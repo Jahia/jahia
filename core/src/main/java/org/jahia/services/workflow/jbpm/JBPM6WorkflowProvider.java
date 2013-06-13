@@ -12,9 +12,15 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +89,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {
         KieBase kieBase = kieSession.getKieBase();
         Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<WorkflowDefinition> workflowDefinitions = new ArrayList<WorkflowDefinition>();
+        for (org.kie.api.definition.process.Process process : processes) {
+            workflowDefinitions.add(convertToWorkflowDefinition(process, locale));
+        }
+        return workflowDefinitions;
     }
 
     @Override
@@ -95,7 +105,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Collection<ProcessInstance> processInstances = kieSession.getProcessInstances();
+        List<Workflow> activeWorkflows = new ArrayList<Workflow>();
+        for (ProcessInstance processInstance : processInstances) {
+            activeWorkflows.add(convertToWorkflow(processInstance, locale));
+        }
+        return activeWorkflows;
     }
 
     @Override
@@ -106,23 +121,22 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
-        ProcessInstance processInstance = kieSession.getProcessInstance(Long.getLong(processId));
+        ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
 
     }
 
     @Override
     public void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void abortProcess(String processId) {
-        kieSession.abortProcessInstance(Long.getLong(processId));
+        kieSession.abortProcessInstance(Long.parseLong(processId));
     }
 
     @Override
     public Workflow getWorkflow(String processId, Locale locale) {
-        ProcessInstance processInstance = kieSession.getProcessInstance(Long.getLong(processId));
+        ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
         String processDefinitionId = processInstance.getProcessId();
         KieBase kieBase = kieSession.getKieBase();
         org.kie.api.definition.process.Process process = kieBase.getProcess(processDefinitionId);
@@ -132,7 +146,40 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public Set<WorkflowAction> getAvailableActions(String processId, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
+        Set<String> connectionIds = new TreeSet<String>();
+        if (processInstance instanceof WorkflowProcessInstance) {
+            WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+            Collection<NodeInstance> activeNodeInstances = workflowProcessInstance.getNodeInstances();
+            for (NodeInstance nodeInstance : activeNodeInstances) {
+                Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
+                for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
+                    for (Connection connection : outgoingConnectionEntry.getValue()) {
+                        String uniqueId = (String) connection.getMetaData().get("UniqueId");
+                        connectionIds.add(uniqueId);
+                    }
+                }
+            }
+        }
+
+        Set<WorkflowAction> workflowActions = new HashSet<WorkflowAction>();
+        List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
+        for (Long taskId : taskIds) {
+            Task task = taskService.getTaskById(taskId);
+            String taskName = getI18NText(task.getNames(), locale).getText();
+            if (connectionIds.contains(taskName)) {
+                WorkflowAction workflowAction = convertToWorkflowTask(task, locale);
+                workflowActions.add(workflowAction);
+                connectionIds.remove(taskName);
+            }
+        }
+        for (String connectionId : connectionIds) {
+            WorkflowAction workflowAction = new WorkflowAction(connectionId, key);
+            i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName());
+            workflowActions.add(workflowAction);
+        }
+
+        return workflowActions;
     }
 
     @Override
@@ -152,12 +199,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public void assignTask(String taskId, JahiaUser user) {
+        taskService.claim(Long.parseLong(taskId), user.getUserKey());
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void completeTask(String taskId, String outcome, Map<String, Object> args) {
         //To change body of implemented methods use File | Settings | File Templates.
+        args.put("outcome", outcome);
         taskService.complete(taskId, userId, args);
     }
 
@@ -168,8 +217,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public void deleteTask(String taskId, String reason) {
-        //To change body of implemented methods use File | Settings | File Templates.
-        taskService.
+        taskService ???
     }
 
     @Override
@@ -179,7 +227,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public WorkflowTask getWorkflowTask(String taskId, Locale locale) {
-        Task task = taskService.getTaskById(Long.getLong(taskId));
+        Task task = taskService.getTaskById(Long.parseLong(taskId));
         return convertToWorkflowTask(task, locale);
     }
 
@@ -208,16 +256,19 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private WorkflowDefinition convertToWorkflowDefinition(org.kie.api.definition.process.Process value, Locale locale) {
-        WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
-        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),
-                repositoryService.getStartActivityNames(value.getId()).get(0)));
-        if (value instanceof JpdlProcessDefinition) {
-            JpdlProcessDefinition definition = (JpdlProcessDefinition) value;
-            final Map<String, TaskDefinitionImpl> taskDefinitions = definition.getTaskDefinitions();
+    private WorkflowDefinition convertToWorkflowDefinition(org.kie.api.definition.process.Process process, Locale locale) {
+        WorkflowDefinition wf = new WorkflowDefinition(process.getName(), process.getKey(), this.key);
+        wf.setFormResourceName(repositoryService.getStartFormResourceName(process.getId(),
+                repositoryService.getStartActivityNames(process.getId()).get(0)));
+        if (process instanceof WorkflowProcess) {
+            WorkflowProcess workflowProcess = (WorkflowProcess) process;
+            Node[] nodes = workflowProcess.getNodes();
+
             final Set<String> tasks = new LinkedHashSet<String>();
             tasks.add(WorkflowService.START_ROLE);
-            tasks.addAll(taskDefinitions.keySet());
+            for (Node node : nodes) {
+                tasks.add(node.getName());
+            }
             wf.setTasks(tasks);
         }
         if (locale != null) {
@@ -233,15 +284,17 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     private Workflow convertToWorkflow(ProcessInstance instance, Locale locale) {
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) instance;
         final Workflow workflow = new Workflow(instance.getProcessName(), Long.toString(instance.getId()), key);
-        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId(), locale);
+        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getId(), locale);
         workflow.setWorkflowDefinition(definition);
-        workflow.setAvailableActions(getAvailableActions(instance.getId(), locale));
+        workflow.setAvailableActions(getAvailableActions(Long.toString(instance.getId()), locale));
         Job job = managementService.createJobQuery().timers().processInstanceId(instance.getId()).uniqueResult();
         if (job != null) {
             workflow.setDuedate(job.getDueDate());
         }
-        workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
+        workflow.setStartTime(
+                historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
 
         Object user = executionService.getVariable(instance.getId(), "user");
         if (user != null) {
@@ -256,9 +309,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     private WorkflowTask convertToWorkflowTask(Task task, Locale locale) {
         WorkflowTask action = new WorkflowTask(task.getTaskData().getProcessId(), key);
-        action.setDueDate(task.getDuedate());
-        action.setDescription(task.getDescription());
-        action.setCreateTime(task.getCreateTime());
+        action.setDueDate(task.getTaskData().getDuedate());
+        action.setDescription(task.getDescriptions().);
+        action.setCreateTime(task.getTaskData().getCreatedOn());
         action.setProcessId(executionService.findExecutionById(task.getExecutionId()).getProcessInstance().getId());
         if (task.getAssignee() != null) {
             action.setAssignee(
@@ -359,6 +412,17 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             workflowTask.setDisplayOutcomes(displayOutcomes);
             workflowTask.setOutcomeIcons(outcomeIcons);
         }
+    }
+
+    private I18NText getI18NText(List<I18NText> i18NTexts, Locale locale) {
+        for (I18NText i18NText : i18NTexts) {
+            if (i18NText.getLanguage().equals(locale.toString())) {
+                return i18NText;
+            } else if (i18NText.getLanguage().equals(locale.getLanguage())) {
+                return i18NText;
+            }
+        }
+        return null;
     }
 
 }

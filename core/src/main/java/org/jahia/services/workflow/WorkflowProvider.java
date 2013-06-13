@@ -74,6 +74,13 @@ public interface WorkflowProvider {
 
     Workflow getWorkflow(String processId, Locale locale);
 
+    /**
+     * Returns the next possible connections for a given process (usually only for User tasks).
+     *
+     * @param processId
+     * @param locale
+     * @return
+     */
     Set<WorkflowAction> getAvailableActions(String processId, Locale locale);
 
     List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale);
@@ -86,6 +93,14 @@ public interface WorkflowProvider {
 
     void completeTask(String taskId, String outcome, Map<String, Object> args);
 
+    /**
+     * Add a group as a potential participator in the task. The role will determine
+     * what the members of the group may do.
+     *
+     * @param taskId
+     * @param group
+     * @param role
+     */
     void addParticipatingGroup(String taskId, JahiaGroup group, String role);
 
     void deleteTask(String taskId, String reason);

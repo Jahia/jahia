@@ -40,7 +40,11 @@
 
 package org.jahia.ajax.gwt.utils;
 
+<<<<<<< .working
 import org.apache.commons.lang.StringUtils;
+=======
+import org.apache.commons.lang.StringEscapeUtils;
+>>>>>>> .merge-right.r46334
 import org.apache.commons.lang.WordUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -143,7 +147,7 @@ public class GWTInitializer {
                 }
             } else {
                 if (request.getParameter("site") != null) {
-                    params.put(JahiaGWTParameters.SITE_UUID, request.getParameter("site"));
+                    params.put(JahiaGWTParameters.SITE_UUID, StringEscapeUtils.escapeHtml(request.getParameter("site")));
                 } else {
                     final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(Constants.SESSION_SITE);
                     if (attribute != null && !"".equals(attribute.getSiteKey())) {

@@ -78,6 +78,7 @@ public class TestHelper {
     public static final String TCK_TEMPLATES = "Jahia Test";
     public static final String WEB_TEMPLATES = "templates-web";
     public static final String WEB_BLUE_TEMPLATES = "templates-web-blue";
+    public static final String WEB_SPACE_TEMPLATES = "templates-web-space";
     public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {

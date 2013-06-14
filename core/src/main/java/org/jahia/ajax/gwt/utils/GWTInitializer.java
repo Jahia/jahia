@@ -40,11 +40,8 @@
 
 package org.jahia.ajax.gwt.utils;
 
-<<<<<<< .working
-import org.apache.commons.lang.StringUtils;
-=======
 import org.apache.commons.lang.StringEscapeUtils;
->>>>>>> .merge-right.r46334
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;

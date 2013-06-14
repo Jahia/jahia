@@ -110,6 +110,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
 
+    protected int errorCacheExpiration = 5;
 
 
     /**
@@ -140,6 +141,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
         this.moduleParamsProperties = moduleParamsProperties;
+    }
+
+    public void setErrorCacheExpiration(int errorCacheExpiration) {
+        this.errorCacheExpiration = errorCacheExpiration;
     }
 
     /**
@@ -213,7 +218,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
             CountDownLatch countDownLatch = null;
-            if ( Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
+            if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
                 countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
                     resource.getContextConfiguration(), renderContext.getRequest());
             }
@@ -942,7 +947,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
         super.getContentForError(renderContext, resource, chain, e);
         try {
-            renderContext.getRequest().setAttribute("expiration", "5");
+            renderContext.getRequest().setAttribute("expiration", ""+errorCacheExpiration);
             // Returns a fragment with an error comment
             return execute("<!-- Module error : "+e.getMessage()+"-->", renderContext, resource, chain);
         } catch (Exception e1) {

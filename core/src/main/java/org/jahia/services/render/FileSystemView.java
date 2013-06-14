@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -75,7 +75,7 @@ public class FileSystemView implements Comparable<FileSystemView>, View {
     private Properties defaultProperties;
     public static String THUMBNAIL = "image";
 
-    private static Map<String,Properties> propCache = new HashMap<String, Properties>();
+    private static Map<String,Properties> propCache = new ConcurrentHashMap<String, Properties>();
     
     public static void clearPropertiesCache() {
         propCache.clear();

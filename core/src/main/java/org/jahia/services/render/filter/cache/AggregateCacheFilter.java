@@ -44,8 +44,6 @@ import net.htmlparser.jericho.*;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -65,7 +63,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -76,9 +73,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
-import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
 
 /**
  * Module content caching filter.
@@ -217,11 +211,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // return the content from the cache. Otherwise, return null to continue the render chain.
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
-            CountDownLatch countDownLatch = null;
-            if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
-                countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
-                    resource.getContextConfiguration(), renderContext.getRequest());
-            }
+            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
+                    resource.getContextConfiguration(), renderContext.getRequest(), resource, properties);
             if (countDownLatch == null) {
                 element = cache.get(finalKey);
                 if (element != null && element.getValue() != null) {
@@ -989,7 +980,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     protected CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration,
-                                                                 HttpServletRequest request) throws Exception {
+                                                                 HttpServletRequest request, Resource resource, Properties properties) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
         boolean semaphoreAcquired = false;
@@ -1007,10 +998,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
         }
         synchronized (generatingModules) {
-            latch = (CountDownLatch) generatingModules.get(key);
-            if (latch == null) {
-                latch = new CountDownLatch(1);
-                generatingModules.put(key, latch);
+            if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
+                latch = generatingModules.get(key);
+                if (latch == null) {
+                    latch = new CountDownLatch(1);
+                    generatingModules.put(key, latch);
+                    mustWait = false;
+                }
+            } else {
                 mustWait = false;
             }
         }

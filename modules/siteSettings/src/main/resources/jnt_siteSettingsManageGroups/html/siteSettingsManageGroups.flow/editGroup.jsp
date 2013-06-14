@@ -95,8 +95,7 @@ $(document).ready(function() {
 
 <h2><fmt:message key="label.group"/>: ${fn:escapeXml(user:displayName(group))}</h2>
 
-<span style="color: red">!!!CHANGE THIS TO > 1</span>
-<c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 0}"/>
+<c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
 <c:set var="members" value="${group.members}"/>
 <c:set var="membersFound" value="${fn:length(members) > 0}"/>
 

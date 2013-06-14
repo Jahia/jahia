@@ -37,8 +37,7 @@ function submitGroupForm(act, group) {
 
 <h2><fmt:message key="label.manageGroups"/> - ${fn:escapeXml(site.displayableName)}</h2>
 
-<span style="color: red">!!!CHANGE THIS TO > 1</span>
-<c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 0}"/>
+<c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
 
 <div class="box-1">
     <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">

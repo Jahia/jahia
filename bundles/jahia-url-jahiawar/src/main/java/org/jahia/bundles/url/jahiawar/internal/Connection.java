@@ -452,9 +452,8 @@ public class Connection extends URLConnection {
             bndProperties.put("Jahia-Depends", depends);
         }
         String value = attrs.getValue("module-type");
-        if (value != null) {
-            bndProperties.put("Jahia-Module-Type", value);
-        }
+        bndProperties.put("Jahia-Module-Type", value != null ? value : "system");
+        
         value = attrs.getValue("root-folder");
         if (value != null) {
             bndProperties.put("Jahia-Root-Folder", value);

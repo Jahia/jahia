@@ -40,6 +40,7 @@
 
 package org.jahia.bundles.url.jahiawar.internal;
 
+import org.apache.commons.io.IOUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -57,30 +58,32 @@ import java.util.List;
  * A class to perform needed transformations on Spring configuration files.
  */
 public class SpringFileTransformer {
-
+    
     public static Document transform(Document document) {
 
-        InputStream stylesheetInputStream = SpringFileTransformer.class.getResourceAsStream("/org/jahia/bundles/url/jahiawar/internal/spring.xslt");
+        InputStream stylesheetInputStream = null;
         try {
             String prefix = "beans";
-            List<Element> transformedProperties = getNodes(document, "//beans:property[@ref='sessionFactory']", prefix);
-
-            if (transformedProperties.size() == 0) {
+            if (getNodes(document, "//beans:property[@ref='sessionFactory']", prefix).isEmpty()
+                    && getNodes(document, "//beans:bean[@parent='JahiaUserManagerLDAPProvider' and count(@class)=0]",
+                            prefix).isEmpty()
+                    && getNodes(document, "//beans:bean[@parent='JahiaGroupManagerLDAPProvider' and count(@class)=0]",
+                            prefix).isEmpty()) {
                 return document;
             }
 
+            stylesheetInputStream = SpringFileTransformer.class.getResourceAsStream("/org/jahia/bundles/url/jahiawar/internal/spring.xslt");
             XSLTransformer transformer = new XSLTransformer(stylesheetInputStream);
             Document resultingDocument = transformer.transform(document);
-            if (resultingDocument != null) {
-                return resultingDocument;
-            }
-            return document;
+            return resultingDocument != null ? resultingDocument : document;
         } catch (XSLTransformException e) {
             e.printStackTrace();
             return document;
         } catch (JDOMException e) {
             e.printStackTrace();
             return document;
+        } finally {
+            IOUtils.closeQuietly(stylesheetInputStream);
         }
     }
 

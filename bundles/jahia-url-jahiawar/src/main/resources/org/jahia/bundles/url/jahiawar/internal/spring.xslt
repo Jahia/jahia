@@ -16,4 +16,15 @@
         </xsl:attribute>
     </xsl:template>
 
+    <xsl:template match="beans:bean/@parent[.='JahiaUserManagerLDAPProvider']">
+        <xsl:attribute name="class">org.jahia.services.usermanager.ldap.JahiaUserManagerLDAPProvider</xsl:attribute>
+        <xsl:copy-of select="." />
+        <xsl:attribute name="parent">JahiaUserManagerProvider</xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="beans:bean/@parent[.='JahiaGroupManagerLDAPProvider']">
+        <xsl:attribute name="class">org.jahia.services.usermanager.ldap.JahiaGroupManagerLDAPProvider</xsl:attribute>
+        <xsl:copy-of select="." />
+        <xsl:attribute name="parent">JahiaGroupManagerProvider</xsl:attribute>
+    </xsl:template>
 </xsl:stylesheet>

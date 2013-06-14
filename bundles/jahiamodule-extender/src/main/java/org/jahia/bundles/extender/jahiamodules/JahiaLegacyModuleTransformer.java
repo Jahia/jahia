@@ -53,6 +53,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * A Felix FileInstall ArtifactTransformer implementation that transforms Jahia's legacy WAR module
@@ -69,14 +70,27 @@ class JahiaLegacyModuleTransformer /* implements ArtifactUrlTransformer */ imple
         }
         if (artifact.getName().endsWith(".war")) {
             // we must now check the Manifest to see if it has Jahia-specific entries.
+            JarFile jar = null;
             try {
-                JarFile jar = new JarFile(artifact);
-                Attributes mainAttributes = jar.getManifest().getMainAttributes();
-                if (mainAttributes.getValue("module-type") != null) {
-                    return true;
+                jar = new JarFile(artifact);
+                Manifest mf = jar.getManifest();
+                if (mf != null) {
+                    Attributes mainAttributes = mf.getMainAttributes();
+                    if (mainAttributes.getValue("module-type") != null
+                            || mainAttributes.getValue("root-folder") != null) {
+                        return true;
+                    }
                 }
             } catch (IOException e) {
                 return false;
+            } finally {
+                if (jar != null) {
+                    try {
+                        jar.close();
+                    } catch (IOException ioe) {
+                        // ignore
+                    }
+                }
             }
         }
         return false;

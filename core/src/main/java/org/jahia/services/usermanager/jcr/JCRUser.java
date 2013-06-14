@@ -68,7 +68,6 @@ import java.util.Properties;
  *
  * @author rincevent
  * @since JAHIA 6.5
- * Created : 7 juil. 2009
  */
 public class JCRUser implements JahiaUser, JCRPrincipal {
     private static final long serialVersionUID = 4032549320399420578L;
@@ -270,7 +269,6 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                     Node node = getNode(session);
                     Property property = node.getProperty(key);
                     if (property != null) {
-                        session.checkout(node);
                         property.remove();
                         session.save();
                         properties = null;
@@ -304,7 +302,6 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
-                    session.checkout(node);
                     node.setProperty(key, value);
                     session.save();
                     properties = null;
@@ -365,6 +362,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
             JahiaGroupManagerService groupService = servicesRegistry.getJahiaGroupManagerService();
 
             // lookup the requested group
+            @SuppressWarnings("deprecation")
             JahiaGroup group = groupService.lookupGroup(siteID, name);
             if (group != null) {
                 return group.isMember(this);

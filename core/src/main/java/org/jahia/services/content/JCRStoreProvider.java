@@ -779,7 +779,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                         startNode = startNode.getNode(jcrUsernamePath[i]);
                     } catch (PathNotFoundException e) {
                         try {
-                            session.getWorkspace().getVersionManager().checkout(startNode.getPath());
                             if (i == (length - 1)) {
                                 Node userNode = startNode.addNode(jcrUsernamePath[i], Constants.JAHIANT_USER);
                                 if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {

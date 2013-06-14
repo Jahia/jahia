@@ -62,11 +62,11 @@ import java.util.*;
 /**
  * Implementation of the JahiaGroup interface that uses the JCR API for storage
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 8 juil. 2009
  */
 public class JCRGroup extends JahiaGroup implements JCRPrincipal {
+    private static final long serialVersionUID = 1825041318839222308L;
     public static final String J_HIDDEN = "j:hidden";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
@@ -170,7 +170,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         if (properties != null) {
                             properties.remove(key);
                         }
-                        session.checkout(node);
                         property.remove();
                         session.save();
                         return Boolean.TRUE;
@@ -200,7 +199,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node node = getNode(session);
-                    session.checkout(node);
                     node.setProperty(key, value);
                     session.save();
                     if (properties != null) {
@@ -250,7 +248,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         Node node = getNode(session);
                         Node members = node.getNode("j:members");
                         if (!members.hasNode(name)) {
-                            members.checkout();
                             Node member = members.addNode(name, Constants.JAHIANT_MEMBER);
                             member.setProperty("j:member", jcrUser.getIdentifier());
                             session.save();
@@ -427,7 +424,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             NodeIterator nodes = qr.getNodes();
             while (nodes.hasNext()) {
                 Node memberNode = nodes.nextNode();
-                memberNode.checkout();
                 memberNode.remove();
             }
             session.save();
@@ -553,7 +549,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             Node node = getNode(session);
                             Node members = node.getNode("j:members");
                             if (!members.hasNode(name)) {
-                                members.checkout();
                                 Node member = members.addNode(name, Constants.JAHIANT_MEMBER);
                                 member.setProperty("j:member", jcrUser.getIdentifier());
                                 JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());

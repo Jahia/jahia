@@ -10,6 +10,7 @@ Prerequisites :
 <%@ page import = "java.util.*"%>
 <%@ page import="org.jahia.services.usermanager.*" %>
 <%@ page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -35,7 +36,7 @@ int stretcherToOpen   = 0;
                             <%
                             String searchString = request.getParameter("searchString");
                             if (searchString != null) {
-                                %>value='<%=request.getParameter("searchString")%>'<%
+                                %>value='<%=StringEscapeUtils.escapeHtml(request.getParameter("searchString"))%>'<%
                             }
                                 %>onkeydown="if (event.keyCode == 13) javascript:submitForm('search');">
                     </td>

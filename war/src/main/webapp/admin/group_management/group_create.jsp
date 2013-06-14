@@ -2,6 +2,7 @@
 <%@page import="java.util.*" %>
 <%@page import="org.jahia.bin.*" %>
 <%@page import="org.jahia.data.JahiaData" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -86,7 +87,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="text" name="groupName" class="input" size="40"
-                                                           maxlength="185" value="<%= groupName%>">&nbsp;
+                                                           maxlength="185" value="<%= StringEscapeUtils.escapeHtml(groupName)%>">&nbsp;
                                                     <font class="text2">
                                                         (<fmt:message key="org.jahia.admin.required.label"/>)
                                                     </font>

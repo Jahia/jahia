@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.utils;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.WordUtils;
 import org.drools.util.StringUtils;
 import org.jahia.settings.SettingsBean;
@@ -144,7 +145,7 @@ public class GWTInitializer {
                 }
             } else {
                 if (request.getParameter("site") != null) {
-                    params.put(JahiaGWTParameters.SITE_UUID, request.getParameter("site"));
+                    params.put(JahiaGWTParameters.SITE_UUID, StringEscapeUtils.escapeHtml(request.getParameter("site")));
                 } else {
                     final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
                     if (attribute != null && !"".equals(attribute.getSiteKey())) {

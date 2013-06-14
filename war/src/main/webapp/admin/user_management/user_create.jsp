@@ -11,6 +11,7 @@
 <%@ page import="org.jahia.bin.*,org.jahia.admin.users.*" %>
 <%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
 <%@ page import="org.apache.commons.lang.WordUtils" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
@@ -31,7 +32,7 @@
         if (propValue == null) {
             return "";
         } else {
-            return propValue;
+            return StringEscapeUtils.escapeHtml(propValue);
         }
     }
 %>
@@ -120,7 +121,7 @@
     </td>
     <td>
         <input class="input" type="text" name="username"
-               size="40" maxlength="40" value='<%=userProperties.get("username")%>'>
+               size="40" maxlength="40" value='<%=StringEscapeUtils.escapeHtml((String) userProperties.get("username"))%>'>
         &nbsp;<font class="text2">(<fmt:message key="org.jahia.admin.required.label"/>)</font>
     </td>
 </tr>

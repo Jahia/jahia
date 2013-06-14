@@ -103,6 +103,8 @@ public class JCRSortTag extends AbstractJCRTag {
         Collections.sort(res,new NodeComparator(props));
 
         pageContext.setAttribute(var, res, scope);
+        list = null;
+
         return super.doEndTag();
     }
 
@@ -154,6 +156,9 @@ public class JCRSortTag extends AbstractJCRTag {
                                     break;
                                 case PropertyType.DECIMAL:
                                 case PropertyType.LONG:
+                                    r = Long.compare(p1.getLong(),p2.getLong());
+                                    break;
+                                case PropertyType.DOUBLE:
                                     r = Double.compare(p1.getDouble(),p2.getDouble());
                                     break;
                                 default:
@@ -181,5 +186,7 @@ public class JCRSortTag extends AbstractJCRTag {
         }
 
     }
+
+
 
 }

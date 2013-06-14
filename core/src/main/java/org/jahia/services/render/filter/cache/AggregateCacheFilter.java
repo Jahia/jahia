@@ -44,9 +44,11 @@ import net.htmlparser.jericho.*;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.jackrabbit.util.Base64;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
@@ -67,6 +69,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -104,6 +107,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
 
+<<<<<<< .working
     protected int errorCacheExpiration = 5;
 
 
@@ -153,6 +157,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @return The content (with sub content aggregated) if found in the cache, null otherwise.
      * @throws Exception
      */
+=======
+    protected int errorCacheExpiration = 5;
+
+    public void setErrorCacheExpiration(int errorCacheExpiration) {
+        this.errorCacheExpiration = errorCacheExpiration;
+    }
+
+>>>>>>> .merge-right.r46347
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         boolean debugEnabled = logger.isDebugEnabled();
@@ -206,6 +218,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // The element is found in the cache. Need to
             return returnFromCache(renderContext, resource, key, finalKey, element, cache);
         } else {
+<<<<<<< .working
             // The element is not found in the cache with that key. Use CountLatch to avoid parallel processing of the
             // module - if somebody else is generating this fragment, wait for the entry to be generated and
             // return the content from the cache. Otherwise, return null to continue the render chain.
@@ -213,6 +226,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // key like dependencies can only be calculated when the fragment has been generated.
             CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
                     resource.getContextConfiguration(), renderContext.getRequest(), resource, properties);
+=======
+            // Use CountLatch as not found in cache
+            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey,
+                        resource.getContextConfiguration(), renderContext.getRequest(), resource, properties);
+>>>>>>> .merge-right.r46347
             if (countDownLatch == null) {
                 element = cache.get(finalKey);
                 if (element != null && element.getValue() != null) {
@@ -365,6 +383,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
         try {
             if (cacheable) {
+<<<<<<< .working
                 final Cache cache = cacheProvider.getCache();
                 /*// we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
                 if (!Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
@@ -380,6 +399,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }*/
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
+=======
+                // we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
+                if (!Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
+                    int nbOfDependencies = resource.getDependencies().size();
+
+                    addReferencesToDependencies(resource);
+                    if (resource.getDependencies().size() > nbOfDependencies) {
+                        key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+                        perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
+                        perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
+                    }
+>>>>>>> .merge-right.r46347
                 }
                 doCache(previousOut, renderContext, resource, properties, cache, key, finalKey);
             }
@@ -637,6 +668,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+<<<<<<< .working
     /**
      * Add key to the list of dependencies
      *
@@ -648,16 +680,42 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected void addDependencies(RenderContext renderContext, String finalKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
         if (newDependencies.add(KeyCompressor.encodeKey(finalKey))) {
+=======
+    protected void addDependencies(RenderContext renderContext, String perUserKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
+        if (newDependencies.add(perUserKey)) {
+>>>>>>> .merge-right.r46347
             regexpDependenciesCache.put(new Element(regexp, newDependencies));
         }
     }
 
+<<<<<<< .working
     /**
      * Replace all placeholders in the cache key to get a final key.
      * @param renderContext RenderContext
      * @param key Key with placeholders
      * @return The final key with placehodlers replaced
      */
+=======
+    protected Long getExpiration(RenderContext renderContext, Resource resource, Properties properties) {
+        String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
+        return cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(properties.getProperty("cache.expiration", "-1"));
+    }
+
+    protected String replaceAclPlaceHolder(RenderContext renderContext, String key, String perUserKey)
+            throws ParseException, RepositoryException {
+        if (!key.contains(DefaultCacheKeyGenerator.PER_USER)) {
+            Map<String, String> keyAttrbs = cacheProvider.getKeyGenerator().parse(key);
+            String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
+            String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
+            String acls = ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).getAclsKeyPart(renderContext,
+                    Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get(
+                    "acls"));
+            perUserKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "acls", hashKey(acls));
+        }
+        return perUserKey;
+    }
+
+>>>>>>> .merge-right.r46347
     protected String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
         return cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);
     }
@@ -686,9 +744,45 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 StartTag segment = (StartTag) esiIncludeTag;
                 /*if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
+<<<<<<< .working
                 }*/
                 // Get the sub-fragment cache key
+=======
+                }*/
+>>>>>>> .merge-right.r46347
                 String cacheKey = segment.getAttributeValue("src");
+<<<<<<< .working
+=======
+                CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+                if (!cacheKey.contains(DefaultCacheKeyGenerator.PER_USER) && keyGenerator instanceof DefaultCacheKeyGenerator) {
+                    DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
+                    try {
+                        Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
+                        String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
+                        String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
+                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get("acls"));
+                        cacheKey = keyGenerator.replaceField(cacheKey, "acls", hashKey(acls));
+                        if (renderContext.getRequest().getParameter("ec") != null &&
+                                renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString",
+                                    renderContext.getRequest().getQueryString());
+                        }
+                        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "queryString", UUID.randomUUID().toString());
+                        }
+                    } catch (ParseException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (PathNotFoundException e) {
+                        try {
+                            cacheKey = keyGenerator.replaceField(cacheKey, "acls", "invalid");
+                        } catch (ParseException e1) {
+                            logger.error(e1.getMessage(), e1);
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+>>>>>>> .merge-right.r46347
 
                 // Replace placeholder to have a full contextual cache key
                 String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
@@ -699,13 +793,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
                 }
+<<<<<<< .working
 
                 if (cache.isKeyInCache(replacedCacheKey)) {
                     // If fragment is in cache, get it from there and aggregate recursively
                     final Element element = cache.get(replacedCacheKey);
+=======
+                if (cache.isKeyInCache(mrCacheKey)) {
+                    // If fragment is in cache, get it from there and aggregate recursively
+                    final Element element = cache.get(mrCacheKey);
+>>>>>>> .merge-right.r46347
                     if (element != null && element.getValue() != null) {
                         if (logger.isDebugEnabled()) {
+<<<<<<< .working
                             logger.debug("It has been found in cache", replacedCacheKey);
+=======
+                            logger.debug("It has been found in cache", mrCacheKey);
+>>>>>>> .merge-right.r46347
                         }
                         @SuppressWarnings("unchecked")
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
@@ -736,14 +840,22 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     } else {
                         cache.put(new Element(replacedCacheKey, null));
                         if (logger.isDebugEnabled()) {
+<<<<<<< .working
                             logger.debug("Content is expired", replacedCacheKey);
+=======
+                            logger.debug("Content is expired", mrCacheKey);
+>>>>>>> .merge-right.r46347
                         }
                         // The fragment is not in the cache, generate it
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
+<<<<<<< .working
                         logger.debug("Content is missing from cache", replacedCacheKey);
+=======
+                        logger.debug("Content is missing from cache", mrCacheKey);
+>>>>>>> .merge-right.r46347
                     }
                     // The fragment is not in the cache, generate it
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
@@ -934,6 +1046,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+<<<<<<< .working
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
         super.getContentForError(renderContext, resource, chain, e);
@@ -943,6 +1056,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return execute("<!-- Module error : "+e.getMessage()+"-->", renderContext, resource, chain);
         } catch (Exception e1) {
             return null;
+=======
+
+    @Override
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
+        super.getContentForError(renderContext, resource, chain, e);
+        try {
+            renderContext.getRequest().setAttribute("expiration", ""+errorCacheExpiration);
+            // Returns a fragment with an error comment
+            return execute("<!-- Module error : "+e.getMessage()+"-->", renderContext, resource, chain);
+        } catch (Exception e1) {
+            return null;
+>>>>>>> .merge-right.r46347
         }
 //        LinkedList<String> userKeysLinkedList = userKeys.get();
 //        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
@@ -955,6 +1080,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 //            cache.put(cachedElement);
 //        }
     }
+
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
@@ -997,9 +1123,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 semaphoreAcquired = true;
             }
         }
+<<<<<<< .working
         synchronized (generatingModules) {
             if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
                 latch = generatingModules.get(key);
+=======
+        synchronized (generatingModules) {
+            if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
+                latch = (CountDownLatch) generatingModules.get(key);
+>>>>>>> .merge-right.r46347
                 if (latch == null) {
                     latch = new CountDownLatch(1);
                     generatingModules.put(key, latch);
@@ -1059,6 +1191,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void removeNotCacheableFragment(String key) {
+<<<<<<< .working
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {
             DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
@@ -1068,6 +1201,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             for (String notCacheableKey : notCacheableFragment.keySet()) {
                 if (notCacheableKey.contains(path)) {
                     removableKeys.add(notCacheableKey);
+=======
+        try {
+            CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+            if (keyGenerator instanceof DefaultCacheKeyGenerator) {
+                DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
+                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
+                String path = keyAttrbs.get("path");
+                List<String> removableKeys = new ArrayList<String>();
+                for (String notCacheableKey : notCacheableFragment.keySet()) {
+                    if (notCacheableKey.contains(path)) {
+                        removableKeys.add(notCacheableKey);
+                    }
+>>>>>>> .merge-right.r46347
                 }
             }
             for (String removableKey : removableKeys) {
@@ -1079,4 +1225,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static void flushNotCacheableFragment() {
         notCacheableFragment.clear();
     }
+
+
+
+    private String hashKey(String s ) {
+        try {
+            byte[] b = DigestUtils.sha256(s.getBytes("UTF-8"));
+            StringWriter sw = new StringWriter();
+            Base64.encode(b, 0, b.length, sw);
+            return sw.toString();
+        } catch (Exception e) {
+            logger.warn("Issue while digesting key",e);
+        }
+        return s;
+    }
+
 }

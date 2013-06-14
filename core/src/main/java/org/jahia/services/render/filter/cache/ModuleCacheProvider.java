@@ -148,13 +148,18 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private void invalidateDependencies(Set<String> deps, boolean propageToOtherClusterNodes) {
         for (String dep : deps) {
-            String key;
-            key = KeyCompressor.decodeKey(dep);
+            String key = dep;
             if (key != null) {
                 boolean removed = blockingCache.remove(key, !propageToOtherClusterNodes);
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + key + " from cache");
                 }
+<<<<<<< .working
+=======
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Removing entry from module output cache: " + dep);
+                }
+>>>>>>> .merge-right.r46347
             }
         }
     }

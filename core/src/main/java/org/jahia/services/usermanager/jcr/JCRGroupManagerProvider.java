@@ -125,7 +125,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             String siteName = sitesService.getSite(siteID, session).getSiteKey();
                             parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
                         }
-                        session.checkout(parentNodeWrapper);
                         nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
                         nodeWrapper.setProperty(JCRGroup.J_HIDDEN, hidden);
                         if (properties != null) {
@@ -186,8 +185,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     member.getParent().remove();
                 }
 
-                session.checkout(node.getParent());
-                session.checkout(node);
                 node.remove();
                 session.save();
                 return true;

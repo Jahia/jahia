@@ -151,12 +151,13 @@ public class RenderChain {
                 	long timer = System.currentTimeMillis();
                     out = filter.prepare(renderContext, resource, this);
                     if (logger.isDebugEnabled()) { 
-			logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+                        logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
             }
-            for (; index>0 && renderContext.getRedirect() == null; index--) {
-                RenderFilter filter = filters.get(index-1);
+            index--;
+            for (; index>=0 && renderContext.getRedirect() == null; index--) {
+                RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
                     out = filter.execute(out, renderContext, resource, this);
@@ -166,20 +167,24 @@ public class RenderChain {
                 }
             }
         } catch (Exception e) {
+            out = null;
             logger.error("Error while rendering the resource: " + resource + " -> " + e.toString());
-            for (; index>0 && renderContext.getRedirect() == null; index--) {
+            for (index++; index>0 && renderContext.getRedirect() == null && out == null; index--) {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
-                    filter.handleError(renderContext, resource, this, e);
+                    out = filter.getContentForError(renderContext, resource, this, e);
                     if (logger.isDebugEnabled()) { 
                     	logger.debug("{}: handling error for filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
             }
-            throw new RenderFilterException(e);
+
+            if (out == null) {
+                throw new RenderFilterException(e);
+            }
         } finally {
-            for (; index<filters.size(); index++) {
+            for (index = 0; index<filters.size(); index++) {
                 try {
                     RenderFilter filter = filters.get(index);
                     if (filter.areConditionsMatched(renderContext, resource)) {

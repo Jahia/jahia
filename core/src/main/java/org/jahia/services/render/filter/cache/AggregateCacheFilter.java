@@ -44,9 +44,11 @@ import net.htmlparser.jericho.*;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.jackrabbit.util.Base64;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
@@ -69,6 +71,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -114,6 +117,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String FORM_TOKEN = "form_token";
     protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
+
+    protected int errorCacheExpiration = 5;
+
+    public void setErrorCacheExpiration(int errorCacheExpiration) {
+        this.errorCacheExpiration = errorCacheExpiration;
+    }
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -165,7 +174,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         } else {
             // Use CountLatch as not found in cache
             CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey,
-                    resource.getContextConfiguration(), renderContext.getRequest());
+                        resource.getContextConfiguration(), renderContext.getRequest(), resource, properties);
             if (countDownLatch == null) {
                 element = cache.get(perUserKey);
                 if (element != null && element.getValue() != null) {
@@ -272,12 +281,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             if (cacheable) {
-                int nbOfDependencies = resource.getDependencies().size();
-                addReferencesToDependencies(resource);
-                if (resource.getDependencies().size() > nbOfDependencies) {
-                    key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-                    perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
-                    perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
+                // we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
+                if (!Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
+                    int nbOfDependencies = resource.getDependencies().size();
+
+                    addReferencesToDependencies(resource);
+                    if (resource.getDependencies().size() > nbOfDependencies) {
+                        key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+                        perUserKey = replacePlaceholdersInCacheKey(renderContext, key);
+                        perUserKey = replaceAclPlaceHolder(renderContext, key, perUserKey);
+                    }
                 }
                 String perUser = (String) renderContext.getRequest().getAttribute("perUser");
                 if (perUser != null && "true".equals(perUser.toLowerCase())) {
@@ -335,27 +348,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private void addExpirationToCacheElements(Cache cache, String perUserKey, Long expiration, Element cachedElement)
             throws ParseException {
         cachedElement.setTimeToLive(expiration.intValue());
-        String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
-                "hidden.load");
-        Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-        if (hiddenElement != null) {
-            hiddenElement.setTimeToLive(expiration.intValue());
-            cache.put(hiddenElement);
-        }
-        hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
-                "hidden.footer");
-        hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-        if (hiddenElement != null) {
-            hiddenElement.setTimeToLive(expiration.intValue());
-            cache.put(hiddenElement);
-        }
-        hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
-                "hidden.header");
-        hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-        if (hiddenElement != null) {
-            hiddenElement.setTimeToLive(expiration.intValue());
-            cache.put(hiddenElement);
-        }
     }
 
     private Set<String> manageDependencies(RenderContext renderContext, Resource resource, String perUserKey,
@@ -474,7 +466,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     protected void addDependencies(RenderContext renderContext, String perUserKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
-        if (newDependencies.add(KeyCompressor.encodeKey(perUserKey))) {
+        if (newDependencies.add(perUserKey)) {
             regexpDependenciesCache.put(new Element(regexp, newDependencies));
         }
     }
@@ -493,7 +485,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             String acls = ((DefaultCacheKeyGenerator) cacheProvider.getKeyGenerator()).getAclsKeyPart(renderContext,
                     Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get(
                     "acls"));
-            perUserKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "acls", acls);
+            perUserKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "acls", hashKey(acls));
         }
         return perUserKey;
     }
@@ -570,9 +562,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
-                if (logger.isDebugEnabled()) {
+                /*if (logger.isDebugEnabled()) {
                     logger.debug(segment.toString());
-                }
+                }*/
                 String cacheKey = segment.getAttributeValue("src");
                 CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
                 if (!cacheKey.contains(DefaultCacheKeyGenerator.PER_USER) && keyGenerator instanceof DefaultCacheKeyGenerator) {
@@ -582,7 +574,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
                         String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
                         String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get("acls"));
-                        cacheKey = keyGenerator.replaceField(cacheKey, "acls", acls);
+                        cacheKey = keyGenerator.replaceField(cacheKey, "acls", hashKey(acls));
                         if (renderContext.getRequest().getParameter("ec") != null &&
                                 renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {
                             cacheKey = keyGenerator.replaceField(cacheKey, "queryString",
@@ -611,10 +603,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     logger.debug("Check if {} is in cache", mrCacheKey);
                 }
                 if (cache.isKeyInCache(mrCacheKey)) {
+                    // If fragment is in cache, get it from there and aggregate recursively
                     final Element element = cache.get(mrCacheKey);
                     if (element != null && element.getValue() != null) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("{} has been found in cache", mrCacheKey);
+                            logger.debug("It has been found in cache", mrCacheKey);
                         }
                         @SuppressWarnings("unchecked")
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
@@ -643,13 +636,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Missing content: {}", mrCacheKey);
+                            logger.debug("Content is expired", mrCacheKey);
                         }
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Missing content: {}", mrCacheKey);
+                        logger.debug("Content is missing from cache", mrCacheKey);
                     }
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                 }
@@ -785,23 +778,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
         stringBuilder.append(key);
         stringBuilder.append("</span><br/>");
-        /*if (cachedElement != null && cachedElement.getValue() != null) {
-            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
-            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
-                    cachedElement.getCreationTime())));
-            stringBuilder.append("</span><br/>");
-            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment will expire at: </span><span>");
-            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
-                    cachedElement.getExpirationTime())));
-            stringBuilder.append("</span>");
-            stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext()).append(
-                    "/tools/ehcache/flushKey.jsp\" method=\"post\"");
-            stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
-            stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
-            stringBuilder.append("</form>");
-        } else {
-            stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment Not Cacheable</span><br/>");
-        }*/
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);
         return stringBuilder.toString();
@@ -824,17 +800,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    @Override
-    public void handleError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
-        super.handleError(renderContext, resource, chain, e);
-        LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
-            String perUserKey = userKeysLinkedList.get(0);
 
-            final Cache cache = cacheProvider.getCache();
-            cache.put(new Element(perUserKey, null));
+    @Override
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
+        super.getContentForError(renderContext, resource, chain, e);
+        try {
+            renderContext.getRequest().setAttribute("expiration", ""+errorCacheExpiration);
+            // Returns a fragment with an error comment
+            return execute("<!-- Module error : "+e.getMessage()+"-->", renderContext, resource, chain);
+        } catch (Exception e1) {
+            return null;
         }
     }
+
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
@@ -860,7 +838,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     protected CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration,
-                                                                 HttpServletRequest request) throws Exception {
+                                                                 HttpServletRequest request, Resource resource, Properties properties) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
         boolean semaphoreAcquired = false;
@@ -877,17 +855,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 semaphoreAcquired = true;
             }
         }
-        if (!generatorQueue.isUseLatchOnlyForPages() || "page".equals(contextConfiguration)) {
-            synchronized (generatingModules) {
+        synchronized (generatingModules) {
+            if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
                 latch = (CountDownLatch) generatingModules.get(key);
                 if (latch == null) {
                     latch = new CountDownLatch(1);
                     generatingModules.put(key, latch);
                     mustWait = false;
                 }
+            } else {
+                mustWait = false;
             }
-        } else {
-            mustWait = false;
         }
         if (mustWait) {
             if (semaphoreAcquired) {
@@ -966,7 +944,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
             if (keyGenerator instanceof DefaultCacheKeyGenerator) {
                 DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
-                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(KeyCompressor.decodeKey(key));
+                Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
                 String path = keyAttrbs.get("path");
                 List<String> removableKeys = new ArrayList<String>();
                 for (String notCacheableKey : notCacheableFragment.keySet()) {
@@ -986,4 +964,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static void flushNotCacheableFragment() {
         notCacheableFragment.clear();
     }
+
+
+
+    private String hashKey(String s ) {
+        try {
+            byte[] b = DigestUtils.sha256(s.getBytes("UTF-8"));
+            StringWriter sw = new StringWriter();
+            Base64.encode(b, 0, b.length, sw);
+            return sw.toString();
+        } catch (Exception e) {
+            logger.warn("Issue while digesting key",e);
+        }
+        return s;
+    }
+
 }

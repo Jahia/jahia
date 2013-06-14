@@ -13,7 +13,7 @@
 
     <view-state id="manageGroups" model="searchCriteria">
         <on-render>
-            <evaluate expression="flowHandler.search(searchCriteria)" result="flowScope.groups"/>
+            <evaluate expression="flowHandler.search(searchCriteria)" result="requestScope.groups"/>
             <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
         </on-render>
         <transition on="search" to="manageGroups"/>
@@ -21,12 +21,12 @@
             <evaluate expression="flowHandler.initGroup(flowRequestContext)" result="flowScope.group"/>
         </transition>
         <transition on="editGroup" to="editGroup" bind="false" validate="false">
-            <evaluate expression="flowHandler.lookupGroup(requestParameters.selectedGroup)" result="flowScope.group"/>
+            <set name="flowScope.groupKey" value="requestParameters.selectedGroup" type="java.lang.String" />
         </transition>
         <transition on="copyGroup" to="createGroup" bind="false" validate="false">
-            <evaluate expression="flowHandler.lookupGroup(requestParameters.selectedGroup)" result="flowScope.groupToCopy"/>
             <evaluate expression="flowHandler.initGroup(flowRequestContext)" result="flowScope.group"/>
             <set name="flashScope.copyMode" value="true" type="boolean" />
+            <set name="flowScope.groupToCopyKey" value="requestParameters.selectedGroup" type="java.lang.String" />
         </transition>
         <transition on="removeGroup" to="manageGroups" validate="false">
             <evaluate expression="flowHandler.removeGroup(requestParameters.selectedGroup, messageContext)"/>
@@ -34,11 +34,14 @@
     </view-state>
 
     <view-state id="createGroup" model="group">
+        <on-render>
+            <evaluate expression="flowHandler.lookupGroup(flowScope.groupToCopyKey)" result="requestScope.groupToCopy"/>
+        </on-render>
         <transition on="add" to="manageGroups">
             <evaluate expression="flowHandler.addGroup(group, messageContext)"/>
         </transition>
         <transition on="copy" to="manageGroups">
-            <evaluate expression="flowHandler.copyGroup(flowScope.groupToCopy, group, messageContext)"/>
+            <evaluate expression="flowHandler.copyGroup(flowScope.groupToCopyKey, group, messageContext)"/>
         </transition>
         <transition on="cancel" to="manageGroups" bind="false" validate="false"/>
     </view-state>
@@ -46,12 +49,13 @@
     <view-state id="editGroup">
         <on-render>
             <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.lookupGroup(flowScope.groupKey)" result="requestScope.group"/>
         </on-render>
         <transition on="addMembers" to="editGroup" validate="false">
-            <evaluate expression="flowHandler.addMembers(flowScope.group, requestParameters.newMembers, messageContext)"/>
+            <evaluate expression="flowHandler.addMembers(flowScope.groupKey, requestParameters.newMembers, messageContext)"/>
         </transition>
         <transition on="removeMembers" to="editGroup" validate="false">
-            <evaluate expression="flowHandler.removeMembers(flowScope.group, requestParameters.selectedMembers, messageContext)"/>
+            <evaluate expression="flowHandler.removeMembers(flowScope.groupKey, requestParameters.selectedMembers, messageContext)"/>
         </transition>
         <transition on="cancel" to="manageGroups" bind="false" validate="false"/>
     </view-state>

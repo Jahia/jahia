@@ -114,14 +114,15 @@ public class ManageGroupsFlowHandler implements Serializable {
     /**
      * Adds the specified members to the group.
      * 
-     * @param group
-     *            the group to add member to
+     * @param groupKey
+     *            the key of the group to add members to
      * @param members
      *            the member keys to be added into the group
      * @param context
      *            the message context object
      */
-    public void addMembers(JahiaGroup group, String[] members, MessageContext context) {
+    public void addMembers(String groupKey, String[] members, MessageContext context) {
+        JahiaGroup group = lookupGroup(groupKey);
         logger.info("Adding members {} to group {}", members, group.getGroupKey());
         long timer = System.currentTimeMillis();
         List<Principal> candidates = new LinkedList<Principal>();
@@ -155,16 +156,26 @@ public class ManageGroupsFlowHandler implements Serializable {
     /**
      * Duplicates the selected group.
      * 
-     * @param selectedGroup
-     *            a group to be copied
+     * @param selectedGroupKey
+     *            the key of the group to be copied
      * @param newGroup
      *            the new group model
      * @param context
      *            the message context object
      * @return <code>true</code> if the group was successfully copied; <code>false</code> otherwise
      */
-    public void copyGroup(JahiaGroup selectedGroup, GroupModel newGroup, MessageContext context) {
+    public void copyGroup(String selectedGroupKey, GroupModel newGroup, MessageContext context) {
+        JahiaGroup selectedGroup = lookupGroup(selectedGroupKey);
         Locale locale = LocaleContextHolder.getLocale();
+        if (selectedGroup == null) {
+            context.addMessage(new MessageBuilder()
+                    .error()
+                    .defaultText(
+                            Messages.format(Messages.get("resources.JahiaSiteSettings",
+                                    "siteSettings.groups.errors.create.failed", locale), newGroup.getGroupname()))
+                    .build());
+            return;
+        }
         // create new group
         @SuppressWarnings("deprecation")
         JahiaGroup grp = groupManagerService.createGroup(newGroup.getSiteId(), newGroup.getGroupname(), null, false);
@@ -243,7 +254,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return up the specified group by key
      */
     public JahiaGroup lookupGroup(String selectedGroup) {
-        return groupManagerService.lookupGroup(selectedGroup);
+        return selectedGroup != null ? groupManagerService.lookupGroup(selectedGroup) : null;
     }
 
     /**
@@ -306,14 +317,15 @@ public class ManageGroupsFlowHandler implements Serializable {
     /**
      * Performs the removal of the specified members from the group.
      * 
-     * @param group
-     *            the group to remove members from
+     * @param groupKey
+     *            the key of the group to remove members from
      * @param members
      *            the member keys to remove from the group
      * @param context
      *            the message context object
      */
-    public void removeMembers(JahiaGroup group, String[] members, MessageContext context) {
+    public void removeMembers(String groupKey, String[] members, MessageContext context) {
+        JahiaGroup group = lookupGroup(groupKey);
         logger.info("Removing members {} from group {}", members, group.getGroupKey());
         long timer = System.currentTimeMillis();
         int countRemoved = 0;

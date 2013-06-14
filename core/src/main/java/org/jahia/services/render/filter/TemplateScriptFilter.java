@@ -126,7 +126,6 @@ public class TemplateScriptFilter extends AbstractFilter {
         return output.toString().trim();
     }
 
-<<<<<<< .working
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
         if (renderContext.isEditMode() && SettingsBean.getInstance().isDevelopmentMode()) {
@@ -143,7 +142,4 @@ public class TemplateScriptFilter extends AbstractFilter {
         return out.toString();
     }
 
-=======
-
->>>>>>> .merge-right.r46347
 }

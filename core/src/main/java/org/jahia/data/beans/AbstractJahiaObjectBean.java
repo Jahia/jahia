@@ -41,7 +41,8 @@
  package org.jahia.data.beans;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.jahia.content.JahiaObject;
 import java.lang.reflect.InvocationTargetException;
 import org.jahia.params.ProcessingContext;
@@ -64,7 +65,7 @@ public abstract class AbstractJahiaObjectBean {
     private static org.slf4j.Logger logger =
         org.slf4j.LoggerFactory.getLogger(AbstractJahiaObjectBean.class);
 
-    private static Map<String, String> jahiaObjectToBeanClassNames = new HashMap<String, String>();
+    private static Map<String, String> jahiaObjectToBeanClassNames = new ConcurrentHashMap<String, String>();
 
     /**
      * Registers a new mapping for a sub class of JahiaObject in the factory

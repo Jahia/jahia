@@ -42,6 +42,7 @@ package org.jahia.utils;
 
 import java.text.Collator;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -65,7 +66,7 @@ public class LanguageCodeConverters {
 
     private static List<Locale> availableBundleLocales;
     
-    private static Map<String, Locale> locales = new HashMap<String, Locale>();
+    private static Map<String, Locale> locales = new ConcurrentHashMap<String, Locale>();
     
     /**
      * Converts string such as

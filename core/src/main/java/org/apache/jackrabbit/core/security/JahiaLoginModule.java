@@ -58,6 +58,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import java.security.Principal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -71,7 +72,7 @@ public class JahiaLoginModule implements LoginModule {
     public static final String GUEST = " guest ";
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
-    private static Map<String, Token> systemPass = new HashMap<String, Token>();
+    private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
 
     private JahiaUserManagerService userService;
 

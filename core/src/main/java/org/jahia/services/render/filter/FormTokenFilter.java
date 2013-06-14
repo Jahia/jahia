@@ -40,12 +40,16 @@
 
 package org.jahia.services.render.filter;
 
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import org.apache.noggit.JSONParser;
+import org.apache.noggit.JSONUtil;
+import org.apache.noggit.ObjectBuilder;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -54,30 +58,39 @@ import java.util.concurrent.ConcurrentMap;
  * Time: 19:29
  */
 public class FormTokenFilter extends AbstractFilter {
-    public static final String RANDOMTOKEN = "$$$formtoken$$$";
 
+    /**
+     * @param previousOut   Result from the previous filter
+     * @param renderContext The render context
+     * @param resource      The resource to render
+     * @param chain         The render chain
+     * @return Filtered content
+     * @throws Exception
+     */
     @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String s = super.execute(previousOut, renderContext, resource, chain);
-        int i = s.indexOf(RANDOMTOKEN);
-        if (i > -1) {
-            StringBuffer res = new StringBuffer(s);
-            while (i > -1) {
-                String id = UUID.randomUUID().toString();
-                res.replace(i, i + RANDOMTOKEN.length(), id);
-                i = res.indexOf(RANDOMTOKEN);
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
+        String out = previousOut;
 
-                Set<String> set = (Set<String>) renderContext.getRequest().getSession().getAttribute("form-tokens");
-                if (set == null) {
-                    set = new HashSet<String>();
-                    renderContext.getRequest().getSession().setAttribute("form-tokens", set);
-                }
-                set.add(id);
+        Source source = new Source(previousOut);
+        List<StartTag> jahiaFormTags = source.getAllStartTags("jahia:token-form");
+        for (StartTag formTag : jahiaFormTags) {
+            String id = formTag.getAttributeValue("id");
+            Map<String,List<String>> hiddenInputs = (Map<String, List<String>>) ObjectBuilder.fromJSON(formTag.getAttributeValue("forms-data"));
+            Map<String,Map<String,List<String>>>forms = (Map<String, Map<String,List<String>>>) renderContext.getRequest().getAttribute(
+                    "form-parameter");
+            if (forms == null) {
+                forms = new HashMap<String, Map<String, List<String>>>();
+                renderContext.getRequest().setAttribute("form-parameter", forms);
             }
-            return res.toString();
+            forms.put(id,hiddenInputs);
         }
-
-        return s;
+        source = new Source(out);
+        jahiaFormTags = (new Source(out)).getAllStartTags("jahia:token-form");
+        OutputDocument outputDocument = new OutputDocument(source);
+        for (StartTag segment : jahiaFormTags) {
+            outputDocument.replace(segment, "");
+        }
+        return outputDocument.toString().trim();
     }
-
 }

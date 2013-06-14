@@ -100,7 +100,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     static protected ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
     protected static long lastThreadDumpTime = 0L;
     protected Byte[] threadDumpCheckLock = new Byte[0];
-    public static final String FORM_TOKEN = "form_token";
     protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
 
@@ -211,8 +210,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // return the content from the cache. Otherwise, return null to continue the render chain.
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
-            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey,
-                    resource.getContextConfiguration(), renderContext.getRequest(), resource, properties);
+            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest(), resource, properties);
             if (countDownLatch == null) {
                 element = cache.get(finalKey);
                 if (element != null && element.getValue() != null) {
@@ -289,9 +287,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // Calls aggregation on the fragment content
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
                 (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), new Stack<String>());
-
-        // Restore request attribute that were sets in the fragment execution
-        restoreRequestAttributes(renderContext, cacheEntry);
 
         if (renderContext.getMainResource() == resource) {
             cachedContent = removeCacheTags(cachedContent);
@@ -614,10 +609,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws RepositoryException
      */
     private void addPropertiesToCacheEntry(Resource resource, CacheEntry<String> cacheEntry) throws RepositoryException {
-        // todo : why not handle form token like resources, with simple html tags instead of having custom code here ?
-        if (resource.getFormInputs() != null) {
-            cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
-        }
         LinkedHashMap<String, Object> moduleParams = null;
         for (String property : moduleParamsProperties.keySet()) {
             if (resource.getNode().hasProperty(property)) {
@@ -729,8 +720,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     content);
                         }
-                        // Restore request attributes for this fragment
-                        restoreRequestAttributes(renderContext, cacheEntry);
 
                         cacheKeyStack.pop();
                     } else {
@@ -754,25 +743,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return cachedContent;
     }
 
-    /**
-     * Restore attribute that were store by addPropertiesToCacheEntry
-     *
-     * @param renderContext The render context
-     * @param cacheEntry The cache entry
-     */
-    @SuppressWarnings("unchecked")
-    protected void restoreRequestAttributes(RenderContext renderContext, CacheEntry<?> cacheEntry) {
-        Object property = cacheEntry.getProperty(FORM_TOKEN);
-        if (property != null) {
-            Map<String, Map<String, String>> forms = (Map<String, Map<String, String>>) renderContext.getRequest().getAttribute(
-                    "form-parameter");
-            if (forms == null) {
-                forms = new HashMap<String, Map<String, String>>();
-                renderContext.getRequest().setAttribute("form-parameter", forms);
-            }
-            forms.putAll((Map<? extends String, ? extends Map<String, String>>) property);
-        }
-    }
 
     /**
      * Generates content for a sub fragment.
@@ -979,8 +949,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration,
-                                                                 HttpServletRequest request, Resource resource, Properties properties) throws Exception {
+    protected CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request,
+                                                                 Resource resource, Properties properties) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
         boolean semaphoreAcquired = false;

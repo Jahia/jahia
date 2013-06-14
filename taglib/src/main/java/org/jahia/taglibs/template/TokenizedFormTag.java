@@ -44,6 +44,7 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringUtils;
+import org.apache.noggit.JSONUtil;
 import org.jahia.services.render.Resource;
 
 
@@ -139,7 +140,7 @@ public class TokenizedFormTag extends BodyTagSupport {
                 pageContext.setAttribute("form-parameter", forms, PageContext.REQUEST_SCOPE);
             }
             forms.put(id, hiddenInputs);
-            currentResource.addFormInputs(id,hiddenInputs);
+            outputDocument.insert(formTag.getEnd(),"<jahia:token-form id='"+id+"' forms-data='"+JSONUtil.toJSON(hiddenInputs)+"'/>");
             out.print(outputDocument.toString());
         } catch (IOException e) {
             e.printStackTrace();

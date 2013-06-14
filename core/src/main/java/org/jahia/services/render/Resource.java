@@ -76,7 +76,6 @@ public class Resource {
     private List<Option> options;
     private ExtendedNodeType resourceNodeType;
     private Map<String, Serializable> moduleParams = new HashMap<String, Serializable>();
-    private HashMap<String,Map<String,List<String>>> formInputs;
     private Set<String> regexpDependencies;
 
     /**
@@ -98,7 +97,6 @@ public class Resource {
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();
         options = new ArrayList<Option>();
-        formInputs = null;
     }
 
     public JCRNodeWrapper getNode() {
@@ -138,24 +136,6 @@ public class Resource {
     public String getContextConfiguration() {
         return contextConfiguration;
     }
-//
-//    public List<String> getTemplates() {
-//        List<String> l = new ArrayList<String>();
-//
-//        if (template != null && template.length() > 0) {
-//            l.add(template);
-//            return l;
-//        }
-//        try {
-//            if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
-//                l.add(node.getProperty("j:template").getString());
-//            }
-//        } catch (RepositoryException e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//        l.add("default");
-//        return l;
-//    }
 
     public String getResolvedTemplate() {
         String resolvedTemplate = template;
@@ -299,17 +279,6 @@ public class Resource {
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);
         result = 31 * result + (moduleParams != null ? moduleParams.hashCode() : 0);
         return result;
-    }
-
-    public void addFormInputs(String id, Map<String, List<String>> hiddenInputs) {
-        if(formInputs==null) {
-            formInputs = new HashMap<String, Map<String, List<String>>>();
-        }
-        formInputs.put(id,hiddenInputs);
-    }
-
-    public HashMap<String, Map<String, List<String>>> getFormInputs() {
-        return formInputs;
     }
 
     public class Option implements Comparable<Option> {

@@ -94,6 +94,12 @@
             </list>
         </property>
 	</bean>
+    <bean class="org.jahia.services.render.filter.FormTokenFilter">
+        <property name="priority" value="11" />
+        <property name="description" value="Inject form tokens inside the request."/>
+        <property name="applyOnConfigurations" value="page,gwt" />
+        <property name="applyOnTemplateTypes" value="html,edit,html-.*" />
+    </bean>
 	<bean class="org.jahia.services.render.filter.MetricsLoggingFilter">
 		<property name="priority" value="3" />
         <property name="description" value="Calls the logging service to log the display of a resource. Also initializes profiling information"/>

@@ -41,11 +41,10 @@
 package org.jahia.content;
 
 import org.slf4j.Logger;
-import org.jahia.data.applications.EntryPointObjectKey;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The purpose of this class is to construct ContentObject references that can
@@ -75,7 +74,7 @@ public abstract class ObjectKey implements
     public static final String OBJECT_TYPE = "object";
     
     static {
-    	keyTypeInstances = new HashMap<String, ObjectKeyInterface>();
+    	keyTypeInstances = new ConcurrentHashMap<String, ObjectKeyInterface>();
     	registerType(CategoryKey.CATEGORY_TYPE, CategoryKey.class);
     }
 

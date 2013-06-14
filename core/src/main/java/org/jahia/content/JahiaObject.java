@@ -43,7 +43,6 @@
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,7 +64,7 @@ public abstract class JahiaObject implements Serializable {
     private static org.slf4j.Logger logger =
         org.slf4j.LoggerFactory.getLogger(JahiaObject.class);
 
-    private static Map<String, String> keyTypeClassNames = new HashMap<String, String>();
+    private static Map<String, String> keyTypeClassNames = new ConcurrentHashMap<String, String>();
 
     protected ObjectKey objectKey;
     private static Map<String, Method> methodsMap = new ConcurrentHashMap<String, Method>(32);

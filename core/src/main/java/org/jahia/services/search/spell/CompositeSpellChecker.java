@@ -79,6 +79,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -143,7 +144,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         }
     }
 
-    private static Map<String, InternalSpellChecker> spellCheckers = new HashMap<String, InternalSpellChecker>(2);
+    private static Map<String, InternalSpellChecker> spellCheckers = new ConcurrentHashMap<String, InternalSpellChecker>(2);
     
     /**
      * Triggers update of the spell checker dictionary index.

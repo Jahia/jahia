@@ -40,8 +40,8 @@
 
  package org.jahia.params.valves;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,7 +59,7 @@ public class TokenAuthValveImpl extends BaseAuthValve {
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
-    private static Map<String, JahiaUser> map = new HashMap<String, JahiaUser>();
+    private static Map<String, JahiaUser> map = new ConcurrentHashMap<String, JahiaUser>();
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         if (!isEnabled()) {

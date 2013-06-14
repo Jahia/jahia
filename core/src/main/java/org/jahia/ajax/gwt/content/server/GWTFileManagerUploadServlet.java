@@ -67,6 +67,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * File upload servlet to handle requests from GWT upload form.
@@ -315,7 +316,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         return OK;
     }
 
-    private static Map<String, Item> asyncItems = new HashMap<String, Item>();
+    private static Map<String, Item> asyncItems = new ConcurrentHashMap<String, Item>();
 
     public static class Item {
         private String contentType;

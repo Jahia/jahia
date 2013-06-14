@@ -41,7 +41,8 @@
  package org.jahia.data.beans;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * <p>Title: Abstract class that is the parent class of all bean wrappers
@@ -61,7 +62,7 @@ public abstract class AbstractJahiaObjectBean {
     private static org.slf4j.Logger logger =
         org.slf4j.LoggerFactory.getLogger(AbstractJahiaObjectBean.class);
 
-    private static Map<String, String> jahiaObjectToBeanClassNames = new HashMap<String, String>();
+    private static Map<String, String> jahiaObjectToBeanClassNames = new ConcurrentHashMap<String, String>();
 
     /**
      * Registers a new mapping for a sub class of JahiaObject in the factory

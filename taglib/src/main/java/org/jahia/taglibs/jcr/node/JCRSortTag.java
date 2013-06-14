@@ -156,8 +156,6 @@ public class JCRSortTag extends AbstractJCRTag {
                                     break;
                                 case PropertyType.DECIMAL:
                                 case PropertyType.LONG:
-                                    r = Long.compare(p1.getLong(),p2.getLong());
-                                    break;
                                 case PropertyType.DOUBLE:
                                     r = Double.compare(p1.getDouble(),p2.getDouble());
                                     break;

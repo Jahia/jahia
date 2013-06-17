@@ -1054,7 +1054,18 @@ public class ContentManagerHelper {
                 } else if (node.getLockedLocales().contains(currentUserSession.getLocale())) {
                     if (!toLock) {
                         try {
-                            node.unlock();
+                        	List<Locale> lockedlocals = node.getLockedLocales();
+                        	Locale currentLocale = currentUserSession.getLocale();
+                        	if(lockedlocals != null && lockedlocals.contains(currentLocale)) {
+                        		JCRNodeWrapper ln = currentUserSession.getNode(node.getPath() + "/j:translation_" + currentLocale.toString());
+                        		if(ln != null && ln.isLocked()) {
+                        	      ln.unlock();
+                                } 
+                        	}else {
+                        		if((lockedlocals == null || lockedlocals.isEmpty()) && node.isLocked()) {
+                        			node.unlock();
+                        		}
+                            }
                         } catch (LockException e) {
                             logger.error(e.toString(), e);
                             missedPaths
@@ -1073,7 +1084,18 @@ public class ContentManagerHelper {
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
                     } else {
-                        node.unlock();
+                    	List<Locale> lockedlocals = node.getLockedLocales();
+                    	Locale currentLocale = currentUserSession.getLocale();
+                    	if(lockedlocals != null && lockedlocals.contains(currentLocale)) {
+                    		JCRNodeWrapper ln = currentUserSession.getNode(node.getPath() + "/j:translation_" + currentLocale.toString());
+                    		if(ln != null && ln.isLocked()) {
+                    	      ln.unlock();
+                            } 
+                    	} else {
+                    		if((lockedlocals == null || lockedlocals.isEmpty()) && node.isLocked()) {
+                    			node.unlock();
+                    		}
+                    	}
                     }
                 }
             } catch (RepositoryException e) {

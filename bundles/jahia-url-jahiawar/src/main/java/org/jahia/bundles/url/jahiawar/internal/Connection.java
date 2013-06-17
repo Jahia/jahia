@@ -350,7 +350,7 @@ public class Connection extends URLConnection {
             if (depends == null) {
                 depends = "";
             }
-            if (!depends.contains("default") && !depends.contains("Default Jahia Templates") && !rootFolder.equals("assets") && !rootFolder.equals("default")) {
+            if (!depends.contains("default") && !depends.contains("Default Jahia Templates") && !rootFolder.equals("assets") && !rootFolder.equals("default") && !rootFolder.equals("jquery")) {
                 if (!depends.equals("")) {
                     depends += ",";
                 }

@@ -6,21 +6,11 @@
     <bean class="org.jahia.services.render.StaticAssetMapping">
         <property name="mapping">
             <map>
-                <entry key="/modules/assets/javascript/jquery.js"
-                    value="/modules/assets/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
+                <entry key="/modules/jquery/javascript/jquery.js"
+                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
 
-                <entry key="/modules/assets/javascript/jquery.min.js"
-                    value="/modules/assets/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
-
-                <!-- Google CDN for jQuery and jQuery UI -->
-                <!--
-                <entry key="/modules/assets/javascript/jquery.min.js"
-                    value="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"/>
-                <entry key="/modules/assets/javascript/jquery-ui.min.js"
-                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"/>
-                <entry key="/modules/assets/css/jquery-ui.smoothness.css"
-                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/smoothness/jquery-ui.css"/>
-                -->
+                <entry key="/modules/jquery/javascript/jquery.min.js"
+                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
             </map>
         </property>
     </bean>

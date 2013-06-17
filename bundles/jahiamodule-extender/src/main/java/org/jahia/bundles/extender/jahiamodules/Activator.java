@@ -352,7 +352,7 @@ public class Activator implements BundleActivator {
 
         List<String> dependsList = pkg.getDepends();
         if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates")
-                && !"assets".equals(pkg.getRootFolder()) && !"default".equals(pkg.getRootFolder())) {
+                && !"assets".equals(pkg.getRootFolder()) && !"default".equals(pkg.getRootFolder()) && !"jquery".equals(pkg.getRootFolder())) {
             dependsList.add("default");
         }
 
@@ -469,7 +469,7 @@ public class Activator implements BundleActivator {
             return;
         }
         List<String> dependsList = jahiaTemplatesPackage.getDepends();
-        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default")) {
+        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default") && !bundle.getSymbolicName().equals("jquery")) {
             dependsList.add("default");
         }
 

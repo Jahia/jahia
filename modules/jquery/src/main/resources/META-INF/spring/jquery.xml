@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean class="org.jahia.services.render.StaticAssetMapping">
+        <property name="mapping">
+            <map>
+                <!-- Google CDN for jQuery and jQuery UI -->
+                <!-- please add /modules/assets/javascript/jquery.jahia.js to jquery.js call in order to make ajax reloading resources working with Jahia-->
+                <!--
+                <entry key="/modules/assets/javascript/jquery.min.js"
+                    value="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
+                <entry key="/modules/assets/javascript/jquery-ui.min.js"
+                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"/>
+                <entry key="/modules/assets/css/jquery-ui.smoothness.css"
+                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/smoothness/jquery-ui.css"/>
+                -->
+            </map>
+        </property>
+    </bean>
+
+</beans>

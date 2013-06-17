@@ -20,7 +20,7 @@ Asset Mapping
     <bean class="org.jahia.services.render.StaticAssetMapping">
         <property name="mapping">
             <map>
-                <entry key="/modules/assets/javascript/jquery.min.js"
+                <entry key="/modules/jquery/javascript/jquery.min.js"
                     value="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"/>
             </map>
         </property>
@@ -49,7 +49,7 @@ Asset Mapping
       <property name="mapping">
           <map>
               <!-- Microsoft CDN for jQuery -->
-              <entry key="/modules/assets/javascript/jquery.min.js"
+              <entry key="/modules/jquery/javascript/jquery.min.js"
                   value="http://ajax.microsoft.com/ajax/jQuery/jquery-1.3.2.min.js"/>
 
               <!-- Google CDN for Prototype -->
@@ -74,8 +74,8 @@ Asset Mapping
       <property name="mapping">
           <map>
               <!-- Map minified jQuery to the full one for debugging -->
-              <entry key="/modules/assets/javascript/jquery.min.js"
-                  value="/modules/assets/javascript/jquery.js"/>
+              <entry key="/modules/jquery/javascript/jquery.min.js"
+                  value="/modules/jquery/javascript/jquery.js"/>
           </map>
       </property>
   </bean>

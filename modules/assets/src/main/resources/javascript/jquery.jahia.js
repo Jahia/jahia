@@ -10,7 +10,7 @@
             return _load1.apply( this, arguments );
         }
 
-        var selector, type, response,
+        var selector, response, type,
             self = this,
             off = url.indexOf(" ");
 

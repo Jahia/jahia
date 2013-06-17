@@ -17,7 +17,7 @@
     <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
     <link rel="stylesheet" href="tools.css" type="text/css" />
     <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
     <script type="text/javascript">
         $(document).ready(function() {

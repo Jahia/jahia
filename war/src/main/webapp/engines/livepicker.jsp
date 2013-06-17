@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../modules/assets/css/jquery-ui.smoothness.css" media="screen" type="text/css"/>
     <link rel="stylesheet" href="../modules/assets/css/jquery-ui.smoothness-jahia.css" media="screen" type="text/css"/>
     <link rel="stylesheet" href="../modules/assets/css/jquery.treeview.css" media="screen" type="text/css"/>
-    <script type="text/javascript" src="../modules/assets/javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="../modules/jquery/javascript/jquery.min.js"></script>
     <script type="text/javascript" src="../modules/assets/javascript/jquery.jeditable.js"></script>
     <script type="text/javascript" src="../modules/assets/javascript/jquery.ajaxfileupload.js"></script>
     <script type="text/javascript" src="../modules/assets/javascript/jquery.jeditable.ajaxupload.js"></script>

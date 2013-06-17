@@ -180,6 +180,7 @@
                 <module>tasks</module>
                 <module>templates-system</module>
                 <module>visibility</module>
+                <module>jquery</module>
             </modules>
         </profile>
         <profile>
@@ -211,6 +212,7 @@
                 <module>templates-system</module>
                 <module>visibility</module>
                 <module>translation</module>
+                <module>jquery</module>
             </modules>
         </profile>
     </profiles>

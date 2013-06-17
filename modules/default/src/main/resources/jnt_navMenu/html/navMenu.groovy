@@ -4,6 +4,8 @@ import org.jahia.services.render.RenderService
 import org.jahia.services.render.Resource
 import org.jahia.taglibs.jcr.node.JCRTagUtils
 
+import javax.jcr.ItemNotFoundException
+
 title = currentNode.properties['jcr:title']
 baseline = currentNode.properties['j:baselineNode']
 maxDepth = currentNode.properties['j:maxDepth']
@@ -145,6 +147,10 @@ printMenu = { node, navMenuLevel, omitFormatting ->
     }
 
 }
-
+// Add dependencies to parent of main resource so that we are aware of new pages at sibling level
+try {
+    currentResource.dependencies.add(renderContext.mainResource.node.getParent().getCanonicalPath());
+} catch (ItemNotFoundException e) {
+}
 printMenu(base, 1, false)
 

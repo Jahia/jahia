@@ -45,7 +45,7 @@
 <c:if test="${not empty currentResource.moduleParams.base}">
     <jcr:node var="current" uuid="${currentResource.moduleParams.base}" />
 </c:if>
-
+<template:addCacheDependency path="${renderContext.mainResource.node.parent.path}"/>
 <%--initialize startlevel--%>
 <c:set var="startLevelValue" value="0"/>
 <c:if test="${not empty startLevel}">

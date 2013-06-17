@@ -334,10 +334,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
             // todo: may be done directly in navmenu .. ?
             if (Boolean.valueOf(properties.getProperty("cache.mainResource.flushParent", "false"))) {
-                try {
-                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getCanonicalPath());
-                } catch (ItemNotFoundException e) {
-                }
+
             }
         }
 

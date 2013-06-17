@@ -42,7 +42,7 @@
         <c:set var="current" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}" />
     </c:if>
 </c:if>
-
+<template:addCacheDependency path="${renderContext.mainResource.node.parent.path}"/>
 <c:if test="${not empty currentResource.moduleParams.base}">
     <jcr:node var="current" uuid="${currentResource.moduleParams.base}" />
 </c:if>

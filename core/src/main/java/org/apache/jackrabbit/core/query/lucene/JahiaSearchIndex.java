@@ -153,28 +153,11 @@ public class JahiaSearchIndex extends SearchIndex {
                             log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
                         }
                     }
-<<<<<<< .working
                 });
                 removeSubListStart += BooleanQuery.getMaxClauseCount();
                 removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
 
             }
-=======
-                    searcher.search(query, new HitCollector() {
-                        public void collect(int doc, float score) {
-                            try {
-                                String uuid = reader.document(doc).get("_:UUID");
-                                addIdToBeIndexed(new NodeId(uuid), addedIds, removedIds, addList, removeList);
-                            } catch (Exception e) {
-                                log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
-                            }
-                        }
-                    });
-                    removeSubListStart += BooleanQuery.getMaxClauseCount();
-                    removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
-
-                }
->>>>>>> .merge-right.r46361
             } finally {
                 searcher.close();
                 Util.closeOrRelease(reader);

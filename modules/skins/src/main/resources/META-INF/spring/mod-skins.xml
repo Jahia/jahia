@@ -5,7 +5,7 @@
     <bean class="org.jahia.modules.filter.SkinFilter">
         <property name="description" value="Filter that add skins to the current resource."/>
         <property name="priority" value="45"/>
-        <property name="applyOnNodeTypes" value="jmix:list"/>
+        <property name="applyOnNodeTypes" value="jmix:droppableContent"/>
         <property name="skipOnConfigurations" value="include,wrapper"/>
         <property name="skipOnModes" value="studio"/>
     </bean>

@@ -1,12 +1,12 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:skinnable] mixin
- extends = jmix:list
+ extends = jmix:droppableContent
  itemtype = layout
  - j:skin (string, choicelist[templates='jmix:skinnable,skin']) indexed=no
 
 [jmix:customSkin] > jmix:templateMixin mixin
- extends = jmix:list
+ extends = jmix:droppableContent
  itemtype = layout
  - j:classname (string) nofulltext
  - j:id (string) nofulltext

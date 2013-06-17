@@ -1001,7 +1001,6 @@ public class ContentManagerHelper {
             try {
                 if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
-<<<<<<< .working
                 } else {
                     if (node.getLockedLocales().contains(currentUserSession.getLocale()) ||
                             (!node.hasI18N(currentUserSession.getLocale()) && node.isLocked())) {
@@ -1018,27 +1017,6 @@ public class ContentManagerHelper {
                             if (lockOwner != null && !lockOwner.equals(user.getUsername())) {
                                 missedPaths.add(new StringBuilder(node.getName()).append(": locked by ").append(lockOwner).toString());
                             }
-=======
-                } else if (node.getLockedLocales().contains(currentUserSession.getLocale())) {
-                    if (!toLock) {
-                        try {
-                        	List<Locale> lockedlocals = node.getLockedLocales();
-                        	Locale currentLocale = currentUserSession.getLocale();
-                        	if(lockedlocals != null && lockedlocals.contains(currentLocale)) {
-                        		JCRNodeWrapper ln = currentUserSession.getNode(node.getPath() + "/j:translation_" + currentLocale.toString());
-                        		if(ln != null && ln.isLocked()) {
-                        	      ln.unlock();
-                                } 
-                        	}else {
-                        		if((lockedlocals == null || lockedlocals.isEmpty()) && node.isLocked()) {
-                        			node.unlock();
-                        		}
-                            }
-                        } catch (LockException e) {
-                            logger.error(e.toString(), e);
-                            missedPaths
-                                    .add(new StringBuilder(node.getName()).append(": repository exception").toString());
->>>>>>> .merge-right.r46363
                         }
                     } else {
                         if (toLock) {
@@ -1050,29 +1028,6 @@ public class ContentManagerHelper {
                             node.unlock();
                         }
                     }
-<<<<<<< .working
-=======
-                } else {
-                    if (toLock) {
-                        if (!node.lockAndStoreToken("user")) {
-                            missedPaths
-                                    .add(new StringBuilder(node.getName()).append(": repository exception").toString());
-                        }
-                    } else {
-                    	List<Locale> lockedlocals = node.getLockedLocales();
-                    	Locale currentLocale = currentUserSession.getLocale();
-                    	if(lockedlocals != null && lockedlocals.contains(currentLocale)) {
-                    		JCRNodeWrapper ln = currentUserSession.getNode(node.getPath() + "/j:translation_" + currentLocale.toString());
-                    		if(ln != null && ln.isLocked()) {
-                    	      ln.unlock();
-                            } 
-                    	} else {
-                    		if((lockedlocals == null || lockedlocals.isEmpty()) && node.isLocked()) {
-                    			node.unlock();
-                    		}
-                    	}
-                    }
->>>>>>> .merge-right.r46363
                 }
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);

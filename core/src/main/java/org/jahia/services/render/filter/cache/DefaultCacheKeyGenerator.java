@@ -116,16 +116,16 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             newArgs[i] = partGenerators.get(i).replacePlaceholders(renderContext,value);
         }
         String s = StringUtils.join(newArgs,"@@");
-        if (SettingsBean.getInstance().isProductionMode()) {
-            try {
-                byte[] b = DigestUtils.getSha512Digest().digest(s.getBytes("UTF-8"));
-                StringWriter sw = new StringWriter();
-                Base64.encode(b, 0, b.length, sw);
-                return sw.toString();
-            } catch (Exception e) {
-                logger.warn("Issue while digesting key",e);
-            }
-        }
+//        if (SettingsBean.getInstance().isProductionMode()) {
+//            try {
+//                byte[] b = DigestUtils.getSha512Digest().digest(s.getBytes("UTF-8"));
+//                StringWriter sw = new StringWriter();
+//                Base64.encode(b, 0, b.length, sw);
+//                return sw.toString();
+//            } catch (Exception e) {
+//                logger.warn("Issue while digesting key",e);
+//            }
+//        }
         return s;
     }
 

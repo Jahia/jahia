@@ -43,8 +43,10 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
+import org.apache.jackrabbit.util.Base64;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
@@ -62,6 +64,7 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.AccessControlManager;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -151,13 +154,22 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
 
             try {
-                return getAclsKeyPart(renderContext,
+                keyPart = getAclsKeyPart(renderContext,
                         Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyPart);
             } catch (RepositoryException e) {
                 e.printStackTrace();
             }
         } else {
             keyPart = StringUtils.replace(keyPart, PER_USER, renderContext.getUser().getUsername());
+        }
+
+        try {
+            byte[] b = DigestUtils.getSha256Digest().digest(keyPart.getBytes("UTF-8"));
+            StringWriter sw = new StringWriter();
+            Base64.encode(b, 0, b.length, sw);
+            return sw.toString();
+        } catch (Exception e) {
+            logger.warn("Issue while digesting key",e);
         }
 
         return keyPart;

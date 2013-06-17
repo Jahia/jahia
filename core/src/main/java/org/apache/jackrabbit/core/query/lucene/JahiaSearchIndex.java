@@ -70,12 +70,13 @@ import java.util.*;
 public class JahiaSearchIndex extends SearchIndex {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaSearchIndex.class);
     private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";
-    
+
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
 
     private int maxClauseCount = 1024;
-    
+
     private Boolean versionIndex;
+    private int batchSize = 100;
 
     public int getMaxClauseCount() {
         return maxClauseCount;
@@ -87,9 +88,18 @@ public class JahiaSearchIndex extends SearchIndex {
     }
 
     /**
+     * Set the maximum number of documents that will be sent in one batch to the index
+     *
+     * @param batchSize
+     */
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    /**
      * We override this method in order to trigger re-indexing on translation nodes, when their
      * parent node is getting re-indexed.
-     * 
+     *
      * After that we just call the updateNodes from the Jackrabbut SearchIndex implementation.
      *
      * @param remove ids of nodes to remove.
@@ -120,7 +130,7 @@ public class JahiaSearchIndex extends SearchIndex {
             removedIds.add(nodeId);
             removeList.add(nodeId);
         }
-        
+
         if (!isVersionIndex() && !removeList.isEmpty()) {
             final IndexReader reader = getIndexReader();
             final Searcher searcher = new IndexSearcher(reader);
@@ -145,7 +155,7 @@ public class JahiaSearchIndex extends SearchIndex {
                     });
                     removeSubListStart += BooleanQuery.getMaxClauseCount();
                     removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
-    
+
                 }
             } finally {
                 searcher.close();
@@ -181,15 +191,21 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         long timer = System.currentTimeMillis();
-        
-        super.updateNodes(removeList.iterator(), addList.iterator());
-        
+
+        for (int offset = 0; offset < removeList.size() + addList.size(); offset += batchSize) {
+            int offset1 = Math.min(offset, removeList.size());
+            int offset2 = Math.min(Math.max(0, offset - removeList.size()), addList.size());
+            int limit1 = Math.min(offset1 + batchSize, removeList.size());
+            int limit2 = Math.min(Math.max(0, offset - removeList.size() + batchSize), addList.size());
+            super.updateNodes(removeList.subList(offset1, limit1).iterator(), addList.subList(offset2, limit2).iterator());
+        }
+
         if (log.isDebugEnabled()) {
             log.info("Re-indexed nodes in {} ms: {} removed, {} added", new Object[] {
                     (System.currentTimeMillis() - timer), removeList.size(), addList.size() });
         }
     }
-    
+
     private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList, ItemStateManager itemStateManager) throws ItemStateException {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
             NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
@@ -212,7 +228,7 @@ public class JahiaSearchIndex extends SearchIndex {
             }
         }
     }
-    
+
     private void addIdToBeIndexed(NodeId id, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList)  throws ItemStateException {
         if (!removedIds.contains(id)
                 && !addedIds.contains(id)) {
@@ -337,7 +353,7 @@ public class JahiaSearchIndex extends SearchIndex {
         query.setRespectDocumentOrder(getRespectDocumentOrder());
         return query;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -368,10 +384,10 @@ public class JahiaSearchIndex extends SearchIndex {
         }
         return ids;
     }
-    
+
     /**
      * Returns <code>true</code> if the current search index corresponds to the index of the version store.
-     * 
+     *
      * @return <code>true</code> if the current search index corresponds to the index of the version store
      */
     private boolean isVersionIndex() {

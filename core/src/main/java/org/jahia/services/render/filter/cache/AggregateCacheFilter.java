@@ -68,6 +68,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -248,7 +249,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 "ec").equals(resource.getNode().getIdentifier())) {
             cacheable = false;
         }
-
+        Long expiration = properties.getProperty("cache.expiration") != null ? Long.parseLong(properties.getProperty("cache.expiration")) : -1;
+        if(expiration==0L) {
+            cacheable = false;
+        }
         return cacheable;
     }
 
@@ -358,32 +362,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         try {
             if (cacheable) {
                 final Cache cache = cacheProvider.getCache();
-                /*// we add those references only if not in configuration page as this key need to be exactly the same as in prepare phase
-                if (!Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
-                    // Add reference dependencies for jmix:referencesInField (
-                    int nbOfDependencies = resource.getDependencies().size();
-
-                    addReferencesToDependencies(resource);
-                    if (resource.getDependencies().size() > nbOfDependencies) {
-                        // If new dependencies have been added based on references, regenerate the effective cache key
-                        key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
-                        finalKey = replacePlaceholdersInCacheKey(renderContext, key);
-                    }
-                }*/
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
                 }
                 doCache(previousOut, renderContext, resource, properties, cache, key, finalKey);
             }
-
+            else {
+                notCacheableFragment.put(key,Boolean.TRUE);
+            }
             // Append debug information
             if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
                 return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
             }
 
-            // todo : document why dependencies clear ?
-            resource.getDependencies().clear();
-            resource.getRegexpDependencies().clear();
 
             if (renderContext.getMainResource() == resource) {
                 return removeCacheTags(previousOut);
@@ -408,38 +399,32 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws RepositoryException
      * @throws ParseException
      */
-    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties, Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
-        Long expiration = properties.getProperty("cache.expiration") != null ? Long.parseLong(properties.getProperty("cache.expiration")) : -1;
-        if (expiration != 0) {
-            Set<String> depNodeWrappers = Collections.emptySet();
+    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
+                           Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
+        Long expiration = Long.parseLong(properties.getProperty("cache.expiration"));
+        Set<String> depNodeWrappers = Collections.emptySet();
 
-            // Create the fragment entry based on the rendered content
-            CacheEntry<String> cacheEntry = createCacheEntry(previousOut, renderContext, resource, key);
+        // Create the fragment entry based on the rendered content
+        CacheEntry<String> cacheEntry = createCacheEntry(previousOut, renderContext, resource, key);
 
-            // Store some properties that may have been set during fragment execution (todo : handle this another way)
-            addPropertiesToCacheEntry(resource, cacheEntry);
+        // Store some properties that may have been set during fragment execution (todo : handle this another way)
+        addPropertiesToCacheEntry(resource, cacheEntry);
 
-            Element cachedElement = new Element(finalKey, cacheEntry);
+        Element cachedElement = new Element(finalKey, cacheEntry);
 
-            if (expiration > 0) {
-                addExpirationToCacheElements(cache, finalKey, expiration, cachedElement);
+        if (expiration > 0) {
+            addExpirationToCacheElements(cache, finalKey, expiration, cachedElement);
+        }
+        storeDependencies(renderContext, resource, finalKey, depNodeWrappers);
+        cache.put(cachedElement);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Store in cache content of node with key: {}", finalKey);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String path : depNodeWrappers) {
+                stringBuilder.append(path).append("\n");
             }
-            storeDependencies(renderContext, resource, finalKey, depNodeWrappers);
-            cache.put(cachedElement);
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Store in cache content of node with key: {}", finalKey);
-                StringBuilder stringBuilder = new StringBuilder();
-                for (String path : depNodeWrappers) {
-                    stringBuilder.append(path).append("\n");
-                }
-                logger.debug("Dependencies of {}:\n", finalKey, stringBuilder.toString());
-            }
-        } else {
-            // todo : why this is not tested in the isCacheable method  ( which is done in ExpiringCacheFilter )
-            // todo : Note If this is done in isCacheable , the key in notCacheableFragment won't be the same - won't include additional dependencies (but that may be better)
-            // Fragment is not cacheable, store the key in the list of non-cacheable keys
-            notCacheableFragment.put(key, Boolean.TRUE);
+            logger.debug("Dependencies of {}:\n", finalKey, stringBuilder.toString());
         }
     }
 
@@ -859,8 +844,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                             Element cachedElement) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<div class=\"cacheDebugInfo\">");
-        stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
-        stringBuilder.append(key);
+        stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Expiration: </span><span>");
+        String key1 = replacePlaceholdersInCacheKey(renderContext, key);
+        if(!notCacheableFragment.containsKey(key)){
+            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cacheProvider.getCache().get(
+                    key1).getExpirationTime())));
+        } else{
+            stringBuilder.append("Not cached fragment ").append(SimpleDateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+        }
         stringBuilder.append("</span><br/>");
         stringBuilder.append("</div>");
         stringBuilder.append(renderContent);

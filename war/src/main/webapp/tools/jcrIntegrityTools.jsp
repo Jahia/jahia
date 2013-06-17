@@ -402,7 +402,7 @@
                         	}
                         }catch(javax.jcr.nodetype.ConstraintViolationException x) {
                              //Definition was changed, property is missing
-                             System.out.println("Warning: Property definition is missing:" + x.getMessage());
+                            System.out.println("Warning: Property definition for node " + node.getPath() + " is missing:" + x.getMessage());
                         }
                     } else {
                         if (!processPropertyValue(out, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {

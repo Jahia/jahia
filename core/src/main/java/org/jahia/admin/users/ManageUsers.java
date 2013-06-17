@@ -363,12 +363,12 @@ public class ManageUsers extends AbstractAdministrationModule {
             // any saving or checks.
             return false;
         }
-        String username = request.getParameter("username").trim();
+        String username = StringUtils.trimToEmpty(request.getParameter("username"));
         if (username.length() == 0) {
             userMessage = getMessage("org.jahia.admin.userMessage.specifyUserName.label");
             return false;
         }
-        String email = request.getParameter("manage-user-property#j:email").trim();
+        String email = StringUtils.trimToEmpty(request.getParameter("manage-user-property#j:email"));
         if(!"".equals(email) && !email.matches("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$")){
             userMessage = getMessage("org.jahia.admin.userMessage.emailFormatIsIncorrect.label");
             return false;
@@ -385,13 +385,13 @@ public class ManageUsers extends AbstractAdministrationModule {
             return false;
         }
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
-        String passwd = request.getParameter("passwd").trim();
+        String passwd = StringUtils.trimToEmpty(request.getParameter("passwd"));
         if ("".equals(passwd)) {
             userMessage = getMessage(
                     "org.jahia.admin.userMessage.specifyPassword.label");
             return false;
         } else {
-            String passwdConfirm = request.getParameter("passwdconfirm").trim();
+            String passwdConfirm = StringUtils.trimToEmpty(request.getParameter("passwdconfirm"));
             if (!passwdConfirm.equals(passwd)) {
                 userMessage = getMessage(
                         "org.jahia.admin.userMessage.passwdNotMatch.label");

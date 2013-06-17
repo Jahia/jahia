@@ -684,9 +684,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 // Replace placeholder to have a full contextual cache key
                 String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
 
-                // todo : document or remove that. cacheKey becomes some partially replaced key
-                cacheKey = StringUtils.replace(cacheKey, AclCacheKeyPartGenerator.PER_USER, renderContext.getUser().getUsername());
-
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
                 }

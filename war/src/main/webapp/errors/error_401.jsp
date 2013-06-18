@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-1.1.css" type="text/css"/>
     <title><fmt:message key="label.login"/></title>
     <script type="text/javascript">
-    document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) document.loginForm.submit(); };
+    var clickcounter=0;	
+    document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) clickcounter++; doSubmit(); };
     </script>
 </head>
 <body onload="document.loginForm.username.focus()" class="login">
@@ -23,7 +24,6 @@
     <h2 class="loginlogo"></h2>
         <ui:loginArea>
            <script type="text/javascript">
-        	 	var clickcounter=0;
         	 	function doSubmit() {
         	 		if(clickcounter == 1) {
         	       		document.forms.loginForm.submit();

@@ -83,7 +83,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
-            "templateNodes","resourceID","inArea","site"));
+            "templateNodes", "resourceID", "inArea", "site"));
     private static final String CACHE_NAME = "HTMLNodeUsersACLs";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
     public static final String PER_USER = "_perUser_";
@@ -162,7 +162,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     args.add(encodeString(String.valueOf(resource.getContextConfiguration())));
                 } else if ("custom".equals(field)) {
                     args.add(encodeString((String) resource.getModuleParams().get("module.cache.additional.key")) +
-                                                   encodeString((String) request.getAttribute("module.cache.additional.key")));
+                            encodeString((String) request.getAttribute("module.cache.additional.key")));
                 } else if ("templateNodes".equals(field)) {
                     final Template t = (Template) request.getAttribute("previousTemplate");
                     args.add(encodeString(t != null ? t.serialize() : ""));
@@ -179,7 +179,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                     // Todo : Do we need to find another way of getting the urlresolver ?
                     URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
                     args.add(encodeString(urlResolver == null ||
-                                          urlResolver.getSiteKeyByServerName() == null ? new StringBuilder().append(
+                            urlResolver.getSiteKeyByServerName() == null ? new StringBuilder().append(
                             renderContext.getSite().getSiteKey()).append(":").append("virtualhost").append(":").append(
                             request.getParameter("jsite")).toString() : new StringBuilder().append(
                             renderContext.getSite().getSiteKey()).append(":").append(request.getParameter(
@@ -199,16 +199,16 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             JCRNodeWrapper node = resource.getNode();
             boolean checkRootPath = true;
             Element element = permissionCache.get(node.getPath());
-            if(element!=null && Boolean.TRUE==((Boolean)element.getValue())) {
+            if (element != null && Boolean.TRUE == ((Boolean) element.getValue())) {
                 node = renderContext.getMainResource().getNode();
                 checkRootPath = false;
-            } else if(element==null) {
+            } else if (element == null) {
                 if (node.hasProperty("j:requiredPermissions")) {
-                    permissionCache.put(new Element(node.getPath(),Boolean.TRUE));
+                    permissionCache.put(new Element(node.getPath(), Boolean.TRUE));
                     node = renderContext.getMainResource().getNode();
                     checkRootPath = false;
                 } else {
-                    permissionCache.put(new Element(node.getPath(),Boolean.FALSE));
+                    permissionCache.put(new Element(node.getPath(), Boolean.FALSE));
                 }
             }
             String nodePath = node.getPath();
@@ -228,7 +228,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                         final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
                                         aclsKeys.add(getAclsKeyPart(renderContext, finalCheckRootPath, nodeByIdentifier.getPath(),
-                                            true, null));
+                                                true, null));
                                         return null;
                                     }
                                 });
@@ -244,13 +244,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             logger.warn("PathNotFound: "
                                     + dependency
                                     + "  it could be an invalid reference, check jcr integrity");
-                        }                            
+                        }
                     }
                 }
             }
             StringBuilder stringBuilder = new StringBuilder();
             for (String aclsKey : aclsKeys) {
-                if(stringBuilder.length()>0) {
+                if (stringBuilder.length() > 0) {
                     stringBuilder.append("_depacl_");
                 }
                 stringBuilder.append(aclsKey);
@@ -284,7 +284,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         stringBuilder.append(getAclKeyPartForNode(renderContext, checkRootPath, path, true, principal,
                                 userName));
                     }
-                }else if ("mraclmr".equals(aclKey)) {
+                } else if ("mraclmr".equals(aclKey)) {
                     if (stringBuilder.length() > 0) {
                         stringBuilder.append("_depacl_");
                     }
@@ -340,7 +340,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 fakePath = "/";
             }
             final Set<JahiaGroup> jahiaGroups = allAclsGroups.get(fakePath);
-            if(jahiaGroups==null) {
+            if (jahiaGroups == null) {
                 // Should never be null here so relaunch the call.
                 return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
             }
@@ -348,7 +348,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             fakePath = StringUtils.substringBeforeLast(fakePath, "/");
             if (fakePath.equals("")) {
                 final Set<JahiaGroup> jahiaGroups1 = allAclsGroups.get("/");
-                if(jahiaGroups1==null){
+                if (jahiaGroups1 == null) {
                     return getAclKeyPartForNode(renderContext, checkRootPath, nodePath, appendNodePath, principal, userName);
                 }
                 aclGroups.addAll(jahiaGroups1);
@@ -375,7 +375,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         if ("".equals(userKey.trim())) {
             throw new RepositoryException(
                     "Userkey is empty while generating cache key for path " + path + " and nodepath = " + nodePath +
-                    " checkrootpath = " + checkRootPath);
+                            " checkrootpath = " + checkRootPath);
         }
         Resource mainResource = renderContext.getMainResource();
         Set<String> roles;
@@ -427,16 +427,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         Query.JCR_SQL2);
                 QueryResult queryResult = query.execute();
                 NodeIterator rowIterator = queryResult.getNodes();
+
+                Map<String, String> map = new LinkedHashMap<String, String>();
+
                 while (rowIterator.hasNext()) {
                     Node node = (Node) rowIterator.next();
                     String userPath = userManagerService.getUserSplittingRule().getPathForUsername(userName);
                     if (!node.getPath().startsWith(userPath + "/j:acl")) {
-                        Map<String, String> map;
-                        if (!cache.isKeyInCache(userName)) {
-                            map = new LinkedHashMap<String, String>();
-                        } else {
-                            map = (Map<String, String>) ((Element) cache.get(userName)).getValue();
-                        }
                         String path = node.getParent().getParent().getPath();
                         StringBuilder b = new StringBuilder();
                         Set<String> foundRoles = new HashSet<String>();
@@ -458,12 +455,14 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                                 path = node.getParent().getParent().getParent().getPath();
                             }
                             map.put(path, userName + "_r_" + b.toString());
-                            final Element element = new Element(userName, map);
-                            element.setEternal(true);
-                            cache.put(element);
                         }
                     }
                 }
+
+                final Element element = new Element(userName, map);
+                element.setEternal(true);
+                cache.put(element);
+
                 return null;
             }
         });
@@ -627,10 +626,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     private String encodeString(String toBeEncoded) {
-        return toBeEncoded!=null?toBeEncoded.replaceAll("#","@@"):toBeEncoded;
+        return toBeEncoded != null ? toBeEncoded.replaceAll("#", "@@") : toBeEncoded;
     }
 
     private String decodeString(String toBeDecoded) {
-        return toBeDecoded !=null? toBeDecoded.replaceAll("@@","#"): toBeDecoded;
+        return toBeDecoded != null ? toBeDecoded.replaceAll("@@", "#") : toBeDecoded;
     }
 }

@@ -421,7 +421,8 @@
 [jnt:absoluteArea] > jnt:area, jmix:layoutComponentContent, jmix:studioOnly
  - j:level (long)
 
-[jnt:levelAbsoluteArea] > jnt:absoluteArea
+[jnt:levelAbsoluteArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:listRestrictions, jmix:mockupStyle
+ + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:layoutComponentContent, jmix:mockupStyle, jmix:studioOnly
 

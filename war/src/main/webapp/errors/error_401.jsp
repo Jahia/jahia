@@ -22,6 +22,14 @@
     <div id="adminLogin">
     <h2 class="loginlogo"></h2>
         <ui:loginArea>
+           <script type="text/javascript">
+        	 	var clickcounter=0;
+        	 	function doSubmit() {
+        	 		if(clickcounter == 1) {
+        	       		document.forms.loginForm.submit();
+        	     	}
+              	}  
+        	</script>
             <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />
         <ui:isLoginError var="loginResult">
@@ -52,7 +60,7 @@
         <div id="actionBar" class="alignCenter">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#login" onClick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key='label.login'/>"><fmt:message key="label.login"/></a>
+              <a class="ico-ok" href="#login" onClick="clickcounter++; doSubmit(); return false;" tabindex="5" title="<fmt:message key='label.login'/>"><fmt:message key="label.login"/></a>
              </span>
           </span>
         </div>

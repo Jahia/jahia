@@ -42,19 +42,13 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -72,6 +66,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,10 +79,10 @@ import java.util.Map;
 public class ImageCrop extends Window {
 
     private Linker linker;
-    
+
     private boolean autoName = true;
 
-    public ImageCrop(final Linker linker, final GWTJahiaNode n) {
+    public ImageCrop(final Linker linker, final GWTJahiaNode n, List<String> predefineSizes) {
         super();
         setLayout(new FitLayout());
         setSize(712, 550);
@@ -96,24 +91,23 @@ public class ImageCrop extends Window {
         setHeading(Messages.get("label.crop"));
         setId("JahiaGxtImageCrop");
 
-        FormData formData = new FormData("100%");  
-        FormPanel form = new FormPanel();  
+        FormData formData = new FormData("100%");
+        FormPanel form = new FormPanel();
         form.setFrame(false);
         form.setHeaderVisible(false);
         form.setBorders(false);
         form.setLabelWidth(70);
-      
-        LayoutContainer main = new LayoutContainer();  
-        main.setLayout(new ColumnLayout());  
-      
-        LayoutContainer lcName = new LayoutContainer();  
-        lcName.setStyleAttribute("paddingRight", "10px");  
+
+        LayoutContainer main = new LayoutContainer();
+        main.setLayout(new ColumnLayout());
+        LayoutContainer lcName = new LayoutContainer();
+        lcName.setStyleAttribute("paddingRight", "10px");
         lcName.setLayout(new FormLayout(LabelAlign.LEFT));
-      
+
         final TextField<String> newname = new TextField<String>();
         newname.setName("newname");
         newname.setId("newname");
-        newname.setFieldLabel(Messages.get("label.rename", "Rename"));
+        newname.setFieldLabel(Messages.get("newName.label", "New name"));
         int extIndex = n.getName().lastIndexOf(".");
         if (extIndex > 0) {
             String dotExt = n.getName().substring(extIndex);
@@ -121,7 +115,7 @@ public class ImageCrop extends Window {
         } else {
             newname.setValue(n.getName() + "-crop");
         }
-        
+
         newname.addListener(Events.Change, new Listener<ComponentEvent>() {
             @Override
             public void handleEvent(ComponentEvent be) {
@@ -131,36 +125,55 @@ public class ImageCrop extends Window {
 
         lcName.add(newname, formData);
 
-        LayoutContainer lcWidth = new LayoutContainer();  
-        lcWidth.setStyleAttribute("paddingRight", "10px");  
+        LayoutContainer lcWidth = new LayoutContainer();
+        lcWidth.setStyleAttribute("paddingRight", "10px");
         FormLayout formLayout = new FormLayout(LabelAlign.RIGHT);
         formLayout.setLabelWidth(40);
         lcWidth.setLayout(formLayout);
-      
-        final NumberField width = new NumberField();  
-        width.setFieldLabel(Messages.get("label.width", "Width"));  
+        form.add(lcName, new ColumnData(.6));
+        final SimpleComboBox<String> predefineSizesBox = new SimpleComboBox<String>();
+        predefineSizesBox.setForceSelection(true);
+        predefineSizesBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+        predefineSizesBox.setDeferHeight(true);
+
+
+        final NumberField width = new NumberField();
+        final NumberField height = new NumberField();
+
+        if (predefineSizes != null && !predefineSizes.isEmpty()) {
+            predefineSizesBox.add(predefineSizes);
+            predefineSizesBox.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
+                    String[] v = se.getSelectedItem().getValue().split("x");
+                    setDimensions(Integer.parseInt(v[0]), Integer.parseInt(v[1]));
+                }
+            });
+            predefineSizesBox.setEmptyText(Messages.get("selectPredefinedSize.label","select a predefined size"));
+            main.add(predefineSizesBox, new ColumnData(.6));
+        }
+
+        width.setFieldLabel(Messages.get("width.label", "Width"));
         width.setName("width");
         width.setId("width");
         lcWidth.add(width, formData);
-      
-        LayoutContainer lcHeight = new LayoutContainer();  
-        lcHeight.setStyleAttribute("paddingLeft", "10px");  
+
+        LayoutContainer lcHeight = new LayoutContainer();
+        lcHeight.setStyleAttribute("paddingLeft", "10px");
         formLayout = new FormLayout(LabelAlign.RIGHT);
         formLayout.setLabelWidth(40);
-        lcHeight.setLayout(formLayout);  
-      
-        final NumberField height = new NumberField();  
-        height.setFieldLabel(Messages.get("label.height", "Height"));  
+        lcHeight.setLayout(formLayout);
+
+        height.setFieldLabel(Messages.get("height.label", "Height"));
         height.setName("height");
         height.setId("height");
         lcHeight.add(height, formData);
-      
-        main.add(lcName, new ColumnData(.6));
         main.add(lcWidth, new ColumnData(.2));
-        main.add(lcHeight, new ColumnData(.2));  
-      
+        main.add(lcHeight, new ColumnData(.2));
+
+
         form.add(main, new FormData("100%"));
-        
+
         final Image image = new Image();
         image.addLoadHandler(new LoadHandler() {
             public void onLoad(LoadEvent event) {
@@ -172,7 +185,7 @@ public class ImageCrop extends Window {
         image.setUrl(n.getUrl());
 
         form.add(image);
-        
+
         final NumberField top = new NumberField();
         top.setName("top");
         top.setId("top");
@@ -183,7 +196,7 @@ public class ImageCrop extends Window {
         left.setId("left");
         left.setVisible(false);
         form.add(left);
-        
+
         ButtonBar buttons = new ButtonBar();
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -213,14 +226,14 @@ public class ImageCrop extends Window {
         };
         width.addListener(Events.Change, listener);
         height.addListener(Events.Change, listener);
-        
+
         add(form);
-        
+
         setModal(true);
         setHeaderVisible(true);
         setAutoHide(false);
     }
-    
+
     private native void setDimensions(int w, int h) /*-{
         try {
             var jcapi=$wnd.jQuery('#cropbox').data('Jcrop');
@@ -228,7 +241,7 @@ public class ImageCrop extends Window {
             jcapi.setSelect([c.x, c.y, c.x + w, c.y + h]);
         } catch (e) { }
     }-*/;
-    
+
     private native void initJcrop() /*-{
         thisic=this;
         $wnd.jQuery('#cropbox').Jcrop({
@@ -243,7 +256,7 @@ public class ImageCrop extends Window {
                     $wnd.jQuery('#newname-input').val(nv);
                 }
             }
-        });        
+        });
     }-*/;
 
     private void cropImage(final String path, final String targetName, final int top, final int left, final int width, final int height, final boolean force) {

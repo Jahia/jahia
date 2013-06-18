@@ -42,7 +42,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ImageCrop;
 
@@ -56,13 +55,16 @@ import java.util.List;
  * 
  */
 public class CropActionItem extends BaseActionItem {
+
+    private List<String> predefineSizes;
+
     public void onComponentSelection() {
         GWT.runAsync(new RunAsyncCallback()  {
             public void onFailure(Throwable reason) {
             }
 
             public void onSuccess() {
-                new ImageCrop(linker, linker.getSelectionContext().getSingleSelection()).show();
+                new ImageCrop(linker, linker.getSelectionContext().getSingleSelection(), predefineSizes).show();
             }
         });
     }
@@ -72,5 +74,12 @@ public class CropActionItem extends BaseActionItem {
         setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) && lh.isParentWriteable() && lh.isFile() && lh.isImage());
     }
 
-
+    /**
+     * defines the list of predefined size
+     * each value is a String of format [width]x[height]
+     * @param predefineSizes list of predefined sizes
+     */
+    public void setPredefineSizes(List<String> predefineSizes) {
+        this.predefineSizes = predefineSizes;
+    }
 }

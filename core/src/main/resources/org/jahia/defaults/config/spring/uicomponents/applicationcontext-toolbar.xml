@@ -893,7 +893,16 @@
 
     <bean id="Toolbar.Item.Crop" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem">
+                <property name="predefineSizes">
+                    <!-- each value is a String of format [width]x[height] -->
+                   <list>
+                       <value>100x100</value>
+                       <value>200x100</value>
+                       <value>250x150</value>
+                   </list>
+                </property>
+            </bean>
         </property>
         <property name="titleKey" value="label.crop"/>
         <property name="icon" value="crop"/>

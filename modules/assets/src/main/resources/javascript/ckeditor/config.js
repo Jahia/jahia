@@ -9,8 +9,7 @@ CKEDITOR.editorConfig = function( config )
     config.language = (typeof contextJsParameters != 'undefined') ? contextJsParameters.uilang : 'en';
     config.contentlanguage = (typeof contextJsParameters != 'undefined') ? contextJsParameters.lang : 'en';
     config.siteUuid = (typeof contextJsParameters != 'undefined') ? contextJsParameters.siteUuid : '';
-    config.skin = 'jahia';
-    
+
     config.filebrowserWindowWidth = '810';
     config.filebrowserWindowHeight = '650';
     config.filebrowserLinkWindowHeight = '800';
@@ -80,5 +79,5 @@ CKEDITOR.editorConfig = function( config )
         ['Maximize', 'ShowBlocks']
     ];
     
-    config.extraPlugins = 'acheck';
+    //config.extraPlugins = 'acheck';
 };

@@ -14,7 +14,12 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <title><fmt:message key="label.login"/></title>
     <script type="text/javascript">
+<<<<<<< .working
         document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) document.loginForm.submit(); };
+=======
+    var clickcounter=0;	
+    document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) clickcounter++; doSubmit(); };
+>>>>>>> .merge-right.r46385
     </script>
 </head>
 <body onload="document.loginForm.username.focus()" class="login">
@@ -47,7 +52,6 @@
     <h2 class="loginlogo"></h2>
         <ui:loginArea>
            <script type="text/javascript">
-        	 	var clickcounter=0;
         	 	function doSubmit() {
         	 		if(clickcounter == 1) {
         	       		document.forms.loginForm.submit();

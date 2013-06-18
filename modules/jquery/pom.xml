@@ -52,9 +52,9 @@
     <description>Provided jquery library for Jahia.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/grid</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/grid</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/grid</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/jquery</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/jquery</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/jquery</url>
     </scm>
 
     <repositories>

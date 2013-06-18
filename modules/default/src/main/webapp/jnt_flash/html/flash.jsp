@@ -28,12 +28,17 @@
 <script type="text/javascript">
     swfobject.registerObject("flashcontent${currentNode.UUID}", "${flashPlayer.string}");
 </script>
+<!--[if IE]>
+<object id="flashcontent${currentNode.UUID}" width="${widthFlash.string}" height="${heightFlash.string}"
+        classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" >
+   <param name="movie" value="${flashSource.node.url}">
+<![endif]-->
+ 
+<!--[if !IE]>-->
 <object id="flashcontent${currentNode.UUID}" width="${widthFlash.string}" height="${heightFlash.string}"
         data="${flashSource.node.url}">
+<!--<![endif]-->
 
-    <c:if test="${not empty wmodeFlash.string}">
-        <param name="wmode" value="${wmodeFlash}"/>
-    </c:if>
     <c:if test="${not empty idFlash.string}">
         <param name="id" value="${idFlash.string}"/>
     </c:if>

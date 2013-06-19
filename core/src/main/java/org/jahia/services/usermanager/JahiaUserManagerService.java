@@ -283,23 +283,21 @@ public abstract class JahiaUserManagerService extends JahiaService {
     public abstract boolean userExists(String name);
 
     /**
-	 * Validates provided user name against a regular expression pattern,
-	 * specified in the Jahia configuration.
-	 * 
-	 * @param name
-	 *            the user name to be validated
-	 * @return <code>true</code> if the specified user name matches the
-	 *         validation pattern
-	 */
-	public abstract boolean isUsernameSyntaxCorrect(String name);
+     * Validates provided user name against a regular expression pattern, specified in the Jahia configuration.
+     * 
+     * @param name
+     *            the user name to be validated
+     * @return <code>true</code> if the specified user name matches the validation pattern
+     */
+    public abstract boolean isUsernameSyntaxCorrect(String name);
 
-	/**
-	 * Adds the specified user provider to the registry.
-	 * 
-	 * @param jahiaUserManagerProvider
-	 *            an instance of the user provider to register
-	 */
-	public abstract void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
+    /**
+     * Adds the specified user provider to the registry.
+     * 
+     * @param jahiaUserManagerProvider
+     *            an instance of the user provider to register
+     */
+    public abstract void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
 
     public void setUserSplittingRule(JahiaUserSplittingRule userSplittingRule) {
         this.userSplittingRule = userSplittingRule;

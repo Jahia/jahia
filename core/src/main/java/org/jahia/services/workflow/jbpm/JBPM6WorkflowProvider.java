@@ -99,7 +99,18 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     @Override
     public WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale) {
         KieBase kieBase = kieSession.getKieBase();
-        org.kie.api.definition.process.Process process = kieBase.getProcess(key);
+        Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
+        for (org.kie.api.definition.process.Process process : processes) {
+            if (process.getName().equals(key)) {
+                return convertToWorkflowDefinition(process, locale);
+            }
+        }
+        return null;
+    }
+
+    public WorkflowDefinition getWorkflowDefinitionById(String id, Locale locale) {
+        KieBase kieBase = kieSession.getKieBase();
+        org.kie.api.definition.process.Process process = kieBase.getProcess(id);
         return convertToWorkflowDefinition(process, locale);
     }
 
@@ -139,9 +150,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
         String processDefinitionId = processInstance.getProcessId();
         KieBase kieBase = kieSession.getKieBase();
-        org.kie.api.definition.process.Process process = kieBase.getProcess(processDefinitionId);
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return convertToWorkflow(processInstance, locale);
     }
 
     @Override
@@ -257,7 +267,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     private WorkflowDefinition convertToWorkflowDefinition(org.kie.api.definition.process.Process process, Locale locale) {
-        WorkflowDefinition wf = new WorkflowDefinition(process.getName(), process.getKey(), this.key);
+        WorkflowDefinition wf = new WorkflowDefinition(process.getName(), process.getName(), this.key);
         wf.setFormResourceName(repositoryService.getStartFormResourceName(process.getId(),
                 repositoryService.getStartActivityNames(process.getId()).get(0)));
         if (process instanceof WorkflowProcess) {

@@ -40,6 +40,25 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+<<<<<<< .working
+=======
+import java.util.Arrays;
+
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.DropTarget;
+>>>>>>> .merge-right.r46394
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -51,7 +70,12 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+<<<<<<< .working
+=======
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+>>>>>>> .merge-right.r46394
 import com.google.gwt.user.client.ui.HTML;
+<<<<<<< .working
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -59,11 +83,16 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+=======
+>>>>>>> .merge-right.r46394
 
+<<<<<<< .working
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+=======
+>>>>>>> .merge-right.r46394
 /**
  * The module that displays areas in edit mode.
  * User: toto
@@ -81,6 +110,8 @@ public class AreaModule extends SimpleModule {
     private final LayoutContainer content;
     private String conflictsWith = null;
 
+    private int MIN_WIDTH = 150;
+    
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
         hasDragDrop = false;
@@ -138,17 +169,38 @@ public class AreaModule extends SimpleModule {
     @Override public void onNodeTypesLoaded() {
         if (conflictsWith != null) {
             LayoutContainer p = new HorizontalPanel();
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith })));
+            
+            Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith }));
+            if (getWidth() > MIN_WIDTH) {
+                p.add(label);
+            } else {
+            	p.setTitle(label.getText());
             }
+<<<<<<< .working
             head.addTool(p);
             layout();
+=======
+            
+            ctn.add(p);
+            ctn.layout();
+>>>>>>> .merge-right.r46394
         } else if (missingList && editable) {
             Image icon =  ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
             icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
             LayoutContainer p = new HorizontalPanel();
+<<<<<<< .working
 
             p.add(icon);
+=======
+            p.add(icon.createImage());
+            
+            Text label = new Text(Messages.get("label.areaEnable", "Enable area"));
+            if (getWidth() > MIN_WIDTH) {
+                p.add(label);
+            } else {
+            	p.setTitle(label.getText());
+            }
+>>>>>>> .merge-right.r46394
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-enable");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
@@ -162,7 +214,34 @@ public class AreaModule extends SimpleModule {
                     });
                 }
             });
+<<<<<<< .working
             head.addTool(p);
+=======
+            ctn.add(p);
+            ctn.layout();
+        } else if (childCount == 0 && editable) {
+            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
+            LayoutContainer p = new HorizontalPanel();
+            p.add(icon.createImage());
+            
+            Text label = new Text(Messages.get("label.areaDisable", "Disable area"));
+            if (getWidth() > MIN_WIDTH) {
+                p.add(label);
+            } else {
+            	p.setTitle(label.getText());
+            }
+            p.sinkEvents(Event.ONCLICK);
+            p.addStyleName("button-placeholder");
+            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
+                        }
+                    });
+                }
+            });
+>>>>>>> .merge-right.r46394
 
             addStyleName(mainModule.getConfig().getName() + "DisableArea");
             content.addStyleName(mainModule.getConfig().getName() + "DisableAreaContent");
@@ -185,7 +264,37 @@ public class AreaModule extends SimpleModule {
                         data.put(Linker.REFRESH_MAIN, true);
                         mainModule.getEditLinker().refresh(data);
                     }
+<<<<<<< .working
                 });
+=======
+                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
+                    p = new HorizontalPanel();
+                    p.add(icon.createImage());
+                    
+                    label = new Text(nodeType != null ? nodeType.getLabel() : s);
+                    if (getWidth() > MIN_WIDTH) {
+                        p.add(label);
+                    } else {
+                    	p.setTitle(label.getText());
+                    }
+                    
+                    p.sinkEvents(Event.ONCLICK);
+                    p.addStyleName("button-placeholder");
+                    p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+                        public void handleEvent(ComponentEvent be) {
+                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {
+                                public void onSuccess(GWTJahiaNode result) {
+                                    if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
+                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node, true);
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    ctn.add(p);
+                }
+>>>>>>> .merge-right.r46394
             }
         });
         head.addTool(p);

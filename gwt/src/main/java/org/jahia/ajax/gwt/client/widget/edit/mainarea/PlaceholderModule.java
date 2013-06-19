@@ -40,7 +40,25 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+<<<<<<< .working
 import com.extjs.gxt.ui.client.Style;
+=======
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+
+>>>>>>> .merge-right.r46394
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -56,6 +74,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
+<<<<<<< .working
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -69,9 +88,13 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+=======
+>>>>>>> .merge-right.r46394
 
+<<<<<<< .working
 import java.util.*;
-
+=======
+>>>>>>> .merge-right.r46394
 
 /**
  *
@@ -85,7 +108,13 @@ public class PlaceholderModule extends Module {
     private LayoutContainer pasteButton;
     private LayoutContainer pasteAsReferenceButton;
 
+<<<<<<< .working
     public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
+=======
+    private int MIN_WIDTH = 150;
+    
+    public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
+>>>>>>> .merge-right.r46394
         super(id, path, divElement, mainModule, new FlowLayout());
 
         if (path.endsWith("*")) {
@@ -148,8 +177,12 @@ public class PlaceholderModule extends Module {
                 icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon);
-                if (getWidth() > 150) {
-                    p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
+                
+                Text label = new Text(nodeType != null ? nodeType.getLabel() : s);
+                if (getWidth() > MIN_WIDTH) {
+                    p.add(label);
+                } else {
+                	p.setTitle(label.getText());
                 }
                 p.sinkEvents(Event.ONCLICK);
                 p.addStyleName("button-placeholder");
@@ -172,8 +205,12 @@ public class PlaceholderModule extends Module {
             icon.setTitle(Messages.get("label.paste", "Paste"));
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon);
-            if (getWidth() > 150) {
-                pasteButton.add(new Text(Messages.get("label.paste", "Paste")));
+            
+            Text label = new Text(Messages.get("label.paste", "Paste"));
+            if (getWidth() > MIN_WIDTH) {
+                pasteButton.add(label);
+            } else {
+            	pasteButton.setTitle(label.getText());
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -189,8 +226,12 @@ public class PlaceholderModule extends Module {
             AbstractImagePrototype pasteAsReferenceIcon = ToolbarIconProvider.getInstance().getIcon("pasteReference");
             pasteAsReferenceButton = new HorizontalPanel();
             pasteAsReferenceButton.add(pasteAsReferenceIcon.createImage());
-            if (getWidth() > 150) {
-                pasteAsReferenceButton.add(new Text(Messages.get("label.pasteReference", "Paste Reference")));
+            
+            label = new Text(Messages.get("label.pasteReference", "Paste Reference"));
+            if (getWidth() > MIN_WIDTH) {
+                pasteAsReferenceButton.add(label);
+            } else {
+            	pasteAsReferenceButton.setTitle(label.getText());
             }
             pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
             pasteAsReferenceButton.addStyleName("button-placeholder");

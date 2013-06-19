@@ -82,7 +82,7 @@ public class PlaceholderModule extends Module {
     private LayoutContainer pasteButton;
     private LayoutContainer pasteAsReferenceButton;
 
-    private int MIN_WIDTH = 150;
+    private int MIN_WIDTH = 100;
     
     public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
@@ -160,7 +160,7 @@ public class PlaceholderModule extends Module {
                 p.add(icon.createImage());
                 
                 Text label = new Text(nodeType != null ? nodeType.getLabel() : s);
-                if (getWidth() > MIN_WIDTH) {
+                if (getWidth() >= MIN_WIDTH) {
                     p.add(label);
                 } else {
                 	p.setTitle(label.getText());
@@ -186,11 +186,11 @@ public class PlaceholderModule extends Module {
             pasteButton = new HorizontalPanel();
             pasteButton.add(pasteIcon.createImage());
             
-            Text label = new Text(Messages.get("label.paste", "Paste"));
-            if (getWidth() > MIN_WIDTH) {
-                pasteButton.add(label);
+            Text pasteLabel = new Text(Messages.get("label.paste", "Paste"));
+            if (getWidth() >= MIN_WIDTH) {
+                pasteButton.add(pasteLabel);
             } else {
-            	pasteButton.setTitle(label.getText());
+            	pasteButton.setTitle(pasteLabel.getText());
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -207,11 +207,11 @@ public class PlaceholderModule extends Module {
             pasteAsReferenceButton = new HorizontalPanel();
             pasteAsReferenceButton.add(pasteAsReferenceIcon.createImage());
             
-            label = new Text(Messages.get("label.pasteReference", "Paste Reference"));
-            if (getWidth() > MIN_WIDTH) {
-                pasteAsReferenceButton.add(label);
+            Text pasteReferenceLabel = new Text(Messages.get("label.pasteReference", "Paste Reference"));
+            if (getWidth() >= MIN_WIDTH) {
+                pasteAsReferenceButton.add(pasteReferenceLabel);
             } else {
-            	pasteAsReferenceButton.setTitle(label.getText());
+            	pasteAsReferenceButton.setTitle(pasteReferenceLabel.getText());
             }
             pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
             pasteAsReferenceButton.addStyleName("button-placeholder");

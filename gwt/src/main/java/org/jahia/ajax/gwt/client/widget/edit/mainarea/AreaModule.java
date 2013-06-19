@@ -85,7 +85,7 @@ public class AreaModule extends SimpleModule {
     private boolean missingList;
     private String conflictsWith = null;
 
-    private int MIN_WIDTH = 150;
+    private int MIN_WIDTH = 100;
     
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
@@ -185,7 +185,7 @@ public class AreaModule extends SimpleModule {
             LayoutContainer p = new HorizontalPanel();
             
             Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith }));
-            if (getWidth() > MIN_WIDTH) {
+            if (getWidth() >= MIN_WIDTH) {
                 p.add(label);
             } else {
             	p.setTitle(label.getText());
@@ -199,7 +199,7 @@ public class AreaModule extends SimpleModule {
             p.add(icon.createImage());
             
             Text label = new Text(Messages.get("label.areaEnable", "Enable area"));
-            if (getWidth() > MIN_WIDTH) {
+            if (getWidth() >= MIN_WIDTH) {
                 p.add(label);
             } else {
             	p.setTitle(label.getText());
@@ -222,11 +222,11 @@ public class AreaModule extends SimpleModule {
             LayoutContainer p = new HorizontalPanel();
             p.add(icon.createImage());
             
-            Text label = new Text(Messages.get("label.areaDisable", "Disable area"));
-            if (getWidth() > MIN_WIDTH) {
-                p.add(label);
+            Text disableLabel = new Text(Messages.get("label.areaDisable", "Disable area"));
+            if (getWidth() >= MIN_WIDTH) {
+                p.add(disableLabel);
             } else {
-            	p.setTitle(label.getText());
+            	p.setTitle(disableLabel.getText());
             }
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-placeholder");
@@ -262,11 +262,11 @@ public class AreaModule extends SimpleModule {
                     p = new HorizontalPanel();
                     p.add(icon.createImage());
                     
-                    label = new Text(nodeType != null ? nodeType.getLabel() : s);
-                    if (getWidth() > MIN_WIDTH) {
-                        p.add(label);
+                    Text nodeTypeLabel = new Text(nodeType != null ? nodeType.getLabel() : s);
+                    if (getWidth() >= MIN_WIDTH) {
+                        p.add(nodeTypeLabel);
                     } else {
-                    	p.setTitle(label.getText());
+                    	p.setTitle(nodeTypeLabel.getText());
                     }
                     
                     p.sinkEvents(Event.ONCLICK);

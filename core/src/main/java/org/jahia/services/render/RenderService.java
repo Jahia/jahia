@@ -403,7 +403,7 @@ public class RenderService {
                                                            JCRNodeWrapper templateNode, String type) throws RepositoryException {
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                resource.getNode().getNodeTypes() + aclCacheKeyPartGenerator.appendAcls(resource, renderContext, new Properties(), false);
+                resource.getNode().getNodeTypes() + aclCacheKeyPartGenerator.getAclKeyPartForNode(renderContext, resource.getNode().getPath(), renderContext.getUser(), new HashSet<String>());
         if (templatesCache.containsKey(key)) {
             return templatesCache.get(key);
         }

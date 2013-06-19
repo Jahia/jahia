@@ -42,9 +42,13 @@ package org.jahia.modules.sitesettings.groups;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
@@ -201,16 +205,41 @@ public class ManageGroupsFlowHandler implements Serializable {
     }
 
     /**
-     * Returns a list of all group providers currently registered.
+     * Returns a map of all group providers currently registered.
      * 
-     * @return a list of all group providers currently registered
+     * @return a map of all group providers currently registered
      */
-    public List<? extends JahiaGroupManagerProvider> getProviders() {
-        return groupManagerService.getProviderList();
+    public Map<String, ? extends JahiaGroupManagerProvider> getProviders() {
+        Map<String, JahiaGroupManagerProvider> providers = new LinkedHashMap<String, JahiaGroupManagerProvider>();
+        for (JahiaGroupManagerProvider p : groupManagerService.getProviderList()) {
+            providers.put(p.getKey(), p);
+        }
+        return providers;
     }
 
     private int getSiteId(RequestContext ctx) {
         return ((RenderContext) ctx.getExternalContext().getRequestMap().get("renderContext")).getSite().getID();
+    }
+
+    /**
+     * Returns a set of group keys that are considered as system and cannot be deleted.
+     * 
+     * @param groups
+     *            the set of all groups from the search
+     * @return a set of group keys that are considered as system and cannot be deleted
+     */
+    public Set<String> getSystemGroups(Set<?> groups) {
+        if (groups.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<String> systemGroups = new HashSet<String>();
+        for (Object p : groups) {
+            if (p instanceof JCRGroup && isReadOnly((JahiaGroup) p)) {
+                systemGroups.add(((JahiaGroup) p).getGroupKey());
+            }
+        }
+
+        return systemGroups;
     }
 
     /**

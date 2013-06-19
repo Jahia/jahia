@@ -28,6 +28,9 @@
 <fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
 <fmt:message var="i18nContinue" key="label.confirmContinue"/>
 
+<c:set var="isGroupEditable" value="${!providers[group.providerName].readOnly}"/>
+
+<c:if test="${isGroupEditable}">
 <template:addResources>
 <script type="text/javascript">
 var newMembersArray = new Array();
@@ -92,6 +95,7 @@ $(document).ready(function() {
 })
 </script>
 </template:addResources>
+</c:if>
 
 <h2><fmt:message key="label.group"/>: ${fn:escapeXml(user:displayName(group))}</h2>
 
@@ -102,6 +106,7 @@ $(document).ready(function() {
 <form action="${flowExecutionUrl}" method="post" style="display: inline;">
 <div>
     <div>
+        <c:if test="${isGroupEditable}">
             <button class="btn" type="submit" name="addMembers" onclick="openUserGroupSelect('','', 'Principal|Provider|Name|Properties,100'); return false;">
                 <i class="icon-plus"></i>
                 &nbsp;<fmt:message key="siteSettings.groups.addMembers"/>
@@ -113,6 +118,7 @@ $(document).ready(function() {
                     &nbsp;<fmt:message key="siteSettings.groups.removeMembers"/>
                 </button>
             </c:if>
+        </c:if>
 
             <button class="btn" type="submit" name="_eventId_cancel">
                 <i class="icon-arrow-left"></i>
@@ -120,6 +126,7 @@ $(document).ready(function() {
             </button>
     </div>
     
+    <c:if test="${isGroupEditable}">
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
         <c:if test="${message.severity eq 'INFO'}">
@@ -136,8 +143,10 @@ $(document).ready(function() {
         </c:if>
         </c:forEach>
     </p>
+    </c:if>
 
     <div>
+    <c:if test="${isGroupEditable}">
         <div id="newMembers" style="display:none">
             <h2><fmt:message key="siteSettings.groups.newMembers"/></h2>
             <table id="newMembersTable" class="table table-bordered table-striped table-hover" style="width: 50%">
@@ -159,12 +168,15 @@ $(document).ready(function() {
                 &nbsp;<fmt:message key="label.reset"/>
             </button>
         </div>
+    </c:if>
         
         <h2><fmt:message key="members.label"/></h2>
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
+                <c:if test="${isGroupEditable}">
                 <th width="2%"><input type="checkbox" name="selectedAllMembers" id="cbSelectedAllMembers"/></th>
+                </c:if>
                 <th width="3%">#</th>
                 <th width="3%">&nbsp;</th>
                 <th><fmt:message key="label.name"/></th>
@@ -172,14 +184,16 @@ $(document).ready(function() {
                 <c:if test="${multipleProvidersAvailable}">
                     <th width="10%"><fmt:message key="column.provider.label"/></th>
                 </c:if>
+                <c:if test="${isGroupEditable}">
                 <th width="20%"><fmt:message key="label.actions"/></th>
+                </c:if>
             </tr>
             </thead>
             <tbody>
                 <c:choose>
                     <c:when test="${!membersFound}">
                         <tr>
-                            <td colspan="${multipleProvidersAvailable ? '7' : '6'}"><fmt:message key="label.noItemFound"/></td>
+                            <td colspan="${(multipleProvidersAvailable ? 7 : 6) - (isGroupEditable ? 0 : 2)}"><fmt:message key="label.noItemFound"/></td>
                         </tr>
                     </c:when>
                     <c:otherwise>
@@ -189,9 +203,11 @@ $(document).ready(function() {
                             <c:set var="principalIcon" value="${principalType == 'u' ? 'usersmall' : 'group-icon'}"/>
                             <c:set var="principalKey" value="${principalType}:${principalType == 'u' ? member.userKey : member.groupKey}"/>
                             <tr>
+                                <c:if test="${isGroupEditable}">
                                 <td>
                                     <input type="checkbox" name="selectedMembers" value="${principalKey}"/>
                                 </td>
+                                </c:if>
                                 <td>
                                     ${loopStatus.count}
                                 </td>
@@ -208,6 +224,7 @@ $(document).ready(function() {
                                     <fmt:message var="i18nProviderLabel" key="providers.${member.providerName}.label"/>
                                     <td>${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? member.providerName : i18nProviderLabel)}</td>
                                 </c:if>
+                                <c:if test="${isGroupEditable}">
                                 <td>
                                     <fmt:message var="i18RemoveConfirm" key="siteSettings.groups.removeMember.confirm">
                                         <fmt:param value="${fn:escapeXml(member.name)}"/>
@@ -217,6 +234,7 @@ $(document).ready(function() {
                                         <i class="icon-remove icon-white"></i>
                                     </button>
                                 </td>
+                                </c:if>
                             </tr>
                         </c:forEach>
                     </c:otherwise>

@@ -15,6 +15,7 @@
         <on-render>
             <evaluate expression="flowHandler.search(searchCriteria)" result="requestScope.groups"/>
             <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.getSystemGroups(requestScope.groups)" result="requestScope.systemGroups"/>
         </on-render>
         <transition on="search" to="manageGroups"/>
         <transition on="createGroup" to="createGroup" bind="false" validate="false">

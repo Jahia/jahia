@@ -1,0 +1,1 @@
+﻿CKEDITOR.plugins.add("acheck",{lang:["en","de","fr"],init:function(b){b.addCommand("acheck",{modes:{wysiwyg:1,source:1},exec:function(a){"function"==typeof a.checkWCAGCompliance&&a.checkWCAGCompliance(a.name,document.getElementById(a.name),!0)},canUndo:!1});b.ui.addButton("ACheck",{label:b.lang.acheck.title,command:"acheck",icon:this.path+"acheck.gif"})}});

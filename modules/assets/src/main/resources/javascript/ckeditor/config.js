@@ -1,10 +1,13 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+﻿/**
+ * Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.html or http://ckeditor.com/license
+ */
 
-CKEDITOR.editorConfig = function( config )
-{
+CKEDITOR.editorConfig = function( config ) {
+	// Define changes to default configuration here. For example:
+	// config.language = 'fr';
+	// config.uiColor = '#AADC6E';
+
     config.contextPath = (typeof contextJsParameters != 'undefined') ? contextJsParameters.contextPath : '';
     config.language = (typeof contextJsParameters != 'undefined') ? contextJsParameters.uilang : 'en';
     config.contentlanguage = (typeof contextJsParameters != 'undefined') ? contextJsParameters.lang : 'en';
@@ -14,7 +17,7 @@ CKEDITOR.editorConfig = function( config )
     config.filebrowserWindowHeight = '650';
     config.filebrowserLinkWindowHeight = '800';
     config.filebrowserWindowFeatures = 'location=no,menubar=no,toolbar=no,dependent=yes,minimizable=no,modal=yes,alwaysRaised=yes,resizable=yes,scrollbars=yes';
-    config.filebrowserWindowName = 'JahiaFileBrowser'; 
+    config.filebrowserWindowName = 'JahiaFileBrowser';
     config.filebrowserBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?site=' + config.siteUuid + '&lang='+ config.contentlanguage + '&uilang='+ config.language;
     config.filebrowserImageBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?type=imagepicker&site=' + config.siteUuid + '&lang='+ config.contentlanguage + '&uilang='+ config.language;
     config.filebrowserFlashBrowseUrl = config.contextPath + '/engines/contentpicker.jsp?mime=application%2Fx-shockwave-flash%2Cvideo%2Fx-flv&site=' + config.siteUuid + '&lang='+ config.contentlanguage + '&uilang='+ config.language;
@@ -24,7 +27,7 @@ CKEDITOR.editorConfig = function( config )
     config.toolbar = 'Full';
     config.toolbar_Full = [
         ['Source','-',/*'Save',*/'NewPage','Preview','-','Templates'],
-        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt', 'ACheck'],
+        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'wsc', 'Scayt', 'ACheck'],
         ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
         //['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],
         '/',
@@ -78,6 +81,7 @@ CKEDITOR.editorConfig = function( config )
         ['TextColor','BGColor'],
         ['Maximize', 'ShowBlocks']
     ];
-    
-    //config.extraPlugins = 'acheck';
+
+    config.extraPlugins = 'acheck,wsc,scayt';
 };
+

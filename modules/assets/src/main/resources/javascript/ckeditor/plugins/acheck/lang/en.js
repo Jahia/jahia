@@ -1,6 +1,1 @@
-﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('acheck','en',{acheck:{title:'Check Accessibility'}});
+﻿CKEDITOR.plugins.setLang("acheck","en",{title:"Check Accessibility",toolbar:"Check Accessibility"});

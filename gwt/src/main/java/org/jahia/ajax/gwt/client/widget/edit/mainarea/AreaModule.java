@@ -141,13 +141,8 @@ public class AreaModule extends SimpleModule {
         if (conflictsWith != null) {
             LayoutContainer p = new HorizontalPanel();
             
-<<<<<<< .working
             Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith })); 
             if (getWidth() >= MIN_WIDTH) {
-=======
-            Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith }));
-            if (getWidth() >= MIN_WIDTH) {
->>>>>>> .merge-right.r46397
                 p.add(label);
             } else {
                 p.setTitle(label.getText());
@@ -158,19 +153,8 @@ public class AreaModule extends SimpleModule {
             Image icon =  ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
             icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
             LayoutContainer p = new HorizontalPanel();
-<<<<<<< .working
 
             p.add(icon);
-=======
-            p.add(icon.createImage());
-            
-            Text label = new Text(Messages.get("label.areaEnable", "Enable area"));
-            if (getWidth() >= MIN_WIDTH) {
-                p.add(label);
-            } else {
-            	p.setTitle(label.getText());
-            }
->>>>>>> .merge-right.r46397
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-enable");
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
@@ -184,34 +168,7 @@ public class AreaModule extends SimpleModule {
                     });
                 }
             });
-<<<<<<< .working
             head.addTool(p);
-=======
-            ctn.add(p);
-            ctn.layout();
-        } else if (childCount == 0 && editable) {
-            AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
-            LayoutContainer p = new HorizontalPanel();
-            p.add(icon.createImage());
-            
-            Text disableLabel = new Text(Messages.get("label.areaDisable", "Disable area"));
-            if (getWidth() >= MIN_WIDTH) {
-                p.add(disableLabel);
-            } else {
-            	p.setTitle(disableLabel.getText());
-            }
-            p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-placeholder");
-            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent be) {
-                    JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode result) {
-                            mainModule.getEditLinker().refresh(EditLinker.REFRESH_MAIN);
-                        }
-                    });
-                }
-            });
->>>>>>> .merge-right.r46397
 
             addStyleName(mainModule.getConfig().getName() + "DisableArea");
             content.addStyleName(mainModule.getConfig().getName() + "DisableAreaContent");
@@ -234,37 +191,7 @@ public class AreaModule extends SimpleModule {
                         data.put(Linker.REFRESH_MAIN, true);
                         mainModule.getEditLinker().refresh(data);
                     }
-<<<<<<< .working
                 });
-=======
-                    icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
-                    p = new HorizontalPanel();
-                    p.add(icon.createImage());
-                    
-                    Text nodeTypeLabel = new Text(nodeType != null ? nodeType.getLabel() : s);
-                    if (getWidth() >= MIN_WIDTH) {
-                        p.add(nodeTypeLabel);
-                    } else {
-                    	p.setTitle(nodeTypeLabel.getText());
-                    }
-                    
-                    p.sinkEvents(Event.ONCLICK);
-                    p.addStyleName("button-placeholder");
-                    p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
-                        public void handleEvent(ComponentEvent be) {
-                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {
-                                public void onSuccess(GWTJahiaNode result) {
-                                    if (node != null && PermissionsUtils.isPermitted("jcr:addChildNodes", node) && !node.isLocked()) {
-                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node, true);
-                                    }
-                                }
-                            });
-                        }
-                    });
-
-                    ctn.add(p);
-                }
->>>>>>> .merge-right.r46397
             }
         });
         head.addTool(p);

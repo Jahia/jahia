@@ -43,6 +43,8 @@ package org.jahia.services.usermanager.jcr;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -52,6 +54,8 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
+import org.jahia.utils.ClassLoaderUtils;
+import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
@@ -68,8 +72,8 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 8 juil. 2009
  */
-public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupManagerProvider.class);
+public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implements ApplicationListener<ProviderEvent> {
+    private transient static Logger logger = LoggerFactory.getLogger(JCRGroupManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRGroupManagerProvider mGroupManagerProvider;
     private JCRUserManagerProvider userManagerProvider;
@@ -77,6 +81,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private transient CacheService cacheService;
     private transient Cache<String, JCRGroup> cache;
     private Cache<String, List<String>> membershipCache;
+    private ClassLoader chainedClassLoader;
+    private boolean chainedClassLoaderInitialized;
     public static final String JCR_GROUPMEMBERSHIP_CACHE = "JCRGroupMembershipCache";
 
     /**
@@ -590,7 +596,19 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 siteID = 0;
             }
             final String trueGroupKey = name + ":" + siteID;
-            CacheEntry<JCRGroup> cacheEntry = getCache().getCacheEntry(trueGroupKey);
+            final Cache<String, JCRGroup> cache = getCache();
+            CacheEntry<JCRGroup> cacheEntry = null;
+            final ClassLoader loader = getChainedClassloader();
+            if (loader != null) {
+                 ClassLoaderUtils.executeWith(loader, new Callback<CacheEntry<JCRGroup>>() {
+                    @Override
+                    public CacheEntry<JCRGroup> execute() {
+                        return cache.getCacheEntry(trueGroupKey);
+                    }
+                 });
+            } else {
+                cacheEntry = cache.getCacheEntry(trueGroupKey);
+            }
             if (cacheEntry != null) {
                 JCRGroup group = cacheEntry.getObject();
                 if (group == null) {
@@ -601,36 +619,42 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             final int siteID1 = siteID;
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRGroup>() {
                 public JCRGroup doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node groupNode;
                     try {
-                        Node groupNode;
-                        try {
-                            if (siteID1 <= 0) {
-                                groupNode = session.getNode("/groups/" + name.trim());
-                            } else {
-                                JahiaSite site = sitesService.getSite(siteID1,session);
-                                if (site == null) {
-                                    // This can happen if this method is called during the creation of the site !
-                                    logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
-                                    return null;
-                                }
-                                String siteName = site.getSiteKey();
-                                groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
+                        if (siteID1 <= 0) {
+                            groupNode = session.getNode("/groups/" + name.trim());
+                        } else {
+                            JahiaSite site = sitesService.getSite(siteID1, session);
+                            if (site == null) {
+                                // This can happen if this method is called during the creation of the site !
+                                logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
+                                return null;
                             }
-                        } catch (PathNotFoundException e) {
-                            getCache().put(trueGroupKey, null);
-                            return null;
+                            String siteName = site.getSiteKey();
+                            groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                         }
-                        JCRGroup group = null;
-                        boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
-                        if (allowExternal || !external) {
-                            group = getGroup(groupNode, name, siteID1, external);
-                            getCache().put(trueGroupKey, group);
-                        }
-                        return group;
-                    } catch (JahiaException e) {
-                        logger.error("Error while retrieving group " + name + " for site " + siteID1, e);
+                    } catch (PathNotFoundException e) {
+                        cache.put(trueGroupKey, null);
                         return null;
                     }
+                    JCRGroup group = null;
+                    boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
+                    if (allowExternal || !external) {
+                        group = getGroup(groupNode, name, siteID1, external);
+                        if (loader != null) {
+                            final JCRGroup groupToCache = group;
+                            ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
+                                @Override
+                                public Boolean execute() {
+                                    cache.put(trueGroupKey, groupToCache);
+                                    return Boolean.TRUE;
+                                }
+                            });
+                        } else {
+                            cache.put(trueGroupKey, group);
+                        }
+                    }
+                    return group;
                 }
             });
 
@@ -845,5 +869,39 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         } catch (JahiaInitializationException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public void onApplicationEvent(ProviderEvent event) {
+        // provider either registered or unregistered
+        chainedClassLoader = null;
+        chainedClassLoaderInitialized = false;
+    }
+    
+    private ClassLoader getChainedClassloader() {
+        if (chainedClassLoader != null || chainedClassLoaderInitialized) {
+            return chainedClassLoader;
+        }
+
+        List<? extends JahiaUserManagerProvider> userProviders = JahiaUserManagerRoutingService.getInstance()
+                .getProviderList();
+        List<? extends JahiaGroupManagerProvider> groupProviders = JahiaGroupManagerRoutingService.getInstance()
+                .getProviderList();
+
+        if (userProviders.size() > 1 || groupProviders.size() > 1) {
+            Set<ClassLoader> loaders = new LinkedHashSet<ClassLoader>();
+            for (JahiaUserManagerProvider p : userProviders) {
+                loaders.add(p.getClass().getClassLoader());
+            }
+            for (JahiaGroupManagerProvider p : groupProviders) {
+                loaders.add(p.getClass().getClassLoader());
+            }
+
+            chainedClassLoader = ClassLoaderUtils.getChainedClassLoader(loaders.toArray(new ClassLoader[] {}));
+        }
+
+        chainedClassLoaderInitialized = true;
+
+        return chainedClassLoader;
     }
 }

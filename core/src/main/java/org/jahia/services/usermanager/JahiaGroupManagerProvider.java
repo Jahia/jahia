@@ -245,7 +245,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     public abstract JahiaGroup getUsersGroup (int siteID);
 
     /**
-     * This function checks on a gived site if the groupname has already been
+     * This function checks on a given site if the groupname has already been
      * assigned to another group.
      *
      * @param int       siteID the site id

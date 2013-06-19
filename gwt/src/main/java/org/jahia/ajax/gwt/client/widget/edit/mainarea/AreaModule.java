@@ -40,23 +40,8 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.DropTarget;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Header;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
+import java.util.Arrays;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -68,9 +53,22 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import com.google.gwt.user.client.Element;
 
-import java.util.Arrays;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * The module that displays areas in edit mode.
@@ -87,6 +85,8 @@ public class AreaModule extends SimpleModule {
     private boolean missingList;
     private String conflictsWith = null;
 
+    private int MIN_WIDTH = 150;
+    
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
         hasDragDrop = false;
@@ -183,17 +183,26 @@ public class AreaModule extends SimpleModule {
     @Override public void onNodeTypesLoaded() {
         if (conflictsWith != null) {
             LayoutContainer p = new HorizontalPanel();
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith })));
+            
+            Text label = new Text(Messages.getWithArgs("label.areaConflicts", "Area conflicts with same name node {0}. Rename the area or the node", new String[] { conflictsWith }));
+            if (getWidth() > MIN_WIDTH) {
+                p.add(label);
+            } else {
+            	p.setTitle(label.getText());
             }
+            
             ctn.add(p);
             ctn.layout();
         } else if (missingList && editable) {
             AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("enableArea");
             LayoutContainer p = new HorizontalPanel();
             p.add(icon.createImage());
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.get("label.areaEnable", "Enable area")));
+            
+            Text label = new Text(Messages.get("label.areaEnable", "Enable area"));
+            if (getWidth() > MIN_WIDTH) {
+                p.add(label);
+            } else {
+            	p.setTitle(label.getText());
             }
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-placeholder");
@@ -212,8 +221,12 @@ public class AreaModule extends SimpleModule {
             AbstractImagePrototype icon =  ToolbarIconProvider.getInstance().getIcon("disableArea");
             LayoutContainer p = new HorizontalPanel();
             p.add(icon.createImage());
-            if (getWidth() > 150) {
-                p.add(new Text(Messages.get("label.areaDisable", "Disable area")));
+            
+            Text label = new Text(Messages.get("label.areaDisable", "Disable area"));
+            if (getWidth() > MIN_WIDTH) {
+                p.add(label);
+            } else {
+            	p.setTitle(label.getText());
             }
             p.sinkEvents(Event.ONCLICK);
             p.addStyleName("button-placeholder");
@@ -248,9 +261,14 @@ public class AreaModule extends SimpleModule {
                     icon = ContentModelIconProvider.getInstance().getIcon(nodeType);
                     p = new HorizontalPanel();
                     p.add(icon.createImage());
-                    if (getWidth() > 150) {
-                        p.add(new Text(nodeType != null ? nodeType.getLabel() : s));
+                    
+                    label = new Text(nodeType != null ? nodeType.getLabel() : s);
+                    if (getWidth() > MIN_WIDTH) {
+                        p.add(label);
+                    } else {
+                    	p.setTitle(label.getText());
                     }
+                    
                     p.sinkEvents(Event.ONCLICK);
                     p.addStyleName("button-placeholder");
                     p.addListener(Events.OnClick, new Listener<ComponentEvent>() {

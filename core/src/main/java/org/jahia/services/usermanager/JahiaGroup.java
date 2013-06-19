@@ -62,11 +62,8 @@
 
 package org.jahia.services.usermanager;
 
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.jcr.JCRUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.security.acl.Group;
@@ -94,8 +91,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
     private static final long serialVersionUID = 3192050315335252786L;
-
-    private static Logger logger = LoggerFactory.getLogger(JahiaGroup.class);
 
     /** Group unique identification name */
     protected String mGroupname;
@@ -258,7 +253,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
             return false;
         }
 
-        Boolean isMember = membership.get(JahiaUserManagerService.getKey(principal));
+        Boolean isMember = membership.isEmpty() ? membership.get(JahiaUserManagerService.getKey(principal)) : null;
         if (isMember != null) {
             return isMember;
         }
@@ -322,7 +317,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * Returns an Iterator of the members in the group. The returned objects
      * can be instances of either <code>Principal</code> or <code>Group</code>.
      * </br></br>
-     * Note that the <code>Group</code> is an instanciation of the
+     * Note that the <code>Group</code> is an instantiation of the
      * <code>Principal</code> class.
      *
      * @return An Iterator of the group members.

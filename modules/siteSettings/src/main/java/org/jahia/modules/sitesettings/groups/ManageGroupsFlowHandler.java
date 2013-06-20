@@ -354,6 +354,9 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the message context object
      */
     public void removeMembers(String groupKey, String[] members, MessageContext context) {
+        if (members == null) {
+            return;
+        }
         JahiaGroup group = lookupGroup(groupKey);
         logger.info("Removing members {} from group {}", members, group.getGroupKey());
         long timer = System.currentTimeMillis();

@@ -1089,6 +1089,7 @@
                                 <packageExclude>org.springframework.web.servlet.theme*</packageExclude>
                                 <packageExclude>org.springframework.web.servlet.view*</packageExclude>
                                 <packageExclude>org.springframework.web.util*</packageExclude>
+                                <packageExclude>org.osgi.service.cm</packageExclude>
                             </packageExcludes>
                         </configuration>
                         <phase>prepare-package</phase>

@@ -94,9 +94,9 @@
                    onchange="go('useNativeSort', '${!useNativeSort}')"/>&nbsp;<label for="cbNative">Use native sort</label><br/>
         </c:if>
         <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
-               onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label>
+               onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label><br/>
         <input id="cbUseJackrabbitSession" type="checkbox" ${useJackrabbitSession ? 'checked="checked"' : ''}
-               onchange="go('useJackrabbitSession', '${!useJackrabbitSession}')"/>&nbsp;<label for="cbUseJackrabbitSession">Use jackrabbit session</label>
+               onchange="go('useJackrabbitSession', '${!useJackrabbitSession}')"/>&nbsp;<label for="cbUseJackrabbitSession">Use Jackrabbit session</label>
     </fieldset>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>

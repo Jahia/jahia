@@ -600,7 +600,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
             CacheEntry<JCRGroup> cacheEntry = null;
             final ClassLoader loader = getChainedClassloader();
             if (loader != null) {
-                 ClassLoaderUtils.executeWith(loader, new Callback<CacheEntry<JCRGroup>>() {
+                cacheEntry = ClassLoaderUtils.executeWith(loader, new Callback<CacheEntry<JCRGroup>>() {
                     @Override
                     public CacheEntry<JCRGroup> execute() {
                         return cache.getCacheEntry(trueGroupKey);

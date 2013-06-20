@@ -43,6 +43,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -52,6 +53,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -66,7 +68,6 @@ import javax.jcr.query.QueryResult;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -156,9 +157,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             String nodePath = node.getPath();
             final Set<String> aclsKeys = new LinkedHashSet<String>();
 
-            final Set<String> aclPathChecked = new HashSet<String>();
-
-            aclsKeys.add(getAclKeyPartForNode(renderContext, nodePath, renderContext.getUser(), aclPathChecked));
+            aclsKeys.add(URLEncoder.encode(nodePath,"UTF-8"));
             final Set<String> dependencies = resource.getDependencies();
 
             for (final String dependency : dependencies) {
@@ -168,13 +167,15 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                             JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
-                                    aclsKeys.add(getAclKeyPartForNode(renderContext,
-                                            nodeByIdentifier.getPath(), renderContext.getUser(), aclPathChecked));
+                                    try {
+                                        aclsKeys.add(URLEncoder.encode(nodeByIdentifier.getPath(),"UTF-8"));
+                                    } catch (UnsupportedEncodingException e) {
+                                    }
                                     return null;
                                 }
                             });
                         } else {
-                            aclsKeys.add(getAclKeyPartForNode(renderContext, dependency, renderContext.getUser(), aclPathChecked));
+                            aclsKeys.add(URLEncoder.encode(dependency, "UTF-8"));
                         }
                     } catch (ItemNotFoundException ex) {
                         logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
@@ -187,15 +188,12 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             }
 
             if ("true".equals(properties.get("cache.mainResource"))) {
-                aclsKeys.add(MR_ACL);
+                return MR_ACL;
             }
 
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String aclsKey : aclsKeys) {
-                stringBuilder.append(aclsKey);
-            }
-            return stringBuilder.toString();
+            return StringUtils.join(aclsKeys, ",");
 
+        } catch (UnsupportedEncodingException e) {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -207,24 +205,23 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         if (keyPart.equals(PER_USER)) {
             keyPart = renderContext.getUser().getUsername();
-        } else if (keyPart.contains(MR_ACL)) {
-            try {
-                HashSet<String> aclPathChecked = new HashSet<String>();
-                String[] p = keyPart.split("\\|");
-                for (String s : p) {
-                    if (s.contains(":")) {
-                        try {
-                            aclPathChecked.add(URLDecoder.decode(s.split(":")[1], "UTF-8"));
-                        } catch (UnsupportedEncodingException e) {
-                        }
+        } else {
+            String[] paths = keyPart.split(",");
+            keyPart = "";
+            for (String s : paths) {
+                try {
+                    if (s.equals(MR_ACL)) {
+                        s = renderContext.getMainResource().getNode().getPath();
+                    } else {
+                        s = URLDecoder.decode(s, "UTF-8");
                     }
+                    keyPart += getAclKeyPartForNode(renderContext, s, renderContext.getUser(), new HashSet<String>());
+                } catch (UnsupportedEncodingException e) {
+                } catch (RepositoryException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-                keyPart = keyPart.replace(MR_ACL, getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), aclPathChecked));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
             }
         }
-
 //        try {
 //            byte[] b = DigestUtils.getSha256Digest().digest(keyPart.getBytes("UTF-8"));
 //            StringWriter sw = new StringWriter();
@@ -242,23 +239,28 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                                           JahiaUser principal, Set<String> aclPathChecked)
             throws RepositoryException {
         List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
-        l.add(getUserAcl(principal));
+
+        l.add(getPrincipalAcl("u:"+principal.getName(),0));
 
         List<String> groups = groupManagerService.getUserMembership(principal);
 
         for (String group : groups) {
             JahiaGroup g = groupManagerService.lookupGroup(group);
-            l.add(getUserAcl(g));
+            l.add(getPrincipalAcl("g:" + g.getName(), g.getSiteID()));
         }
+
+        nodePath += "/";
 
         Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
         for (Map<String, Set<String>> map : l) {
             for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
-                if (nodePath.startsWith(entry.getKey()) && !aclPathChecked.contains(entry.getKey())) {
+                String grantPath = entry.getKey() + "/";
+                if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath)) && !aclPathChecked.contains(entry.getKey())) {
+                    Set<String> roles = entry.getValue();
                     if (!rolesForKey.containsKey(entry.getKey())) {
-                        rolesForKey.put(entry.getKey(), new TreeSet<String>(entry.getValue()));
+                        rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
                     } else {
-                        rolesForKey.get(entry.getKey()).addAll(entry.getValue());
+                        rolesForKey.get(entry.getKey()).addAll(roles);
                     }
                 }
             }
@@ -268,21 +270,15 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         String r = "";
         for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
             try {
-                r += StringUtils.join(entry.getValue(),",") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
+                r += URLEncoder.encode(StringUtils.join(entry.getValue(),","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
             } catch (UnsupportedEncodingException e) {
             }
         }
         return r;
     }
 
-    private Map<String, Set<String>> getUserAcl(final Principal principal) throws RepositoryException {
-        final String key;
-        if (principal instanceof JahiaUser) {
-            key = "u:" + principal.getName();
-        } else {
-            key = "g:" + principal.getName();
-        }
-        Element element = cache.get(key);
+    private Map<String, Set<String>> getPrincipalAcl(final String key, final int siteId) throws RepositoryException {
+        Element element = cache.get(key + ":" + siteId);
         if (element == null) {
             Map<String, Set<String>> map = template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Map<String, Set<String>>>() {
                 @SuppressWarnings("unchecked")
@@ -293,34 +289,52 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     QueryResult queryResult = query.execute();
                     NodeIterator rowIterator = queryResult.getNodes();
 
-                    Map<String, Set<String>> map1 = new LinkedHashMap<String, Set<String>>();
+                    Map<String, Set<String>> mapGranted = new LinkedHashMap<String, Set<String>>();
+                    Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
 
                     while (rowIterator.hasNext()) {
-                        Node node = (Node) rowIterator.next();
+                        JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
+                        if (key.startsWith("g:") && siteId != node.getResolveSite().getID() && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteId != 0)) {
+                            continue;
+                        }
                         String path = node.getParent().getParent().getPath();
-                        StringBuilder b = new StringBuilder();
+                        if (path.startsWith("/sites/")) {
+
+                        }
                         Set<String> foundRoles = new HashSet<String>();
                         boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
-                        if (granted) {
-                            Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
-                            for (Value r : roles) {
-                                String role = r.getString();
-                                if (!foundRoles.contains(role)) {
-                                    if (b.length() > 0) {
-                                        b.append("|");
-                                    }
-                                    b.append(role);
-                                    foundRoles.add(role);
-                                }
+                        Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
+                        for (Value r : roles) {
+                            String role = r.getString();
+                            if (!foundRoles.contains(role)) {
+                                foundRoles.add(role);
                             }
-                            map1.put(path, foundRoles);
+                        }
+                        if (granted) {
+                            mapGranted.put(path, foundRoles);
+                        } else {
+                            mapDenied.put(path, foundRoles);
                         }
                     }
-                    return map1;
+                    for (String deniedPath : mapDenied.keySet()) {
+                        String grantedPath = deniedPath;
+                        while (grantedPath.length()>0) {
+                            grantedPath = StringUtils.substringBeforeLast(grantedPath,"/");
+                            if (mapGranted.containsKey(grantedPath)) {
+                                Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath),mapDenied.get(deniedPath));
+                                mapGranted.get(grantedPath).removeAll(intersection);
+                                for (String s : intersection) {
+                                    mapGranted.get(grantedPath).add(s + " -> " +deniedPath);
+                                }
+                            }
+                        }
+                    }
+
+                    return mapGranted;
                 }
             });
 
-            element = new Element(key, map);
+            element = new Element(key + ":" + siteId, map);
             element.setEternal(true);
             cache.put(element);
 
@@ -334,7 +348,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     public void flushUsersGroupsKey(boolean propageToOtherClusterNodes) {
         synchronized (objForSync) {
-//            aclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
             cache.removeAll(!propageToOtherClusterNodes);
             cache.flush();
         }

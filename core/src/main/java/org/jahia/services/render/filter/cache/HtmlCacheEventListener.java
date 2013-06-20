@@ -108,7 +108,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 String path = event.getPath();
                 boolean flushParent = false;
                 boolean flushChilds = false;
-                boolean flushRoles = false;
                 boolean flushForVanityUrl = false;
                 if (path.contains("j:view")) {
                     flushParent = true;
@@ -121,9 +120,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     if (path.endsWith("/j:published")) {
                         flushParent = true;
                     }
-                    if (path.endsWith("j:roles")) {
-                        flushRoles = true;
-                    }
                     path = path.substring(0, path.lastIndexOf("/"));
                 } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
                     flushParent = true;
@@ -131,7 +127,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 if (path.contains("vanityUrlMapping")) {
                     flushForVanityUrl=true;
                 }
-                if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
+                if (path.contains("j:acl") || type == Event.NODE_MOVED) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
                     AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
                     if (cacheKeyGenerator != null) {

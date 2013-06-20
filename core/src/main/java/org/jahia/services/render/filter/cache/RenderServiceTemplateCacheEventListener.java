@@ -81,7 +81,6 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
             try {
                 String path = event.getPath();
                 if (!path.startsWith("/jcr:system")) {
-                    boolean flushRoles = false;
                     final int type = event.getType();
                     if (renderService == null) {
                         renderService = (RenderService) SpringContextSingleton.getBean("RenderService");
@@ -93,11 +92,7 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
                         if (path.contains("j:templateName")) {
                             renderService.flushCache();
                         }
-                        if (path.endsWith("j:roles")) {
-                            flushRoles = true;
-                        }
-                        if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles ||
-                            type == Event.NODE_MOVED) {
+                        if (path.contains("j:acl") || type == Event.NODE_MOVED) {
                             // Flushing cache of acl key for users as a group or an acl has been updated
                             aclCacheKeyPartGenerator.flushUsersGroupsKey();
                         }

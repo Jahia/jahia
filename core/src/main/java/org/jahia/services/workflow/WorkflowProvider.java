@@ -91,7 +91,7 @@ public interface WorkflowProvider {
 
     void assignTask(String taskId, JahiaUser user);
 
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
+    void completeTask(String taskId, JahiaUser jahiaUser, String outcome, Map<String, Object> args);
 
     /**
      * Add a group as a potential participator in the task. The role will determine

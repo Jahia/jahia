@@ -128,7 +128,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
         if (module != null) {
             modulesForWorkflowDefinition.put(definition, module.getRootFolder());
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle("org.jahia.modules.custom.workflow."+definition, module);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle("org.jahia.modules.custom.workflow." + definition, module);
         }
 
         if (perms != null) {
@@ -619,8 +619,8 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         lookupProvider(provider).assignTask(taskId, user);
     }
 
-    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
-        lookupProvider(provider).completeTask(taskId, outcome, args);
+    public void completeTask(String taskId, JahiaUser user, String provider, String outcome, Map<String, Object> args) {
+        lookupProvider(provider).completeTask(taskId, user, outcome, args);
     }
 
     public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws RepositoryException, SchedulerException {
@@ -637,7 +637,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public void assignAndCompleteTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
         assignTask(taskId, provider, user);
-        completeTask(taskId, provider, outcome, args);
+        completeTask(taskId, user, provider, outcome, args);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {

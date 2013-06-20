@@ -389,26 +389,32 @@ public abstract class JahiaGroupManagerService extends JahiaService {
     public abstract void updateCache(JahiaGroup jahiaGroup);
     
     /**
-	 * Validates provided group name against a regular expression pattern,
-	 * specified in the Jahia configuration.
-	 * 
-	 * @param name
-	 *            the group name to be validated
-	 * @return <code>true</code> if the specified group name matches the
-	 *         validation pattern
-	 */
-	public abstract boolean isGroupNameSyntaxCorrect(String name);
+     * Validates provided group name against a regular expression pattern, specified in the Jahia configuration.
+     * 
+     * @param name
+     *            the group name to be validated
+     * @return <code>true</code> if the specified group name matches the validation pattern
+     */
+    public abstract boolean isGroupNameSyntaxCorrect(String name);
 
+    /**
+     * Adds the specified group provider to the registry.
+     * 
+     * @param jahiaGroupManagerProvider
+     *            an instance of the group provider to register
+     */
+    public abstract void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
 
-	/**
-	 * Adds the specified group provider to the registry.
-	 * 
-	 * @param jahiaGroupManagerProvider
-	 *            an instance of the group provider to register
-	 */
-	public abstract void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
-
+    /**
+     * Removes the specified group provider from the registry.
+     * 
+     * @param jahiaGroupManagerProvider
+     *            an instance of the group provider to unregister
+     */
     public abstract void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
 
+    /**
+     * Flushes group manager provider caches.
+     */
     public abstract void flushCache();
 }

@@ -894,19 +894,31 @@
     <bean id="Toolbar.Item.Crop" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem">
-                <property name="predefineSizes">
-                    <!-- each value is a String of format [width]x[height] -->
-                   <list>
-                       <value>100x100</value>
-                       <value>200x100</value>
-                       <value>250x150</value>
-                   </list>
-                </property>
+                <property name="predefinedSizes" ref="ImageCrop.predefinedSizes"/>
             </bean>
         </property>
         <property name="titleKey" value="label.crop"/>
         <property name="icon" value="crop"/>
     </bean>
+
+    <util:list id="ImageCrop.predefinedSizes">
+        <!-- each value is a String of format [width]x[height] -->
+        <value>120x90</value>
+        <value>160x120</value>
+        <value>200x150</value>
+        <value>320x240</value>
+        <value>400x300</value>
+        <value>640x480</value>
+        <value>1024x600</value>
+        <value>1024x768</value>
+        <value>1200x900</value>
+        <value>1280x800</value>
+        <value>1280x1024</value>
+        <value>1366x768</value>
+        <value>1440x900</value>
+        <value>1600x1200</value>
+        <value>1920x1080</value>
+    </util:list>
 
     <bean id="Toolbar.Item.Cut" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

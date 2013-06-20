@@ -45,6 +45,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ImageCrop;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ import java.util.List;
  */
 public class CropActionItem extends BaseActionItem {
 
-    private List<String> predefineSizes;
+    private List<Integer[]> predefinedSizes;
 
     public void onComponentSelection() {
         GWT.runAsync(new RunAsyncCallback()  {
@@ -64,7 +65,7 @@ public class CropActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                new ImageCrop(linker, linker.getSelectionContext().getSingleSelection(), predefineSizes).show();
+                new ImageCrop(linker, linker.getSelectionContext().getSingleSelection(), predefinedSizes).show();
             }
         });
     }
@@ -75,11 +76,28 @@ public class CropActionItem extends BaseActionItem {
     }
 
     /**
-     * defines the list of predefined size
-     * each value is a String of format [width]x[height]
-     * @param predefineSizes list of predefined sizes
+     * Defines the list of predefined image sizes. 
+     * Each value is a String of format [width]x[height]
+     * @param predefinedSizes list of predefined sizes
      */
-    public void setPredefineSizes(List<String> predefineSizes) {
-        this.predefineSizes = predefineSizes;
+    public void setPredefinedSizes(List<String> predefinedSizes) {
+        if (predefinedSizes == null || predefinedSizes.isEmpty()) {
+            this.predefinedSizes = null;
+        } else {
+            this.predefinedSizes = new ArrayList<Integer[]>(predefinedSizes.size());
+            for (String size : predefinedSizes) {
+                if (size.indexOf('x') != -1) {
+                    String[] dimensions = size.split("x");
+                    if (dimensions.length == 2) {
+                        try {
+                            this.predefinedSizes.add(new Integer[] { Integer.parseInt(dimensions[0]),
+                                    Integer.parseInt(dimensions[1]) });
+                        } catch (NumberFormatException e) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+        }
     }
 }

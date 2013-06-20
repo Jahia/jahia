@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -59,22 +60,20 @@ import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Image;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Widget to crop image and save it
- * this uses Jcrop
- * Jcrop is used to perfom the crop
- * User: rfelden
- * Date: 21 oct. 2008 - 14:38:21
+ * Widget to crop image and save it by using the jQuery-based Jcrop library.
  */
 public class ImageCrop extends Window {
 
@@ -82,7 +81,19 @@ public class ImageCrop extends Window {
 
     private boolean autoName = true;
 
-    public ImageCrop(final Linker linker, final GWTJahiaNode n, List<String> predefineSizes) {
+    private TextField<String> newname;
+
+    private ComboBox<GWTJahiaValueDisplayBean> predefinedSizesBox;
+
+    private NumberField width;
+
+    private NumberField height;
+
+    private NumberField top;
+
+    private NumberField left;
+    
+    public ImageCrop(final Linker linker, final GWTJahiaNode n, List<Integer[]> predefinedSizes) {
         super();
         setLayout(new FitLayout());
         setSize(712, 550);
@@ -104,7 +115,7 @@ public class ImageCrop extends Window {
         lcName.setStyleAttribute("paddingRight", "10px");
         lcName.setLayout(new FormLayout(LabelAlign.LEFT));
 
-        final TextField<String> newname = new TextField<String>();
+        newname = new TextField<String>();
         newname.setName("newname");
         newname.setId("newname");
         newname.setFieldLabel(Messages.get("newName.label", "New name"));
@@ -131,26 +142,54 @@ public class ImageCrop extends Window {
         formLayout.setLabelWidth(40);
         lcWidth.setLayout(formLayout);
         form.add(lcName, new ColumnData(.6));
-        final SimpleComboBox<String> predefineSizesBox = new SimpleComboBox<String>();
-        predefineSizesBox.setForceSelection(true);
-        predefineSizesBox.setTriggerAction(ComboBox.TriggerAction.ALL);
-        predefineSizesBox.setDeferHeight(true);
 
 
-        final NumberField width = new NumberField();
-        final NumberField height = new NumberField();
+        width = new NumberField();
+        width.setPropertyEditorType(Integer.class);
+        height = new NumberField();
+        height.setPropertyEditorType(Integer.class);
+        
+        String imageWidthStr = n.get("j:width");
+        String imageHeightStr = n.get("j:height");
+        int imageWidth = 0;
+        int imageHeight = 0;
+        try {
+            imageWidth = imageWidthStr != null ? Integer.parseInt(imageWidthStr) : 0;
+            imageHeight = imageHeightStr != null ? Integer.parseInt(imageHeightStr) : 0;
+        } catch (NumberFormatException e) {
+            // ignore
+        }
 
-        if (predefineSizes != null && !predefineSizes.isEmpty()) {
-            predefineSizesBox.add(predefineSizes);
-            predefineSizesBox.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
-                @Override
-                public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
-                    String[] v = se.getSelectedItem().getValue().split("x");
-                    setDimensions(Integer.parseInt(v[0]), Integer.parseInt(v[1]));
+        if (predefinedSizes != null && !predefinedSizes.isEmpty()) {
+            List<GWTJahiaValueDisplayBean> sizes = new ArrayList<GWTJahiaValueDisplayBean>();
+            for (Integer[] d : predefinedSizes) {
+                if ((imageWidth == 0 || imageWidth > d[0]) && (imageHeight == 0 || imageHeight > d[1])) {
+                    String label = d[0] + " x " + d[1];
+                    GWTJahiaValueDisplayBean v = new GWTJahiaValueDisplayBean(label, label);
+                    v.set("width", d[0]);
+                    v.set("height", d[1]);
+                    sizes.add(v);
                 }
-            });
-            predefineSizesBox.setEmptyText(Messages.get("selectPredefinedSize.label","select a predefined size"));
-            main.add(predefineSizesBox, new ColumnData(.6));
+            }
+            if (!sizes.isEmpty()) {
+                predefinedSizesBox = new ComboBox<GWTJahiaValueDisplayBean>();
+                predefinedSizesBox.setDisplayField("display");
+                predefinedSizesBox.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+                predefinedSizesBox.setForceSelection(true);
+                predefinedSizesBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+                predefinedSizesBox.setDeferHeight(true);
+                predefinedSizesBox.getStore().add(sizes);
+                predefinedSizesBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                        GWTJahiaValueDisplayBean v = se.getSelectedItem();
+                        setDimensions((Integer) v.get("width"), (Integer) v.get("height"));
+                    }
+                });
+                predefinedSizesBox.setEmptyText(Messages.get("selectPredefinedSize.label","select a predefined size"));
+                main.add(predefinedSizesBox, new ColumnData(.6));
+            } else {
+            }
         }
 
         width.setFieldLabel(Messages.get("width.label", "Width"));
@@ -186,12 +225,14 @@ public class ImageCrop extends Window {
 
         form.add(image);
 
-        final NumberField top = new NumberField();
+        top = new NumberField();
+        top.setPropertyEditorType(Integer.class);
         top.setName("top");
         top.setId("top");
         top.setVisible(false);
         form.add(top);
-        final NumberField left = new NumberField();
+        left = new NumberField();
+        left.setPropertyEditorType(Integer.class);
         left.setName("left");
         left.setId("left");
         left.setVisible(false);
@@ -221,6 +262,9 @@ public class ImageCrop extends Window {
             public void handleEvent(ComponentEvent be) {
                 if (width.getValue() != null && height.getValue() != null) {
                     setDimensions(width.getValue().intValue(), height.getValue().intValue());
+                    if (predefinedSizesBox != null) {
+                        predefinedSizesBox.clearSelections();
+                    }
                 }
             }
         };
@@ -232,6 +276,27 @@ public class ImageCrop extends Window {
         setModal(true);
         setHeaderVisible(true);
         setAutoHide(false);
+    }
+    
+    public void cropSelectionChanged(int x, int y, int w, int h) {
+        left.setValue(x);
+        top.setValue(y);
+        width.setRawValue(String.valueOf(w));
+        height.setRawValue(String.valueOf(h));
+
+        if (autoName) {
+            // change "new name" field automatically
+            String n = newname.getValue();
+            int dp = n.lastIndexOf('.');
+            newname.setValue(n.substring(0, n.lastIndexOf("-crop")) + "-crop" + w + "x" + h
+                    + (dp != -1 ? n.substring(dp, n.length()) : ""));
+        }
+        
+        GWTJahiaValueDisplayBean v = predefinedSizesBox != null ? predefinedSizesBox.getValue() : null;
+        if (v != null && (w != ((Integer) v.get("width")) || h != ((Integer) v.get("height")))) {
+            // if the selection is changed -> clear predefined size box selection
+            predefinedSizesBox.clearSelections();
+        }
     }
 
     private native void setDimensions(int w, int h) /*-{
@@ -248,13 +313,7 @@ public class ImageCrop extends Window {
             boxWidth: 700,
             boxHeight: 400,
             onChange: function(c) {
-                $wnd.jQuery('#left-input').val(c.x); $wnd.jQuery('#top-input').val(c.y); $wnd.jQuery('#width-input').val(c.w); $wnd.jQuery('#height-input').val(c.h);
-                if (thisic.@org.jahia.ajax.gwt.client.widget.content.ImageCrop::autoName) {
-                    var n=$wnd.jQuery('#newname-input').val();
-                    var dp=n.lastIndexOf('.');
-                    var nv=n.substring(0, n.lastIndexOf('-crop')) + '-crop' + c.w + 'x' + c.h + (dp != -1 ? n.substring(dp, n.length) : '');
-                    $wnd.jQuery('#newname-input').val(nv);
-                }
+                thisic.@org.jahia.ajax.gwt.client.widget.content.ImageCrop::cropSelectionChanged(IIII)(Math.round(c.x), Math.round(c.y), Math.round(c.w), Math.round(c.h));
             }
         });
     }-*/;

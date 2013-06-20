@@ -68,7 +68,7 @@ function removeMultipleGroupMembers() {
 		alert('${functions:escapeJavaScript(i18nRemoveMultipleNothingSelected)}');
 		return false;
 	}
-	if (confirm('${functions:escapeJavaScript(i18nRemoveMultipleConfirm)} ${functions:escapeJavaScript(i18nContinue)}')) {
+	if (confirm('${functions:escapeJavaScript(i18nRemoveMultipleConfirm)}' + ' ' + '${functions:escapeJavaScript(i18nContinue)}')) {
 		workInProgress();
 		return true;
 	}
@@ -249,7 +249,7 @@ $(document).ready(function() {
                                         <fmt:param value="${fn:escapeXml(member.name)}"/>
                                     </fmt:message>
                                     <button style="margin-bottom:0;" class="btn btn-danger btn-small" type="submit" name="_eventId_removeMembers"
-                                        onclick="return removeGroupMember('${functions:escapeJavaScript(i18RemoveConfirm)} ${functions:escapeJavaScript(i18nContinue)}', '${principalKey}')">
+                                        onclick="return removeGroupMember('${functions:escapeJavaScript(i18RemoveConfirm)}' + ' ' + '${functions:escapeJavaScript(i18nContinue)}', '${principalKey}')">
                                         <i class="icon-remove icon-white"></i>
                                     </button>
                                 </td>

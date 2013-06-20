@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.JahiaService;
 import org.jahia.services.sites.JahiaSite;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -61,8 +62,8 @@ import org.springframework.beans.factory.InitializingBean;
  * @version 1.0
  */
 
-public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean {
-// 
+public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean, DisposableBean {
+
     private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerProvider.class);
 
     private static Pattern groupNamePattern;
@@ -144,6 +145,13 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     public void afterPropertiesSet() throws Exception {
         if (groupManagerService != null) {
             groupManagerService.registerProvider(this);
+        }
+    }
+    
+    @Override
+    public void destroy() {
+        if (groupManagerService != null) {
+            groupManagerService.unregisterProvider(this);
         }
     }
 
@@ -310,7 +318,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
         this.groupManagerService = groupManagerService;
     }
 
-    public void flushCache(){
-
+    public void flushCache() {
+        // do nothing
     };
 }

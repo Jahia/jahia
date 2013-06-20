@@ -48,6 +48,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.JahiaService;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 
@@ -59,10 +60,9 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Fulco Houkes
  * @version 2.0
  */
-public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean {
+public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean, DisposableBean {
 
-    private static Logger logger = LoggerFactory
-            .getLogger(JahiaUserManagerProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaUserManagerProvider.class);
 
     private static Pattern userNamePattern;
 
@@ -121,9 +121,17 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
         this.readOnly = readOnly;
     }
 
+    @Override
     public void afterPropertiesSet() {
         if (userManagerService != null) {
             userManagerService.registerProvider(this);
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (userManagerService != null) {
+            userManagerService.unregisterProvider(this);
         }
     }
 

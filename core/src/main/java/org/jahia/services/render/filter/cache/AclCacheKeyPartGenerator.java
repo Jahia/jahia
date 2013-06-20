@@ -63,6 +63,9 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -206,7 +209,17 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             keyPart = renderContext.getUser().getUsername();
         } else if (keyPart.contains(MR_ACL)) {
             try {
-                keyPart = keyPart.replace(MR_ACL, getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), new HashSet<String>()));
+                HashSet<String> aclPathChecked = new HashSet<String>();
+                String[] p = keyPart.split("\\|");
+                for (String s : p) {
+                    if (s.contains(":")) {
+                        try {
+                            aclPathChecked.add(URLDecoder.decode(s.split(":")[1], "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                        }
+                    }
+                }
+                keyPart = keyPart.replace(MR_ACL, getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), aclPathChecked));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -254,7 +267,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         aclPathChecked.addAll(rolesForKey.keySet());
         String r = "";
         for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
-            r += StringUtils.join(entry.getValue(),",") + entry.getKey() + "|";
+            try {
+                r += StringUtils.join(entry.getValue(),",") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
+            } catch (UnsupportedEncodingException e) {
+            }
         }
         return r;
     }

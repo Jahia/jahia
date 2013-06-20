@@ -634,7 +634,17 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                             groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                         }
                     } catch (PathNotFoundException e) {
-                        cache.put(trueGroupKey, null);
+                        if (loader != null) {
+                            ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
+                                @Override
+                                public Boolean execute() {
+                                    cache.put(trueGroupKey, null);
+                                    return Boolean.TRUE;
+                                }
+                            });
+                        } else {
+                            cache.put(trueGroupKey, null);
+                        }
                         return null;
                     }
                     JCRGroup group = null;
@@ -810,9 +820,21 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      *
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
-    public void updateCache(JahiaGroup jahiaGroup) {
+    public void updateCache(final JahiaGroup jahiaGroup) {
         try {
-            getCache().remove(jahiaGroup.getGroupKey());
+            final Cache<String, JCRGroup> cache = getCache();
+            final ClassLoader loader = getChainedClassloader();
+            if (loader != null) {
+                 ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
+                    @Override
+                    public Boolean execute() {
+                        cache.remove(jahiaGroup.getGroupKey());
+                        return Boolean.TRUE;
+                    }
+                 });
+            } else {
+                cache.remove(jahiaGroup.getGroupKey());
+            }
         } catch (JahiaInitializationException e) {
             logger.error(e.getMessage(), e);
         }

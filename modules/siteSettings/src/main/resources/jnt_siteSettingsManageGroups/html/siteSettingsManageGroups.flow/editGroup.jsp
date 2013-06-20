@@ -19,6 +19,8 @@
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="searchCriteria" type="org.jahia.modules.sitesettings.groups.SearchCriteria"--%>
 
+<c:set var="memberDisplayLimit" value="${functions:default(fn:escapeXml(param.displayLimit), siteSettingsProperties.memberDisplayLimit)}"/>
+
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources>
@@ -101,7 +103,8 @@ $(document).ready(function() {
 
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
 <c:set var="members" value="${group.members}"/>
-<c:set var="membersFound" value="${fn:length(members) > 0}"/>
+<c:set var="memberCount" value="${fn:length(members)}"/>
+<c:set var="membersFound" value="${memberCount > 0}"/>
 
 <form action="${flowExecutionUrl}" method="post" style="display: inline;">
 <div>
@@ -169,8 +172,24 @@ $(document).ready(function() {
             </button>
         </div>
     </c:if>
+        <h2><fmt:message key="members.label"/> (${memberCount})</h2>
+        <c:if test="${memberCount > memberDisplayLimit}">
+            <div class="alert alert-success">
+                <fmt:message key="siteSettings.groups.members.found">
+                    <fmt:param value="${memberCount}"/>
+                    <fmt:param value="${memberDisplayLimit}"/>
+                </fmt:message>
+                <input type="hidden" id="memberFormDisplayLimit" name="displayLimit" value="<%= Integer.MAX_VALUE %>" />
+                <button class="btn" type="submit" name="refresh">
+                    <i class="icon-search"></i>
+                    &nbsp;<fmt:message key="siteSettings.groups.members.showAll"/>
+                </button>
+                <c:if test="${memberCount > 100}">
+                 - <fmt:message key="siteSettings.groups.members.showAll.notice"/>
+                </c:if>
+            </div>
+        </c:if>
         
-        <h2><fmt:message key="members.label"/></h2>
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
@@ -198,7 +217,7 @@ $(document).ready(function() {
                     </c:when>
                     <c:otherwise>
                         <fmt:message var="i18nRemove" key="label.remove"/><c:set var="i18nRemove" value="${fn:escapeXml(i18nRemove)}"/>
-                        <c:forEach items="${members}" var="member" varStatus="loopStatus">
+                        <c:forEach items="${members}" var="member" end="${memberDisplayLimit - 1}" varStatus="loopStatus">
                             <c:set var="principalType" value="${user:principalType(member)}"/>
                             <c:set var="principalIcon" value="${principalType == 'u' ? 'usersmall' : 'group-icon'}"/>
                             <c:set var="principalKey" value="${principalType}:${principalType == 'u' ? member.userKey : member.groupKey}"/>

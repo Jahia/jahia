@@ -19,6 +19,8 @@
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="searchCriteria" type="org.jahia.modules.sitesettings.groups.SearchCriteria"--%>
 
+<c:set var="groupDisplayLimit" value="${siteSettingsProperties.groupDisplayLimit}"/>
+
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -109,7 +111,18 @@ function submitGroupForm(act, group) {
     </p>
 
     <div>
-        <c:set var="groupsFound" value="${fn:length(groups) > 0}"/>
+        <c:set var="groupCount" value="${fn:length(groups)}"/>
+        <c:set var="groupsFound" value="${groupCount > 0}"/>
+        
+        <c:if test="${groupCount > groupDisplayLimit}">
+            <div class="alert alert-success">
+                <fmt:message key="siteSettings.groups.found">
+                    <fmt:param value="${groupCount}"/>
+                    <fmt:param value="${groupDisplayLimit}"/>
+                </fmt:message>
+            </div>
+        </c:if>
+        
         <c:if test="${groupsFound}">
             <form action="${flowExecutionUrl}" method="post" style="display: inline;" id="groupForm">
                 <input type="hidden" name="selectedGroup" id="groupFormSelected"/>
@@ -142,7 +155,7 @@ function submitGroupForm(act, group) {
                     <fmt:message var="i18nRemoveNote" key="siteSettings.groups.remove.confirm"/>
                     <fmt:message var="i18nContinue" key="label.confirmContinue"/>
                     <c:set var="i18nRemoveConfirm" value="${functions:escapeJavaScript(i18nRemoveNote)} ${functions:escapeJavaScript(i18nContinue)}"/>
-                    <c:forEach items="${groups}" var="grp" varStatus="loopStatus">
+                    <c:forEach items="${groups}" var="grp" end="${groupDisplayLimit - 1}" varStatus="loopStatus">
                         <tr>
                             <td>${loopStatus.count}</td>
                             <td>

@@ -9,6 +9,7 @@
 
     <on-start>
         <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.searchCriteria"/>
+        <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
     </on-start>
 
     <view-state id="manageGroups" model="searchCriteria">
@@ -58,6 +59,7 @@
         <transition on="removeMembers" to="editGroup" validate="false">
             <evaluate expression="flowHandler.removeMembers(flowScope.groupKey, requestParameters.selectedMembers, messageContext)"/>
         </transition>
+        <transition on="refresh" to="editGroup" validate="false"/>
         <transition on="cancel" to="manageGroups" bind="false" validate="false"/>
     </view-state>
 </flow>

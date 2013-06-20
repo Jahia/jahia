@@ -408,5 +408,7 @@ public abstract class JahiaGroupManagerService extends JahiaService {
 	 */
 	public abstract void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
 
+    public abstract void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
+
     public abstract void flushCache();
 }

@@ -72,7 +72,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
     private int priority = 99;
     private String key;
     
-    private JahiaUserManagerService userManagerService;
+    protected JahiaUserManagerService userManagerService;
 
 // -------------------------- STATIC METHODS --------------------------
 

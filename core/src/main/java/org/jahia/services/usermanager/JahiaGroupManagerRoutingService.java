@@ -533,6 +533,23 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     }
 
     @Override
+    public void unregisterProvider(JahiaGroupManagerProvider provider) {
+        providersTable.remove(provider.getKey());
+        sortedProviders.remove(provider);
+        if (provider.isDefaultProvider() && defaultProviderInstance == provider) {
+            for (JahiaGroupManagerProvider p : sortedProviders) {
+                if (p.isDefaultProvider()) {
+                    defaultProviderInstance = p;
+                    break;
+                }
+            }
+            if (defaultProviderInstance == null && !sortedProviders.isEmpty()) {
+                defaultProviderInstance = sortedProviders.iterator().next();
+            }
+        }
+    }
+
+    @Override
     public void flushCache() {
         if (isSingleProvider()) {
             defaultProviderInstance.flushCache();

@@ -299,6 +299,8 @@ public abstract class JahiaUserManagerService extends JahiaService {
      */
     public abstract void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
 
+    public abstract void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
+
     public void setUserSplittingRule(JahiaUserSplittingRule userSplittingRule) {
         this.userSplittingRule = userSplittingRule;
     }

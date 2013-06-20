@@ -73,7 +73,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     private boolean readOnly = false;
     private int priority = 99;
     private String key;
-    private JahiaGroupManagerService groupManagerService;
+    protected JahiaGroupManagerService groupManagerService;
 
     protected static Pattern getGroupNamePattern() {
 		if (groupNamePattern == null) {

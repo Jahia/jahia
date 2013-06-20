@@ -384,6 +384,23 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
         }
     }
 
+    @Override
+    public void unregisterProvider(JahiaUserManagerProvider provider) {
+        providersTable.remove(provider.getKey());
+        sortedProviders.remove(provider);
+        if (provider.isDefaultProvider() && defaultProviderInstance == provider) {
+            for (JahiaUserManagerProvider p : sortedProviders) {
+                if (p.isDefaultProvider()) {
+                    defaultProviderInstance = p;
+                    break;
+                }
+            }
+            if (defaultProviderInstance == null && !sortedProviders.isEmpty()) {
+                defaultProviderInstance = sortedProviders.iterator().next();
+            }
+        }
+    }
+
     public void setDefaultProvider(JahiaUserManagerProvider defaultProvider) {
     	defaultProvider.setDefaultProvider(true);
     	defaultProvider.setUserManagerService(this);

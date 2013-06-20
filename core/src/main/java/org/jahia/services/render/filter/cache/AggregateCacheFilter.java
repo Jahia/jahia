@@ -963,7 +963,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
                     TimeUnit.MILLISECONDS)) {
                 manageThreadDump();
-                throw new Exception("Module generation takes too long due to maximum parallel processings reached (" +
+                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" +
                         generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key + " - " +
                         request.getRequestURI());
             } else {

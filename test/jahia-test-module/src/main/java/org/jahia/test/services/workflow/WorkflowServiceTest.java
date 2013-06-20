@@ -55,8 +55,8 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.jahia.test.TestHelper;
-import org.jbpm.api.JbpmException;
 import org.junit.*;
 import org.slf4j.Logger;
 
@@ -97,8 +97,8 @@ public class WorkflowServiceTest {
         JCRSessionFactory.getInstance().getCurrentUserSession().save();
         service = WorkflowService.getInstance();
         publicationService = JCRPublicationService.getInstance();
-        JBPMProvider jBPMProvider = (JBPMProvider) SpringContextSingleton.getBean("jBPMProvider");
-        jBPMProvider.registerListeners();
+        JBPM6WorkflowProvider jBPMProvider = (JBPM6WorkflowProvider) SpringContextSingleton.getBean("jBPMProvider");
+        // jBPMProvider.registerListeners();
     }
 
     @AfterClass
@@ -359,11 +359,7 @@ public class WorkflowServiceTest {
     @After
     public void tearDown() throws Exception {
         if (processId != null) {
-            try {
-                service.deleteProcess(processId, PROVIDER);
-            } catch (JbpmException e) {
-                // ignore it
-            }
+            service.deleteProcess(processId, PROVIDER);
         }
         JCRSessionFactory.getInstance().closeAllSessions();
     }

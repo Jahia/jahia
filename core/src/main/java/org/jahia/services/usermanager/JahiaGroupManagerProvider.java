@@ -62,54 +62,48 @@ import org.springframework.beans.factory.InitializingBean;
  */
 
 public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean {
-// ------------------------------ FIELDS ------------------------------
+// 
+    private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerProvider.class);
 
-    private static Logger logger = LoggerFactory
-	        .getLogger(JahiaGroupManagerProvider.class);
+    private static Pattern groupNamePattern;
 
-	private static Pattern groupNamePattern;
-
-	private boolean defaultProvider = false;
+    private boolean defaultProvider = false;
     private boolean readOnly = false;
     private int priority = 99;
     private String key;
     protected JahiaGroupManagerService groupManagerService;
 
     protected static Pattern getGroupNamePattern() {
-		if (groupNamePattern == null) {
-			synchronized (JahiaUserManagerProvider.class) {
-				if (groupNamePattern == null) {
-					groupNamePattern = Pattern.compile(org.jahia.settings.SettingsBean.getInstance()
-					        .lookupString("userManagementGroupNamePattern"));
-				}
-			}
-		}
-		return groupNamePattern;
-	}
+        if (groupNamePattern == null) {
+            synchronized (JahiaUserManagerProvider.class) {
+                if (groupNamePattern == null) {
+                    groupNamePattern = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString(
+                            "userManagementGroupNamePattern"));
+                }
+            }
+        }
+        return groupNamePattern;
+    }
 
     /**
-	 * Validates provided group name against a regular expression pattern,
-	 * specified in the Jahia configuration.
-	 * 
-	 * @param name
-	 *            the group name to be validated
-	 * @return <code>true</code> if the specified group name matches the
-	 *         validation pattern
-	 */
-	public boolean isGroupNameSyntaxCorrect(String name) {
-		if (name == null || name.length() == 0) {
-			return false;
-		}
+     * Validates provided group name against a regular expression pattern, specified in the Jahia configuration.
+     * 
+     * @param name
+     *            the group name to be validated
+     * @return <code>true</code> if the specified group name matches the validation pattern
+     */
+    public boolean isGroupNameSyntaxCorrect(String name) {
+        if (name == null || name.length() == 0) {
+            return false;
+        }
 
-		boolean nameValid = getGroupNamePattern().matcher(name).matches();
-		if (!nameValid && logger.isDebugEnabled()) {
-			logger.debug("Validation failed for the group name: " + name
-			        + " against pattern: " + getGroupNamePattern().pattern());
-		}
-		return nameValid;
-	}
-
-// --------------------- GETTER / SETTER METHODS ---------------------
+        boolean nameValid = getGroupNamePattern().matcher(name).matches();
+        if (!nameValid && logger.isDebugEnabled()) {
+            logger.debug("Validation failed for the group name: " + name + " against pattern: "
+                    + getGroupNamePattern().pattern());
+        }
+        return nameValid;
+    }
 
     public String getKey() {
         return key;
@@ -147,15 +141,12 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
         this.readOnly = readOnly;
     }
 
-// -------------------------- OTHER METHODS --------------------------
-
     public void afterPropertiesSet() throws Exception {
-    	if (groupManagerService != null) {
-    		groupManagerService.registerProvider(this);
-    	}
+        if (groupManagerService != null) {
+            groupManagerService.registerProvider(this);
+        }
     }
 
-//-------------------------------------------------------------------------
     /**
      * Create a new group in the system.
      *
@@ -268,7 +259,6 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
      */
     public abstract JahiaGroup lookupGroup (String groupKey);
 
-    //-------------------------------------------------------------------------
     /**
      * Lookup the group information from the underlying system (DB, LDAP, ... )
      * Try to lookup the group into the cache, if it's not in the cache, then
@@ -302,22 +292,22 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
      */
     public abstract void updateCache(JahiaGroup jahiaGroup);
 
-	/**
-	 * Returns an instance of the group manager.
-	 * 
-	 * @return an instance of the group manager
-	 */
-	protected JahiaGroupManagerService getGroupManagerService() {
-    	return groupManagerService;
+    /**
+     * Returns an instance of the group manager.
+     * 
+     * @return an instance of the group manager
+     */
+    protected JahiaGroupManagerService getGroupManagerService() {
+        return groupManagerService;
     }
 
-	/**
-	 * Injects the group management service instance.
-	 * 
-	 * @param groupManagerService an instance of the group management service
-	 */
-	public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-    	this.groupManagerService = groupManagerService;
+    /**
+     * Injects the group management service instance.
+     * 
+     * @param groupManagerService an instance of the group management service
+     */
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
     }
 
     public void flushCache(){

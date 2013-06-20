@@ -971,17 +971,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 semaphoreAcquired = true;
             }
         }
-        synchronized (generatingModules) {
-            if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
+        if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
+            synchronized (generatingModules) {
                 latch = generatingModules.get(key);
                 if (latch == null) {
                     latch = new CountDownLatch(1);
                     generatingModules.put(key, latch);
                     mustWait = false;
                 }
-            } else {
-                mustWait = false;
             }
+        } else {
+            mustWait = false;
         }
         if (mustWait) {
             if (semaphoreAcquired) {

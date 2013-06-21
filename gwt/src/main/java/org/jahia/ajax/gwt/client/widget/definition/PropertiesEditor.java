@@ -569,11 +569,21 @@ public class PropertiesEditor extends FormPanel {
                             new GWTJahiaNodePropertyValue(node, propDef.getRequiredType());
                     values.add(propertyValue);
                 }
+<<<<<<< .working
             } else if (fld instanceof MultipleTextField) {
                 List l = (List) fld.getValue();
                 for (Object s : l) {
                     values.add(getPropertyValue(s, propDef.getRequiredType()));
                 }
+            } else {
+                values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+=======
+            } else if (fld instanceof MultipleTextField) {
+                List l = (List) fld.getValue();
+                for (Object s : l) {
+                    values.add(getPropertyValue(s, propDef.getRequiredType()));
+                }
+>>>>>>> .merge-right.r46455
             } else {
                 values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
             }

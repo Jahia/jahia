@@ -57,6 +57,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import javax.jcr.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -265,9 +267,13 @@ public class DocumentViewExporter {
                             StringBuffer b = new StringBuffer();
                             for (int i = 0; i < values.size(); i++) {
                                 String v = values.get(i);
-                                b.append(v);
+                                try {
+                                b.append(StringUtils.replaceEach(v,new String[]{" ","+"},new String[]{URLEncoder.encode(" ","UTF-8"),URLEncoder.encode("+","UTF-8")}));
                                 if (i + 1 < values.size()) {
                                     b.append(" ");
+                                }
+                                } catch (UnsupportedEncodingException e) {
+                                    logger.warn("cannot encode multiple property " + v + " while importing",e);
                                 }
                             }
                             value = b.toString();

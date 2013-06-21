@@ -174,7 +174,7 @@ $(document).ready(function() {
     </c:if>
         <h2><fmt:message key="members.label"/> (${memberCount})</h2>
         <c:if test="${memberCount > memberDisplayLimit}">
-            <div class="alert alert-success">
+            <div class="alert alert-info">
                 <fmt:message key="siteSettings.groups.members.found">
                     <fmt:param value="${memberCount}"/>
                     <fmt:param value="${memberDisplayLimit}"/>

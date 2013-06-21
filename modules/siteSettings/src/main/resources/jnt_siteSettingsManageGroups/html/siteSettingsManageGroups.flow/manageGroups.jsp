@@ -114,7 +114,7 @@ function submitGroupForm(act, group) {
         <c:set var="groupsFound" value="${groupCount > 0}"/>
         
         <c:if test="${groupCount > groupDisplayLimit}">
-            <div class="alert alert-success">
+            <div class="alert alert-info">
                 <fmt:message key="siteSettings.groups.found">
                     <fmt:param value="${groupCount}"/>
                     <fmt:param value="${groupDisplayLimit}"/>

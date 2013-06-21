@@ -21,6 +21,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Content;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
@@ -135,7 +136,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     @Override
     public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
         ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
-
+        kieSession.signalEvent();
     }
 
     @Override
@@ -240,11 +241,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public void deleteTask(String taskId, String reason) {
-        taskService ???
-    }
-
-    @Override
     public void addComment(String processId, String comment, String user) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -343,7 +339,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             workflowTask.setAssignee(
                     ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().toString()));
         }
-        workflowTask.setId(task.getId());
+        workflowTask.setId(Long.toString(task.getId()));
         workflowTask.setOutcome(taskService.getOutcomes(task.getId()));
         List<Participation> participationList = taskService.getTaskParticipations(task.getId());
         if (participationList.size() > 0) {
@@ -364,7 +360,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             workflowTask.setParticipations(participations);
         }
         // Get form resource name
-        workflowTask.setFormResourceName(task.getFormResourceName());
+        long contentId = task.getTaskData().getDocumentContentId();
+        Content taskContent = taskService.getContentById(contentId);
+        taskContent.
+                workflowTask.setFormResourceName(task.getFormResourceName());
 
         // Get Tasks variables
         Set<String> variableNames = taskService.getVariableNames(task.getId());

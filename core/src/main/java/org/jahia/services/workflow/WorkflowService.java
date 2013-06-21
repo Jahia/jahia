@@ -644,10 +644,6 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         lookupProvider(provider).addParticipatingGroup(taskId, group, role);
     }
 
-    public void deleteTask(String taskId, String provider, String reason) {
-        lookupProvider(provider).deleteTask(taskId, reason);
-    }
-
     public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow) throws RepositoryException {
         // store the rule
         JCRNodeWrapper rules = null;

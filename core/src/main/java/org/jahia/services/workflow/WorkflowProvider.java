@@ -103,8 +103,6 @@ public interface WorkflowProvider {
      */
     void addParticipatingGroup(String taskId, JahiaGroup group, String role);
 
-    void deleteTask(String taskId, String reason);
-
     void addComment(String processId, String comment, String user);
 
     WorkflowTask getWorkflowTask(String taskId, Locale locale);

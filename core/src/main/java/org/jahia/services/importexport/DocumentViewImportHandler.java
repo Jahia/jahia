@@ -42,33 +42,27 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.View;
-import org.jahia.settings.SettingsBean;
-import org.mvel.TemplateRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -76,8 +70,8 @@ import org.xml.sax.SAXException;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -636,7 +630,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
                         Value[] v = new Value[s.length];
                         for (int j = 0; j < s.length; j++) {
-                            v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
+                            try {
+                                v[j] = child.getRealNode().getSession().getValueFactory().createValue(StringUtils.replaceEach(s[j], new String[]{URLEncoder.encode(" ","UTF-8"),URLEncoder.encode("+","UTF-8")},new String[]{" ","+"}));
+                            } catch (UnsupportedEncodingException e) {
+                                logger.warn("cannot decode property value " + s[j] + " while importing",e);
+                            }
                         }
                         child.getRealNode().setProperty(attrName, v);
                     } else {

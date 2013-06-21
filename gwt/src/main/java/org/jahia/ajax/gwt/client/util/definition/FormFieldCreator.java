@@ -68,6 +68,7 @@ import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 import org.jahia.ajax.gwt.client.widget.content.ColorPickerField;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.CronField;
+import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
@@ -112,17 +113,26 @@ public class FormFieldCreator {
             String emptyText = "";
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
-                    switch (propDefinition.getRequiredType()) {
-                        case GWTJahiaNodePropertyType.LONG:
-                            field = new NumberField();
-                            ((NumberField) field).setAllowDecimals(false);
-                            ((NumberField) field).setPropertyEditorType(Long.class);
-                            break;
-                        case GWTJahiaNodePropertyType.DOUBLE:
-                            field = new NumberField();
-                            ((NumberField) field).setAllowDecimals(true);
-                            break;
-                        default:
+                    if (((GWTJahiaPropertyDefinition) definition).isMultiple()) {
+                        field = new MultipleTextField<String>();
+                    } else {
+                        switch (propDefinition.getRequiredType()) {
+                            case GWTJahiaNodePropertyType.LONG:
+                                field = new NumberField();
+                                ((NumberField) field).setAllowDecimals(false);
+                                ((NumberField) field).setPropertyEditorType(Long.class);
+                                break;
+                            case GWTJahiaNodePropertyType.DOUBLE:
+                                field = new NumberField();
+                                ((NumberField) field).setAllowDecimals(true);
+                                break;
+                            default:
+                                field = new TextField<String>();
+                                break;
+                        }
+                        if (definition.getSelectorOptions().get("password") != null) {
+                            ((TextField)field).setPassword(true);
+                        }
                             final TextField<String> f = new TextField<String>();
                             f.addListener(Events.Change, new Listener<ComponentEvent>() {
                                 public void handleEvent(ComponentEvent event) {
@@ -132,9 +142,6 @@ public class FormFieldCreator {
                             });
                             field = f;
                             break;
-                    }
-                    if (definition.getSelectorOptions().get("password") != null) {
-                        ((TextField)field).setPassword(true);
                     }
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:
@@ -512,6 +519,12 @@ public class FormFieldCreator {
                             List<GWTJahiaNode> v = new ArrayList<GWTJahiaNode>();
                             for (GWTJahiaNodePropertyValue value : values) {
                                 v.add(value.getNode());
+                            }
+                            field.setValue(v);
+                        } else if (propDefinition.isMultiple()) {
+                            List<String> v = new ArrayList<String>();
+                            for (GWTJahiaNodePropertyValue value : values) {
+                                v.add(value.getString());
                             }
                             field.setValue(v);
                         } else {

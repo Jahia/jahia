@@ -113,7 +113,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (ext.equalsIgnoreCase(".cnd")) {
             Reader defsReader = null;
             try {
-                defsReader =  new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                defsReader =  new InputStreamReader(new FileInputStream(file), "UTF_8");
 
                 JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
                 r.parse();
@@ -123,7 +123,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         } else if (ext.equalsIgnoreCase(".grp")) {
             Reader defsReader = null;
             try {
-                defsReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                defsReader = new InputStreamReader(new FileInputStream(file), "UTF_8");
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
                 r.parse();            
             } finally {

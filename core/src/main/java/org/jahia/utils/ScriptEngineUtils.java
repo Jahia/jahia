@@ -107,7 +107,7 @@ public class ScriptEngineUtils {
             if(System.getProperty("runtime.log.logsystem.log4j.logger")!=null)  {
             	velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", System.getProperty("runtime.log.logsystem.log4j.logger")); 
             } else {
-              velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", "velocity");
+              velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", "root");
             }
             engine.getContext().setAttribute("com.sun.script.velocity.properties", velocityProperties, ScriptContext.GLOBAL_SCOPE);
         }

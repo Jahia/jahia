@@ -50,7 +50,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.Messages;
 import org.springframework.binding.message.MessageBuilder;
@@ -178,7 +177,6 @@ public class UserProperties implements Serializable {
     private String email;
     private Boolean emailNotificationsDisabled = Boolean.FALSE;
     private String firstName;
-    private List<JahiaGroup> groups;
     private String lastName;
     private String localPath;
     private String organization;
@@ -186,8 +184,10 @@ public class UserProperties implements Serializable {
     private String passwordConfirm;
     private Locale preferredLanguage;
 
-    private String userKey;
+    private boolean readOnly;
 
+    private String userKey;
+    
     private String username;
 
     public UserProperties() {
@@ -217,10 +217,6 @@ public class UserProperties implements Serializable {
 
     public String getFirstName() {
         return firstName;
-    }
-
-    public List<JahiaGroup> getGroups() {
-        return groups;
     }
 
     public String getLastName() {
@@ -264,6 +260,10 @@ public class UserProperties implements Serializable {
         return properties;
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
     public void setAccountLocked(Boolean accountLocked) {
         this.accountLocked = accountLocked;
     }
@@ -282,10 +282,6 @@ public class UserProperties implements Serializable {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public void setGroups(List<JahiaGroup> groups) {
-        this.groups = groups;
     }
 
     public void setLastName(String lastName) {
@@ -310,6 +306,10 @@ public class UserProperties implements Serializable {
 
     public void setPreferredLanguage(Locale preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     public void setUserKey(String userKey) {

@@ -22,12 +22,17 @@
 <div>
     <h2><fmt:message key="label.remove"/>&nbsp;${userProperties.displayName}</h2>
     <div class="alert alert-info">
+        <c:if test="${!userProperties.readOnly}">
         <p><fmt:message key="serverSettings.user.definitivelyRemove"/><br/>
         <fmt:message key="serverSettings.user.definitivelyRemove.files"/></p>
         <a class="btn btn-primary" href="<c:url value='/cms/export/default${userProperties.localPath}.zip?cleanup=simple'/>" target="_blank">
             <i class="icon-upload icon-white"></i>
             <fmt:message key="label.export"/>
         </a>
+        </c:if>
+        <c:if test="${userProperties.readOnly}">
+            <p><fmt:message key="serverSettings.user.definitivelyRemove.readOnly"/></p>
+        </c:if>
     </div>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
             <c:if test="${message.severity eq 'ERROR'}">
@@ -96,7 +101,7 @@
                         <div class="span12">
                             <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
                             <select class="span4 fontfix" name="selectMember" size="6" multiple disabled="disabled">
-                                <c:forEach items="${userProperties.groups}" var="group">
+                                <c:forEach items="${userGroups}" var="group">
                                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
                                 </c:forEach>
                             </select>
@@ -108,13 +113,15 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-danger" type="submit" name="_eventId_confirm" onclick="workInProgress(); return true;">
-                                <i class="icon-remove icon-white"></i>
-                                &nbsp;<fmt:message key='label.remove.confirm'/>
-                            </button>
+                            <c:if test="${!userProperties.readOnly}">
+                                <button class="btn btn-danger" type="submit" name="_eventId_confirm" onclick="workInProgress(); return true;">
+                                    <i class="icon-remove icon-white"></i>
+                                    &nbsp;<fmt:message key="label.remove"/>
+                                </button>
+                            </c:if>
                             <button class="btn" type="submit" name="_eventId_cancel">
                                 <i class="icon-ban-circle"></i>
-                                &nbsp;<fmt:message key='label.cancel'/>
+                                &nbsp;<fmt:message key="label.cancel"/>
                             </button>
                         </div>
                     </div>

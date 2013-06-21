@@ -108,7 +108,7 @@
                         <div class="span12">
                             <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
                             <select class="span12 fontfix" name="selectMember" size="6" multiple>
-                                <c:forEach items="${userProperties.groups}" var="group">
+                                <c:forEach items="${userGroups}" var="group">
                                     <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
                                 </c:forEach>
                             </select>

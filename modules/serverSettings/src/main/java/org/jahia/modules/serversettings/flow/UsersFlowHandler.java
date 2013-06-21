@@ -74,7 +74,8 @@ public class UsersFlowHandler implements Serializable {
     private static final long serialVersionUID = -7240178997123886031L;
     
     public static UserProperties populateUser(String userKey, UserProperties propertiesToPopulate) {
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey);
+        JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        JahiaUser jahiaUser = service.lookupUserByKey(userKey);
         if (propertiesToPopulate == null) {
             propertiesToPopulate = new UserProperties();
         }
@@ -91,7 +92,9 @@ public class UsersFlowHandler implements Serializable {
         propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
                 LocaleContextHolder.getLocale()));
         propertiesToPopulate.setLocalPath(jahiaUser.getLocalPath());
-        propertiesToPopulate.setGroups(new LinkedList<JahiaGroup>(User.getUserMembership(jahiaUser.getUsername()).values()));
+        
+        propertiesToPopulate.setReadOnly(service.getProvider(jahiaUser.getProviderName()).isReadOnly());
+
         return propertiesToPopulate;
     }
     
@@ -211,13 +214,16 @@ public class UsersFlowHandler implements Serializable {
         return new UserProperties();
     }
     
-    public UserProperties populateUser(String[] selectedUsers) {
-        assert selectedUsers.length == 1;
-        return populateUser(selectedUsers[0], null);
+    public UserProperties populateUser(String selectedUser) {
+        return populateUser(selectedUser, null);
     }
 
-    public boolean removeUser(UserProperties userProperties, MessageContext context) {
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
+    public List<JahiaGroup> getUserMembership(String selectedUser) {
+        return new LinkedList<JahiaGroup>(User.getUserMembership(selectedUser).values());
+    }
+
+    public boolean removeUser(String userKey, MessageContext context) {
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
         if(userManagerService.deleteUser(jahiaUser)) {
             context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
                     "serverSettings.user.remove.successful", LocaleContextHolder.getLocale())).build());

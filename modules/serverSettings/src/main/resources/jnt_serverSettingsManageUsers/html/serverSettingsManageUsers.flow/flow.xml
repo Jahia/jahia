@@ -8,13 +8,12 @@
     <var name="flowHandler" class="org.jahia.modules.serversettings.flow.UsersFlowHandler"/>
 
     <on-start>
-        <evaluate expression="flowHandler.init()" result="flowScope.users"/>
         <evaluate expression="flowHandler.initCriteria()" result="flowScope.searchCriteria"/>
     </on-start>
 
     <view-state id="search" model="searchCriteria">
         <on-render>
-            <evaluate expression="flowHandler.search(searchCriteria)" result="flowScope.users"/>
+            <evaluate expression="flowHandler.search(searchCriteria)" result="requestScope.users"/>
             <evaluate expression="flowHandler.providersList" result="requestScope.providersList"/>
         </on-render>
         <transition on="search" to="search"/>
@@ -39,6 +38,9 @@
     </view-state>
 
     <view-state id="editUser" model="userProperties">
+        <on-render>
+            <evaluate expression="flowHandler.getUserMembership(userProperties.getUsername())" result="requestScope.userGroups"/>
+        </on-render>
         <transition on="update" to="search">
             <evaluate expression="flowHandler.updateUser(userProperties, messageContext)"/>
         </transition>
@@ -47,8 +49,11 @@
     </view-state>
 
     <view-state id="removeUser" model="userProperties">
+        <on-render>
+            <evaluate expression="flowHandler.getUserMembership(userProperties.getUsername())" result="requestScope.userGroups"/>
+        </on-render>
         <transition on="confirm" to="search">
-            <evaluate expression="flowHandler.removeUser(userProperties, messageContext)"/>
+            <evaluate expression="flowHandler.removeUser(userProperties.getUserKey(), messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>

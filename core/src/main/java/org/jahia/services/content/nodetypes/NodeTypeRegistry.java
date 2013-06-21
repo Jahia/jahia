@@ -188,10 +188,14 @@ public class NodeTypeRegistry implements NodeTypeManager {
 >>>>>>> .merge-right.r46462
             try {
 <<<<<<< .working
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream());
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
 =======
                 defsReader =  new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+=======
+                defsReader =  new InputStreamReader(new FileInputStream(file), "UTF_8");
+>>>>>>> .merge-right.r46470
 
                 JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
 >>>>>>> .merge-right.r46462
@@ -207,11 +211,15 @@ public class NodeTypeRegistry implements NodeTypeManager {
 >>>>>>> .merge-right.r46462
             try {
 <<<<<<< .working
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream());
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
                 r.parse();
 =======
                 defsReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+=======
+                defsReader = new InputStreamReader(new FileInputStream(file), "UTF_8");
+>>>>>>> .merge-right.r46470
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
                 r.parse();            
 >>>>>>> .merge-right.r46462

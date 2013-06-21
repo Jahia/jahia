@@ -59,8 +59,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseView implements View, Comparable<View> {
 
-    private static final Properties EMPTY_PROPERTIES = new Properties();
-
     private static final Logger logger = LoggerFactory.getLogger(BaseView.class);
 
     private static Map<String, Properties> propCache = new ConcurrentHashMap<String, Properties>(512);
@@ -273,12 +271,11 @@ public abstract class BaseView implements View, Comparable<View> {
     }
 
     protected Properties loadProperties(String path, String thumbnailPath) {
-        Properties p = EMPTY_PROPERTIES;
+        Properties p = new Properties();
         InputStream is = null;
         try {
             is = getInputStream(path);
             if (is != null) {
-                p = new Properties();
                 p.load(is);
             }
         } catch (IOException e) {

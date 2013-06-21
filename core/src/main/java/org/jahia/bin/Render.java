@@ -780,9 +780,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKeyByServerName());
                         }
                     }
+<<<<<<< .working
                     if ((site == null && resource.getNode().getPath().startsWith("/sites/")) || (site != null
                             && !site.getPath().startsWith("/modules/") && !site.isAllowsUnlistedLanguages()
                             && !(renderContext.isLiveMode() ? site.getActiveLiveLanguagesAsLocales().contains(urlResolver.getLocale()) : site.getLanguagesAsLocales().contains(urlResolver.getLocale())))) {
+=======
+                    if (resource.getNode().getPath().startsWith("/sites/") && (site == null || site != null
+                                            && !renderContext.getMode().equals("studio") && !site.isAllowsUnlistedLanguages()
+                                            && !(renderContext.isLiveMode() ? site.getActiveLanguagesAsLocales().contains(urlResolver.getLocale()) : site.getLanguagesAsLocales().contains(urlResolver.getLocale())))) {
+>>>>>>> .merge-right.r46453
                         throw new PathNotFoundException("This language does not exist on this site");
                     }
                     renderContext.setSite(site);

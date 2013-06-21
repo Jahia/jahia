@@ -40,21 +40,21 @@
 
 package org.jahia.modules.tasks.rules;
 
+import org.apache.commons.lang.StringUtils;
+import org.drools.core.spi.KnowledgeHelper;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.tasks.Task;
+import org.jahia.services.tasks.TaskService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
-import org.drools.spi.KnowledgeHelper;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.tasks.Task;
-import org.jahia.services.tasks.TaskService;
 
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
@@ -87,7 +87,7 @@ public class Tasks {
     }
 
     public void createTask(String user, String title, String description, String priority, Date dueDate, String state,
-            KnowledgeHelper drools) throws RepositoryException {
+                           KnowledgeHelper drools) throws RepositoryException {
         Task task = new Task(title, description);
         if (priority != null) {
             task.setPriority(Task.Priority.valueOf(priority));
@@ -105,7 +105,7 @@ public class Tasks {
     }
 
     public void createTaskForGroupMembers(String group, String title, String description, KnowledgeHelper drools)
-    throws RepositoryException {
+            throws RepositoryException {
         int siteId = 0;
         if (group.startsWith("/sites/")) {
             String siteKey = StringUtils.substringBetween(group, "/sites/", "/");
@@ -127,7 +127,7 @@ public class Tasks {
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
-    
+
     public void assignTask(AddedNodeFact node, String username) {
         JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         try {
@@ -136,11 +136,11 @@ public class Tasks {
             String provider = jcrNodeWrapper.getProperty("provider").getString();
             WorkflowService.getInstance().assignTask(taskId, provider, user);
         } catch (RepositoryException e) {
-            logger.error("cannot assign task",e);
+            logger.error("cannot assign task", e);
         }
     }
 
-    public void completeTask(AddedNodeFact node) {
+    public void completeTask(AddedNodeFact node, JahiaUser user) {
         try {
             JCRNodeWrapper jcrNodeWrapper = node.getNode();
             String taskId = jcrNodeWrapper.getProperty("taskId").getString();
@@ -160,30 +160,30 @@ public class Tasks {
                         if (property.isMultiple()) {
                             propertyValues = property.getValues();
                         } else {
-                            propertyValues = new Value[] { property.getValue() };
+                            propertyValues = new Value[]{property.getValue()};
                         }
                         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.length);
                         boolean toBeAdded = false;
                         for (Value value : propertyValues) {
                             String s = value.getString();
-                            if(s!=null && !"".equals(s)) {
+                            if (s != null && !"".equals(s)) {
                                 values.add(new WorkflowVariable(s, value.getType()));
-                                toBeAdded=true;
+                                toBeAdded = true;
                             }
                         }
-                        if(toBeAdded) {
+                        if (toBeAdded) {
                             map.put(property.getName(), values);
                         } else {
-                            map.put(property.getName(),new ArrayList<WorkflowVariable>());
+                            map.put(property.getName(), new ArrayList<WorkflowVariable>());
                         }
                     }
                 }
             }
 
-            WorkflowService.getInstance().completeTask(taskId, provider, outcome, map);
+            WorkflowService.getInstance().completeTask(taskId, user, provider, outcome, map);
         } catch (RepositoryException e) {
-            logger.error("cannot complete task",e);
+            logger.error("cannot complete task", e);
         }
     }
-    
+
 }

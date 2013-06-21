@@ -105,8 +105,12 @@ public class JSR223Script implements Script {
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
                     scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+<<<<<<< .working
                     scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE),
                             ScriptContext.GLOBAL_SCOPE);
+=======
+                    scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+>>>>>>> .merge-right.r46449
                     scriptEngine.eval(scriptContent, scriptContext);
                     StringWriter writer = (StringWriter) scriptContext.getWriter();
                     return writer.toString().trim();

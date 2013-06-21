@@ -804,16 +804,16 @@ public class UIConfigHelper {
         }
         if (value.contains("${")) {
             try {
-                ScriptEngine byName = scriptEngineUtils.getEngineByName("velocity");
+                ScriptEngine scriptEngine = scriptEngineUtils.getEngineByName("velocity");
                 ScriptContext scriptContext = new SimpleScriptContext();
                 final Bindings bindings = new SimpleBindings();
                 bindings.put("currentSite", site);
                 bindings.put("currentUser", jahiaUser);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());
                 scriptContext.setErrorWriter(new StringWriter());
-                byName.eval(value, scriptContext);
+                scriptEngine.eval(value, scriptContext);
                 //String error = scriptContext.getErrorWriter().toString();
                 return scriptContext.getWriter().toString().trim();
             } catch (ScriptException e) {

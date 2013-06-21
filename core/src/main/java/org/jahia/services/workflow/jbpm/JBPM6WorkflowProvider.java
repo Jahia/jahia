@@ -9,6 +9,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -362,12 +363,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         // Get form resource name
         long contentId = task.getTaskData().getDocumentContentId();
         Content taskContent = taskService.getContentById(contentId);
-        taskContent.
-                workflowTask.setFormResourceName(task.getFormResourceName());
+        Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), kieSession.getEnvironment());
+        if (contentData instanceof Map) {
+            Map<String, Object> taskParameters = (Map<String, Object>) contentData;
+            workflowTask.setFormResourceName((String) taskParameters.get("FormName"));
+            workflowTask.setVariables(taskParameters);
+        }
 
         // Get Tasks variables
-        Set<String> variableNames = taskService.getVariableNames(task.getId());
-        workflowTask.setVariables(taskService.getVariables(task.getId(), variableNames));
         final ProcessInstance instance = kieSession.getProcessInstance(task.getTaskData().getProcessInstanceId());
         if (instance != null) {
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale);

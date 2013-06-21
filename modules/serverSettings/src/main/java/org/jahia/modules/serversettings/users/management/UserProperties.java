@@ -41,9 +41,11 @@
 package org.jahia.modules.serversettings.users.management;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -185,6 +187,8 @@ public class UserProperties implements Serializable {
     private Locale preferredLanguage;
 
     private boolean readOnly;
+    
+    private Set<String> readOnlyProperties = new HashSet<String>();
 
     private String userKey;
     
@@ -241,6 +245,10 @@ public class UserProperties implements Serializable {
 
     public Locale getPreferredLanguage() {
         return preferredLanguage;
+    }
+
+    public Set<String> getReadOnlyProperties() {
+        return readOnlyProperties;
     }
 
     public String getUserKey() {

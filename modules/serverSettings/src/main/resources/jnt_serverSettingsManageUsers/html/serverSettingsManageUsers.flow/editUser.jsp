@@ -19,6 +19,7 @@
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<c:set var="readOnlyProperties" value="${userProperties.readOnlyProperties}"/>
 <div>
     <h2><fmt:message key="label.edit"/>&nbsp;${userProperties.displayName}</h2>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -36,21 +37,21 @@
                     <div class="row-fluid">
                         <div class="span4">
                             <label for="firstName"><fmt:message key="label.firstName"/></label>
-                            <input class="span12" type="text" name="firstName" id="firstName" value="${userProperties.firstName}">
+                            <input class="span12" type="text" name="firstName" id="firstName" value="${userProperties.firstName}"${functions:contains(readOnlyProperties, 'j:firstName') ? ' disabled="disabled"' : ''}>
                         </div>
                         <div class="span4">
                             <label for="lastName"><fmt:message key="label.lastName"/></label>
-                            <input class="span12" type="text" name="lastName" id="lastName" value="${userProperties.lastName}">
+                            <input class="span12" type="text" name="lastName" id="lastName" value="${userProperties.lastName}"${functions:contains(readOnlyProperties, 'j:lastName') ? ' disabled="disabled"' : ''}>
                         </div>
                     </div>
                     <div class="row-fluid">
                         <div class="span4">
                             <label for="email"><fmt:message key="label.email"/></label>
-                            <input class="span12" type="text" name="email" id="email" value="${userProperties.email}">
+                            <input class="span12" type="text" name="email" id="email" value="${userProperties.email}"${functions:contains(readOnlyProperties, 'j:email') ? ' disabled="disabled"' : ''}>
                         </div>
                         <div class="span4">
                             <label for="organization"><fmt:message key="label.organization"/></label>
-                            <input class="span12" type="text" name="organization" id="organization" value="${userProperties.organization}">
+                            <input class="span12" type="text" name="organization" id="organization" value="${userProperties.organization}"${functions:contains(readOnlyProperties, 'j:organization') ? ' disabled="disabled"' : ''}>
                         </div>
                     </div>
                 </div>
@@ -60,12 +61,12 @@
                     <div class="row-fluid">
                         <div class="span4">
                             <label for="password"><fmt:message key="label.password"/></label>
-                            <input class="span12" type="password" name="password" id="password" value="">
+                            <input class="span12" type="password" name="password" id="password" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''}>
                             <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
                         </div>
                         <div class="span4">
                             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-                            <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value="">
+                            <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''}>
                             <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
                         </div>
                     </div>
@@ -77,21 +78,23 @@
                         <div class="span4">
                             <label for="emailNotificationsDisabled">
                                 <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled"
-                                       <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>>
+                                       <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>
+                                       ${functions:contains(readOnlyProperties, 'emailNotificationsDisabled') ? ' disabled="disabled"' : ''}>
                                 <fmt:message key="serverSettings.user.emailNotifications"/>
                                 <input type="hidden" name="_emailNotificationsDisabled"/>
                             </label>
 
                             <label for="accountLocked">
                                 <input type="checkbox" name="accountLocked" id="accountLocked"
-                                       <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>>
+                                       <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>
+                                       ${functions:contains(readOnlyProperties, 'j:accountLocked') ? ' disabled="disabled"' : ''}>
                                 <fmt:message key="label.accountLocked"/>
                                 <input type="hidden" name="_accountLocked"/>
                             </label>
                         </div>
                         <div class="span4">
                             <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
-                            <select class="span12" id="preferredLanguage" name="preferredLanguage">
+                            <select class="span12" id="preferredLanguage" name="preferredLanguage"${functions:contains(readOnlyProperties, 'preferredLanguage') ? ' disabled="disabled"' : ''}>
                                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                                     <option value="${uiLanguage}"
                                             <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>
@@ -128,11 +131,12 @@
                                 <i class="icon-ban-circle"></i>
                                 &nbsp;<fmt:message key='label.cancel'/>
                             </button>
-                            <input type="hidden" name="selectedUsers" value="${userProperties.userKey}"/>
-                            <button class="btn" type="submit" name="_eventId_removeUser">
-                                <i class="icon-remove"></i>
-                                &nbsp;<fmt:message key='serverSettings.user.remove'/>
-                            </button>
+                            <c:if test="${!userProperties.readOnly}">
+                                <button class="btn" type="submit" name="_eventId_removeUser">
+                                    <i class="icon-remove"></i>
+                                    &nbsp;<fmt:message key='serverSettings.user.remove'/>
+                                </button>
+                            </c:if>
                         </div>
                     </div>
                 </div>

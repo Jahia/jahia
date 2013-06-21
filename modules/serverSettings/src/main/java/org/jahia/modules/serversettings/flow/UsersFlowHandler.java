@@ -79,16 +79,41 @@ public class UsersFlowHandler implements Serializable {
         if (propertiesToPopulate == null) {
             propertiesToPopulate = new UserProperties();
         }
+        
+        org.jahia.services.usermanager.UserProperties props = jahiaUser.getUserProperties();
+        Set<String> readOnlyProperties = propertiesToPopulate.getReadOnlyProperties();
+        
         propertiesToPopulate.setFirstName(jahiaUser.getProperty("j:firstName"));
+        if (props.isReadOnly("j:firstName")) {
+            readOnlyProperties.add("j:firstName");
+        }
         propertiesToPopulate.setLastName(jahiaUser.getProperty("j:lastName"));
+        if (props.isReadOnly("j:lastName")) {
+            readOnlyProperties.add("j:lastName");
+        }
         propertiesToPopulate.setUsername(jahiaUser.getUsername());
         propertiesToPopulate.setUserKey(jahiaUser.getUserKey());
         propertiesToPopulate.setEmail(jahiaUser.getProperty("j:email"));
+        if (props.isReadOnly("j:email")) {
+            readOnlyProperties.add("j:email");
+        }
         propertiesToPopulate.setOrganization(jahiaUser.getProperty("j:organization"));
+        if (props.isReadOnly("j:organization")) {
+            readOnlyProperties.add("j:organization");
+        }
         propertiesToPopulate.setEmailNotificationsDisabled(Boolean.valueOf(jahiaUser
                 .getProperty("emailNotificationsDisabled")));
+        if (props.isReadOnly("emailNotificationsDisabled")) {
+            readOnlyProperties.add("emailNotificationsDisabled");
+        }
         propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
+        if (props.isReadOnly("preferredLanguage")) {
+            readOnlyProperties.add("preferredLanguage");
+        }
         propertiesToPopulate.setAccountLocked(Boolean.valueOf(jahiaUser.getProperty("j:accountLocked")));
+        if (props.isReadOnly("j:accountLocked")) {
+            readOnlyProperties.add("j:accountLocked");
+        }
         propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
                 LocaleContextHolder.getLocale()));
         propertiesToPopulate.setLocalPath(jahiaUser.getLocalPath());
@@ -285,15 +310,30 @@ public class UsersFlowHandler implements Serializable {
         logger.info("Updating user");
         JahiaUser jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
         boolean hasErrors = false;
+        Set<String> readOnlyProps = userProperties.getReadOnlyProperties();
         if (jahiaUser != null) {
-            hasErrors = setUserProperty("j:firstName", userProperties.getFirstName(),"firstName", context, jahiaUser);
-            hasErrors |= setUserProperty("j:lastName", userProperties.getLastName(),"lastName", context, jahiaUser);
-            hasErrors |= setUserProperty("j:email", userProperties.getEmail(),"email", context, jahiaUser);
-            hasErrors |= setUserProperty("j:organization", userProperties.getOrganization(),"organization", context, jahiaUser);
-            hasErrors |= setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(),"emailNotifications", context, jahiaUser);
-            hasErrors |= setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(),"accountLocked", context, jahiaUser);
-            hasErrors |= setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(),"preferredLanguage", context, jahiaUser);
-            if (StringUtils.isNotBlank(userProperties.getPassword())) {
+            if (!readOnlyProps.contains("j:firstName")) {
+                hasErrors |= setUserProperty("j:firstName", userProperties.getFirstName(),"firstName", context, jahiaUser);
+            }
+            if (!readOnlyProps.contains("j:lastName")) {
+                hasErrors |= setUserProperty("j:lastName", userProperties.getLastName(),"lastName", context, jahiaUser);
+            }
+            if (!readOnlyProps.contains("j:email")) {
+                hasErrors |= setUserProperty("j:email", userProperties.getEmail(),"email", context, jahiaUser);
+            }
+            if (!readOnlyProps.contains("j:organization")) {
+                hasErrors |= setUserProperty("j:organization", userProperties.getOrganization(),"organization", context, jahiaUser);
+            }
+            if (!readOnlyProps.contains("emailNotificationsDisabled")) {
+                hasErrors |= setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(),"emailNotifications", context, jahiaUser);
+            }
+            if (!readOnlyProps.contains("j:accountLocked")) {
+                hasErrors |= setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(),"accountLocked", context, jahiaUser);
+            }
+            if (!readOnlyProps.contains("preferredLanguage")) {
+                hasErrors |= setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(),"preferredLanguage", context, jahiaUser);
+            }
+            if (!userProperties.isReadOnly() && StringUtils.isNotBlank(userProperties.getPassword())) {
                 if(jahiaUser.setPassword(userProperties.getPassword())) {
                     context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
                             "serverSettings.user.edit.password.changed", LocaleContextHolder.getLocale())).build());

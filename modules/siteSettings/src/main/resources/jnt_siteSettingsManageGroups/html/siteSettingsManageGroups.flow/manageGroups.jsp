@@ -58,7 +58,6 @@ function submitGroupForm(act, group) {
             </div>
             <c:if test="${multipleProvidersAvailable}">
                 <br/>
-                <br/>
                 <label for="storedOn"><span class="badge badge-info"><fmt:message key="label.on"/></span></label>
                 <input type="radio" name="storedOn" value="everywhere" 
                     ${empty searchCriteria.storedOn || searchCriteria.storedOn == 'everywhere' ? ' checked="checked" ' : ''}   

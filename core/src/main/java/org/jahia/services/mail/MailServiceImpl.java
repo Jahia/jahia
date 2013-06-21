@@ -360,7 +360,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                         subjectTemplatePath);
                 scriptContent = new InputStreamReader(stream);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());
                 scriptEngine.eval(scriptContent, scriptContext);
                 subject = ((StringWriter) scriptContext.getWriter()).toString().trim();

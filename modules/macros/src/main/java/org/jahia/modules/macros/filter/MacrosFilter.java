@@ -109,7 +109,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(macro[1]);
                     ScriptContext scriptContext = new SimpleScriptContext();
                     scriptContext.setBindings(getBindings(renderContext, resource, scriptContext, matcher), ScriptContext.ENGINE_SCOPE);
-                    scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                    scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                     scriptContext.setWriter(new StringWriter());
                     scriptContext.setErrorWriter(new StringWriter());
                     scriptEngine.eval(macro[0],scriptContext);

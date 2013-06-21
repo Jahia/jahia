@@ -341,7 +341,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
         scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+        scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
         scriptEngine.eval(scriptToExecute, scriptContext);
         String error = scriptContext.getErrorWriter().toString();
         if (error.length() > 0) {

@@ -262,7 +262,7 @@ public class RulesNotificationService {
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-                scriptContext.setBindings(scriptContext.getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptEngine.eval(scriptContent, scriptContext);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();

@@ -66,6 +66,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
+import org.jahia.bin.Login;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.exceptions.JahiaException;
@@ -100,6 +101,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -2190,7 +2192,12 @@ public class ManageSites extends AbstractAdministrationModule {
                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                 defaultLocale, tpl, null, "fileImport", file,
                                                 (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"),legacyImportFilePath,legacyDefinitionsFilePath);
-                                session.setAttribute(ProcessingContext.SESSION_SITE, site);
+                                try {
+                                    session.setAttribute(ProcessingContext.SESSION_SITE, site);
+                                } catch (IllegalStateException e) {
+                                    response.sendRedirect(response.encodeRedirectURL(Login.getServletPath()));
+                                    return;
+                                }
                                 jParams.setSite(site);
                                 jParams.setSiteID(site.getID());
                                 jParams.setSiteKey(site.getSiteKey());

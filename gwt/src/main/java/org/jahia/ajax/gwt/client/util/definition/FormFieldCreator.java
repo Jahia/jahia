@@ -114,7 +114,6 @@ public class FormFieldCreator {
             String emptyText = "";
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
-<<<<<<< .working
                     if (((GWTJahiaPropertyDefinition) definition).isMultiple()) {
                         field = new MultipleTextField<String>();
                     } else {
@@ -142,37 +141,6 @@ public class FormFieldCreator {
                         if (definition.getSelectorOptions().get("password") != null) {
                             ((TextField)field).setPassword(true);
                         }
-=======
-                    if (((GWTJahiaPropertyDefinition) definition).isMultiple()) {
-                        field = new MultipleTextField<String>();
-                    } else {
-                        switch (propDefinition.getRequiredType()) {
-                            case GWTJahiaNodePropertyType.LONG:
-                                field = new NumberField();
-                                ((NumberField) field).setAllowDecimals(false);
-                                ((NumberField) field).setPropertyEditorType(Long.class);
-                                break;
-                            case GWTJahiaNodePropertyType.DOUBLE:
-                                field = new NumberField();
-                                ((NumberField) field).setAllowDecimals(true);
-                                break;
-                            default:
-                                field = new TextField<String>();
-                                break;
-                        }
-                        if (definition.getSelectorOptions().get("password") != null) {
-                            ((TextField)field).setPassword(true);
-                        }
-                            final TextField<String> f = new TextField<String>();
-                            f.addListener(Events.Change, new Listener<ComponentEvent>() {
-                                public void handleEvent(ComponentEvent event) {
-                                    String s = f.getValue();
-                                    f.setValue(s.trim());
-                                }
-                            });
-                            field = f;
-                            break;
->>>>>>> .merge-right.r46455
                     }
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:
@@ -255,7 +223,7 @@ public class FormFieldCreator {
                             StoreFilterField<GWTJahiaValueDisplayBean> filterField = new StoreFilterField<GWTJahiaValueDisplayBean>() {
                                 @Override
                                 protected boolean doSelect(Store<GWTJahiaValueDisplayBean> store, GWTJahiaValueDisplayBean parent,
-                                        GWTJahiaValueDisplayBean record, String property, String filter) {
+                                                           GWTJahiaValueDisplayBean record, String property, String filter) {
 
                                     String s = filter.toLowerCase();
                                     return record.getValue().toLowerCase().contains(s)
@@ -343,7 +311,7 @@ public class FormFieldCreator {
     }
 
     private static CKEditorConfig getCKEditorConfig(GWTJahiaPropertyDefinition propDefinition,
-            GWTBitSet permissions) {
+                                                    GWTBitSet permissions) {
         CKEditorConfig config = new CKEditorConfig();
         boolean toolbarDefined = false;
         for (Map.Entry<String, String> option : propDefinition.getSelectorOptions()

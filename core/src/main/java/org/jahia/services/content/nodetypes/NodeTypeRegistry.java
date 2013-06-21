@@ -57,6 +57,7 @@ import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -180,20 +181,40 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
         String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
+<<<<<<< .working
             Reader resourceReader = null;
+=======
+            Reader defsReader = null;
+>>>>>>> .merge-right.r46462
             try {
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream());
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
+=======
+                defsReader =  new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+
+                JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
+>>>>>>> .merge-right.r46462
                 r.parse();
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }
         } else if (ext.equalsIgnoreCase(".grp")) {
+<<<<<<< .working
             Reader resourceReader = null;
+=======
+            Reader defsReader = null;
+>>>>>>> .merge-right.r46462
             try {
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream());
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
                 r.parse();
+=======
+                defsReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
+                r.parse();            
+>>>>>>> .merge-right.r46462
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }

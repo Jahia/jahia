@@ -248,13 +248,19 @@ public class UsersFlowHandler implements Serializable {
     }
 
     private boolean setUserProperty(String propertyName, String propertyValue,String source, MessageContext context, JahiaUser jahiaUser) {
-        if(!jahiaUser.setProperty(propertyName, propertyValue)){
-            context.addMessage(new MessageBuilder().error().source(source).defaultText(Messages.getWithArgs(
-                    "resources.JahiaServerSettings", "serverSettings.user.edit.errors.property",
-                    LocaleContextHolder.getLocale(),source)).build());
-            return true;
+        String oldPropertyValue = jahiaUser.getProperty(propertyName);
+        if (oldPropertyValue == null && StringUtils.isNotEmpty(propertyValue) || oldPropertyValue != null && !StringUtils.equals(oldPropertyValue, propertyValue)) {
+            if(!jahiaUser.setProperty(propertyName, propertyValue)){
+                context.addMessage(new MessageBuilder().error().source(source).defaultText(Messages.getWithArgs(
+                        "resources.JahiaServerSettings", "serverSettings.user.edit.errors.property",
+                        LocaleContextHolder.getLocale(),source)).build());
+                return true;
+            }
+            return false;
+        } else {
+            // no changes needed
+            return false;
         }
-        return false;
     }
 
     private Properties transformUserProperties(UserProperties userProperties) {
@@ -271,8 +277,7 @@ public class UsersFlowHandler implements Serializable {
 
     public boolean updateUser(UserProperties userProperties, MessageContext context) {
         logger.info("Updating user");
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(
-                userProperties.getUserKey());
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
         boolean hasErrors = false;
         if (jahiaUser != null) {
             hasErrors = setUserProperty("j:firstName", userProperties.getFirstName(),"firstName", context, jahiaUser);

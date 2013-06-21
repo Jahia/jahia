@@ -68,60 +68,62 @@
             <label for="searchIn"><span class="badge badge-info"><fmt:message key="label.in"/></span></label>
             <input type="radio" id="searchIn" name="searchIn" value="allProps"
                    <c:if test="${empty searchCriteria.searchIn or searchCriteria.searchIn eq 'allProps'}">checked</c:if>
-                   onclick="$('.propCheck').attr('disabled',true);">&nbsp;<fmt:message
-                key="label.allProperties"/>
-            <input type="radio" name="searchIn" value="properties"
+                   onclick="$('.propCheck').attr('disabled',true);">&nbsp;<label for="searchIn"><fmt:message
+                key="label.allProperties"/></label>
+            <input type="radio" name="searchIn" id="searchInProperties" value="properties"
                    <c:if test="${searchCriteria.searchIn eq 'properties'}">checked</c:if>
-                   onclick="$('.propCheck').removeAttr('disabled');">&nbsp;<fmt:message
-                key="serverSettings.user.properties.selected"/>:&nbsp;
+                   onclick="$('.propCheck').removeAttr('disabled');">&nbsp;<label for="searchInProperties"><fmt:message
+                key="serverSettings.user.properties.selected"/></label>:&nbsp;
 
 
-            <input type="checkbox" class="propCheck" name="properties" value="username"
+            <input type="checkbox" class="propCheck" name="properties" value="username" id="propsUsersname"
                    <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                    <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'username')}">checked="checked"</c:if> >
-            <fmt:message key="label.username"/>
+            <label for="propsUsersname"><fmt:message key="label.username"/></label>
 
-            <input type="checkbox" class="propCheck" name="properties" value="j:firstName"
+            <input type="checkbox" class="propCheck" name="properties" value="j:firstName" id="propsFirstName"
                    <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                    <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:firstName')}">checked="checked"</c:if> >
-            <fmt:message key="label.firstName"/>
+            <label for="propsFirstName"><fmt:message key="label.firstName"/></label>
 
-            <input type="checkbox" class="propCheck" name="properties" value="j:lastName"
+            <input type="checkbox" class="propCheck" name="properties" value="j:lastName" id="propsLastName"
                    <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                    <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:lastName')}">checked="checked"</c:if> >
-            <fmt:message key="label.lastName"/>
+            <label for="propsLastName"><fmt:message key="label.lastName"/></label>
 
-            <input type="checkbox" class="propCheck" name="properties" value="j:email"
+            <input type="checkbox" class="propCheck" name="properties" value="j:email" id="propsEmail"
                    <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                    <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:email')}">checked="checked"</c:if> >
-            <fmt:message key="label.email"/>
+            <label for="propsEmail"><fmt:message key="label.email"/></label>
 
-            <input type="checkbox" class="propCheck" name="properties" value="j:organization"
+            <input type="checkbox" class="propCheck" name="properties" value="j:organization" id="propsOrganization"
                    <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
                    <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'j:organization')}">checked="checked"</c:if> >
-            <fmt:message key="label.organization"/>
+            <label for="propsOrganization"><fmt:message key="label.organization"/></label>
 
             <c:if test="${multipleProvidersAvailable}">
             <br/>
             <label for="storedOn"><span class="badge badge-info"><fmt:message key="label.on"/></span></label>
             <%--@elvariable id="providersList" type="java.util.List"--%>
-            <input type="radio" name="storedOn" value="everywhere"
+            <input type="radio" name="storedOn" id="storeOnEverywhere" value="everywhere"
                        <c:if test="${empty searchCriteria.storedOn or searchCriteria.storedOn eq 'everywhere'}">checked</c:if>
-                       onclick="$('.provCheck').attr('disabled',true);">&nbsp;<fmt:message
-                    key="label.everyWhere"/>
+                       onclick="$('.provCheck').attr('disabled',true);">&nbsp;<label for="storeOnEverywhere"><fmt:message
+                    key="label.everyWhere"/></label>
 
             <input type="radio" id="storedOn" name="storedOn" value="providers"
             <c:if test="${searchCriteria.storedOn eq 'providers'}">
                    checked </c:if>
-                   onclick="$('.provCheck').removeAttr('disabled');">&nbsp;<fmt:message key="label.providers"/>:&nbsp;
+                   onclick="$('.provCheck').removeAttr('disabled');">&nbsp;<label for="storedOn"><fmt:message key="label.providers"/></label>:&nbsp;
 
             <c:forEach items="${providersList}" var="curProvider">
-                <input type="checkbox" class="provCheck" name="providers" value="${curProvider.key}"
+                <input type="checkbox" class="provCheck" name="providers" id="provider-${curProvider.key}" value="${curProvider.key}"
                        <c:if test="${fn:length(providersList) le 1 or searchCriteria.storedOn ne 'providers'}">disabled </c:if>
                 <c:if test="${fn:length(providersList) le 1 or (not empty searchCriteria.providers and functions:contains(searchCriteria.providers, curProvider.key))}">
                        checked </c:if>>
+                <label for="provider-${curProvider.key}">
                 <fmt:message var="i18nProviderLabel" key="providers.${curProvider.key}.label"/>
                 ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider.key : i18nProviderLabel)}
+                </label>
             </c:forEach>
 
             </c:if>

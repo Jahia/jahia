@@ -374,6 +374,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
 
     @Override
     public void registerProvider(JahiaUserManagerProvider provider) {
+        logger.info("Registering user provider {}", provider.getKey());
         providersTable.put(provider.getKey(), provider);
         sortedProviders.add(provider);
         if (defaultProviderInstance == null || provider.isDefaultProvider()) {
@@ -386,6 +387,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
 
     @Override
     public void unregisterProvider(JahiaUserManagerProvider provider) {
+        logger.info("Unregistering user provider {}", provider.getKey());
         providersTable.remove(provider.getKey());
         sortedProviders.remove(provider);
         if (provider.isDefaultProvider() && defaultProviderInstance == provider) {

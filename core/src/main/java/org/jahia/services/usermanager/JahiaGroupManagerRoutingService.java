@@ -66,6 +66,8 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.utils.ClassLoaderUtils;
 import org.jahia.utils.ClassLoaderUtils.Callback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
@@ -82,7 +84,8 @@ import javax.jcr.RepositoryException;
  */
 
 public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService implements ApplicationEventPublisherAware {
-// ------------------------------ FIELDS ------------------------------
+    
+    private static final Logger logger = LoggerFactory.getLogger(JahiaGroupManagerRoutingService.class);
 
     static private JahiaGroupManagerRoutingService mInstance = null;
 
@@ -94,8 +97,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-
-// -------------------------- STATIC METHODS --------------------------
 
     /**
      * Create an new instance of the Group Manager Service if the instance do not
@@ -110,8 +111,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return mInstance;
     }
 
-// --------------------------- CONSTRUCTORS ---------------------------
-
     protected JahiaGroupManagerRoutingService () {
         providersTable = new HashMap<String, JahiaGroupManagerProvider>();
 
@@ -121,9 +120,6 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
             }
         });
     }
-
-// -------------------------- OTHER METHODS --------------------------
-
 
     public void start() throws JahiaInitializationException {
     	// do nothing
@@ -522,6 +518,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
 
     @Override
     public void registerProvider(JahiaGroupManagerProvider provider) {
+        logger.info("Registered group provider {}", provider.getKey());
         providersTable.put(provider.getKey(), provider);
         sortedProviders.add(provider);
         if (defaultProviderInstance == null || provider.isDefaultProvider()) {
@@ -534,6 +531,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
 
     @Override
     public void unregisterProvider(JahiaGroupManagerProvider provider) {
+        logger.info("Unregistering group provider {}", provider.getKey());
         providersTable.remove(provider.getKey());
         sortedProviders.remove(provider);
         if (provider.isDefaultProvider() && defaultProviderInstance == provider) {

@@ -108,7 +108,7 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-primary" type="submit" name="_eventId_add">
+                            <button class="btn btn-primary" type="submit" name="_eventId_add" onclick="workInProgress(); return true;">
                                 <i class="icon-plus icon-white"></i>
                                 &nbsp;<fmt:message key='label.add'/>
                             </button>

@@ -120,7 +120,7 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-primary" type="submit" name="_eventId_update">
+                            <button class="btn btn-primary" type="submit" name="_eventId_update" onclick="workInProgress(); return true;">
                                 <i class="icon-ok icon-white"></i>
                                 &nbsp;<fmt:message key='label.update'/>
                             </button>

@@ -108,7 +108,7 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-danger" type="submit" name="_eventId_confirm">
+                            <button class="btn btn-danger" type="submit" name="_eventId_confirm" onclick="workInProgress(); return true;">
                                 <i class="icon-remove icon-white"></i>
                                 &nbsp;<fmt:message key='label.remove.confirm'/>
                             </button>

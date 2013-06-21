@@ -101,6 +101,7 @@
                         <Jahia-Depends>assets</Jahia-Depends>
                         <Embed-Dependency>*; scope=compile; type=!pom;
                             inline=false</Embed-Dependency>
+                        <Export-Package>org.jahia.modules.osgi</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

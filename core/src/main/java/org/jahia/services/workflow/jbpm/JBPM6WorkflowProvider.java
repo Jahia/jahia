@@ -22,10 +22,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
-import org.kie.api.task.model.Content;
-import org.kie.api.task.model.I18NText;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -342,19 +339,21 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
         workflowTask.setId(Long.toString(task.getId()));
         workflowTask.setOutcome(taskService.getOutcomes(task.getId()));
-        List<Participation> participationList = taskService.getTaskParticipations(task.getId());
-        if (participationList.size() > 0) {
+        PeopleAssignments peopleAssignements = task.getPeopleAssignments();
+        if (peopleAssignements.getPotentialOwners().size() > 0) {
             List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
-            for (Participation participation : participationList) {
-                if (participation.getGroupId() != null) {
+            for (OrganizationalEntity organizationalEntity : peopleAssignements.getPotentialOwners()) {
+                if (organizationalEntity instanceof Group) {
+                    Group group = (Group) organizationalEntity;
                     participations
-                            .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                    groupManager.lookupGroup(participation.getGroupId())));
+                            .add(new WorkflowParticipation(WorkflowService.CANDIDATE,
+                                    groupManager.lookupGroup(group.getId())));
                 } else {
-                    if (participation.getUserId() != null) {
+                    if (organizationalEntity instanceof User) {
+                        User user = (User) organizationalEntity;
                         participations
-                                .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                        userManager.lookupUserByKey(participation.getUserId())));
+                                .add(new WorkflowParticipation(WorkflowService.CANDIDATE,
+                                        userManager.lookupUserByKey(user.getId())));
                     }
                 }
             }

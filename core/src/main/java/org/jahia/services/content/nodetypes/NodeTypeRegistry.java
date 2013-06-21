@@ -49,6 +49,7 @@ import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -110,18 +111,19 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException {
         String ext = file.getName().substring(file.getName().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
-            FileReader defsReader = null;
+            Reader defsReader = null;
             try {
-                defsReader = new FileReader(file);
+                defsReader =  new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+
                 JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
                 r.parse();
             } finally {
                 IOUtils.closeQuietly(defsReader);
             }
         } else if (ext.equalsIgnoreCase(".grp")) {
-            FileReader defsReader = null;
+            Reader defsReader = null;
             try {
-                defsReader = new FileReader(file);
+                defsReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
                 r.parse();            
             } finally {

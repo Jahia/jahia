@@ -298,7 +298,7 @@
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myContent.go)##"/>
                     </go-to-my-content>
                   </my-settings-2>
-                  <my-settings-1 j:originWS="default" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
+                  <my-settings-1 j:invertCondition="false" j:originWS="default" j:requireLoggedUser="false" j:requirePrivilegedUser="true" j:requiredPermissions="" j:skin="skins.box8" j:style="blue" jcr:mixinTypes="jmix:requiredPermissions jmix:skinnable jmix:style" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myTasks)##"/>
                     <image-reference j:node="_x002f_templateSets_x002f_templates-system_x002f_templates_x002f_files_x002f_icons_x002f_my-tasks.png" j:originWS="default" jcr:primaryType="jnt:imageReference"/>
                     <rich-text j:originWS="default" jcr:primaryType="jnt:bigText">

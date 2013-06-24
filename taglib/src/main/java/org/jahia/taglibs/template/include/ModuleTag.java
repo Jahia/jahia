@@ -310,6 +310,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     logger.error(e.getMessage(), e);
                 }
             }
+        } catch (RenderException ex) {
+            throw new JspException(ex.getCause());
         } catch (IOException ex) {
             throw new JspException(ex);
         } finally {
@@ -530,7 +532,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
     }
 
-    protected void render(RenderContext renderContext, Resource resource) throws IOException {
+    protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
 //        try {
 //
 //            if (!(this instanceof IncludeTag) && (resource.getNode().isLocked() || !resource.getNode().getLockedLocales().isEmpty())) {
@@ -604,15 +606,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 buffer.delete(0, buffer.length());
             }
         } catch (RenderException e) {
-            if (!(e.getCause() instanceof AccessDeniedException)) {
-                logger.error(e.getMessage(), e);
-            }
             if(renderContext.isEditMode() && ((e.getCause() instanceof TemplateNotFoundException) || (e.getCause() instanceof AccessDeniedException))){
+                if (!(e.getCause() instanceof AccessDeniedException)) {
+                    logger.error(e.getMessage(), e);
+                }
                 buffer.append(e.getCause().getMessage());
                 if (var == null) {
                     pageContext.getOut().print(buffer);
                     buffer.delete(0, buffer.length());
                 }
+            } else {
+                throw e;
             }
         }
 

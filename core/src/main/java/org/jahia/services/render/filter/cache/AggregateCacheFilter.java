@@ -232,7 +232,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @SuppressWarnings("unchecked")
     protected String returnFromCache(RenderContext renderContext, Resource resource, boolean debugEnabled,
                                      boolean displayCacheInfo, Set<String> servedFromCache, String key, Element element,
-                                     Cache cache, String perUserKey) {
+                                     Cache cache, String perUserKey) throws RenderException {
         if (debugEnabled) {
             logger.debug("Content retrieved from cache for node with key: {}", perUserKey);
         }
@@ -558,7 +558,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) {
+    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) throws RenderException {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -671,7 +671,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     protected void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-                                   String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier) {
+                                   String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier) throws RenderException {
         // if missing data call RenderService after creating the right resource
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
@@ -747,8 +747,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 renderContext.getRequest().removeAttribute("previousTemplate");
             }
         } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RenderException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

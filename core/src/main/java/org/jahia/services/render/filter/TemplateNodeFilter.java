@@ -91,35 +91,29 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
 
             if (template != null && template.node != null) {
-                try {
-                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
-                    renderContext.getRequest().setAttribute("previousTemplate", template);
-                    renderContext.getRequest().setAttribute("wrappedResource", resource);
-                    Resource wrapperResource = new Resource(templateNode,
-                            resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasView(templateNode, template.getView(), resource.getTemplateType())) {
+                JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
+                renderContext.getRequest().setAttribute("previousTemplate", template);
+                renderContext.getRequest().setAttribute("wrappedResource", resource);
+                Resource wrapperResource = new Resource(templateNode,
+                        resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
+                if (service.hasView(templateNode, template.getView(), resource.getTemplateType())) {
 
-                        Integer currentLevel =
-                                (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
-                        if (currentLevel != null) {
-                            renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + (currentLevel));
-                        }
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Calling render service with template : " + template.serialize() +
-                                         " templateNode path : " + templateNode.getPath() + " for wrapperresource " +
-                                         wrapperResource);
-                        }
-                        String output = RenderService.getInstance().render(wrapperResource, renderContext);
-                        renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
-
-                        return output;
-                    } else {
-                        logger.warn("Cannot get wrapper " + template);
+                    Integer currentLevel =
+                            (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
+                    if (currentLevel != null) {
+                        renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + (currentLevel));
                     }
-                } catch (TemplateNotFoundException e) {
-                    logger.debug("Cannot find wrapper " + template, e);
-                } catch (RenderException e) {
-                    logger.error("Cannot execute wrapper " + template, e);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Calling render service with template : " + template.serialize() +
+                                " templateNode path : " + templateNode.getPath() + " for wrapperresource " +
+                                wrapperResource);
+                    }
+                    String output = RenderService.getInstance().render(wrapperResource, renderContext);
+                    renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
+
+                    return output;
+                } else {
+                    logger.warn("Cannot get wrapper " + template);
                 }
             }
         } else if (renderContext.isAjaxRequest() && resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE)) {

@@ -122,6 +122,12 @@ public class RequestDispatcherScript implements Script {
         try {
             rd.include(request, wrapper);
         } catch (ServletException e) {
+            while (e.getRootCause() instanceof ServletException) {
+                e = (ServletException) e.getRootCause();
+            }
+            if (e.getRootCause() instanceof RenderException) {
+                throw (RenderException)e.getRootCause();
+            }
             throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);
         } catch (IOException e) {
             throw new RenderException(e);

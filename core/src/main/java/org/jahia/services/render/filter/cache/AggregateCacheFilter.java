@@ -469,9 +469,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected void addDependencies(RenderContext renderContext, String perUserKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
+    protected void addDependencies(RenderContext renderContext, String perUserKey, Cache cache, String value, Set<String> newDependencies) {
         if (newDependencies.add(perUserKey)) {
-            regexpDependenciesCache.put(new Element(regexp, newDependencies));
+            cache.put(new Element(value, newDependencies));
         }
     }
 

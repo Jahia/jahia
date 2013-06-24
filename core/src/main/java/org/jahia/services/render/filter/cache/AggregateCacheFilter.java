@@ -281,19 +281,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @return
      */
     @SuppressWarnings("unchecked")
-<<<<<<< .working
     protected String returnFromCache(RenderContext renderContext, Resource resource,
                                      String key, String finalKey, Element element,
-                                     Cache cache) {
+                                     Cache cache) throws RenderException {
         if (logger.isDebugEnabled()) {
             logger.debug("Content retrieved from cache for node with key: {}", finalKey);
-=======
-    protected String returnFromCache(RenderContext renderContext, Resource resource, boolean debugEnabled,
-                                     boolean displayCacheInfo, Set<String> servedFromCache, String key, Element element,
-                                     Cache cache, String perUserKey) throws RenderException {
-        if (debugEnabled) {
-            logger.debug("Content retrieved from cache for node with key: {}", perUserKey);
->>>>>>> .merge-right.r46490
         }
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
@@ -670,39 +662,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param allPaths
      * @return
      */
-<<<<<<< .working
     protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier,
-                                      Stack<String> cacheKeyStack, Set<String> allPaths) {
-=======
-    protected void addReferencesToDependencies(final Resource resource) throws RepositoryException {
-        if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
-                        try {
-                            resource.getDependencies().add(ref.getProperty("j:reference").getNode().getPath());
-                        } catch (PathNotFoundException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("j:reference property is not found on node {}", ref.getCanonicalPath());
-                            }
-                        } catch (RepositoryException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("referenced node does not exist anymore {}", ref.getCanonicalPath());
-                            }
-                        } catch (Exception e) {
-                            logger.warn("Error adding dependency to node " + resource.getNode().getCanonicalPath(), e);
-                        }
-                    }
-                    return null;
-                }
-            });
-        }
-    }
-
-    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) throws RenderException {
->>>>>>> .merge-right.r46490
+                                      Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
 
@@ -789,13 +750,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param allPaths
      */
     protected void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-<<<<<<< .working
                                    String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier,
-                                   Set<String> allPaths) {
-=======
-                                   String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier) throws RenderException {
-        // if missing data call RenderService after creating the right resource
->>>>>>> .merge-right.r46490
+                                   Set<String> allPaths) throws RenderException {
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             // Parse the key to get all separate key attributes like node path and template

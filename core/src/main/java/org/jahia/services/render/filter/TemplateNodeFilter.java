@@ -91,22 +91,12 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
 
             if (template != null && template.node != null) {
-<<<<<<< .working
-                try {
-                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
-                    renderContext.getRequest().setAttribute("previousTemplate", template);
-                    renderContext.getRequest().setAttribute("wrappedResource", resource);
-                    Resource wrapperResource = new Resource(templateNode,
-                            resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasView(templateNode, template.getView(), resource.getTemplateType(), renderContext)) {
-=======
                 JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
                 renderContext.getRequest().setAttribute("previousTemplate", template);
                 renderContext.getRequest().setAttribute("wrappedResource", resource);
                 Resource wrapperResource = new Resource(templateNode,
                         resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
-                if (service.hasView(templateNode, template.getView(), resource.getTemplateType())) {
->>>>>>> .merge-right.r46490
+                if (service.hasView(templateNode, template.getView(), resource.getTemplateType(), renderContext)) {
 
                     Integer currentLevel =
                             (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");

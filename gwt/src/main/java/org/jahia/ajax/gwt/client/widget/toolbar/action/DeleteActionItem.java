@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+<<<<<<< .working
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -49,24 +50,27 @@ import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+=======
+import java.util.List;
+>>>>>>> .merge-right.r46477
 
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
+<<<<<<< .working
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+=======
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+>>>>>>> .merge-right.r46477
 import java.util.Map;
 
 /**
@@ -158,6 +162,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
             }
 
             public void onSuccess() {
+<<<<<<< .working
                 final LinkerSelectionContext lh = linker.getSelectionContext();
                 if (!lh.getMultipleSelection().isEmpty()) {
                     // Usages
@@ -287,6 +292,9 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                             }
                         });
                 }
+=======
+            	new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete).show();
+>>>>>>> .merge-right.r46477
             }
         });
     }
@@ -311,7 +319,6 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
         return super.isNodeTypeAllowed(selectedNode);
     }
-
     private class myBox extends MessageBox {
 
         @Override

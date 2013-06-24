@@ -106,19 +106,19 @@ public class NodeUsagesGrid {
                 new RpcProxy() {
                     @Override
                     protected void load(Object loadConfig, final AsyncCallback asyncCallback) {
+                    	List<String> paths = new ArrayList();
                         for (GWTJahiaNode selectedNode : nodes) {
-                            String path = selectedNode.getPath();
-
-                            instance.getUsages(Arrays.asList(path), new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
-                                public void onApplicationFailure(Throwable throwable) {
-                                    Log.debug("Cannot retrieve usages", throwable);
-                                }
-
-                                public void onSuccess(List<GWTJahiaNodeUsage> gwtJahiaNodeUsages) {
-                                    asyncCallback.onSuccess(gwtJahiaNodeUsages);
-                                }
-                            });
+                            paths.add(selectedNode.getPath());
                         }
+                        instance.getUsages(paths, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                            public void onApplicationFailure(Throwable throwable) {
+                                Log.debug("Cannot retrieve usages", throwable);
+                            }
+
+                            public void onSuccess(List<GWTJahiaNodeUsage> gwtJahiaNodeUsages) {
+                                asyncCallback.onSuccess(gwtJahiaNodeUsages);
+                            }
+                        });                        
                     }
                 }));
         final Grid<GWTJahiaNodeUsage> tbl = new Grid<GWTJahiaNodeUsage>(usageStore, cm);

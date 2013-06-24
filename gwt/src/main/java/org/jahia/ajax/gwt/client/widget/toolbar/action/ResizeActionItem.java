@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ImageResize;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,13 +56,16 @@ import java.util.List;
  * Time: 6:57:55 PM
  */
 public class ResizeActionItem extends BaseActionItem   {
+
+    private List<Integer[]> predefinedSizes;
+
     public void onComponentSelection() {
         GWT.runAsync(new RunAsyncCallback()  {
             public void onFailure(Throwable reason) {
             }
 
             public void onSuccess() {
-                new ImageResize(linker, linker.getSelectionContext().getSingleSelection()).show();
+                new ImageResize(linker, linker.getSelectionContext().getSingleSelection(), predefinedSizes).show();
             }
         });
     }
@@ -74,4 +78,32 @@ public class ResizeActionItem extends BaseActionItem   {
                 && lh.getSingleSelection().get("j:height") != null
                 && lh.getSingleSelection().get("j:width") != null);
     }
+
+    /**
+     * Defines the list of predefined image sizes.
+     * Each value is a String of format [width]x[height]
+     * @param predefinedSizes list of predefined sizes
+     */
+    public void setPredefinedSizes(List<String> predefinedSizes) {
+        if (predefinedSizes == null || predefinedSizes.isEmpty()) {
+            this.predefinedSizes = null;
+        } else {
+            this.predefinedSizes = new ArrayList<Integer[]>(predefinedSizes.size());
+            for (String size : predefinedSizes) {
+                if (size.indexOf('x') != -1) {
+                    String[] dimensions = size.split("x");
+                    if (dimensions.length == 2) {
+                        try {
+                            this.predefinedSizes.add(new Integer[] { Integer.parseInt(dimensions[0]),
+                                    Integer.parseInt(dimensions[1]) });
+                        } catch (NumberFormatException e) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }

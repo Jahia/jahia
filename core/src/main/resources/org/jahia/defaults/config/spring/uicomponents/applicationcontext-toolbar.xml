@@ -1073,7 +1073,9 @@
 
     <bean id="Toolbar.Item.Resize" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ResizeActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ResizeActionItem">
+                <property name="predefinedSizes" ref="ImageCrop.predefinedSizes"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.resize"/>
         <property name="icon" value="resize"/>

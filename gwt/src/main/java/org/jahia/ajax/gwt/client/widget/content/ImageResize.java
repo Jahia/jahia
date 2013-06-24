@@ -43,23 +43,25 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,10 +73,10 @@ import java.util.Map;
 public class ImageResize extends Window {
 
     private Linker linker;
-    
+    private ComboBox<GWTJahiaValueDisplayBean> predefinedSizesBox;
     private boolean autoName = true;
 
-    public ImageResize(final Linker linker, final GWTJahiaNode n) {
+    public ImageResize(final Linker linker, final GWTJahiaNode n, List<Integer[]> predefinedSizes) {
         super() ;
 
         this.linker = linker ;
@@ -94,26 +96,62 @@ public class ImageResize extends Window {
         setModal(true);
 
         FormData layoutData = new FormData(100, 0);
-
         final NumberField wf = new NumberField();
+        final NumberField hf = new NumberField();
+        final CheckBox keepRatio = new CheckBox();
+        final TextField<String> newname = new TextField<String>();
+
+        if (predefinedSizes != null && !predefinedSizes.isEmpty()) {
+            List<GWTJahiaValueDisplayBean> sizes = new ArrayList<GWTJahiaValueDisplayBean>();
+            for (Integer[] d : predefinedSizes) {
+                    String label = d[0] + " x " + d[1];
+                    GWTJahiaValueDisplayBean v = new GWTJahiaValueDisplayBean(label, label);
+                    v.set("width", d[0]);
+                    v.set("height", d[1]);
+                    sizes.add(v);
+            }
+            if (!sizes.isEmpty()) {
+                predefinedSizesBox = new ComboBox<GWTJahiaValueDisplayBean>();
+                predefinedSizesBox.setDisplayField("display");
+                predefinedSizesBox.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+                predefinedSizesBox.setForceSelection(true);
+                predefinedSizesBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+                predefinedSizesBox.setDeferHeight(true);
+                predefinedSizesBox.getStore().add(sizes);
+                predefinedSizesBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                        GWTJahiaValueDisplayBean v = se.getSelectedItem();
+                        wf.setValue((Integer) v.get("width"));
+                        if (!keepRatio.getValue()) {
+                            hf.setValue((Integer) v.get("height"));
+                        } else {
+                            hf.setValue(h * wf.getValue().intValue() / w);
+                        }
+                        if (autoName) setAutoName(newname, wf.getValue().intValue(), hf.getValue().intValue());
+                    }
+                });
+                predefinedSizesBox.setEmptyText(Messages.get("selectPredefinedSize.label","select a predefined size"));
+                form.add(predefinedSizesBox, layoutData);
+            } else {
+            }
+        }
+
         wf.setName("width");
         wf.setValue(new Integer(w));
         wf.setFieldLabel(Messages.get("width.label"));
         form.add(wf, layoutData);
 
-        final NumberField hf = new NumberField();
         hf.setName("height");
         hf.setValue(new Integer(h));
         hf.setFieldLabel(Messages.get("height.label"));
         form.add(hf, layoutData);
 
-        final CheckBox keepRatio = new CheckBox();
         keepRatio.setName("ratio");
         keepRatio.setValue(true);
         keepRatio.setFieldLabel(Messages.get("ratio.label"));
         form.add(keepRatio, new FormData(20, 0));
 
-        final TextField<String> newname = new TextField<String>();
         newname.setName("newname");
         newname.setWidth(350);
         int extIndex = n.getName().lastIndexOf(".") ;
@@ -170,6 +208,7 @@ public class ImageResize extends Window {
 
         add(form);
     }
+
 
     protected void setAutoName(TextField<String> newname, int w, int h) {
         String v = newname.getValue();

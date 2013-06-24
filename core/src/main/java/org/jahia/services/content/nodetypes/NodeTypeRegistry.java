@@ -183,8 +183,14 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (ext.equalsIgnoreCase(".cnd")) {
             Reader resourceReader = null;
             try {
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
+=======
+                defsReader =  new InputStreamReader(new FileInputStream(file), "UTF-8");
+
+                JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
+>>>>>>> .merge-right.r46482
                 r.parse();
             } finally {
                 IOUtils.closeQuietly(resourceReader);
@@ -192,9 +198,15 @@ public class NodeTypeRegistry implements NodeTypeManager {
         } else if (ext.equalsIgnoreCase(".grp")) {
             Reader resourceReader = null;
             try {
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
                 r.parse();
+=======
+                defsReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+                JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
+                r.parse();            
+>>>>>>> .merge-right.r46482
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }

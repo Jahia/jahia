@@ -627,6 +627,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         cacheEntry.setProperty("allPaths",allPaths);
     }
 
+<<<<<<< .working
     /**
      * Add key to the list of dependencies
      *
@@ -638,7 +639,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected void addDependencies(RenderContext renderContext, String finalKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
         if (newDependencies.add(finalKey)) {
-            regexpDependenciesCache.put(new Element(regexp, newDependencies));
+=======
+    protected void addDependencies(RenderContext renderContext, String perUserKey, Cache cache, String value, Set<String> newDependencies) {
+        if (newDependencies.add(perUserKey)) {
+>>>>>>> .merge-right.r46487
+            cache.put(new Element(value, newDependencies));
         }
     }
 

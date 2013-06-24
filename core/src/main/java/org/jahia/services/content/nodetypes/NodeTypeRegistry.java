@@ -49,7 +49,6 @@ import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**

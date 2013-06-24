@@ -117,8 +117,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String FORM_TOKEN = "form_token";
     protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
-
+    protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
+
+    public void setCascadeFragmentErrors(boolean cascadeFragmentErrors) {
+        this.cascadeFragmentErrors = cascadeFragmentErrors;
+    }
 
     public void setErrorCacheExpiration(int errorCacheExpiration) {
         this.errorCacheExpiration = errorCacheExpiration;
@@ -804,6 +808,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
         super.getContentForError(renderContext, resource, chain, e);
+        if (cascadeFragmentErrors) {
+            return null;
+        }
         try {
             renderContext.getRequest().setAttribute("expiration", ""+errorCacheExpiration);
             // Returns a fragment with an error comment
@@ -841,7 +848,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                                                  HttpServletRequest request, Resource resource, Properties properties) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
-        boolean semaphoreAcquired = false;
+
         Map<String, CountDownLatch> generatingModules = generatorQueue.getGeneratingModules();
         if (generatingModules.get(key) == null && acquiredSemaphore.get() == null) {
             if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
@@ -852,7 +859,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         request.getRequestURI());
             } else {
                 acquiredSemaphore.set(key);
-                semaphoreAcquired = true;
             }
         }
         if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
@@ -868,7 +874,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             mustWait = false;
         }
         if (mustWait) {
-            if (semaphoreAcquired) {
+            if (acquiredSemaphore.get() != null) {
                 // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait 
                 generatorQueue.getAvailableProcessings().release();
                 acquiredSemaphore.set(null);

@@ -105,8 +105,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
 
-<<<<<<< .working
-
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
      * (and satisfied BeanFactoryAware and ApplicationContextAware).
@@ -137,12 +135,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.moduleParamsProperties = moduleParamsProperties;
     }
 
-=======
     public void setCascadeFragmentErrors(boolean cascadeFragmentErrors) {
         this.cascadeFragmentErrors = cascadeFragmentErrors;
     }
 
->>>>>>> .merge-right.r46485
     public void setErrorCacheExpiration(int errorCacheExpiration) {
         this.errorCacheExpiration = errorCacheExpiration;
     }
@@ -627,22 +623,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         cacheEntry.setProperty("allPaths",allPaths);
     }
 
-<<<<<<< .working
     /**
      * Add key to the list of dependencies
      *
      * @param renderContext
      * @param finalKey
-     * @param regexpDependenciesCache
-     * @param regexp
+     * @param cache
+     * @param value
      * @param newDependencies
      */
-    protected void addDependencies(RenderContext renderContext, String finalKey, Cache regexpDependenciesCache, String regexp, Set<String> newDependencies) {
+    protected void addDependencies(RenderContext renderContext, String finalKey, Cache cache, String value, Set<String> newDependencies) {
         if (newDependencies.add(finalKey)) {
-=======
-    protected void addDependencies(RenderContext renderContext, String perUserKey, Cache cache, String value, Set<String> newDependencies) {
-        if (newDependencies.add(perUserKey)) {
->>>>>>> .merge-right.r46487
             cache.put(new Element(value, newDependencies));
         }
     }

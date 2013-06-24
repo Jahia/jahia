@@ -421,9 +421,7 @@
 [jnt:absoluteArea] > jnt:area, jmix:layoutComponentContent, jmix:studioOnly
  - j:level (long)
 
-[jnt:levelAbsoluteArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:listRestrictions, jmix:mockupStyle, jmix:droppableContent
- - j:level (long)
- + * (jmix:droppableContent) = jmix:droppableContent version
+[jnt:levelAbsoluteArea] > jnt:absoluteArea, jmix:hiddenType
 
 [jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:layoutComponentContent, jmix:mockupStyle, jmix:studioOnly
 
@@ -562,6 +560,10 @@
 [jmix:formContent] > jmix:droppableContent mixin
 
 [jmix:userProfileComponents] > jmix:droppableContent mixin
+
+// To exclude a notetype from the components tree
+
+[jmix:hiddenType]
 
 // @since Jahia 6.6
 [jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:nolive, mix:title, jmix:list

@@ -26,6 +26,11 @@
                 <value>jmix:studioOnly</value>
             </set>
         </property>
+        <property name="nonVisibleTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
 
         <property name="topToolbar">
             <bean id="editModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

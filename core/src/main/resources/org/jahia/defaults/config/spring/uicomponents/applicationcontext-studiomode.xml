@@ -47,7 +47,11 @@
                 <value>jmix:list</value>
             </set>
         </property>
-
+        <property name="nonVisibleTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <!--<property name="nonEditableTypes">-->
             <!--<set>-->
                 <!--<value>jmix:layoutComponentContent</value>-->

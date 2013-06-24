@@ -1,7 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -119,13 +121,14 @@ public class DeleteItemWindow extends Window {
 						} else if (linker instanceof EditLinker) {
 							el = (EditLinker) linker;
 						}
-						if (el != null && selectedNodeList.contains(el.getSelectionContext().getMainNode().getPath())) {
-							linker.refresh(EditLinker.REFRESH_PAGES);
-							linker.select(null);
-						} else {
-							linker.refresh(EditLinker.REFRESH_ALL);
-							linker.select(null);
-						}
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        if (el != null && selectedPathList.contains(el.getSelectionContext().getMainNode().getPath())) {
+                            data.put("node", el.getSelectionContext().getMainNode());
+                        } else {
+                            data.put(Linker.REFRESH_ALL, true);
+                        }
+                        linker.refresh(data);
+                        linker.select(null);
 						hide();
 					}
 				};

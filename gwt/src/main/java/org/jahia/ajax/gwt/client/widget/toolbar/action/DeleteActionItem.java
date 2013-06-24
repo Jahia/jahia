@@ -40,38 +40,23 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-<<<<<<< .working
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
-=======
+import java.util.ArrayList;
 import java.util.List;
->>>>>>> .merge-right.r46477
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-<<<<<<< .working
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-=======
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
->>>>>>> .merge-right.r46477
-import java.util.Map;
 
 /**
  * Action item responsible for deleting the content.
@@ -162,7 +147,6 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
             }
 
             public void onSuccess() {
-<<<<<<< .working
                 final LinkerSelectionContext lh = linker.getSelectionContext();
                 if (!lh.getMultipleSelection().isEmpty()) {
                     // Usages
@@ -179,122 +163,10 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                             }
 
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                                String icon = MessageBox.WARNING;
-                                String message;
-                                if (l.size() > 1) {
-                                    message = Messages.getWithArgs("message.remove.multiple.confirm",
-                                            "Do you really want to remove the {0} selected resources?",
-                                            new String[]{String.valueOf(
-                                                    l.size())});
-                                } else {
-                                    if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
-                                        message = Messages.getWithArgs(
-                                                "message.remove.single.page.confirm",
-                                                "Do you really want to remove the selected PAGE {0}?",
-                                                new String[]{lh.getSingleSelection().getName()});
-                                        icon = "ext-mb-delete-page";
-                                    } else {
-                                        message = Messages.getWithArgs(
-                                                "message.remove.single.confirm",
-                                                "Do you really want to remove the selected resource {0}?",
-                                                new String[]{lh.getSingleSelection().getName()});
-                                    }
-                                }
-                                if (l.size() > 1) {
-                                    message += "<br/><br/>";
-                                    int i = 0;
-                                    for (GWTJahiaNode node : lh.getMultipleSelection()) {
-                                        if (i > 4) {
-                                            message += "<br/>...";
-                                            break;
-                                        }
-                                        message += "<br/>" + node.getName();
-                                        i++;
-                                    }
-                                }
-                                message+="<br/><br/>";
-                                String n = "";
-                                int size = result.size();
-                                if(size>0) {
-                                    message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
-                                            "Those nodes are still used in:") : Messages.get(
-                                            "message.remove.single.usage",
-                                            "This node is still used by:");
-                                }
-                                int i = 0;
-                                for (int j = 0; j < (size>4?4:size); j++) {
-                                    GWTJahiaNodeUsage nodeUsage = result.get(j);
-                                    if (!nodeUsage.getNodeName().equals(n)) {
-                                        message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getNodeTitle() + " " + Messages.get(
-                                                "label.remove.used", "is using this node in page(s)") + "<br/>" +nodeUsage.getPageTitle()+"</span>";
-                                        i++;
-                                    } else {
-                                        message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getPageTitle()+"</span>";
-                                    }
-                                    n = nodeUsage.getNodeName();
-                                }
-                                if(i>4) {
-                                    message+="<br/>.<br/>.<br/>.";
-                                }
-                                if (i > 0) {
-                                    message+="<br/>";
-                                }
-                                if (permanentlyDelete) {
-                                    message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
-                                } else {
-                                    message += "<br/>" + Messages.get("label.comment","Comment") + ":";
-                                }
-
-                                final MessageBox box = new MessageBox();
-                                box.setTitle(Messages.get("label.information", "Information"));
-                                box.setMessage(message);
-                                if (!permanentlyDelete) {
-                                    box.setType(MessageBoxType.MULTIPROMPT);
-                                }
-                                box.setButtons(MessageBox.YESNO);
-                                box.setIcon(icon);
-                                box.addCallback(new Listener<MessageBoxEvent>() {
-                                    public void handleEvent(MessageBoxEvent be) {
-                                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                            BaseAsyncCallback<Object> baseAsyncCallback = new BaseAsyncCallback<Object>() {
-                                                public void onApplicationFailure(Throwable throwable) {
-                                                    Log.error(throwable.getMessage(), throwable);
-                                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                                                }
-
-                                                public void onSuccess(Object o) {
-                                                    EditLinker el = null;
-                                                    if (linker instanceof SidePanelTabItem.SidePanelLinker) {
-                                                        el = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
-                                                    } else if (linker instanceof EditLinker) {
-                                                        el = (EditLinker) linker;
-                                                    }
-                                                    Map<String, Object> data = new HashMap<String, Object>();
-                                                    if (el != null && l.contains(el.getSelectionContext().getMainNode().getPath())) {
-                                                        data.put("node", el.getSelectionContext().getMainNode());
-                                                    } else {
-                                                        data.put(Linker.REFRESH_ALL, true);
-                                                    }
-                                                    linker.refresh(data);
-                                                    linker.select(null);
-                                                }
-                                            };
-                                            if (permanentlyDelete) {
-                                                async.deletePaths(l, baseAsyncCallback);
-                                            } else {
-                                                async.markForDeletion(l, box.getTextArea().getValue(), baseAsyncCallback);
-                                            }
-                                        }
-                                    }
-                                });
-                                box.show();
-
+                            	new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete).show();
                             }
                         });
                 }
-=======
-            	new DeleteItemWindow(linker, linker.getSelectionContext(), permanentlyDelete).show();
->>>>>>> .merge-right.r46477
             }
         });
     }
@@ -319,12 +191,4 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
         return super.isNodeTypeAllowed(selectedNode);
     }
-    private class myBox extends MessageBox {
-
-        @Override
-        public TextArea getTextArea() {
-            return super.getTextArea();    //To change body of overridden methods use File | Settings | File Templates.
-        }
-    }
-
 }

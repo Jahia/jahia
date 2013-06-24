@@ -376,6 +376,7 @@
         </property>
 
     </bean>
+<<<<<<< .working
 
     <bean class="org.jahia.services.content.decorator.JCRNodeDecoratorDefinition">
         <property name="decorators">
@@ -385,4 +386,10 @@
         </property>
     </bean>
 
+=======
+
+    <bean class="org.jahia.services.render.filter.cache.CacheFilterCheckFilter">
+        <property name="priority" value="-99"/>
+    </bean>
+>>>>>>> .merge-right.r46492
 </beans>

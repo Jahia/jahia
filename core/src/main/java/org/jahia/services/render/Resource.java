@@ -91,7 +91,7 @@ public class Resource {
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
-        dependencies = new LinkedHashSet<String>();
+        dependencies = new HashSet<String>();
         dependencies.add(node.getCanonicalPath());
         regexpDependencies = new LinkedHashSet<String>();
         missingResources = new ArrayList<String>();

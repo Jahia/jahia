@@ -479,7 +479,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Element element1 = dependenciesCache.get(path);
                 Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
                 if (!dependencies.contains("ALL")) {
-                    Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
+                    Set<String> newDependencies = new HashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
                     if ((newDependencies.size() + 1) > dependenciesLimit) {
                         newDependencies.clear();

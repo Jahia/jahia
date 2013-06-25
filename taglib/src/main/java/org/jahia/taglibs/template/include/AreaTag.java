@@ -48,6 +48,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
 import org.slf4j.Logger;
@@ -258,7 +259,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                 // now let's check if the content node matches the areaType. If not it means we have a
                                 // conflict with another content created outside of the content of the area (DEVMINEFI-223)
                                 if (!this.node.isNodeType(areaType)) {
-                                    conflictsWith = this.node.getPath();
+//                                    conflictsWith = this.node.getPath();
                                     found = false;
                                     this.node = null;
                                     break;
@@ -341,7 +342,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     @Override
-    protected void render(RenderContext renderContext, Resource resource) throws IOException {
+    protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
         if (canEdit(renderContext) || !isEmptyArea() || path == null) {
             super.render(renderContext, resource);
         }

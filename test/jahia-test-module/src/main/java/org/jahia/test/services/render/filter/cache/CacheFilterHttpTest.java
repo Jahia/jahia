@@ -103,10 +103,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         Ehcache cache = cacheProvider.getCache();
         Ehcache depCache = cacheProvider.getDependenciesCache();
         cache.flush();
-        cache.clearStatistics();
         cache.removeAll();
         depCache.flush();
-        depCache.clearStatistics();
         depCache.removeAll();
         AggregateCacheFilter.flushNotCacheableFragment();
         CacheFilterCheckFilter.clear();

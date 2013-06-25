@@ -105,7 +105,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
 
-<<<<<<< .working
+    private Set<String> skipLatchForConfigurations;
+    private Set<String> skipLatchForPaths;
+    private Set<String> skipLatchForNodeTypes;
+
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
      * (and satisfied BeanFactoryAware and ApplicationContextAware).
@@ -136,13 +139,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.moduleParamsProperties = moduleParamsProperties;
     }
 
-=======
-    private Set<String> skipLatchForConfigurations;
-    private Set<String> skipLatchForPaths;
-    private Set<String> skipLatchForNodeTypes;
-
-
->>>>>>> .merge-right.r46497
     public void setCascadeFragmentErrors(boolean cascadeFragmentErrors) {
         this.cascadeFragmentErrors = cascadeFragmentErrors;
     }
@@ -151,20 +147,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.errorCacheExpiration = errorCacheExpiration;
     }
 
-<<<<<<< .working
-    /**
-     * The prepare method is the first entry point in the cache. Its purpose is to check if a content is inside the
-     * cache, and returns cached content for the fragment matching the requested resource if it is found. If other
-     * fragment (module tags) are embedded inside this fragment, it will get them from the cache or by calling the
-     * render service and aggregate them.
-     *
-     * @param renderContext The render context
-     * @param resource The resource to render
-     * @param chain The render chain
-     * @return The content (with sub content aggregated) if found in the cache, null otherwise.
-     * @throws Exception
-     */
-=======
     public void setSkipLatchForConfigurations(Set<String> skipLatchForConfigurations) {
         this.skipLatchForConfigurations = skipLatchForConfigurations;
     }
@@ -177,7 +159,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.skipLatchForNodeTypes = skipLatchForNodeTypes;
     }
 
->>>>>>> .merge-right.r46497
+    /**
+     * The prepare method is the first entry point in the cache. Its purpose is to check if a content is inside the
+     * cache, and returns cached content for the fragment matching the requested resource if it is found. If other
+     * fragment (module tags) are embedded inside this fragment, it will get them from the cache or by calling the
+     * render service and aggregate them.
+     *
+     * @param renderContext The render context
+     * @param resource The resource to render
+     * @param chain The render chain
+     * @return The content (with sub content aggregated) if found in the cache, null otherwise.
+     * @throws Exception
+     */
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         boolean debugEnabled = logger.isDebugEnabled();

@@ -928,7 +928,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
         super.getContentForError(renderContext, resource, chain, e);
-        if (cascadeFragmentErrors) {
+        if (cascadeFragmentErrors || Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
             return null;
         }
         try {

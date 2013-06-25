@@ -105,6 +105,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
 
+<<<<<<< .working
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
      * (and satisfied BeanFactoryAware and ApplicationContextAware).
@@ -135,6 +136,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.moduleParamsProperties = moduleParamsProperties;
     }
 
+=======
+    private Set<String> skipLatchForConfigurations;
+    private Set<String> skipLatchForPaths;
+    private Set<String> skipLatchForNodeTypes;
+
+
+>>>>>>> .merge-right.r46497
     public void setCascadeFragmentErrors(boolean cascadeFragmentErrors) {
         this.cascadeFragmentErrors = cascadeFragmentErrors;
     }
@@ -143,6 +151,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         this.errorCacheExpiration = errorCacheExpiration;
     }
 
+<<<<<<< .working
     /**
      * The prepare method is the first entry point in the cache. Its purpose is to check if a content is inside the
      * cache, and returns cached content for the fragment matching the requested resource if it is found. If other
@@ -155,6 +164,20 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @return The content (with sub content aggregated) if found in the cache, null otherwise.
      * @throws Exception
      */
+=======
+    public void setSkipLatchForConfigurations(Set<String> skipLatchForConfigurations) {
+        this.skipLatchForConfigurations = skipLatchForConfigurations;
+    }
+
+    public void setSkipLatchForPaths(Set<String> skipLatchForPaths) {
+        this.skipLatchForPaths = skipLatchForPaths;
+    }
+
+    public void setSkipLatchForNodeTypes(Set<String> skipLatchForNodeTypes) {
+        this.skipLatchForNodeTypes = skipLatchForNodeTypes;
+    }
+
+>>>>>>> .merge-right.r46497
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         boolean debugEnabled = logger.isDebugEnabled();
@@ -974,7 +997,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 acquiredSemaphore.set(key);
             }
         }
-        if ( !Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) && Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"),"true") )) {
+        if (shouldUseLatch(resource, properties)) {
             synchronized (generatingModules) {
                 latch = generatingModules.get(key);
                 if (latch == null) {
@@ -1008,6 +1031,33 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
         }
         return latch;
+    }
+
+    private boolean shouldUseLatch(Resource resource, Properties properties) throws RepositoryException {
+        if (!Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"), "true"))) {
+            return false;
+        }
+        if (skipLatchForConfigurations != null && skipLatchForConfigurations.contains(resource.getContextConfiguration())) {
+            return false;
+        }
+        if (skipLatchForPaths != null) {
+            for (String skipLatchForPath : skipLatchForPaths) {
+                if (skipLatchForPath.contains("$currentSite")) {
+                    skipLatchForPath = skipLatchForPath.replace("$currentSite",resource.getNode().getResolveSite().getPath());
+                }
+                if (resource.getNode().getPath().startsWith(skipLatchForPath)) {
+                    return false;
+                }
+            }
+        }
+        if (skipLatchForNodeTypes != null) {
+            for (String nodeType : skipLatchForNodeTypes) {
+                if (resource.getNode().isNodeType(nodeType)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     protected void manageThreadDump() {

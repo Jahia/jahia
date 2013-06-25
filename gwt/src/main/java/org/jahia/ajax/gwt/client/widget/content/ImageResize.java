@@ -131,8 +131,9 @@ public class ImageResize extends Window {
                         if (autoName) setAutoName(newname, wf.getValue().intValue(), hf.getValue().intValue());
                     }
                 });
-                predefinedSizesBox.setEmptyText(Messages.get("selectPredefinedSize.label","select a predefined size"));
-                form.add(predefinedSizesBox, layoutData);
+                predefinedSizesBox.setEmptyText(Messages.get("selectPredefinedSize.label", "select a predefined size"));
+                predefinedSizesBox.setFieldLabel(Messages.get("label.size","Size"));
+                form.add(predefinedSizesBox, new ColumnData(200));
             } else {
             }
         }

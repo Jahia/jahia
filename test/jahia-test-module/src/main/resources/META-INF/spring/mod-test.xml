@@ -398,4 +398,7 @@
         </property>
     </bean>
 
+    <bean class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
+        <property name="priority" value="-99"/>
+    </bean>
 </beans>

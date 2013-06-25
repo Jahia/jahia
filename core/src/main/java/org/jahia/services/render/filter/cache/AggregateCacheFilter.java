@@ -628,7 +628,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     final Element element = cache.get(mrCacheKey);
                     if (element != null && element.getValue() != null) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("It has been found in cache", mrCacheKey);
+                            logger.debug("It has been found in cache");
                         }
                         @SuppressWarnings("unchecked")
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
@@ -657,13 +657,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Content is expired", mrCacheKey);
+                            logger.debug("Content is expired");
                         }
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Content is missing from cache", mrCacheKey);
+                        logger.debug("Content is missing from cache");
                     }
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
                 }

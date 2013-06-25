@@ -6,17 +6,27 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.*;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.JahiaTestCase;
+import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
 
+import javax.jcr.ImportUUIDBehavior;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -28,40 +38,40 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
-//            JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web-blue");
-//            assertNotNull(site);
-//            JCRStoreService jcrService = ServicesRegistry.getInstance()
-//                    .getJCRStoreService();
-//            JCRSessionWrapper session = jcrService.getSessionFactory()
-//                    .getCurrentUserSession();
-//
-//            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/jahia-test-module-war", SITECONTENT_ROOT_NODE, session.getUser().getUsername());;
-//            final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
-//            final JCRUser userAB = userManagerProvider.createUser("userAB", "password", new Properties());
-//            final JCRUser userAC = userManagerProvider.createUser("userAC", "password", new Properties());
-//            final JCRUser userBC = userManagerProvider.createUser("userBC", "password", new Properties());
-//
-//            // Create three groups
-//            final JCRGroupManagerProvider groupManagerProvider = JCRGroupManagerProvider.getInstance();
-//            final JCRGroup groupA = groupManagerProvider.createGroup(site.getID(), "groupA", new Properties(), false);
-//            final JCRGroup groupB = groupManagerProvider.createGroup(site.getID(), "groupB", new Properties(), false);
-//            final JCRGroup groupC = groupManagerProvider.createGroup(site.getID(), "groupC", new Properties(), false);
-//            // Associate each user to two group
-//            groupA.addMember(userAB);
-//            groupA.addMember(userAC);
-//            groupB.addMember(userAB);
-//            groupB.addMember(userBC);
-//            groupC.addMember(userAC);
-//            groupC.addMember(userBC);
-//
-//            InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/cachetest-site.xml");
-//            session.importXML(SITECONTENT_ROOT_NODE, importStream,
-//                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
-//            importStream.close();
-//            session.save();
-//            JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
-//            JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-//                    true, null);
+            JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web-blue");
+            assertNotNull(site);
+            JCRStoreService jcrService = ServicesRegistry.getInstance()
+                    .getJCRStoreService();
+            JCRSessionWrapper session = jcrService.getSessionFactory()
+                    .getCurrentUserSession();
+
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().deployModule("/templateSets/jahia-test-module-war", SITECONTENT_ROOT_NODE, session.getUser().getUsername());;
+            final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
+            final JCRUser userAB = userManagerProvider.createUser("userAB", "password", new Properties());
+            final JCRUser userAC = userManagerProvider.createUser("userAC", "password", new Properties());
+            final JCRUser userBC = userManagerProvider.createUser("userBC", "password", new Properties());
+
+            // Create three groups
+            final JCRGroupManagerProvider groupManagerProvider = JCRGroupManagerProvider.getInstance();
+            final JCRGroup groupA = groupManagerProvider.createGroup(site.getID(), "groupA", new Properties(), false);
+            final JCRGroup groupB = groupManagerProvider.createGroup(site.getID(), "groupB", new Properties(), false);
+            final JCRGroup groupC = groupManagerProvider.createGroup(site.getID(), "groupC", new Properties(), false);
+            // Associate each user to two group
+            groupA.addMember(userAB);
+            groupA.addMember(userAC);
+            groupB.addMember(userAB);
+            groupB.addMember(userBC);
+            groupC.addMember(userAC);
+            groupC.addMember(userBC);
+
+            InputStream importStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("imports/cachetest-site.xml");
+            session.importXML(SITECONTENT_ROOT_NODE, importStream,
+                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+            importStream.close();
+            session.save();
+            JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
+            JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    true, null);
 
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
@@ -71,15 +81,15 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-//        try {
-//            TestHelper.deleteSite(TESTSITE_NAME);
-//            final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB"));
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC"));
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC"));
-//        } catch (Exception e) {
-//            logger.warn("Exception during test tearDown", e);
-//        }
+        try {
+            TestHelper.deleteSite(TESTSITE_NAME);
+            final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB"));
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC"));
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC"));
+        } catch (Exception e) {
+            logger.warn("Exception during test tearDown", e);
+        }
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 

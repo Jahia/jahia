@@ -462,31 +462,6 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
     /**
      * This method will call the underlying provider to signal the identified process.
      *
-     * @param processId      the process we want to advance
-     * @param provider       The provider executing the process
-     * @param transitionName
-     * @param args           List of args for the process
-     */
-    public void signalProcess(String processId, String transitionName, String provider, Map<String, Object> args) {
-        lookupProvider(provider).signalProcess(processId, transitionName, args);
-    }
-
-    /**
-     * This method will call the underlying provider to signal the identified process.
-     *
-     * @param processId      the process we want to advance
-     * @param provider       The provider executing the process
-     * @param transitionName
-     * @param args           List of args for the process
-     */
-    public void signalProcess(String processId, String transitionName, String signalName, String provider,
-                              Map<String, Object> args) {
-        lookupProvider(provider).signalProcess(processId, transitionName, signalName, args);
-    }
-
-    /**
-     * This method will call the underlying provider to signal the identified process.
-     *
      * @param processId the process we want to advance
      * @param provider  The provider executing the process
      */

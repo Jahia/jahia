@@ -964,6 +964,11 @@
             <artifactId>jbpm-human-task-workitems</artifactId>
             <version>${jbpm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-audit</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>jboss</groupId>

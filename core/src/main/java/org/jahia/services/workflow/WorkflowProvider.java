@@ -66,10 +66,6 @@ public interface WorkflowProvider {
 
     String startProcess(String processKey, Map<String, Object> args);
 
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
-
-    void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
-
     void abortProcess(String processId);
 
     Workflow getWorkflow(String processId, Locale locale);

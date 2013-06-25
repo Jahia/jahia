@@ -191,13 +191,6 @@ public class WorkflowServiceTest {
         final Set<WorkflowAction> availableActions = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM",
                 availableActions.size() > 0);
-        WorkflowAction action = availableActions.iterator().next();
-        if (action instanceof WorkflowTask) {
-            service.signalProcess(processId, action.getName(), ((WorkflowTask) action).getOutcomes().contains(
-                    "accept") ? "accept" : "reject", PROVIDER, emptyMap);
-        } else {
-            service.signalProcess(processId, action.getName(), PROVIDER, emptyMap);
-        }
         final List<Workflow> newActiveWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", newActiveWorkflows.size() > 0);
         final Set<WorkflowAction> newAvailableActions = newActiveWorkflows.get(0).getAvailableActions();

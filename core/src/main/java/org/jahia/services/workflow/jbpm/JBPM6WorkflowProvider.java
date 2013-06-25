@@ -9,6 +9,8 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
@@ -132,16 +134,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
-        ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
-        kieSession.signalEvent();
-    }
-
-    @Override
-    public void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args) {
-    }
-
-    @Override
     public void abortProcess(String processId) {
         kieSession.abortProcessInstance(Long.parseLong(processId));
     }
@@ -261,7 +253,21 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<HistoryWorkflow> historyWorkflows = new ArrayList<HistoryWorkflow>();
+        for (String processId : processIds) {
+            ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
+            historyWorkflows.add(new HistoryWorkflow(processInstanceLog.getId(),
+                    getWorkflowDefinitionById(processInstanceLog.getProcessId(), locale),
+                    processInstanceLog.getProcessName(),
+                    key,
+                    processInstanceLog.getIdentity(),
+                    processInstanceLog.getStart(),
+                    processInstanceLog.getEnd(),
+                    processInstanceLog.getOutcome(),
+                    nodeId
+            ));
+        }
+        return historyWorkflows;
     }
 
     @Override
@@ -276,10 +282,13 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     private WorkflowDefinition convertToWorkflowDefinition(org.kie.api.definition.process.Process process, Locale locale) {
         WorkflowDefinition wf = new WorkflowDefinition(process.getName(), process.getName(), this.key);
-        wf.setFormResourceName(repositoryService.getStartFormResourceName(process.getId(),
-                repositoryService.getStartActivityNames(process.getId()).get(0)));
+        String startFormName = null;
+        WorkflowProcess workflowProcess = (WorkflowProcess) process;
+        if (workflowProcess.getNodes().length > 0) {
+            startFormName = (String) workflowProcess.getNodes()[0].getMetaData().get("FormName");
+        }
+        wf.setFormResourceName(startFormName);
         if (process instanceof WorkflowProcess) {
-            WorkflowProcess workflowProcess = (WorkflowProcess) process;
             Node[] nodes = workflowProcess.getNodes();
 
             final Set<String> tasks = new LinkedHashSet<String>();
@@ -314,10 +323,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             workflow.setDuedate(job.getDueDate());
         }
         */
-        workflow.setStartTime(
-                historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
+        ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(instance.getId());
+        workflow.setStartTime(processInstanceLog.getStart());
 
-        Object user = executionService.getVariable(instance.getId(), "user");
+        Object user = workflowProcessInstance.getVariable("User");
         if (user != null) {
             workflow.setStartUser(user.toString());
         }

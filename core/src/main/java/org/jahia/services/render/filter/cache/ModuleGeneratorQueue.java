@@ -109,6 +109,7 @@ public class ModuleGeneratorQueue implements InitializingBean {
 
     public void setMaxModulesToGenerateInParallel(int maxModulesToGenerateInParallel) {
         this.maxModulesToGenerateInParallel = maxModulesToGenerateInParallel;
+        availableProcessings = null;
     }
 
     public void setModuleGenerationWaitTime(long moduleGenerationWaitTime) {

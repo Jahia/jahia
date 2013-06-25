@@ -14,5 +14,5 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-Very long to appear <% Thread.currentThread().sleep(20000); %>
+Very long to appear <% Thread.currentThread().sleep(2000); %>
 ${currentNode.properties['text'].string}

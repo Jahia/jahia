@@ -12,7 +12,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.services.sites.JahiaSite;
@@ -26,6 +25,8 @@ import org.junit.*;
 import org.slf4j.Logger;
 
 import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.NodeIterator;
+import javax.jcr.query.Query;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -315,7 +316,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 Matcher m = Pattern.compile("text content updated").matcher(newvalue);
                 assertTrue("Value has not been updated",m.find());
                 assertTrue("References have not been flushed",m.find());
-                assertTrue("References have not been flushed",m.find());
+                assertTrue("References have not been flushed", m.find());
             } finally {
                 n.setProperty("text","text content");
                 session.save();
@@ -323,6 +324,49 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    @Test
+    public void testRandomFlush() throws Exception {
+        JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'"+SITECONTENT_ROOT_NODE+"')", Query.JCR_SQL2);
+        List<String> paths = new ArrayList<String>();
+        NodeIterator nodes = q.execute().getNodes();
+        while (nodes.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+            paths.add(next.getPath());
+        }
+
+        List<String> users = Arrays.asList("userAB", "userAC", "userBC");
+        Map<String,String> m = new HashMap<String, String>();
+        for (String user : users) {
+            for (String path : paths) {
+                m.put(user + path, getContent(getUrl(path), user, "password", null));
+            }
+        }
+
+        List<String> l = ModuleCacheProvider.getInstance().getCache().getKeys();
+        for (int j = 0; j < 10; j++) {
+            List<String> toFlush = randomizeFlush(l, 10);
+            for (String user : users) {
+                for (String path : paths) {
+                    if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
+                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
+                    }
+                }
+            }
+        }
+    }
+
+    private List<String> randomizeFlush(List<String> l, int number) {
+        Random r = new Random();
+        List<String> toFlush = new ArrayList<String>();
+        for (int i = 0; i < number; i++) {
+            String s = l.get(r.nextInt(l.size()));
+            toFlush.add(s);
+            ModuleCacheProvider.getInstance().getCache().remove(s);
+        }
+        return toFlush;
     }
 
     private String getContent(URL url, String user, String password, String requestId) throws Exception {

@@ -17,7 +17,7 @@
     </mail>
 
     <task form="jnt:simpleWorkflow" g="345,55,80,40" name="review">
-        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener"/>
         <transition g="397,114:-26,4" name="reject" to="alertReject"/>
         <transition g="396,35:-18,-17" name="accept" to="alertPublish">
         </transition>

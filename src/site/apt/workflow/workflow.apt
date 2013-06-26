@@ -108,7 +108,7 @@ Workflow Integration
 
 +--------------------
      <task name="request" form="jnt:translationRequest">
-         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener"/>
          ...
 
      </task>

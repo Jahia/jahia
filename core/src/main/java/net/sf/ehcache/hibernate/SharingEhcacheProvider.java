@@ -3,6 +3,7 @@ package net.sf.ehcache.hibernate;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.hibernate.management.impl.ProviderMBeanRegistrationHelper;
 import org.hibernate.cache.CacheException;
+import org.hibernate.cfg.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import java.util.Properties;
  * A sharing Hibernate EHCache provider that can re-use a CacheManager provided by Jahia. This is useful for using
  * Hibernate inside modules.
  */
-public class SharingEhcacheProvider extends AbstractEhcacheProvider {
+public class SharingEhcacheProvider extends AbstractEhcacheRegionFactory {
 
     public static final String ORG_JAHIA_HIBERNATE_EHCACHE_EXISTING_CACHE_MANAGER_NAME = "org.jahia.hibernate.ehcache.existingCacheManagerName";
 
@@ -22,7 +23,7 @@ public class SharingEhcacheProvider extends AbstractEhcacheProvider {
     private final ProviderMBeanRegistrationHelper mbeanRegistrationHelper = new ProviderMBeanRegistrationHelper();
 
     @Override
-    public void start(Properties properties) throws CacheException {
+    public void start(Settings settings, Properties properties) throws CacheException {
         if (manager != null) {
             LOG.warn("Attempt to restart an already started EhCacheProvider. Use sessionFactory.close() " +
                     " between repeated calls to buildSessionFactory. Using previously created EhCacheProvider." +

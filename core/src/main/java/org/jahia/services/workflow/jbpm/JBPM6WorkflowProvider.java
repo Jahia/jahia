@@ -68,7 +68,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public void setWorkflowObservationManager(WorkflowObservationManager observationManager) {
         this.observationManager = observationManager;
         listener.setObservationManager(observationManager);
-        JBPMTaskAssignmentListener.setObservationManager(observationManager);
+        JBPMTaskLifeCycleEventListener.setObservationManager(observationManager);
     }
 
     public void setGroupManager(JahiaGroupManagerService groupManager) {
@@ -81,7 +81,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+        JBPMTaskLifeCycleEventListener.setProvider(this);
+        JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
+        JBPMTaskLifeCycleEventListener.setTaskService(taskService);
     }
 
     @Override
@@ -467,7 +469,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
     }
 
-    private I18NText getI18NText(List<I18NText> i18NTexts, Locale locale) {
+    public static I18NText getI18NText(List<I18NText> i18NTexts, Locale locale) {
         for (I18NText i18NText : i18NTexts) {
             if (i18NText.getLanguage().equals(locale.toString())) {
                 return i18NText;

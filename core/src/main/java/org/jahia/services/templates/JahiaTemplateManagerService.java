@@ -716,7 +716,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             "-Dgoals=install",
                             "--batch-mode"
                     };
-                    //ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+                    ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
                     ret = 0;
                     if (ret > 0) {
                         cli.doMain(new String[]{"release:rollback"}, sources.getPath(), System.out, System.err);
@@ -821,8 +821,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
                 // Todo : generate url
-
-                String url = "http://localhost:8080/jahia/sites/mySite/contents/forge-modules-repository.createModule.do";
+                String url = "http://localhost:8080" + SettingsBean.getInstance().getServletContext().getContextPath() + "/sites/forge/contents/forge-modules-repository.createModule.do";
 
                 createForgeModule(url,forgeParams);
 

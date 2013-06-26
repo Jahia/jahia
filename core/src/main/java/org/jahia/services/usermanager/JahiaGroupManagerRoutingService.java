@@ -116,7 +116,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
 
         sortedProviders = new TreeSet<JahiaGroupManagerProvider> (new Comparator<JahiaGroupManagerProvider> () {
             public int compare (JahiaGroupManagerProvider o1, JahiaGroupManagerProvider o2) {
-                return (o1.getPriority () - o2.getPriority ());
+                return o1.getPriority () - o2.getPriority () != 0 ? o1.getPriority () - o2.getPriority () : o1.getKey().compareTo(o2.getKey());
             }
         });
     }

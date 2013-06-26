@@ -107,7 +107,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
 
         sortedProviders = new TreeSet<JahiaUserManagerProvider>(new Comparator<JahiaUserManagerProvider>() {
             public int compare (JahiaUserManagerProvider o1, JahiaUserManagerProvider o2) {
-                return o1.getPriority () - o2.getPriority ();
+                return o1.getPriority () - o2.getPriority () != 0 ? o1.getPriority () - o2.getPriority () : o1.getKey().compareTo(o2.getKey());
             }
         });
     }

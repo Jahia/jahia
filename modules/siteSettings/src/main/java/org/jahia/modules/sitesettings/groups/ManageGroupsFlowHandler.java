@@ -138,7 +138,7 @@ public class ManageGroupsFlowHandler implements Serializable {
             }
 
             // do not add group to itself and check if the principal is not yet a member of the group
-            if (!group.equals(principal) && !group.isMember(principal)) {
+            if (!group.equals(principal) && !group.isMember(principal) && (!(principal instanceof JahiaGroup) || !((JahiaGroup)principal).isMember(group))) {
                 candidates.add(principal);
             }
         }

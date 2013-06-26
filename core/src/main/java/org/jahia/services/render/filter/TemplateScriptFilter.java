@@ -50,6 +50,8 @@ import org.slf4j.profiler.Profiler;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Stack;
 
 /**
@@ -151,4 +153,19 @@ public class TemplateScriptFilter extends AbstractFilter {
         return output.toString().trim();
     }
 
+    @Override
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
+        if (renderContext.isEditMode() && SettingsBean.getInstance().isDevelopmentMode()) {
+            return "<pre>"+getExceptionDetails(e)+"</pre>";
+        }
+        return super.getContentForError(renderContext, resource, renderChain, e);
+    }
+
+    private String getExceptionDetails(Throwable ex) {
+        StringWriter out = new StringWriter();
+        out.append(ex.getMessage()).append("\n");
+        ex.printStackTrace(new PrintWriter(out));
+        out.append("\n");
+        return out.toString();
+    }
 }

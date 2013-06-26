@@ -2019,7 +2019,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         Map<String,String> headers = new HashMap<String, String>();
 
-        headers.put("Authorization", "Basic " + Base64.encode("root:root1234".getBytes()));
+        headers.put("Authorization", "Basic " + Base64.encode("user1:root1234".getBytes()));
         headers.put("accept","");
         String result = httpClientService.executePost(url,params,headers);
 

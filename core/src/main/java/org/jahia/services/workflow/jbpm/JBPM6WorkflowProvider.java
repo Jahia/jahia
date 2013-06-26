@@ -11,6 +11,7 @@ import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
@@ -256,7 +257,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         List<HistoryWorkflow> historyWorkflows = new ArrayList<HistoryWorkflow>();
         for (String processId : processIds) {
             ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
-            historyWorkflows.add(new HistoryWorkflow(processInstanceLog.getId(),
+            List<VariableInstanceLog> nodeIdVariableInstanceLogs = JPAProcessInstanceDbLog.findVariableInstances(Long.parseLong(processId), "JCRNodeId");
+            String nodeId = null;
+            for (VariableInstanceLog nodeIdVariableInstanceLog : nodeIdVariableInstanceLogs) {
+                nodeId = nodeIdVariableInstanceLog.getValue();
+            }
+            historyWorkflows.add(new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
                     getWorkflowDefinitionById(processInstanceLog.getProcessId(), locale),
                     processInstanceLog.getProcessName(),
                     key,
@@ -347,7 +353,18 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().toString()));
         }
         workflowTask.setId(Long.toString(task.getId()));
-        workflowTask.setOutcome(taskService.getOutcomes(task.getId()));
+        long workItemId = task.getTaskData().getWorkItemId();
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) kieSession.getProcessInstance(task.getTaskData().getProcessInstanceId());
+        NodeInstance nodeInstance = workflowProcessInstance.getNodeInstance(workItemId);
+        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
+        Set<String> connectionIds = new TreeSet<String>();
+        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
+            for (Connection connection : outgoingConnectionEntry.getValue()) {
+                String uniqueId = (String) connection.getMetaData().get("UniqueId");
+                connectionIds.add(uniqueId);
+            }
+        }
+        workflowTask.setOutcome(connectionIds);
         PeopleAssignments peopleAssignements = task.getPeopleAssignments();
         if (peopleAssignements.getPotentialOwners().size() > 0) {
             List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();

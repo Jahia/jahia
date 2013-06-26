@@ -140,6 +140,7 @@
         <property name="siteService" ref="JahiaSitesService"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
         <property name="sourceControlFactory" ref="SourceControlFactory"/>
+        <property name="httpClientService" ref="HttpClientService"/>
         <property name="xmlIndentation" value="4"/>
         <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml}"/>
     </bean>

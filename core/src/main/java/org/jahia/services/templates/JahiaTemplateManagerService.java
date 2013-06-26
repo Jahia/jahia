@@ -55,6 +55,7 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.cli.MavenCli;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -81,6 +82,7 @@ import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.ReferencesHelper;
+import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
@@ -154,6 +156,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private TemplatePackageRegistry templatePackageRegistry;
 
     private JahiaSitesService siteService;
+
+    private HttpClientService httpClientService;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -712,7 +716,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             "-Dgoals=install",
                             "--batch-mode"
                     };
-                    ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+                    //ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+                    ret = 0;
                     if (ret > 0) {
                         cli.doMain(new String[]{"release:rollback"}, sources.getPath(), System.out, System.err);
                         throw new IOException("Maven invokation failed");
@@ -784,6 +789,42 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                     undeployModule(module);
                 }
+                Map<String,String> forgeParams = new HashMap<String, String>();
+                // module
+                forgeParams.put("jcr:title", module.getName());
+                if (module.getDescription() != null) {
+                    forgeParams.put("description", module.getDescription());
+                } else {
+                    forgeParams.put("description", "not set yet");
+                }
+
+                // deploy the module on the forge
+
+                //forgeParams.put("category", module.getModuleType());
+                //forgeParams.put("icon", "");
+                forgeParams.put("authorNameDisplayedAs", "username");
+                forgeParams.put("authorURL", "");
+                forgeParams.put("authorEmail", "");
+                forgeParams.put("howToInstall", "");
+                forgeParams.put("FAQ", "");
+                forgeParams.put("codeRepository", "");
+
+                //version
+
+                //forgeParams.put("requiredVersion", "");
+                forgeParams.put("releaseType", "hotfix");
+                //forgeParams.put("status", "");
+                forgeParams.put("activeVersion", "true");
+
+                forgeParams.put("versionNumber", releaseVersion);
+                forgeParams.put("url", "http://nexus/released/" + module.getName() + "-" + releaseVersion + ".jar");
+
+
+                // Todo : generate url
+
+                String url = "http://localhost:8080/jahia/sites/mySite/contents/forge-modules-repository.createModule.do";
+
+                createForgeModule(url,forgeParams);
 
                 return generatedWar;
             } else {
@@ -1969,6 +2010,24 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setMavenArchetypeCatalog(String mavenArchetypeCatalog) {
         this.mavenArchetypeCatalog = mavenArchetypeCatalog;
+    }
+
+    /**
+     * Manage forge
+     */
+
+    public void createForgeModule(String url,Map<String,String> params) {
+
+        Map<String,String> headers = new HashMap<String, String>();
+
+        headers.put("Authorization", "Basic " + Base64.encode("root:root1234".getBytes()));
+        headers.put("accept","");
+        String result = httpClientService.executePost(url,params,headers);
+
+    }
+
+    public void setHttpClientService(HttpClientService httpClientService) {
+        this.httpClientService = httpClientService;
     }
 
     /**

@@ -9,6 +9,7 @@
     <on-start>
         <evaluate expression="adminPropertiesHandler.init()" />
         <evaluate expression="adminPropertiesHandler.adminProperties" result="flowScope.adminProperties"/>
+        <evaluate expression="adminPropertiesHandler.getUserMembership()" result="flowScope.userGroups"/>
     </on-start>
 
     <view-state id="adminPropertiesForm" model="adminProperties">

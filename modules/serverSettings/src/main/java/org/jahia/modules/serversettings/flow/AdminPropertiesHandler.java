@@ -41,11 +41,15 @@
 package org.jahia.modules.serversettings.flow;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.taglibs.user.User;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.springframework.binding.message.MessageBuilder;
@@ -106,4 +110,8 @@ public class AdminPropertiesHandler implements Serializable {
                         Messages.get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, "label.changeSaved",
                                 LocaleContextHolder.getLocale())).build());
     }
+    public List<JahiaGroup> getUserMembership() {
+        return new LinkedList<JahiaGroup>(User.getUserMembership(JCRUserManagerProvider.getInstance().lookupRootUser().getUsername()).values());
+    }
+
 }

@@ -6,6 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -78,9 +79,17 @@
     </form:form>
 </div>
     <hr/>
-    <h3><fmt:message key="serverSettings.user.groupList"/>:</h3>
-    <p style="line-height: 20px">
-        <c:forEach items="${adminProperties.groups}" var="group">
-            <span class="badge badge-info">${fn:escapeXml(group.groupname)}</span>
-        </c:forEach>
-    </p>
+<fieldset id="groupsFields" title="<fmt:message key="serverSettings.user.groups.list"/>">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
+                <select class="span12 fontfix" name="selectMember" size="6" multiple>
+                    <c:forEach items="${userGroups}" var="group">
+                        <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+    </div>
+</fieldset>

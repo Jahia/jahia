@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2012 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,19 +40,17 @@
 
 package org.jahia.services.render.filter;
 
-import org.jahia.services.render.Template;
-import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.Template;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
 import org.slf4j.profiler.Profiler;
+import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Date;
+import java.util.Stack;
 
 /**
  * TemplateScriptFilter
@@ -75,6 +73,7 @@ public class TemplateScriptFilter extends AbstractFilter {
         Script script = (Script) request.getAttribute("script");
         renderContext.getResourcesStack().push(resource);
         StringBuffer output = new StringBuffer();
+        Stack<StopWatch> stopWatchStack = null;
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Render " + script.getView().getPath() + " for resource: " + resource);
@@ -90,9 +89,26 @@ public class TemplateScriptFilter extends AbstractFilter {
                 }
             }
             long start = 0;
-            if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
+
+            StopWatch stopWatch = null;
+            boolean moduleInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:template");
+
+            if (moduleInfo) {
                 output.append("\n<fieldset class=\"moduleinfo\"> ");
                 start = System.currentTimeMillis();
+
+                stopWatchStack = (Stack<StopWatch>) renderContext.getRequest().getAttribute("stopWatchStack");
+                if (stopWatchStack == null) {
+                    stopWatchStack = new Stack<StopWatch>();
+                    renderContext.getRequest().setAttribute("stopWatchStack",stopWatchStack);
+                }
+                if (!stopWatchStack.isEmpty()) {
+                    stopWatchStack.peek().stop();
+                }
+
+                stopWatch = new StopWatch();
+                stopWatchStack.push(stopWatch);
+                stopWatch.start();
             }
             output.append(script.execute(resource, renderContext));
 
@@ -109,37 +125,30 @@ public class TemplateScriptFilter extends AbstractFilter {
                 }
             }
 
-            if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
+            if (moduleInfo) {
+                stopWatch.stop();
                 output.append("<legend>")
                         .append("<img src=\"")
                         .append(renderContext.getURLGenerator().getContext())
                         .append("/modules/default/images/icons/information.png")
                         .append("\" title=\"").append(script.getView().getInfo()).append(" node : ").append(resource.getNode().getPath())
-                        .append(" in ").append(System.currentTimeMillis() - start).append( "ms")
+                        .append(" in total: ").append(System.currentTimeMillis() - start).append( "ms")
+                        .append(" , own time: ").append(stopWatch.getTotalTimeMillis()).append( "ms")
                         .append("\"/></legend>");
                 output.append("</fieldset> ");
             }
-
         } finally {
             renderContext.getResourcesStack().pop();
+
+            if (stopWatchStack != null) {
+                stopWatchStack.pop();
+
+                if (!stopWatchStack.isEmpty()) {
+                    stopWatchStack.peek().start();
+                }
+            }
         }
         return output.toString().trim();
-    }
-
-    @Override
-    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
-        if (renderContext.isEditMode() && SettingsBean.getInstance().isDevelopmentMode()) {
-            return "<pre>"+getExceptionDetails(e)+"</pre>";
-        }
-        return super.getContentForError(renderContext, resource, renderChain, e);
-    }
-
-    private String getExceptionDetails(Throwable ex) {
-        StringWriter out = new StringWriter();
-        out.append(ex.getMessage()).append("\n");
-        ex.printStackTrace(new PrintWriter(out));
-        out.append("\n");
-        return out.toString();
     }
 
 }

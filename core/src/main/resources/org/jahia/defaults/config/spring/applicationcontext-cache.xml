@@ -96,7 +96,7 @@ when we flush this entry we will flush the whole cache
         <property name="dependenciesLimit" value="1000"/>
         <property name="skipLatchForPaths" >
             <set>
-                <value>$currentSite/templates</value>
+                <value>/modules</value>
             </set>
         </property>
         <property name="skipLatchForConfigurations">

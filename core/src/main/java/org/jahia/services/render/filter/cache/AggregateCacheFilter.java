@@ -188,7 +188,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
         // First check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
         // ec parameter with the uuid of the current node.
-        boolean cacheable = isCacheable(renderContext, resource, key, properties, true);
+        boolean cacheable = isCacheable(renderContext, resource, key, properties);
         if(!cacheable) {
             return null;
         }
@@ -250,15 +250,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     /**
      * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the ec or v parameter.
      *
+     *
      * @param renderContext render context
      * @param resource current resource
      * @param key calculated cache key
      * @param properties cache properties
-     * @param isInPrepare true if we are in filter prepare mode, and false if we are in filter execute mode
      * @return true if fragments is cacheable, false if not
      * @throws RepositoryException
      */
-    protected boolean isCacheable(RenderContext renderContext, Resource resource, String key, Properties properties, boolean isInPrepare) throws RepositoryException {
+    protected boolean isCacheable(RenderContext renderContext, Resource resource, String key, Properties properties) throws RepositoryException {
         boolean cacheable = !notCacheableFragment.containsKey(key);
         if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
             cacheable = false;
@@ -372,7 +372,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
 
         // Check if the fragment is still cacheable, based on the key and cache properties
-        boolean cacheable = isCacheable(renderContext, resource, key, properties, false);
+        boolean cacheable = isCacheable(renderContext, resource, key, properties);
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
 

@@ -44,7 +44,6 @@ import java.util.Properties;
 
 import javax.jcr.RepositoryException;
 
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
@@ -62,8 +61,7 @@ public class ExpiringCacheFilter extends AggregateCacheFilter {
 
     @Override
     protected boolean isCacheable(RenderContext renderContext,
-            Resource resource, String key, Properties properties,
-            boolean isInPrepare) throws RepositoryException {
+                                  Resource resource, String key, Properties properties) throws RepositoryException {
         return Long.parseLong(properties.getProperty("cache.expiration")) > 0;
     }
 

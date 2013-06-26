@@ -233,7 +233,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
             assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
 
-            System.out.println("thread t1");
             assertTrue(t1.getResult().contains("Very long to appear"));
             assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
             assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() > 2000 && CacheFilterCheckFilter.getData("testModuleWait2").getTime() < 3000);
@@ -249,8 +248,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testMaxConcurrent() throws Exception {
-        Thread.sleep(5000);
-
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
         try {

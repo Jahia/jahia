@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -173,11 +175,35 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         checkAcl(userBC, new boolean[]{false, true, false, true, false, false, true, true});
         checkAcl(userAC, new boolean[]{false, true, false, false, true, true, false, true});
 
-        assertEquals("Content served is not the same", guest, getContent(getUrl(path), null, null, null));
-        assertEquals("Content served is not the same", root, getContent(getUrl(path), "root", "root1234", null));
-        assertEquals("Content served is not the same", userAB, getContent(getUrl(path), "userAB", "password", null));
-        assertEquals("Content served is not the same", userBC, getContent(getUrl(path), "userBC", "password", null));
-        assertEquals("Content served is not the same", userAC, getContent(getUrl(path), "userAC", "password", null));
+        JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
+        try {
+            n.revokeRolesForPrincipal("g:groupA");
+            n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
+            session.save();
+
+            String guest2 = getContent(getUrl(path), null, null, "testACLs1");
+            String root2 = getContent(getUrl(path), "root", "root1234", "testACLs2");
+            String userAB2 = getContent(getUrl(path), "userAB", "password", "testACLs3");
+            String userBC2 = getContent(getUrl(path), "userBC", "password", "testACLs4");
+            String userAC2 = getContent(getUrl(path), "userAC", "password", "testACLs5");
+
+            checkAcl(guest2, new boolean[]{false, false, false, false, false, false, false, false});
+            checkAcl(root2, new boolean[]{true, true, true, true, true, true, true, true});
+            checkAcl(userAB2, new boolean[]{false, true, true, false, false, true, true, false});
+            checkAcl(userBC2, new boolean[]{false, true, false, true, false, true, true, true});
+            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false , true});
+        } finally {
+            n.revokeRolesForPrincipal("g:groupB");
+            n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
+            session.save();
+        }
+
+        assertEquals("Content served is not the same", guest, getContent(getUrl(path), null, null, "testACLs6"));
+        assertEquals("Content served is not the same", root, getContent(getUrl(path), "root", "root1234", "testACLs7"));
+        assertEquals("Content served is not the same", userAB, getContent(getUrl(path), "userAB", "password", "testACLs8"));
+        assertEquals("Content served is not the same", userBC, getContent(getUrl(path), "userBC", "password", "testACLs9"));
+        assertEquals("Content served is not the same", userAC, getContent(getUrl(path), "userAC", "password", "testACLs10"));
     }
 
     private void checkAcl(String content, boolean[] b) {
@@ -234,7 +260,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
             assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
 
-            System.out.println("thread t1");
             assertTrue(t1.getResult().contains("Very long to appear"));
             assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
             assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() > 2000 && CacheFilterCheckFilter.getData("testModuleWait2").getTime() < 3000);
@@ -250,8 +275,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testMaxConcurrent() throws Exception {
-        Thread.sleep(5000);
-
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
         try {
@@ -274,6 +297,31 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
+        }
+    }
+
+    @Test
+    public void testReferencesFlush() throws Exception {
+        URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
+        getContent(url, "root", "root1234", null);
+
+        try {
+            JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/maincontent/simple-text");
+            try {
+                n.setProperty("text", "text content updated");
+                session.save();
+                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
+                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
+                assertTrue("Value has not been updated",m.find());
+                assertTrue("References have not been flushed",m.find());
+                assertTrue("References have not been flushed",m.find());
+            } finally {
+                n.setProperty("text","text content");
+                session.save();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 

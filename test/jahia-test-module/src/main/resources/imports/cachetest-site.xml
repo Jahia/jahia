@@ -162,7 +162,7 @@
                      jcr:mixinTypes="jmix:skinnable"
                      jcr:primaryType="jnt:contentList"
                      jcr:uuid="ad961f54-c138-4a05-addf-e7c1a292d951">
-            <simple-text j:lastPublished="2013-06-24T13:04:30.655+02:00"
+            <simple-text-root j:lastPublished="2013-06-24T13:04:30.655+02:00"
                          j:lastPublishedBy="root"
                          j:originWS="default"
                          j:published="true"
@@ -198,8 +198,8 @@
                                   jcr:primaryType="jnt:ace"
                                   jcr:uuid="ba3a6d8a-b3d8-40c4-b6d7-6f8b39c54e7b"/>
                 </j:acl>
-            </simple-text>
-            <simple-text-1 j:lastPublished="2013-06-24T13:04:30.655+02:00"
+            </simple-text-root>
+            <simple-text-users j:lastPublished="2013-06-24T13:04:30.655+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -229,8 +229,8 @@
                                   jcr:primaryType="jnt:ace"
                                   jcr:uuid="66808c9c-f622-48bc-8374-c5e79fe7b5a8"/>
                 </j:acl>
-            </simple-text-1>
-            <simple-text-2 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-users>
+            <simple-text-AB j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -272,7 +272,7 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="835ee6c4-01af-42d8-959d-2dd662704895"/>
                 </j:acl>
-            </simple-text-2>
+            </simple-text-AB>
             <j:translation_en j:lastPublished="2013-06-24T13:04:30.655+02:00"
                               j:lastPublishedBy="root"
                               j:published="true"
@@ -283,7 +283,7 @@
                               jcr:primaryType="jnt:translation"
                               jcr:title="ACL test"
                               jcr:uuid="5679009d-841b-48bb-8ff2-8d0635075597"/>
-            <simple-text-3 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            <simple-text-AC j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -325,8 +325,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="b56c65e5-3176-4943-af94-b56700fd70fa"/>
                 </j:acl>
-            </simple-text-3>
-            <simple-text-4 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-AC>
+            <simple-text-BC j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -368,8 +368,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="b1cf1305-9cbd-4041-9e2e-6d9a5b9f0048"/>
                 </j:acl>
-            </simple-text-4>
-            <simple-text-5 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-BC>
+            <simple-text-A j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -411,8 +411,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="4a3cae45-f090-44f4-8f59-9cfcf806e316"/>
                 </j:acl>
-            </simple-text-5>
-            <simple-text-6 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-A>
+            <simple-text-B j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -454,8 +454,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="4d5cff18-899a-45b6-a7ca-c7fa3c66eaa7"/>
                 </j:acl>
-            </simple-text-6>
-            <simple-text-7 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-B>
+            <simple-text-C j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -497,7 +497,7 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="31de739d-3b35-499e-9220-dbd9204cc053"/>
                 </j:acl>
-            </simple-text-7>
+            </simple-text-C>
         </maincontent>
         <Right-column j:lastPublished="2013-06-24T13:04:30.655+02:00"
                       j:lastPublishedBy="root"
@@ -579,7 +579,7 @@
                      jcr:mixinTypes="jmix:deletedChildren jmix:skinnable"
                      jcr:primaryType="jnt:contentList"
                      jcr:uuid="46ece1d6-4fb2-46de-ba96-d25cae93b188">
-            <simple-text j:lastPublished="2013-06-24T13:04:30.655+02:00"
+            <simple-text-root j:lastPublished="2013-06-24T13:04:30.655+02:00"
                          j:lastPublishedBy="root"
                          j:originWS="default"
                          j:published="true"
@@ -602,8 +602,8 @@
                 <j:acl j:inherit="false"
                        jcr:primaryType="jnt:acl"
                        jcr:uuid="4cb36806-1f91-438a-aefb-b8ad035baa2a"/>
-            </simple-text>
-            <simple-text-1 j:lastPublished="2013-06-24T13:04:30.655+02:00"
+            </simple-text-root>
+            <simple-text-users j:lastPublished="2013-06-24T13:04:30.655+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -639,7 +639,7 @@
                                   jcr:primaryType="jnt:ace"
                                   jcr:uuid="76180fb3-b8a6-4fbf-bf29-03acdaadf96d"/>
                 </j:acl>
-            </simple-text-1>
+            </simple-text-users>
             <j:translation_en j:lastPublished="2013-06-24T13:04:30.655+02:00"
                               j:lastPublishedBy="root"
                               j:published="true"
@@ -650,7 +650,7 @@
                               jcr:primaryType="jnt:translation"
                               jcr:title="ACL test - inheritance break"
                               jcr:uuid="e4533a18-9a6c-437f-8e0b-9a2add742b2e"/>
-            <simple-text-3 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            <simple-text-AB j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -680,8 +680,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="6dcd3ccb-597d-484b-84ac-abf6e8ef9428"/>
                 </j:acl>
-            </simple-text-3>
-            <simple-text-4 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-AB>
+            <simple-text-AC j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -711,8 +711,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="535b5a97-8d76-46c2-9691-9548b6a5db05"/>
                 </j:acl>
-            </simple-text-4>
-            <simple-text-5 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-AC>
+            <simple-text-BC j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -742,8 +742,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="13ccd904-4282-4940-be23-6f712d9aaa00"/>
                 </j:acl>
-            </simple-text-5>
-            <simple-text-6 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-BC>
+            <simple-text-A j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -773,8 +773,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="b5e9ec0d-6f4c-4fcc-9a15-07209a376cb5"/>
                 </j:acl>
-            </simple-text-6>
-            <simple-text-7 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-A>
+            <simple-text-B j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -804,8 +804,8 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="15473950-64ac-416e-b7b0-a9a9823fddcc"/>
                 </j:acl>
-            </simple-text-7>
-            <simple-text-8 j:lastPublished="2013-06-24T13:17:33.204+02:00"
+            </simple-text-B>
+            <simple-text-C j:lastPublished="2013-06-24T13:17:33.204+02:00"
                            j:lastPublishedBy="root"
                            j:originWS="default"
                            j:published="true"
@@ -835,7 +835,7 @@
                                     jcr:primaryType="jnt:ace"
                                     jcr:uuid="41883999-7f80-4db0-9558-0f5e205c30f2"/>
                 </j:acl>
-            </simple-text-8>
+            </simple-text-C>
         </maincontent>
         <absolute-1 j:lastPublished="2013-06-24T13:04:30.655+02:00"
                     j:lastPublishedBy="root"

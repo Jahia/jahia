@@ -29,10 +29,10 @@ public class CacheFilterCheckFilter extends AbstractFilter {
             if (resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE)) {
                 RequestData requestData = new RequestData();
                 data.put(key, requestData);
-                requestData.getRenderCalled().add(resource.getPath());
             }
 
             RequestData requestData = data.get(key);
+            requestData.getRenderCalled().add(resource.getPath());
             requestData.setCount(requestData.getCount() + 1);
         }
         return super.prepare(renderContext, resource, chain);    //To change body of overridden methods use File | Settings | File Templates.

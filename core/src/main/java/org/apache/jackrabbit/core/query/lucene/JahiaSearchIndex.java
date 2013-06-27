@@ -40,7 +40,6 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -193,21 +192,6 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         long timer = System.currentTimeMillis();
-
-        List<NodeId> commonIds = new ArrayList<NodeId>((Collection<NodeId>)CollectionUtils.intersection(addedIds, removedIds));
-        List<NodeState> commonNodes = new ArrayList<NodeState>();
-        for (NodeState nodeState : addList) {
-            if (commonIds.contains(nodeState.getId())) {
-                commonNodes.add(nodeState);
-            }
-        }
-        removeList.removeAll(commonIds);
-        addList.removeAll(commonNodes);
-
-        for (int offset = 0; offset < commonNodes.size(); offset += batchSize) {
-            int limit = Math.min(offset + batchSize, commonNodes.size());
-            super.updateNodes(commonIds.subList(offset,limit).iterator(), commonNodes.subList(offset, limit).iterator());
-        }
 
         for (int offset = 0; offset < removeList.size() + addList.size(); offset += batchSize) {
             int offset1 = Math.min(offset, removeList.size());

@@ -229,44 +229,49 @@ public class PagesTabItem extends SidePanelTabItem {
             }
             if (activeItem != null && isAllowed) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
-                GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);
+                isAllowed = PermissionsUtils.isPermitted("editModeAccess", activeNode) && PermissionsUtils.isPermitted(
+                        "jcr:write_default", activeNode) && !activeNode.isLocked();
+                if (isAllowed) {
+                    GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, activeNode);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, parent);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, activeNode.get("path"));
 
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, activeNode);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, parent);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, activeNode.get("path"));
-
-                if (status == 1 && activeItem.isExpanded() && activeItem.getItemCount() > 0) {
-                    List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(activeNode);
-                    GWTJahiaNode n = children.get(0);
-                    e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, n);
-                    e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, activeNode);
-                } else if (status == 1) {
-                    List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(parent);
-                    int next = children.indexOf(activeNode) + 1;
-                    if (next < children.size()) {
-                        GWTJahiaNode n = children.get(next);
+                    if (status == 1 && activeItem.isExpanded() && activeItem.getItemCount() > 0) {
+                        List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(activeNode);
+                        GWTJahiaNode n = children.get(0);
                         e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, n);
-                    } else {
-                        e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, null);
+                        e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, activeNode);
+                    } else if (status == 1) {
+                        List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(parent);
+                        int next = children.indexOf(activeNode) + 1;
+                        if (next < children.size()) {
+                            GWTJahiaNode n = children.get(next);
+                            e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, n);
+                        } else {
+                            e.getStatus().setData(EditModeDNDListener.TARGET_NEXT_NODE, null);
+                        }
                     }
-                }
 
-                if (activeNode.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
-                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
-                } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder")
-                        && EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE))) {
-                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
-                } else {
-                    e.getStatus().setStatus(false);
-                    e.setCancelled(true);
+                    if (activeNode.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
+                        e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
+                    } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder") &&
+                               EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(
+                                       EditModeDNDListener.SOURCE_TYPE))) {
+                        e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
+                    } else {
+                        e.getStatus().setStatus(false);
+                        e.setCancelled(true);
+                    }
+                    return;
                 }
-            } else {
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, null);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, null);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, null);
-                e.getStatus().setStatus(false);
-                e.setCancelled(true);
             }
+            e.getStatus().setData(EditModeDNDListener.TARGET_NODE, null);
+            e.getStatus().setData(EditModeDNDListener.TARGET_PARENT, null);
+            e.getStatus().setData(EditModeDNDListener.TARGET_PATH, null);
+            e.getStatus().setStatus(false);
+            e.setCancelled(true);
+
         }
 
         @Override

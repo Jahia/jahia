@@ -79,7 +79,11 @@ public class DeleteItemWindow extends Window {
 		usagesGrid.setSize(windowWidth, 200);
 		cp.add(usagesGrid);		
 		formPanel.add(cp);
-		
+
+        /* Comments textarea */
+        final TextArea textArea = new TextArea();
+        textArea.setSize(windowWidth - 30, 100);
+
 		// listener on the grid because the message depends on the number of usages found, and we get this at the very end
 		final int nbSelectedNodes = selectedNodeList.size();
 	    usagesGrid.getStore().getLoader().addLoadListener(new LoadListener() {
@@ -93,15 +97,12 @@ public class DeleteItemWindow extends Window {
 				} else {
 					// no empty grid if no usages
 					formPanel.remove(cp);
+                    textArea.setSize(""+(windowWidth - 30), "70%");
 				}
 				textMessage.setText(strMessage);  
 				formPanel.layout();
             }
-		});	
-	    
-		/* Comments textarea */
-		final TextArea textArea = new TextArea();
-		textArea.setSize((windowWidth - 30), 100);
+		});
 
 		/* Buttons */
 		Button submit = new Button(Messages.get("label.yes"), new SelectionListener<ButtonEvent>() {

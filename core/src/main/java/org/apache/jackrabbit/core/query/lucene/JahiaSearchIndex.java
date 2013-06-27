@@ -78,7 +78,7 @@ public class JahiaSearchIndex extends SearchIndex {
     private int maxClauseCount = 1024;
 
     private Boolean versionIndex;
-    private int batchSize = 100000;
+    private int batchSize = 100;
 
     public int getMaxClauseCount() {
         return maxClauseCount;

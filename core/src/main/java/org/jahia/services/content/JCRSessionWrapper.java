@@ -44,8 +44,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+<<<<<<< .working
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
+=======
+>>>>>>> .merge-right.r46539
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -399,16 +402,24 @@ public class JCRSessionWrapper implements Session {
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
+        updatePathInCache(source, dest, sessionCacheByPath);
+        updatePathInCache(source, dest, newNodes);
+        updatePathInCache(source, dest, changedNodes);
+    }
+
+    private void updatePathInCache(String source, String dest, Map<String, JCRNodeWrapper> cacheByPath) {
         String sourcePrefix = source + "/";
-        for (String s : sessionCacheByPath.keySet()) {
+        Set<String> paths = new HashSet<String>(cacheByPath.keySet());
+        for (String s : paths) {
             if (s.equals(source) || s.startsWith(sourcePrefix)) {
-                JCRNodeWrapper n = sessionCacheByPath.get(s);
+                JCRNodeWrapper n = cacheByPath.remove(s);
                 if (n instanceof JCRNodeDecorator) {
                     n = ((JCRNodeDecorator)n).getDecoratedNode();
                 }
                 String newPath = dest + n.getPath().substring(source.length());
                 ((JCRNodeWrapperImpl)n).localPath = newPath;
                 ((JCRNodeWrapperImpl)n).localPathInProvider = newPath;
+                cacheByPath.put(newPath, n);
             }
         }
     }

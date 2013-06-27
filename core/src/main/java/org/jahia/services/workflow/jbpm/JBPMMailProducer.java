@@ -45,7 +45,10 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -55,6 +58,7 @@ import org.jbpm.api.ProcessEngine;
 import org.jbpm.api.cmd.Environment;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
+import org.jbpm.process.workitem.email.EmailWorkItemHandler;
 import org.jbpm.pvm.internal.email.impl.*;
 import org.jbpm.pvm.internal.email.spi.AddressResolver;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
@@ -73,11 +77,14 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
+ * A work item handler to send email. This implementation extends the built-in JBPM 6 implementation by
+ * re-introducing the mail template mechanism available in JBPM 4
+ *
  * @author : rincevent
  * @since JAHIA 6.5
  *        Created : 14 sept. 2010
  */
-public class JBPMMailProducer extends MailProducerImpl {
+public class JBPMMailProducer extends EmailWorkItemHandler {
     private static final long serialVersionUID = -5084848266010688683L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
@@ -97,7 +104,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     public Collection<Message> produce(final Execution execution) {
         final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
         Locale locale = (Locale) vars.get("locale");
-        
+
         if (templateKey != null) {
             MailTemplate template = null;
             MailTemplateRegistry templateRegistry = ((ProcessEngine) SpringContextSingleton.getBean("processEngine")).get(MailTemplateRegistry.class);
@@ -115,7 +122,7 @@ public class JBPMMailProducer extends MailProducerImpl {
 
         if (ServicesRegistry.getInstance().getMailService().isEnabled() && getTemplate() != null) {
             try {
-                return JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",locale,new JCRCallback<Collection<Message>>() {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "default", locale, new JCRCallback<Collection<Message>>() {
                     public Collection<Message> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
@@ -147,11 +154,11 @@ public class JBPMMailProducer extends MailProducerImpl {
     }
 
     /**
-       * Fills the <code>from</code> attribute of the given email. The sender addresses are an
-       * optional element in the mail template. If absent, each mail server supplies the current
-       * user's email address.
-       *
-       * @see {@link InternetAddress#getLocalAddress(Session)}
+     * Fills the <code>from</code> attribute of the given email. The sender addresses are an
+     * optional element in the mail template. If absent, each mail server supplies the current
+     * user's email address.
+     *
+     * @see {@link InternetAddress#getLocalAddress(Session)}
      */
     protected void fillFrom(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
         try {
@@ -251,13 +258,15 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    private String[] tokenizeActors(String recipients, Execution execution, JCRSessionWrapper session) throws RepositoryException, ScriptException{
+    private String[] tokenizeActors(String recipients, Execution execution, JCRSessionWrapper session) throws RepositoryException, ScriptException {
         String[] actors = ACTORS_PATTERN.split(evaluateExpression(execution, recipients, session));
         if (actors.length == 0) throw new JbpmException("recipient list is empty: " + recipients);
         return actors;
     }
 
-    /** construct recipient addresses from user entities */
+    /**
+     * construct recipient addresses from user entities
+     */
     private Address[] resolveAddresses(List<User> users, AddressResolver addressResolver) {
         int userCount = users.size();
         List<Address> addresses = new ArrayList<Address>();

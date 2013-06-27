@@ -14,11 +14,11 @@ import java.util.Properties;
  * A sharing Hibernate EHCache provider that can re-use a CacheManager provided by Jahia. This is useful for using
  * Hibernate inside modules.
  */
-public class SharingEhcacheProvider extends AbstractEhcacheRegionFactory {
+public class SharingEhcacheRegionFactory extends EhCacheRegionFactory {
 
     public static final String ORG_JAHIA_HIBERNATE_EHCACHE_EXISTING_CACHE_MANAGER_NAME = "org.jahia.hibernate.ehcache.existingCacheManagerName";
 
-    private static final Logger LOG = LoggerFactory.getLogger(SharingEhcacheProvider.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SharingEhcacheRegionFactory.class.getName());
 
     private final ProviderMBeanRegistrationHelper mbeanRegistrationHelper = new ProviderMBeanRegistrationHelper();
 

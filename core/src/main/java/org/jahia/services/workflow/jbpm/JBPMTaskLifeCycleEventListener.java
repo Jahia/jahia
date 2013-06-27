@@ -57,11 +57,16 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.utils.Patterns;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.lifecycle.listeners.DefaultTaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.Environment;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 
 import javax.enterprise.event.Observes;
@@ -121,8 +126,8 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
     }
 
     @Override
-    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task ti) {
-        Content taskContent = taskService.getContentById(ti.getTaskData().getDocumentContentId());
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
+        Content taskContent = taskService.getContentById(task.getTaskData().getDocumentContentId());
         Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), environment);
         String nodeId = null;
         Locale locale = null;
@@ -132,22 +137,35 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
             nodeId = (String) taskParameters.get("nodeId");
             locale = (Locale) taskParameters.get("locale");
         }
-        WorkflowDefinition def = (WorkflowDefinition) provider.getWorkflowDefinitionById(ti.getTaskData().getProcessId(), locale);
-        JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
-        String name = JBPM6WorkflowProvider.getI18NText(ti.getNames(), locale).getText();
-        final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name, Long.toString(ti.getTaskData().getProcessInstanceId()));
-        for (JahiaPrincipal principal : principals) {
-            if (principal instanceof JahiaGroup) {
-                assignable.addCandidateGroup(((JahiaGroup) principal).getGroupKey());
-            } else if (principal instanceof JahiaUser) {
-                assignable.addCandidateUser(((JahiaUser) principal).getUserKey());
+        WorkflowDefinition def = provider.getWorkflowDefinitionById(task.getTaskData().getProcessId(), locale);
+        JCRNodeWrapper node = null;
+        try {
+            node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
+            String name = JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText();
+
+            PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
+            List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+            final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name, Long.toString(task.getTaskData().getProcessInstanceId()));
+            for (JahiaPrincipal principal : principals) {
+                if (principal instanceof JahiaGroup) {
+                    potentialOwners.add(new GroupImpl(((JahiaGroup) principal).getGroupKey()));
+                } else if (principal instanceof JahiaUser) {
+                    potentialOwners.add(new UserImpl(((JahiaUser) principal).getUserKey()));
+                }
             }
+            List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
+            administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
+            peopleAssignments.getBusinessAdministrators().addAll(administrators);
+            peopleAssignments.getPotentialOwners().addAll(potentialOwners);
+
+            // @todo we need to update the task in the service and serialize the changes
+
+            createTask(task, taskParameters, principals);
+
+            observationManager.notifyNewTask("jBPM", Long.toString(task.getId()));
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Error while setting up task assignees and creating a JCR task", e);
         }
-        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey());
-
-        createTask(ti, taskParameters, principals);
-
-        observationManager.notifyNewTask("jBPM", Long.toString(ti.getId()));
     }
 
     protected void createTask(final Task task, final Map<String, Object> taskParameters, final List<JahiaPrincipal> candidates) throws RepositoryException {
@@ -173,9 +191,9 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
                     } else {
                         tasks = n.getNode("workflowTasks");
                     }
-                    JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, task.getName()), "jnt:workflowTask");
-                    String definitionKey = task.getProcessInstance().getProcessDefinition().getKey();
-                    jcrTask.setProperty("taskName", task.getName());
+                    JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText()), "jnt:workflowTask");
+                    String definitionKey = task.getTaskData().getProcessId();
+                    jcrTask.setProperty("taskName", JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText());
                     String bundle = WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll("");
                     jcrTask.setProperty("taskBundle", bundle);
                     jcrTask.setProperty("taskId", task.getId());
@@ -186,9 +204,9 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
                         jcrTask.setProperty("targetNode", uuid);
                     }
 
-                    if (task.getDuedate() != null) {
+                    if (task.getTaskData().getExpirationTime() != null) {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(task.getDuedate());
+                        calendar.setTime(task.getTaskData().getExpirationTime());
                         jcrTask.setProperty("dueDate", calendar);
                     }
                     List<Value> candidatesArray = new ArrayList<Value>();
@@ -201,20 +219,22 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
                         }
                     }
                     jcrTask.setProperty("candidates", candidatesArray.toArray(new Value[candidatesArray.size()]));
-                    List<Value> outcomes = new ArrayList<Value>();
-                    for (Transition transition : execution.getActivity().getOutgoingTransitions()) {
-                        outcomes.add(valueFactory.createValue(transition.getName()));
-                    }
+                    Set<String> outcomes = getProvider().getTaskOutcomes(task);
                     jcrTask.setProperty("possibleOutcomes", outcomes.toArray(new Value[outcomes.size()]));
                     jcrTask.setProperty("state", "active");
                     jcrTask.setProperty("type", "workflow");
-                    jcrTask.setProperty("jcr:title", "##resourceBundle(" + Patterns.SPACE.matcher(task.getName()).replaceAll(".").trim().toLowerCase() + "," + bundle + ")## : " + session.getNodeByIdentifier(uuid).getDisplayableName());
+                    jcrTask.setProperty("jcr:title", "##resourceBundle(" +
+                            Patterns.SPACE.matcher(JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText()).replaceAll(".").trim().toLowerCase() +
+                            "," +
+                            bundle +
+                            ")## : " +
+                            session.getNodeByIdentifier(uuid).getDisplayableName());
 
                     if (taskParameters.get("jcr:title") instanceof List && ((List<WorkflowVariable>) taskParameters.get("jcr:title")).size() > 0) {
                         jcrTask.setProperty("description", ((List<WorkflowVariable>) taskParameters.get("jcr:title")).get(0).getValue());
                     }
 
-                    String form = task.getTaskDefinition().getFormResourceName();
+                    String form = (String) taskParameters.get("formName");
                     if (form != null && NodeTypeRegistry.getInstance().hasNodeType(form)) {
                         JCRNodeWrapper data = jcrTask.addNode("taskData", form);
                         ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(form);

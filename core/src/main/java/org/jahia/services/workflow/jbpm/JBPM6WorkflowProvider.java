@@ -355,17 +355,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().toString()));
         }
         workflowTask.setId(Long.toString(task.getId()));
-        long workItemId = task.getTaskData().getWorkItemId();
-        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) kieSession.getProcessInstance(task.getTaskData().getProcessInstanceId());
-        NodeInstance nodeInstance = workflowProcessInstance.getNodeInstance(workItemId);
-        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
-        Set<String> connectionIds = new TreeSet<String>();
-        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
-            for (Connection connection : outgoingConnectionEntry.getValue()) {
-                String uniqueId = (String) connection.getMetaData().get("UniqueId");
-                connectionIds.add(uniqueId);
-            }
-        }
+        Set<String> connectionIds = getTaskOutcomes(task);
         workflowTask.setOutcome(connectionIds);
         PeopleAssignments peopleAssignements = task.getPeopleAssignments();
         if (peopleAssignements.getPotentialOwners().size() > 0) {
@@ -405,6 +395,21 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             i18nOfWorkflowAction(locale, workflowTask, definition.getKey());
         }
         return workflowTask;
+    }
+
+    public Set<String> getTaskOutcomes(Task task) {
+        long workItemId = task.getTaskData().getWorkItemId();
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) kieSession.getProcessInstance(task.getTaskData().getProcessInstanceId());
+        NodeInstance nodeInstance = workflowProcessInstance.getNodeInstance(workItemId);
+        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
+        Set<String> connectionIds = new TreeSet<String>();
+        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
+            for (Connection connection : outgoingConnectionEntry.getValue()) {
+                String uniqueId = (String) connection.getMetaData().get("UniqueId");
+                connectionIds.add(uniqueId);
+            }
+        }
+        return connectionIds;
     }
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {

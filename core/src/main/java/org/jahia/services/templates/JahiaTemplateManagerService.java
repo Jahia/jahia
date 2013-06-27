@@ -791,7 +791,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
                 Map<String,String> forgeParams = new HashMap<String, String>();
                 // module
-                forgeParams.put("jcr:title", module.getName());
+                forgeParams.put("moduleName", module.getName());
                 if (module.getDescription() != null) {
                     forgeParams.put("description", module.getDescription());
                 } else {

@@ -347,6 +347,7 @@ public class PublicationHelper {
             gwtInfo.setIsAllowedToPublishWithoutWorkflow(jcrNode.hasPermission("publish"));
             gwtInfo.setIsNonRootMarkedForDeletion(jcrNode.isNodeType("jmix:markedForDeletion") && !jcrNode.isNodeType("jmix:markedForDeletionRoot"));
         } catch (RepositoryException e1) {
+            logger.warn("Issue when reading workflow and delete status of node "+node.getPath(),e1);
             gwtInfo.setTitle(node.getPath());
         }
 

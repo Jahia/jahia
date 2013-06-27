@@ -93,6 +93,8 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         setUuid(uuid);
         setStatus(status);
         setLocked(false);
+        setIsAllowedToPublishWithoutWorkflow(false);
+        setIsNonRootMarkedForDeletion(false);
     }
 
     public String getTitle() {

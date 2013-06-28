@@ -82,8 +82,75 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
     private Object[] getArguments(Resource resource, RenderContext renderContext, Properties properties) {
         List<String> args = new LinkedList<String>();
+<<<<<<< .working
         for (CacheKeyPartGenerator generator : partGenerators) {
             args.add(generator.getValue(resource, renderContext, properties));
+=======
+        for (String field : fields) {
+            if ("workspace".equals(field)) {
+                args.add(encodeString(resource.getWorkspace()));
+            } else if ("language".equals(field)) {
+                args.add(encodeString(resource.getLocale().toString()));
+            } else {
+                if ("path".equals(field)) {
+                    StringBuilder s = new StringBuilder(resource.getNode().getPath());
+                    if (Boolean.TRUE.equals(request.getAttribute("cache.mainResource"))) {
+                        s.append(MAIN_RESOURCE_KEY);
+                    }
+                    args.add(encodeString(s.toString()));
+                } else if ("template".equals(field)) {
+                    if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
+                            renderContext.getMainResource().getNode().getPath())) {
+                        args.add(encodeString(renderContext.getMainResource().getResolvedTemplate()));
+                    } else {
+                        args.add(encodeString(resource.getResolvedTemplate()));
+                    }
+                } else if ("templateType".equals(field)) {
+                    String templateType = resource.getTemplateType();
+                    if (renderContext.isAjaxRequest()) {
+                        templateType += ".ajax";
+                    }
+                    args.add(encodeString(templateType));
+                } else if ("queryString".equals(field)) {
+                    String[] params = (String[]) request.getAttribute("cache.requestParameters");
+                    if (params != null && params.length > 0) {
+                        args.add(encodeString("_qs" + Arrays.toString(params) + "_"));
+                    } else {
+                        args.add("");
+                    }
+                } else if ("acls".equals(field)) {
+                    args.add(encodeString(appendAcls(resource, renderContext, true)));
+                } else if ("wrapped".equals(field)) {
+                    args.add(encodeString(String.valueOf(resource.hasWrapper())));
+                } else if ("context".equals(field)) {
+                    args.add(encodeString(String.valueOf(resource.getContextConfiguration())));
+                } else if ("custom".equals(field)) {
+                    args.add((resource.getModuleParams().get("module.cache.additional.key") != null ? encodeString(resource.getModuleParams().get("module.cache.additional.key").toString()) : "") +
+                            (request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : ""));
+                } else if ("templateNodes".equals(field)) {
+                    final Template t = (Template) request.getAttribute("previousTemplate");
+                    args.add(encodeString(t != null ? t.serialize() : ""));
+                } else if ("resourceID".equals(field)) {
+                    try {
+                        args.add(encodeString(resource.getNode().getIdentifier()));
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else if ("inArea".equals(field)) {
+                    Object inArea = request.getAttribute("inArea");
+                    args.add(encodeString(inArea != null ? inArea.toString() : ""));
+                } else if ("site".equals(field)) {
+                    // Todo : Do we need to find another way of getting the urlresolver ?
+                    URLResolver urlResolver = (URLResolver) renderContext.getRequest().getAttribute("urlResolver");
+                    args.add(encodeString(urlResolver == null ||
+                            urlResolver.getSiteKeyByServerName() == null ? new StringBuilder().append(
+                            renderContext.getSite().getSiteKey()).append(":").append("virtualhost").append(":").append(
+                            request.getParameter("jsite")).toString() : new StringBuilder().append(
+                            renderContext.getSite().getSiteKey()).append(":").append(request.getParameter(
+                            "jsite")).toString()));
+                }
+            }
+>>>>>>> .merge-right.r46549
         }
         return args.toArray(new String[args.size()]);
     }

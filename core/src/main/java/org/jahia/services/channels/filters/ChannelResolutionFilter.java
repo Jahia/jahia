@@ -50,6 +50,8 @@ import org.slf4j.Logger;
 
 import javax.jcr.AccessDeniedException;
 import javax.servlet.http.Cookie;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A filter that will match a user agent and set it to the associated channel
@@ -99,7 +101,12 @@ public class ChannelResolutionFilter extends AbstractFilter {
             Channel resolvedChannel = channelService.resolveChannel(context.getRequest());
             if (resolvedChannel != null) {
                 context.setChannel(resolvedChannel);
-                context.getRequest().setAttribute("module.cache.additional.key",resolvedChannel.getIdentifier());
+                List l = (List) context.getRequest().getAttribute("module.cache.additional.key");
+                if (l == null) {
+                    l = new ArrayList();
+                    context.getRequest().setAttribute("module.cache.additional.key", l);
+                }
+                l.add(resolvedChannel.getIdentifier());
             } else {
                 context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
             }

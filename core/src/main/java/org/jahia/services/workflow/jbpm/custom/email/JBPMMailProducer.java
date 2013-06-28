@@ -44,7 +44,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -52,17 +51,14 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
-import org.jbpm.api.Execution;
 import org.jbpm.api.JbpmException;
-import org.jbpm.api.ProcessEngine;
-import org.jbpm.api.cmd.Environment;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
-import org.jbpm.process.workitem.email.EmailWorkItemHandler;
 import org.jbpm.pvm.internal.email.spi.AddressResolver;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.identity.spi.IdentitySession;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
+import org.kie.api.runtime.process.WorkItem;
 import org.slf4j.Logger;
 
 import javax.activation.DataHandler;
@@ -91,15 +87,16 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  *        Created : 14 sept. 2010
  */
-public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
+public class JBPMMailProducer {
     private static final long serialVersionUID = -5084848266010688683L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateEmailWorkItemHandler.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
     private String templateKey;
-    private MailTemplate template; // @todo we might have to use a thread local for this.
+    private ThreadLocal<MailTemplate> template = new ThreadLocal<MailTemplate>();
+    private MailTemplateRegistry mailTemplateRegistry;
 
     public String getTemplateKey() {
         return templateKey;
@@ -109,29 +106,36 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         this.templateKey = templateKey;
     }
 
+    public MailTemplateRegistry getMailTemplateRegistry() {
+        return mailTemplateRegistry;
+    }
+
+    public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
+        this.mailTemplateRegistry = mailTemplateRegistry;
+    }
+
     public MailTemplate getTemplate() {
-        return template;
+        return template.get();
     }
 
     public void setTemplate(MailTemplate template) {
-        this.template = template;
+        this.template.set(template);
     }
 
-    public Collection<Message> produce(final Execution execution) {
-        final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
+    public Collection<Message> produce(final WorkItem workItem) {
+        final Map<String, Object> vars = workItem.getParameters();
         Locale locale = (Locale) vars.get("locale");
 
         if (templateKey != null) {
             MailTemplate template = null;
-            MailTemplateRegistry templateRegistry = ((ProcessEngine) SpringContextSingleton.getBean("processEngine")).get(MailTemplateRegistry.class);
             if (locale != null) {
-                template = (templateRegistry.getTemplate(templateKey + "." + locale.toString()));
+                template = (mailTemplateRegistry.getTemplate(templateKey + "." + locale.toString()));
                 if (template == null) {
-                    template = (templateRegistry.getTemplate(templateKey + "." + locale.getLanguage()));
+                    template = (mailTemplateRegistry.getTemplate(templateKey + "." + locale.getLanguage()));
                 }
             }
             if (template == null) {
-                template = templateRegistry.getTemplate(templateKey);
+                template = mailTemplateRegistry.getTemplate(templateKey);
             }
             setTemplate(template);
         }
@@ -144,10 +148,10 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
                             scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
                             bindings = null;
                             Message email = instantiateEmail();
-                            fillFrom(email, execution, session);
-                            fillRecipients(email, execution, session);
-                            fillSubject(email, execution, session);
-                            fillContent(email, execution, session);
+                            fillFrom(email, workItem, session);
+                            fillRecipients(email, workItem, session);
+                            fillSubject(email, workItem, session);
+                            fillContent(email, workItem, session);
                             Address[] addresses = email.getRecipients(Message.RecipientType.TO);
                             if (addresses != null && addresses.length > 0) {
                                 return Collections.singleton(email);
@@ -180,7 +184,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
      *
      * @see {@link InternetAddress#getLocalAddress(Session)}
      */
-    protected void fillFrom(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
+    protected void fillFrom(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
         try {
             AddressTemplate fromTemplate = getTemplate().getFrom();
             // "from" attribute is optional
@@ -189,7 +193,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
             // resolve and parse addresses
             String addresses = fromTemplate.getAddresses();
             if (addresses != null) {
-                addresses = evaluateExpression(execution, addresses, session);
+                addresses = evaluateExpression(workItem, addresses, session);
                 // non-strict parsing applies to a list of mail addresses entered by a human
                 email.addFrom(InternetAddress.parse(addresses, false));
             }
@@ -201,7 +205,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
             // resolve and tokenize users
             String userList = fromTemplate.getUsers();
             if (userList != null) {
-                String[] userIds = tokenizeActors(userList, execution, session);
+                String[] userIds = tokenizeActors(userList, workItem, session);
                 List<User> users = identitySession.findUsersById(userIds);
                 email.addFrom(resolveAddresses(users, addressResolver));
             }
@@ -209,7 +213,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
             // resolve and tokenize groups
             String groupList = fromTemplate.getGroups();
             if (groupList != null) {
-                for (String groupId : tokenizeActors(groupList, execution, session)) {
+                for (String groupId : tokenizeActors(groupList, workItem, session)) {
                     Group group = identitySession.findGroupById(groupId);
                     email.addFrom(addressResolver.resolveAddresses(group));
                 }
@@ -221,24 +225,24 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         }
     }
 
-    protected void fillRecipients(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
+    protected void fillRecipients(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
         try {
             // to
             AddressTemplate to = getTemplate().getTo();
             if (to != null) {
-                fillRecipients(to, email, Message.RecipientType.TO, execution, session);
+                fillRecipients(to, email, Message.RecipientType.TO, workItem, session);
             }
 
             // cc
             AddressTemplate cc = getTemplate().getCc();
             if (cc != null) {
-                fillRecipients(cc, email, Message.RecipientType.CC, execution, session);
+                fillRecipients(cc, email, Message.RecipientType.CC, workItem, session);
             }
 
             // bcc
             AddressTemplate bcc = getTemplate().getBcc();
             if (bcc != null) {
-                fillRecipients(bcc, email, Message.RecipientType.BCC, execution, session);
+                fillRecipients(bcc, email, Message.RecipientType.BCC, workItem, session);
             }
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
@@ -247,11 +251,11 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         }
     }
 
-    private void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, Execution execution, JCRSessionWrapper session) throws MessagingException, RepositoryException, ScriptException {
+    private void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, WorkItem workItem, JCRSessionWrapper session) throws MessagingException, RepositoryException, ScriptException {
         // resolve and parse addresses
         String addresses = addressTemplate.getAddresses();
         if (addresses != null) {
-            addresses = evaluateExpression(execution, addresses, session);
+            addresses = evaluateExpression(workItem, addresses, session);
             // non-strict parsing applies to a list of mail addresses entered by a human
             email.addRecipients(recipientType, InternetAddress.parse(addresses, false));
         }
@@ -263,7 +267,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         // resolve and tokenize users
         String userList = addressTemplate.getUsers();
         if (userList != null) {
-            String[] userIds = tokenizeActors(userList, execution, session);
+            String[] userIds = tokenizeActors(userList, workItem, session);
             List<User> users = identitySession.findUsersById(userIds);
             email.addRecipients(recipientType, resolveAddresses(users, addressResolver));
         }
@@ -271,15 +275,15 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         // resolve and tokenize groups
         String groupList = addressTemplate.getGroups();
         if (groupList != null) {
-            for (String groupId : tokenizeActors(groupList, execution, session)) {
+            for (String groupId : tokenizeActors(groupList, workItem, session)) {
                 Group group = identitySession.findGroupById(groupId);
                 email.addRecipients(recipientType, addressResolver.resolveAddresses(group));
             }
         }
     }
 
-    private String[] tokenizeActors(String recipients, Execution execution, JCRSessionWrapper session) throws RepositoryException, ScriptException {
-        String[] actors = ACTORS_PATTERN.split(evaluateExpression(execution, recipients, session));
+    private String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws RepositoryException, ScriptException {
+        String[] actors = ACTORS_PATTERN.split(evaluateExpression(workItem, recipients, session));
         if (actors.length == 0) throw new JbpmException("recipient list is empty: " + recipients);
         return actors;
     }
@@ -298,11 +302,11 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         return addresses.toArray(new Address[addresses.size()]);
     }
 
-    protected void fillSubject(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
+    protected void fillSubject(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
         String subject = getTemplate().getSubject();
         if (subject != null) {
             try {
-                String evaluatedSubject = evaluateExpression(execution, subject, session).replaceAll("[\r\n]", "");
+                String evaluatedSubject = evaluateExpression(workItem, subject, session).replaceAll("[\r\n]", "");
                 email.setSubject(WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
@@ -312,7 +316,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         }
     }
 
-    protected void fillContent(Message email, Execution execution, JCRSessionWrapper session) throws MessagingException {
+    protected void fillContent(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
         String text = getTemplate().getText();
         String html = getTemplate().getHtml();
         List<AttachmentTemplate> attachmentTemplates = getTemplate().getAttachmentTemplates();
@@ -330,7 +334,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
                 // html
                 if (html != null) {
                     BodyPart htmlPart = new MimeBodyPart();
-                    html = evaluateExpression(execution, html, session);
+                    html = evaluateExpression(workItem, html, session);
                     htmlPart.setContent(html, "text/html; charset=UTF-8");
                     alternatives.addBodyPart(htmlPart);
                 }
@@ -338,20 +342,20 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
                 // text
                 if (text != null) {
                     BodyPart textPart = new MimeBodyPart();
-                    text = evaluateExpression(execution, text, session);
+                    text = evaluateExpression(workItem, text, session);
                     textPart.setContent(text, "text/plain; charset=UTF-8");
                     alternatives.addBodyPart(textPart);
                 }
 
                 // attachments
                 if (!attachmentTemplates.isEmpty()) {
-                    addAttachments(execution, multipart);
+                    addAttachments(workItem, multipart);
                 }
 
                 email.setContent(multipart);
             } else if (text != null) {
                 // unipart
-                text = evaluateExpression(execution, text, session);
+                text = evaluateExpression(workItem, text, session);
                 email.setText(text);
             }
         } catch (RepositoryException e) {
@@ -361,11 +365,11 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         }
     }
 
-    private String evaluateExpression(Execution execution, String scriptToExecute, JCRSessionWrapper session)
+    private String evaluateExpression(WorkItem workItem, String scriptToExecute, JCRSessionWrapper session)
             throws RepositoryException, ScriptException {
         ScriptContext scriptContext = new SimpleScriptContext();
         if (bindings == null) {
-            bindings = getBindings(execution, session);
+            bindings = getBindings(workItem, session);
         }
         scriptContext.setWriter(new StringWriter());
         scriptContext.setErrorWriter(new StringWriter());
@@ -379,11 +383,10 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         return scriptContext.getWriter().toString().trim();
     }
 
-    private Bindings getBindings(Execution execution, JCRSessionWrapper session) throws RepositoryException {
-        EnvironmentImpl environment = EnvironmentImpl.getCurrent();
-        final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
+    private Bindings getBindings(WorkItem workItem, JCRSessionWrapper session) throws RepositoryException {
+        final Map<String, Object> vars = workItem.getParameters();
         Locale locale = (Locale) vars.get("locale");
-        final Bindings bindings = new MyBindings(environment);
+        final Bindings bindings = new MyBindings(workItem);
         ResourceBundle resourceBundle = ResourceBundles.get(
                 "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey(), locale);
         bindings.put("bundle", resourceBundle);
@@ -414,25 +417,25 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         return bindings;
     }
 
-    protected void addAttachments(Execution execution, Multipart multipart)
-            throws MessagingException {
-        for (AttachmentTemplate attachmentTemplate : template.getAttachmentTemplates()) {
+    protected void addAttachments(WorkItem workItem, Multipart multipart, JCRSessionWrapper session)
+            throws MessagingException, ScriptException, RepositoryException {
+        for (AttachmentTemplate attachmentTemplate : getTemplate().getAttachmentTemplates()) {
             BodyPart attachmentPart = new MimeBodyPart();
 
             // resolve description
             String description = attachmentTemplate.getDescription();
             if (description != null) {
-                attachmentPart.setDescription(evaluateExpression(description));
+                attachmentPart.setDescription(evaluateExpression(workItem, description, session));
             }
 
             // obtain interface to data
-            DataHandler dataHandler = createDataHandler(attachmentTemplate);
+            DataHandler dataHandler = createDataHandler(attachmentTemplate, workItem, session);
             attachmentPart.setDataHandler(dataHandler);
 
             // resolve file name
             String name = attachmentTemplate.getName();
             if (name != null) {
-                attachmentPart.setFileName(evaluateExpression(name));
+                attachmentPart.setFileName(evaluateExpression(workItem, name, session));
             } else {
                 // fall back on data source
                 DataSource dataSource = dataHandler.getDataSource();
@@ -450,11 +453,11 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         }
     }
 
-    private DataHandler createDataHandler(AttachmentTemplate attachmentTemplate) {
+    private DataHandler createDataHandler(AttachmentTemplate attachmentTemplate, WorkItem workItem, JCRSessionWrapper session) throws ScriptException, RepositoryException {
         // evaluate expression
         String expression = attachmentTemplate.getExpression();
         if (expression != null) {
-            Object object = evaluateExpression(expression, Object.class);
+            Object object = evaluateExpression(workItem, expression, session);
             return new DataHandler(object, attachmentTemplate.getMimeType());
         }
 
@@ -483,7 +486,7 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
         }
         // resolve classpath resource
         else {
-            String resource = evaluateExpression(attachmentTemplate.getResource());
+            String resource = evaluateExpression(workItem, attachmentTemplate.getResource(), session);
             targetUrl = Thread.currentThread().getContextClassLoader().getResource(resource);
             if (targetUrl == null) {
                 throw new JbpmException("could not read attachment content, resource not found: "
@@ -503,21 +506,21 @@ public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
     }
 
     public class MyBindings extends SimpleBindings {
-        private final Environment environment;
+        private final WorkItem workItem;
 
-        public MyBindings(Environment environment) {
+        public MyBindings(WorkItem workItem) {
             super();
-            this.environment = environment;
+            this.workItem = workItem;
         }
 
         @Override
         public boolean containsKey(Object key) {
-            return super.containsKey(key) || environment.get((String) key) != null;
+            return super.containsKey(key) || workItem.getParameter((String) key) != null;
         }
 
         @Override
         public Object get(Object key) {
-            return super.containsKey(key) ? super.get(key) : environment.get((String) key);
+            return super.containsKey(key) ? super.get(key) : workItem.getParameter((String) key);
         }
 
     }

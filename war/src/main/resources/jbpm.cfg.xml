@@ -14,6 +14,6 @@
     <import resource="jbpm.jobexecutor.cfg.xml"/>
     <transaction-context>
         <object class="org.jahia.services.workflow.jbpm.JBPMIdentitySession"/>
-        <object class="org.jahia.services.workflow.jbpm.JBPMMailSession"/>
+        <object class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailSession"/>
     </transaction-context>
 </jbpm-configuration>

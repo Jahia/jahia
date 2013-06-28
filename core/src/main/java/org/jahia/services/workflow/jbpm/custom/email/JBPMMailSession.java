@@ -38,18 +38,17 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.workflow.jbpm;
+package org.jahia.services.workflow.jbpm.custom.email;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
-import org.springframework.beans.factory.DisposableBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailServiceImpl;
-import org.jbpm.pvm.internal.email.spi.MailSession;
+import org.springframework.beans.factory.DisposableBean;
 
-import javax.mail.*;
+import javax.mail.Message;
 import javax.mail.internet.MimeMultipart;
 import java.util.Collection;
 
@@ -60,7 +59,7 @@ import java.util.Collection;
  * @since JAHIA 6.5
  *        Created : 14 sept. 2010
  */
-public class JBPMMailSession implements MailSession, DisposableBean {
+public class JBPMMailSession implements DisposableBean {
     private MailServiceImpl mailService;
     private ProducerTemplate template;
 
@@ -72,15 +71,6 @@ public class JBPMMailSession implements MailSession, DisposableBean {
     public void send(Collection<Message> emails) {
         if (mailService.isEnabled()) {
             for (Message email : emails) {
-//                Properties props = System.getProperties();
-//                props.put("mail.smtp.host", "smtp.free.fr");
-//                Session session = Session.getDefaultInstance(props, null);
-//
-//                try {
-//                    Transport.send(email);
-//                } catch (MessagingException e) {
-//                    e.printStackTrace();
-//                }
                 try {
                     CamelContext context = mailService.getCamelContext();
                     MailEndpoint endpoint = (MailEndpoint) context.getEndpoint(mailService.getEndpointUri());
@@ -103,8 +93,8 @@ public class JBPMMailSession implements MailSession, DisposableBean {
                                 }
                             }
                         }
-                        for (int i = 1 ; i<multipart.getCount(); i++) {
-                            exchange.getIn().addAttachment("part"+i, multipart.getBodyPart(i).getDataHandler());
+                        for (int i = 1; i < multipart.getCount(); i++) {
+                            exchange.getIn().addAttachment("part" + i, multipart.getBodyPart(i).getDataHandler());
                         }
                     }
                     template.send("seda:mailUsers?multipleConsumers=true",
@@ -116,9 +106,9 @@ public class JBPMMailSession implements MailSession, DisposableBean {
         }
     }
 
-	public void destroy() throws Exception {
-		if (template != null) {
-			template.stop();
-		}
+    public void destroy() throws Exception {
+        if (template != null) {
+            template.stop();
+        }
     }
 }

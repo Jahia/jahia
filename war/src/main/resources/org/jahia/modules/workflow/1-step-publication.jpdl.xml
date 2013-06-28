@@ -9,7 +9,7 @@
         <transition g="-29,8" name="to review" to="sendStartMail"/>
     </custom>
 
-    <mail class="org.jahia.services.workflow.jbpm.custom.email.TemplateEmailWorkItemHandler" name="sendStartMail"
+    <mail class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer" name="sendStartMail"
           g="216,53,80,40">
         <property name="templateKey">
             <string value="start-publication-template"/>
@@ -24,7 +24,7 @@
         </transition>
     </task>
 
-    <mail class="org.jahia.services.workflow.jbpm.custom.email.TemplateEmailWorkItemHandler" name="alertReject"
+    <mail class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer" name="alertReject"
           g="454,94,80,40">
         <property name="templateKey">
             <string value="alert-reject-template"/>
@@ -32,7 +32,7 @@
         <transition to="unlock"/>
     </mail>
 
-    <mail class="org.jahia.services.workflow.jbpm.custom.email.TemplateEmailWorkItemHandler" name="alertPublish"
+    <mail class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer" name="alertPublish"
           g="450,16,80,40">
         <property name="templateKey">
             <string value="alert-publish-template"/>

@@ -210,4 +210,21 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
         return out;
     }
+
+    @Override
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
+        super.getContentForError(renderContext, resource, chain, e);
+        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
+            return null;
+        }
+        try {
+            // Handle case of required mode
+            if(e instanceof AccessDeniedException && renderContext.getMode().equals("preview") && resource.getNode().hasProperty("j:requiredMode"))
+            // Returns a fragment with an error comment
+            return "<p>"+e.getMessage()+"</p>";
+        } catch (Exception e1) {
+            return null;
+        }
+        return null;
+    }
 }

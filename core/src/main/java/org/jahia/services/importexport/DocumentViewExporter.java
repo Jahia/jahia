@@ -268,7 +268,7 @@ public class DocumentViewExporter {
                             for (int i = 0; i < values.size(); i++) {
                                 String v = values.get(i);
                                 try {
-                                b.append(StringUtils.replaceEach(v,new String[]{" ","+"},new String[]{URLEncoder.encode(" ","UTF-8"),URLEncoder.encode("+","UTF-8")}));
+                                b.append(URLEncoder.encode(v,"UTF-8"));
                                 if (i + 1 < values.size()) {
                                     b.append(" ");
                                 }

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
@@ -271,6 +272,24 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
         }
+    }
+
+    @Test
+    public void testModuleParams() throws Exception {
+        ModuleCacheProvider.getInstance().flushCaches();
+        String path = SITECONTENT_ROOT_NODE + "/home/moduleParams";
+        String userAB = getContent(getUrl(path), "userAB", "password", null);
+        String userBC = getContent(getUrl(path), "userBC", "password", null);
+        assertTrue("Page should contains 'Welcome on jahia dear userAB'", userAB.contains("Welcome on jahia dear userAB"));
+        assertTrue("Page should contains 'Welcome on jahia dear userBC'", userBC.contains("Welcome on jahia dear userBC"));
+        List keys = ModuleCacheProvider.getInstance().getCache().getKeys();
+        int count = 0;
+        for (Object key : keys) {
+            if(((String)key).contains("{'testParam':")){
+                count++;
+            }
+        }
+        assertEquals("We should have two keys with module params 'testParam' serialized in JSON",2,count);
     }
 
     private String getContent(URL url, String user, String password, String requestId) throws Exception {

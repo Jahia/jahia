@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.workflow.jbpm;
+package org.jahia.services.workflow.jbpm.custom.email;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -59,20 +59,27 @@ import org.jbpm.api.cmd.Environment;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.process.workitem.email.EmailWorkItemHandler;
-import org.jbpm.pvm.internal.email.impl.*;
 import org.jbpm.pvm.internal.email.spi.AddressResolver;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.identity.spi.IdentitySession;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.slf4j.Logger;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.activation.URLDataSource;
 import javax.jcr.RepositoryException;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.script.*;
+import java.io.File;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -84,14 +91,15 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  *        Created : 14 sept. 2010
  */
-public class JBPMMailProducer extends EmailWorkItemHandler {
+public class TemplateEmailWorkItemHandler extends EmailWorkItemHandler {
     private static final long serialVersionUID = -5084848266010688683L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateEmailWorkItemHandler.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
     private String templateKey;
+    private MailTemplate template; // @todo we might have to use a thread local for this.
 
     public String getTemplateKey() {
         return templateKey;
@@ -99,6 +107,14 @@ public class JBPMMailProducer extends EmailWorkItemHandler {
 
     public void setTemplateKey(String templateKey) {
         this.templateKey = templateKey;
+    }
+
+    public MailTemplate getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(MailTemplate template) {
+        this.template = template;
     }
 
     public Collection<Message> produce(final Execution execution) {
@@ -151,6 +167,10 @@ public class JBPMMailProducer extends EmailWorkItemHandler {
             }
         }
         return Collections.emptyList();
+    }
+
+    protected Message instantiateEmail() {
+        return new MimeMessage((Session) null);
     }
 
     /**
@@ -392,6 +412,94 @@ public class JBPMMailProducer extends EmailWorkItemHandler {
         }
         bindings.put("nodes", nodes);
         return bindings;
+    }
+
+    protected void addAttachments(Execution execution, Multipart multipart)
+            throws MessagingException {
+        for (AttachmentTemplate attachmentTemplate : template.getAttachmentTemplates()) {
+            BodyPart attachmentPart = new MimeBodyPart();
+
+            // resolve description
+            String description = attachmentTemplate.getDescription();
+            if (description != null) {
+                attachmentPart.setDescription(evaluateExpression(description));
+            }
+
+            // obtain interface to data
+            DataHandler dataHandler = createDataHandler(attachmentTemplate);
+            attachmentPart.setDataHandler(dataHandler);
+
+            // resolve file name
+            String name = attachmentTemplate.getName();
+            if (name != null) {
+                attachmentPart.setFileName(evaluateExpression(name));
+            } else {
+                // fall back on data source
+                DataSource dataSource = dataHandler.getDataSource();
+                if (dataSource instanceof URLDataSource) {
+                    name = extractResourceName(((URLDataSource) dataSource).getURL());
+                } else {
+                    name = dataSource.getName();
+                }
+                if (name != null) {
+                    attachmentPart.setFileName(name);
+                }
+            }
+
+            multipart.addBodyPart(attachmentPart);
+        }
+    }
+
+    private DataHandler createDataHandler(AttachmentTemplate attachmentTemplate) {
+        // evaluate expression
+        String expression = attachmentTemplate.getExpression();
+        if (expression != null) {
+            Object object = evaluateExpression(expression, Object.class);
+            return new DataHandler(object, attachmentTemplate.getMimeType());
+        }
+
+        // resolve local file
+        String file = attachmentTemplate.getFile();
+        if (file != null) {
+            File targetFile = new File(evaluateExpression(file));
+            if (!targetFile.isFile()) {
+                throw new JbpmException("could not read attachment content, file not found: "
+                        + targetFile);
+            }
+            // set content from file
+            return new DataHandler(new FileDataSource(targetFile));
+        }
+
+        // resolve external url
+        URL targetUrl;
+        String url = attachmentTemplate.getUrl();
+        if (url != null) {
+            url = evaluateExpression(url);
+            try {
+                targetUrl = new URL(url);
+            } catch (MalformedURLException e) {
+                throw new JbpmException("could not read attachment content, malformed url: " + url, e);
+            }
+        }
+        // resolve classpath resource
+        else {
+            String resource = evaluateExpression(attachmentTemplate.getResource());
+            targetUrl = Thread.currentThread().getContextClassLoader().getResource(resource);
+            if (targetUrl == null) {
+                throw new JbpmException("could not read attachment content, resource not found: "
+                        + resource);
+            }
+        }
+        // set content from url
+        return new DataHandler(targetUrl);
+    }
+
+    private static String extractResourceName(URL url) {
+        String path = url.getPath();
+        if (path == null || path.length() == 0) return null;
+
+        int sepIndex = path.lastIndexOf('/');
+        return sepIndex != -1 ? path.substring(sepIndex + 1) : null;
     }
 
     public class MyBindings extends SimpleBindings {

@@ -44,11 +44,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-<<<<<<< .working
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
-=======
->>>>>>> .merge-right.r46539
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;

@@ -126,22 +126,24 @@ public class FormFieldCreator {
                                 field = new NumberField();
                                 ((NumberField) field).setAllowDecimals(true);
                                 break;
+                            case GWTJahiaNodePropertyType.DECIMAL:
+                                field = new NumberField();
+                                ((NumberField) field).setAllowDecimals(true);
+                                break;
                             default:
-                                field = new TextField<String>();
+                                final TextField<String> f = new TextField<String>();
+                                f.addListener(Events.Change, new Listener<ComponentEvent>() {
+                                    public void handleEvent(ComponentEvent event) {
+                                        String s = f.getValue();
+                                        f.setValue(s.trim());
+                                    }
+                                });
+                                field = f;
+                                if (definition.getSelectorOptions().get("password") != null) {
+                                    ((TextField)field).setPassword(true);
+                                }
                                 break;
                         }
-                        if (definition.getSelectorOptions().get("password") != null) {
-                            ((TextField)field).setPassword(true);
-                        }
-                            final TextField<String> f = new TextField<String>();
-                            f.addListener(Events.Change, new Listener<ComponentEvent>() {
-                                public void handleEvent(ComponentEvent event) {
-                                    String s = f.getValue();
-                                    f.setValue(s.trim());
-                                }
-                            });
-                            field = f;
-                            break;
                     }
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:

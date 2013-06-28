@@ -60,6 +60,8 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
@@ -744,6 +746,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 for (Map.Entry<String, Serializable> entry : moduleParams.entrySet()) {
                     resource.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
+            }
+            try {
+                JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
+                Iterator keys = map.keys();
+                while (keys.hasNext()) {
+                    String next = (String) keys.next();
+                    resource.getModuleParams().put(next,(Serializable) map.get(next));
+                }
+            } catch (JSONException e) {
+                logger.error(e.getMessage(), e);
             }
             String content = RenderService.getInstance().render(resource, renderContext);
             if (content == null || "".equals(content.trim())) {

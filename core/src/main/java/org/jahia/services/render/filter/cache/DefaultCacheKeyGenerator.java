@@ -46,6 +46,8 @@ import net.sf.ehcache.Element;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -58,6 +60,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -83,14 +86,14 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
             "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
-            "templateNodes", "resourceID", "inArea", "site"));
+            "templateNodes", "resourceID", "inArea", "site","moduleParams"));
     private static final String CACHE_NAME = "HTMLNodeUsersACLs";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
     public static final String PER_USER = "_perUser_";
     private static final String MAIN_RESOURCE_KEY = "_mr_";
     private List<String> fields = new ArrayList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}#{12}#{13}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}#{12}#{13}#{14}");
 
     private JahiaGroupManagerService groupManagerService;
     private JahiaUserManagerService userManagerService;
@@ -161,8 +164,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 } else if ("context".equals(field)) {
                     args.add(encodeString(String.valueOf(resource.getContextConfiguration())));
                 } else if ("custom".equals(field)) {
-                    args.add((resource.getModuleParams().get("module.cache.additional.key") != null ? encodeString(resource.getModuleParams().get("module.cache.additional.key").toString()) : "") +
-                            (request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : ""));
+                    args.add((request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : ""));
                 } else if ("templateNodes".equals(field)) {
                     final Template t = (Template) request.getAttribute("previousTemplate");
                     args.add(encodeString(t != null ? t.serialize() : ""));
@@ -184,6 +186,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             request.getParameter("jsite")).toString() : new StringBuilder().append(
                             renderContext.getSite().getSiteKey()).append(":").append(request.getParameter(
                             "jsite")).toString()));
+                } else if ("moduleParams".equals(field)) {
+                    args.add(encodeString(new JSONObject(resource.getModuleParams()).toString()).replaceAll("\"","'"));
                 }
             }
         }

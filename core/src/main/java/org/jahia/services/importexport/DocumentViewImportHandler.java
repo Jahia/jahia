@@ -72,6 +72,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -497,8 +498,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             List<ExtendedNodeType> nodeTypes = new ArrayList<ExtendedNodeType>();
             nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(pt));
             if (atts.getValue(Constants.JCR_MIXINTYPES) != null) {
-                for (String mixin : atts.getValue(Constants.JCR_MIXINTYPES).split(" ")) {
-                    nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(mixin));
+                try {
+                    for (String mixin : URLDecoder.decode(atts.getValue(Constants.JCR_MIXINTYPES),"UTF-8").split(" ")) {
+                        nodeTypes.add(NodeTypeRegistry.getInstance().getNodeType(mixin));
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    logger.warn("unable to decode " + path + "/" + Constants.JCR_MIXINTYPES + " with value " + atts.getValue(Constants.JCR_MIXINTYPES) + " while importing - values skipped");
                 }
             }
             JCRSiteNode currentSite = nodes.peek().getResolveSite();
@@ -536,8 +541,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private void addMixins(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
         if (m != null) {
-            StringTokenizer st = new StringTokenizer(m, " ,");
-            while (st.hasMoreTokens()) {
+            StringTokenizer st = null;
+            try {
+                st = new StringTokenizer(URLDecoder.decode(m, "UTF-8"), " ,");
+            } catch (UnsupportedEncodingException e) {
+                logger.warn("Cannot add node type " + e.getMessage());
+            }
+            while (st != null && st.hasMoreTokens()) {
                 try {
                     child.addMixin(st.nextToken());
                 } catch (NoSuchNodeTypeException e) {
@@ -640,7 +650,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         Value[] v = new Value[s.length];
                         for (int j = 0; j < s.length; j++) {
                             try {
-                                v[j] = child.getRealNode().getSession().getValueFactory().createValue(StringUtils.replaceEach(s[j], new String[]{URLEncoder.encode(" ","UTF-8"),URLEncoder.encode("+","UTF-8")},new String[]{" ","+"}));
+                                v[j] = child.getRealNode().getSession().getValueFactory().createValue(URLDecoder.decode(s[j],"UTF-8"));
                             } catch (UnsupportedEncodingException e) {
                                 logger.warn("cannot decode property value " + s[j] + " while importing",e);
                             }

@@ -243,6 +243,10 @@ public class ManageSites extends AbstractAdministrationModule {
             throws IOException, ServletException {
         logger.debug(" display sites list started ");
 
+        // clean previous import infos
+        if (jParams.getSessionState().getAttribute("importsInfos") != null)
+            jParams.getSessionState().setAttribute("importsInfos",null);
+
         // retrieve previous form values...
         String jahiaDisplayMessage = (String) request.getAttribute(CLASS_NAME + "jahiaDisplayMessage");
         String warningMsg = (String) request.getAttribute("warningMsg");

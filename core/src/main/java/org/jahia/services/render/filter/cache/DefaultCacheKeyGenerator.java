@@ -161,8 +161,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 } else if ("context".equals(field)) {
                     args.add(encodeString(String.valueOf(resource.getContextConfiguration())));
                 } else if ("custom".equals(field)) {
-                    args.add(encodeString((String) resource.getModuleParams().get("module.cache.additional.key")) +
-                            encodeString((String) request.getAttribute("module.cache.additional.key")));
+                    args.add((resource.getModuleParams().get("module.cache.additional.key") != null ? encodeString(resource.getModuleParams().get("module.cache.additional.key").toString()) : "") +
+                            (request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : ""));
                 } else if ("templateNodes".equals(field)) {
                     final Template t = (Template) request.getAttribute("previousTemplate");
                     args.add(encodeString(t != null ? t.serialize() : ""));

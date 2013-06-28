@@ -132,16 +132,6 @@ public class FormFieldCreator {
                                 ((NumberField) field).setAllowDecimals(true);
                                 break;
                             default:
-<<<<<<< .working
-                                final TextField<String> f = new TextField<String>();
-                                f.addListener(Events.Change, new Listener<ComponentEvent>() {
-                                    public void handleEvent(ComponentEvent event) {
-                                        String s = f.getValue();
-                                        f.setValue(s.trim());
-                                    }
-                                });
-                                field = f;
-=======
                                 final TextField<String> f = new TextField<String>();
                                 f.addListener(Events.Change, new Listener<ComponentEvent>() {
                                     public void handleEvent(ComponentEvent event) {
@@ -153,15 +143,8 @@ public class FormFieldCreator {
                                 if (definition.getSelectorOptions().get("password") != null) {
                                     ((TextField)field).setPassword(true);
                                 }
->>>>>>> .merge-right.r46557
                                 break;
                         }
-<<<<<<< .working
-                        if (definition.getSelectorOptions().get("password") != null) {
-                            ((TextField)field).setPassword(true);
-                        }
-=======
->>>>>>> .merge-right.r46557
                     }
                     break;
                 case GWTJahiaNodeSelectorType.TEXTAREA:

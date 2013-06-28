@@ -42,10 +42,20 @@ package org.jahia.services.render.filter.cache;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
 import org.apache.jackrabbit.util.Base64;
+=======
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
+import org.jahia.api.Constants;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.content.*;
+>>>>>>> .merge-right.r46553
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.settings.SettingsBean;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +74,40 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     private List<CacheKeyPartGenerator> partGenerators;
     private List<String> fields;
 
+<<<<<<< .working
     public List<CacheKeyPartGenerator> getPartGenerators() {
         return partGenerators;
+=======
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
+
+    private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
+            "path", "template", "templateType", "acls", "context", "wrapped", "custom", "queryString",
+            "templateNodes", "resourceID", "inArea", "site","moduleParams"));
+    private static final String CACHE_NAME = "HTMLNodeUsersACLs";
+    private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
+    public static final String PER_USER = "_perUser_";
+    private static final String MAIN_RESOURCE_KEY = "_mr_";
+    private List<String> fields = new ArrayList<String>(KNOWN_FIELDS);
+
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}#{11}#{12}#{13}#{14}");
+
+    private JahiaGroupManagerService groupManagerService;
+    private JahiaUserManagerService userManagerService;
+    private Map<String, Set<JahiaGroup>> aclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
+    private final Object objForSync = new Object();
+    private EhCacheProvider cacheProvider;
+    private Cache cache;
+    private JCRTemplate template;
+    private Cache permissionCache;
+    public static Pattern mainResourcePattern = Pattern.compile(MAIN_RESOURCE_KEY);
+    public static Pattern perUserPattern = Pattern.compile(PER_USER);
+    private static final Pattern depAclsPattern = Pattern.compile("_depacl_");
+    private static final Pattern aclsPathPattern = Pattern.compile("_p_");
+    public static Pattern mainResourceAclPattern = Pattern.compile("mraclmr");
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+>>>>>>> .merge-right.r46553
     }
 
     public void setPartGenerators(List<CacheKeyPartGenerator> partGenerators) {
@@ -125,8 +167,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
                 } else if ("context".equals(field)) {
                     args.add(encodeString(String.valueOf(resource.getContextConfiguration())));
                 } else if ("custom".equals(field)) {
-                    args.add((resource.getModuleParams().get("module.cache.additional.key") != null ? encodeString(resource.getModuleParams().get("module.cache.additional.key").toString()) : "") +
-                            (request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : ""));
+                    args.add((request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : ""));
                 } else if ("templateNodes".equals(field)) {
                     final Template t = (Template) request.getAttribute("previousTemplate");
                     args.add(encodeString(t != null ? t.serialize() : ""));
@@ -148,6 +189,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
                             request.getParameter("jsite")).toString() : new StringBuilder().append(
                             renderContext.getSite().getSiteKey()).append(":").append(request.getParameter(
                             "jsite")).toString()));
+                } else if ("moduleParams".equals(field)) {
+                    args.add(encodeString(new JSONObject(resource.getModuleParams()).toString()).replaceAll("\"","'"));
                 }
             }
 >>>>>>> .merge-right.r46549

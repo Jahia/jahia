@@ -44,22 +44,19 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRMultiValueUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.jcr.*;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,11 +66,11 @@ import java.util.regex.Pattern;
  * User: toto
  * Date: Dec 17, 2009
  * Time: 3:02:35 PM
- * 
+ *
  */
 public class DocumentViewExporter {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);
-    
+
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
 
@@ -234,7 +231,7 @@ public class DocumentViewExporter {
                     return;
                 } else {
                     exportedShareable.put(node.getIdentifier(), node.getPath());
-                }                
+                }
             }
             PropertyIterator propsIterator = node.getRealNode().getProperties();
             SortedSet<String> sortedProps = new TreeSet<String>();
@@ -262,23 +259,15 @@ public class DocumentViewExporter {
                             Value[] vs = property.getValues();
                             List<String> values = new ArrayList<String>();
                             for (Value v : vs) {
-                                values.add(getValue(v));
+                                values.add(JCRMultiValueUtils.encode(getValue(v)).replace("_x002f_","/").replace("_x0023_", "#"));
                             }
                             Collections.sort(values);
                             StringBuffer b = new StringBuffer();
                             for (int i = 0; i < values.size(); i++) {
                                 String v = values.get(i);
-                                try {
-                                    if (property.getType() == PropertyType.REFERENCE || property.getType() == ExtendedPropertyType.WEAKREFERENCE) {
-                                        b.append(v);
-                                    } else {
-                                        b.append(URLEncoder.encode(v,"UTF-8"));
-                                    }
+                                b.append(v);
                                 if (i + 1 < values.size()) {
                                     b.append(" ");
-                                }
-                                } catch (UnsupportedEncodingException e) {
-                                    logger.warn("cannot encode multiple property " + v + " while importing",e);
                                 }
                             }
                             value = b.toString();
@@ -351,7 +340,7 @@ public class DocumentViewExporter {
                         }
                     }
                 }
-                return ISO9075.encode(path).replace("_x002f_","/").replace("_x0023_","#");
+                return path;
             } catch (ItemNotFoundException e) {
                 return "";
             }

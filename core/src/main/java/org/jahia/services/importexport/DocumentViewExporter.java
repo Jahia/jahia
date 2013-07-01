@@ -45,6 +45,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
@@ -268,7 +269,11 @@ public class DocumentViewExporter {
                             for (int i = 0; i < values.size(); i++) {
                                 String v = values.get(i);
                                 try {
-                                b.append(URLEncoder.encode(v,"UTF-8"));
+                                    if (property.getType() == PropertyType.REFERENCE || property.getType() == ExtendedPropertyType.WEAKREFERENCE) {
+                                        b.append(v);
+                                    } else {
+                                        b.append(URLEncoder.encode(v,"UTF-8"));
+                                    }
                                 if (i + 1 < values.size()) {
                                     b.append(" ");
                                 }

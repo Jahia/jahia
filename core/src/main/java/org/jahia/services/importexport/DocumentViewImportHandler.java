@@ -42,12 +42,9 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -55,10 +52,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.View;
 import org.jahia.settings.SettingsBean;
-import org.mvel.TemplateRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 <<<<<<< .working
@@ -619,7 +613,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         String[] values = propDef.isMultiple() ? Patterns.SPACE.split(attrValue) : new String[]{attrValue};
                         for (String value : values) {
                             if (propDef.isMultiple()) {
-                                value = JCRMultiValueUtils.decode(value);
+                                value = JCRMultipleValueUtils.decode(value);
                             }
                             if (!StringUtils.isEmpty(value)) {
                                 if (value.startsWith("$currentSite")) {
@@ -647,7 +641,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
                         Value[] v = new Value[s.length];
                         for (int j = 0; j < s.length; j++) {
-                            v[j] = child.getRealNode().getSession().getValueFactory().createValue(JCRMultiValueUtils.decode(s[j]));
+                            v[j] = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]));
                         }
                         child.getRealNode().setProperty(attrName, v);
                     } else {

@@ -43,14 +43,12 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.api.Constants;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.templates.ComponentRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -541,5 +539,23 @@ public class JCRTagUtils {
         }
 
         return StringUtils.defaultString(keywords);
+    }
+
+    public static boolean needPublication(JCRNodeWrapper node, String language, boolean includesReferences,
+                                                     boolean includesSubnodes, boolean allsubtree) {
+        JCRPublicationService publicationService = JCRPublicationService.getInstance();
+        try {
+            List<PublicationInfo> publicationInfos = publicationService.getPublicationInfo(node.getIdentifier(),
+                    (language == null ? null : Collections.singleton(language)), includesReferences, includesSubnodes,
+                    allsubtree, node.getSession().getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+            for (PublicationInfo publicationInfo : publicationInfos) {
+                if (publicationInfo.needPublication(language)) {
+                    return true;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Failed to get PublicationInfo for node " + node.getPath(), e);
+        }
+        return false;
     }
 }

@@ -753,4 +753,10 @@
         ]]>
         </example>
     </function>
+    <function>
+        <description>Evaluate to true if the node and if specified, its subnodes, need publication.</description>
+        <name>needPublication</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>boolean needPublication(org.jahia.services.content.JCRNodeWrapper, java.lang.String, boolean, boolean, boolean)</function-signature>
+    </function>
 </taglib>

@@ -64,8 +64,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
+<<<<<<< .working
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+=======
+import javax.jcr.*;
+>>>>>>> .merge-right.r46574
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -946,6 +950,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             renderContext.getRequest().setAttribute("expiration", ""+errorCacheExpiration);
+            logger.error(e.getMessage(), e);
             // Returns a fragment with an error comment
             return execute("<!-- Module error : "+e.getMessage()+"-->", renderContext, resource, chain);
         } catch (Exception e1) {

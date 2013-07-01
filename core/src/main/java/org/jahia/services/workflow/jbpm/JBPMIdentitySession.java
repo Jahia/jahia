@@ -53,6 +53,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.security.Principal;
 import java.util.*;
 
@@ -200,7 +203,7 @@ public class JBPMIdentitySession implements TaskIdentityService {
         throw new UnsupportedOperationException();
     }
 
-    class UserImpl implements User, Comparable<User> {
+    class UserImpl implements User, Comparable<UserImpl> {
         private String id;
         private String givenName;
         private String familyName;
@@ -266,7 +269,7 @@ public class JBPMIdentitySession implements TaskIdentityService {
          * @throws ClassCastException if the specified object's type prevents it
          *                            from being compared to this object.
          */
-        public int compareTo(User o) {
+        public int compareTo(UserImpl o) {
             return (getFamilyName() + getGivenName()).compareTo(o.getFamilyName() + o.getGivenName());
         }
 
@@ -288,6 +291,22 @@ public class JBPMIdentitySession implements TaskIdentityService {
         @Override
         public int hashCode() {
             return id.hashCode();
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput objectOutput) throws IOException {
+            objectOutput.writeUTF(id);
+            objectOutput.writeUTF(givenName);
+            objectOutput.writeUTF(familyName);
+            objectOutput.writeUTF(businessEmail);
+        }
+
+        @Override
+        public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+            id = objectInput.readUTF();
+            givenName = objectInput.readUTF();
+            familyName = objectInput.readUTF();
+            businessEmail = objectInput.readUTF();
         }
     }
 
@@ -312,6 +331,20 @@ public class JBPMIdentitySession implements TaskIdentityService {
 
         public String getType() {
             return type;
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput objectOutput) throws IOException {
+            objectOutput.writeUTF(id);
+            objectOutput.writeUTF(name);
+            objectOutput.writeUTF(type);
+        }
+
+        @Override
+        public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+            id = objectInput.readUTF();
+            name = objectInput.readUTF();
+            type = objectInput.readUTF();
         }
     }
 

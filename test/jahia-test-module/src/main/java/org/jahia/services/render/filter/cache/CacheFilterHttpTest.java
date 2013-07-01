@@ -205,6 +205,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @Test
+    public void testModuleErrorWithCascade() throws Exception {
+        ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).setCascadeFragmentErrors(true);
+        try {
+            GetMethod method = executeCall(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", null);
+            assertEquals("Incorrect status code", 500, method.getStatusCode());
+        } finally {
+            ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).setCascadeFragmentErrors(false);
+        }
+    }
+
+    @Test
     public void testModuleWait() throws Exception {
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         try {

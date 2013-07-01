@@ -48,7 +48,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
@@ -64,12 +66,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
-<<<<<<< .working
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-=======
-import javax.jcr.*;
->>>>>>> .merge-right.r46574
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;

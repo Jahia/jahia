@@ -1040,8 +1040,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private boolean shouldUseLatch(Resource resource, Properties properties) throws RepositoryException {
-        if (!Boolean.valueOf(StringUtils.defaultIfEmpty(properties.getProperty("cache.latch"), "true"))) {
-            return false;
+        if (!StringUtils.isEmpty(properties.getProperty("cache.latch"))) {
+            return Boolean.valueOf(properties.getProperty("cache.latch"));
         }
         if (skipLatchForConfigurations != null && skipLatchForConfigurations.contains(resource.getContextConfiguration())) {
             return false;

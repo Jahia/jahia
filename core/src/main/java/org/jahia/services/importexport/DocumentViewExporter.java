@@ -45,7 +45,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRMultiValueUtils;
+import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -259,7 +259,7 @@ public class DocumentViewExporter {
                             Value[] vs = property.getValues();
                             List<String> values = new ArrayList<String>();
                             for (Value v : vs) {
-                                values.add(JCRMultiValueUtils.encode(getValue(v)).replace("_x002f_","/").replace("_x0023_", "#"));
+                                values.add(JCRMultipleValueUtils.encode(getValue(v)).replace("_x002f_","/").replace("_x0023_", "#"));
                             }
                             Collections.sort(values);
                             StringBuffer b = new StringBuffer();

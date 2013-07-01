@@ -12,12 +12,12 @@ import java.util.regex.Pattern;
  * NCName it is encoded in the form: '_x' + hexValueOf(c) + '_'.
  */
 
-public class JCRMultiValueUtils {
+public class JCRMultipleValueUtils {
 
 
 
     /** Hidden constructor. */
-    private JCRMultiValueUtils() { }
+    private JCRMultipleValueUtils() { }
 
     /** Pattern on an encoded character */
     private static final Pattern ENCODE_PATTERN = Pattern.compile("_x\\p{XDigit}{4}_");

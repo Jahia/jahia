@@ -40,8 +40,6 @@
 
 package org.jahia.services.importexport.validation;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -53,23 +51,19 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
 /**
  * Helper class for performing a validation for missing node types and mixins in the imported content.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since Jahia 6.6
  */
 public class MissingNodetypesValidator implements ImportValidator {
-    private static Logger logger = LoggerFactory.getLogger(MissingNodetypesValidator.class);
 
     private Set<String> existingNodetypes = new HashSet<String>();
     private Map<String, Set<String>> missingMixins = new TreeMap<String, Set<String>>();
     private Map<String, Set<String>> missingNodetypes = new TreeMap<String, Set<String>>();
-
 
     private boolean isTypeExisting(String type, boolean mixin) {
         if (existingNodetypes.contains(type)) {
@@ -98,19 +92,14 @@ public class MissingNodetypesValidator implements ImportValidator {
     }
 
     public void validate(String decodedLocalName, String decodedQName, String currentPath,
-            Attributes atts) {
+                         Attributes atts) {
         String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
         if (pt != null && !isTypeExisting(pt, false)) {
             missingNodetypes.get(pt).add(currentPath);
         }
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
         if (m != null) {
-            StringTokenizer st = null;
-            try {
-                st = new StringTokenizer(URLDecoder.decode(m, "UTF-8"), " ,");
-            } catch (UnsupportedEncodingException e) {
-                logger.warn("Cannot add node type " + e.getMessage());
-            }
+            StringTokenizer st = new StringTokenizer(m, " ,");
             while (st.hasMoreTokens()) {
 
                 String mixin = st.nextToken();

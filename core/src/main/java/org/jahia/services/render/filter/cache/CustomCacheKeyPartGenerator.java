@@ -56,13 +56,17 @@ public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
 
-        return (String) resource.getModuleParams().get("module.cache.additional.key") +
-                (String) request.getAttribute("module.cache.additional.key");
+        return request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : "";
     }
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         return keyPart;
     }
+
+    private String encodeString(String toBeEncoded) {
+        return toBeEncoded != null ? toBeEncoded.replaceAll("#", "@@") : toBeEncoded;
+    }
+
 
 }

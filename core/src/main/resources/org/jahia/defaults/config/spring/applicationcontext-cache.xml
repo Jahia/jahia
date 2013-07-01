@@ -53,6 +53,7 @@ when we flush this entry we will flush the whole cache
                 <bean class="org.jahia.services.render.filter.cache.ResourceIDCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.InAreaCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.SiteCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.ModuleParamsCacheKeyPartGenerator"/>
             </list>
         </property>
     </bean>

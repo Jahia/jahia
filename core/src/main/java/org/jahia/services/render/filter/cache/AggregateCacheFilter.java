@@ -833,10 +833,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     resource.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
             }
-<<<<<<< .working
 
-            // Dispatch to the render service to generate the content
-=======
             try {
                 JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
                 Iterator keys = map.keys();
@@ -847,7 +844,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             } catch (JSONException e) {
                 logger.error(e.getMessage(), e);
             }
->>>>>>> .merge-right.r46553
+
+            // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
             if (content == null || "".equals(content.trim())) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +

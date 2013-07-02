@@ -74,23 +74,32 @@ public class FormTokenFilter extends AbstractFilter {
 
         Source source = new Source(previousOut);
         List<StartTag> jahiaFormTags = source.getAllStartTags("jahia:token-form");
+
+        Map<StartTag, String> m = new HashMap<StartTag, String>();
         for (StartTag formTag : jahiaFormTags) {
-            String id = formTag.getAttributeValue("id");
+            String formid = formTag.getAttributeValue("id");
             Map<String,List<String>> hiddenInputs = (Map<String, List<String>>) ObjectBuilder.fromJSON(formTag.getAttributeValue("forms-data"));
-            Map<String,Map<String,List<String>>>forms = (Map<String, Map<String,List<String>>>) renderContext.getRequest().getAttribute(
-                    "form-parameter");
-            if (forms == null) {
-                forms = new HashMap<String, Map<String, List<String>>>();
-                renderContext.getRequest().setAttribute("form-parameter", forms);
+            if (hiddenInputs != null) {
+                String id = java.util.UUID.randomUUID().toString();
+                Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) renderContext.getRequest().getSession().getAttribute("form-tokens");
+                if (toks == null) {
+                    toks = new HashMap<String, Map<String, List<String>>>();
+                    renderContext.getRequest().getSession().setAttribute("form-tokens", toks);
+                }
+                toks.put(id, hiddenInputs);
+                m.put(formTag, id);
+                renderContext.getRequest().setAttribute("form-" + formid, id);
             }
-            forms.put(id,hiddenInputs);
+
         }
-        source = new Source(out);
-        jahiaFormTags = (new Source(out)).getAllStartTags("jahia:token-form");
+
         OutputDocument outputDocument = new OutputDocument(source);
-        for (StartTag segment : jahiaFormTags) {
-            outputDocument.replace(segment, "");
+
+        Collections.reverse(jahiaFormTags);
+        for (StartTag jahiaFormTag : jahiaFormTags) {
+            outputDocument.replace(jahiaFormTag, "<input type=\"hidden\" name=\"form-token\" value=\""+m.get(jahiaFormTag)+"\"/>");
         }
+
         return outputDocument.toString().trim();
     }
 }

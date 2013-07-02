@@ -130,17 +130,8 @@ public class TokenizedFormTag extends BodyTagSupport {
             hiddenInputs.put("allowsMultipleSubmits", Arrays.asList(String.valueOf(allowsMultipleSubmits)));
             outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"disableXSSFiltering\" value=\"" + disableXSSFiltering + "\"/>");
 
-            outputDocument.insert(formTag.getEnd(), "<input type=\"hidden\" name=\"form-token\" value=\"##formtoken(" + id + ")##\"/>");
-
-
-            @SuppressWarnings("unchecked")
-            Map<String,Map<String,List<String>>> forms = (Map<String, Map<String, List<String>>>) pageContext.getAttribute("form-parameter", PageContext.REQUEST_SCOPE);
-            if (forms == null) {
-                forms = new HashMap<String, Map<String, List<String>>>();
-                pageContext.setAttribute("form-parameter", forms, PageContext.REQUEST_SCOPE);
-            }
-            forms.put(id, hiddenInputs);
             outputDocument.insert(formTag.getEnd(),"<jahia:token-form id='"+id+"' forms-data='"+JSONUtil.toJSON(hiddenInputs)+"'/>");
+
             out.print(outputDocument.toString());
         } catch (IOException e) {
             e.printStackTrace();

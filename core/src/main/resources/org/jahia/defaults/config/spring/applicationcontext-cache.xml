@@ -89,11 +89,6 @@ when we flush this entry we will flush the whole cache
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
         <property name="generatorQueue" ref="moduleGeneratorQueue"/>
-        <property name="moduleParamsProperties">
-            <map key-type="java.lang.String" value-type="java.lang.String">
-                <entry key="j:subNodesView" value="subNodesView"/>
-            </map>
-        </property>
         <property name="dependenciesLimit" value="1000"/>
         <property name="skipLatchForPaths" >
             <set>

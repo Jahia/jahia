@@ -312,8 +312,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
         // Calls aggregation on the fragment content
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
+<<<<<<< .working
                 (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), new Stack<String>(),
                 (Set<String>) cacheEntry.getProperty("allPaths"));
+=======
+                (String) cacheEntry.getProperty("areaResource"), new Stack<String>());
+        setResources(renderContext, cacheEntry);
+>>>>>>> .merge-right.r46592
 
         if (renderContext.getMainResource() == resource) {
             cachedContent = removeCacheTags(cachedContent);
@@ -613,19 +618,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     private void addPropertiesToCacheEntry(Resource resource, CacheEntry<String> cacheEntry,
                                            RenderContext renderContext) throws RepositoryException {
-        LinkedHashMap<String, Object> moduleParams = null;
-        for (String property : moduleParamsProperties.keySet()) {
-            if (resource.getNode().hasProperty(property)) {
-                if (moduleParams == null) {
-                    moduleParams = new LinkedHashMap<String, Object>();
-                }
-                moduleParams.put(moduleParamsProperties.get(property),
-                        resource.getNode().getPropertyAsString(property));
-            }
-        }
-        if (moduleParams != null && moduleParams.size() > 0) {
-            cacheEntry.setProperty("moduleParams", moduleParams);
-        }
         if (resource.getNode().isNodeType("jnt:area") || resource.getNode().isNodeType(
                 "jnt:mainResourceDisplay")) {
             cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
@@ -678,8 +670,39 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param allPaths
      * @return
      */
+<<<<<<< .working
     protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier,
                                       Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
+=======
+    protected void addReferencesToDependencies(final Resource resource) throws RepositoryException {
+        if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
+                        try {
+                            resource.getDependencies().add(ref.getProperty("j:reference").getNode().getPath());
+                        } catch (PathNotFoundException e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("j:reference property is not found on node {}", ref.getCanonicalPath());
+                            }
+                        } catch (RepositoryException e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("referenced node does not exist anymore {}", ref.getCanonicalPath());
+                            }
+                        } catch (Exception e) {
+                            logger.warn("Error adding dependency to node " + resource.getNode().getCanonicalPath(), e);
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
+    }
+
+    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier, Stack<String> cacheKeyStack) throws RenderException {
+>>>>>>> .merge-right.r46592
         // aggregate content
         Source htmlContent = new Source(cachedContent);
 
@@ -724,7 +747,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         cacheKeyStack.push(cacheKey);
 
                         if (!cachedContent.equals(content)) {
+<<<<<<< .working
                             String aggregatedContent = aggregateContent(cache, content, renderContext, (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths"));
+=======
+                            String aggregatedContent = aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack);
+>>>>>>> .merge-right.r46592
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -738,15 +765,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         if (logger.isDebugEnabled()) {
                             logger.debug("Content is expired");
                         }
+<<<<<<< .working
                         // The fragment is not in the cache, generate it
                         generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier, allPaths);
+=======
+                        generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier);
+>>>>>>> .merge-right.r46592
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Content is missing from cache");
                     }
+<<<<<<< .working
                     // The fragment is not in the cache, generate it
                     generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier,allPaths);
+=======
+                    generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier);
+>>>>>>> .merge-right.r46592
                 }
             }
             return outputDocument.toString();
@@ -766,8 +801,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param allPaths
      */
     protected void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
+<<<<<<< .working
                                    String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier,
                                    Set<String> allPaths) throws RenderException {
+=======
+                                   String cacheKey, String areaIdentifier) throws RenderException {
+        // if missing data call RenderService after creating the right resource
+>>>>>>> .merge-right.r46592
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             // Parse the key to get all separate key attributes like node path and template
@@ -791,7 +831,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (logger.isDebugEnabled()) {
                 logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
                         new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
-                        ToStringBuilder.reflectionToString(moduleParams, ToStringStyle.MULTI_LINE_STYLE) +
                         " areaIdentifier " + areaIdentifier);
             }
 
@@ -826,11 +865,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
-            if (moduleParams != null) {
-                for (Map.Entry<String, Serializable> entry : moduleParams.entrySet()) {
-                    resource.getModuleParams().put(entry.getKey(), entry.getValue());
-                }
-            }
 
             try {
                 JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
@@ -848,7 +882,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (content == null || "".equals(content.trim())) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
                         new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
-                        ToStringBuilder.reflectionToString(moduleParams, ToStringStyle.MULTI_LINE_STYLE) +
                         " areaIdentifier " + areaIdentifier);
             }
 

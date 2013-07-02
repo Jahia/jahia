@@ -11,6 +11,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -60,7 +61,7 @@ public class DeleteItemWindow extends Window {
 	    formPanel.setSize(windowWidth, windowHeight);
 	    
 	    final Text textMessage = new Text();
-	    formPanel.add(textMessage);
+	    formPanel.add(textMessage);	    
 	    
 		/* Usages grid */
 		final List<GWTJahiaNode> selectedNodeList = new ArrayList<GWTJahiaNode>();
@@ -83,7 +84,11 @@ public class DeleteItemWindow extends Window {
         /* Comments textarea */
         final TextArea textArea = new TextArea();
         textArea.setSize(windowWidth - 30, 100);
-
+	    if (!permanentlyDelete) {
+	        formPanel.add(new Text("<br />" + Messages.get("label.comment", "Comment") + ": <br />"));
+	    	formPanel.add(textArea);
+	    }
+	    
 		// listener on the grid because the message depends on the number of usages found, and we get this at the very end
 		final int nbSelectedNodes = selectedNodeList.size();
 	    usagesGrid.getStore().getLoader().addLoadListener(new LoadListener() {
@@ -98,12 +103,24 @@ public class DeleteItemWindow extends Window {
 					// no empty grid if no usages
 					formPanel.remove(cp);
                     textArea.setSize(""+(windowWidth - 30), "70%");
+                    
+                    if (permanentlyDelete) {
+                    	setHeight(130);
+                    	formPanel.setHeight(130);
+                    }
 				}
-				textMessage.setText(strMessage);  
+				textMessage.setText(strMessage);
 				formPanel.layout();
             }
 		});
 
+		if (permanentlyDelete) {
+			String permanentDeletionMessage = Messages.get("message.remove.warning",
+					"<br/><span style=\"font-style:bold;color:red;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
+			formPanel.add(new Text(permanentDeletionMessage));
+			setIcon(StandardIconsProvider.STANDARD_ICONS.warning());
+		}
+		
 		/* Buttons */
 		Button submit = new Button(Messages.get("label.yes"), new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent event) {
@@ -146,10 +163,7 @@ public class DeleteItemWindow extends Window {
 				hide();
 			}
 		});
-	    
-	    formPanel.add(new Text("<br />" + Messages.get("label.comment", "Comment") + ": <br />"));	    
-		formPanel.add(textArea);
-		
+	    		
         ButtonBar buttons = new ButtonBar() ;
         buttons.setAlignment(HorizontalAlignment.CENTER);
 		buttons.add(submit);
@@ -161,12 +175,20 @@ public class DeleteItemWindow extends Window {
 		add(formPanel);
 	}
 
+	private boolean isPageDeleted(LinkerSelectionContext lh) {
+		if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	private String getConfirmationMessage(LinkerSelectionContext lh, int nbSelectedNodes) {
 		String message = "";
 		if (nbSelectedNodes > 1) {
 			message = Messages.getWithArgs("message.remove.multiple.confirm", "Do you really want to remove the {0} selected resources?", new String[] { String.valueOf(nbSelectedNodes) });
 		} else {
-			if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
+			if (isPageDeleted(lh)) {
 				message = Messages.getWithArgs("message.remove.single.page.confirm", "Do you really want to remove the selected PAGE {0}?", new String[] { lh.getSingleSelection().getName() });
 				// icon = "ext-mb-delete-page";
 			} else {

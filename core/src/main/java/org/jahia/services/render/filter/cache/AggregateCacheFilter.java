@@ -255,7 +255,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
         String cachedContent = (String) cacheEntry.getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
-                (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), new Stack<String>());
+                (String) cacheEntry.getProperty("areaResource"), new Stack<String>());
         setResources(renderContext, cacheEntry);
 
         if (renderContext.getMainResource() == resource) {
@@ -466,19 +466,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (resource.getFormInputs() != null) {
             cacheEntry.setProperty(FORM_TOKEN, resource.getFormInputs());
         }
-        LinkedHashMap<String, Object> moduleParams = null;
-        for (String property : moduleParamsProperties.keySet()) {
-            if (resource.getNode().hasProperty(property)) {
-                if (moduleParams == null) {
-                    moduleParams = new LinkedHashMap<String, Object>();
-                }
-                moduleParams.put(moduleParamsProperties.get(property),
-                        resource.getNode().getPropertyAsString(property));
-            }
-        }
-        if (moduleParams != null && moduleParams.size() > 0) {
-            cacheEntry.setProperty("moduleParams", moduleParams);
-        }
         if (resource.getNode().isNodeType("jnt:area") || resource.getNode().isNodeType(
                 "jnt:mainResourceDisplay")) {
             cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
@@ -574,7 +561,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier, Stack<String> cacheKeyStack) throws RenderException {
+    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier, Stack<String> cacheKeyStack) throws RenderException {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -643,7 +630,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         cacheKeyStack.push(cacheKey);
 
                         if (!cachedContent.equals(content)) {
-                            String aggregatedContent = aggregateContent(cache, content, renderContext, (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), cacheKeyStack);
+                            String aggregatedContent = aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack);
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -658,13 +645,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         if (logger.isDebugEnabled()) {
                             logger.debug("Content is expired");
                         }
-                        generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
+                        generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Content is missing from cache");
                     }
-                    generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier);
+                    generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier);
                 }
             }
             return outputDocument.toString();
@@ -687,7 +674,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     protected void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-                                   String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier) throws RenderException {
+                                   String cacheKey, String areaIdentifier) throws RenderException {
         // if missing data call RenderService after creating the right resource
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
@@ -710,7 +697,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (logger.isDebugEnabled()) {
                 logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
                         new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
-                        ToStringBuilder.reflectionToString(moduleParams, ToStringStyle.MULTI_LINE_STYLE) +
                         " areaIdentifier " + areaIdentifier);
             }
             renderContext.getRequest().removeAttribute(
@@ -739,11 +725,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
-            if (moduleParams != null) {
-                for (Map.Entry<String, Serializable> entry : moduleParams.entrySet()) {
-                    resource.getModuleParams().put(entry.getKey(), entry.getValue());
-                }
-            }
             try {
                 JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
                 Iterator keys = map.keys();
@@ -758,7 +739,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             if (content == null || "".equals(content.trim())) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
                         new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
-                        ToStringBuilder.reflectionToString(moduleParams, ToStringStyle.MULTI_LINE_STYLE) +
                         " areaIdentifier " + areaIdentifier);
             }
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);

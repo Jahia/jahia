@@ -41,42 +41,96 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.*;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Identity Manager for connecting jBPM to Jahia Users
  */
-public class JBPMIdentitySession implements TaskIdentityService {
-    private static transient Logger logger = LoggerFactory.getLogger(JBPMIdentitySession.class);
+public class JBPMTaskIdentityService implements TaskIdentityService {
+    private static transient Logger logger = LoggerFactory.getLogger(JBPMTaskIdentityService.class);
     protected JahiaGroupManagerService groupService;
     protected JahiaUserManagerService userService;
 
-    public JBPMIdentitySession() {
+    public JBPMTaskIdentityService() {
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
     }
 
-    public String createUser(String s, String s1, String s2, String s3) {
+    public List<Group> findGroupsByUser(String userId) {
+        List<Group> results = new ArrayList<Group>();
+        JahiaUser user = this.userService.lookupUserByKey(userId);
+        if (user != null) {
+            List<String> l = groupService.getUserMembership(user);
+            for (String groupKey : l) {
+                Group groupById = getGroupById(groupKey);
+                if (groupById != null) {
+                    results.add(groupById);
+                }
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public void addUser(User user) {
+        throw new UnsupportedOperationException("addUser");
+    }
+
+    @Override
+    public void addGroup(Group group) {
+        throw new UnsupportedOperationException("addGroup");
+    }
+
+    @Override
+    public void removeGroup(String groupId) {
         throw new UnsupportedOperationException();
     }
 
-    public User findUserById(String userId) {
+    @Override
+    public void removeUser(String userId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<User> getUsers() {
+        List<String> userKeyList = userService.getUserList();
+        List<User> results = new ArrayList<User>();
+        for (String userKey : userKeyList) {
+            JahiaUser jahiaUser = userService.lookupUserByKey(userKey);
+            results.add(new UserImpl(jahiaUser.getUserKey(), jahiaUser.getProperty("firstName"), jahiaUser.getProperty("lastName"), jahiaUser.getProperty("email")));
+        }
+        return results;
+    }
+
+    @Override
+    public List<Group> getGroups() {
+        List<Group> results = new ArrayList<Group>();
+        List<String> groupKeyList = groupService.getGroupList();
+        for (String groupKey : groupKeyList) {
+            JahiaGroup jahiaGroup = groupService.lookupGroup(groupKey);
+            results.add(new GroupImpl(jahiaGroup.getGroupKey(), jahiaGroup.getName(), "jahia"));
+        }
+        return results;
+    }
+
+    @Override
+    public User getUserById(String userId) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaUser user = service.lookupUserByKey(userId);
         if (user != null) {
@@ -87,83 +141,8 @@ public class JBPMIdentitySession implements TaskIdentityService {
         return null;
     }
 
-    public List<User> findUsersById(String... strings) {
-        SortedSet<User> emails = new TreeSet<User>();
-        try {
-            ExecutionImpl execution = ((ExecutionContext) EnvironmentImpl.getCurrent().getContext("execution")).getExecution();
-            WorkflowDefinition def = (WorkflowDefinition) execution.getVariable("workflow");
-            String id = (String) execution.getVariable("nodeId");
-            for (String userId : strings) {
-                if (userId.equals("previousTaskAssignable")) {
-                    JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-                    List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
-                            execution.getActivity().getIncomingTransitions().get(0).getSource().getName(), execution.getProcessInstance().getId());
-                    iterateOverPrincipals(emails, userId, principals);
-                } else if (userId.equals("nextTaskAssignable") || userId.equals("assignable")) {
-                    JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-                    List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
-                            execution.getActivity().getDefaultOutgoingTransition().getDestination().getName(), execution.getProcessInstance().getId());
-                    iterateOverPrincipals(emails, userId, principals);
-                } else if (userId.equals("currentWorkflowStarter")) {
-                    String jahiaUser = (String) execution.getVariable("user");
-                    JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
-                    JahiaUser user = service.lookupUserByKey(jahiaUser);
-                    addUser(emails, userId, user);
-                } else if (userId.equals("jahiaSettingsProperty")) {
-                    emails.add(new UserImpl(userId, "", "", ServicesRegistry.getInstance().getMailService().getSettings().getFrom()));
-                } else {
-                    emails.add(findUserById(userId));
-                }
-            }
-
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return new LinkedList<User>(emails);
-    }
-
-    private void iterateOverPrincipals(SortedSet<User> emails, String userId, List<JahiaPrincipal> principals)
-            throws RepositoryException {
-        for (JahiaPrincipal principal : principals) {
-            if (principal instanceof JahiaGroup) {
-                Collection<Principal> members = ((JahiaGroup) principal).getMembers();
-                for (Principal member : members) {
-                    if (member instanceof JahiaUser) {
-                        JahiaUser jahiaUser = (JahiaUser) member;
-                        addUser(emails, userId, jahiaUser);
-                    }
-                }
-            } else if (principal instanceof JahiaUser) {
-                JahiaUser jahiaUser = (JahiaUser) principal;
-                addUser(emails, userId, jahiaUser);
-            }
-        }
-    }
-
-    private void addUser(SortedSet<User> emails, String userId, JahiaUser jahiaUser) {
-        final String property = jahiaUser.getProperty("j:email");
-        if (property != null) {
-            emails.add(new UserImpl(userId, jahiaUser.getProperty("j:firstName"), jahiaUser.getProperty("j:lastName"), jahiaUser.getProperty("j:email")));
-        }
-    }
-
-    public List<User> findUsers() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void deleteUser(String s) {
-        throw new UnsupportedOperationException();
-    }
-
-    public String createGroup(String s, String s1, String s2) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<User> findUsersByGroup(String s) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Group findGroupById(String groupId) {
+    @Override
+    public Group getGroupById(String groupId) {
         JahiaGroupManagerService service = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         JahiaGroup group = service.lookupGroup(groupId);
         if (group != null) {
@@ -172,35 +151,9 @@ public class JBPMIdentitySession implements TaskIdentityService {
         return null;
     }
 
-    public List<Group> findGroupsByUserAndGroupType(String s, String s1) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<Group> findGroupsByUser(String userId) {
-        List<Group> results = new ArrayList<Group>();
-        JahiaUser user = this.userService.lookupUserByKey(userId);
-        if (user != null) {
-            List<String> l = groupService.getUserMembership(user);
-            for (String groupKey : l) {
-                Group groupById = findGroupById(groupKey);
-                if (groupById != null) {
-                    results.add(groupById);
-                }
-            }
-        }
-        return results;
-    }
-
-    public void deleteGroup(String s) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void createMembership(String s, String s1, String s2) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void deleteMembership(String s, String s1, String s2) {
-        throw new UnsupportedOperationException();
+    @Override
+    public OrganizationalEntity getOrganizationalEntityById(String entityId) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     class UserImpl implements User, Comparable<UserImpl> {

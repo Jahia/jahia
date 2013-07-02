@@ -13,7 +13,7 @@
     <!-- To enable timers and messages in production use, this should be included. -->
     <import resource="jbpm.jobexecutor.cfg.xml"/>
     <transaction-context>
-        <object class="org.jahia.services.workflow.jbpm.JBPMIdentitySession"/>
+        <object class="org.jahia.services.workflow.jbpm.JBPMTaskIdentityService"/>
         <object class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailSession"/>
     </transaction-context>
 </jbpm-configuration>

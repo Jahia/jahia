@@ -77,11 +77,8 @@ public class JahiaSearchIndex extends SearchIndex {
     private int maxClauseCount = 1024;
 
     private Boolean versionIndex;
-<<<<<<< .working
-    private int batchSize = 100;
-=======
+
     private int batchSize = 100;    
->>>>>>> .merge-right.r46588
 
     public int getMaxClauseCount() {
         return maxClauseCount;
@@ -101,15 +98,6 @@ public class JahiaSearchIndex extends SearchIndex {
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
     }    
-
-    /**
-     * Set the maximum number of documents that will be sent in one batch to the index
-     *
-     * @param batchSize
-     */
-    public void setBatchSize(int batchSize) {
-        this.batchSize = batchSize;
-    }
 
     /**
      * We override this method in order to trigger re-indexing on translation nodes, when their
@@ -208,13 +196,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
         long timer = System.currentTimeMillis();
 
-        for (int offset = 0; offset < removeList.size() + addList.size(); offset += batchSize) {
-            int offset1 = Math.min(offset, removeList.size());
-            int offset2 = Math.min(Math.max(0, offset - removeList.size()), addList.size());
-            int limit1 = Math.min(offset1 + batchSize, removeList.size());
-            int limit2 = Math.min(Math.max(0, offset - removeList.size() + batchSize), addList.size());
-            super.updateNodes(removeList.subList(offset1, limit1).iterator(), addList.subList(offset2, limit2).iterator());
-        }
+        super.updateNodes(removeList.iterator(), addList.iterator());
 
         if (log.isDebugEnabled()) {
             log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[] {

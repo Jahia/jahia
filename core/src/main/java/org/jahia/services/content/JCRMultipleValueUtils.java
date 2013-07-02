@@ -2,10 +2,14 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.util.XMLChar;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Custom implementation of ISO 9075 to encode only HEX_ENCODED characters
+ *
  * Implements the encode and decode routines as specified for XML name to SQL
  * identifier conversion in ISO 9075-14:2003.<br/>
  * If a character <code>c</code> is not valid at a certain position in an XML 1.0
@@ -28,7 +32,7 @@ public class JCRMultipleValueUtils {
     /** All the possible hex digits */
     private static final String HEX_DIGITS = "0123456789abcdefABCDEF";
 
-    /**
+        /**
      * Encodes <code>name</code> as specified in ISO 9075.
      * @param value the <code>String</code> to encode.
      * @return the encoded <code>String</code> or <code>name</code> if it does
@@ -46,7 +50,8 @@ public class JCRMultipleValueUtils {
             // encode
             StringBuffer encoded = new StringBuffer();
             for (int i = 0; i < value.length(); i++) {
-                if (!XMLChar.isName(value.charAt(i))) {
+                char c = value.charAt(i);
+                if (c == ' ' ||c == '\t' ||c == '\n' ||c == '\r') {
                     encode(value.charAt(i), encoded);
                 } else {
                     if (needsEscaping(value, i)) {

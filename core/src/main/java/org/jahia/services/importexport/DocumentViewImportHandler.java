@@ -611,9 +611,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     if (attrValue.length() > 0) {
                         String[] values = propDef.isMultiple() ? Patterns.SPACE.split(attrValue) : new String[]{attrValue};
                         for (String value : values) {
-                            if (propDef.isMultiple()) {
-                                value = JCRMultipleValueUtils.decode(value);
-                            }
+                            value = JCRMultipleValueUtils.decode(value);
                             if (!StringUtils.isEmpty(value)) {
                                 if (value.startsWith("$currentSite")) {
                                     value = nodes.peek().getResolveSite().getPath() + value.substring(12);

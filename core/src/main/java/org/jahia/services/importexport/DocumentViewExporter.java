@@ -49,6 +49,8 @@ import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
@@ -254,12 +256,16 @@ public class DocumentViewExporter {
 
                         String value;
                         if (!property.isMultiple()) {
-                            value = getValue(property.getValue());
+                            if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE || property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                                value = JCRMultipleValueUtils.encode(getValue(property.getValue()));
+                            } else {
+                                value = getValue(property.getValue());
+                            }
                         } else {
                             Value[] vs = property.getValues();
                             List<String> values = new ArrayList<String>();
                             for (Value v : vs) {
-                                values.add(JCRMultipleValueUtils.encode(getValue(v)).replace("_x002f_","/").replace("_x0023_", "#"));
+                                values.add(JCRMultipleValueUtils.encode(getValue(v)));
                             }
                             Collections.sort(values);
                             StringBuffer b = new StringBuffer();

@@ -41,15 +41,19 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.drools.compiler.kie.builder.impl.FileKieModule;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
+import org.drools.compiler.kie.builder.impl.ZipKieModule;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.templates.JahiaModuleAware;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
-import org.jbpm.api.Deployment;
-import org.jbpm.api.NewDeployment;
-import org.jbpm.api.ProcessEngine;
-import org.jbpm.api.RepositoryService;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -57,9 +61,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -69,16 +75,14 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     private transient static Logger logger = LoggerFactory.getLogger(JBPMModuleProcessLoader.class);
 
-    private ProcessEngine processEngine;
     private Resource[] processes;
     private Resource[] mailTemplates;
-    private RepositoryService repositoryService;
+    private KieRepository kieRepository;
     private MailTemplateRegistry mailTemplateRegistry;
     private JahiaTemplatesPackage module;
 
-    public void setProcessEngine(ProcessEngine processEngine) {
-        this.processEngine = processEngine;
-        repositoryService = processEngine.getRepositoryService();
+    public void setKieRepository(KieRepository kieRepository) {
+        this.kieRepository = kieRepository;
     }
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
@@ -104,19 +108,43 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     private void deployDeclaredProcesses() throws IOException {
         if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
-            List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
+            ReleaseId moduleReleaseId = new ReleaseIdImpl("org.jahia.modules", module.getName(), module.getVersion().toString());
+            KieModule kieModule = kieRepository.getKieModule(moduleReleaseId);
             for (Resource process : processes) {
                 long lastModified = process.lastModified();
 
                 boolean needUpdate = true;
                 boolean found = false;
                 String fileName = process.getFilename();
-                for (Deployment deployment : deploymentList) {
-                    if (deployment.getName().equals(fileName)) {
-                        found = true;
-                        if (deployment.getTimestamp() >= lastModified) {
-                            needUpdate = false;
-                            break;
+                if (kieModule instanceof ZipKieModule) {
+                    ZipKieModule zipKieModule = (ZipKieModule) kieModule;
+                    if (zipKieModule.getFile().lastModified() >= lastModified) {
+                        needUpdate = false;
+                    }
+                } else if (kieModule instanceof FileKieModule) {
+                    FileKieModule fileKieModule = (FileKieModule) kieModule;
+                    Collection<String> kieModuleFileNames = fileKieModule.getFileNames();
+                    for (String kieModuleFileName : kieModuleFileNames) {
+                        if (kieModuleFileName.equals(fileName)) {
+                            File kieModuleFile = new File(fileKieModule.getFile(), kieModuleFileName);
+                            if (kieModuleFile.lastModified() >= lastModified) {
+                                needUpdate = false;
+                                break;
+                            }
+                        }
+                    }
+                } else if (kieModule instanceof MemoryKieModule) {
+                    MemoryKieModule memoryKieModule = (MemoryKieModule) kieModule;
+                    Collection<String> kieModuleFileNames = memoryKieModule.getFileNames();
+                    for (String kieModuleFileName : kieModuleFileNames) {
+                        if (kieModuleFileName.equals(fileName)) {
+                            org.drools.compiler.compiler.io.File kieModuleFile = memoryKieModule.getMemoryFileSystem().getFile(kieModuleFileName);
+                            /* @todo memory KieModule are not supported because there is no way to test the last modification date. Maybe we could use some kind of CRC instead ?
+                            if (kieModuleFile.lastModified() >= lastModified) {
+                                needUpdate = false;
+                                break;
+                            }
+                            */
                         }
                     }
                 }
@@ -126,18 +154,10 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                     } else {
                         logger.info("Found new workflow process " + fileName + ". Deploying...");
                     }
-                    NewDeployment newDeployment = repositoryService.createDeployment();
-                    newDeployment.addResourceFromInputStream(process.getFilename(), process.getInputStream());
-                    newDeployment.setTimestamp(lastModified);
-                    newDeployment.setName(fileName);
-                    newDeployment.deploy();
-//
-//                    for (DeploymentProperty property : ((DeploymentImpl) newDeployment).getObjectProperties()) {
-//                        if (property.getKey().equals("pdkey")) {
-//                            WorkflowService.getInstance().registerWorkflowType(null, property.getStringValue(), module.getRootFolder(), null);
-//                        }
-//                    }
-//
+                    if (kieModule == null) {
+                        kieModule = new ZipKieModule(moduleReleaseId, KieServices.Factory.get().newKieModuleModel(), new File(module.getFilePath()));
+                    }
+                    kieRepository.addKieModule(kieModule);
                     logger.info("... done");
                 } else {
                     logger.info("Found workflow process " + fileName + ". It is up-to-date.");
@@ -148,7 +168,10 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
 
-            List keys = Arrays.asList("from", "to", "cc", "bcc", "from-users", "to-users", "cc-users", "bcc-users", "from-groups", "to-groups", "cc-groups", "bcc-groups", "subject", "text", "html", "language");
+            List keys = Arrays.asList("from", "to", "cc", "bcc",
+                    "from-users", "to-users", "cc-users", "bcc-users",
+                    "from-groups", "to-groups", "cc-groups", "bcc-groups",
+                    "subject", "text", "html", "language");
 
             for (Resource mailTemplateResource : mailTemplates) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));

@@ -51,7 +51,7 @@ public class JCRMultipleValueUtils {
             StringBuffer encoded = new StringBuffer();
             for (int i = 0; i < value.length(); i++) {
                 char c = value.charAt(i);
-                if (c == ' ' ||c == '\t' ||c == '\n' ||c == '\r') {
+                if (XMLChar.isSpace(c)) {
                     encode(value.charAt(i), encoded);
                 } else {
                     if (needsEscaping(value, i)) {

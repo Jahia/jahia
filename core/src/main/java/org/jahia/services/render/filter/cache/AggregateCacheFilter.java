@@ -359,10 +359,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // Add main resource if cache.mainResource is set
         if ("true".equals(properties.getProperty("cache.mainResource"))) {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
-            // todo: may be done directly in navmenu .. ?
-            if (Boolean.valueOf(properties.getProperty("cache.mainResource.flushParent", "false"))) {
-
-            }
         }
 
         // Generates the cache key

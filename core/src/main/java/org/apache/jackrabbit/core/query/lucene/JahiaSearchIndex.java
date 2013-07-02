@@ -77,7 +77,11 @@ public class JahiaSearchIndex extends SearchIndex {
     private int maxClauseCount = 1024;
 
     private Boolean versionIndex;
+<<<<<<< .working
     private int batchSize = 100;
+=======
+    private int batchSize = 100;    
+>>>>>>> .merge-right.r46588
 
     public int getMaxClauseCount() {
         return maxClauseCount;
@@ -87,6 +91,16 @@ public class JahiaSearchIndex extends SearchIndex {
         this.maxClauseCount = maxClauseCount;
         BooleanQuery.setMaxClauseCount(maxClauseCount);
     }
+    
+    /**
+     * Set the maximum number of documents that will be sent in one batch to the index for certain
+     * mass indexing requests, like after ACL change
+     *
+     * @param batchSize
+     */
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }    
 
     /**
      * Set the maximum number of documents that will be sent in one batch to the index
@@ -118,6 +132,7 @@ public class JahiaSearchIndex extends SearchIndex {
         final List<NodeId> removeList = new ArrayList<NodeId>();
         final Set<NodeId> removedIds = new HashSet<NodeId>();
         final Set<NodeId> addedIds = new HashSet<NodeId>();
+        final List<NodeId> aclChangedList = new ArrayList<NodeId>();        
 
         while (add.hasNext()) {
             final NodeState state = add.next();
@@ -164,7 +179,7 @@ public class JahiaSearchIndex extends SearchIndex {
             }
         }
 
-        if (addList.size() > 0) {
+        if (!isVersionIndex() && addList.size() > 0) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
                 for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
@@ -183,7 +198,7 @@ public class JahiaSearchIndex extends SearchIndex {
                         NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
                                 .getParentId());
                         addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                        recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, addList, removeList, itemStateManager);
+                        recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                     } catch (ItemStateException e) {
                         log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                     }
@@ -202,17 +217,43 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         if (log.isDebugEnabled()) {
-            log.info("Re-indexed nodes in {} ms: {} removed, {} added", new Object[] {
+            log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[] {
                     (System.currentTimeMillis() - timer), removeList.size(), addList.size() });
+        }
+        
+        if (!aclChangedList.isEmpty()) {
+            int aclSubListStart = 0;
+            int aclSubListEnd = Math.min(aclChangedList.size(), batchSize);
+            while (aclSubListStart < aclChangedList.size()) {
+                List<NodeState> aclAddList = new ArrayList<NodeState>();
+                List<NodeId> aclRemoveList = new ArrayList<NodeId>();                
+                for (final NodeId node : aclChangedList.subList(aclSubListStart, aclSubListEnd)) {
+                    try {
+                        addIdToBeIndexed(node, addedIds, removedIds,
+                                aclAddList, aclRemoveList);
+                    } catch (ItemStateException e) {
+                        log.warn("ACL_UUID field in document for nodeId '" + node.toString() + "' may not be updated, so access rights check in search may not work correctly", e);
+                    }
+                }
+                
+                super.updateNodes(aclRemoveList.iterator(), aclAddList.iterator());
+                
+                aclSubListStart += batchSize;
+                aclSubListEnd =  Math.min(aclChangedList.size(), aclSubListEnd + batchSize);
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Re-indexed {} nodes after ACL change in {} ms", new Object[] {aclChangedList.size(), 
+                        (System.currentTimeMillis() - timer)});
+            }
         }
     }
 
-    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList, ItemStateManager itemStateManager) throws ItemStateException {
+    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeId> aclChangedList, ItemStateManager itemStateManager) throws ItemStateException {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
-            NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
-            boolean breakInheritance = false;
-            if (childNode.hasPropertyName(JahiaNodeIndexer.J_ACL_INHERITED)) {
-                try {
+            try {            
+                NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
+                boolean breakInheritance = false;
+                if (childNode.hasPropertyName(JahiaNodeIndexer.J_ACL_INHERITED)) {
                     PropertyId propId = new PropertyId((NodeId) childNode.getId(), JahiaNodeIndexer.J_ACL_INHERITED);
                     PropertyState ps = (PropertyState) itemStateManager.getItemState(propId);
                     if (ps.getValues().length == 1) {
@@ -220,13 +261,16 @@ public class JahiaSearchIndex extends SearchIndex {
                             breakInheritance = true;
                         }
                     }
-                } catch (RepositoryException e) {
                 }
-            }
-            if (!breakInheritance) {
-                addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
-                recurseTreeForAclIdSetting(childNode, addedIds, removedIds, addList, removeList, itemStateManager);
-            }
+                if (!breakInheritance) {
+                    if (!addedIds.contains(childNodeEntry.getId()) && !removedIds.contains(childNodeEntry.getId())) {
+                        aclChangedList.add(childNodeEntry.getId());
+                    }
+                    recurseTreeForAclIdSetting(childNode, addedIds, removedIds, aclChangedList, itemStateManager);
+                }
+            } catch (RepositoryException e) {
+                log.warn("ACL_UUID field in document for nodeId '" + childNodeEntry.getId().toString() + "' may not be updated, so access rights check in search may not work correctly", e);                
+            }            
         }
     }
 

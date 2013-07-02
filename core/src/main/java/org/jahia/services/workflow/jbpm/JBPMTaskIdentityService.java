@@ -52,6 +52,7 @@ import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Entity;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -156,7 +157,8 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    class UserImpl implements User, Comparable<UserImpl> {
+    @Entity
+    public class UserImpl implements User, Comparable<UserImpl> {
         private String id;
         private String givenName;
         private String familyName;
@@ -263,7 +265,8 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         }
     }
 
-    class GroupImpl implements Group {
+    @Entity
+    public class GroupImpl implements Group {
         private String id;
         private String name;
         private String type;

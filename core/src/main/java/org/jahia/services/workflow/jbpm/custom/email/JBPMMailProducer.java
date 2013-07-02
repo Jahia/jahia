@@ -48,17 +48,15 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
-import org.jbpm.api.JbpmException;
-import org.jbpm.api.identity.Group;
-import org.jbpm.api.identity.User;
-import org.jbpm.pvm.internal.email.spi.AddressResolver;
-import org.jbpm.pvm.internal.env.EnvironmentImpl;
-import org.jbpm.pvm.internal.identity.spi.IdentitySession;
-import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
 
 import javax.activation.DataHandler;
@@ -74,8 +72,10 @@ import javax.mail.internet.MimeMultipart;
 import javax.script.*;
 import java.io.File;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -97,6 +97,7 @@ public class JBPMMailProducer {
     private String templateKey;
     private ThreadLocal<MailTemplate> template = new ThreadLocal<MailTemplate>();
     private MailTemplateRegistry mailTemplateRegistry;
+    private TaskIdentityService taskIdentityService;
 
     public String getTemplateKey() {
         return templateKey;
@@ -112,6 +113,10 @@ public class JBPMMailProducer {
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
         this.mailTemplateRegistry = mailTemplateRegistry;
+    }
+
+    public void setTaskIdentityService(TaskIdentityService taskIdentityService) {
+        this.taskIdentityService = taskIdentityService;
     }
 
     public MailTemplate getTemplate() {
@@ -198,29 +203,30 @@ public class JBPMMailProducer {
                 email.addFrom(InternetAddress.parse(addresses, false));
             }
 
-            EnvironmentImpl environment = EnvironmentImpl.getCurrent();
-            IdentitySession identitySession = environment.get(IdentitySession.class);
-            AddressResolver addressResolver = environment.get(AddressResolver.class);
-
             // resolve and tokenize users
             String userList = fromTemplate.getUsers();
             if (userList != null) {
                 String[] userIds = tokenizeActors(userList, workItem, session);
-                List<User> users = identitySession.findUsersById(userIds);
-                email.addFrom(resolveAddresses(users, addressResolver));
+                List<User> users = new ArrayList<User>();
+                for (String userId : userIds) {
+                    users.add(taskIdentityService.getUserById(userId));
+                }
+                email.addFrom(getAddresses(users));
             }
 
             // resolve and tokenize groups
             String groupList = fromTemplate.getGroups();
             if (groupList != null) {
                 for (String groupId : tokenizeActors(groupList, workItem, session)) {
-                    Group group = identitySession.findGroupById(groupId);
-                    email.addFrom(addressResolver.resolveAddresses(group));
+                    Group group = taskIdentityService.getGroupById(groupId);
+                    email.addFrom(getAddresses(group));
                 }
             }
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
@@ -248,10 +254,12 @@ public class JBPMMailProducer {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
-    private void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, WorkItem workItem, JCRSessionWrapper session) throws MessagingException, RepositoryException, ScriptException {
+    private void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         // resolve and parse addresses
         String addresses = addressTemplate.getAddresses();
         if (addresses != null) {
@@ -260,46 +268,100 @@ public class JBPMMailProducer {
             email.addRecipients(recipientType, InternetAddress.parse(addresses, false));
         }
 
-        EnvironmentImpl environment = EnvironmentImpl.getCurrent();
-        IdentitySession identitySession = environment.get(IdentitySession.class);
-        AddressResolver addressResolver = environment.get(AddressResolver.class);
-
         // resolve and tokenize users
         String userList = addressTemplate.getUsers();
         if (userList != null) {
             String[] userIds = tokenizeActors(userList, workItem, session);
-            List<User> users = identitySession.findUsersById(userIds);
-            email.addRecipients(recipientType, resolveAddresses(users, addressResolver));
+            List<User> users = new ArrayList<User>();
+            for (String userId : userIds) {
+                users.add(taskIdentityService.getUserById(userId));
+            }
+            email.addRecipients(recipientType, getAddresses(users));
         }
 
         // resolve and tokenize groups
         String groupList = addressTemplate.getGroups();
         if (groupList != null) {
             for (String groupId : tokenizeActors(groupList, workItem, session)) {
-                Group group = identitySession.findGroupById(groupId);
-                email.addRecipients(recipientType, addressResolver.resolveAddresses(group));
+                Group group = taskIdentityService.getGroupById(groupId);
+                email.addRecipients(recipientType, getAddresses(group));
             }
         }
     }
 
-    private String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws RepositoryException, ScriptException {
+    private String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         String[] actors = ACTORS_PATTERN.split(evaluateExpression(workItem, recipients, session));
-        if (actors.length == 0) throw new JbpmException("recipient list is empty: " + recipients);
+        if (actors.length == 0) throw new Exception("recipient list is empty: " + recipients);
         return actors;
     }
 
     /**
      * construct recipient addresses from user entities
      */
-    private Address[] resolveAddresses(List<User> users, AddressResolver addressResolver) {
+    private Address[] getAddresses(List<User> users) {
         int userCount = users.size();
         List<Address> addresses = new ArrayList<Address>();
         for (int i = 0; i < userCount; i++) {
-            if (!StringUtils.isEmpty(users.get(i).getBusinessEmail())) {
-                addresses.add(addressResolver.resolveAddress(users.get(i)));
+            Address userAddress = null;
+            try {
+                userAddress = getAddress(users.get(i));
+            } catch (UnsupportedEncodingException e) {
+                logger.error("Error retrieving email address for user " + users.get(i), e);
+            }
+            if (userAddress != null) {
+                addresses.add(userAddress);
             }
         }
         return addresses.toArray(new Address[addresses.size()]);
+    }
+
+    private Address[] getAddresses(Group group) {
+        List<Address> addresses = new ArrayList<Address>();
+        JahiaGroup jahiaGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group.getId());
+        if (jahiaGroup == null) {
+            return new Address[0];
+        }
+        Set<Principal> recursiveUsers = jahiaGroup.getRecursiveUserMembers();
+        for (Principal principal : recursiveUsers) {
+            JahiaUser jahiaUser = (JahiaUser) principal;
+            Address address = null;
+            try {
+                address = getAddress(jahiaUser.getProperty("firstName"), jahiaUser.getProperty("lastName"), jahiaUser.getProperty("email"));
+            } catch (UnsupportedEncodingException e) {
+                logger.error("Error while trying to get email address for user " + jahiaUser, e);
+                address = null;
+            }
+            if (address != null) {
+                addresses.add(address);
+            }
+        }
+        return addresses.toArray(new Address[addresses.size()]);
+    }
+
+    private Address getAddress(User user) throws UnsupportedEncodingException {
+        if (user instanceof JBPMTaskIdentityService.UserImpl) {
+            JBPMTaskIdentityService.UserImpl userImpl = (JBPMTaskIdentityService.UserImpl) user;
+            return getAddress(userImpl.getGivenName(), userImpl.getFamilyName(), userImpl.getBusinessEmail());
+        } else {
+            return null;
+        }
+    }
+
+    private Address getAddress(String firstName, String lastName, String email) throws UnsupportedEncodingException {
+        String personal = null;
+        if (StringUtils.isEmpty(email)) {
+            return null;
+        }
+        if (StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)) {
+            personal = firstName + " " + lastName;
+        } else if (StringUtils.isEmpty(firstName) && StringUtils.isEmpty(lastName)) {
+            personal = null;
+        } else if (StringUtils.isEmpty(firstName)) {
+            personal = lastName;
+        } else {
+            personal = firstName;
+        }
+        return new InternetAddress(email, personal, "UTF-8");
     }
 
     protected void fillSubject(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
@@ -349,7 +411,7 @@ public class JBPMMailProducer {
 
                 // attachments
                 if (!attachmentTemplates.isEmpty()) {
-                    addAttachments(workItem, multipart);
+                    addAttachments(workItem, multipart, session);
                 }
 
                 email.setContent(multipart);
@@ -361,6 +423,8 @@ public class JBPMMailProducer {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (ScriptException e) {
+            logger.error(e.getMessage(), e);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
@@ -388,7 +452,7 @@ public class JBPMMailProducer {
         Locale locale = (Locale) vars.get("locale");
         final Bindings bindings = new MyBindings(workItem);
         ResourceBundle resourceBundle = ResourceBundles.get(
-                "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey(), locale);
+                "org.jahia.services.workflow." + vars.get("processName"), locale);
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
@@ -418,7 +482,7 @@ public class JBPMMailProducer {
     }
 
     protected void addAttachments(WorkItem workItem, Multipart multipart, JCRSessionWrapper session)
-            throws MessagingException, ScriptException, RepositoryException {
+            throws Exception {
         for (AttachmentTemplate attachmentTemplate : getTemplate().getAttachmentTemplates()) {
             BodyPart attachmentPart = new MimeBodyPart();
 
@@ -453,7 +517,7 @@ public class JBPMMailProducer {
         }
     }
 
-    private DataHandler createDataHandler(AttachmentTemplate attachmentTemplate, WorkItem workItem, JCRSessionWrapper session) throws ScriptException, RepositoryException {
+    private DataHandler createDataHandler(AttachmentTemplate attachmentTemplate, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         // evaluate expression
         String expression = attachmentTemplate.getExpression();
         if (expression != null) {
@@ -464,9 +528,9 @@ public class JBPMMailProducer {
         // resolve local file
         String file = attachmentTemplate.getFile();
         if (file != null) {
-            File targetFile = new File(evaluateExpression(file));
+            File targetFile = new File(evaluateExpression(workItem, file, session));
             if (!targetFile.isFile()) {
-                throw new JbpmException("could not read attachment content, file not found: "
+                throw new Exception("could not read attachment content, file not found: "
                         + targetFile);
             }
             // set content from file
@@ -477,11 +541,11 @@ public class JBPMMailProducer {
         URL targetUrl;
         String url = attachmentTemplate.getUrl();
         if (url != null) {
-            url = evaluateExpression(url);
+            url = evaluateExpression(workItem, url, session);
             try {
                 targetUrl = new URL(url);
             } catch (MalformedURLException e) {
-                throw new JbpmException("could not read attachment content, malformed url: " + url, e);
+                throw new Exception("could not read attachment content, malformed url: " + url, e);
             }
         }
         // resolve classpath resource
@@ -489,7 +553,7 @@ public class JBPMMailProducer {
             String resource = evaluateExpression(workItem, attachmentTemplate.getResource(), session);
             targetUrl = Thread.currentThread().getContextClassLoader().getResource(resource);
             if (targetUrl == null) {
-                throw new JbpmException("could not read attachment content, resource not found: "
+                throw new Exception("could not read attachment content, resource not found: "
                         + resource);
             }
         }

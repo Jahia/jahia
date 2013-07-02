@@ -56,7 +56,9 @@ import org.jahia.settings.SettingsBean;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
+import org.kie.api.io.KieResources;
 import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +161,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private void initRules() throws Exception {
         KieServices kieServices = KieServices.Factory.get();
+        KieRepository kieRepository = kieServices.getRepository();
+        KieResources kieResources = kieServices.getResources();
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
         //conf.setRemoveIdentities( true );

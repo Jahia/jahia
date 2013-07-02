@@ -50,9 +50,13 @@
     
     <view-state id="editGroup">
         <on-render>
+            <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.memberSearchCriteria"/>
             <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
             <evaluate expression="flowHandler.lookupGroup(flowScope.groupKey)" result="requestScope.group"/>
         </on-render>
+        <transition on="editGroupMembers" to="editGroupMembers" validate="false">
+
+        </transition>
         <transition on="addMembers" to="editGroup" validate="false">
             <evaluate expression="flowHandler.addMembers(flowScope.groupKey, requestParameters.newMembers, messageContext)"/>
         </transition>
@@ -61,5 +65,27 @@
         </transition>
         <transition on="refresh" to="editGroup" validate="false"/>
         <transition on="cancel" to="manageGroups" bind="false" validate="false"/>
+    </view-state>
+
+    <view-state id="editGroupMembers" model="memberSearchCriteria">
+        <on-render>
+            <evaluate expression="flowHandler.searchNewMembers(memberSearchCriteria)" result="requestScope.principals"/>
+            <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.lookupGroup(flowScope.groupKey)" result="requestScope.group"/>
+        </on-render>
+
+        <transition on="editGroup" to="editGroup"/>
+        <transition on="search" to="editGroupMembers"/>
+        <transition on="users" to="editGroupMembers" validate="false">
+            <evaluate expression="'users'" result="flowHandler.searchType"/>
+        </transition>
+        <transition on="groups" to="editGroupMembers" validate="false">
+            <evaluate expression="'groups'" result="flowHandler.searchType"/>
+        </transition>
+        <transition on="save" to="editGroup" validate="false">
+            <evaluate expression="flowHandler.addMembers(flowScope.groupKey, requestParameters.addedMembers, messageContext)"/>
+            <evaluate expression="flowHandler.removeMembers(flowScope.groupKey, requestParameters.removedMembers, messageContext)"/>
+        </transition>
+
     </view-state>
 </flow>

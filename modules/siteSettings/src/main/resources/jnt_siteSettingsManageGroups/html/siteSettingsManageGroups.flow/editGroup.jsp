@@ -23,9 +23,6 @@
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
-<template:addResources>
-    <link type="text/css" href="<c:url value='/gwt/resources/css/gwt-1.4.min.css'/>" rel="stylesheet"/>
-</template:addResources>
 
 <fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
 <fmt:message var="i18nContinue" key="label.confirmContinue"/>
@@ -109,10 +106,15 @@ $(document).ready(function() {
 <form action="${flowExecutionUrl}" method="post" style="display: inline;">
 <div>
     <div>
+        <button class="btn" type="submit" name="_eventId_cancel">
+            <i class="icon-arrow-left"></i>
+            &nbsp;<fmt:message key="label.backToGroupList"/>
+        </button>
+
         <c:if test="${isGroupEditable}">
-            <button class="btn" type="submit" name="addMembers" onclick="openUserGroupSelect('','', 'Principal|Provider|Name|Properties,100'); return false;">
-                <i class="icon-plus"></i>
-                &nbsp;<fmt:message key="siteSettings.groups.addMembers"/>
+            <button class="btn" type="submit" name="_eventId_editGroupMembers" >
+                <i class="icon-ok"></i>
+                &nbsp;<fmt:message key="siteSettings.groups.editMembers"/>
             </button>
 
             <c:if test="${membersFound}">
@@ -123,10 +125,6 @@ $(document).ready(function() {
             </c:if>
         </c:if>
 
-            <button class="btn" type="submit" name="_eventId_cancel">
-                <i class="icon-arrow-left"></i>
-                &nbsp;<fmt:message key="label.backToGroupList"/>
-            </button>
     </div>
     
     <c:if test="${isGroupEditable}">

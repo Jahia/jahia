@@ -86,6 +86,8 @@ public class ManageGroupsFlowHandler implements Serializable {
 
     private transient JahiaUserManagerService userManagerService;
 
+    private String searchType = "users";
+
     /**
      * Performs the creation of a new group for the site.
      * 
@@ -379,11 +381,13 @@ public class ManageGroupsFlowHandler implements Serializable {
                 System.currentTimeMillis() - timer });
 
         Locale locale = LocaleContextHolder.getLocale();
+        if (context.getAllMessages().length == 0) {
         context.addMessage(new MessageBuilder()
                 .info()
                 .defaultText(
                         Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
                                 + Messages.getInternal("message.successfully.updated", locale)).build());
+        }
     }
 
     /**
@@ -400,6 +404,41 @@ public class ManageGroupsFlowHandler implements Serializable {
                 searchCriteria.getStoredOn(), searchCriteria.getProviders());
         logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
         return searchResult;
+    }
+
+    /**
+     * Performs the group search with the specified search criteria and returns the list of matching groups.
+     *
+     * @param searchCriteria
+     *            current search criteria
+     * @return the list of groups, matching the specified search criteria
+     */
+    public Set<Principal> searchNewMembers(SearchCriteria searchCriteria) {
+        long timer = System.currentTimeMillis();
+
+        Set<Principal> searchResult;
+        if (searchType.equals("users")) {
+            searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+                    searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                    searchCriteria.getProviders());
+        } else {
+            searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
+                    searchCriteria.getSiteId(), searchCriteria.getSearchString(), searchCriteria.getProperties(),
+                    searchCriteria.getStoredOn(), searchCriteria.getProviders());
+        }
+
+        logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
+        return searchResult;
+    }
+
+
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public String getSearchType() {
+        return searchType;
     }
 
     @Autowired

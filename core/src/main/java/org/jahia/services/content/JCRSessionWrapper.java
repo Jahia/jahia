@@ -475,14 +475,11 @@ public class JCRSessionWrapper implements Session {
         CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null);
         exception = validateNodes(changedNodes.values(), exception);
         if (exception != null) {
-            if (!isSystem()) {
-                refresh(false);
-                throw exception;
-            } else {
-                for (ConstraintViolationException violationException : exception.getErrors()) {
-                    logger.error("Constraint violation " + violationException.getMessage());
-                }
+            refresh(false);
+            for (ConstraintViolationException violationException : exception.getErrors()) {
+                logger.error("Constraint violation " + violationException.getMessage());
             }
+            throw exception;
         }
     }
 

@@ -953,7 +953,8 @@
                                                 jcr:mixinTypes="mix:title"
                                                 jcr:primaryType="jnt:translation"
                                                 jcr:title="##resourceBundle(system.facets)##"/>
-                                        <facets jcr:primaryType="jnt:facets">
+                                        <facets jcr:primaryType="jnt:facets"
+                                                j:type="jnt:content">
                                                 <fieldFacet facet="tags"
                                              field="jmix:tagged;j:tags"
                                              jcr:primaryType="jnt:fieldFacet"
@@ -1023,7 +1024,8 @@
                                                 jcr:mixinTypes="mix:title"
                                                 jcr:primaryType="jnt:translation"
                                                 jcr:title="##resourceBundle(system.facets)##"/>
-                                        <facets jcr:primaryType="jnt:facets">
+                                        <facets jcr:primaryType="jnt:facets"
+                                                j:type="jnt:file">
                                                 <fieldFacet facet="tags"
                                              field="jmix:tagged;j:tags"
                                              jcr:primaryType="jnt:fieldFacet"

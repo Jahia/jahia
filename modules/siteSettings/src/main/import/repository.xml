@@ -1,112 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
   <modules jcr:primaryType="jnt:modules">
-    <siteSettings j:dependencies="default" j:installedModules="siteSettings" j:siteType="module" j:title="Jahia Site Settings" j:wcagCompliance="true" jcr:primaryType="jnt:virtualsite">
-      <portlets jcr:primaryType="jnt:portletFolder" />
-      <contents jcr:primaryType="jnt:contentFolder" />
+        <siteSettings j:dependencies="default"
+                    j:installedModules="siteSettings"
+                    j:moduleType="module"
+                    j:title="Jahia Site Settings"
+                    jcr:primaryType="jnt:module">
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
       <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
           <files jcr:primaryType="jnt:folder">
-              <text_rich_colored.png j:height="16" j:width="16" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <text_rich_colored.png j:height="16"
+                                      j:width="16"
+                                      jcr:mixinTypes="jmix:image"
+                                      jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </text_rich_colored.png>
-              <briefcase_document.png j:height="16" j:width="16" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <briefcase_document.png j:height="16"
+                                       j:width="16"
+                                       jcr:mixinTypes="jmix:image"
+                                       jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </briefcase_document.png>
-              <link.png j:height="16" j:width="16" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <link.png j:height="16"
+                         j:width="16"
+                         jcr:mixinTypes="jmix:image"
+                         jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </link.png>
-              <signpost.png j:height="16" j:width="16" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <signpost.png j:height="16"
+                             j:width="16"
+                             jcr:mixinTypes="jmix:image"
+                             jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </signpost.png>
-              <urlmapping_large.png j:height="32" j:width="32" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <urlmapping_large.png j:height="32"
+                                     j:width="32"
+                                     jcr:mixinTypes="jmix:image"
+                                     jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </urlmapping_large.png>
-              <users_into.png j:height="16" j:width="16" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <users_into.png j:height="16"
+                               j:width="16"
+                               jcr:mixinTypes="jmix:image"
+                               jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </users_into.png>
-              <link_large.png j:height="32" j:width="32" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <link_large.png j:height="32"
+                               j:width="32"
+                               jcr:mixinTypes="jmix:image"
+                               jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </link_large.png>
-              <text_rich_colored_large.png j:height="32" j:width="32" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <text_rich_colored_large.png j:height="32"
+                                            j:width="32"
+                                            jcr:mixinTypes="jmix:image"
+                                            jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </text_rich_colored_large.png>
-              <signpost_large.png j:height="32" j:width="32" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <signpost_large.png j:height="32"
+                                   j:width="32"
+                                   jcr:mixinTypes="jmix:image"
+                                   jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </signpost_large.png>
-              <briefcase_document_large.png j:height="32" j:width="32" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <briefcase_document_large.png j:height="32"
+                                             j:width="32"
+                                             jcr:mixinTypes="jmix:image"
+                                             jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </briefcase_document_large.png>
-              <users_into_large.png j:height="32" j:width="32" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <users_into_large.png j:height="32"
+                                     j:width="32"
+                                     jcr:mixinTypes="jmix:image"
+                                     jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </users_into_large.png>
-              <urlmapping.png j:height="16" j:width="16" jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file">
-                  <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                  <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                        <urlmapping.png j:height="16"
+                               j:width="16"
+                               jcr:mixinTypes="jmix:image"
+                               jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </urlmapping.png>
           </files>
-          <siteSettingsBase j:view="siteSettings" jcr:mixinTypes="jmix:useUILocale" jcr:primaryType="jnt:template">
-              <manageLanguages j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                               j:icon="/modules/siteSettings/templates/files/signpost.png" j:priority="100"
+                    <contents jcr:primaryType="jnt:contentFolder"/>
+                    <siteSettingsBase j:view="siteSettings"
+                              jcr:mixinTypes="jmix:useUILocale"
+                              jcr:primaryType="jnt:template">
+                        <manageLanguages j:applyOn="jnt:virtualsite"
+                                j:defaultTemplate="false"
+                                j:hiddenTemplate="true"
+                                j:icon="/modules/siteSettings/templates/files/signpost.png"
+                                j:priority="100"
                                j:requiredPermissions="#/permissions/admin/adminSiteLanguages"
-                               j:titleKey="siteSettings.label.manageLanguages" jcr:mixinTypes="jmix:rbTitle"
+                                j:titleKey="siteSettings.label.manageLanguages"
+                                jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
                       <manage-languages jcr:primaryType="jnt:siteSettingsManageLanguages"/>
                   </pagecontent>
               </manageLanguages>
-              <wcagCompliance j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                        <wcagCompliance j:applyOn="jnt:virtualsite"
+                               j:defaultTemplate="false"
+                               j:hiddenTemplate="true"
                               j:icon="/modules/siteSettings/templates/files/text_rich_colored.png"
                               j:priority="100"
                               j:requiredPermissions="#/permissions/admin/adminWcagCompliance"
                               j:titleKey="siteSettings.label.wcagCompliance"
-                              jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                               jcr:mixinTypes="jmix:rbTitle"
+                               jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
                       <wcag-compliance jcr:primaryType="jnt:siteSettingsWcagCompliance"/>
                   </pagecontent>
               </wcagCompliance>
-              <htmlFiltering j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                        <htmlFiltering j:applyOn="jnt:virtualsite"
+                              j:defaultTemplate="false"
+                              j:hiddenTemplate="true"
                              j:icon="/modules/siteSettings/templates/files/text_rich_colored.png"
                              j:priority="100"
                              j:requiredPermissions="#/permissions/admin/adminHtmlSettings"
                              j:titleKey="siteSettings.label.htmlFiltering"
-                             jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                              jcr:mixinTypes="jmix:rbTitle"
+                              jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
                       <html-filtering jcr:primaryType="jnt:siteSettingsHtmlFiltering"/>
                   </pagecontent>
               </htmlFiltering>
-              <vanityURLSetting j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
-                                j:icon="/modules/siteSettings/templates/files/urlmapping.png" j:priority="100"
+                        <vanityURLSetting j:applyOn="jnt:virtualsite"
+                                 j:defaultTemplate="false"
+                                 j:hiddenTemplate="true"
+                                 j:icon="/modules/siteSettings/templates/files/urlmapping.png"
+                                 j:priority="100"
                                 j:requiredPermissions="#/permissions/admin/adminUrlmapping"
-                                j:titleKey="siteSettings.label.vanityURLSettings" jcr:mixinTypes="jmix:rbTitle"
+                                 j:titleKey="siteSettings.label.vanityURLSettings"
+                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
-                      <pager displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100"
+                                <pager displayNbOfItemsPerPage="true"
+                            displayNbOfItemsPerPageValues="5,10,25,50,100"
                              displayPager="true"
                              j:bindedComponent="/modules/siteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
-                             jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10"
+                            jcr:mixinTypes="jmix:accessControlled"
+                            jcr:primaryType="jnt:pager"
+                            nbOfPages="10"
                              pageSize="10">
                           <j:acl jcr:primaryType="jnt:acl"/>
                       </pager>
@@ -114,37 +177,49 @@
                                       jcr:primaryType="jnt:siteSettingsVanityUrlsList">
                           <j:acl jcr:primaryType="jnt:acl"/>
                       </vanityurlslist>
-                      <pager-1 displayNbOfItemsPerPage="true" displayNbOfItemsPerPageValues="5,10,25,50,100"
+                                <pager-1 displayNbOfItemsPerPage="true"
+                              displayNbOfItemsPerPageValues="5,10,25,50,100"
                                displayPager="true"
                                j:bindedComponent="/modules/siteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
-                               jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:pager" nbOfPages="10"
+                              jcr:mixinTypes="jmix:accessControlled"
+                              jcr:primaryType="jnt:pager"
+                              nbOfPages="10"
                                pageSize="10">
                           <j:acl jcr:primaryType="jnt:acl"/>
                       </pager-1>
                   </pagecontent>
               </vanityURLSetting>
-              <manageModules j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                        <manageModules j:applyOn="jnt:virtualsite"
+                              j:defaultTemplate="false"
+                              j:hiddenTemplate="true"
                              j:icon="/modules/siteSettings/templates/files/briefcase_document.png"
                              j:priority="100"
                              j:requiredPermissions="#/permissions/admin/adminSiteTemplates"
                              j:titleKey="siteSettings.label.manageModules"
-                             jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                              jcr:mixinTypes="jmix:rbTitle"
+                              jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
                       <manage-modules jcr:primaryType="jnt:siteSettingsManageModules"/>
                   </pagecontent>
               </manageModules>
-              <manageGroups j:applyOn="jnt:virtualsite" j:defaultTemplate="false" j:hiddenTemplate="true"
+                        <manageGroups j:applyOn="jnt:virtualsite"
+                             j:defaultTemplate="false"
+                             j:hiddenTemplate="true"
                              j:icon="/modules/siteSettings/templates/files/users_into.png"
                              j:priority="100"
                              j:requiredPermissions="#/permissions/admin/adminGroups"
                              j:titleKey="label.manageGroups"
-                             jcr:mixinTypes="jmix:rbTitle" jcr:primaryType="jnt:contentTemplate">
+                             jcr:mixinTypes="jmix:rbTitle"
+                             jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
                       <manage-groups jcr:primaryType="jnt:siteSettingsManageGroups"/>
                   </pagecontent>
               </manageGroups>
         </siteSettingsBase>
       </templates>
+                
+                
     </siteSettings>
   </modules>
+    
 </content>

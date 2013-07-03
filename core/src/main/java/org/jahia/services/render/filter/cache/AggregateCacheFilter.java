@@ -953,6 +953,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
+        this.moduleParamsProperties = moduleParamsProperties;
+    }
+
+
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
      * (and satisfied BeanFactoryAware and ApplicationContextAware).

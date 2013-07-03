@@ -738,7 +738,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             String content = RenderService.getInstance().render(resource, renderContext);
             if (content == null || "".equals(content.trim())) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
-                        new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
                         " areaIdentifier " + areaIdentifier);
             }
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
@@ -953,11 +952,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             notCacheableFragment.clear();
         }
     }
-
-    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
-        this.moduleParamsProperties = moduleParamsProperties;
-    }
-
 
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied

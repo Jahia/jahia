@@ -42,7 +42,7 @@
 
         <property name="visibleTypes">
             <set>
-                <value>jmix:areaComponent</value>
+                <value>jmix:studioLayout</value>
                 <value>jmix:layoutComponentContent</value>
                 <value>jmix:list</value>
             </set>

@@ -565,6 +565,8 @@
 
 [jmix:hiddenType] mixin
 
+[jmix:studioLayout] mixin
+
 // @since Jahia 6.6
 [jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:nolive, mix:title, jmix:list
  + * (jnt:component)

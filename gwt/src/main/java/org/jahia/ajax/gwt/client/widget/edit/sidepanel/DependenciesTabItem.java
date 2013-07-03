@@ -40,18 +40,15 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.GridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -106,8 +103,20 @@ class DependenciesTabItem extends SidePanelTabItem {
                 return 0;
             }
         });
+        StoreSorter<GWTJahiaNode> availableModulestoreSorter = new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof String && o2 instanceof String) {
+                    String s1 = (String) o1;
+                    String s2 = (String) o2;
+                    return Collator.getInstance().localeCompare(s1, s2);
+                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                    return ((Comparable) o1).compareTo(o2);
+                }
+                return 0;
+            }
+        });
         modulesStore = new ListStore<GWTJahiaNode>();
-        modulesStore.setStoreSorter(storeSorter);
+        modulesStore.setStoreSorter(availableModulestoreSorter);
         modulesStore.setSortField("displayName");
         modulesStore.setSortDir(Style.SortDir.ASC);
         dependenciesStore = new ListStore<GWTJahiaNode>();
@@ -180,6 +189,18 @@ class DependenciesTabItem extends SidePanelTabItem {
         dependenciesVBoxData.setFlex(1);
         tab.add(dependenciesContainer, dependenciesVBoxData);
 
+        dependencyModules.addListener(Events.CellDoubleClick,new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                removeDependencies();
+            }
+        });
+        availableModules.addListener(Events.CellDoubleClick, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                addDependencies();
+            }
+        });
         return tab;
     }
 

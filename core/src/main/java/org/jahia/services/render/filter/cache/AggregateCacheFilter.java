@@ -104,7 +104,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     static protected ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
     protected static long lastThreadDumpTime = 0L;
     protected Byte[] threadDumpCheckLock = new Byte[0];
-    protected Map<String, String> moduleParamsProperties;
     protected int dependenciesLimit = 1000;
     protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
@@ -137,10 +136,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
         this.generatorQueue = generatorQueue;
-    }
-
-    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
-        this.moduleParamsProperties = moduleParamsProperties;
     }
 
     public void setCascadeFragmentErrors(boolean cascadeFragmentErrors) {
@@ -181,9 +176,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         @SuppressWarnings("unchecked")
 
         // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
-        // (resource and context) and the cache properties. The generated key will contains temporary placeholders
-        // that will be replaced to have the final key.
-        Properties properties = getAttributesForKey(renderContext, resource);
+                // (resource and context) and the cache properties. The generated key will contains temporary placeholders
+                // that will be replaced to have the final key.
+                Properties properties = getAttributesForKey(renderContext, resource);
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
 
         if (debugEnabled) {
@@ -312,13 +307,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
         // Calls aggregation on the fragment content
         cachedContent = aggregateContent(cache, cachedContent, renderContext,
-<<<<<<< .working
-                (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), new Stack<String>(),
+                (String) cacheEntry.getProperty("areaResource"), new Stack<String>(),
                 (Set<String>) cacheEntry.getProperty("allPaths"));
-=======
-                (String) cacheEntry.getProperty("areaResource"), new Stack<String>());
-        setResources(renderContext, cacheEntry);
->>>>>>> .merge-right.r46592
 
         if (renderContext.getMainResource() == resource) {
             cachedContent = removeCacheTags(cachedContent);
@@ -661,48 +651,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * embedded.
      *
      *
+     *
      * @param cache The cache
      * @param cachedContent The fragment, as it is stored in the cache
      * @param renderContext The render context
-     * @param moduleParams Module params the key/value of the params that where on when this fragment was generated in case we need to regenerate it
      * @param areaIdentifier
      * @param cacheKeyStack
      * @param allPaths
      * @return
      */
-<<<<<<< .working
-    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, Map<String, Serializable> moduleParams, String areaIdentifier,
+    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier,
                                       Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
-=======
-    protected void addReferencesToDependencies(final Resource resource) throws RepositoryException {
-        if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper ref = (JCRNodeWrapper) ni.nextNode();
-                        try {
-                            resource.getDependencies().add(ref.getProperty("j:reference").getNode().getPath());
-                        } catch (PathNotFoundException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("j:reference property is not found on node {}", ref.getCanonicalPath());
-                            }
-                        } catch (RepositoryException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("referenced node does not exist anymore {}", ref.getCanonicalPath());
-                            }
-                        } catch (Exception e) {
-                            logger.warn("Error adding dependency to node " + resource.getNode().getCanonicalPath(), e);
-                        }
-                    }
-                    return null;
-                }
-            });
-        }
-    }
-
-    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier, Stack<String> cacheKeyStack) throws RenderException {
->>>>>>> .merge-right.r46592
         // aggregate content
         Source htmlContent = new Source(cachedContent);
 
@@ -747,11 +706,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         cacheKeyStack.push(cacheKey);
 
                         if (!cachedContent.equals(content)) {
-<<<<<<< .working
-                            String aggregatedContent = aggregateContent(cache, content, renderContext, (Map<String, Serializable>) cacheEntry.getProperty("moduleParams"), (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths"));
-=======
-                            String aggregatedContent = aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack);
->>>>>>> .merge-right.r46592
+                            String aggregatedContent = aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths"));
                             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                     aggregatedContent);
                         } else {
@@ -765,23 +720,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         if (logger.isDebugEnabled()) {
                             logger.debug("Content is expired");
                         }
-<<<<<<< .working
                         // The fragment is not in the cache, generate it
-                        generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier, allPaths);
-=======
-                        generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier);
->>>>>>> .merge-right.r46592
+                        generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier, allPaths);
                     }
                 } else {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Content is missing from cache");
                     }
-<<<<<<< .working
                     // The fragment is not in the cache, generate it
-                    generateContent(renderContext, outputDocument, segment, cacheKey, moduleParams, areaIdentifier,allPaths);
-=======
-                    generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier);
->>>>>>> .merge-right.r46592
+                    generateContent(renderContext, outputDocument, segment, cacheKey, areaIdentifier,allPaths);
                 }
             }
             return outputDocument.toString();
@@ -796,18 +743,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param outputDocument The full output document
      * @param segment The segment to replace in the output document
      * @param cacheKey The cache key of the fragment to generate
-     * @param moduleParams The module params of that fragment
      * @param areaIdentifier
      * @param allPaths
      */
     protected void generateContent(RenderContext renderContext, OutputDocument outputDocument, StartTag segment,
-<<<<<<< .working
-                                   String cacheKey, Map<String, Serializable> moduleParams, String areaIdentifier,
+                                   String cacheKey, String areaIdentifier,
                                    Set<String> allPaths) throws RenderException {
-=======
-                                   String cacheKey, String areaIdentifier) throws RenderException {
-        // if missing data call RenderService after creating the right resource
->>>>>>> .merge-right.r46592
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             // Parse the key to get all separate key attributes like node path and template
@@ -830,7 +771,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
-                        new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
                         " areaIdentifier " + areaIdentifier);
             }
 
@@ -1122,35 +1062,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-<<<<<<< .working
-<<<<<<< .working
-=======
-=======
-    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
-        this.moduleParamsProperties = moduleParamsProperties;
-    }
-
-
->>>>>>> .merge-right.r46608
-    /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
-     */
-    public void afterPropertiesSet() throws Exception {
-        Config.LoggerProvider = LoggerProvider.DISABLED;
-    }
-
-    public void setDependenciesLimit(int dependenciesLimit) {
-        this.dependenciesLimit = dependenciesLimit;
-    }
-
->>>>>>> .merge-right.r46606
     public void removeNotCacheableFragment(String key) {
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {

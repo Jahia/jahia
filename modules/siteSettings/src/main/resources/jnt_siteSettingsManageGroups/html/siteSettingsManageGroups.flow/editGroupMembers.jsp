@@ -37,9 +37,11 @@
 
 <c:if test="${flowHandler.searchType eq 'users'}">
     <c:set var="prefix" value="u:"/>
+    <c:set var="displayUsers" value="selected"/>
 </c:if>
 <c:if test="${flowHandler.searchType eq 'groups'}">
     <c:set var="prefix" value="g:"/>
+    <c:set var="displayGroups" value="selected"/>
 </c:if>
 
 <script type="text/javascript">
@@ -96,13 +98,12 @@
                 <i class="icon-arrow-left"></i>
                 &nbsp;<fmt:message key="siteSettings.label.backToGroup"/>
             </button>
-
-            <button class="btn" type="submit" name="_eventId_users">
+            <button class="btn ${displayUsers}" type="submit" name="_eventId_users">
                 <i class="icon-user"></i>
                 &nbsp;<fmt:message key="label.users"/>
             </button>
 
-            <button class="btn" type="submit" name="_eventId_groups">
+            <button class="btn ${displayGroups}" type="submit" name="_eventId_groups">
                 <i class="icon-group"></i>
                 &nbsp;<fmt:message key="label.groups"/>
             </button>

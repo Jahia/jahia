@@ -1123,7 +1123,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
 <<<<<<< .working
+<<<<<<< .working
 =======
+=======
+    public void setModuleParamsProperties(Map<String, String> moduleParamsProperties) {
+        this.moduleParamsProperties = moduleParamsProperties;
+    }
+
+
+>>>>>>> .merge-right.r46608
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
      * (and satisfied BeanFactoryAware and ApplicationContextAware).

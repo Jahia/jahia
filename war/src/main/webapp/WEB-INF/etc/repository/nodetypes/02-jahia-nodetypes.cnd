@@ -563,7 +563,7 @@
 
 // To exclude a notetype from the components tree
 
-[jmix:hiddenType]
+[jmix:hiddenType] mixin
 
 // @since Jahia 6.6
 [jnt:componentFolder] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:nolive, mix:title, jmix:list

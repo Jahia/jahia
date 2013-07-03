@@ -881,7 +881,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             String content = RenderService.getInstance().render(resource, renderContext);
             if (content == null || "".equals(content.trim())) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
-                        new ToStringBuilder(keyAttrbs, ToStringStyle.MULTI_LINE_STYLE) + "\nmodule params : " +
                         " areaIdentifier " + areaIdentifier);
             }
 
@@ -1123,6 +1122,27 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+<<<<<<< .working
+=======
+    /**
+     * Invoked by a BeanFactory after it has set all bean properties supplied
+     * (and satisfied BeanFactoryAware and ApplicationContextAware).
+     * <p>This method allows the bean instance to perform initialization only
+     * possible when all bean properties have been set and to throw an
+     * exception in the event of misconfiguration.
+     *
+     * @throws Exception in the event of misconfiguration (such
+     *                   as failure to set an essential property) or if initialization fails.
+     */
+    public void afterPropertiesSet() throws Exception {
+        Config.LoggerProvider = LoggerProvider.DISABLED;
+    }
+
+    public void setDependenciesLimit(int dependenciesLimit) {
+        this.dependenciesLimit = dependenciesLimit;
+    }
+
+>>>>>>> .merge-right.r46606
     public void removeNotCacheableFragment(String key) {
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {

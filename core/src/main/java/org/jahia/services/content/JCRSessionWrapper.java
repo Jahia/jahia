@@ -366,8 +366,14 @@ public class JCRSessionWrapper implements Session {
         if (refPath.equals("")) {
             wrapper = referencedNode.getProvider().getNodeWrapper(realReferencedNode, fullPath, parent, this);
         } else {
+<<<<<<< .working
             Node node = realReferencedNode.getNode(refPath);
             wrapper = referencedNode.getProvider().getNodeWrapper(node, fullPath, null, this);
+=======
+            Node node = realReferencedNode.getNode(refPath);
+            fullPath = parent.getPath() + DEREF_SEPARATOR + refRootName + node.getPath().substring(realReferencedNode.getPath().length());
+            wrapper = referencedNode.getProvider().getNodeWrapper(node, fullPath, null, this);
+>>>>>>> .merge-right.r46624
         }
         sessionCacheByPath.put(fullPath, wrapper);
         return wrapper;

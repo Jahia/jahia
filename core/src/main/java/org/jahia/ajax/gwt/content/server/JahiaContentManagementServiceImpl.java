@@ -1656,7 +1656,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             result.setChoiceListInitializersValues(contentDefinition.getAllChoiceListInitializersValues(allTypes,
                     nodeType, null, parent, getUILocale()));
-            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
+            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, sessionWrapper.getRootNode().getResolveSite().getLanguagesAsLocales()));
 
             result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
             result.setDefaultName(jcrContentUtils.generateNodeName(parent, defaultLanguage, nodeType, targetName));
@@ -1737,7 +1737,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(
                     contentDefinition.getAllChoiceListInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
                             parent, getUILocale()));
-            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
+            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, sessionWrapper.getRootNode().getResolveSite().getLanguagesAsLocales()));
             final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getUILocale());
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
@@ -1892,7 +1892,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(contentDefinition.getAllChoiceListInitializersValues(allTypes,
                     NodeTypeRegistry.getInstance().getNodeType("nt:base"), nodeWrapper, nodeWrapper.getParent(),
                     getUILocale()));
-            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, getSite().getLanguagesAsLocales()));
+            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, sessionWrapper.getRootNode().getResolveSite().getLanguagesAsLocales()));
             return result;
         } catch (PathNotFoundException e) {
             // the node no longer exists

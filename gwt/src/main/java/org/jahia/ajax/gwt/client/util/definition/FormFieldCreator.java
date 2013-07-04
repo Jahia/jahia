@@ -236,6 +236,7 @@ public class FormFieldCreator {
                             };
                             filterField.bind(store);
                             filterField.setHeight(FILTER_FIELD_HEIGHT);
+                            filterField.setEmptyText(Messages.get("label.type.here.to.filter","Type here to filter the list"));
                             lists.setFilterField(filterField);
                         }
                         ListField<GWTJahiaValueDisplayBean> to = lists.getToList();
@@ -695,6 +696,7 @@ public class FormFieldCreator {
             });
             toField.setName("to-" + name);
             fromField.setName("from-" + name);
+            setHeight(200);
         }
 
         @Override

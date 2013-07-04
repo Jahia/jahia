@@ -9,8 +9,12 @@
                    j:moduleType="system"
                    j:title="Jahia Translation Providers"
                    jcr:primaryType="jnt:module">
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                    <files jcr:primaryType="jnt:folder"/>
+                    <contents jcr:primaryType="jnt:contentFolder"/>
                     <siteSettingsBase j:view="siteSettings"
                               jcr:mixinTypes="jmix:useUILocale"
                               jcr:primaryType="jnt:template">
@@ -28,8 +32,7 @@
                     </translationSettings>
                 </siteSettingsBase>
             </templates>
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
                 
         </translation>
     </modules>

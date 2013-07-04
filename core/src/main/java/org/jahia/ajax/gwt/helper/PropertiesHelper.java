@@ -443,16 +443,12 @@ public class PropertiesHelper {
     }
 
     private void addConvertedException(NodeConstraintViolationException violationException, GWTCompositeConstraintViolationException gwt) throws GWTJahiaServiceException {
-        try {
-            if (violationException instanceof PropertyConstraintViolationException) {
-                PropertyConstraintViolationException v = (PropertyConstraintViolationException) violationException;
-                gwt.addError(v.getNode().getIdentifier(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, v.getDefinition().getName(), v.getDefinition().getLabel(LocaleContextHolder.getLocale(), v.getNode().getPrimaryNodeType()));
-            } else {
-                NodeConstraintViolationException v = violationException;
-                gwt.addError(v.getNode().getIdentifier(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, null, null);
-            }
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+        if (violationException instanceof PropertyConstraintViolationException) {
+            PropertyConstraintViolationException v = (PropertyConstraintViolationException) violationException;
+            gwt.addError(v.getNode().getPath(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, v.getDefinition().getName(), v.getDefinition().getLabel(LocaleContextHolder.getLocale(), v.getDefinition().getDeclaringNodeType()));
+        } else {
+            NodeConstraintViolationException v = violationException;
+            gwt.addError(v.getNode().getPath(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, null, null);
         }
     }
 

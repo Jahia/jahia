@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 public class GWTConstraintViolationException extends GWTJahiaServiceException implements Serializable, IsSerializable {
-    private String uuid;
+    private String path;
     private String constraintMessage;
     private String locale;
     private String propertyName;
@@ -54,8 +54,8 @@ public class GWTConstraintViolationException extends GWTJahiaServiceException im
     public GWTConstraintViolationException() {
     }
 
-    GWTConstraintViolationException(String uuid, String constraintMessage, String locale, String propertyName, String propertyLabel) {
-        this.uuid = uuid;
+    GWTConstraintViolationException(String path, String constraintMessage, String locale, String propertyName, String propertyLabel) {
+        this.path = path;
         this.constraintMessage = constraintMessage;
         this.locale = locale;
         this.propertyName = propertyName;
@@ -63,7 +63,7 @@ public class GWTConstraintViolationException extends GWTJahiaServiceException im
     }
 
     public String getUuid() {
-        return uuid;
+        return path;
     }
 
     public String getConstraintMessage() {

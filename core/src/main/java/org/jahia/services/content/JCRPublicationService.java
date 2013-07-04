@@ -1139,11 +1139,11 @@ public class JCRPublicationService extends JahiaService {
                     }
                     Date modProp = pubProp != null ? node.getLastModifiedAsDate() : null;
                     if (modProp == null || pubProp == null) {
-                        logger.warn(
+                        logger.debug(
                                 "Unable to check publication status for node {}."
                                         + " One of properties [last published or last modified (live) / last modified] is null."
                                         + " Considering node as modified.", node.getPath());
-                        status = PublicationInfo.MODIFIED;
+                        status = PublicationInfo.NOT_PUBLISHED;
                     } else {
                         status = modProp.after(pubProp) ? PublicationInfo.MODIFIED : PublicationInfo.PUBLISHED;
                     }

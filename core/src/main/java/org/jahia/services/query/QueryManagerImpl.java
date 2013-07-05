@@ -119,6 +119,8 @@ public class QueryManagerImpl implements QueryManager {
      */
     private class QOMInvocationHandler implements InvocationHandler {
         private final QueryObjectModel underlying;
+        private long limit = -1;
+        private long offset = 0;
 
         QOMInvocationHandler(QueryObjectModel underlying) {
             super();
@@ -129,7 +131,13 @@ public class QueryManagerImpl implements QueryManager {
             try {
                 if ("execute".equals(method.getName())) {
                     QueryWrapper queryWrapper = new QueryWrapper(underlying, session, sessionFactory);
+                    queryWrapper.setOffset(offset);
+                    queryWrapper.setLimit(limit);
                     return queryWrapper.execute();
+                } else if ("setLimit".equals(method.getName())) {
+                    limit = (Long) args[0];
+                } else if ("setOffset".equals(method.getName())) {
+                    offset = (Long) args[0];
                 }
                 return method.invoke(underlying, args);
             } catch (InvocationTargetException e) {

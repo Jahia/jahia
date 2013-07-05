@@ -701,7 +701,7 @@
                 <property name="settingPath" value="$site"/>
             </bean>
         </property>
-        <property name="requiredPermission" value="administrationAccess"/>
+        <property name="requiredPermission" value="siteAdministrationAccess"/>
     </bean>
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">

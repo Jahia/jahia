@@ -131,7 +131,7 @@ public class AclListener extends DefaultEventListener {
                             JCRNodeWrapper externalPermissions = (JCRNodeWrapper) r.nextNode();
                             if (externalPermissions.isNodeType("jnt:externalPermissions")) {
                                 String path = externalPermissions.getProperty("j:path").getString();
-                                path = path.replace("$site-path", ace.getResolveSite().getPath());
+                                path = path.replace("$currentSite", ace.getResolveSite().getPath());
                                 logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() +" on " + path);
                                 JCRNodeWrapper refNode = session.getNode(path);
                                 if (!refNode.hasNode("j:acl")) {

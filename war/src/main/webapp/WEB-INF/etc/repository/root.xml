@@ -100,98 +100,100 @@
 
             <publish jcr:primaryType="jnt:permission"/>
         </repository-permissions>
-        <admin jcr:primaryType="jnt:permission">
+        <admin jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" >
             <!-- server settings -->
-            <administrationAccess jcr:primaryType="jnt:permission"/>
-            <adminVirtualSites jcr:primaryType="jnt:permission"/>
-            <adminPortlets jcr:primaryType="jnt:permission"/>
-            <adminEmailSettings jcr:primaryType="jnt:permission"/>
-            <adminRootUser jcr:primaryType="jnt:permission"/>
-            <adminCache jcr:primaryType="jnt:permission"/>
-            <adminPasswordPolicy jcr:primaryType="jnt:permission"/>
-            <adminIssueTracking jcr:primaryType="jnt:permission"/>
-            <adminDocumentation jcr:primaryType="jnt:permission"/>
-            <adminAbout jcr:primaryType="jnt:permission"/>
-            <adminUsers jcr:primaryType="jnt:permission"/>
-            <adminDBSettings jcr:primaryType="jnt:permission"/>
-            <adminTemplates jcr:primaryType="jnt:permission"/>
-            <adminSystemInfos jcr:primaryType="jnt:permission"/>
-            <adminManageMemory jcr:primaryType="jnt:permission"/>
-
-            <!-- site settings -->
-            <adminGroups jcr:primaryType="jnt:permission"/>
-            <adminSiteLanguages jcr:primaryType="jnt:permission"/>
-            <adminHtmlSettings jcr:primaryType="jnt:permission"/>
-            <adminUrlmapping jcr:primaryType="jnt:permission"/>
-            <adminSiteTemplates jcr:primaryType="jnt:permission"/>
-            <adminWcagCompliance jcr:primaryType="jnt:permission"/>
+            <administrationAccess jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminVirtualSites jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminPortlets jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminEmailSettings jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminRootUser jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminCache jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminPasswordPolicy jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminIssueTracking jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminDocumentation jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminAbout jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminUsers jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminDBSettings jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminTemplates jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminSystemInfos jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <adminManageMemory jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
         </admin>
 
-        <studioMode jcr:primaryType="jnt:permission">
-            <studioModeAccess jcr:primaryType="jnt:permission"/>
-            <studioSelector jcr:primaryType="jnt:permission">
-                <templatesSelector jcr:primaryType="jnt:permission"/>
-                <dependenciesSelector jcr:primaryType="jnt:permission"/>
+        <site-admin jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" >
+            <!-- site settings -->
+            <siteAdministrationAccess jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+            <siteAdminGroups jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+            <siteAdminLanguages jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+            <siteAadminHtmlSettings jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+            <siteAdminUrlmapping jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+            <siteAdminTemplates jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+            <siteAdminWcagCompliance jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
+        </site-admin>
+
+        <studioMode jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true">
+            <studioModeAccess jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true"/>
+            <studioSelector jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true">
+                <templatesSelector jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true"/>
+                <dependenciesSelector jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true"/>
             </studioSelector>
         </studioMode>
 
-        <editMode jcr:primaryType="jnt:permission">
-            <editModeAccess jcr:primaryType="jnt:permission"/>
-            <useComponent jcr:primaryType="jnt:permission">
-                <useComponentForCreate jcr:primaryType="jnt:permission"/>
-                <useComponentForEdit jcr:primaryType="jnt:permission"/>
+        <editMode jcr:primaryType="jnt:permission" j:requirePrivileged="true">
+            <editModeAccess jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+            <useComponent jcr:primaryType="jnt:permission" j:nodeTypes="jnt:component" j:requirePrivileged="true">
+                <useComponentForCreate jcr:primaryType="jnt:permission" j:nodeTypes="jnt:component" j:requirePrivileged="true"/>
+                <useComponentForEdit jcr:primaryType="jnt:permission" j:nodeTypes="jnt:component" j:requirePrivileged="true"/>
             </useComponent>
-            <editSelector jcr:primaryType="jnt:permission">
-                <categoriesSelector jcr:primaryType="jnt:permission"/>
-                <contentSelector jcr:primaryType="jnt:permission"/>
-                <createSelector jcr:primaryType="jnt:permission"/>
-                <filesAndImagesSelector jcr:primaryType="jnt:permission"/>
-                <latestSelector jcr:primaryType="jnt:permission"/>
-                <portletsSelector jcr:primaryType="jnt:permission"/>
-                <searchSelector jcr:primaryType="jnt:permission"/>
-                <sitemapSelector jcr:primaryType="jnt:permission"/>
+            <editSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true">
+                <categoriesSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <contentSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <createSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <filesAndImagesSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <latestSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <portletsSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <searchSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <sitemapSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
             </editSelector>
 
-            <engineTabs jcr:primaryType="jnt:permission">
-                <viewCategoriesTab jcr:primaryType="jnt:permission"/>
-                <viewContentTab jcr:primaryType="jnt:permission"/>
-                <viewLayoutTab jcr:primaryType="jnt:permission"/>
-                <viewMetadataTab jcr:primaryType="jnt:permission"/>
-                <viewOptionsTab jcr:primaryType="jnt:permission"/>
-                <viewRolesTab jcr:primaryType="jnt:permission">
-                    <viewComponentRightsTab jcr:primaryType="jnt:permission"/>
-                    <viewLiveRolesTab jcr:primaryType="jnt:permission"/>
-                    <viewEditRolesTab jcr:primaryType="jnt:permission"/>
+            <engineTabs jcr:primaryType="jnt:permission" j:requirePrivileged="true">
+                <viewCategoriesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewContentTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewLayoutTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewMetadataTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewOptionsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true">
+                    <viewComponentRightsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                    <viewLiveRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                    <viewEditRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
                 </viewRolesTab>
-                <viewSeoTab jcr:primaryType="jnt:permission"/>
-                <viewTagsTab jcr:primaryType="jnt:permission"/>
-                <viewUsagesTab jcr:primaryType="jnt:permission"/>
-                <viewWorkflowTab jcr:primaryType="jnt:permission"/>
-                <viewHistoryTab jcr:primaryType="jnt:permission"/>
-                <viewVersioningTab jcr:primaryType="jnt:permission"/>
-                <viewVisibilityTab jcr:primaryType="jnt:permission"/>
-                <viewContributeModeTab jcr:primaryType="jnt:permission"/>
+                <viewSeoTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewTagsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewUsagesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewWorkflowTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewHistoryTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewVersioningTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewVisibilityTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewContributeModeTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
             </engineTabs>
             
-            <editModeActions jcr:primaryType="jnt:permission">
-                <createPageAction jcr:primaryType="jnt:permission"/>
+            <editModeActions jcr:primaryType="jnt:permission" j:requirePrivileged="true">
+                <createPageAction jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
             </editModeActions>
         </editMode>
 
-        <contributeMode jcr:primaryType="jnt:permission">
-            <contributeModeAccess jcr:primaryType="jnt:permission"/>
+        <contributeMode jcr:primaryType="jnt:permission" j:requirePrivileged="true">
+            <contributeModeAccess jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
         </contributeMode>
 
-        <managers jcr:primaryType="jnt:permission">
-            <categoryManager jcr:primaryType="jnt:permission"/>
-            <repositoryExplorer jcr:primaryType="jnt:permission"/>
-            <editorialContentManager jcr:primaryType="jnt:permission"/>
-            <fileManager jcr:primaryType="jnt:permission"/>
-            <portletDefinitionManager jcr:primaryType="jnt:permission"/>
-            <portletManager jcr:primaryType="jnt:permission"/>
-            <siteManager jcr:primaryType="jnt:permission"/>
-            <tagManager jcr:primaryType="jnt:permission"/>
-            <componentManager jcr:primaryType="jnt:permission"/>
+        <managers jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true">
+            <categoryManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <repositoryExplorer jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <editorialContentManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <fileManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <portletDefinitionManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <portletManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <siteManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+            <tagManager jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
         </managers>
 
         <workflow-tasks jcr:primaryType="jnt:permission">
@@ -207,8 +209,8 @@
             <view-light-wysiwyg-editor jcr:primaryType="jnt:permission"/>
         </wysiwyg-editor-toolbar>
 
-        <jobs jcr:primaryType="jnt:permission">
-            <view-all-jobs jcr:primaryType="jnt:permission"/>
+        <jobs jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true">
+            <view-all-jobs jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
         </jobs>
 
         <actions jcr:primaryType="jnt:permission"/>
@@ -270,13 +272,15 @@
                 /permissions/editMode/engineTabs/viewContributeModeTab
                 /permissions/contributeMode
                 /permissions/templates
-                /permissions/managers/fileManager
-                /permissions/managers/portletManager
                 /permissions/workflow-tasks/1-step-publication-start
                 /permissions/workflow-tasks/1-step-unpublication-start
                 /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
                 j:privilegedAccess="true"
-                />
+                >
+            <currentSite-access j:path="$currentSite"
+                                j:permissions="/permissions/managers"
+                                jcr:primaryType="jnt:externalPermissions"/>
+        </editor>
 
         <reviewer jcr:primaryType="jnt:role" j:roleGroup="edit-role"
                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default
@@ -310,7 +314,7 @@
                 j:privilegedAccess="true"
                 />
 
-        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
+        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="edit-role"
                       j:privilegedAccess="true">
             <studio-access jcr:primaryType="jnt:externalPermissions" j:path="/modules"
                            j:permissions="/permissions/editMode
@@ -334,34 +338,12 @@
                             /permissions/managers/siteManager
                             /permissions/managers/tagManager
                             /permissions/wysiwyg-editor-toolbar
-                            /permissions/admin/administrationAccess
-                            /permissions/admin/adminSiteLanguages
-                            /permissions/admin/adminUrlmapping
-                            /permissions/admin/adminHtmlSettings
-                            /permissions/admin/adminDocumentation
-                            /permissions/admin/adminGroups
-                            /permissions/admin/adminIssueTracking
-                            /permissions/admin/adminSiteTemplates
-                            /permissions/admin/adminWcagCompliance
+                            /permissions/site-admin
                             /permissions/templates"
                             j:privilegedAccess="true" />
 
-        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:globalSettings" j:roleGroup="edit-role"
-                              j:permissions="/permissions/admin/administrationAccess
-                                            /permissions/admin/adminVirtualSites
-                                            /permissions/admin/adminPortlets
-                                            /permissions/admin/adminEmailSettings
-                                            /permissions/admin/adminRootUser
-                                            /permissions/admin/adminCache
-                                            /permissions/admin/adminPasswordPolicy
-                                            /permissions/admin/adminIssueTracking
-                                            /permissions/admin/adminDocumentation
-                                            /permissions/admin/adminAbout
-                                            /permissions/admin/adminUsers
-                                            /permissions/admin/adminDBSettings
-                                            /permissions/admin/adminTemplates
-                                            /permissions/admin/adminSystemInfos
-                                            /permissions/admin/adminManageMemory" >
+        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="edit-role"
+                              j:permissions="/permissions/admin" j:privilegedAccess="true">
             <root-access jcr:primaryType="jnt:externalPermissions" j:path="/"
                          j:permissions="/permissions/repository-permissions/jcr:all_default" />
             <permissions-access jcr:primaryType="jnt:externalPermissions" j:path="/permissions"

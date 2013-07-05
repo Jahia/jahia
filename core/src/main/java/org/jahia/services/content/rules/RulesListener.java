@@ -56,9 +56,11 @@ import org.jahia.settings.SettingsBean;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
-import org.kie.api.io.KieResources;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +102,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private List<String> filesAccepted;
     private Map<String, String> modulePackageNameMap;
+
+    private KieServices kieServices;
+    private KieRepository kieRepository;
 
     public RulesListener() {
         instances.add(this);
@@ -160,9 +165,26 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private void initRules() throws Exception {
-        KieServices kieServices = KieServices.Factory.get();
-        KieRepository kieRepository = kieServices.getRepository();
-        KieResources kieResources = kieServices.getResources();
+        kieServices = KieServices.Factory.get();
+        kieRepository = kieServices.getRepository();
+
+        List<org.kie.api.io.Resource> fileSystemResources = new ArrayList<org.kie.api.io.Resource>();
+        for (Resource dslFile : dslFiles) {
+            fileSystemResources.add(kieServices.getResources().newFileSystemResource(dslFile.getFile()));
+        }
+
+        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
+
+        kieFileSystem.write()
+
+        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+
+        kieBuilder.buildAll();
+
+        KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+
+        KieSession kieSession = kContainer.newKieSession();
+
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
         //conf.setRemoveIdentities( true );
@@ -243,6 +265,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 if (aPackage != null) {
                     cfg.setClassLoader(aPackage.getChainedClassLoader());
                 }
+
 
                 KieBuilder builder = new KieBuilder(cfg);
 

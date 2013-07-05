@@ -73,24 +73,19 @@
     -moz-border-top-colors: none;
     -moz-user-select: none;
     background-color: #EAEAEA;
-    background-image: linear-gradient(#FAFAFA, #EAEAEA);
-    background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA');
     background-repeat: repeat-x;
-    border-color: #DDDDDD #DDDDDD #C5C5C5;
+    border-color: #DDDDDD;
     border-image: none;
-    border-radius: 3px 3px 3px 3px;
+    border-radius: 2px 2px 2px 2px;
     border-style: solid;
     border-width: 1px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
     color: #333333 !important;
     cursor: pointer;
     display:block;
     font-size: 11px;
     font-weight: bold;
-    padding: 7px;
+    padding: 3px;
     position: relative;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     vertical-align: middle;
     margin-bottom:10px;
     line-height: 16px !important;
@@ -110,24 +105,19 @@
     -moz-border-top-colors: none;
     -moz-user-select: none;
     background-color: #cccccc;
-    background-image: linear-gradient(#cccccc, #999999);
-    background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#999999));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#999999');
     background-repeat: repeat-x;
-    border-color: #999999 #999999 #666666;
+    border-color: #999999;
     border-image: none;
     border-radius: 3px 3px 0 0;
     border-style: solid;
     border-width: 1px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
-    color: #333333 !important;
+    color: #333333;
     cursor: pointer;
     display:block;
     font-size: 11px;
     font-weight: bold;
-    padding: 7px;
+    padding: 3px;
     position: relative;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
     vertical-align: middle;
     margin-bottom:10px;
     line-height: 16px !important;
@@ -146,22 +136,18 @@
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
     background-color: #6D6D6D;
-    background-image: linear-gradient(#8C8C8C, #6D6D6D);
-    background: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#6D6D6D));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8C8C8C', endColorstr='#6D6D6D');
     background-repeat: repeat-x;
-    border-color: #707070 #707070 #595959;
+    border-color: #707070;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #EAEAEA !important;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color: #EAEAEA ;
     border-radius: 3px 3px 0 0;
     cursor: pointer;
     display:block;
     font-size: 11px;
     font-weight: bold;
-    padding: 7px;
+    padding: 3px;
     position: relative;
     vertical-align: middle;
     margin-bottom:10px;
@@ -186,22 +172,18 @@
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
     background-color: #cc6666;
-    background-image: linear-gradient(#cc6666, #993333);
-    background: -webkit-gradient(linear, left top, left bottom, from(#cc6666), to(#993333));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cc6666', endColorstr='#993333');
     background-repeat: repeat-x;
-    border-color: #993333 #993333 #663333;
+    border-color: #993333;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #EAEAEA !important;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color: #EAEAEA;
     border-radius: 3px 3px 0 0;
     cursor: pointer;
     display:block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
-    padding: 7px;
+    padding: 3px;
     position: relative;
     vertical-align: middle;
     margin-bottom:10px;
@@ -225,22 +207,18 @@
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
     background-color: #333;
-    background-image: linear-gradient(#333, #000);
-    background: -webkit-gradient(linear, left top, left bottom, from(#333), to(#000));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333', endColorstr='#000');
     background-repeat: repeat-x;
-    border-color: #000 #000 #000;
+    border-color: #000;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #EAEAEA !important;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color: #EAEAEA ;
     border-radius: 3px 3px 0 0;
     cursor: pointer;
     display:block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
-    padding: 7px;
+    padding: 3px;
     position: relative;
     vertical-align: middle;
     margin-bottom:10px;
@@ -254,15 +232,9 @@
     transition: all 0.5s ease ;
 }
 .hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule, .hover-module > .x-panel-header-absoluteAreamodule {
-    background-color: #39f;
-    background-image: linear-gradient(#39f, #06c);
-    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
-    background-repeat: repeat-x;
-    border-color: #2A65A0;
-    color: #FFFFFF !important;
-    text-decoration: none;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #2e8ae5;
+    border-color: #297acc;
+    color: #FFFFFF;
 }
 .x-panel-placeholder {
     margin-bottom: 10px;
@@ -286,25 +258,20 @@ button.button-placeholder, div.button-placeholder {
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
     -moz-user-select: none;
-    background-color: #EAEAEA;
-    background-image: linear-gradient(#FAFAFA, #EAEAEA);
-    background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA');
+    background-color: #fff;
     background-repeat: repeat-x;
-    border-color: #DDDDDD #DDDDDD #C5C5C5;
+    border-color: #ccc ;
     border-image: none;
     border-radius: 3px 3px 3px 3px;
     border-style: solid;
     border-width: 1px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
-    color: #333333;
+    color: #333;
     cursor: pointer;
     display: inline-block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
-    padding: 7px;
+    padding: 3px 4px;
     position: relative;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     vertical-align: middle;
     width: auto !important;
     margin-left: 2px;
@@ -316,17 +283,14 @@ button.button-placeholder, div.button-placeholder {
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
+
+
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {
-    background-color: #39f;
-    background-image: linear-gradient(#39f, #06c);
-    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
-    background-repeat: repeat-x;
-    border-color: #2A65A0;
+    background-color: #2e8ae5;
+    border-color: #297acc;
     color: #FFFFFF;
     text-decoration: none;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 button.button-placeholder img, div.button-placeholder img   {
     margin-right:5px;
@@ -337,12 +301,12 @@ button.button-placeholder tr,
 div.button-placeholder tr,
 button.button-placeholder td,
 div.button-placeholder td {
-     margin: 0;
-     padding: 0;
-     border: 0;
-     font-size: 100%;
-     font: inherit;
-     background: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    background: none;
 }
 
 button.button-enable, div.button-enable {
@@ -352,20 +316,17 @@ button.button-enable, div.button-enable {
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
     background-color: #6D6D6D;
-    background-image: linear-gradient(#8C8C8C, #6D6D6D);
-    background: -webkit-gradient(linear, left top, left bottom, from(#8C8C8C), to(#6D6D6D));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8C8C8C', endColorstr='#6D6D6D');
     background-repeat: repeat-x;
-    border-color: #707070 #707070 #595959;
+    border-color: #707070;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #FFFFFF !important;
+    color: #FFFFFF ;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-radius: 3px 3px 3px 3px;
     cursor: pointer;
     display:block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     padding: 2px;
     position: relative;
@@ -411,7 +372,7 @@ button.button-disable, div.button-disable {
     border-width: 1px;
     cursor: pointer;
     display: block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     padding: 2px;
     position: relative;
@@ -593,7 +554,7 @@ button.button-disable:hover, div.button-disable:hover {
     padding: 5px;
     margin-bottom: 5px;
     font-family: tahoma,arial,verdana,sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     border-radius: 3px 3px 3px 3px;
     background-color: #fff;
 
@@ -603,7 +564,7 @@ button.button-disable:hover, div.button-disable:hover {
     padding: 5px;
     margin-bottom: 5px;
     font-family: tahoma,arial,verdana,sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     border-radius: 3px 3px 3px 3px;
     background-color: #eaeaea;
 }
@@ -663,11 +624,12 @@ button.button-disable:hover, div.button-disable:hover {
 
 .AreaInformation{
     font-family: tahoma,arial,verdana,sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     padding: 5px;
     color: #666665 !important;
     margin-bottom:10px;
+    display:block;
     display:block;
     overflow:hidden;
 }

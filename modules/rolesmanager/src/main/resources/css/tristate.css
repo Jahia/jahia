@@ -1,0 +1,15 @@
+.triState a.checkbox {
+    background: url(checkbox.gif) 0 0 no-repeat;
+    display: block;
+    height: 13px;
+    overflow: hidden;
+    width: 13px;
+}
+
+.triState a.checked {
+    background-position: 0 -13px;
+}
+
+.triState a.partial {
+    background-position: 0 -26px;
+}

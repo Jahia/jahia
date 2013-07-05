@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -10,13 +11,11 @@
     <name>Jahia Roles Manager</name>
     <packaging>bundle</packaging>
     <description>This is a custom module for running on a Jahia server.</description>
-
     <scm>
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia_ee/trunk/modules/rolesmanager</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia_ee/trunk/modules/rolesmanager</developerConnection>
         <url>https://devtools.jahia.com/svn/jahia_ee/trunk/modules/rolesmanager</url>
     </scm>
-
     <repositories>
         <repository>
             <id>jahia-enterprise</id>
@@ -31,7 +30,6 @@
             </snapshots>
         </repository>
     </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>
@@ -48,7 +46,8 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Jahia-Depends>assets</Jahia-Depends>
+                        <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
+                        <Jahia-Depends>default,serverSettings</Jahia-Depends> 
                     </instructions>
                 </configuration>
             </plugin>

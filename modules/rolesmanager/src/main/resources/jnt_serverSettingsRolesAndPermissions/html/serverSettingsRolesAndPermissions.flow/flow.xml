@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <var name="handler" class="org.jahia.modules.rolesmanager.RolesAndPermissionsHandler"/>
+
+    <view-state id="view" >
+        <on-render>
+            <evaluate expression="handler.roles" result="requestScope.roles"/>
+        </on-render>
+
+        <transition on="addRole" to="viewRole">
+            <evaluate expression="handler.addRole(requestParameters.newRole, requestParameters.roleScope)" result="handler.roleBean"/>
+        </transition>
+
+        <transition on="viewRole" to="viewRole">
+            <evaluate expression="handler.getRole(requestParameters.uuid)" result="handler.roleBean"/>
+        </transition>
+
+    </view-state>
+
+    <view-state id="viewRole">
+        <transition on="rolesList" to="view"/>
+
+        <transition on="saveRole" to="viewRole">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+            <evaluate expression="handler.save()"/>
+        </transition>
+
+        <transition on="switchTab" to="viewRole">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+            <evaluate expression="handler.setCurrentTab(requestParameters.tab)" />
+        </transition>
+
+        <transition on="addContext" to="viewRole">
+            <evaluate expression="handler.addContext(requestParameters.newContext)" />
+        </transition>
+
+    </view-state>
+
+</flow>

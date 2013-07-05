@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:jcr="http://www.jcp.org/jcr/1.0"
-         xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
-         xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-         xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+    <modules jcr:primaryType="jnt:modules">
+        <rolesmanager j:dependencies="default serverSettings"
+                      j:installedModules="rolesmanager"
+                      j:moduleType="module"
+                      j:title="Jahia Roles Manager"
+                      jcr:primaryType="jnt:module">
 
+            <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder">
+                    <permissions.png j:height="16"
+                                     j:width="16"
+                                     jcr:mixinTypes="jmix:image"
+                                     jcr:primaryType="jnt:file">
+                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                    </permissions.png>
+                </files>
+                <contents jcr:primaryType="jnt:contentFolder"/>
+                <serverSettingsBase j:view="serverSettings"
+                                    jcr:mixinTypes="jmix:useUILocale"
+                                    jcr:primaryType="jnt:template">
+                    <users-and-roles j:titleKey="serverSettings.usersAndRoles"
+                                     jcr:mixinTypes="jmix:rbTitle"
+                                     jcr:primaryType="jnt:template">
+                        <rolesAndPermissions j:applyOn="jnt:globalSettings"
+                                             j:defaultTemplate="false"
+                                             j:hiddenTemplate="false"
+                                             j:icon="/modules/rolesmanager/templates/files/permissions.png"
+                                             j:requiredPermissions="#/permissions/admin/adminRoles"
+                                             j:titleKey="rolesmanager.rolesAndPermissions"
+                                             jcr:mixinTypes="jmix:rbTitle"
+                                             jcr:primaryType="jnt:contentTemplate">
+                            <pagecontent jcr:primaryType="jnt:contentList">
+                                <roles-and-permissions jcr:primaryType="jnt:serverSettingsRolesAndPermissions"/>
+                            </pagecontent>
+                        </rolesAndPermissions>
+                    </users-and-roles>
+                </serverSettingsBase>
+            </templates>
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+
+        </rolesmanager>
+    </modules>
 </content>

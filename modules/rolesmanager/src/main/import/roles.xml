@@ -4,16 +4,4 @@
        xmlns:j="http://www.jahia.org/jahia/1.0"
        xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <editor-in-chief jcr:primaryType="jnt:role"
-                     j:permissions="/permissions/managers/rolesManager"
-                     j:privilegedAccess="true"
-            />
-
-    <site-administrator jcr:primaryType="jnt:role"
-                     j:permissions="/permissions/managers/rolesManager"
-                     j:privilegedAccess="true"/>
-
-    <server-administrator jcr:primaryType="jnt:role">
-        <settings-access jcr:primaryType="jnt:externalPermissions" j:permissions="/permissions/admin/adminRoles" />
-    </server-administrator>
 </roles>

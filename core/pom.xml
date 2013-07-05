@@ -514,7 +514,7 @@
             <artifactId>taglibs-unstandard</artifactId>
             <version>20060829</version>
         </dependency>
-
+        <!-- Spring framework dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
@@ -569,6 +569,20 @@
             <groupId>org.springframework.webflow</groupId>
             <artifactId>spring-js</artifactId>
             <version>${springwebflow-version}</version>
+        </dependency>
+
+        <!-- Spring framework optional dependencies-->
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.9</version>
         </dependency>
 
         <dependency>

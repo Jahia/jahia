@@ -157,11 +157,13 @@
 
     <div class="btn-group">
         <input type="hidden" name="tab" id="tabField" value=""/>
-        <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
-            <button class="btn ${handler.currentTab eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchTab" onclick="$('#tabField').val('${permissionGroup.key}')">
-                    ${permissionGroup.key}
-            </button>
-        </c:forEach>
+        <div class="btn-group">
+            <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
+                <button class="btn ${handler.currentTab eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchTab" onclick="$('#tabField').val('${permissionGroup.key}')">
+                        ${permissionGroup.key}
+                </button>
+            </c:forEach>
+        </div>
     <%--<c:forEach items="${handler.roleBean.externalPermissions}" var="permissionGroup">--%>
         <%--<div style="float:left;">--%>
             <%--<form style="margin: 0;" action="${flowExecutionUrl}" method="POST">--%>
@@ -184,13 +186,13 @@
 
         <div class="box-1">
             <h3>Permissions :</h3>
-                <ul class="nav nav-tabs nav-stacked">
-            <c:forEach items="${handler.roleBean.permissions[handler.currentTab]}" var="entry">
-                <c:set value="${entry.value}" var="permission"/>
-                <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentTab][permission.parentPath].set}">
-                <li><a href="#${permission.path}" > ${permission.name} </a></li>
-                </c:if>
-            </c:forEach>
+            <ul class="nav nav-tabs nav-stacked">
+                <c:forEach items="${handler.roleBean.permissions[handler.currentTab]}" var="entry">
+                    <c:set value="${entry.value}" var="permission"/>
+                    <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentTab][permission.parentPath].set}">
+                    <li><a href="#${permission.path}" > ${permission.name} </a></li>
+                    </c:if>
+                </c:forEach>
             </ul>
         </div>
     </div>

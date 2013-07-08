@@ -62,7 +62,7 @@
                 <tr>
                     <td><input name="selectedSites" type="checkbox" value="${role.name}"/></td>
                     <td>
-                        <a href="#" onclick="viewRole('${role.uuid}')">${role.name}</a>
+                        <strong><a href="#" onclick="viewRole('${role.uuid}')">${role.name}</a></strong>
                         [<c:forEach items="${role.permissions}" var="item">${item.key},</c:forEach>]
                     </td>
                     <%--<td>--%>

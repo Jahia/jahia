@@ -238,7 +238,7 @@ public class QueryResultWrapperImpl implements QueryResultWrapper {
 
     public boolean isFacetResultsEmpty(){
         return (this.getFacetFields() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
-                (this.getFacetDates() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
+                (this.getFacetDates() == null || isFacetFieldsEmpty(this.getFacetDates())) &&
                 (this.getFacetQuery() == null || this.getFacetQuery().isEmpty());
     }
 

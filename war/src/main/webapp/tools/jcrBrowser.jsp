@@ -210,7 +210,9 @@
         <c:when test="${param.action == 'delete' && not empty param.target}">
             <% Node target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
-                jcrSession.getWorkspace().getVersionManager().checkout(target.getParent().getPath());
+                if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(target.getParent().getPath()))  {
+                    jcrSession.getWorkspace().getVersionManager().checkout(target.getParent().getPath());
+                }
                 pageContext.setAttribute("deletedTargetPath",target.getPath());
                 target.remove();
                 jcrSession.save();
@@ -220,7 +222,9 @@
         <c:when test="${param.action == 'rename' && not empty param.target && not empty param.value}">
             <% Node target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
-                jcrSession.getWorkspace().getVersionManager().checkout(target.getParent().getPath());
+                if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(target.getParent().getPath()))  {
+                    jcrSession.getWorkspace().getVersionManager().checkout(target.getParent().getPath());
+                }
                 pageContext.setAttribute("deletedTargetPath",target.getPath());
                 jcrSession.move(target.getPath(), target.getParent().getPath() + "/" + JCRContentUtils.findAvailableNodeName(target.getParent(), request.getParameter("value")));
                 jcrSession.save();
@@ -229,7 +233,9 @@
         </c:when>
         <c:when test="${param.action == 'removeMixin' && not empty param.value}">
             <%
-                jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(node.getPath()))  {
+                    jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                }
                 node.removeMixin(request.getParameter("value"));
                 jcrSession.save();
             %>
@@ -238,7 +244,9 @@
         <c:when test="${param.action == 'removeProperty' && not empty param.value}">
             <%
                 if (node.hasProperty(request.getParameter("value"))) {
-                    jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                    if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(node.getPath()))  {
+                        jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                    }
                     node.getProperty(request.getParameter("value")).remove();
                     jcrSession.save();
             %>
@@ -251,7 +259,9 @@
             <%
                 PropertyDefinition def = JCRContentUtils.getPropertyDefinition(node.getPrimaryNodeType().getName(), request.getParameter("value"));
                 if (def != null) {
-                    jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                    if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(node.getPath()))  {
+                        jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                    }
                     if (def.isMultiple()) {
                         String[] newValues = request.getParameterValues("propertyValue");
                         if (newValues != null) {
@@ -275,7 +285,9 @@
         </c:when>
         <c:when test="${param.action == 'addMixin' && not empty param.value}">
             <%
-                jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(node.getPath()))  {
+                    jcrSession.getWorkspace().getVersionManager().checkout(node.getPath());
+                }
                 node.addMixin(request.getParameter("value"));
                 jcrSession.save();
             %>

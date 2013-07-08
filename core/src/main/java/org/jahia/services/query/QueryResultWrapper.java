@@ -93,7 +93,15 @@ public interface QueryResultWrapper extends QueryResult {
      * Check if the queryResultWrapper contains any facet results
      * @return true is queryResultWrapper doesn't contains any facet results
      */
+<<<<<<< .working
     public boolean isFacetResultsEmpty();
+=======
+    public boolean isFacetResultsEmpty(){
+        return (this.getFacetFields() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
+                (this.getFacetDates() == null || isFacetFieldsEmpty(this.getFacetDates())) &&
+                (this.getFacetQuery() == null || this.getFacetQuery().isEmpty());
+    }
+>>>>>>> .merge-right.r46638
 
     public long getApproxCount();
 }

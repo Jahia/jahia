@@ -45,9 +45,6 @@
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size: 11px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
     overflow: hidden;
 }
 .x-panel-linker p {
@@ -76,7 +73,6 @@
     background-repeat: repeat-x;
     border-color: #DDDDDD;
     border-image: none;
-    border-radius: 2px 2px 2px 2px;
     border-style: solid;
     border-width: 1px;
     color: #333333 !important;
@@ -108,7 +104,6 @@
     background-repeat: repeat-x;
     border-color: #999999;
     border-image: none;
-    border-radius: 3px 3px 0 0;
     border-style: solid;
     border-width: 1px;
     color: #333333;
@@ -135,14 +130,13 @@
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    background-color: #6D6D6D;
+    background-color: #cccccc;
     background-repeat: repeat-x;
-    border-color: #707070;
+    border-color: #ccc;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #EAEAEA ;
-    border-radius: 3px 3px 0 0;
+    color: #333 ;
     cursor: pointer;
     display:block;
     font-size: 11px;
@@ -178,7 +172,6 @@
     border-style: solid;
     border-width: 1px;
     color: #EAEAEA;
-    border-radius: 3px 3px 0 0;
     cursor: pointer;
     display:block;
     font-size: 10px;
@@ -213,7 +206,6 @@
     border-style: solid;
     border-width: 1px;
     color: #EAEAEA ;
-    border-radius: 3px 3px 0 0;
     cursor: pointer;
     display:block;
     font-size: 10px;
@@ -262,11 +254,11 @@ button.button-placeholder, div.button-placeholder {
     background-repeat: repeat-x;
     border-color: #ccc ;
     border-image: none;
-    border-radius: 3px 3px 3px 3px;
     border-style: solid;
     border-width: 1px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
     color: #333;
+    border-radius: 3px 3px 3px 3px;
     cursor: pointer;
     display: inline-block;
     font-size: 10px;
@@ -324,7 +316,6 @@ button.button-enable, div.button-enable {
     border-width: 1px;
     color: #FFFFFF ;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    border-radius: 3px 3px 3px 3px;
     cursor: pointer;
     display:block;
     font-size: 10px;
@@ -342,9 +333,6 @@ button.button-enable, div.button-enable {
 }
 button.button-enable:hover, div.button-enable:hover {
     background-color: #39f;
-    background-image: linear-gradient(#39f, #06c);
-    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
     background-repeat: repeat-x;
     border-color: #2A65A0;
     color: #FFFFFF;
@@ -354,9 +342,6 @@ button.button-enable:hover, div.button-enable:hover {
 button.button-disable, div.button-disable {
     font-family: tahoma,arial,helvetica,sans-serif;
     background-color: #39f;
-    background-image: linear-gradient(#39f, #06c);
-    background: -webkit-gradient(linear, left top, left bottom, from(#39f), to(#06c));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39f', endColorstr='#06c');
     background-repeat: repeat-x;
     border-color: #2A65A0;
     color: #FFFFFF;
@@ -368,7 +353,6 @@ button.button-disable, div.button-disable {
     -moz-border-top-colors: none;
     -moz-user-select: none;
     border-image: none;
-    border-radius: 3px 3px 3px 3px;
     border-style: solid;
     border-width: 1px;
     cursor: pointer;
@@ -556,7 +540,6 @@ button.button-disable:hover, div.button-disable:hover {
     margin-bottom: 5px;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 10px;
-    border-radius: 3px 3px 3px 3px;
     background-color: #fff;
 
 }
@@ -566,7 +549,6 @@ button.button-disable:hover, div.button-disable:hover {
     margin-bottom: 5px;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 10px;
-    border-radius: 3px 3px 3px 3px;
     background-color: #eaeaea;
 }
 

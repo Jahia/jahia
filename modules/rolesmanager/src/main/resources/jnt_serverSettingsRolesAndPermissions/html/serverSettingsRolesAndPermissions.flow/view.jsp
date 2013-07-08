@@ -13,27 +13,26 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <jsp:useBean id="nowDate" class="java.util.Date"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+<div class="box-1">
+    <fieldset>
+        <h2>Roles and permissions</h2>
+        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" >
+        <h3>Add role :</h3>
+        <select name="roleScope">
+            <option value="CONTENT-false">CONTENT / LIVE ROLE</option>
+            <option value="CONTENT-true">CONTENT ROLE</option>
+            <option value="SITE-true">SITE ROLE</option>
+            <option value="SERVER-true">SERVER ROLE</option>
+        </select>
+        <input type="text" id="addRoleField" name="newRole"/>
+        <button class="btn btn-primary" type="submit" name="_eventId_addRole" >
+            <i class="icon-plus  icon-white"></i>
+            Add
+        </button>
+        </form>
 
-<fieldset>
-    <h2>Roles and permissions</h2>
-
-    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" >
-    Add role :
-    <select name="roleScope">
-        <option value="CONTENT-false">CONTENT / LIVE ROLE</option>
-        <option value="CONTENT-true">CONTENT ROLE</option>
-        <option value="SITE-true">SITE ROLE</option>
-        <option value="SERVER-true">SERVER ROLE</option>
-    </select>
-    <input type="text" id="addRoleField" name="newRole"/>
-    <button class="btn btn-danger" type="submit" name="_eventId_addRole" >
-        <i class="icon-plus"></i>
-        Add
-    </button>
-    </form>
-
-</fieldset>
-
+    </fieldset>
+</div>
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>

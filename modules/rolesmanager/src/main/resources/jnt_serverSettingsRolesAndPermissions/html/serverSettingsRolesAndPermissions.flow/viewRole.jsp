@@ -123,9 +123,15 @@
         }
     });
 </script>
+<div class="clearfix">
 
-<h2>Roles and permissions : ${handler.roleBean.name}</h2>
-
+    <h2>
+        <form class="pull-left" action="${flowExecutionUrl}" method="POST" >
+            <button class="btn" name="_eventId_rolesList" ><i class=" icon-chevron-left"></i>&nbsp;Back</button>
+        </form>
+        &nbsp;Roles and permissions : ${handler.roleBean.name}
+    </h2>
+</div>
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -134,9 +140,7 @@
 </c:forEach>
 
 
-<form action="${flowExecutionUrl}" method="POST" >
-    <button class="btn" name="_eventId_rolesList" >Back</button>
-</form>
+
 
 
 
@@ -145,15 +149,16 @@
     <input id="partialSelectedPermissions" type="hidden" name="partialSelectedPermissions"/>
 
     <div class="btn-group">
-    <button class="btn btn-danger" type="submit" name="_eventId_saveRole" >
-        SAVE
+    <button class="btn btn-primary" type="submit" name="_eventId_saveRole" >
+        <i class="icon-ok icon-white"></i>
+        &nbsp;SAVE
     </button>
         </div>
 
     <div class="btn-group">
         <input type="hidden" name="tab" id="tabField" value=""/>
         <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
-            <button class="btn ${handler.currentTab eq permissionGroup.key ? 'btn-primary':''}" type="submit" name="_eventId_switchTab" onclick="$('#tabField').val('${permissionGroup.key}')">
+            <button class="btn ${handler.currentTab eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchTab" onclick="$('#tabField').val('${permissionGroup.key}')">
                     ${permissionGroup.key}
             </button>
         </c:forEach>
@@ -169,21 +174,25 @@
     <%--</c:forEach>--%>
     </div>
 
-    Add context : <input type="text" id="addContextField" name="newContext"/>
-    <button class="btn btn-danger" type="submit" name="_eventId_addContext" id="addContextButton">
-        Add
+    <Add context : <input type="text" id="addContextField" name="newContext"/>
+    <button class="btn btn-primary" type="submit" name="_eventId_addContext" id="addContextButton">
+        <i class="icon-plus  icon-white"></i>
+        &nbsp;Add
     </button>
 
-    <div style="font-weight: bold">
-        Permissions :
-        <ul>
-        <c:forEach items="${handler.roleBean.permissions[handler.currentTab]}" var="entry">
-            <c:set value="${entry.value}" var="permission"/>
-            <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentTab][permission.parentPath].set}">
-            <li><a href="#${permission.path}" > ${permission.name} </a></li>
-            </c:if>
-        </c:forEach>
-        </ul>
+    <div>
+
+        <div class="box-1">
+            <h3>Permissions :</h3>
+                <ul class="nav nav-tabs nav-stacked">
+            <c:forEach items="${handler.roleBean.permissions[handler.currentTab]}" var="entry">
+                <c:set value="${entry.value}" var="permission"/>
+                <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentTab][permission.parentPath].set}">
+                <li><a href="#${permission.path}" > ${permission.name} </a></li>
+                </c:if>
+            </c:forEach>
+            </ul>
+        </div>
     </div>
     <fieldset>
         <h3>${permissionGroup.key}</h3>

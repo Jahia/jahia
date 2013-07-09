@@ -207,6 +207,9 @@ public class JahiaSearchIndex extends SearchIndex {
             int aclSubListStart = 0;
             int aclSubListEnd = Math.min(aclChangedList.size(), batchSize);
             while (aclSubListStart < aclChangedList.size()) {
+                if (aclSubListStart > 0) {
+                    Thread.yield();
+                }
                 List<NodeState> aclAddList = new ArrayList<NodeState>();
                 List<NodeId> aclRemoveList = new ArrayList<NodeId>();                
                 for (final NodeId node : aclChangedList.subList(aclSubListStart, aclSubListEnd)) {

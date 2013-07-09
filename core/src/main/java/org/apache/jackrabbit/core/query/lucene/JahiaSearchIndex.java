@@ -233,7 +233,7 @@ public class JahiaSearchIndex extends SearchIndex {
         }
     }
 
-    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeId> aclChangedList, ItemStateManager itemStateManager) throws ItemStateException {
+    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeId> aclChangedList, ItemStateManager itemStateManager) {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
             try {            
                 NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
@@ -253,8 +253,12 @@ public class JahiaSearchIndex extends SearchIndex {
                     }
                     recurseTreeForAclIdSetting(childNode, addedIds, removedIds, aclChangedList, itemStateManager);
                 }
+            } catch (ItemStateException e) {
+                log.warn("ACL_UUID field in document for nodeId '{}' may not be updated, so access rights check in search may not work correctly", childNodeEntry.getId().toString());
+                log.debug("Exception when checking for creating ACL_UUID in index", e);
             } catch (RepositoryException e) {
-                log.warn("ACL_UUID field in document for nodeId '" + childNodeEntry.getId().toString() + "' may not be updated, so access rights check in search may not work correctly", e);                
+                log.warn("ACL_UUID field in document for nodeId '{}' may not be updated, so access rights check in search may not work correctly", childNodeEntry.getId().toString());
+                log.debug("Exception when checking for creating ACL_UUID in index", e);                
             }            
         }
     }

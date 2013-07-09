@@ -50,6 +50,8 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -66,6 +68,8 @@ import java.util.List;
  * 
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
+
+    private static Logger logger = LoggerFactory.getLogger(TemplatePermissionCheckFilter.class);
 
     public String prepare(RenderContext renderContext, final Resource resource, RenderChain chain) throws Exception {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
@@ -219,9 +223,11 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         }
         try {
             // Handle case of required mode
-            if(e instanceof AccessDeniedException && renderContext.getMode().equals("preview") && resource.getNode().hasProperty("j:requiredMode"))
-            // Returns a fragment with an error comment
-            return "<p>"+e.getMessage()+"</p>";
+            if(e instanceof AccessDeniedException && renderContext.getMode().equals("preview") && resource.getNode().hasProperty("j:requiredMode")) {
+                // Returns a fragment with an error comment
+                logger.warn("Access Denied Exception occurred : "+e.getMessage(),e);
+                return "<p>"+e.getMessage()+"</p>";
+            }
         } catch (Exception e1) {
             return null;
         }

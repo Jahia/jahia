@@ -3,6 +3,9 @@ import org.jahia.services.content.JCRContentUtils
 import org.jahia.services.render.RenderService
 import org.jahia.services.render.Resource
 import org.jahia.taglibs.jcr.node.JCRTagUtils
+import org.slf4j.LoggerFactory
+
+logger = LoggerFactory.getLogger(this.class)
 
 title = currentNode.properties['jcr:title']
 baseline = currentNode.properties['j:baselineNode']
@@ -44,6 +47,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
         def nbOfChilds = children.size();
         def closeUl = false;
         children.eachWithIndex() { menuItem, index ->
+          try {
             itemPath = menuItem.path
             inpath = renderContext.mainResource.node.path == itemPath || renderContext.mainResource.node.path.startsWith(itemPath+"/")
             selected = menuItem.isNodeType("jmix:nodeReference") ?
@@ -126,6 +130,9 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                 print("</div>")
                 closeUl = false;
             }
+          } catch (Exception e) {
+              logger.warn("Error processing nav-menu link with id " + menuItem.identifier, e);          
+          }
         }
 
         if (empty && renderContext.editMode) {

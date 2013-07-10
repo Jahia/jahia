@@ -175,7 +175,7 @@ public class ContentDefinitionHelper {
                             case GWTJahiaNodePropertyType.DATE:
                                 resolveDateConstraint(prop);
                                 break;
-                                
+
                             case GWTJahiaNodePropertyType.STRING:
                                 if (prop.getValueConstraints().size() == 1 && GWTJahiaNodeSelectorType.CHOICELIST != def.getSelector()) {
                                     prop.setConstraintErrorMessage(epd.getMessage("constraint.error.message", uiLocale));
@@ -237,7 +237,7 @@ public class ContentDefinitionHelper {
 
         return gwt;
     }
-    
+
     public static void resolveNumericConstraint(GWTJahiaPropertyDefinition prop) {
         for (String valueConstraint : prop.getValueConstraints()) {
             final boolean lowerInclusive;
@@ -307,8 +307,8 @@ public class ContentDefinitionHelper {
             final boolean lowerInclusive;
             Calendar lowerLimit;
             final boolean upperInclusive;
-            Calendar upperLimit;            
-        
+            Calendar upperLimit;
+
             Pattern pattern = Pattern.compile("([\\(\\[]) *([0-9TZ\\.\\+-:]*)? *, *([0-9TZ\\.\\+-:]*)? *([\\)\\]])");
             Matcher matcher = pattern.matcher(valueConstraint);
             if (matcher.matches()) {
@@ -368,17 +368,17 @@ public class ContentDefinitionHelper {
             }
         }
     }
-    
+
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names, Locale uiLocale) {
         try {
             List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
             for (String name : names) {
                 if (!StringUtils.isEmpty(name)) {
-                GWTJahiaNodeType nodeType = getNodeType(name, uiLocale);
-                if (nodeType != null) {
-                    list.add(nodeType);
+                    GWTJahiaNodeType nodeType = getNodeType(name, uiLocale);
+                    if (nodeType != null) {
+                        list.add(nodeType);
+                    }
                 }
-            }
             }
             return list;
         } catch (Exception e) {
@@ -470,7 +470,7 @@ public class ContentDefinitionHelper {
                     }
                 }
                 if (!l.isEmpty()) {
-                        map.put(getGWTJahiaNodeType(mainType, uiLocale), l);
+                    map.put(getGWTJahiaNodeType(mainType, uiLocale), l);
                 }
             }
             if (!nodeTypes.isEmpty()) {
@@ -499,7 +499,7 @@ public class ContentDefinitionHelper {
 
         add(req, baseTypes, contentTypes, result, excludeNonDroppable);
         if (includeSubTypes) {
-        NodeTypeIterator subtypes = req.getSubtypes();
+            NodeTypeIterator subtypes = req.getSubtypes();
             while (subtypes.hasNext()) {
                 ExtendedNodeType subtype = (ExtendedNodeType) subtypes.next();
                 add(subtype, baseTypes, contentTypes, result, excludeNonDroppable);
@@ -622,7 +622,7 @@ public class ContentDefinitionHelper {
                     } else {
                         return null;
                     }
-                } 
+                }
                 break;
             case PropertyType.UNDEFINED:
                 type = GWTJahiaNodePropertyType.UNDEFINED;
@@ -711,10 +711,10 @@ public class ContentDefinitionHelper {
         }
         return results;
     }
-    
+
     public GWTChoiceListInitializer getInitializerValues(ExtendedPropertyDefinition epd,
-            ExtendedNodeType contextType, JCRNodeWrapper contextNode, JCRNodeWrapper contextParent,
-            Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, Locale uiLocale) throws RepositoryException {
+                                                         ExtendedNodeType contextType, JCRNodeWrapper contextNode, JCRNodeWrapper contextParent,
+                                                         Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, Locale uiLocale) throws RepositoryException {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("contextType", contextType);
         context.put("contextNode", contextNode);
@@ -724,12 +724,12 @@ public class ContentDefinitionHelper {
                 public Object transform(Object input) {
                     return input.toString();
                 }
-            }));            
+            }));
         }
 
         return getChoiceListInitializerValues(epd, context, uiLocale);
     }
-    
+
     private GWTChoiceListInitializer getChoiceListInitializerValues(ExtendedPropertyDefinition epd, Map<String, Object> context, Locale uiLocale) {
         GWTChoiceListInitializer initializer = null;
         Map<String, String> map = epd.getSelectorOptions();
@@ -746,7 +746,7 @@ public class ContentDefinitionHelper {
                 if (initializers.containsKey(entry.getKey())) {
                     listValues = initializers.get(entry.getKey())
                             .getChoiceListValues(epd, entry.getValue(), listValues, uiLocale, context);
-                } 
+                }
             }
             if (listValues != null) {
                 for (ChoiceListValue choiceListValue : listValues) {
@@ -783,7 +783,7 @@ public class ContentDefinitionHelper {
             for (ExtendedPropertyDefinition definition : c) {
                 if (definition.getSelector() == SelectorType.CHOICELIST && !definition.getSelectorOptions().isEmpty()) {
                     items.put(definition.getDeclaringNodeType().getName() + "."
-                                    + definition.getName(), definition);
+                            + definition.getName(), definition);
                 }
             }
         }
@@ -855,7 +855,6 @@ public class ContentDefinitionHelper {
                 }
             }
 
-<<<<<<< .working
             List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
             for (JahiaTemplatesPackage pkg : packages) {
                 if  (pkg != null) {
@@ -870,31 +869,6 @@ public class ContentDefinitionHelper {
                             ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
                             if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, nodesForTypes.get(extendedNodeType.getName()))) {
                                 types.add(extendedNodeType);
-=======
-                for (int j = 0; j < list.size(); j++) {
-                    GWTJahiaNode child = list.get(j);
-                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate") && !StringUtils.equals(child.getName(),"nonDroppableComponents")) {
-                        GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
-                        child.set("componentNodeType", type);
-                        if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
-                            if (includeSubTypes) {
-                                HashSet<String> set = new HashSet<String>(type.getSuperTypes());
-                                set.add(type.getName());
-                                set.retainAll(nodeTypes);
-                                if (!set.isEmpty()) {
-                                    node.add(child);
-                                    allNodes.add(child);
-                                    lastAdded = child;
-                                    found ++;
-                                }
-                            } else {
-                                if (nodeTypes.contains(type.getName())) {
-                                    node.add(child);
-                                    allNodes.add(child);
-                                    lastAdded = child;
-                                    found ++;
-                                }
->>>>>>> .merge-right.r46650
                             }
                         }
                     }

@@ -40,7 +40,6 @@
 
 package org.jahia.bundles.extender.jahiamodules;
 
-import org.apache.commons.collections.list.SynchronizedList;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;

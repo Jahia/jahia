@@ -842,6 +842,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                     cache.remove(key);
                 }
             }
+            for (String key : getMembership(jahiaGroup)) {
+                getCache().remove(key);
+            }
         } catch (JahiaInitializationException e) {
             logger.error(e.getMessage(), e);
         }

@@ -823,17 +823,24 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
     public void updateCache(final JahiaGroup jahiaGroup) {
         try {
             final Cache<String, JCRGroup> cache = getCache();
+            final List<String> membership = getMembership(jahiaGroup);
             final ClassLoader loader = getChainedClassloader();
             if (loader != null) {
                  ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
                     @Override
                     public Boolean execute() {
                         cache.remove(jahiaGroup.getGroupKey());
+                        for (String key : membership) {
+                            cache.remove(key);
+                        }
                         return Boolean.TRUE;
                     }
                  });
             } else {
                 cache.remove(jahiaGroup.getGroupKey());
+                for (String key : membership) {
+                    cache.remove(key);
+                }
             }
         } catch (JahiaInitializationException e) {
             logger.error(e.getMessage(), e);

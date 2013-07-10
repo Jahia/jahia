@@ -170,7 +170,7 @@
         </c:forEach>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
-    <c:if test="${not result.facetResultsEmpty}">
+    <c:if test="${not result.facetResultsEmpty or !empty activeFacetsVars[activeFacetMapVarName]}">
         <div class="facets">
             <%@include file="activeFacets.jspf"%>
             <c:if test="${facet:isUnappliedFacetExisting(result, activeFacetsVars[activeFacetMapVarName])}">

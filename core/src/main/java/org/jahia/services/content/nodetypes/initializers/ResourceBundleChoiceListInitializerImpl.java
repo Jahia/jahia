@@ -73,7 +73,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
             String[] constr = epd.getValueConstraints();
             for (String s : constr) {
                 ChoiceListValue bean = new ChoiceListValue(Messages.get(rb, epd.getResourceBundleKey() + "."
-                        + JCRContentUtils.replaceColon(s), s), s);
+                        + JCRContentUtils.replaceColon("".equals(s.trim())?"empty":s), "".equals(s.trim())?"empty":s), s);
 
                 l.add(bean);
             }

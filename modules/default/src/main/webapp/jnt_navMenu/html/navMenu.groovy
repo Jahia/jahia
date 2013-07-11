@@ -5,8 +5,6 @@ import org.jahia.services.render.Resource
 import org.jahia.taglibs.jcr.node.JCRTagUtils
 import org.slf4j.LoggerFactory
 
-logger = LoggerFactory.getLogger(this.class)
-
 title = currentNode.properties['jcr:title']
 baseline = currentNode.properties['j:baselineNode']
 maxDepth = currentNode.properties['j:maxDepth']
@@ -131,6 +129,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                 closeUl = false;
             }
           } catch (Exception e) {
+              logger = LoggerFactory.getLogger(this.class)
               logger.warn("Error processing nav-menu link with id " + menuItem.identifier, e);          
           }
         }

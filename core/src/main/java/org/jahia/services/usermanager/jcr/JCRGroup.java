@@ -260,7 +260,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     return false;
                 }
             });
-            JCRGroupManagerProvider.getInstance().updateCache(this);
+            JCRGroupManagerProvider.getInstance().invalidateCacheRecursively(this);
             return memberAdded;
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
@@ -430,7 +430,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             mMembers = null;
             mMembers = getMembersMap();
             JCRGroupManagerProvider.getInstance().updateMembershipCache(memberIdentifier);
-            JCRGroupManagerProvider.getInstance().updateCache(this);
+            JCRGroupManagerProvider.getInstance().invalidateCacheRecursively(this);
             return true;
         }
         return false;
@@ -560,7 +560,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     return null;
                 }
             });
-            JCRGroupManagerProvider.getInstance().updateCache(this);
+            JCRGroupManagerProvider.getInstance().invalidateCacheRecursively(this);
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
         }

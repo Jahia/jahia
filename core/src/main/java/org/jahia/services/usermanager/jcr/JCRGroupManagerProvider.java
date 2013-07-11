@@ -163,18 +163,17 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
     public boolean deleteGroup(JahiaGroup group) {
         if (group instanceof JCRGroup) {
             final JCRGroup jcrGroup = (JCRGroup) group;
-            Boolean aBoolean = null;
             List<String> membership = null;
             try {
                 membership = getMembership(jcrGroup);
-                aBoolean = jcrTemplate.doExecuteWithSystemSession(deleteCallback(jcrGroup));
+                Boolean aBoolean = jcrTemplate.doExecuteWithSystemSession(deleteCallback(jcrGroup));
                 aBoolean = aBoolean && jcrTemplate.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback(jcrGroup));
                 return aBoolean;
             } catch (RepositoryException e) {
                 logger.error("Error while deleting group", e);
             } finally {
+                removeFromCache(group.getGroupKey());
                 try {
-                    getCache().remove(group.getGroupKey());
                     getMembershipCache().flush();
                 } catch (JahiaInitializationException e) {
                     logger.error(e.getMessage(), e);
@@ -831,36 +830,29 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(final JahiaGroup jahiaGroup) {
+        removeFromCache(jahiaGroup.getGroupKey());
+    }
+    
+    private void removeFromCache(final String key) {
         try {
-<<<<<<< .working
             final Cache<String, JCRGroup> cache = getCache();
-            final List<String> membership = getMembership(jahiaGroup);
             final ClassLoader loader = getChainedClassloader();
             if (loader != null) {
-                 ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
+                ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
                     @Override
                     public Boolean execute() {
-                        cache.remove(jahiaGroup.getGroupKey());
-                        for (String key : membership) {
-                            cache.remove(key);
-                        }
+                        cache.remove(key);
                         return Boolean.TRUE;
                     }
-                 });
+                });
             } else {
-                cache.remove(jahiaGroup.getGroupKey());
-                for (String key : membership) {
-                    cache.remove(key);
-                }
+                cache.remove(key);
             }
-=======
-            getCache().remove(jahiaGroup.getGroupKey());
->>>>>>> .merge-right.r46682
         } catch (JahiaInitializationException e) {
             logger.error(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Invalidates group caches recursively considering membership of the group in other groups.
      * 
@@ -868,11 +860,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      *            the group to invalidate caches for
      */
     public void invalidateCacheRecursively(JahiaGroup jahiaGroup) {
-        try {
-            getCache().remove(jahiaGroup.getGroupKey());
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-        }
+        updateCache(jahiaGroup);
         invalidateCachesForMembership(getMembership(jahiaGroup));
     }
 
@@ -887,16 +875,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
             return;
         }
 
-        Cache<String, JCRGroup> cache;
-        try {
-            cache = getCache();
-        } catch (JahiaInitializationException e) {
-            throw new IllegalArgumentException(e);
-        }
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
         for (String key : membership) {
-            cache.remove(key);
+            removeFromCache(key);
             JahiaGroup grp = groupService.lookupGroup(key);
             if (grp != null) {
                 invalidateCachesForMembership(getMembership(grp));

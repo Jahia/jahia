@@ -836,7 +836,7 @@ public class ContentDefinitionHelper {
 
                 for (int j = 0; j < list.size(); j++) {
                     GWTJahiaNode child = list.get(j);
-                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate") && !StringUtils.equals(child.getName(),"nonDroppableComponents")) {
+                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate")) {
                         GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
                         child.set("componentNodeType", type);
                         if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {

@@ -855,7 +855,6 @@ public class ContentDefinitionHelper {
                 }
             }
 
-<<<<<<< .working
             List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
             for (JahiaTemplatesPackage pkg : packages) {
                 if  (pkg != null) {
@@ -870,31 +869,6 @@ public class ContentDefinitionHelper {
                             ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
                             if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, nodesForTypes.get(extendedNodeType.getName()))) {
                                 types.add(extendedNodeType);
-=======
-                for (int j = 0; j < list.size(); j++) {
-                    GWTJahiaNode child = list.get(j);
-                    if (session.getNodeByIdentifier(child.getUUID()).hasPermission("useComponentForCreate")) {
-                        GWTJahiaNodeType type = getNodeType(child.getName(), uiLocale);
-                        child.set("componentNodeType", type);
-                        if (child.getInheritedNodeTypes().contains("jnt:component") && nodeTypes != null && type != null) {
-                            if (includeSubTypes) {
-                                HashSet<String> set = new HashSet<String>(type.getSuperTypes());
-                                set.add(type.getName());
-                                set.retainAll(nodeTypes);
-                                if (!set.isEmpty()) {
-                                    node.add(child);
-                                    allNodes.add(child);
-                                    lastAdded = child;
-                                    found ++;
-                                }
-                            } else {
-                                if (nodeTypes.contains(type.getName())) {
-                                    node.add(child);
-                                    allNodes.add(child);
-                                    lastAdded = child;
-                                    found ++;
-                                }
->>>>>>> .merge-right.r46677
                             }
                         }
                     }

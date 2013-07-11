@@ -46,7 +46,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.junit.*;
-import org.slf4j.Logger;
 
 import java.security.Principal;
 import java.util.List;
@@ -59,8 +58,6 @@ import static org.junit.Assert.*;
  * Group manager unit test. This unit test is not yet complete, it was only implemented to test some marginal cases.
  */
 public class JahiaGroupManagerServiceTest {
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaGroupManagerServiceTest.class);
 
     private static JahiaUserManagerService userManager;
     private static JahiaGroupManagerService groupManager;
@@ -130,22 +127,48 @@ public class JahiaGroupManagerServiceTest {
         group2.addMember(user2);
         group2.addMember(group1);
 
-        assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
-                user1.isMemberOfGroup(0, "test-group2"));
-        List<String> user1GroupMembership = groupManager.getUserMembership(user1);
-        assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
-                user1GroupMembership.contains("test-group2:0"));
+        assertMembership(group1, user1, true);
+        assertMembership(group2, user2, true);
+        assertMembership(group2, user1, true);
+        assertTrue("Group 1 should be a member of group 1", group2.isMember(group1));
 
+        group1 = groupManager.lookupGroup(group1.getGroupKey());
+        group2 = groupManager.lookupGroup(group2.getGroupKey());
+        assertMembership(group1, user1, true);
+        assertMembership(group2, user2, true);
+        assertMembership(group2, user1, true);
+        assertTrue("Group 1 should be a member of group 1", group2.isMember(group1));
+        
         group1.removeMember(user1);
-        assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
-                user1.isMemberOfGroup(0, "test-group2"));
-        user1GroupMembership = groupManager.getUserMembership(user1);
-        assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
-                user1GroupMembership.contains("test-group2:0"));
+        assertMembership(group1, user1, false);
+        assertMembership(group2, user1, false);
+        group1 = groupManager.lookupGroup(group1.getGroupKey());
+        group2 = groupManager.lookupGroup(group2.getGroupKey());
+        assertMembership(group1, user1, false);
+        assertMembership(group2, user1, false);
+
+        // add user1 back
+        group1.addMember(user1);
+        group1 = groupManager.lookupGroup(group1.getGroupKey());
+        group2 = groupManager.lookupGroup(group2.getGroupKey());
+        assertMembership(group1, user1, true);
+        assertMembership(group2, user1, true);
+        
+        // now delete group1 and check user1 membership
+        groupManager.deleteGroup(group1);
+        group2 = groupManager.lookupGroup(group2.getGroupKey());
+        assertMembership(group2, user1, false);
 
         groupManager.deleteGroup(group2);
-        groupManager.deleteGroup(group1);
+    }
 
+    private void assertMembership(JahiaGroup group, JahiaUser member, boolean isMember) {
+        String msg = member.getName() + (isMember ? " should " : " should NOT ") + "be a member of group "
+                + group.getGroupname();
+        assertEquals(msg, isMember, group.isMember(member));
+        List<String> membership = groupManager.getUserMembership(member);
+        assertEquals(msg, isMember, membership.contains(group.getGroupKey()));
+        assertEquals(msg, isMember, member.isMemberOfGroup(group.getSiteID(), group.getName()));
     }
 
     @Test

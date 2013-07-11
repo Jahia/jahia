@@ -123,15 +123,15 @@ printMenu = { node, navMenuLevel, omitFormatting ->
 //                    print "</li>"
                 }
             }
-            if (closeUl && index == (nbOfChilds - 1)) {
-                print("</ul>");
-                print("</div>")
-                closeUl = false;
-            }
           } catch (Exception e) {
               logger = LoggerFactory.getLogger(this.class)
               logger.warn("Error processing nav-menu link with id " + menuItem.identifier, e);          
           }
+          if (closeUl && index == (nbOfChilds - 1)) {
+              print("</ul>");
+              print("</div>")
+              closeUl = false;
+          }          
         }
 
         if (empty && renderContext.editMode) {

@@ -47,9 +47,9 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>jquery</artifactId>
-    <name>Jahia JQuery</name>
+    <name>Jahia jQuery</name>
     <packaging>bundle</packaging>
-    <description>Provided jquery library for Jahia.</description>
+    <description>Provides jQuery library for Jahia xCM server.</description>
 
     <scm>
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/jquery</connection>

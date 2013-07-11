@@ -156,6 +156,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 // In case we are accessing versionned node, this ensure that localPath contain the expected localPath
                 if(this.localPath.startsWith("/jcr:system")) {
                     this.localPath = path;
+                    this.localPathInProvider = path;
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

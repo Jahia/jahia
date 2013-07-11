@@ -140,7 +140,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
 
             rd.include(request, responseWrapper);
 
-            while (responseWrapper.getRedirect() != null) {
+            while (responseWrapper.getRedirect() != null && !responseWrapper.getRedirect().startsWith("http://") && !responseWrapper.getRedirect().startsWith("https://")) {
                 final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                 final Map<String,String[]> params = new HashMap<String,String[]>();
                 if (!StringUtils.isEmpty(qs)) {
@@ -182,6 +182,9 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                 rd = requestWrapper.getRequestDispatcher("/flow/"+flowPath + "?" + qs);
                 responseWrapper = new StringResponseWrapper(response);
                 rd.include(requestWrapper, responseWrapper);
+            }
+            if(responseWrapper.getRedirect() != null && (responseWrapper.getRedirect().startsWith("http://") || responseWrapper.getRedirect().startsWith("https://"))) {
+                context.setRedirect(responseWrapper.getRedirect());
             }
         } catch (ServletException e) {
             throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);

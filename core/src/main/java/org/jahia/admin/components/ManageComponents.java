@@ -57,6 +57,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.jahia.admin.AbstractAdministrationModule;
@@ -220,7 +221,7 @@ public class ManageComponents extends AbstractAdministrationModule {
             Iterator<String> iterator = filesName.iterator();
             if (iterator.hasNext()) {
                 String n = iterator.next();
-                String fileName = fileUpload.getFileSystemName(n);
+                String fileName = FilenameUtils.getName(fileUpload.getFileSystemName(n));
                 File f = fileUpload.getFile(n);
                 File generatedFile = null;
 

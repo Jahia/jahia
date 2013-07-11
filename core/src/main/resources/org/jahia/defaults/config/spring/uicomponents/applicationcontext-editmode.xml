@@ -1057,7 +1057,7 @@
 
     <bean id="Engine.Tab.ContributeMode" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="contributeMode"/>
-        <property name="titleKey" value="jmix_contributeMode"/>
+        <property name="titleKey" value="label.contributeMode"/>
         <property name="requiredPermission" value="viewContributeModeTab"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">

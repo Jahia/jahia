@@ -55,8 +55,10 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.cli.MavenCli;
+import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -494,7 +496,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
-        CompiledModuleInfo moduleInfo = compileModule(moduleName, sources);
+        CompiledModuleInfo moduleInfo = compileModule(sources);
         Bundle bundle = findBundle(moduleName, moduleInfo.getVersion());
         if (bundle != null) {
             bundle.update(new FileInputStream(moduleInfo.getFile()));
@@ -518,20 +520,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public CompiledModuleInfo compileModule(final String moduleName, File sources) throws IOException {
+    public CompiledModuleInfo compileModule(File sources) throws IOException {
+        File pom = new File(sources, "pom.xml");
         try {
-            SAXReader reader = new SAXReader();
-            Document document = reader.read(new File(sources, "pom.xml"));
-            Element n;
-            if (document.getRootElement().elementIterator("version").hasNext()) {
-                n = (Element) document.getRootElement().elementIterator("version").next();
-            } else if (document.getRootElement().elementIterator("parent").hasNext()) {
-                n = (Element) document.getRootElement().elementIterator("parent").next();
-                n = (Element) n.elementIterator("version").next();
-            } else {
-                throw new IOException("No version found in pom.xml file");
+            Model model = PomUtils.read(pom);
+            String artifactId = model.getArtifactId();
+            String version = PomUtils.getVersion(model);
+            if (StringUtils.isEmpty(version)) {
+                throw new IOException("No version found in pom.xml file " + pom);
             }
-            String version = n.getText();
 
             String[] installParams = {"clean", "install"};
             int r = cli.doMain(installParams, sources.getPath(), System.out, System.err);
@@ -539,18 +536,18 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 logger.error("Compilation error, returned status " + r);
                 throw new IOException("Compilation error, status " + r);
             }
-            File file = new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".war");
+            File file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".war");
             if (!file.exists()) {
-                file = new File(sources.getPath() + "/target/" + moduleName + "-" + version + ".jar");
+                file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".jar");
             }
             if (file.exists()) {
-                return new CompiledModuleInfo(file, moduleName, version);
+                return new CompiledModuleInfo(file, artifactId, version);
             } else {
                 throw new IOException("Cannot find a module archive to deploy in folder " + file.getParentFile().getAbsolutePath());
             }
-        } catch (DocumentException e) {
-            logger.error(e.getMessage(), e);
-            throw new IOException("Cannot parse pom file", e);
+        } catch (XmlPullParserException e) {
+            logger.error("Error parsing pom.xml file at " + pom, e);
+            throw new IOException("Cannot parse pom.xml file " + pom, e);
         }
     }
 
@@ -559,11 +556,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             return null;
         }
 
+        File pom = new File(sources, "pom.xml");
         try {
-            SAXReader reader = new SAXReader();
-            Document document = reader.read(new File(sources, "pom.xml"));
-            Element n = (Element) document.getRootElement().elementIterator("artifactId").next();
-            String moduleName = n.getText();
+            Model model = PomUtils.read(pom);
+            String moduleName = model.getArtifactId();
 
             JahiaTemplatesPackage pack = compileAndDeploy(moduleName, sources, session);
             pack.setSourcesFolder(sources);
@@ -572,8 +568,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             session.save();
 
             return node;
-        } catch (DocumentException e) {
-            throw new IOException("Cannot parse pom file", e);
+        } catch (XmlPullParserException e) {
+            throw new IOException("Cannot parse pom.xml file at " + pom, e);
         }
     }
 
@@ -646,21 +642,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         File pom = new File(sources, "pom.xml");
         if (pom.exists()) {
             try {
-                Document document = new SAXReader().read(pom);
-                Element element = document.getRootElement();
-                Iterator<?> iterator = element.elementIterator("version");
-                if (iterator.hasNext()) {
-                    element = (Element) iterator.next();
-                } else {
-                    element = (Element) element.elements("parent").get(0);
-                    element = (Element) element.elements("version").get(0);
-                }
-                String sourceVersion = element.getText();
-                if (sourceVersion.equals(pack.getVersion().toString())) {
+                String sourceVersion = PomUtils.getVersion(pom);
+                if (sourceVersion != null && sourceVersion.equals(pack.getVersion().toString())) {
                     return true;
                 }
-            } catch (DocumentException e) {
-                logger.error("Cannot parse pom file", e);
+            } catch (Exception e) {
+                logger.error("Cannot parse pom.xml file at " + pom, e);
             }
         }
         return false;
@@ -690,153 +677,133 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public File releaseModule(final JahiaTemplatesPackage module, String nextVersion, File sources, String scmUrl, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
+        File pom = new File(sources, "pom.xml");
+        Model model = null;
         try {
-            SAXReader reader = new SAXReader();
-            File pom = new File(sources, "pom.xml");
-            Document document = reader.read(pom);
-            Element versionElement = (Element) document.getRootElement().elementIterator("version").next();
-            String lastVersion = versionElement.getText();
-
-            String releaseVersion = StringUtils.substringBefore(lastVersion, "-SNAPSHOT");
-
-//            String lastVersion = pack.getLastVersion().toString();
-            if (lastVersion.endsWith("-SNAPSHOT")) {
-                File generatedWar = null;
-                if (scmUrl != null) {
-                    String tag = module.getRootFolder() + "-" + releaseVersion;
-
-                    int ret;
-                    String M2_HOME = System.getenv().get("M2_HOME") != null ? System.getenv().get("M2_HOME") : "/usr/share/maven";
-                    if (!new File(M2_HOME).exists()) {
-                        throw new IOException("Maven home not found, please set your M2_HOME property");
-                    }
-                    String[] installParams = {"release:prepare", "release:perform",
-                            "-Dmaven.home=" + M2_HOME,
-                            "-Dtag=" + tag,
-                            "-DreleaseVersion=" + releaseVersion,
-                            "-DdevelopmentVersion=" + nextVersion,
-                            "-DignoreSnapshots=true",
-                            "-Dgoals=install",
-                            "--batch-mode"
-                    };
-                    ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
-                    ret = 0;
-                    if (ret > 0) {
-                        cli.doMain(new String[]{"release:rollback"}, sources.getPath(), System.out, System.err);
-                        throw new IOException("Maven invokation failed");
-                    }
-
-                    File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), module + "-" + lastVersion + ".war");
-                    if (oldWar.exists()) {
-                        oldWar.delete();
-                    }
-
-                    generatedWar = new File(sources.getPath() + "/target/checkout/target/" + module.getRootFolder() + "-" + releaseVersion + ".war");
-                    if (!generatedWar.exists()) {
-                        generatedWar = new File(sources.getPath() + "/target/checkout/target/" + module.getRootFolder() + "-" + releaseVersion + ".jar");
-                    }
-                } else {
-                    versionElement.setText(releaseVersion);
-                    File modifiedPom = new File(sources, "pom-modified.xml");
-                    XMLWriter writer = null;
-                    try {
-                        writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
-                        writer.write(document);
-                    } finally {
-                        if (writer != null) {
-                            writer.close();
-                        }
-                    }
-                    FileInputStream source = new FileInputStream(modifiedPom);
-                    try {
-                        saveFile(source, pom);
-                    } finally {
-                        IOUtils.closeQuietly(source);
-                    }
-
-                    generatedWar = compileModule(module.getRootFolder(), sources).getFile();
-
-                    versionElement.setText(nextVersion);
-                    writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
-                    try {
-                        writer.write(document);
-                    } finally {
-                        writer.close();
-                    }
-                    source = new FileInputStream(modifiedPom);
-                    try {
-                        saveFile(source, pom);
-                    } finally {
-                        IOUtils.closeQuietly(source);
-                    }
-                }
-
-                File releasedModules = new File(settingsBean.getJahiaVarDiskPath(), "released-modules");
-                if (generatedWar.exists()) {
-                    FileUtils.moveFileToDirectory(generatedWar, releasedModules, true);
-                    generatedWar = new File(releasedModules, generatedWar.getName());
-                } else {
-                    generatedWar = null;
-                }
-
-
-                if (generatedWar != null) {
-                    FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), new FileInputStream(generatedWar));
-                    JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
-                    JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
-                    node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
-                    if (scmUrl != null) {
-                        node.getNode("j:versionInfo").setProperty("j:scmURI", scmUrl);
-                    }
-                    session.save();
-
-                    undeployModule(module);
-                }
-                Map<String,String> forgeParams = new HashMap<String, String>();
-                // module
-                forgeParams.put("moduleName", module.getName());
-                if (module.getDescription() != null) {
-                    forgeParams.put("description", module.getDescription());
-                } else {
-                    forgeParams.put("description", "not set yet");
-                }
-
-                // deploy the module on the forge
-
-                //forgeParams.put("category", module.getModuleType());
-                //forgeParams.put("icon", "");
-                forgeParams.put("authorNameDisplayedAs", "username");
-                forgeParams.put("authorURL", "");
-                forgeParams.put("authorEmail", "");
-                forgeParams.put("howToInstall", "");
-                forgeParams.put("FAQ", "");
-                forgeParams.put("codeRepository", "");
-
-                //version
-
-                //forgeParams.put("requiredVersion", "");
-                forgeParams.put("releaseType", "hotfix");
-                //forgeParams.put("status", "");
-                forgeParams.put("activeVersion", "true");
-
-                forgeParams.put("versionNumber", releaseVersion);
-                forgeParams.put("url", "http://nexus/released/" + module.getName() + "-" + releaseVersion + ".jar");
-
-
-                // Todo : generate url
-                String url = "http://localhost:8080" + SettingsBean.getInstance().getServletContext().getContextPath() + "/sites/forge/contents/forge-modules-repository.createModule.do";
-
-                createForgeModule(url,forgeParams);
-
-                return generatedWar;
-            } else {
-                throw new IOException("Cannot release a SNAPSHOT version");
-            }
-        } catch (DocumentException e) {
-            throw new IOException(e);
-        } catch (PatchFailedException e) {
+            model = PomUtils.read(pom);
+        } catch (XmlPullParserException e) {
             throw new IOException(e);
         }
+        String lastVersion = PomUtils.getVersion(model);
+        if (!lastVersion.endsWith("-SNAPSHOT")) {
+            throw new IOException("Cannot release a non-SNAPSHOT version");
+        }
+        String releaseVersion = StringUtils.substringBefore(lastVersion, "-SNAPSHOT");
+
+        File generatedWar;
+        try {
+            generatedWar = releaseModuleInternal(model, lastVersion, releaseVersion, nextVersion, sources, scmUrl);
+        } catch (XmlPullParserException e) {
+            throw new IOException(e);
+        }
+
+        File releasedModules = new File(settingsBean.getJahiaVarDiskPath(), "released-modules");
+        if (generatedWar.exists()) {
+            FileUtils.moveFileToDirectory(generatedWar, releasedModules, true);
+            generatedWar = new File(releasedModules, generatedWar.getName());
+        } else {
+            generatedWar = null;
+        }
+
+        if (generatedWar != null) {
+            FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(),
+                    new FileInputStream(generatedWar));
+            JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
+            JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+            node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
+            if (scmUrl != null) {
+                node.getNode("j:versionInfo").setProperty("j:scmURI", scmUrl);
+            }
+            session.save();
+
+            undeployModule(module);
+        }
+        Map<String, String> forgeParams = new HashMap<String, String>();
+        // module
+        forgeParams.put("moduleName", module.getName());
+        if (module.getDescription() != null) {
+            forgeParams.put("description", module.getDescription());
+        } else {
+            forgeParams.put("description", "not set yet");
+        }
+
+        // deploy the module on the forge
+
+        // forgeParams.put("category", module.getModuleType());
+        // forgeParams.put("icon", "");
+        forgeParams.put("authorNameDisplayedAs", "username");
+        forgeParams.put("authorURL", "");
+        forgeParams.put("authorEmail", "");
+        forgeParams.put("howToInstall", "");
+        forgeParams.put("FAQ", "");
+        forgeParams.put("codeRepository", "");
+
+        // version
+
+        // forgeParams.put("requiredVersion", "");
+        forgeParams.put("releaseType", "hotfix");
+        // forgeParams.put("status", "");
+        forgeParams.put("activeVersion", "true");
+
+        forgeParams.put("versionNumber", releaseVersion);
+        forgeParams.put("url", "http://nexus/released/" + module.getName() + "-" + releaseVersion + ".jar");
+
+        // Todo : generate url
+        String url = "http://localhost:8080" + SettingsBean.getInstance().getServletContext().getContextPath()
+                + "/sites/forge/contents/forge-modules-repository.createModule.do";
+
+        createForgeModule(url, forgeParams);
+
+        return generatedWar;
+    }
+    
+    private File releaseModuleInternal(Model model, String lastVersion, String releaseVersion, String nextVersion, File sources, String scmUrl) throws IOException, XmlPullParserException {
+        String artifactId = model.getArtifactId();
+        File pom = new File(sources, "pom.xml");
+        File generatedWar = null;
+        if (scmUrl != null) {
+            // release using maven-release-plugin
+            String tag = StringUtils.replace(releaseVersion, ".", "_");
+
+            String M2_HOME = System.getenv().get("M2_HOME") != null ? System.getenv().get("M2_HOME")
+                    : "/usr/share/maven";
+            if (!new File(M2_HOME).exists()) {
+                throw new IOException("Maven home not found, please set your M2_HOME property");
+            }
+            String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + M2_HOME, "-Dtag=" + tag,
+                    "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
+                    "-DignoreSnapshots=true", "-Dgoals=install", "--batch-mode" };
+            int ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+            if (ret > 0) {
+                cli.doMain(new String[] { "release:rollback" }, sources.getPath(), System.out, System.err);
+                throw new IOException("Maven invokation failed");
+            }
+
+            File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".war");
+            if (oldWar.exists()) {
+                oldWar.delete();
+            }
+            oldWar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".jar");
+            if (oldWar.exists()) {
+                oldWar.delete();
+            }
+
+            generatedWar = new File(sources.getPath() + "/target/checkout/target/" + artifactId + "-" + releaseVersion
+                    + ".war");
+            if (!generatedWar.exists()) {
+                generatedWar = new File(sources.getPath() + "/target/checkout/target/" + artifactId + "-"
+                        + releaseVersion + ".jar");
+            }
+        } else {
+            // modify the version in the pom.xml and compile/install module
+            PomUtils.updateVersion(pom, releaseVersion);
+
+            generatedWar = compileModule(sources).getFile();
+
+            PomUtils.updateVersion(pom, nextVersion);
+        }
+
+        return generatedWar;
     }
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
@@ -991,53 +958,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     private void setSCMConfigInPom(File sources, String uri) {
         try {
-            SAXReader reader = new SAXReader();
-            File pom = new File(sources, "pom.xml");
-            Document document = reader.read(pom);
-            Element root = document.getRootElement();
-            Iterator it = root.elementIterator("scm");
-            Element scm;
-            if (!it.hasNext()) {
-                scm = root.addElement("scm");
-            } else {
-                scm = root.element("scm");
-            }
-            it = scm.elementIterator("connection");
-            Element connection;
-            if (!it.hasNext()) {
-                connection = scm.addElement("connection");
-            } else {
-                connection = scm.element("connection");
-            }
-            connection.setText(uri);
-            it = scm.elementIterator("developerConnection");
-            Element developerConnection;
-            if (!it.hasNext()) {
-                developerConnection = scm.addElement("developerConnection");
-            } else {
-                developerConnection = scm.element("developerConnection");
-            }
-            developerConnection.setText(uri);
-            List list = root.elements();
-            list.remove(scm);
-            list.add(list.indexOf(root.elementIterator("description").next()) + 1, scm);
-            File modifiedPom = new File(sources, "pom-modified.xml");
-            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
-            try {
-                writer.write(document);
-            } finally {
-                writer.close();
-            }
-            FileInputStream source = new FileInputStream(modifiedPom);
-            try {
-                saveFile(source, pom);
-            } finally {
-                IOUtils.closeQuietly(source);
-                modifiedPom.delete();
-            }
+            PomUtils.updateScm(new File(sources, "pom.xml"), uri);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -1146,7 +1069,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 try {
                     node.getNode("j:versionInfo").setProperty("j:scmURI", pack.getSourceControl().getURI());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

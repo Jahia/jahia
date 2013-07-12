@@ -308,8 +308,8 @@
     </build>
 
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module-war</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module-war</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module-war</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_6_6_1_7_RC/jahia-test-parent/jahia-test-module-war</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_6_6_1_7_RC/jahia-test-parent/jahia-test-module-war</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_6_6_1_7_RC/jahia-test-parent/jahia-test-module-war</url>
   </scm>
 </project>

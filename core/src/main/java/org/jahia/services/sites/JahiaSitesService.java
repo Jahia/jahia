@@ -596,10 +596,18 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     public JahiaSite getDefaultSite(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode(SITES_JCR_PATH);
         if (node.hasProperty("j:defaultSite")) {
-            return (JCRSiteNode) node.getProperty("j:defaultSite").getNode();
-        } else {
-            return null;
+            try {
+                return (JCRSiteNode) node.getProperty("j:defaultSite").getNode();
+            } catch (RepositoryException e) {
+                List<JCRSiteNode> sitesNodeList = getSitesNodeList(session);
+                for (JCRSiteNode jcrSiteNode : sitesNodeList) {
+                    if(!"systemsite".equals(jcrSiteNode.getSiteKey())){
+                        return jcrSiteNode;
+                    }
+                }
+            }
         }
+        return null;
     }
 
     public void setDefaultSite(final JahiaSite site) {

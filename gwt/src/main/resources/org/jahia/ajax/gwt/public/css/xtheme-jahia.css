@@ -562,6 +562,40 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     }
 }
 /*start grey theme */
+/*
+ * Sencha GXT 2.3.0 - Sencha for GWT
+ * Copyright(c) 2007-2013, Sencha, Inc.
+ * licensing@sencha.com
+ *
+ * http://www.sencha.com/products/gxt/license/
+ */
+/* form */
+.x-form-text, textarea.x-form-field {
+    background-color: #FFFFFF;
+    background-image: none;
+    border-color: #d0d0d0;
+}
+
+.x-form-field-wrap .x-form-trigger {
+    background-image: url(../images/gray/form/trigger.png);
+    border-bottom-color: #d0d0d0;
+}
+
+.x-form-field-wrap .x-form-date-trigger {
+    background-image: url(../images/gray/form/date-trigger.png);
+}
+
+.x-form-field-wrap .x-form-clear-trigger {
+    background-image: url(../images/gray/form/clear-trigger.png);
+}
+
+.x-form-field-wrap .x-form-search-trigger {
+    background-image: url(../images/gray/form/search-trigger.png);
+}
+.x-trigger-wrap-focus .x-form-trigger {
+    border-bottom-color: #d0d0d0;
+}
+/* group expand */
 .x-grid-group-hd .x-grid-group-div {
     background-image: url("../images/gray/grid/group-expand-sprite.gif");
     color: #39f;
@@ -570,7 +604,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 .x-grid-group-hd {
     border-bottom-color: #39f;
 }
-
+/* general */
 .x-panel {
     border-style: solid;
     border-color: #d0d0d0;
@@ -1045,10 +1079,10 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
     color: #333;
 }
 .x-spinner-field .x-form-spinner-up {
-    background-image: url('../images/gray/form/spinner.gif');
+    background-image: url('../images/gray/form/spinner.png');
 }
 .x-spinner-field .x-form-spinner-down {
-    background-image: url('../images/gray/form/spinner.gif');
+    background-image: url('../images/gray/form/spinner.png');
 }.x-accordion-hd {
      background-color: #e5e5e5;
  }.x-border {
@@ -1095,6 +1129,31 @@ body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc
  }.my-treetbl {
       border: 1px solid #C6C5C5;
   }
+.x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
+    background-image:url(../images/gray/slider/slider-bg.png);
+}
+.x-slider-horz .x-slider-thumb {
+    background-image:url(../images/gray/slider/slider-thumb.png);
+}
+.x-slider-vert, .x-slider-vert .x-slider-end, .x-slider-vert .x-slider-inner {
+    background-image:url(../images/gray/slider/slider-v-bg.png);
+}
+.x-slider-vert .x-slider-thumb {
+    background-image:url(../images/gray/slider/slider-v-thumb.png);
+}
+
+.x-window-dlg .ext-mb-info {
+    background-image:url(../images/gray/window/icon-info.png);
+}
+.x-window-dlg .ext-mb-warning {
+    background-image:url(../images/gray/window/icon-warning.png);
+}
+.x-window-dlg .ext-mb-question {
+    background-image:url(../images/gray/window/icon-question.png);
+}
+.x-window-dlg .ext-mb-error {
+    background-image:url(../images/gray/window/icon-error.png);
+}
 /*stop grey theme */
 
 

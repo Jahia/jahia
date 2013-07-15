@@ -16,12 +16,7 @@
 <div style="display:none">
     <div id="popup-${currentNode.name}" class="${currentNode.properties['popupClass'].string}">
 </c:if>
-        <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">
-            <template:module node="${child}"/>
-        </c:forEach>
-        <c:if test="${renderContext.editMode}">
-            <template:module path="*"/>
-        </c:if>
+    <template:area path="popup-content" areaAsSubNode="false"/>
 <c:if test="${not renderContext.editMode}">
     </div>
 </div>

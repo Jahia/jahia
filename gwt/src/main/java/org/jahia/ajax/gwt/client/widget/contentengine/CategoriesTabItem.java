@@ -124,14 +124,22 @@ public class CategoriesTabItem extends EditEngineTabItem {
     private Component createCategoriedPickerPanel() {
 
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
+<<<<<<< .working
         final ColumnConfig name = new ColumnConfig();
         name.setId("displayName");
         name.setHeader(Messages.get("label.title"));
         name.setWidth(5000);
         name.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaNode>() {
+=======
+        ColumnConfig name = new ColumnConfig("displayName", Messages.get("label.title"), 500);
+        name.setSortable(false);
+        name.setMenuDisabled(true);
+        name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
+>>>>>>> .merge-right.r46701
             public String getId(TreeGrid<GWTJahiaNode> grid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {
                 return "JahiaGxtCategory_" + model.getName().replace(":", "_");
             }
+<<<<<<< .working
 
             @Override
             public Widget getWidget(final GWTJahiaNode model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
@@ -146,6 +154,27 @@ public class CategoriesTabItem extends EditEngineTabItem {
                         } else {
                             catStore.remove(model);
                             topPanel.remove(button);
+=======
+        });
+        name.setFixed(true);
+        ColumnConfig action = new ColumnConfig("action", "Action", 100);
+        action.setAlignment(Style.HorizontalAlignment.RIGHT);
+        action.setSortable(false);
+        action.setMenuDisabled(true);
+        action.setRenderer(new GridCellRenderer() {
+            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+                                 ListStore listStore, Grid grid) {
+                GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) modelData;
+                Button button = null;
+                if (gwtJahiaNode.getNodeTypes().contains("jnt:category")) {
+                    button = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent buttonEvent) {
+                            final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
+                            if (catStore.findModel(node1) == null) {
+                                catStore.add(node1, false);
+                            }
+>>>>>>> .merge-right.r46701
                         }
                         topPanel.layout();
                     }

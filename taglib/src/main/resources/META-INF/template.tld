@@ -219,7 +219,6 @@
         </attribute>
         <attribute>
             <description>
-<<<<<<< .working
                 For css resource type, this attribute specify the relationship type of the link
             </description>
             <name>rel</name>
@@ -228,10 +227,7 @@
         </attribute>
         <attribute>
             <description>
-            	For css resource type, this attribute specify the media on which the css will be applied
-=======
             	For css resource type, this attribute specifies the media (or medias, comma separated) on which the css will be applied.
->>>>>>> .merge-right.r46717
             </description>
             <name>media</name>
             <required>false</required>

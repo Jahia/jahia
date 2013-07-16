@@ -77,199 +77,8 @@ public class TemplatePackageDeployer {
 
     protected JahiaTemplateManagerService service;
 
-<<<<<<< .working
-=======
-        TemplatesWatcher(File sharedTemplatesFolder, File deployedTemplatesFolder) {
-            super();
-            this.sharedTemplatesFolder = sharedTemplatesFolder;
-            this.deployedTemplatesFolder = deployedTemplatesFolder;
-            initTimestamps();
-        }
-
-        private void initTimestamps() {
-            // list WEB-INF/var/shared_modules
-            File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
-            for (File pkgFile : existingFiles) {
-                logger.debug("Monitoring {} for changes", pkgFile.toString());
-                timestamps.put(pkgFile.getPath(), pkgFile.lastModified());
-            }
-
-            if (settingsBean.isDevelopmentMode()) {
-                // list first level folders under /modules
-                for (File deployedFolder : deployedTemplatesFolder.listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
-                    logger.debug("Monitoring {} for changes", deployedFolder.toString());
-                    timestamps.put(deployedFolder.getPath(), deployedFolder.lastModified());
-                    // list direct files (not recursing into sub-folders)
-                    for (File file : deployedFolder.listFiles((FileFilter) FileFilterUtils.fileFileFilter())) {
-                        logger.debug("Monitoring {} for changes", file.toString());
-                        timestamps.put(file.getPath(), file.lastModified());
-                    }
-                    // watch for everything under module's META-INF/
-                    File metaInf = new File(deployedFolder, "META-INF");
-                    if (metaInf.exists()) {
-                        for (File file : FileUtils.listFiles(metaInf, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-                            logger.debug("Monitoring {} for changes", file.toString());
-                            timestamps.put(file.getPath(), file.lastModified());
-                        }
-                    }
-                    // watch for everything under module's WEB-INF/
-                    File webInf = new File(deployedFolder, "WEB-INF");
-                    if (webInf.exists()) {
-                        for (File file : FileUtils.listFiles(webInf, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-                            logger.debug("Monitoring {} for changes", file.toString());
-                            timestamps.put(file.getPath(), file.lastModified());
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void run() {
-            boolean reloadSpringContext = false;
-            boolean changed = false;
-
-            LinkedHashSet<File> remaining = new LinkedHashSet<File>();
-
-            // list WEB-INF/var/shared_modules
-            File[] existingFiles = getPackageFiles(sharedTemplatesFolder);
-            for (File file : existingFiles) {
-                if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
-                    logger.debug("Detected modified resource {}", file.getPath());
-                    try {
-                        File folder = deployPackage(file);
-                        if (folder != null) {
-                            remaining.add(folder);
-                        }
-                        timestamps.put(file.getPath(), file.lastModified());
-                    reloadSpringContext = true;
-                    changed = true;
-                    } catch (ZipException e) {
-                        logger.warn("Cannot deploy module : "+file.getName()+", will try again later");
-                    } catch (Exception e) {
-                        logger.error("Cannot deploy module : "+file.getName(),e);
-                        timestamps.put(file.getPath(), file.lastModified());
-                    }
-                }
-            }
-
-            if (settingsBean.isDevelopmentMode()) {
-
-                IOFileFilter fileFilter = new NotFileFilter(new SuffixFileFilter(new String[] {".pkg"}));
-
-                // list first level folders under /modules
-                for (File deployedFolder : deployedTemplatesFolder
-                        .listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
-                    // list direct files (not recursing into sub-folders)
-                    for (File file : deployedFolder.listFiles((FileFilter) FileFilterUtils
-                            .fileFileFilter())) {
-                        if (!timestamps.containsKey(file.getPath())
-                                || timestamps.get(file.getPath()) != file.lastModified()) {
-                            timestamps.put(file.getPath(), file.lastModified());
-                            logger.debug("Detected modified resource {}", file.getPath());
-                            remaining.add(deployedFolder);
-                            if (file.getName().startsWith("import.")) {
-                                reloadSpringContext = true;
-                            }
-                        }
-                    }
-
-                    // watch for everything under module's META-INF/
-                    File metaInf = new File(deployedFolder, "META-INF");
-                    if (metaInf.exists()) {
-                        for (File file : FileUtils.listFiles(metaInf, fileFilter,
-                                TrueFileFilter.INSTANCE)) {
-                            if (!timestamps.containsKey(file.getPath())
-                                    || timestamps.get(file.getPath()) != file.lastModified()) {
-                                timestamps.put(file.getPath(), file.lastModified());
-                                logger.debug("Detected modified resource {}", file.getPath());
-                                remaining.add(deployedFolder);
-                                reloadSpringContext = true;
-                            }
-                        }
-                    }
-
-                    // watch for everything under module's WEB-INF/
-                    File webInf = new File(deployedFolder, "WEB-INF");
-                    if (webInf.exists()) {
-                        for (File file : FileUtils.listFiles(webInf, fileFilter,
-                                TrueFileFilter.INSTANCE)) {
-                            if (!timestamps.containsKey(file.getPath())
-                                    || timestamps.get(file.getPath()) != file.lastModified()) {
-                                timestamps.put(file.getPath(), file.lastModified());
-                                logger.debug("Detected modified resource {}", file.getPath());
-                                remaining.add(deployedFolder);
-                                reloadSpringContext = true;
-                            }
-                        }
-                    }
-
-                    if (!timestamps.containsKey(deployedFolder.getPath())
-                            || timestamps.get(deployedFolder.getPath()) != deployedFolder
-                                    .lastModified()) {
-                        timestamps.put(deployedFolder.getPath(), deployedFolder.lastModified());
-                        logger.debug("Detected modified resource {}", deployedFolder.getPath());
-                        remaining.add(deployedFolder);
-                    }
-                }
-
-            }
-            if (!remaining.isEmpty()) {
-                LinkedHashSet<JahiaTemplatesPackage> remainingPackages = new LinkedHashSet<JahiaTemplatesPackage>();
-                for (File pkgFolder : remaining) {
-                    JahiaTemplatesPackage packageHandler = getPackage(pkgFolder);
-                    if (packageHandler != null) {
-                        remainingPackages.add(packageHandler);
-                    }
-                }
-                remainingPackages.addAll(unresolvedDependencies);
-                for (JahiaTemplatesPackage pack : getOrderedPackages(remainingPackages).values()) {
-                    if (unzippedPackages.contains(pack.getRootFolder())) {
-                        unzippedPackages.remove(pack.getRootFolder());
-                        initialImports.add(pack);
-                    }
-                    unresolvedDependencies.remove(pack);
-                    templatePackageRegistry.register(pack);
-                    changed = true;
-                }
-            }
-
-            if (changed) {
-            	applicationEventPublisher.publishEvent(new TemplatePackageRedeployedEvent(TemplatePackageDeployer.class.getName()));
-            }
-            if (reloadSpringContext) {
-                // reload the Spring application context for modules
-                templatePackageRegistry.resetBeanModules();
-                contextLoader.reload();
-                if (SpringContextSingleton.getInstance().getModuleContext() != null) {
-                    Map map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
-                            JahiaAfterInitializationService.class);
-                    for (Object o : map.values()) {
-                        JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                        try {
-                            initializationService.initAfterAllServicesAreStarted();
-                        } catch (JahiaInitializationException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    private static final PathFilter TEMPLATE_FILTER = new ExclusionWildcardFilter("WEB-INF/web.xml", "META-INF/maven/*");
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageDeployer.class);
-
->>>>>>> .merge-right.r46717
     private TemplatePackageRegistry templatePackageRegistry;
-<<<<<<< .working
     private ComponentRegistry componentRegistry;
-=======
-
-    private ImportExportService importExportService;
->>>>>>> .merge-right.r46717
 
     private ImportExportBaseService importExportService;
 
@@ -306,36 +115,7 @@ public class TemplatePackageDeployer {
                         }
                     }
 
-<<<<<<< .working
                     return null;
-=======
-        private Map<String,String> copiedFiles = new TreeMap<String,String>();
-        private File referenceDir;
-        private File sourceDir;
-        private File destDir;
-        private String basePath;
-
-        public TracingFileFilter(File sourceDir, File destDir, File referenceDir) {
-            this.sourceDir = sourceDir;
-            this.destDir = destDir;
-            this.referenceDir = referenceDir;
-        }
-
-        public TracingFileFilter(File sourceDir, File destDir, File referenceDir, String basePath) {
-            this(sourceDir, destDir, referenceDir);
-            this.basePath = basePath;
-        }
-
-        public boolean accept(File file) {
-            String sourceDirAbsPath = sourceDir.getAbsolutePath() + File.separator;
-            if (file.getAbsolutePath().startsWith(sourceDirAbsPath)) {
-                String fileRelativePath = file.getAbsolutePath().substring(sourceDirAbsPath.length());
-                String fileDestPath = destDir.getAbsolutePath() + File.separator + fileRelativePath;
-                String referenceDirPath = referenceDir.getAbsolutePath() + File.separator;
-                String referencePath = fileRelativePath;
-                if (file.getAbsolutePath().startsWith(referenceDirPath)) {
-                    referencePath = file.getAbsolutePath().substring(referenceDirPath.length());
->>>>>>> .merge-right.r46717
                 }
             });
         } catch (RepositoryException e) {
@@ -431,7 +211,6 @@ public class TemplatePackageDeployer {
         session.save();
     }
 
-<<<<<<< .working
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
         String modulePath = "/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion();
         if (session.nodeExists(modulePath)) {
@@ -442,24 +221,6 @@ public class TemplatePackageDeployer {
                 if (!next.isNodeType("jnt:versionInfo") && !next.isNodeType("jnt:moduleVersionFolder")) {
                     next.remove();
                 }
-=======
-    private void resetModuleAttributes(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
-        JCRNodeWrapper modules = session.getNode("/templateSets");
-        JCRNodeWrapper m = modules.getNode(pack.getRootFolder());
-        m.setProperty("j:title", pack.getName());
-        m.setProperty("j:installedModules", new Value[] { session.getValueFactory().createValue(pack.getFileName())});
-        if (pack.getModuleType() != null) {
-            m.setProperty("j:siteType",pack.getModuleType());
-        }
-        List<Value> l = new ArrayList<Value>();
-        for (String d : pack.getDepends()) {
-            if (templatePackageRegistry.lookup(d) != null) {
-                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookup(d).getFileName()));
-            } else if (templatePackageRegistry.lookupByFileName(d) != null) {
-                l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getFileName()));
-            } else {
-                logger.warn("cannot find dependency " + d + " for package '" + pack.getName() + "'");
->>>>>>> .merge-right.r46717
             }
             session.save();
         }
@@ -583,21 +344,7 @@ public class TemplatePackageDeployer {
                     }
                 }
             }
-<<<<<<< .working
             moduleNode.setProperty("j:languages", langs.toArray(new String[langs.size()]));
-=======
-            if (newRemaining.equals(remaining)) {
-                String str = "";
-                for (JahiaTemplatesPackage item : newRemaining) {
-                    unresolvedDependencies.add(item);
-                    str += item.getName() + ",";
-                }
-                logger.error("Cannot deploy packages " + str + " unresolved dependencies {}", Arrays.toString(newRemaining.toArray()));
-                break;
-            } else {
-                remaining = newRemaining;
-            }
->>>>>>> .merge-right.r46717
         }
     }
 

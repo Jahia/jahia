@@ -11,7 +11,7 @@
     <uri>http://www.jahia.org/tags/templateLib</uri>
     <tag>
         <description>
-            Tag is used to add parameters to the parent tag, that implements ParamParent, e.g. 'include' or 'module' tags
+            Tag used to add parameters to the parent tag, that implements ParamParent, e.g. 'include' or 'module' tags
         </description>
 	    <name>param</name>
 	    <tag-class>org.apache.taglibs.standard.tag.rt.core.ParamTag</tag-class>
@@ -31,7 +31,7 @@
     </tag>
 
     <tag>
-        <description>Includes a node as a module into the page. The node to display is determined either by nodeName, contentBeanName, path or node attribute. Only one these attributes must be specified.
+        <description>Includes a node as a sub fragment into the page. The node to display is determined either by nodeName, contentBeanName, path or node attribute. Only one from these attributes must be specified.
             templateType / template attributes determine the way the node is rendered.
         </description>
         <name>module</name>
@@ -44,31 +44,31 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Name of the node attribute to be found in page context</description>
+            <description>Name of the variable that exposes the node in the page context</description>
             <name>nodeName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Relative or absolute path to the node to include</description>
+            <description>Relative (to the current node) or absolute path to the node to include</description>
             <name>path</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <description>The output type to use. By default, inherited from parent fragment, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The default view used for displaying the node. Can be overriden with template of the node itself.</description>
+            <description>The view used to display the node. Overrides the view defined on the node itself (layout tab in edit mode), which is used when this attribute is not set.</description>
             <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
+            <description>Enables or disables edition of this content in edit mode. Mainly used for absolute or references.</description>
             <name>editable</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -100,13 +100,13 @@
         <tag-class>org.jahia.taglibs.template.include.IncludeTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <description>The output type to use. By default, inherited from parent fragment, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
+            <description>The view used to display the node. Overrides the view defined on the node itself (layout tab in edit mode), which is used when this attribute is not set.</description>
             <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -145,11 +145,11 @@
         </attribute>
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
-   
+
 
     <!-- layout manager -->
     <tag>
-        <description>create html struture for layout manager.</description>
+        <description>Creates the HTML structure for layout manager.</description>
         <name>layoutManagerArea</name>
         <tag-class>org.jahia.taglibs.template.layoutmanager.LayoutManagerAreaTag</tag-class>
         <body-content>JSP</body-content>
@@ -185,14 +185,14 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Name of the template used for the rendering</description>
+            <description>Name of the output type (html, xml, ...) used for the rendering</description>
             <name>view</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
-        <description>Add some resources to the head tag of the html.
+        <description>Add some resources to the head tag of the HTML page.
         </description>
         <name>addResources</name>
         <tag-class>org.jahia.taglibs.template.include.AddResourcesTag</tag-class>
@@ -201,7 +201,7 @@
             <description>
             	Type of the resources (will define where to find (in css direcory for css, in javascript directory for javascript).
             	If not set the content of the tag body will be used as the asset itself and
-            	the resources attribute can be left empty. 
+            	the resources attribute can be left empty.
             </description>
             <name>type</name>
             <required>false</required>
@@ -209,9 +209,9 @@
         </attribute>
         <attribute>
             <description>
-            	The list of resources they will be included in the define order.
+            	The list of resources they will be included in the defined order.
             	If the tag body is not empty, it will be used as the asset itself and
-            	the resources attribute can be left empty. 
+            	the resources attribute can be left empty.
            	</description>
             <name>resources</name>
             <required>false</required>
@@ -219,6 +219,7 @@
         </attribute>
         <attribute>
             <description>
+<<<<<<< .working
                 For css resource type, this attribute specify the relationship type of the link
             </description>
             <name>rel</name>
@@ -228,6 +229,9 @@
         <attribute>
             <description>
             	For css resource type, this attribute specify the media on which the css will be applied
+=======
+            	For css resource type, this attribute specifies the media (or medias, comma separated) on which the css will be applied.
+>>>>>>> .merge-right.r46717
             </description>
             <name>media</name>
             <required>false</required>
@@ -250,7 +254,7 @@
         </attribute>
         <attribute>
             <description>
-                An optional title value for this asset (in case of a link). 
+                An optional title value for this asset (in case of a link).
             </description>
             <name>title</name>
             <required>false</required>
@@ -307,7 +311,7 @@
             <name>sizeNotExact</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>id of current pagination</description>
             <name>id</name>
@@ -329,31 +333,31 @@
     </tag>
 
     <tag>
-        <description>Define an area for containing sub modules.
+        <description>Defines an area for containing sub contents.
         </description>
         <name>list</name>
         <tag-class>org.jahia.taglibs.template.include.ListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Relative or absolute path to the node to include</description>
+            <description>Relative (to the current node) or absolute path to the node to include</description>
             <name>path</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <description>The output type to use. By default, inherited from parent fragment, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
+            <description>The view used to display the node. Overrides the view defined on the node itself (layout tab in edit mode), which is used when this attribute is not set.</description>
             <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
+            <description>Enables or disables edition of this content in edit mode. Mainly used for absolute or references.</description>
             <name>editable</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -379,19 +383,20 @@
     </tag>
 
     <tag>
-        <description>Define an area for containing sub modules.
+        <description>Define an area for containing sub content.
         </description>
         <name>area</name>
         <tag-class>org.jahia.taglibs.template.include.AreaTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Relative or absolute path to the node to include</description>
+            <description>Relative (to the current node) or absolute path to the node to include</description>
             <name>path</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Type of module, area is the default. Set to absoluteArea for absolute.</description>
+            <description>Defines where the related storage list is located, area (default) for a local list (i.e. stored as a subnode of the current main resource),
+                absoluteArea for absolute.</description>
             <name>moduleType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -403,19 +408,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <description>The output type to use. By default, inherited from parent fragment, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
+            <description>The view used to display the node. Overrides the view defined on the node itself (layout tab in edit mode), which is used when this attribute is not set.</description>
             <name>view</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
+            <description>Enables or disables edition of this content in edit mode. Mainly used for absolute or references.</description>
             <name>editable</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -500,14 +505,14 @@
         <tag-class>org.jahia.taglibs.template.TokenizedFormTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Disable XSS filtering (since Jahia 6.7). [false]</description>
+            <description>Disable XSS filtering (since Jahia 6.6.1.7). [false]</description>
             <name>disableXSSFiltering</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
-            <description>Disable XSS filtering (since Jahia 6.7). [false]</description>
+            <description>Allows to submit several times the same token (since Jahia 6.6.1.7). [false]</description>
             <name>allowsMultipleSubmits</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -581,14 +586,14 @@
             <name>paramIncludeRegex</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>   
+        </attribute>
         <attribute>
             <description>If set to true the parameter from current request will also be used for the query string of the created url. [false]</description>
             <name>useRequestParams</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
-        </attribute>        
+        </attribute>
     </tag>
     <tag-file>
     	<name>displayPagination</name>

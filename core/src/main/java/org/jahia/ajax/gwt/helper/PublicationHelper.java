@@ -500,7 +500,7 @@ public class PublicationHelper {
      * Publish a node to live workspace immediately.
      *
      *
-     * @param uuids     uuids of the nodes to unpublish
+     * @param uuids     uuids of the nodes to publish
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */

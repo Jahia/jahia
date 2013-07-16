@@ -91,6 +91,7 @@
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
+    text-shadow: none;
 }
 
 .x-panel-header-listmodule {
@@ -122,6 +123,7 @@
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
+    text-shadow: none;
 }
 
 .x-panel-header-areamodule {
@@ -153,6 +155,7 @@
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
+    text-shadow: none;
 }
 
 .x-panel-header-text-areamodule {
@@ -165,13 +168,13 @@
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    background-color: #cc6666;
+    background-color: #cc0000;
     background-repeat: repeat-x;
-    border-color: #993333;
+    border-color: #990000;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #EAEAEA;
+    color: #fff;
     cursor: pointer;
     display:block;
     font-size: 10px;
@@ -188,6 +191,7 @@
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
+    text-shadow: none;
 }
 .x-panel-header-text-absoluteAreamodule {
 
@@ -222,6 +226,7 @@
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
+    text-shadow: none;
 }
 .hover-module > .x-panel-header-areamodule, .hover-module > .x-panel-header-listmodule, .hover-module > .x-panel-header-absoluteAreamodule {
     background-color: #2e8ae5;

@@ -107,7 +107,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #333333;
+    color: #333333 !important;
     cursor: pointer;
     display:block;
     font-size: 11px;
@@ -138,7 +138,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #333 ;
+    color: #333 !important;
     cursor: pointer;
     display:block;
     font-size: 11px;
@@ -174,7 +174,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #fff;
+    color: #fff !important;
     cursor: pointer;
     display:block;
     font-size: 10px;
@@ -209,7 +209,7 @@
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #EAEAEA ;
+    color: #EAEAEA !important;
     cursor: pointer;
     display:block;
     font-size: 10px;
@@ -262,7 +262,7 @@ button.button-placeholder, div.button-placeholder {
     border-style: solid;
     border-width: 1px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.075);
-    color: #333;
+    color: #333 !important;
     border-radius: 3px 3px 3px 3px;
     cursor: pointer;
     display: inline-block;
@@ -281,7 +281,7 @@ button.button-placeholder, div.button-placeholder {
     -o-transition: all 0.5s ease ;
     -ms-transition: all 0.5s ease ;
     transition: all 0.5s ease ;
-
+    text-shadow: none;
 
 }
 button.button-placeholder:hover,  div.button-placeholder:hover {

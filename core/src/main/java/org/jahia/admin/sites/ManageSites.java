@@ -1941,11 +1941,11 @@ public class ManageSites extends AbstractAdministrationModule {
                                             JCRSessionFactory.getInstance().getCurrentUserSession(),
                                             zis2, "application/xml", installedModules);
                             if (!validationResults.isSuccessful()) {
-                                logger.error("Failed Import {}/{} validated in {} ms: {}",
+                                logger.error("Validation failed for {}/{} (validated in {}ms): {}",
                                         new String[]{filename, z.getName(), String.valueOf(
                                                 (System.currentTimeMillis() - timer)), validationResults.toString()});
                             } else {
-                                logger.info("Successful Import {}/{} validated in {} ms: {}",
+                                logger.info("Validation passed for {}/{} (validated in {} ms): {}",
                                         new String[]{filename, z.getName(), String.valueOf(
                                                 (System.currentTimeMillis() - timer)), validationResults.toString()});
                             }

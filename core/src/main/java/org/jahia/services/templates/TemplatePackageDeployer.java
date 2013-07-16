@@ -115,7 +115,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                 logger.debug("Monitoring {} for changes", pkgFile.toString());
                 timestamps.put(pkgFile.getPath(), pkgFile.lastModified());
             }
-            
+
             if (settingsBean.isDevelopmentMode()) {
                 // list first level folders under /modules
                 for (File deployedFolder : deployedTemplatesFolder.listFiles((FileFilter) FileFilterUtils.directoryFileFilter())) {
@@ -283,9 +283,9 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     private static final PathFilter TEMPLATE_FILTER = new ExclusionWildcardFilter("WEB-INF/web.xml", "META-INF/maven/*");
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageDeployer.class);
-    
+
     private TemplatePackageRegistry templatePackageRegistry;
-    
+
     private ImportExportService importExportService;
 
     private SettingsBean settingsBean;
@@ -396,7 +396,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             this.destDir = destDir;
             this.referenceDir = referenceDir;
         }
-        
+
         public TracingFileFilter(File sourceDir, File destDir, File referenceDir, String basePath) {
             this(sourceDir, destDir, referenceDir);
             this.basePath = basePath;
@@ -682,7 +682,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
             } else if (templatePackageRegistry.lookupByFileName(d) != null) {
                 l.add(session.getValueFactory().createValue(templatePackageRegistry.lookupByFileName(d).getFileName()));
             } else {
-                logger.warn("cannot found dependency " + d + " for package '" + pack.getName() + "'");
+                logger.warn("cannot find dependency " + d + " for package '" + pack.getName() + "'");
             }
         }
         Value[] values = new Value[pack.getDepends().size()];
@@ -840,7 +840,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
                     unresolvedDependencies.add(item);
                     str += item.getName() + ",";
                 }
-                logger.error("Cannot deploy packages " + str + " unresolved dependencies");
+                logger.error("Cannot deploy packages " + str + " unresolved dependencies {}", Arrays.toString(newRemaining.toArray()));
                 break;
             } else {
                 remaining = newRemaining;

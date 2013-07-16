@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * Delete a site.
+ * Creates a site.
  */
 public class AdminCreateSiteAction extends AdminAction {
     private static Logger logger = LoggerFactory.getLogger(AdminCreateSiteAction.class);

@@ -136,7 +136,9 @@ public interface JahiaContentManagementServiceAsync {
 
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
 
-    void releaseModule(String moduleName, String nextVersion, AsyncCallback<RpcMap> asyncCallback);
+    void releaseModule(String moduleName, GWTModuleReleaseInfo releaseInfo, AsyncCallback<RpcMap> asyncCallback);
+
+    void getInfoForModuleRelease(String moduleName, AsyncCallback<GWTModuleReleaseInfo> asyncCallback);
 
     void getAbsolutePath(String path, AsyncCallback<String> async);
 
@@ -318,6 +320,9 @@ public interface JahiaContentManagementServiceAsync {
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
     void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void setDistributionServerForModule(String module, String repositoryId, String repositoryUrl,
+            AsyncCallback<GWTModuleReleaseInfo> async);
 
     void setLock(List<String> paths, boolean locked, AsyncCallback async);
 

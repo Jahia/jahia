@@ -70,6 +70,7 @@ import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -77,19 +78,17 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -102,8 +101,6 @@ import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -166,6 +163,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private MavenCli cli = new MavenCli(new ClassWorld("plexus.core", getClass().getClassLoader()));
 
     private SourceControlFactory sourceControlFactory;
+    
+    private ModuleInstallationHelper moduleInstallationHelper;
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -653,9 +652,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return false;
     }
 
-    public File releaseModule(String moduleName, String nextVersion, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
+    public File releaseModule(String moduleName, ModuleReleaseInfo releaseInfo, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileName(moduleName);
-        if (pack.getVersion().isSnapshot() && nextVersion != null) {
+        if (pack.getVersion().isSnapshot() && releaseInfo != null && releaseInfo.getNextVersion() != null) {
             File sources = getSources(pack, session);
             if (sources != null) {
                 JCRNodeWrapper vi = session.getNode("/modules/" + pack.getRootFolderWithVersion() + "/j:versionInfo");
@@ -667,16 +666,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     if (scm != null) {
                         scm.update();
                         scm.commit("Release");
-                        return releaseModule(pack, nextVersion, sources, vi.getProperty("j:scmURI").getString(), session);
+                        return releaseModule(pack, releaseInfo, sources, vi.getProperty("j:scmURI").getString(), session);
                     }
                 }
-                return releaseModule(pack, nextVersion, sources, null, session);
+                return releaseModule(pack, releaseInfo, sources, null, session);
             }
         }
         return null;
     }
 
-    public File releaseModule(final JahiaTemplatesPackage module, String nextVersion, File sources, String scmUrl, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
+    public File releaseModule(final JahiaTemplatesPackage module, ModuleReleaseInfo releaseInfo, File sources, String scmUrl, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         File pom = new File(sources, "pom.xml");
         Model model = null;
         try {
@@ -692,7 +691,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         File generatedWar;
         try {
-            generatedWar = releaseModuleInternal(model, lastVersion, releaseVersion, nextVersion, sources, scmUrl);
+            generatedWar = releaseModuleInternal(model, lastVersion, releaseVersion, releaseInfo, sources, scmUrl);
         } catch (XmlPullParserException e) {
             throw new IOException(e);
         }
@@ -718,6 +717,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             undeployModule(module);
         }
+        
+        if (releaseInfo.isPublishToMaven() && releaseInfo.isPublishToCatalog()) {
+            publishToCatalog(module, releaseVersion, releaseInfo, model);
+        }
+
+        return generatedWar;
+    }
+
+    private void publishToCatalog(final JahiaTemplatesPackage module, String releaseVersion,
+            ModuleReleaseInfo releaseInfo, Model model) {
         Map<String, String> forgeParams = new HashMap<String, String>();
         // module
         forgeParams.put("moduleName", module.getName());
@@ -746,18 +755,41 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         forgeParams.put("activeVersion", "true");
 
         forgeParams.put("versionNumber", releaseVersion);
-        forgeParams.put("url", "http://nexus/released/" + module.getName() + "-" + releaseVersion + ".jar");
+        String url = computeModuleJarUrl(releaseVersion, releaseInfo, model);
+        forgeParams.put("url", url);
 
-        // Todo : generate url
-        String url = "http://localhost:8080" + SettingsBean.getInstance().getServletContext().getContextPath()
-                + "/sites/forge/contents/forge-modules-repository.createModule.do";
-
-        createForgeModule(url, forgeParams);
-
-        return generatedWar;
+        createForgeModule(releaseInfo.getCatalogUrl(), releaseInfo.getCatalogUsername(),
+                releaseInfo.getCatalogPassword(), forgeParams);
     }
     
-    private File releaseModuleInternal(Model model, String lastVersion, String releaseVersion, String nextVersion, File sources, String scmUrl) throws IOException, XmlPullParserException {
+    private String computeModuleJarUrl(String releaseVersion, ModuleReleaseInfo releaseInfo, Model model) {
+        StringBuilder url = new StringBuilder(64);
+        url.append(releaseInfo.getRepositoryUrl());
+        if (!releaseInfo.getRepositoryUrl().endsWith("/")) {
+            url.append("/");
+        }
+        String groupId = model.getGroupId();
+        if (groupId == null && model.getParent() != null) {
+            groupId = model.getParent().getGroupId();
+        }
+        url.append(StringUtils.replace(groupId, ".", "/"));
+        url.append("/");
+        url.append(model.getArtifactId());
+        url.append("/");
+        url.append(releaseVersion);
+        url.append("/");
+        url.append(model.getArtifactId());
+        url.append("-");
+        url.append(releaseVersion);
+        url.append(".");
+        String packaging = model.getPackaging();
+        url.append(packaging == null || packaging.equals("bundle") ? "jar" : packaging);
+
+        return url.toString();
+    }
+
+    private File releaseModuleInternal(Model model, String lastVersion, String releaseVersion, ModuleReleaseInfo releaseInfo, File sources, String scmUrl) throws IOException, XmlPullParserException {
+        String nextVersion = releaseInfo.getNextVersion();
         String artifactId = model.getArtifactId();
         File pom = new File(sources, "pom.xml");
         File generatedWar = null;
@@ -765,18 +797,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             // release using maven-release-plugin
             String tag = StringUtils.replace(releaseVersion, ".", "_");
 
-            String M2_HOME = System.getenv().get("M2_HOME") != null ? System.getenv().get("M2_HOME")
-                    : "/usr/share/maven";
-            if (!new File(M2_HOME).exists()) {
-                throw new IOException("Maven home not found, please set your M2_HOME property");
-            }
-            String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + M2_HOME, "-Dtag=" + tag,
+            String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
                     "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
                     "-DignoreSnapshots=true", "-Dgoals=install", "--batch-mode" };
             int ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
             if (ret > 0) {
                 cli.doMain(new String[] { "release:rollback" }, sources.getPath(), System.out, System.err);
-                throw new IOException("Maven invokation failed");
+                throw new IOException("Maven invocation failed");
             }
 
             File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".war");
@@ -799,11 +826,31 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             PomUtils.updateVersion(pom, releaseVersion);
 
             generatedWar = compileModule(sources).getFile();
+            
+            if (releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryId() != null
+                    && releaseInfo.getRepositoryUrl() != null) {
+                // deploy artifacts to Maven distribution server
+                int ret = cli.doMain(new String[] { "deploy", "-Dmaven.home=" + getMavenHome() },
+                        sources.getPath(), System.out, System.err);
+                if (ret > 0) {
+                    logger.warn(
+                            "mvn deploy:deploy failed for module {}. Please see server console output for details.",
+                            sources.getPath());
+                }
+            }
 
             PomUtils.updateVersion(pom, nextVersion);
         }
 
         return generatedWar;
+    }
+
+    private String getMavenHome() throws IOException {
+        String home = System.getenv().get("M2_HOME") != null ? System.getenv().get("M2_HOME") : "/usr/share/maven";
+        if (!new File(home).exists()) {
+            throw new IOException("Maven home not found, please set your M2_HOME environment variable");
+        }
+        return home;
     }
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
@@ -1162,74 +1209,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void autoInstallModulesToSites(JahiaTemplatesPackage module, JCRSessionWrapper session)
             throws RepositoryException {
-        Set<String> autoInstalled = new HashSet<String>();
-        if (StringUtils.isNotBlank(module.getAutoDeployOnSite())) {
-            if ("system".equals(module.getAutoDeployOnSite())) {
-                if (session.nodeExists("/sites/systemsite")) {
-                    installModule(module, "/sites/systemsite", session);
-                    autoInstalled.add("systemsite");
-                }
-            } else if ("all".equals(module.getAutoDeployOnSite())) {
-                if (session.nodeExists("/sites/systemsite")) {
-                    installModuleOnAllSites(module, session, null);
-                    return;
-                }
-            }
-        }
-
-        List<JCRNodeWrapper> sites = new ArrayList<JCRNodeWrapper>();
-        NodeIterator ni = session.getNode("/sites").getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            if (autoInstalled.contains(next.getName())) {
-                continue;
-            }
-            if (next.hasProperty("j:installedModules")) {
-                Value[] v = next.getProperty("j:installedModules").getValues();
-                for (Value value : v) {
-                    if (value.getString().equals(module.getRootFolder())) {
-                        sites.add(next);
-                    }
-                }
-            }
-        }
-        if (!sites.isEmpty()) {
-            installModuleOnAllSites(module, session, sites);
-        }
+        moduleInstallationHelper.autoInstallModulesToSites(module, session);
     }
 
     public void installModuleOnAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
-        if (sites == null) {
-            sites = new ArrayList<JCRNodeWrapper>();
-            NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                sites.add(next);
-            }
-        }
-
-        JCRNodeWrapper tpl = sessionWrapper.getNode("/modules/" + module.getRootFolderWithVersion());
-        for (JCRNodeWrapper site : sites) {
-            if (tpl.hasProperty("j:moduleType") && MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:moduleType").getString())) {
-                if (tpl.getName().equals(site.getResolveSite().getTemplateFolder())) {
-                    installModule(module, site.getPath(), sessionWrapper);
-                }
-            } else {
-                installModule(module, site.getPath(), sessionWrapper);
-            }
-        }
+        moduleInstallationHelper.installModuleOnAllSites(module, sessionWrapper, sites);
     }
 
     public void installModule(final String module, final String sitePath, String username)
             throws RepositoryException {
-        JCRTemplate.getInstance()
-                .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        installModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
-                        session.save();
-                        return null;
-                    }
-                });
+        moduleInstallationHelper.installModule(module, sitePath, username);
     }
 
     public void installModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
@@ -1237,255 +1226,23 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        if (!sitePath.startsWith("/sites/")) {
-            return;
-        }
-        final JCRSiteNode siteNode = (JCRSiteNode) session.getNode(sitePath);
-
-        HashMap<String, List<String>> references = new HashMap<String, List<String>>();
-        for (JahiaTemplatesPackage module : modules) {
-            logger.info("Installing " + module.getName() + " on " + sitePath);
-            JCRNodeWrapper moduleNode = null;
-            try {
-                moduleNode = session.getNode("/modules/" + module.getRootFolder());
-
-                String moduleName = moduleNode.getName();
-
-                if (moduleNode.isNodeType("jnt:module")) {
-                    moduleNode = moduleNode.getNode(module.getVersion().toString());
-                }
-                synchro(moduleNode, siteNode, session, moduleName, references);
-
-                ReferencesHelper.resolveCrossReferences(session, references);
-
-                addDependencyValue(moduleNode.getParent(), siteNode, "j:installedModules");
-                logger.info("Done installing " + module.getName() + " on " + sitePath);
-            } catch (PathNotFoundException e) {
-                logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
-                        module, sitePath);
-                return;
-            }
-
-        }
-
-        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath,
-                JahiaTemplateManagerService.class.getName()));
-    }
-
-    private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName) throws RepositoryException {
-//        Version v = templatePackageRegistry.lookupByFileName(originalNode.getName()).getLastVersion();
-        String newStringValue = originalNode.getName();
-        if (destinationNode.hasProperty(propertyName)) {
-            JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
-            Value[] values = installedModules.getValues();
-            for (Value value : values) {
-                if (value.getString().equals(originalNode.getName())) {
-                    return true;
-                }
-            }
-
-            destinationNode.getSession().checkout(destinationNode);
-            installedModules.addValue(originalNode.getName());
-        } else {
-            destinationNode.setProperty(propertyName, new String[]{newStringValue});
-        }
-        return false;
+        moduleInstallationHelper.installModules(modules, sitePath, session);
     }
 
     public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session, String moduleName,
                         Map<String, List<String>> references) throws RepositoryException {
-        if (source.isNodeType("jnt:moduleVersion")) {
-            session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
-            NodeIterator ni = source.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder")) {
-                    continue;
-                }
-                JCRNodeWrapper node;
-                boolean newNode = false;
-                String childName = child.getName();
-                if (destinationNode.hasNode(childName)) {
-                    node = destinationNode.getNode(childName);
-                } else {
-                    session.checkout(destinationNode);
-                    String primaryNodeTypeName = child.getPrimaryNodeTypeName();
-                    node = destinationNode.addNode(childName, primaryNodeTypeName);
-                    newNode = true;
-                }
-
-                if (!child.isNodeType("jnt:templatesFolder") && !child.isNodeType("jnt:componentFolder")) {
-                    templatesSynchro(child, node, session, references, newNode, true);
-                }
-            }
-        }
+        moduleInstallationHelper.synchro(source, destinationNode, session, moduleName, references);
     }
 
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
                                  JCRSessionWrapper session, Map<String, List<String>> references, boolean doUpdate, boolean doChildren)
             throws RepositoryException {
-        if ("j:acl".equals(destinationNode.getName())) {
-            return;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Synchronizing node : " + destinationNode.getPath() + ", update=" + doUpdate + "/children=" + doChildren);
-        }
-
-        // Set for jnt:template nodes : declares if the template was originally created with that module, false otherwise
-//        boolean isCurrentModule = (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) || (destinationNode.hasProperty("j:moduleTemplate") && destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
-
-        session.checkout(destinationNode);
-
-        final Map<String, String> uuidMapping = session.getUuidMapping();
-
-        ExtendedNodeType[] mixin = source.getMixinNodeTypes();
-        List<ExtendedNodeType> destMixin = Arrays.asList(destinationNode.getMixinNodeTypes());
-        for (ExtendedNodeType aMixin : mixin) {
-            if (!destMixin.contains(aMixin)) {
-                destinationNode.addMixin(aMixin.getName());
-            }
-        }
-
-        uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
-
-        List<String> names = new ArrayList<String>();
-
-        if (doUpdate) {
-            if (source.hasProperty(Constants.JCR_LANGUAGE) && (!destinationNode.hasProperty(Constants.JCR_LANGUAGE) ||
-                    (!destinationNode.getProperty(Constants.JCR_LANGUAGE).getString().equals(source.getProperty(Constants.JCR_LANGUAGE).getString())))) {
-                destinationNode.setProperty(Constants.JCR_LANGUAGE, source.getProperty(Constants.JCR_LANGUAGE).getString());
-            }
-
-            PropertyIterator props = source.getProperties();
-
-            while (props.hasNext()) {
-                Property property = props.nextProperty();
-                names.add(property.getName());
-                try {
-                    if (!property.getDefinition().isProtected() &&
-                            !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
-                        if (property.getType() == PropertyType.REFERENCE ||
-                                property.getType() == PropertyType.WEAKREFERENCE) {
-                            if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                                if (!destinationNode.hasProperty(property.getName()) ||
-                                        !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
-                                    destinationNode.setProperty(property.getName(), new Value[0]);
-                                    Value[] values = property.getValues();
-                                    for (Value value : values) {
-                                        keepReference(destinationNode, references, property, value.getString());
-                                    }
-                                }
-                            } else {
-                                if (!destinationNode.hasProperty(property.getName()) ||
-                                        !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
-                                    keepReference(destinationNode, references, property, property.getValue().getString());
-                                }
-                            }
-                        } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                            if (!destinationNode.hasProperty(property.getName()) ||
-                                    !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
-                                destinationNode.setProperty(property.getName(), property.getValues());
-                            }
-                        } else if (!destinationNode.hasProperty(property.getName()) ||
-                                !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
-                            destinationNode.setProperty(property.getName(), property.getValue());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
-                }
-            }
-
-            PropertyIterator pi = destinationNode.getProperties();
-            while (pi.hasNext()) {
-                JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
-                if (!oldChild.getDefinition().isProtected()) {
-                    if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published") && !oldChild.getName().equals(Constants.JAHIA_MODULE_TEMPLATE) && !oldChild.getName().equals("j:sourceTemplate")) {
-                        oldChild.remove();
-                    }
-                }
-            }
-
-            mixin = destinationNode.getMixinNodeTypes();
-            for (NodeType aMixin : mixin) {
-                if (!source.isNodeType(aMixin.getName())) {
-                    destinationNode.removeMixin(aMixin.getName());
-                }
-            }
-        }
-
-        NodeIterator ni = source.getNodes();
-
-        names.clear();
-
-        while (ni.hasNext()) {
-            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            boolean isPageNode = child.isNodeType("jnt:page");
-
-            if (doChildren) {
-                names.add(child.getName());
-
-                boolean newNode = false;
-                JCRNodeWrapper node = null;
-                if (destinationNode.hasNode(child.getName())) {
-                    node = destinationNode.getNode(child.getName());
-                } else if (node == null) {
-                    node = destinationNode.addNode(child.getName(), child.getPrimaryNodeTypeName());
-                    newNode = true;
-                }
-                templatesSynchro(child, node, session, references, newNode, doChildren && (!isPageNode || newNode));
-            }
-        }
-        if (doUpdate) {
-            List<String> destNames = new ArrayList<String>();
-            ni = destinationNode.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
-                destNames.add(oldChild.getName());
-            }
-            if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes() && !names.equals(destNames)) {
-                Collections.reverse(names);
-                String previous = null;
-                for (String name : names) {
-                    destinationNode.orderBefore(name, previous);
-                    previous = name;
-                }
-            }
-        }
-    }
-
-    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property,
-                               String value) throws RepositoryException {
-        if (!references.containsKey(value)) {
-            references.put(value, new ArrayList<String>());
-        }
-        references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
+        moduleInstallationHelper.templatesSynchro(source, destinationNode, session, references, doUpdate, doChildren);
     }
 
     public void uninstallModule(final String module, final String sitePath, String username, final boolean purgeAllContent)
             throws RepositoryException {
-        JCRTemplate.getInstance()
-                .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        uninstallModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
-                        if (purgeAllContent) {
-                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
-                        }
-                        session.save();
-                        return null;
-                    }
-                });
-        if (purgeAllContent) {
-            JCRTemplate.getInstance()
-                    .doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
-                            session.save();
-                            return null;
-                        }
-                    });
-        }
+        moduleInstallationHelper.uninstallModule(module, sitePath, username, purgeAllContent);
     }
 
     public void uninstallModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
@@ -1494,43 +1251,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
     public void uninstallModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        if (!sitePath.startsWith("/sites/")) {
-            return;
-        }
-        final JCRSiteNode siteNode = (JCRSiteNode) session.getNode(sitePath);
-
-        for (JahiaTemplatesPackage module : modules) {
-            if (uninstallModule(sitePath, session, siteNode, module)) {
-                return;
-            }
-        }
-
-        applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(sitePath,
-                JahiaTemplateManagerService.class.getName()));
+        moduleInstallationHelper.uninstallModules(modules, sitePath, session);
     }
 
     public void uninstallModulesFromAllSites(final String module, final String username, final boolean purgeAllContent) throws RepositoryException {
-        JCRTemplate.getInstance()
-                .doExecuteWithSystemSession(username, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        uninstallModulesFromAllSites(templatePackageRegistry.lookupByFileName(module), session);
-                        if (purgeAllContent) {
-                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), "/", session);
-                        }
-                        session.save();
-                        return null;
-                    }
-                });
-        if (purgeAllContent) {
-            JCRTemplate.getInstance()
-                    .doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), "/", session);
-                            session.save();
-                            return null;
-                        }
-                    });
-        }
+        moduleInstallationHelper.uninstallModulesFromAllSites(module, username, purgeAllContent);
     }
 
     public void uninstallModulesFromAllSites(final JahiaTemplatesPackage module, final JCRSessionWrapper session) throws RepositoryException {
@@ -1538,72 +1263,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void uninstallModulesFromAllSites(final List<JahiaTemplatesPackage> modules, final JCRSessionWrapper session) throws RepositoryException {
-        List<JCRSiteNode> sitesList = siteService.getSitesNodeList(session);
-        for (JCRSiteNode jahiaSite : sitesList) {
-            for (JahiaTemplatesPackage module : modules) {
-                if (uninstallModule(jahiaSite.getName(), session, jahiaSite, module)) {
-                    return;
-                }
-                applicationEventPublisher.publishEvent(new ModuleDeployedOnSiteEvent(jahiaSite.getName(), JahiaTemplateManagerService.class.getName()));
-            }
-        }
+        moduleInstallationHelper.uninstallModulesFromAllSites(modules, session);
     }
-
-    public void purgeModuleContent(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        QueryManager manager = session.getWorkspace().getQueryManager();
-        for (JahiaTemplatesPackage module : modules) {
-            NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(module.getRootFolder());
-            while (nti.hasNext()) {
-                ExtendedNodeType next = (ExtendedNodeType) nti.next();
-                Query q = manager.createQuery("select * from ['" + next.getName() + "'] as c where isdescendantnode(c,'" + sitePath + "')", Query.JCR_SQL2);
-                try {
-                    NodeIterator ni = q.execute().getNodes();
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.nextNode();
-                        nodeWrapper.remove();
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot remove node", e);
-                }
-            }
-        }
-    }
-
-    private boolean uninstallModule(String sitePath, JCRSessionWrapper session, JCRSiteNode siteNode,
-                                    JahiaTemplatesPackage module) throws RepositoryException {
-        logger.info("Uninstalling " + module.getName() + " on " + sitePath);
-        JCRNodeWrapper moduleNode = null;
-        try {
-            moduleNode = session.getNode("/modules/" + module.getRootFolder());
-
-            String moduleName = moduleNode.getName();
-
-            if (moduleNode.isNodeType("jnt:module")) {
-                moduleNode = moduleNode.getNode(module.getVersion().toString());
-            }
-            /*synchro(moduleNode, siteNode, session, moduleName, references);
-
-            ReferencesHelper.resolveCrossReferences(session, references);*/
-
-            JCRPropertyWrapper installedModules = siteNode.getProperty("j:installedModules");
-            Value toBeRemoved = null;
-            Value[] values = installedModules.getValues();
-            for (Value value : values) {
-                if (value.getString().equals(moduleName)) {
-                    toBeRemoved = value;
-                    break;
-                }
-            }
-            installedModules.removeValue(toBeRemoved);
-            logger.info("Done uninstalling " + module.getName() + " on " + sitePath);
-        } catch (PathNotFoundException e) {
-            logger.warn("Cannot find module for path {}. Skipping deployment to site {}.",
-                    module, sitePath);
-            return true;
-        }
-        return false;
-    }
-
 
     /**
      * Returns a list of all available template packages.
@@ -1940,15 +1601,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * Manage forge
      */
+    protected void createForgeModule(String url, String username, String password, Map<String, String> params) {
+        Map<String, String> headers = new HashMap<String, String>();
 
-    public void createForgeModule(String url,Map<String,String> params) {
-
-        Map<String,String> headers = new HashMap<String, String>();
-
-        headers.put("Authorization", "Basic " + Base64.encode("user1:root1234".getBytes()));
-        headers.put("accept","");
-        String result = httpClientService.executePost(url,params,headers);
-
+        if (username != null && password != null) {
+            headers.put("Authorization", "Basic " + Base64.encode((username + ":" + password).getBytes()));
+        }
+        headers.put("accept", "");
+        String result = httpClientService.executePost(url, params, headers);
     }
 
     public void setHttpClientService(HttpClientService httpClientService) {
@@ -2018,5 +1678,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         public String getVersion() {
             return version;
         }
+    }
+
+    public void setModuleInstallationHelper(ModuleInstallationHelper moduleInstallationHelper) {
+        this.moduleInstallationHelper = moduleInstallationHelper;
     }
 }

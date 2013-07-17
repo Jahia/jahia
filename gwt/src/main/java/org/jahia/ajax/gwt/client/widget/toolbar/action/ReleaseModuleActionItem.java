@@ -40,23 +40,12 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.RpcMap;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.ui.HTML;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -64,65 +53,109 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import java.util.*;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.RpcMap;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.MarginData;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Action item to export and download the current templates set as a war
  */
 public class ReleaseModuleActionItem extends BaseActionItem {
 
-    @Override public void onComponentSelection() {
-        final Window window = new Window();
-        String versionInfo = JahiaGWTParameters.getSiteNode().get("j:versionInfo");
-        window.setHeading(Messages.get("label.releaseWar")+"&nbsp;"+versionInfo+"&nbsp;->&nbsp;"+versionInfo.replace("-SNAPSHOT",""));
-        window.setSize(500, 150);
-        window.setResizable(false);
-        window.setLayout(new FillLayout());
-        window.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        window.setModal(true);
+    private abstract class DistributionServerWindow extends Window {
+        protected abstract void callback(String id, String url);
 
+        @Override
+        protected void onRender(Element parent, int pos) {
+            super.onRender(parent, pos);
 
-        final List<Integer> versionNumbers = JahiaGWTParameters.getSiteNode().get("j:versionNumbers");
-        final FormPanel formPanel = new FormPanel();
-        formPanel.setHeaderVisible(false);
-        final TextField<String> vn = new TextField<String>();
-        vn.setValue(generateVersionNumber(versionNumbers, 1));
-        vn.setFieldLabel(Messages.get("label.nextVersion", "Next iteration version"));
-        formPanel.add(vn);
-        Button b = new Button(Messages.get("label.minorVersion", "Minor version"));
+            setLayout(new FitLayout());
+            setHeading(Messages.get("label.releaseModule.distributionServer", "Distribution server (Maven)"));
+            setModal(true);
+            setWidth(500);
+            setHeight(270);
 
-        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                String s = generateVersionNumber(versionNumbers, 1);
-                vn.setValue(s);
-            }
-        });
-        window.addButton(b);
+            VerticalPanel p = new VerticalPanel();
+            p.add(new Label(Messages.get("label.releaseModule.distributionServer.notProvided",
+                    "No target distribution server configured for this module yet.")));
+            p.add(new HTML("<br/>"));
+            p.add(new Label(Messages.get("label.releaseModule.distributionServer.purpose",
+                    "A target distribution server is a Maven repository,"
+                            + " where built module artifacts (module JAR file)"
+                            + " are pushed to during module release process.")));
+            p.add(new Label(Messages.get("label.releaseModule.distributionServer.authentication",
+                    "If your distribution server requires authentication, please, provide the corresponding"
+                            + " <server/> section in your Maven's settings.xml file.")));
+            p.add(new HTML("<br/>"));
+            p.add(new Label(Messages.get("label.releaseModule.distributionServer.provideNow",
+                    "Would you like to configure the distribution server now?")));
 
-        b = new Button(Messages.get("label.majorVersion", "Major version"));
-        b.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                String s = generateVersionNumber(versionNumbers, 0);
-                vn.setValue(s);
-            }
-        });
-        window.addButton(b);
+            final FormPanel formPanel = new FormPanel();
+            formPanel.setHeaderVisible(false);
+            formPanel.setLabelWidth(50);
+            formPanel.setFieldWidth(380);
+            formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+            formPanel.setBorders(false);
 
-        b = new Button(Messages.get("label.release", "Release"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                if (!vn.getValue().endsWith("-SNAPSHOT")) {
-                    vn.markInvalid(Messages.get("label.snapshotRequired","Working version number must end with -SNAPSHOT"));
-                    return;
+            final TextField<String> tfRepoId = new TextField<String>();
+            tfRepoId.setFieldLabel(Messages.get("label.id", "ID"));
+            tfRepoId.setAllowBlank(false);
+            formPanel.add(tfRepoId);
+
+            final TextField<String> tfRepoUrl = new TextField<String>();
+            tfRepoUrl.setFieldLabel(Messages.get("label.url", "URL"));
+            tfRepoUrl.setAllowBlank(false);
+            formPanel.add(tfRepoUrl);
+
+            final Window w = this;
+            formPanel.addButton(new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    w.hide();
+                    callback(tfRepoId.getValue(), tfRepoUrl.getValue());
                 }
-                window.hide();
-                linker.loading("Releasing module...");
-                HTML html = new HTML("Generating war, please wait ...");
-                window.getButtonBar().setEnabled(false);
-                window.add(html);
+            }));
+            formPanel.addButton(new Button(Messages.get("label.skip", "Skip"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    w.hide();
+                    callback(null, null);
+                }
+            }));
 
-                JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), vn.getValue(), new BaseAsyncCallback<RpcMap>() {
+            p.add(formPanel);
+
+            add(p, new MarginData(5));
+        }
+    }
+
+    private static final long serialVersionUID = 4466321584782980102L;
+
+    protected boolean areModuleSourcesAvailable() {
+        return JahiaGWTParameters.getSiteNode().get("j:sourcesFolder") != null;
+    }
+
+    protected void doRelease(GWTModuleReleaseInfo info, final ReleaseModuleWindow window) {
+        JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), info,
+                new BaseAsyncCallback<RpcMap>() {
+                    public void onApplicationFailure(Throwable caught) {
+                        linker.loaded();
+                        Info.display(
+                                Messages.get("label.error", "Error"),
+                                Messages.get("label.releaseModule.failure", "Module release failed") + ":\n"
+                                        + caught.getMessage());
+                    }
+
                     public void onSuccess(RpcMap result) {
                         linker.loaded();
                         GWTJahiaNode newModule = (GWTJahiaNode) result.get("newModule");
@@ -141,36 +174,14 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         SiteSwitcherActionItem.refreshAllSitesList(linker);
 
                         window.removeAll();
-                        HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + filename + "</a>");
+                        window.setHeight(150);
+                        HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url
+                                + "\" target=\"_new\">" + filename + "</a>");
                         window.add(link);
+                        window.layout();
                         window.show();
                     }
-
-                    public void onApplicationFailure(Throwable caught) {
-                        linker.loaded();
-                        Info.display("Module release failed", caught.getMessage());
-                    }
                 });
-            }
-        });
-        window.addButton(b);
-        window.add(formPanel);
-        window.show();
-    }
-
-    private String generateVersionNumber(List<Integer> orderedVersionNumbers, int index) {
-        List<Integer> newOrderedVersionNumbers = new ArrayList<Integer>(orderedVersionNumbers);
-        newOrderedVersionNumbers.set(index, orderedVersionNumbers.get(index) + 1);
-        for (int i = index+1; i < newOrderedVersionNumbers.size(); i++) {
-            newOrderedVersionNumbers.set(i, Integer.valueOf(0));
-        }
-        String s = "";
-        for (Integer n : newOrderedVersionNumbers) {
-            s += ("." + n);
-        }
-        s = s.substring(1);
-        s += "-SNAPSHOT";
-        return s;
     }
 
     @Override
@@ -182,5 +193,78 @@ public class ReleaseModuleActionItem extends BaseActionItem {
         } else {
             setEnabled(false);
         }
+    }
+
+    @Override
+    public void onComponentSelection() {
+        linker.loading(Messages.get("label.releaseModule.loadingInfo", "Loading release information for module..."));
+        JahiaContentManagementService.App.getInstance().getInfoForModuleRelease(JahiaGWTParameters.getSiteKey(),
+                new BaseAsyncCallback<GWTModuleReleaseInfo>() {
+                    public void onApplicationFailure(Throwable caught) {
+                        linker.loaded();
+                        Info.display(
+                                Messages.get("label.error", "Error"),
+                                Messages.get("label.releaseModule.loadingInfo.failure",
+                                        "Cannot load module information for release") + ":\n" + caught.getMessage());
+                    }
+
+                    public void onSuccess(GWTModuleReleaseInfo result) {
+                        linker.loaded();
+                        onInfoLoaded(result);
+                    }
+                });
+    }
+
+    protected void onInfoLoaded(final GWTModuleReleaseInfo result) {
+        if ((result == null || result.getRepositoryUrl() == null) && areModuleSourcesAvailable()) {
+            // if no distribution server defined and we have module sources ask for the server info
+            DistributionServerWindow distributionServerDialog = new DistributionServerWindow() {
+                @Override
+                protected void callback(String id, String url) {
+                    if (id != null && url != null) {
+                        linker.loading(Messages.get("label.releaseModule.distributionServer.updating",
+                                "Updating distribution management server information for module..."));
+                        JahiaContentManagementService.App.getInstance().setDistributionServerForModule(
+                                JahiaGWTParameters.getSiteKey(), id, url,
+                                new BaseAsyncCallback<GWTModuleReleaseInfo>() {
+                                    public void onApplicationFailure(Throwable caught) {
+                                        linker.loaded();
+                                        Info.display(
+                                                Messages.get("label.error", "Error"),
+                                                Messages.get("label.releaseModule.distributionServer.updating.failure",
+                                                        "Cannot update distribution server information")
+                                                        + ":\n"
+                                                        + caught.getMessage());
+                                    }
+
+                                    @Override
+                                    public void onSuccess(GWTModuleReleaseInfo newInfo) {
+                                        linker.loaded();
+                                        showReleaseModuleWindo(newInfo);
+                                    }
+                                });
+                    } else {
+                        showReleaseModuleWindo(result);
+                    }
+                }
+            };
+            distributionServerDialog.show();
+        } else {
+            showReleaseModuleWindo(result);
+        }
+    }
+
+    private void showReleaseModuleWindo(GWTModuleReleaseInfo result) {
+        final ReleaseModuleWindow window = new ReleaseModuleWindow(result);
+        window.setCallback(new ReleaseModuleWindow.Callback() {
+            @Override
+            public void handle(GWTModuleReleaseInfo info) {
+                window.hide();
+                linker.loading(Messages.get("label.releaseModule.releasing", "Releasing module..."));
+                doRelease(info, window);
+            }
+        });
+
+        window.show();
     }
 }

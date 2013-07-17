@@ -138,4 +138,10 @@
         <property name="stubService" ref="StubService" />
     </bean>
 
+    <bean name="ModuleHelper" class="org.jahia.ajax.gwt.helper.ModuleHelper">
+        <property name="navigation" ref="NavigationHelper"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+        <property name="httpClient" ref="HttpClientService"/>
+    </bean>
+
 </beans>

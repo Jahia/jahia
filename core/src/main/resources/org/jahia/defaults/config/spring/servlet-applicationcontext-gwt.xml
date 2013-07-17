@@ -64,6 +64,7 @@
                 <value>loops</value>
             </list>
         </property>
+        <property name="moduleHelper" ref="ModuleHelper"/>
     </bean>
 
     <bean name="toolbarServiceController" parent="abstractServiceController">

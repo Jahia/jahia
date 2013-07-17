@@ -156,7 +156,18 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
 
-    RpcMap releaseModule(String moduleName, String nextVersion) throws GWTJahiaServiceException;
+    RpcMap releaseModule(String moduleName, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException;
+
+    /**
+     * Returns the information, required for performing a release of the module: distribution server, Jahia catalog (forge) etc.
+     * 
+     * @param moduleName
+     *            the name of the module which will be released
+     * @return a map with the release info: distribution server, Jahia catalog (forge) etc
+     * @throws GWTJahiaServiceException
+     *             in case of an error
+     */
+    GWTModuleReleaseInfo getInfoForModuleRelease(String moduleName) throws GWTJahiaServiceException;
 
     String getAbsolutePath(String path) throws GWTJahiaServiceException;
 
@@ -376,6 +387,22 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException;
 
+    /**
+     * Updates the module's pom.xml file with the specified distribution server details and returns the module release information.
+     * 
+     * @param module
+     *            the module to update distribution management information
+     * @param repositoryId
+     *            the server ID for the repository
+     * @param repositoryUrl
+     *            the target repository URL
+     * @return the updated module release info
+     * @throws GWTJahiaServiceException
+     *             in case of an error
+     */
+    GWTModuleReleaseInfo setDistributionServerForModule(String module, String repositoryId, String repositoryUrl)
+            throws GWTJahiaServiceException;
+
     void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException;
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
@@ -406,18 +433,15 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
     
-	/**
-	 * Validates the HTML texts against WCAG rules. This method allows to
-	 * validate multiple texts at once to be able to check WCAG rules for all
-	 * rich text fields in the engine.
-	 * 
-	 * @param richTexts
-	 *            a map of HTML texts to be validated, keyed by field IDs (
-	 *            {@link CKEditorField#getItemId()})
-	 * @return the WCAG validation results, keyed by the original field IDs (
-	 *         {@link CKEditorField#getItemId()})
-	 */
-	Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts);
+    /**
+     * Validates the HTML texts against WCAG rules. This method allows to validate multiple texts at once to be able to check WCAG rules for
+     * all rich text fields in the engine.
+     * 
+     * @param richTexts
+     *            a map of HTML texts to be validated, keyed by field IDs ( {@link CKEditorField#getItemId()})
+     * @return the WCAG validation results, keyed by the original field IDs ( {@link CKEditorField#getItemId()})
+     */
+    Map<String, WCAGValidationResult> validateWCAG(Map<String, String> richTexts);
 
     void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException;
 
@@ -448,8 +472,6 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
     RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;
-
-// -------------------------- INNER CLASSES --------------------------
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

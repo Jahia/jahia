@@ -37,7 +37,7 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.templates;
+package org.jahia.utils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -47,6 +47,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 
+import org.apache.maven.model.DeploymentRepository;
+import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -114,6 +116,39 @@ public final class PomUtils {
         } finally {
             IOUtils.closeQuietly(reader);
         }
+    }
+
+    /**
+     * Updates the distribution management repository in the specified Maven project file.
+     * 
+     * @param pomXmlFile
+     *            the Maven project descriptor file to update
+     * @param repositoryId
+     *            the server ID for the distribution repository
+     * @param repositoryUrl
+     *            the URL of the target distribution repository
+     * @throws IOException
+     *             in case of a reading problem
+     * @throws XmlPullParserException
+     *             in case of a parsing error
+     */
+    public static void updateDistributionManagement(File pomXmlFile, String repositoryId, String repositoryUrl)
+            throws IOException, XmlPullParserException {
+        Model model = read(pomXmlFile);
+        DistributionManagement dm = model.getDistributionManagement();
+        if (dm == null) {
+            dm = new DistributionManagement();
+            model.setDistributionManagement(dm);
+        }
+        DeploymentRepository repo = dm.getRepository();
+        if (repo == null) {
+            repo = new DeploymentRepository();
+            dm.setRepository(repo);
+        }
+        repo.setId(repositoryId);
+        repo.setUrl(repositoryUrl);
+
+        write(model, pomXmlFile);
     }
 
     /**

@@ -569,6 +569,26 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
  *
  * http://www.sencha.com/products/gxt/license/
  */
+.x-component{
+    font: 11px tahoma,arial,helvetica,sans-serif;
+}
+/* utils */
+.x-utils-noborder {
+    border: none;
+}
+.x-utils-noborder-left {
+    border-left: none;
+}
+.x-utils-noborder-right {
+    border-right: none;
+}
+.x-utils-noborder-bottom {
+    border-bottom: none;
+}
+.x-utils-noborder-top {
+    border-top: none;
+}
+
 /* form */
 .x-form-text, textarea.x-form-field {
     background-color: #FFFFFF;
@@ -614,6 +634,21 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     border:1px solid #d0d0d0;
     background-image:none;
     background-color: #f5f6f7;
+}
+.x-panel-header-noborder {
+    border:1px solid #f5f6f7;
+}
+.x-panel-header-noborder-left {
+    border-left:none;
+}
+.x-panel-header-noborder-right {
+    border-right:none;
+}
+.x-panel-header-noborder-bottom {
+    border-bottom:none;
+}
+.x-panel-header-noborder-top {
+    border-top:none;
 }
 
 .x-panel-body {

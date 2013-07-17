@@ -38,7 +38,7 @@
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Beta5</jbpm.version>
         <drools.version>6.0.0.Beta5</drools.version>
-        <hibernate.version>4.2.2.Final</hibernate.version>
+        <hibernate.version>4.2.3.Final</hibernate.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <apache.tika.version>1.3</apache.tika.version>
         <camel.version>2.4.0</camel.version>

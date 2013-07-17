@@ -43,22 +43,15 @@ package org.jahia.services.content.rules;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.common.DroolsObjectInputStream;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.settings.SettingsBean;
-import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
@@ -72,7 +65,10 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -88,7 +84,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private Timer rulesTimer = new Timer("rules-timer", true);
 
-    private KieBase ruleBase;
+    // private KieBase ruleBase;
     private long lastRead = 0;
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
@@ -105,6 +101,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private KieServices kieServices;
     private KieRepository kieRepository;
+    private KieSession kieSession;
+    private KieFileSystem kieFileSystem;
+    private KieBuilder kieBuilder;
+    private KieContainer kieContainer;
 
     public RulesListener() {
         instances.add(this);
@@ -129,7 +129,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private StatelessKieSession getStatelessSession(Map<String, Object> globals) {
-        StatelessKieSession session = ruleBase.newStatelessKieSession();
+        StatelessKieSession session = kieContainer.newStatelessKieSession();
         for (Map.Entry<String, Object> entry : globals.entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
         }
@@ -173,29 +173,19 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             fileSystemResources.add(kieServices.getResources().newFileSystemResource(dslFile.getFile()));
         }
 
-        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
+        kieFileSystem = kieServices.newKieFileSystem();
 
-        kieFileSystem.write()
+        for (org.kie.api.io.Resource kieResource : fileSystemResources) {
+            kieFileSystem.write(kieResource);
+        }
 
-        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
 
         kieBuilder.buildAll();
 
-        KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+        kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
 
-        KieSession kieSession = kContainer.newKieSession();
-
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
-        //conf.setRemoveIdentities( true );
-        ruleBase = RuleBaseFactory.newRuleBase(conf);
-
-        dslFiles.add(
-                new FileSystemResource(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
-
-        for (String s : ruleFiles) {
-            addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
-        }
+        kieSession = kieContainer.newKieSession();
 
         lastRead = System.currentTimeMillis();
     }
@@ -231,78 +221,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             if (!compiledRulesDir.exists()) {
                 compiledRulesDir.mkdirs();
             }
-            // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
-            File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(), "/") + ".pkg");
-            if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
-                ObjectInputStream ois = null;
-                try {
-                    if (aPackage != null) {
-                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), aPackage.getChainedClassLoader());
-                    } else {
-                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), null);
-                    }
 
-                    Package pkg = (Package) ois.readObject();
-                    if (ruleBase.getKiePackage(pkg.getName()) != null) {
-                        ruleBase.removeKiePackage(pkg.getName());
-                    }
-                    ruleBase.addPackage(pkg);
-                    if (aPackage != null) {
-                        modulePackageNameMap.put(aPackage.getName(), pkg.getName());
-                    }
-                } finally {
-                    IOUtils.closeQuietly(ois);
-                }
-            } else {
-                drl = new InputStreamReader(new BufferedInputStream(dsrlFile.getInputStream()));
+            kieFileSystem.write(kieServices.getResources().newInputStreamResource(dsrlFile.getInputStream()));
+            kieBuilder.buildAll();
 
-                Properties properties = new Properties();
-                properties.setProperty("drools.dialect.java.compiler", "JANINO");
-                PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(getClass().getClassLoader(), properties);
-                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-                javaConf.setCompiler(JavaDialectConfiguration.JANINO);
-
-                if (aPackage != null) {
-                    cfg.setClassLoader(aPackage.getChainedClassLoader());
-                }
-
-
-                KieBuilder builder = new KieBuilder(cfg);
-
-                builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
-
-                List<Message> errors = builder.getResults().getMessages(Message.Level.ERROR);
-
-                if (errors.size() == 0) {
-                    Package pkg = builder.getPackage();
-
-                    ObjectOutputStream oos = null;
-                    try {
-                        pkgFile.getParentFile().mkdirs();
-                        oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
-                        oos.writeObject(pkg);
-                    } catch (IOException e) {
-                        logger.error("Error writing rule package to file " + pkgFile, e);
-                    } finally {
-                        IOUtils.closeQuietly(oos);
-                    }
-
-                    if (ruleBase.getKiePackage(pkg.getName()) != null) {
-                        ruleBase.removeKiePackage(pkg.getName());
-                    }
-                    ruleBase.addPackage(pkg);
-                    if (aPackage != null) {
-                        modulePackageNameMap.put(aPackage.getName(), pkg.getName());
-                    }
-                    logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
-                } else {
-                    logger.error("---------------------------------------------------------------------------------");
-                    logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
-                    logger.error("---------------------------------------------------------------------------------");
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage(), e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -332,13 +254,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             return;
         }
 
-        if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastRead) {
+        if (kieContainer == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastRead) {
             try {
                 initRules();
             } catch (Exception e) {
                 logger.error("Cannot compile rules", e);
             }
-            if (ruleBase == null) {
+            if (kieContainer == null) {
                 return;
             }
         }
@@ -712,8 +634,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void removeRules(String moduleName) {
-        if (modulePackageNameMap.containsKey(moduleName) && ruleBase.getKiePackage(modulePackageNameMap.get(moduleName)) != null) {
-            ruleBase.removeKiePackage(modulePackageNameMap.get(moduleName));
+        if (modulePackageNameMap.containsKey(moduleName) && kieContainer.getKieBase().getKiePackage(modulePackageNameMap.get(moduleName)) != null) {
+            kieContainer.getKieBase().removeKiePackage(modulePackageNameMap.get(moduleName));
         }
     }
 

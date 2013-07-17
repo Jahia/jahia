@@ -45,6 +45,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 import javax.jcr.NamespaceRegistry;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
@@ -662,7 +663,24 @@ public class JahiaNodeIndexer extends NodeIndexer {
     @Override
     protected void addReferenceValue(Document doc, String fieldName, NodeId internalValue,
             boolean weak) {
-        super.addReferenceValue(doc, fieldName, internalValue, weak);
+        // Not calling super method, because it wrongly set omit norms to false
+        // for the PROPERTIES field
+        //super.addReferenceValue(doc, fieldName, internalValue, weak);        
+        
+        String uuid = internalValue.toString();
+        doc.add(createFieldWithoutNorms(fieldName, uuid,
+                weak ? PropertyType.WEAKREFERENCE : PropertyType.REFERENCE));
+        Field field = new Field(FieldNames.PROPERTIES,
+                FieldNames.createNamedValue(fieldName, uuid),
+                Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
+        field.setOmitNorms(true);
+        doc.add(field);
+        
+        if (weak) {
+            doc.add(new Field(FieldNames.WEAK_REFS, uuid, Field.Store.NO,
+                    Field.Index.NOT_ANALYZED_NO_NORMS));
+        }
+        
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             if (definition.isHierarchical()) {

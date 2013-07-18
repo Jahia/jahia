@@ -1615,7 +1615,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (StringUtils.isNotEmpty(result)) {
             try {
                 JSONObject json = new JSONObject(result);
-                moduleUrl = json.getString("moduleAbsoluteUrl");
+                if (!json.isNull("moduleAbsoluteUrl")) {
+                    moduleUrl = json.getString("moduleAbsoluteUrl");
+                } else {
+                    logger.warn("Cannot find 'moduleAbsoluteUrl' entry in the create module actin response: {}", result);
+                }
             } catch (JSONException e) {
                 logger.error("Unable to parse the response of the module creation action. Cause: " + e.getMessage(), e);
             }

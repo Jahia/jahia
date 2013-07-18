@@ -163,9 +163,8 @@ public class ReleaseModuleWindow extends Window {
         FieldSet fsCatalog = null;
         TextField<String> tfUsername = null;
         TextField<String> tfPassword = null;
-        TextField<String> tfComment = null;
         if (fsMaven != null && releaseInfo.getCatalogUrl() != null) {
-            setHeight(360);
+            setHeight(340);
             fsCatalog = new FieldSet();
             fsCatalog.setCheckboxToggle(true);
             final FormLayout fl = new FormLayout();
@@ -190,10 +189,6 @@ public class ReleaseModuleWindow extends Window {
             tfPassword.setPassword(true);
             fsCatalog.add(tfPassword);
 
-            tfComment = new TextField<String>();
-            tfComment.setFieldLabel(Messages.get("label.comment", "Comment"));
-            fsCatalog.add(tfComment);
-            
             if (fsMaven.isCollapsible()) {
                 final FieldSet finalFsCatalog = fsCatalog;
                 Listener<FieldSetEvent> listener = new Listener<FieldSetEvent>() {
@@ -216,7 +211,6 @@ public class ReleaseModuleWindow extends Window {
         final FieldSet finalFsCatalog = fsCatalog;
         final TextField<String> finalTfUsername = tfUsername;
         final TextField<String> finalTfPassword = tfPassword;
-        final TextField<String> finalTfComment = tfComment;
 
         Button b = new Button(Messages.get("label.release", "Release"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -234,7 +228,6 @@ public class ReleaseModuleWindow extends Window {
                 if (releaseInfo.isPublishToCatalog()) {
                     releaseInfo.setCatalogUsername(finalTfUsername.getValue());
                     releaseInfo.setCatalogPassword(finalTfPassword.getValue());
-                    releaseInfo.setCatalogComment(finalTfComment.getValue());
                 }
 
                 callback.handle(releaseInfo);

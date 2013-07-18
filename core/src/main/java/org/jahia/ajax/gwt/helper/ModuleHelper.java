@@ -94,7 +94,6 @@ public class ModuleHelper {
         info.setCatalogUrl(gwtInfo.getCatalogUrl());
         info.setCatalogUsername(gwtInfo.getCatalogUsername());
         info.setCatalogPassword(gwtInfo.getCatalogPassword());
-        info.setCatalogComment(gwtInfo.getCatalogComment());
 
         return info;
     }
@@ -230,12 +229,14 @@ public class ModuleHelper {
                 session);
     }
 
-    public GWTJahiaNode releaseModule(String moduleName, GWTModuleReleaseInfo releaseInfo, JCRSessionWrapper session)
+    public GWTJahiaNode releaseModule(String moduleName, GWTModuleReleaseInfo gwtReleaseInfo, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
-        String nextVersion = releaseInfo != null ? releaseInfo.getNextVersion() : null;
+        String nextVersion = gwtReleaseInfo != null ? gwtReleaseInfo.getNextVersion() : null;
         File f;
         if (nextVersion != null) {
-            f = templateManagerService.releaseModule(moduleName, toModuleReleaseInfo(releaseInfo), session);
+            ModuleReleaseInfo releaseInfo = toModuleReleaseInfo(gwtReleaseInfo);
+            f = templateManagerService.releaseModule(moduleName, releaseInfo, session);
+            gwtReleaseInfo.setCatalogModulePageUrl(releaseInfo.getCatalogModulePageUrl());
         } else {
             JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
             f = templateManagerService.compileModule(previous.getSourcesFolder()).getFile();

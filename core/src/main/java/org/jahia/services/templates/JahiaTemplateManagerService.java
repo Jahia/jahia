@@ -90,6 +90,8 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -758,8 +760,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         String url = computeModuleJarUrl(releaseVersion, releaseInfo, model);
         forgeParams.put("url", url);
 
-        createForgeModule(releaseInfo.getCatalogUrl(), releaseInfo.getCatalogUsername(),
-                releaseInfo.getCatalogPassword(), forgeParams);
+        releaseInfo.setCatalogModulePageUrl(createForgeModule(releaseInfo.getCatalogUrl(),
+                releaseInfo.getCatalogUsername(), releaseInfo.getCatalogPassword(), forgeParams));
     }
     
     private String computeModuleJarUrl(String releaseVersion, ModuleReleaseInfo releaseInfo, Model model) {
@@ -1601,14 +1603,25 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * Manage forge
      */
-    protected void createForgeModule(String url, String username, String password, Map<String, String> params) {
+    protected String createForgeModule(String url, String username, String password, Map<String, String> params) {
+        String moduleUrl = null;
         Map<String, String> headers = new HashMap<String, String>();
 
         if (username != null && password != null) {
             headers.put("Authorization", "Basic " + Base64.encode((username + ":" + password).getBytes()));
         }
-        headers.put("accept", "");
+        headers.put("accept", "application/json");
         String result = httpClientService.executePost(url, params, headers);
+        if (StringUtils.isNotEmpty(result)) {
+            try {
+                JSONObject json = new JSONObject(result);
+                moduleUrl = json.getString("moduleAbsoluteUrl");
+            } catch (JSONException e) {
+                logger.error("Unable to parse the response of the module creation action. Cause: " + e.getMessage(), e);
+            }
+        }
+
+        return moduleUrl;
     }
 
     public void setHttpClientService(HttpClientService httpClientService) {

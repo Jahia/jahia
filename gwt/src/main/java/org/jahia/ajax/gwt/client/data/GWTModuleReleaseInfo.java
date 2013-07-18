@@ -50,8 +50,8 @@ public class GWTModuleReleaseInfo extends RpcMap {
 
     private static final long serialVersionUID = -815808036831126232L;
 
-    public String getCatalogComment() {
-        return (String) get("catalogComment");
+    public String getCatalogModulePageUrl() {
+        return (String) get("catalogModulePageUrl");
     }
 
     public String getCatalogPassword() {
@@ -86,8 +86,8 @@ public class GWTModuleReleaseInfo extends RpcMap {
         return containsKey("publishToMaven") && (Boolean) get("publishToMaven");
     }
 
-    public void setCatalogComment(String catalogComment) {
-        put("catalogComment", catalogComment);
+    public void setCatalogModulePageUrl(String pageUrl) {
+        put("catalogModulePageUrl", pageUrl);
     }
 
     public void setCatalogPassword(String catalogPassword) {

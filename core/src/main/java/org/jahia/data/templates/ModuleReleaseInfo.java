@@ -46,7 +46,7 @@ package org.jahia.data.templates;
  */
 public class ModuleReleaseInfo {
 
-    private String catalogComment;
+    private String catalogModulePageUrl;
 
     private String catalogPassword;
 
@@ -61,11 +61,11 @@ public class ModuleReleaseInfo {
     private boolean publishToMaven;
 
     private String repositoryId;
-    
+
     private String repositoryUrl;
 
-    public String getCatalogComment() {
-        return catalogComment;
+    public String getCatalogModulePageUrl() {
+        return catalogModulePageUrl;
     }
 
     public String getCatalogPassword() {
@@ -100,8 +100,8 @@ public class ModuleReleaseInfo {
         return publishToMaven;
     }
 
-    public void setCatalogComment(String catalogComment) {
-        this.catalogComment = catalogComment;
+    public void setCatalogModulePageUrl(String catalogModulePageUrl) {
+        this.catalogModulePageUrl = catalogModulePageUrl;
     }
 
     public void setCatalogPassword(String catalogPassword) {

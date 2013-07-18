@@ -161,6 +161,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         GWTJahiaNode newModule = (GWTJahiaNode) result.get("newModule");
                         String filename = (String) result.get("filename");
                         String url = (String) result.get("downloadUrl");
+                        String catalogModulePageUrl = (String) result.get("catalogModulePageUrl");
 
                         JahiaGWTParameters.getSitesMap().remove(JahiaGWTParameters.getSiteNode().getUUID());
                         JahiaGWTParameters.getSitesMap().put(newModule.getUUID(), newModule);
@@ -180,6 +181,9 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         window.add(link);
                         window.layout();
                         window.show();
+                        if (catalogModulePageUrl != null && catalogModulePageUrl.length() > 0) {
+                            com.google.gwt.user.client.Window.open(catalogModulePageUrl, "CatalogModulePage", "");
+                        }
                     }
                 });
     }

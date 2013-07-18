@@ -897,11 +897,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public String getAbsoluteContextPath(ServletRequest request) {
-        StringBuffer serverUrlBuffer = new StringBuffer(request.getScheme());
+        StringBuilder serverUrlBuffer = new StringBuilder(request.getScheme());
         serverUrlBuffer.append("://");
         serverUrlBuffer.append(request.getServerName());
-        serverUrlBuffer.append(":");
-        serverUrlBuffer.append(request.getServerPort());
+        if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+            serverUrlBuffer.append(":");
+            serverUrlBuffer.append(request.getServerPort());
+        }
         return serverUrlBuffer.toString();
     }
 

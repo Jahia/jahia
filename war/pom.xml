@@ -38,7 +38,8 @@
     If you are unsure which license is appropriate for your use,
     please contact the sales department at sales@jahia.com.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -53,7 +54,7 @@
         <singleModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</singleModuleName>
         <ContentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</ContentManagerModuleName>
         <EditModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</EditModuleName>
-        <ResourcesModuleName>org.jahia.ajax.gwt.module.resources.DevResources</ResourcesModuleName>        
+        <ResourcesModuleName>org.jahia.ajax.gwt.module.resources.DevResources</ResourcesModuleName>
     </properties>
 
     <profiles>
@@ -75,11 +76,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -88,14 +89,15 @@
             </build>
         </profile>
 
-		<profile>
-			<id>gwt-production</id>
-			<properties>
-				<ContentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</ContentManagerModuleName>
-				<EditModuleName>org.jahia.ajax.gwt.module.edit.Edit</EditModuleName>
-				<ResourcesModuleName>org.jahia.ajax.gwt.module.resources.Resources</ResourcesModuleName>
-			</properties>
-		</profile>        
+        <profile>
+            <id>gwt-production</id>
+            <properties>
+                <ContentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager
+                </ContentManagerModuleName>
+                <EditModuleName>org.jahia.ajax.gwt.module.edit.Edit</EditModuleName>
+                <ResourcesModuleName>org.jahia.ajax.gwt.module.resources.Resources</ResourcesModuleName>
+            </properties>
+        </profile>
         <profile>
             <id>full-gwt</id>
             <activation>
@@ -105,15 +107,17 @@
             </activation>
             <build>
                 <plugins>
-                  <plugin>
+                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>                       
+                        <artifactId>gwt-maven-plugin</artifactId>
                         <version>${gwt.version}</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
                             <soyc>false</soyc>
-                            <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <extraJvmArgs>-Xmx1280m -Xss2048k
+                                -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
+                            </extraJvmArgs>
                             <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
@@ -154,11 +158,13 @@
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
                             <force>true</force>
-                            <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <extraJvmArgs>-Xmx1024m -Xss2048k
+                                -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
+                            </extraJvmArgs>
                             <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <module>${singleModuleName}</module>
-							<style>DETAILED</style>
+                            <style>DETAILED</style>
                         </configuration>
                         <executions>
                             <execution>
@@ -183,72 +189,82 @@
             </activation>
             <build>
                 <plugins>
-		            <plugin>
-		                <groupId>org.apache.maven.plugins</groupId>
-		                <artifactId>maven-antrun-plugin</artifactId>
-		                <version>${antrun.plugin.version}</version>
-		                <dependencies>
-		                    <dependency>
-		                        <groupId>org.hibernate</groupId>
-		                        <artifactId>hibernate-core</artifactId>
-		                        <version>${hibernate.version}</version>
-		                    </dependency>
-		                    <dependency>
-		                        <groupId>org.hibernate</groupId>
-		                        <artifactId>hibernate-tools</artifactId>
-		                        <version>3.2.3.GA</version>
-		                    </dependency>
-		                    <dependency>
-		                        <groupId>org.slf4j</groupId>
-		                        <artifactId>slf4j-log4j12</artifactId>
-		                        <version>${slf4j.version}</version>
-		                    </dependency>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${antrun.plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.hibernate</groupId>
+                                <artifactId>hibernate-core</artifactId>
+                                <version>${hibernate.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.hibernate</groupId>
+                                <artifactId>hibernate-tools</artifactId>
+                                <version>3.2.3.GA</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-log4j12</artifactId>
+                                <version>${slf4j.version}</version>
+                            </dependency>
                             <dependency>
                                 <groupId>org.slf4j</groupId>
                                 <artifactId>slf4j-api</artifactId>
                                 <version>${slf4j.version}</version>
                             </dependency>
-		                    <dependency>
-		                        <groupId>org.jahia.server</groupId>
-		                        <artifactId>jahia-impl</artifactId>
-		                        <version>${project.version}</version>
-		                    </dependency>
-		                </dependencies>
-		                <executions>
-		                    <execution>
-		                        <id>generate-ddl</id>
-		                        <phase>generate-resources</phase>
-		                        <goals>
-		                            <goal>run</goal>
-		                        </goals>
-		                        <configuration>
-		                            <tasks if="jahia.generate.ddl">
-		                                <echo message="Generating DDL schemata..." />
-		
-		                                <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask">
-		                                    <classpath>
-		                                        <path refid="maven.dependency.classpath" />
-		                                        <pathelement path="${maven.build.dest}" />
-		                                        <pathelement path="${maven.test.dest}" />
-		                                    </classpath>
-		                                </taskdef>
-										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
-											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml" />
-											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
-									  	</hibernatetool>
-										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
-											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml" />
-											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
-									  	</hibernatetool>
-										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
-											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml" />
-											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
-									  	</hibernatetool>
-		                            </tasks>
-		                        </configuration>
-		                    </execution>
-		                </executions>
-		            </plugin>
+                            <dependency>
+                                <groupId>org.jahia.server</groupId>
+                                <artifactId>jahia-impl</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>generate-ddl</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks if="jahia.generate.ddl">
+                                        <echo message="Generating DDL schemata..."/>
+
+                                        <taskdef name="hibernatetool"
+                                                 classname="org.hibernate.tool.ant.HibernateToolTask">
+                                            <classpath>
+                                                <path refid="maven.dependency.classpath"/>
+                                                <pathelement path="${maven.build.dest}"/>
+                                                <pathelement path="${maven.test.dest}"/>
+                                            </classpath>
+                                        </taskdef>
+                                        <hibernatetool
+                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
+                                            <annotationconfiguration
+                                                    configurationfile="${basedir}/tools/derby.hibernate.cfg.xml"/>
+                                            <hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false"
+                                                     drop="true"/>
+                                        </hibernatetool>
+                                        <hibernatetool
+                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
+                                            <annotationconfiguration
+                                                    configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml"/>
+                                            <hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false"
+                                                     drop="true"/>
+                                        </hibernatetool>
+                                        <hibernatetool
+                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
+                                            <annotationconfiguration
+                                                    configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml"/>
+                                            <hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false"
+                                                     drop="true"/>
+                                        </hibernatetool>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -262,84 +278,93 @@
             </activation>
             <build>
                 <plugins>
-		            <plugin>
-		                <groupId>org.apache.maven.plugins</groupId>
-		                <artifactId>maven-antrun-plugin</artifactId>
-		                <version>${antrun.plugin.version}</version>
-		                <dependencies>
-		                    <dependency>
-		                        <groupId>org.hibernate</groupId>
-		                        <artifactId>hibernate-core</artifactId>
-		                        <version>${hibernate.version}</version>
-		                    </dependency>
-		                    <dependency>
-		                        <groupId>org.hibernate</groupId>
-		                        <artifactId>hibernate-tools</artifactId>
-		                        <version>3.2.3.GA</version>
-		                    </dependency>
-		                    <dependency>
-		                        <groupId>org.slf4j</groupId>
-		                        <artifactId>slf4j-log4j12</artifactId>
-		                        <version>${slf4j.version}</version>
-		                    </dependency>
-		                    <dependency>
-		                        <groupId>org.jahia.server</groupId>
-		                        <artifactId>jahia-impl</artifactId>
-		                        <version>${project.version}</version>
-		                    </dependency>
-		                </dependencies>
-		                <executions>
-		                    <execution>
-		                        <id>generate-jbpm-ddl</id>
-		                        <phase>generate-resources</phase>
-		                        <goals>
-		                            <goal>run</goal>
-		                        </goals>
-		                        <configuration>
-		                            <tasks if="jahia.generate.jbpm.ddl">
-		                                <echo message="Generating DDL schemata for jBPM..." />
-		                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar" dest="${project.build.directory}/jbpm">
-		                                    <patternset>
-		                                        <include name="*.hbm.xml" />
-		                                    </patternset>
-		                                </unzip>
-		                                <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask">
-		                                    <classpath>
-		                                        <path refid="maven.dependency.classpath" />
-		                                        <pathelement path="${maven.build.dest}" />
-		                                        <pathelement path="${maven.test.dest}" />
-		                                    </classpath>
-		                                </taskdef>
-										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
-											<configuration propertyfile="${basedir}/tools/derby.hibernate.properties">
-			                                    <fileset dir="${project.build.directory}/jbpm">
-			                                        <include name="*.hbm.xml" />
-			                                    </fileset>
-											</configuration>
-											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
-									  	</hibernatetool>
-										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
-											<configuration propertyfile="${basedir}/tools/mysql.hibernate.properties">
-			                                    <fileset dir="${project.build.directory}/jbpm">
-			                                        <include name="*.hbm.xml" />
-			                                    </fileset>
-											</configuration>
-											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
-									  	</hibernatetool>
-										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
-											<configuration propertyfile="${basedir}/tools/postgresql.hibernate.properties">
-			                                    <fileset dir="${project.build.directory}/jbpm">
-			                                        <include name="*.hbm.xml" />
-			                                    </fileset>
-											</configuration>
-											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
-									  	</hibernatetool>
-		                                <delete dir="${project.build.directory}/jbpm" />
-		                            </tasks>
-		                        </configuration>
-		                    </execution>
-		                </executions>
-		            </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${antrun.plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.hibernate</groupId>
+                                <artifactId>hibernate-core</artifactId>
+                                <version>${hibernate.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.hibernate</groupId>
+                                <artifactId>hibernate-tools</artifactId>
+                                <version>3.2.3.GA</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-log4j12</artifactId>
+                                <version>${slf4j.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.jahia.server</groupId>
+                                <artifactId>jahia-impl</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>generate-jbpm-ddl</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks if="jahia.generate.jbpm.ddl">
+                                        <echo message="Generating DDL schemata for jBPM..."/>
+                                        <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar"
+                                               dest="${project.build.directory}/jbpm">
+                                            <patternset>
+                                                <include name="*.hbm.xml"/>
+                                            </patternset>
+                                        </unzip>
+                                        <taskdef name="hibernatetool"
+                                                 classname="org.hibernate.tool.ant.HibernateToolTask">
+                                            <classpath>
+                                                <path refid="maven.dependency.classpath"/>
+                                                <pathelement path="${maven.build.dest}"/>
+                                                <pathelement path="${maven.test.dest}"/>
+                                            </classpath>
+                                        </taskdef>
+                                        <hibernatetool
+                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
+                                            <configuration propertyfile="${basedir}/tools/derby.hibernate.properties">
+                                                <fileset dir="${project.build.directory}/jbpm">
+                                                    <include name="*.hbm.xml"/>
+                                                </fileset>
+                                            </configuration>
+                                            <hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false"
+                                                     drop="true"/>
+                                        </hibernatetool>
+                                        <hibernatetool
+                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
+                                            <configuration propertyfile="${basedir}/tools/mysql.hibernate.properties">
+                                                <fileset dir="${project.build.directory}/jbpm">
+                                                    <include name="*.hbm.xml"/>
+                                                </fileset>
+                                            </configuration>
+                                            <hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false"
+                                                     drop="true"/>
+                                        </hibernatetool>
+                                        <hibernatetool
+                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
+                                            <configuration
+                                                    propertyfile="${basedir}/tools/postgresql.hibernate.properties">
+                                                <fileset dir="${project.build.directory}/jbpm">
+                                                    <include name="*.hbm.xml"/>
+                                                </fileset>
+                                            </configuration>
+                                            <hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false"
+                                                     drop="true"/>
+                                        </hibernatetool>
+                                        <delete dir="${project.build.directory}/jbpm"/>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -370,8 +395,8 @@
             <version>6.7.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        
-		<!-- Jahia Modules -->
+
+        <!-- Jahia Modules -->
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>assets</artifactId>
@@ -565,7 +590,7 @@
             <version>1.2.17</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <!-- Pluto 2.0 shared lib-->
         <dependency>
             <groupId>org.apache.portals</groupId>
@@ -724,7 +749,7 @@
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
         </dependency>
-        
+
 
         <!--Atmosphere dependencies-->
         <dependency>
@@ -774,7 +799,7 @@
                 </exclusion>
             </exclusions>
         </dependency>-->
-        
+
         <dependency>
             <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
             <artifactId>cglib-nodep</artifactId>
@@ -782,7 +807,7 @@
             <version>2.2.2</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <!-- Felix HTTP bridge -->
             <groupId>org.apache.felix</groupId>
@@ -968,18 +993,18 @@
                         </configuration>
                     </execution>
                     <!--<execution>-->
-                        <!--<id>copy-watched-bundles</id>-->
-                        <!--<goals>-->
-                            <!--<goal>copy</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<artifactItems>-->
-                            <!--</artifactItems>-->
-                            <!--<stripVersion>false</stripVersion>-->
-                            <!--<outputDirectory>-->
-                                <!--${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles-->
-                            <!--</outputDirectory>-->
-                        <!--</configuration>-->
+                    <!--<id>copy-watched-bundles</id>-->
+                    <!--<goals>-->
+                    <!--<goal>copy</goal>-->
+                    <!--</goals>-->
+                    <!--<configuration>-->
+                    <!--<artifactItems>-->
+                    <!--</artifactItems>-->
+                    <!--<stripVersion>false</stripVersion>-->
+                    <!--<outputDirectory>-->
+                    <!--${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles-->
+                    <!--</outputDirectory>-->
+                    <!--</configuration>-->
                     <!--</execution>-->
                 </executions>
             </plugin>
@@ -994,7 +1019,7 @@
                         <supportedProjectType>war</supportedProjectType>
                     </supportedProjectTypes>
                     <instructions>
-                        <Export-Package>*</Export-Package>
+                        <Export-Package>org.jahia.*,</Export-Package>
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>*</Embed-Transitive>
                         <_nodefaultversion>true</_nodefaultversion>
@@ -1023,12 +1048,12 @@
                     <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
                     <webResources>
                         <resource>
-                          <directory>${project.build.directory}/native2ascii</directory>
-                          <targetPath>WEB-INF/classes</targetPath>
+                            <directory>${project.build.directory}/native2ascii</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                          <directory>${project.build.directory}/generated-resources</directory>
-                          <targetPath>WEB-INF/etc/config</targetPath>
+                            <directory>${project.build.directory}/generated-resources</directory>
+                            <targetPath>WEB-INF/etc/config</targetPath>
                         </resource>
                         <resource>
                             <directory>.</directory>
@@ -1044,7 +1069,7 @@
                             <addClasspath>false</addClasspath>
                         </manifest>
                     </archive>
-                </configuration>                   
+                </configuration>
             </plugin>
 
             <plugin>
@@ -1060,7 +1085,8 @@
                             <propertiesInputFile>
                                 ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
                             </propertiesInputFile>
-                            <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
+                            <propertiesOutputFile>
+                                ${project.build.directory}/generated-resources/felix-framework.properties
                             </propertiesOutputFile>
                             <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
                             <packageExcludes>
@@ -1091,7 +1117,8 @@
                             <propertiesInputFile>
                                 ${project.build.directory}/generated-resources/felix-framework.properties
                             </propertiesInputFile>
-                            <propertiesOutputFile>${project.build.directory}/generated-resources/felix-framework.properties
+                            <propertiesOutputFile>
+                                ${project.build.directory}/generated-resources/felix-framework.properties
                             </propertiesOutputFile>
                             <artifactExcludes>
                                 <exclude>org.jahia.modules:*</exclude>
@@ -1156,13 +1183,14 @@
                         <configuration>
                             <tasks>
                                 <java classname="org.jahia.ajax.gwt.utils.GWTDictionaryBuilder">
-                                    <arg value="JahiaInternalResources" />
-                                    <arg value="de,en,es,fr,it,pt" />
-                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n" />
-                                    <arg value="messages" />
-                                    <arg value="true" /><!-- minified -->
+                                    <arg value="JahiaInternalResources"/>
+                                    <arg value="de,en,es,fr,it,pt"/>
+                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n"/>
+                                    <arg value="messages"/>
+                                    <arg value="true"/>
+                                    <!-- minified -->
                                     <classpath>
-                                        <path refid="maven.runtime.classpath" />
+                                        <path refid="maven.runtime.classpath"/>
                                     </classpath>
                                 </java>
                             </tasks>
@@ -1179,17 +1207,21 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="Deleting unused/duplicate resources..." />
+                                <echo message="Deleting unused/duplicate resources..."/>
                                 <!-- in resources folder, delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) -->
                                 <delete includeemptydirs="true" failonerror="false">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/" includes="**/*.cache.*,**/*.nocache.*,**/*.rpc" />
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/"
+                                             includes="**/*.cache.*,**/*.nocache.*,**/*.rpc"/>
                                 </delete>
                                 <!-- delete duplicated resources , DO NOT delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) and resources folder -->
                                 <delete includeemptydirs="true" failonerror="false">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/" includes="**/*" excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html" />
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/"
+                                             includes="**/*"
+                                             excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html"/>
                                 </delete>
-                                <delete dir="${project.build.directory}/${project.build.finalName}/gwt-unitCache" failonerror="false"/>
-                                <echo message="...done" />
+                                <delete dir="${project.build.directory}/${project.build.finalName}/gwt-unitCache"
+                                        failonerror="false"/>
+                                <echo message="...done"/>
                             </tasks>
                         </configuration>
                     </execution>

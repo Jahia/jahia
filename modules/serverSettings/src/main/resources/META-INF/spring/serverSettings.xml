@@ -8,7 +8,7 @@
     <bean class="org.jahia.modules.serversettings.portlets.ManagePortletsAction" />
 
     <bean name="preparedPortletsController" class="org.jahia.modules.serversettings.portlets.PreparedPortletsController"/>
-    <bean name="jahiaTestMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <bean name="serverSettingsMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/preparedportlets" value-ref="preparedPortletsController"/>

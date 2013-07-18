@@ -430,10 +430,50 @@
 <p><strong>References:&nbsp;</strong><a href="#references" onclick="go('showReferences', ${showReferences ? 'false' : 'true'}); return false;">${showReferences ? 'hide' : 'show'}</a></p>
 <c:if test="${showReferences}">
     <ul>
+      <%try {%>
         <c:set var="refsCount" value="${functions:length(node.references) + functions:length(node.weakReferences)}"/>
         <c:if test="${refsCount == 0}"><li>No references found</li></c:if>
         <c:if test="${refsCount > 0}">
+<<<<<<< .working
             <c:forEach items="${node.references}" var="ref">
+=======
+        <c:forEach items="${node.references}" var="ref">
+            <li>
+                <c:if test="${not empty ref}">
+                    <c:set var="refTarget" value="${ref.parent}"/>
+                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier}) / ${ref.name}</a>
+                </c:if>
+            </li>
+        </c:forEach>
+        <c:forEach items="${node.weakReferences}" var="ref">
+            <li>
+                <c:if test="${not empty ref}">
+                    <c:set var="refTarget" value="${ref.parent}"/>
+                    <a href="#reference" onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier}) / ${ref.name} - weak</a>
+                </c:if>
+            </li>
+        </c:forEach>
+        </c:if>
+      <%} catch (Exception ex) {%>
+          <p style="color:red;">Error retrieving references<br/>Cause: <%=(ex.getCause() != null ? ex.getCause().toString() : ex.toString())%></p>
+      <%} %>
+        </ul>
+    </c:if>
+
+    <p><strong>Child nodes:&nbsp;</strong><a href="#nodes" onclick="go('showNodes', ${showNodes ? 'false' : 'true'}); return false;">${showNodes ? 'hide' : 'show'}</a>
+    <c:if test="${showNodes}">
+        <c:set var="nodes" value="${node.nodes}"/>
+        <c:set var="childrenCount" value="${functions:length(nodes)}"/>
+        <c:if test="${childrenCount > 0}">- ${childrenCount} nodes found</c:if>
+        </p>
+        <ul>
+            <c:if test="${not empty parentUrl}">
+                <li><a href="${parentUrl}">[..]</a></li>
+            </c:if>
+        <c:if test="${childrenCount == 0}"><li>No child nodes present</li></c:if>
+        <c:if test="${childrenCount > 0}">
+               <c:forEach items="${nodes}" var="child">
+>>>>>>> .merge-right.r46741
                 <li>
                     <c:if test="${not empty ref}">
                         <c:set var="refTarget" value="${ref.parent}"/>

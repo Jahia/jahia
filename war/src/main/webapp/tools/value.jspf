@@ -26,16 +26,14 @@
         <fmt:formatDate value="${value.date.time}" pattern="yyyy-MM-dd HH:mm:ss"/>
     </c:when>
     <c:when test="${value.type == jcrPropertyTypes.REFERENCE || value.type == jcrPropertyTypes.WEAKREFERENCE}">
-        <%
-            /*        try {
-                            Node reference = jcrSession.getNodeByIdentifier(((Value) pageContext.getAttribute("value")).getString());
-        
-                            pageContext.setAttribute("reference",reference);
-                    } catch (Exception e) {
-        
-                    }*/
-        %>
-        <%=((Value) pageContext.getAttribute("value")).getString()%>
+        <c:choose>
+            <c:when test="${showJCRNodes}">
+                <jcr:node var="reference" uuid="${value.string}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="reference" value="${value.node}"/>
+            </c:otherwise>
+        </c:choose>
         <c:if test="${not empty reference}" var="valuePresent">
             <c:url var="urlValue" value="?">
                 <c:param name="uuid" value="${reference.identifier}"/>
@@ -45,7 +43,7 @@
                 <c:param name="showActions" value="${showActions}"/>
                 <c:param name="workspace" value="${workspace}"/>
             </c:url>
-            <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>
+            <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>        
         </c:if>
         <c:if test="${not valuePresent}">${value.string}</c:if>
     </c:when>

@@ -11,7 +11,7 @@
                 /admin/** = authcBasic, roles[toolManager]
                 /modules/**/*.jsp = authcBasic, roles[toolManager]
                 
-                /cms/**/*.raw = authcBasic, roles[toolManager]
+                /**/*.raw = authcBasic, roles[toolManager]
                 /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/** = authcBasic, roles[toolManager]
                 /cms/text-extract = authcBasic, roles[toolManager]

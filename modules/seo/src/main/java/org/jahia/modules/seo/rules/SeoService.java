@@ -40,23 +40,22 @@
 
 package org.jahia.modules.seo.rules;
 
-import javax.jcr.RepositoryException;
-import javax.validation.ConstraintViolationException;
-
-import org.slf4j.Logger;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.slf4j.Logger;
 
+import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 /**
  * SEO service class for manipulating content URL mappings from the
  * right-hand-side (consequences) of rules.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SeoService {
@@ -67,16 +66,16 @@ public class SeoService {
 
     /**
      * Adds the URL mapping for the specified node and language.
-     * 
-     * @param node the node add mappings to
-     * @param locale the language code to add mappings for
-     * @param url the URL for the mapping
+     *
+     * @param node      the node add mappings to
+     * @param locale    the language code to add mappings for
+     * @param url       the URL for the mapping
      * @param isDefault set the new mapping as default one
-     * @param drools the rule engine helper class
+     * @param drools    the rule engine helper class
      * @throws RepositoryException in case of an error
      */
     public void addMapping(final AddedNodeFact node, final String locale, final String url, final boolean isDefault,
-            KnowledgeHelper drools) throws RepositoryException {
+                           KnowledgeHelper drools) throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Adding URL mapping for node " + node.getPath() + " and locale '" + locale + "'");
         }
@@ -97,8 +96,8 @@ public class SeoService {
 
     /**
      * Removes all URL mappings for the specified node and language.
-     * 
-     * @param node the node to remove mappings from
+     *
+     * @param node   the node to remove mappings from
      * @param locale the language code to remove mappings for
      * @param drools the rule engine helper class
      * @throws RepositoryException in case of an error
@@ -133,8 +132,8 @@ public class SeoService {
 
             boolean changed = false;
             do {
-                result = urlService.findExistingVanityUrls(url , node.getResolveSite().getSiteKey(), node.getSession().getWorkspace().getName());
-                if (result.size() > (changed ? 0 : 1))  {
+                result = urlService.findExistingVanityUrls(url, node.getResolveSite().getSiteKey(), node.getSession().getWorkspace().getName());
+                if (result.size() > (changed ? 0 : 1)) {
                     url = baseurl + "-" + (i++) + ext;
                     changed = true;
                 } else {
@@ -151,7 +150,7 @@ public class SeoService {
 
     /**
      * Injects an instance of the {@link VanityUrlService}.
-     * 
+     *
      * @param urlService an instance of the {@link VanityUrlService}
      */
     public void setUrlService(VanityUrlService urlService) {

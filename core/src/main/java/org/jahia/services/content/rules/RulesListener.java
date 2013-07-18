@@ -42,7 +42,6 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.drools.common.DroolsObjectInputStream;
 import org.jahia.data.templates.JahiaTemplatesPackage;

@@ -91,7 +91,7 @@
                         <entry key="hibernate.hbm2ddl.auto" value="none"/>
                         <entry key="hibernate.show_sql" value="false"/>
                         <entry key="hibernate.cache.provider_class"
-                               value="net.sf.ehcache.hibernate.SharingEhcacheRegionFactory"/>
+                               value="org.hibernate.cache.ehcache.SharingEhcacheRegionFactory"/>
                         <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                         <entry key="hibernate.cache.use_query_cache" value="false"/>
                         <entry key="hibernate.jdbc.batch_size" value="16"/>

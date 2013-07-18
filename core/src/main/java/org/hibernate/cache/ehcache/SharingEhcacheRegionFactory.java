@@ -1,4 +1,4 @@
-package net.sf.ehcache.hibernate;
+package org.hibernate.cache.ehcache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.hibernate.management.impl.ProviderMBeanRegistrationHelper;

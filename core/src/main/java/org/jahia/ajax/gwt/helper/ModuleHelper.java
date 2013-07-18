@@ -180,11 +180,16 @@ public class ModuleHelper {
 
         if (catalogInfo != null) {
             catalogInfo = catalogInfo.trim();
+            if (!catalogInfo.endsWith(".do")) {
+                // assume we have a URL to the Jahia server where the Jahi Catalog is hosted
+                catalogInfo = catalogInfo.endsWith("/") ? (catalogInfo + "sites/forge/contents/forge-modules-repository.createModule.do")
+                        : (catalogInfo + "/sites/forge/contents/forge-modules-repository.createModule.do");
+            }
         }
 
-        logger.info("Retrieved Jahia Catalog information in {} ms:\n{}", System.currentTimeMillis() - timer,
+        logger.info("Retrieved Jahia Catalog information in {} ms. The URL to the catalog is: {}", System.currentTimeMillis() - timer,
                 catalogInfo);
-
+        
         return catalogInfo;
     }
 

@@ -64,6 +64,13 @@ public interface WorkflowProvider {
 
     List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale);
 
+    /**
+     * Start a process instance previously registered
+     *
+     * @param processKey
+     * @param args
+     * @return the process instance identifier
+     */
     String startProcess(String processKey, Map<String, Object> args);
 
     void abortProcess(String processId);

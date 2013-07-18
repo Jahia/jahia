@@ -41,13 +41,13 @@
 package org.jahia.test.services.workflow;
 
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.jbpm.api.Execution;
-import org.jbpm.api.ExecutionService;
-import org.jbpm.api.ProcessInstance;
-import org.jbpm.api.RepositoryService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -56,28 +56,21 @@ import static org.junit.Assert.assertNotNull;
  */
 public class StateSequenceTest {
 
-    static String deploymentId;
-    private static RepositoryService repositoryService;
-    private static ExecutionService executionService;
+    private static JBPM6WorkflowProvider jbpm6WorkflowProvider;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        JBPMProvider jBPMProvider = (JBPMProvider) SpringContextSingleton.getBean("jBPMProvider");
-        repositoryService = jBPMProvider.getRepositoryService();
-        executionService = jBPMProvider.getExecutionService();
-        deploymentId = repositoryService.createDeployment().addResourceFromInputStream("sequence_process.jpdl.xml",
-                StateSequenceTest.class.getClassLoader().getResourceAsStream("org/jahia/test/services/workflow/sequence_process.jpdl.xml")).deploy();
+        jbpm6WorkflowProvider = (JBPM6WorkflowProvider) SpringContextSingleton.getBean("jBPM6WorkflowProvider");
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        repositoryService.deleteDeploymentCascade(deploymentId);
 
     }
 
     @Test
     public void testWaitStatesSequence() {
-        ProcessInstance processInstance = executionService.startProcessInstanceByKey("StateSequence");
+        String processInstanceId = jbpm6WorkflowProvider.startProcess("StateSequence", new HashMap<String, Object>());
         Execution executionInA = processInstance.findActiveExecutionIn("a");
         assertNotNull(executionInA);
 

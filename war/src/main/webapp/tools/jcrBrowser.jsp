@@ -350,6 +350,7 @@ function go(id1, value1, id2, value2, id3, value3) {
     <p><strong>References:&nbsp;</strong><a href="#references" onclick="go('showReferences', ${showReferences ? 'false' : 'true'}); return false;">${showReferences ? 'hide' : 'show'}</a></p>
     <c:if test="${showReferences}">
         <ul>
+      <%try {%>
         <c:set var="refsCount" value="${functions:length(node.references) + functions:length(node.weakReferences)}"/>
         <c:if test="${refsCount == 0}"><li>No references found</li></c:if>
         <c:if test="${refsCount > 0}">
@@ -370,6 +371,9 @@ function go(id1, value1, id2, value2, id3, value3) {
             </li>
         </c:forEach>
         </c:if>
+      <%} catch (Exception ex) {%>
+          <p style="color:red;">Error retrieving references<br/>Cause: <%=(ex.getCause() != null ? ex.getCause().toString() : ex.toString())%></p>
+      <%} %>
         </ul>
     </c:if>
 

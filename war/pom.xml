@@ -115,8 +115,7 @@
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
                             <soyc>false</soyc>
-                            <extraJvmArgs>-Xmx1280m -Xss2048k
-                                -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
+                            <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
                             </extraJvmArgs>
                             <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>

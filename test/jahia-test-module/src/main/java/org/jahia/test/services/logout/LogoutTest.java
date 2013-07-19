@@ -49,7 +49,6 @@ import java.util.Set;
 import javax.jcr.PathNotFoundException;
 
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -198,7 +197,7 @@ public class LogoutTest extends JahiaTestCase {
     @Test
     public void logoutAdministration() throws Exception {
         String returnUrl = perform("/administration");
-        assertEquals("Logout from administration failed ", "/administration", returnUrl);
+        assertEquals("Logout from administration failed ", "/cms/admin/en/settings.aboutJahia.html", returnUrl);
     }
 
     @Test
@@ -222,11 +221,6 @@ public class LogoutTest extends JahiaTestCase {
     protected String logout(String url) throws Exception {
         String baseurl = getBaseServerURL() + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
-        if (url.equals("/administration")) {
-            method.setQueryString(new NameValuePair[]{
-                    new NameValuePair("redirect","/administration")
-            });
-        }
         method.setRequestHeader("Referer",baseurl + url);
         getHttpClient().executeMethod(method);
         return StringUtils.isEmpty(Jahia.getContextPath())

@@ -14,7 +14,7 @@ public class JahiaOperandEvaluator extends OperandEvaluator {
     private final Locale locale;
 
     public JahiaOperandEvaluator(ValueFactory factory, Map<String, Value> variables, Locale locale) {
-        super(factory, variables, locale);
+        super(factory, variables, locale != null ? locale : Locale.ENGLISH);
         this.locale = locale;
     }
 

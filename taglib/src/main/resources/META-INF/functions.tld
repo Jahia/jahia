@@ -208,6 +208,34 @@
             &lt;c:out value="${functions:round(9 * tag.references.size / totalTagUsage)}"&gt;
         </example>
     </function>
+
+    <function>
+        <description>
+            Returns the closest int to the argument.
+            The result is rounded to an integer by adding 1/2, taking the
+            floor of the result, and casting the result to type int.
+        </description>
+        <name>ceil</name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>double ceil(double)</function-signature>
+        <example>
+            &lt;c:out value="${functions:ceil(9 * tag.references.size / totalTagUsage)}"&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>
+            Returns the closest int to the argument.
+            The result is rounded to an integer by adding 1/2, taking the
+            floor of the result, and casting the result to type int.
+        </description>
+        <name>floor</name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>double floor(double)</function-signature>
+        <example>
+            &lt;c:out value="${functions:floor(9 * tag.references.size / totalTagUsage)}"&gt;
+        </example>
+    </function>
     
     <function>
         <description>Returns the smaller of two long values.</description>

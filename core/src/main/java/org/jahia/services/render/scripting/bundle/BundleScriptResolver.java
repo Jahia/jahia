@@ -181,6 +181,10 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      */
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
+        String defaultView = (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
+        if(defaultView !=null && "default".equals(template)) {
+            template = defaultView;
+        }
         try {
             JCRSiteNode site = renderContext.getSite();
 
@@ -205,13 +209,23 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             }
             Set<View> s = getViewsSet(nodeTypeList, site,
                     templateTypeMappings != null ? templateTypeMappings : Arrays.asList(resource.getTemplateType()));
-            for (View view : s) {
-                if (view.getKey().equals(template)) {
-                    return view;
-                }
+            View selected;
+            selected = getView(template, s);
+            if(selected==null && !"default".equals(template)) {
+                selected = getView("default", s);
             }
+            return selected;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private View getView(String template, Set<View> s) {
+        for (View view : s) {
+            if (view.getKey().equals(template)) {
+                return view;
+            }
         }
         return null;
     }

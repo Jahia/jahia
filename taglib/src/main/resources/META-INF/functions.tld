@@ -236,6 +236,20 @@
             &lt;c:out value="${functions:floor(9 * tag.references.size / totalTagUsage)}"&gt;
         </example>
     </function>
+
+    <function>
+        <description>
+            Returns the closest int to the argument.
+            The result is rounded to an integer by adding 1/2, taking the
+            floor of the result, and casting the result to type int.
+        </description>
+        <name>rint</name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>double rint(double)</function-signature>
+        <example>
+            &lt;c:out value="${functions:rint(9 * tag.references.size / totalTagUsage)}"&gt;
+        </example>
+    </function>
     
     <function>
         <description>Returns the smaller of two long values.</description>

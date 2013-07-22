@@ -41,30 +41,18 @@
 package org.jahia.test.bin;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.test.JahiaAdminUser;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
-<<<<<<< .working
-import org.jahia.data.templates.JahiaTemplatesPackage;
-=======
 import org.jahia.test.SurefireTestNGXMLResultFormatter;
-import org.jahia.exceptions.JahiaException;
->>>>>>> .merge-right.r46763
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
-<<<<<<< .working
-=======
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.context.WebApplicationContext;
->>>>>>> .merge-right.r46763
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,9 +137,9 @@ public class TestServlet extends BaseTestController {
                     String className = pathInfo.substring(pathInfo
                             .lastIndexOf('/') + 1);
                     try {
-                        Class testClass = Class.forName(className);
-                        List<Class> classes = getTestClasses(testClass,
-                                new ArrayList<Class>());
+                        Class<?> testClass = Class.forName(className);
+                        List<Class<?>> classes = getTestClasses(testClass,
+                                new ArrayList<Class<?>>());
                         if (!classes.isEmpty()) {
                             myTestNG.setTestClasses(classes
                                     .toArray(new Class[classes.size()]));
@@ -165,6 +153,7 @@ public class TestServlet extends BaseTestController {
                 myTestNG.setPreserveOrder(true);
                 myTestNG.run();
             } else if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*")) {
+
                 final Set<String> ignoreTests = getIgnoreTests();
                 // Execute one test
                 String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);

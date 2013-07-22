@@ -202,7 +202,7 @@ public class ChangedPropertyFact implements Updateable {
                         Value[] oldValues = property.getValues();
                         Value[] newValues = new Value[oldValues.length + values.length];
                         System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-                        System.arraycopy(values, oldValues.length, newValues, 0, values.length);
+                        System.arraycopy(values, 0, newValues, oldValues.length, values.length);
                         property.setValue(newValues);
                     } else {
                         property = node.setProperty(name, values);

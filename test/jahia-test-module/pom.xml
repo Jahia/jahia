@@ -332,6 +332,7 @@
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+<<<<<<< .working
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -425,6 +426,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+=======
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.5</version>
+        </dependency>        
+>>>>>>> .merge-right.r46763
     </dependencies>
 
     <build>

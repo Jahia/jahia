@@ -691,13 +691,13 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             />
 
     <cache
-            name="org.hibernate.cache.StandardQueryCache"
+            name="org.hibernate.cache.internal.StandardQueryCache"
             eternal="false"
             overflowToDisk="true"
             />
 
     <cache
-            name="org.hibernate.cache.UpdateTimestampsCache"
+            name="org.hibernate.cache.spi.UpdateTimestampsCache"
             eternal="true"
             overflowToDisk="true"
             />

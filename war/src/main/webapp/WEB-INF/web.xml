@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5" id="WebApp_Jahia">
 
     <display-name>Jahia</display-name>
 
     <context-param>
-    	<description>Required on IBM WebSphere to disable deployment into a built-in portlet container and allow deployment into a custom portlet container (Pluto)</description>
+        <description>Required on IBM WebSphere to disable deployment into a built-in portlet container and allow
+            deployment into a custom portlet container (Pluto)
+        </description>
         <param-name>com.ibm.websphere.portletcontainer.PortletDeploymentEnabled</param-name>
         <param-value>false</param-value>
     </context-param>
-    
+
     <context-param>
         <description>
             The location of Spring's configuration files used by the listener upon startup
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,classpath*:org/jahia/defaults/config/**/applicationcontext-override-*.xml,WEB-INF/etc/spring/**/applicationcontext-*.xml,WEB-INF/etc/spring/**/applicationcontext-override-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-override-*.xml</param-value>
+        <param-value>
+            classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,classpath*:org/jahia/defaults/config/**/applicationcontext-override-*.xml,WEB-INF/etc/spring/**/applicationcontext-*.xml,WEB-INF/etc/spring/**/applicationcontext-override-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-override-*.xml
+        </param-value>
     </context-param>
 
     <context-param>
@@ -29,7 +32,7 @@
         <param-name>log4jRefreshInterval</param-name>
         <param-value>60000</param-value>
     </context-param>
-    
+
     <context-param>
         <!-- if you have trouble with the JDK detection code, you might want
              to remove the following parameter. Please note that this is here
@@ -39,12 +42,18 @@
         <param-value>1.6 &lt;= x &lt; 1.8</param-value>
     </context-param>
 
+    <context-param>
+        <description>Spring Expression Language Support</description>
+        <param-name>springJspExpressionSupport</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
     <filter>
-    	<description>
-	      The following filter to use SPNEGO authentication is
-	      configured in applicationcontext-spnego.xml.
-	      It can be enabled in the jahia.advanced.properties.
-    	</description>
+        <description>
+            The following filter to use SPNEGO authentication is
+            configured in applicationcontext-spnego.xml.
+            It can be enabled in the jahia.advanced.properties.
+        </description>
         <filter-name>SpnegoHttpFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
     </filter>
@@ -55,11 +64,12 @@
     </filter>
 
     <filter>
-    	<filter-name>UrlRewriteFilter</filter-name>
+        <filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <init-param>
             <param-name>renderApplicationContextAttribute</param-name>
-            <param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet</param-value>
+            <param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet
+            </param-value>
         </init-param>
         <init-param>
             <param-name>targetFilterLifecycle</param-name>
@@ -81,24 +91,25 @@
             <description>
                 The minimal error response code to fire an event.
                 For example the value 500 will only fire errorOccurred event for critical events.
-                In case the value is set to 400, also the "bad request", "unauthorized", "forbidden", "resource not found" errors will be reported 
+                In case the value is set to 400, also the "bad request", "unauthorized", "forbidden", "resource not
+                found" errors will be reported
             </description>
             <param-name>minimalErrorCode</param-name>
             <param-value>500</param-value>
         </init-param>
     </filter>
-    
+
     <filter>
-    	<description>Sets request character encoding if it is not set already</description>
-    	<filter-name>CharacterEncodingFilter</filter-name>
-    	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    	<init-param>
-    		<description>Which encoding should we set?</description>
-    		<param-name>encoding</param-name>
-    		<param-value>UTF-8</param-value>
-    	</init-param>
+        <description>Sets request character encoding if it is not set already</description>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <description>Which encoding should we set?</description>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
     </filter>
-    
+
     <filter>
         <filter-name>ShindigAuthFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
@@ -122,7 +133,7 @@
     </filter>
 
     <filter>
-    	<description>Allows temporary disabling request serving and switching to a maintenance mode.</description>
+        <description>Allows temporary disabling request serving and switching to a maintenance mode.</description>
         <filter-name>MaintenanceFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
@@ -137,7 +148,9 @@
     </filter>
 
     <filter>
-        <description>Protects access to the content manager and content picker by enforcing permission checks and validating parameters.</description>
+        <description>Protects access to the content manager and content picker by enforcing permission checks and
+            validating parameters.
+        </description>
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
@@ -150,16 +163,16 @@
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
-	<filter-mapping>
-		<filter-name>MaintenanceFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping> 
 
-	<filter-mapping>
-		<filter-name>LicenseFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping> 
+    <filter-mapping>
+        <filter-name>MaintenanceFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>LicenseFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>shiroFilter</filter-name>
@@ -179,11 +192,11 @@
     </filter-mapping>
 
     <filter-mapping>
-       <filter-name>UrlRewriteFilter</filter-name>
-       <url-pattern>/*</url-pattern>
-       <dispatcher>REQUEST</dispatcher>
-       <dispatcher>FORWARD</dispatcher>
-       <dispatcher>ERROR</dispatcher>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <filter-mapping>
@@ -197,7 +210,7 @@
         <url-pattern>/*</url-pattern>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-    
+
     <filter-mapping>
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <url-pattern>/engines/contentpicker.jsp</url-pattern>
@@ -210,41 +223,41 @@
         <filter-name>CSSChannelFilter</filter-name>
         <url-pattern>*.css</url-pattern>
     </filter-mapping>
-<!-- Shindig filter mappings -->
+    <!-- Shindig filter mappings -->
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/social/*</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/social/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/ifr</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/gadgets/ifr</url-pattern>
     </filter-mapping>
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/makeRequest</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/gadgets/makeRequest</url-pattern>
     </filter-mapping>
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/api/rpc/*</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/gadgets/api/rpc/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/api/rest/*</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/gadgets/api/rest/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/rpc/*</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/rpc/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/rest/*</url-pattern>
+        <filter-name>ShindigAuthFilter</filter-name>
+        <url-pattern>/rest/*</url-pattern>
     </filter-mapping>
-<!-- End of Shindig filter mappings -->   
+    <!-- End of Shindig filter mappings -->
 
     <listener>
         <listener-class>org.jahia.bin.listeners.InitLoggingConfigListener</listener-class>
     </listener>
-    
+
     <listener>
         <listener-class>org.jahia.bin.listeners.JahiaContextLoaderListener</listener-class>
     </listener>
@@ -386,17 +399,17 @@
         <init-param>
             <description>
                 Defines how a missing authorization header should be handled.
-                 1) If this init-param is missing, a 401 response is generated.
-                    This is suitable for clients (eg. webdav clients) for which
-                    sending a proper authorization header is not possible if the
-                    server never sent a 401.
-                 2) If this init-param is present with an empty value,
-                    null-credentials are returned, thus forcing an null login
-                    on the repository.
-                 3) If this init-param is present with the value 'guestcredentials'
-                    java.jcr.GuestCredentials are used to login to the repository.
-                 4) If this init-param has a 'user:password' value, the respective
-                    simple credentials are generated.
+                1) If this init-param is missing, a 401 response is generated.
+                This is suitable for clients (eg. webdav clients) for which
+                sending a proper authorization header is not possible if the
+                server never sent a 401.
+                2) If this init-param is present with an empty value,
+                null-credentials are returned, thus forcing an null login
+                on the repository.
+                3) If this init-param is present with the value 'guestcredentials'
+                java.jcr.GuestCredentials are used to login to the repository.
+                4) If this init-param has a 'user:password' value, the respective
+                simple credentials are generated.
             </description>
             <param-name>missing-auth-mapping</param-name>
             <param-value></param-value>
@@ -460,15 +473,16 @@
             <param-name>csrf-protection</param-name>
             <param-value>host1.domain.com,host2.domain.org</param-value>
         </init-param>
-        -->       <load-on-startup>5</load-on-startup>
+        -->
+        <load-on-startup>5</load-on-startup>
     </servlet>
 
     <!-- ====================================================================== -->
     <!-- R M I   B I N D I N G   S E R V L E T                                  -->
     <!-- ====================================================================== -->
     <servlet>
-      <servlet-name>RMI</servlet-name>
-      <servlet-class>org.apache.jackrabbit.servlet.remote.RemoteBindingServlet</servlet-class>
+        <servlet-name>RMI</servlet-name>
+        <servlet-class>org.apache.jackrabbit.servlet.remote.RemoteBindingServlet</servlet-class>
     </servlet>
 
     <servlet>
@@ -519,7 +533,9 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-gwt*.xml,WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml</param-value>
+            <param-value>
+                classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-gwt*.xml,WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml
+            </param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>
@@ -532,24 +548,26 @@
         <servlet-class>org.jahia.bin.JahiaDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-renderer*.xml,WEB-INF/etc/spring/servlet-applicationcontext-renderer*.xml</param-value>
+            <param-value>
+                classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-renderer*.xml,WEB-INF/etc/spring/servlet-applicationcontext-renderer*.xml
+            </param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>
             <param-value>false</param-value>
         </init-param>
     </servlet>
-    
+
     <servlet>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
-        	<param-name>contextAttribute</param-name>
-        	<param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
+            <param-name>contextAttribute</param-name>
+            <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
         </init-param>
     </servlet>
-    
-<!-- Quercus PHP servlet -->
+
+    <!-- Quercus PHP servlet -->
     <servlet>
         <servlet-name>Quercus Servlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -558,14 +576,14 @@
             <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
         </init-param>
     </servlet>
-<!-- End of Quercus PHP servlet -->
+    <!-- End of Quercus PHP servlet -->
 
     <!-- OSGi Proxy Servlet -->
     <servlet>
         <servlet-name>osgiProxy</servlet-name>
         <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-    </servlet>    
+    </servlet>
 
     <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have
          the highest load-on-startup value. This servlet may also be queried to check if the server has completed
@@ -605,7 +623,9 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-webflow*.xml,WEB-INF/etc/spring/servlet-applicationcontext-webflow*.xml</param-value>
+            <param-value>
+                classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-webflow*.xml,WEB-INF/etc/spring/servlet-applicationcontext-webflow*.xml
+            </param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>
@@ -616,7 +636,7 @@
             <param-value>false</param-value>
         </init-param>
     </servlet>
-    
+
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -630,7 +650,7 @@
         <servlet-name>WelcomeServlet</servlet-name>
         <url-pattern>/welcome/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>ValidateTicket</servlet-name>
         <url-pattern>/validateTicket</url-pattern>
@@ -679,13 +699,13 @@
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>RendererDispatcherServlet</servlet-name>
         <url-pattern>/cms/*</url-pattern>
     </servlet-mapping>
 
-<!-- Shindig servlet mappings -->
+    <!-- Shindig servlet mappings -->
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <url-pattern>/gadgets/js/*</url-pattern>
@@ -746,9 +766,9 @@
         <servlet-name>ShindigDispatcherServlet</servlet-name>
         <url-pattern>/oauth/*</url-pattern>
     </servlet-mapping>
-<!-- End of Shindig servlet mappings -->
+    <!-- End of Shindig servlet mappings -->
 
-<!-- Quercus PHP mapping -->
+    <!-- Quercus PHP mapping -->
     <servlet-mapping>
         <servlet-name>Quercus Servlet</servlet-name>
         <url-pattern>*.php</url-pattern>
@@ -784,7 +804,7 @@
         <servlet-name>FlowDispatcherServlet</servlet-name>
         <url-pattern>/flow/*</url-pattern>
     </servlet-mapping>
-    
+
     <!-- Session timeout value is set in minutes. Comment this section out
          in order to set the timeout time back to the server's value  -->
     <!--
@@ -1031,7 +1051,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mathml</extension>
-        <mime-type>application/mathml+xml</mime-type> 
+        <mime-type>application/mathml+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>me</extension>
@@ -1160,7 +1180,7 @@
     </mime-mapping>
     <mime-mapping>
         <!-- OpenDocument Drawing Template -->
-        <extension>otg </extension>
+        <extension>otg</extension>
         <mime-type>application/vnd.oasis.opendocument.graphics-template</mime-type>
     </mime-mapping>
     <mime-mapping>
@@ -1176,7 +1196,7 @@
     <mime-mapping>
         <!-- OpenDocument Spreadsheet Template -->
         <extension>ots</extension>
-        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template </mime-type>
+        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template</mime-type>
     </mime-mapping>
     <mime-mapping>
         <!-- OpenDocument Text Template -->
@@ -1303,12 +1323,12 @@
         <extension>shar</extension>
         <mime-type>application/x-shar</mime-type>
     </mime-mapping>
-<!--
-    <mime-mapping>
-        <extension>shtml</extension>
-        <mime-type>text/x-server-parsed-html</mime-type>
-    </mime-mapping>
--->
+    <!--
+        <mime-mapping>
+            <extension>shtml</extension>
+            <mime-type>text/x-server-parsed-html</mime-type>
+        </mime-mapping>
+    -->
     <mime-mapping>
         <extension>smf</extension>
         <mime-type>audio/x-midi</mime-type>

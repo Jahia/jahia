@@ -76,6 +76,7 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
@@ -257,10 +258,10 @@ public class TemplatePackageRegistry {
 
     public Set<ModuleVersion> getAvailableVersionsForModule(String rootFolder) {
         if (packagesWithVersionByFilename.containsKey(rootFolder)) {
-            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>)  packagesWithVersionByFilename.get(rootFolder).keySet());
+            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionByFilename.get(rootFolder).keySet());
         }
         if (packagesWithVersion.containsKey(rootFolder)) {
-            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>)  packagesWithVersion.get(rootFolder).keySet());
+            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersion.get(rootFolder).keySet());
         }
         return Collections.emptySet();
     }
@@ -854,8 +855,20 @@ public class TemplatePackageRegistry {
                 }
             }
 
+            if (bean.getClass().getName().contains("HandlerMapping")) {
+                logger.info("classname: {}", bean.getClass().getName());
+                logger.info("instanceof: {}", bean instanceof HandlerMapping);
+                logger.info("bean CL:\n{}", bean.getClass().getClassLoader());
+
+                logger.info("HandlerMapping CL:\n{}", HandlerMapping.class.getClassLoader());
+            }
             if (bean instanceof HandlerMapping) {
                 templatePackageRegistry.springHandlerMappings.add((HandlerMapping) bean);
+                try {
+                    logger.info("Map {}", ((SimpleUrlHandlerMapping) bean).getUrlMap());
+                } catch (Exception e) {
+
+                }
             }
 
             if (bean instanceof ProviderFactory) {

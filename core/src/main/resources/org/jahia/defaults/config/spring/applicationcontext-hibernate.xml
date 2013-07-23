@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/jahia"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
           depends-on="settingsBean">
         <property name="dataSource">
             <ref bean="dataSource"/>
@@ -21,70 +21,38 @@
         </property>
         <property name="packagesToScan" value="org.jahia.modules"/>
 
-        <property name="mappingResources">
-            <list>
-                <!-- We have forked these files to activate Hibernate caching, make sure you sync them when updating
-                     jBPM. -->
-                <value>jbpm/hibernate/jbpm.repository.hbm.xml</value>
-                <value>jbpm/hibernate/jbpm.execution.hbm.xml</value>
-                <value>jbpm/hibernate/jbpm.history.hbm.xml</value>
-                <value>jbpm/hibernate/jbpm.task.hbm.xml</value>
-                <value>jbpm/hibernate/jbpm.identity.hbm.xml</value>
-            </list>
-        </property>
-
-        <property name="entityCacheStrategies">
-            <props>
-                <prop key="org.jahia.services.history.HistoryEntry">read-write</prop>
-            </props>
-        </property>
-
-        <property name="collectionCacheStrategies">
-           <props>
-             <prop key="org.jbpm.pvm.internal.repository.DeploymentImpl.resources">read-write</prop>
-             <prop key="org.jbpm.pvm.internal.repository.DeploymentImpl.objectProperties">read-write</prop>
-           </props>
-        </property>
-
         <property name="hibernateProperties">
-			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-				<property name="properties">
-					<map>
-						<entry key="hibernate.dialect" value="${hibernate.dialect}"/>
-						<entry key="hibernate.hbm2ddl.auto" value="none"/>
-						<entry key="hibernate.show_sql" value="false"/>
-						<entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.EhCacheProvider"/>
-                        <entry key="hibernate.cache.use_second_level_cache" value="true" />
-		                <!-- If you use an invalidation-based cache, make sure you turn the query cache off ! -->
-						<entry key="hibernate.cache.use_query_cache" value="true"/>
-		                <!-- put the batch size property to 0 if you need to debug -->
-						<entry key="hibernate.jdbc.batch_size" value="16"/>
-						<entry key="hibernate.default_batch_fetch_size" value="16"/>
-						<entry key="hibernate.max_fetch_depth" value="3"/>
-						<entry key="hibernate.query.substitutions" value="true 1, false 0"/>
-						<entry key="hibernate.generate_statistics" value="false"/>
-						<entry key="hibernate.cache.use_structured_entries" value="false"/>
-						<entry key="net.sf.ehcache.configurationResourceName">
-							<bean class="org.jahia.settings.EhCacheConfigFactoryBean">
-								<constructor-arg index="0" value="/ehcache-hibernate.xml"/>
-								<constructor-arg index="1" value="${cluster.activated}"/>
-							</bean>
-						</entry>
-					</map>
-				</property>
-			</bean>
+            <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+                <property name="properties">
+                    <map>
+                        <entry key="hibernate.dialect" value="${hibernate.dialect}"/>
+                        <entry key="hibernate.hbm2ddl.auto" value="none"/>
+                        <entry key="hibernate.show_sql" value="false"/>
+                        <entry key="hibernate.cache.region.factory_class"
+                               value="org.hibernate.cache.ehcache.EhCacheRegionFactory"/>
+                        <entry key="hibernate.cache.use_second_level_cache" value="true"/>
+                        <!-- If you use an invalidation-based cache, make sure you turn the query cache off ! -->
+                        <entry key="hibernate.cache.use_query_cache" value="true"/>
+                        <!-- put the batch size property to 0 if you need to debug -->
+                        <entry key="hibernate.jdbc.batch_size" value="16"/>
+                        <entry key="hibernate.default_batch_fetch_size" value="16"/>
+                        <entry key="hibernate.max_fetch_depth" value="3"/>
+                        <entry key="hibernate.query.substitutions" value="true 1, false 0"/>
+                        <entry key="hibernate.generate_statistics" value="false"/>
+                        <entry key="hibernate.cache.use_structured_entries" value="false"/>
+                        <entry key="net.sf.ehcache.configurationResourceName">
+                            <bean class="org.jahia.settings.EhCacheConfigFactoryBean">
+                                <constructor-arg index="0" value="/ehcache-hibernate.xml"/>
+                                <constructor-arg index="1" value="${cluster.activated}"/>
+                            </bean>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
         </property>
-        <property name="eventListeners">
-            <map>
-                <entry key="merge">
-                    <bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
-                </entry>
-            </map>
-        </property>
-        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory">
             <ref local="sessionFactory"/>
         </property>

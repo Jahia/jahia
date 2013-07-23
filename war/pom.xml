@@ -115,7 +115,8 @@
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
                             <soyc>false</soyc>
-                            <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
+                            <extraJvmArgs>-Xmx1280m -Xss2048k
+                                -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
                             </extraJvmArgs>
                             <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
@@ -157,7 +158,9 @@
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
                             <force>true</force>
-                            <extraJvmArgs>-Xmx1024m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
+                            <extraJvmArgs>-Xmx1024m -Xss2048k
+                                -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory
+                            </extraJvmArgs>
                             <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <module>${singleModuleName}</module>
@@ -542,17 +545,9 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <version>4.0.7</version>
+            <version>${drools.version}</version>
             <scope>runtime</scope>
             <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jdt</groupId>
-                    <artifactId>core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>

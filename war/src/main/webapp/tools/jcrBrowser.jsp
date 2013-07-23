@@ -264,14 +264,14 @@ function go(id1, value1, id2, value2, id3, value3) {
             </c:when>
             <c:when test="${param.action == 'unlock'}">
                 <%
-                JCRContentUtils.clearAllLocks(node.getPath(), false, jcrSession);
+                JCRContentUtils.clearAllLocks(node.getPath(), false, jcrSession.getWorkspace().getName());
                 jcrSession.save();
                 %>
                 <p style="color: blue">Locks cleared for node <strong>${fn:escapeXml(node.path)}</strong></p>
             </c:when>
             <c:when test="${param.action == 'unlockTree'}">
                 <%
-                JCRContentUtils.clearAllLocks(node.getPath(), true, jcrSession);
+                JCRContentUtils.clearAllLocks(node.getPath(), true, jcrSession.getWorkspace().getName());
                 jcrSession.save();
                 %>
                 <p style="color: blue">Locks cleared for node <strong>${fn:escapeXml(node.path)}</strong> and its children</p>

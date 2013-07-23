@@ -413,7 +413,7 @@ public class ContentManagerHelper {
                                    JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
-        
+
         // perform a check to prevent pasting content to itself or its children
         for (Iterator<String> iterator = pathsToCopy.iterator(); iterator.hasNext();) {
             String toCopy = iterator.next();
@@ -1019,7 +1019,7 @@ public class ContentManagerHelper {
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession,Locale uiLocale) throws GWTJahiaServiceException {
         try {
             if (currentUserSession.getUser().isRoot()) {
-                JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession);
+                JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession.getWorkspace().getName());
             } else {
                 logger.error("Error when clearing all locks on node " + path);
                 throw new GWTJahiaServiceException(MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.when.clearing.all.locks.on.node", uiLocale), path, currentUserSession.getUser().getUserKey()));
@@ -1051,21 +1051,10 @@ public class ContentManagerHelper {
             try {
                 if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
-                } else if (node.getLockedLocales().contains(currentUserSession.getLocale())) {
+                } else if (node.getLockedLocales().contains(currentUserSession.getLocale()) || (node.getLockedLocales().isEmpty() && node.isLocked())) {
                     if (!toLock) {
                         try {
-                        	List<Locale> lockedlocals = node.getLockedLocales();
-                        	Locale currentLocale = currentUserSession.getLocale();
-                        	if(lockedlocals != null && lockedlocals.contains(currentLocale)) {
-                        		JCRNodeWrapper ln = currentUserSession.getNode(node.getPath() + "/j:translation_" + currentLocale.toString());
-                        		if(ln != null && ln.isLocked()) {
-                        	      ln.unlock();
-                                } 
-                        	}else {
-                        		if((lockedlocals == null || lockedlocals.isEmpty()) && node.isLocked()) {
-                        			node.unlock();
-                        		}
-                            }
+                            node.unlock();
                         } catch (LockException e) {
                             logger.error(e.toString(), e);
                             missedPaths
@@ -1084,18 +1073,7 @@ public class ContentManagerHelper {
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
                     } else {
-                    	List<Locale> lockedlocals = node.getLockedLocales();
-                    	Locale currentLocale = currentUserSession.getLocale();
-                    	if(lockedlocals != null && lockedlocals.contains(currentLocale)) {
-                    		JCRNodeWrapper ln = currentUserSession.getNode(node.getPath() + "/j:translation_" + currentLocale.toString());
-                    		if(ln != null && ln.isLocked()) {
-                    	      ln.unlock();
-                            } 
-                    	} else {
-                    		if((lockedlocals == null || lockedlocals.isEmpty()) && node.isLocked()) {
-                    			node.unlock();
-                    		}
-                    	}
+                        node.unlock();
                     }
                 }
             } catch (RepositoryException e) {

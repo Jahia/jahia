@@ -29,6 +29,7 @@ import org.kie.api.task.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
 
 import java.util.*;
 
@@ -52,9 +53,19 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private KieSession kieSession;
     private TaskService taskService;
     private JBPMListener listener = new JBPMListener(this);
+    private List<Resource> processes;
+    private List<Resource> mailTemplates;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
+    }
+
+    public void setProcesses(List<Resource> processes) {
+        this.processes = processes;
+    }
+
+    public void setMailTemplates(List<Resource> mailTemplates) {
+        this.mailTemplates = mailTemplates;
     }
 
     public void setKey(String key) {
@@ -88,6 +99,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         JBPMTaskLifeCycleEventListener.setProvider(this);
         JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
         JBPMTaskLifeCycleEventListener.setTaskService(taskService);
+    }
+
+    public void start() {
+
     }
 
     @Override

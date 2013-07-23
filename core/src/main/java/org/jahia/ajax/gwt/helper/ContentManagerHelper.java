@@ -968,7 +968,7 @@ public class ContentManagerHelper {
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             if (currentUserSession.getUser().isRoot()) {
-                JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession);
+                JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession.getWorkspace().getName());
             } else {
                 logger.error("Error when clearing all locks on node " + path);
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.when.clearing.all.locks.on.node", uiLocale, path, currentUserSession.getUser().getUserKey()));
@@ -1000,6 +1000,7 @@ public class ContentManagerHelper {
             try {
                 if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
+<<<<<<< .working
                 } else {
                     if (node.getLockedLocales().contains(currentUserSession.getLocale()) ||
                             (!node.hasI18N(currentUserSession.getLocale()) && node.isLocked())) {
@@ -1011,6 +1012,12 @@ public class ContentManagerHelper {
                                 missedPaths
                                         .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                             }
+=======
+                } else if (node.getLockedLocales().contains(currentUserSession.getLocale()) || (node.getLockedLocales().isEmpty() && node.isLocked())) {
+                    if (!toLock) {
+                        try {
+                            node.unlock();
+>>>>>>> .merge-right.r46773
                         } else {
                             String lockOwner = node.getLockOwner();
                             if (lockOwner != null && !lockOwner.equals(user.getUsername())) {
@@ -1027,6 +1034,18 @@ public class ContentManagerHelper {
                             node.unlock();
                         }
                     }
+<<<<<<< .working
+=======
+                } else {
+                    if (toLock) {
+                        if (!node.lockAndStoreToken("user")) {
+                            missedPaths
+                                    .add(new StringBuilder(node.getName()).append(": repository exception").toString());
+                        }
+                    } else {
+                        node.unlock();
+                    }
+>>>>>>> .merge-right.r46773
                 }
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);

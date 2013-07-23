@@ -2658,11 +2658,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
             Property property = objectNode.getProperty(Constants.JAHIA_LOCKTYPES);
             Value[] oldValues = property.getValues();
-            for (Value value : oldValues) {
-                if (value.getString().equals(l)) {
-                    return;
-                }
-            }
             Value[] newValues = new Value[oldValues.length + 1];
             System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
             newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
@@ -2697,7 +2692,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public List<Locale> getLockedLocales() throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
-        NodeIterator ni = objectNode.getNodes("j:translation*");
+        NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
         while (ni.hasNext()) {
             Node n = ni.nextNode();
             if (n.isLocked()) {
@@ -2830,22 +2825,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (currentType.equals(type)) {
                     if (userID.equals(owner)) {
                         objectNode.getSession().addLockToken(token);
-                        final Map<String, Value> valueList = new HashMap<String, Value>();
-                        for (Value v : types) {
-                            valueList.put(v.getString(), v);
-                        }
-                        valueList.remove(value.getString());
                         getSession().checkout(objectNode);
-
+                        List<Value> valueList = new ArrayList<Value>(Arrays.asList(types));
+                        valueList.remove(value);
                         if (valueList.isEmpty()) {
                             getSession().save();
                             objectNode.unlock();
                             property.remove();
                             objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
                         } else {
-                            objectNode.setProperty(Constants.JAHIA_LOCKTYPES, valueList.values().toArray(new Value[valueList.size()]));
+                            objectNode.setProperty(Constants.JAHIA_LOCKTYPES, valueList.toArray(new Value[valueList.size()]));
                         }
                         getSession().save();
+
+                        return;
                     }
                 }
             }
@@ -2855,10 +2848,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public void clearAllLocks() throws RepositoryException {
-        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale(),
-                false)) {
-            Node trans = getI18N(session.getLocale(), false);
-            if (trans.isLocked()) {
+        if (!isNodeType(Constants.JAHIANT_TRANSLATION)) {
+            NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
+            while (ni.hasNext()) {
+                Node trans = (Node) ni.next();
                 clearAllLocks(trans);
             }
         }
@@ -2871,17 +2864,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void clearAllLocks(final Node objectNode) throws RepositoryException {
-        if (objectNode.hasProperty("j:locktoken")) {
-            Property property = objectNode.getProperty("j:locktoken");
-            String token = property.getString();
-
-            objectNode.getSession().addLockToken(token);
-
-            getSession().checkout(objectNode);
+        getSession().checkout(objectNode);
+        if (objectNode.isLocked()) {
             objectNode.unlock();
-            property.remove();
+        }
+        if (objectNode.hasProperty(Constants.JAHIA_LOCKTOKEN)) {
+            objectNode.getProperty(Constants.JAHIA_LOCKTOKEN).remove();
+            getSession().save();
+        }
+        if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
             objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
-
             getSession().save();
         }
     }

@@ -179,17 +179,26 @@ public final class JCRContentUtils implements ServletContextAware {
      *
      * @param path               the path of the node remove locks from
      * @param processChildNodes  do we need to also remove locks in children?
-     * @param currentUserSession current JCR session
+     * @param workspace          workspace
      * @throws RepositoryException in case of an error
      */
-    public static void clearAllLocks(String path, boolean processChildNodes,
-                                     JCRSessionWrapper currentUserSession) throws RepositoryException {
-        JCRNodeWrapper node = currentUserSession.getNode(path);
+    public static void clearAllLocks(final String path, final boolean processChildNodes, final String workspace) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                clearAllLocks(path, processChildNodes, session);
+                return null;
+            }
+        });
+    }
+
+    private static void clearAllLocks(String path, boolean processChildNodes,
+                                     JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper node = session.getNode(path);
         node.clearAllLocks();
         if (processChildNodes) {
             for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
                 JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
-                clearAllLocks(child.getPath(), processChildNodes, currentUserSession);
+                clearAllLocks(child.getPath(), processChildNodes, session);
             }
         }
     }

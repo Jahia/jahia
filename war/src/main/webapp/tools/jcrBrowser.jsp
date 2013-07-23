@@ -290,6 +290,7 @@
                 }
                 node.addMixin(request.getParameter("value"));
                 jcrSession.save();
+<<<<<<< .working
             %>
             <p style="color: blue">Mixin ${param.value} successfully added to the node <strong>${fn:escapeXml(node.path)}</strong></p>
         </c:when>
@@ -340,6 +341,33 @@
     <a href="#parent" onclick="go('uuid', '${node.parent.identifier}'); return false;">[..]</a>
     <c:if test="${fn:contains(fn:substringAfter(node.path, '/'), '/')}">
         <a href="#root" onclick="go('uuid', 'cafebabe-cafe-babe-cafe-babecafebabe'); return false;">[/]</a>
+=======
+                %>
+                <p style="color: blue">Mixin ${param.value} successfully added to the node <strong>${fn:escapeXml(node.path)}</strong></p>
+            </c:when>
+            <c:when test="${param.action == 'lock'}">
+                <%
+                node.lockAndStoreToken("user");
+                jcrSession.save();
+                %>
+                <p style="color: blue">Node <strong>${fn:escapeXml(node.path)}</strong> locked</p>
+            </c:when>
+            <c:when test="${param.action == 'unlock'}">
+                <%
+                JCRContentUtils.clearAllLocks(node.getPath(), false, jcrSession.getWorkspace().getName());
+                jcrSession.save();
+                %>
+                <p style="color: blue">Locks cleared for node <strong>${fn:escapeXml(node.path)}</strong></p>
+            </c:when>
+            <c:when test="${param.action == 'unlockTree'}">
+                <%
+                JCRContentUtils.clearAllLocks(node.getPath(), true, jcrSession.getWorkspace().getName());
+                jcrSession.save();
+                %>
+                <p style="color: blue">Locks cleared for node <strong>${fn:escapeXml(node.path)}</strong> and its children</p>
+            </c:when>
+        </c:choose>
+>>>>>>> .merge-right.r46773
     </c:if>
     <c:set var="breadcrumbs" value=""/>
     <c:forTokens items="${node.path}" delims="/" var="pathItem"

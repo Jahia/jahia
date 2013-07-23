@@ -719,7 +719,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             undeployModule(module);
         }
-        
+
+        activateModuleVersion(module.getRootFolder(), releaseInfo.getNextVersion());
+
         if (releaseInfo.isPublishToMaven() && releaseInfo.isPublishToCatalog()) {
             publishToCatalog(module, releaseVersion, releaseInfo, model);
         }
@@ -728,7 +730,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void publishToCatalog(final JahiaTemplatesPackage module, String releaseVersion,
-            ModuleReleaseInfo releaseInfo, Model model) {
+            ModuleReleaseInfo releaseInfo, Model model) throws IOException {
         Map<String, String> forgeParams = new HashMap<String, String>();
         // module
         forgeParams.put("moduleName", module.getName());
@@ -757,8 +759,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         forgeParams.put("activeVersion", "true");
 
         forgeParams.put("versionNumber", releaseVersion);
-        String url = computeModuleJarUrl(releaseVersion, releaseInfo, model);
-        forgeParams.put("url", url);
+        forgeParams.put("url", releaseInfo.getArtifactUrl());
 
         releaseInfo.setCatalogModulePageUrl(createForgeModule(releaseInfo.getCatalogUrl(),
                 releaseInfo.getCatalogUsername(), releaseInfo.getCatalogPassword(), forgeParams));
@@ -795,13 +796,19 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         String artifactId = model.getArtifactId();
         File pom = new File(sources, "pom.xml");
         File generatedWar = null;
+        boolean publishToMaven = releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryId() != null
+                && releaseInfo.getRepositoryUrl() != null;
         if (scmUrl != null) {
             // release using maven-release-plugin
             String tag = StringUtils.replace(releaseVersion, ".", "_");
 
+            String goals = "install";
+            if (publishToMaven) {
+                goals = "deploy";
+            }
             String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
                     "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
-                    "-DignoreSnapshots=true", "-Dgoals=install", "--batch-mode" };
+                    "-DignoreSnapshots=true", "-Dgoals="+goals, "--batch-mode" };
             int ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
             if (ret > 0) {
                 cli.doMain(new String[] { "release:rollback" }, sources.getPath(), System.out, System.err);
@@ -829,8 +836,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             generatedWar = compileModule(sources).getFile();
             
-            if (releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryId() != null
-                    && releaseInfo.getRepositoryUrl() != null) {
+            if (publishToMaven) {
                 // deploy artifacts to Maven distribution server
                 int ret = cli.doMain(new String[] { "deploy", "-Dmaven.home=" + getMavenHome() },
                         sources.getPath(), System.out, System.err);
@@ -838,12 +844,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     logger.warn(
                             "mvn deploy:deploy failed for module {}. Please see server console output for details.",
                             sources.getPath());
+                    PomUtils.updateVersion(pom, lastVersion);
+                    throw new IOException("Maven invocation failed");
                 }
             }
 
             PomUtils.updateVersion(pom, nextVersion);
         }
-
+        if (publishToMaven) {
+            releaseInfo.setArtifactUrl(computeModuleJarUrl(releaseVersion, releaseInfo, model));
+        }
         return generatedWar;
     }
 
@@ -1603,7 +1613,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * Manage forge
      */
-    protected String createForgeModule(String url, String username, String password, Map<String, String> params) {
+    protected String createForgeModule(String url, String username, String password, Map<String, String> params) throws IOException {
         String moduleUrl = null;
         Map<String, String> headers = new HashMap<String, String>();
 
@@ -1617,8 +1627,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 JSONObject json = new JSONObject(result);
                 if (!json.isNull("moduleAbsoluteUrl")) {
                     moduleUrl = json.getString("moduleAbsoluteUrl");
+                } else if (!json.isNull("error")) {
+                    throw new IOException(json.getString("error"));
                 } else {
                     logger.warn("Cannot find 'moduleAbsoluteUrl' entry in the create module actin response: {}", result);
+                    throw new IOException("unknown");
                 }
             } catch (JSONException e) {
                 logger.error("Unable to parse the response of the module creation action. Cause: " + e.getMessage(), e);

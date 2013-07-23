@@ -64,6 +64,8 @@ public class ModuleReleaseInfo {
 
     private String repositoryUrl;
 
+    private String artifactUrl;
+
     public String getCatalogModulePageUrl() {
         return catalogModulePageUrl;
     }
@@ -98,6 +100,10 @@ public class ModuleReleaseInfo {
 
     public boolean isPublishToMaven() {
         return publishToMaven;
+    }
+
+    public String getArtifactUrl() {
+        return artifactUrl;
     }
 
     public void setCatalogModulePageUrl(String catalogModulePageUrl) {
@@ -136,4 +142,7 @@ public class ModuleReleaseInfo {
         this.repositoryUrl = repositoryUrl;
     }
 
+    public void setArtifactUrl(String artifactUrl) {
+        this.artifactUrl = artifactUrl;
+    }
 }

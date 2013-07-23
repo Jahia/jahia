@@ -134,10 +134,6 @@ public class ReleaseModuleWindow extends Window {
             setHeight(200);
             fsMaven = new FieldSet();
             fsMaven.setCheckboxToggle(true);
-            GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
-            if (siteNode.get("j:sourcesFolder") != null && siteNode.get("j:scmURI") != null) {
-                fsMaven.setCollapsible(false);
-            }
             final FormLayout fl = new FormLayout();
             fl.setLabelWidth(30);
             fl.setDefaultWidth(400);

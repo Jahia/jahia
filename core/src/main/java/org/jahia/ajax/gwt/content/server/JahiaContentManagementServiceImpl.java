@@ -1570,6 +1570,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             GWTJahiaNode node = moduleHelper.releaseModule(moduleName, releaseInfo, retrieveCurrentSession(null));
             RpcMap r = new RpcMap();
             r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, retrieveCurrentSession(), getUILocale()));
+            r.put("artifactUrl", releaseInfo.getArtifactUrl());
             r.put("catalogModulePageUrl", releaseInfo.getCatalogModulePageUrl());
             if (node != null) {
                 r.put("filename",node.getName());

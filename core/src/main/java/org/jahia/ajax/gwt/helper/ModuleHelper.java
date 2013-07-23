@@ -237,16 +237,13 @@ public class ModuleHelper {
             ModuleReleaseInfo releaseInfo = toModuleReleaseInfo(gwtReleaseInfo);
             f = templateManagerService.releaseModule(moduleName, releaseInfo, session);
             gwtReleaseInfo.setCatalogModulePageUrl(releaseInfo.getCatalogModulePageUrl());
+            gwtReleaseInfo.setArtifactUrl(releaseInfo.getArtifactUrl());
         } else {
             JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
             f = templateManagerService.compileModule(previous.getSourcesFolder()).getFile();
         }
         if (f == null) {
             return null;
-        }
-
-        if (nextVersion != null) {
-            templateManagerService.activateModuleVersion(moduleName, nextVersion);
         }
 
         JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");

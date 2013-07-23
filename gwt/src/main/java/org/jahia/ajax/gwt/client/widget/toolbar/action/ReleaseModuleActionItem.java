@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.extjs.gxt.ui.client.widget.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
@@ -57,10 +58,6 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -150,16 +147,17 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                 new BaseAsyncCallback<RpcMap>() {
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display(
+                        MessageBox.alert(
                                 Messages.get("label.error", "Error"),
                                 Messages.get("label.releaseModule.failure", "Module release failed") + ":\n"
-                                        + caught.getMessage());
+                                        + caught.getMessage(), null);
                     }
 
                     public void onSuccess(RpcMap result) {
                         linker.loaded();
                         GWTJahiaNode newModule = (GWTJahiaNode) result.get("newModule");
                         String filename = (String) result.get("filename");
+                        String artifactUrl = (String) result.get("artifactUrl");
                         String url = (String) result.get("downloadUrl");
                         String catalogModulePageUrl = (String) result.get("catalogModulePageUrl");
 
@@ -176,9 +174,15 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
                         window.removeAll();
                         window.setHeight(150);
-                        HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url
-                                + "\" target=\"_new\">" + filename + "</a>");
-                        window.add(link);
+
+                        if (artifactUrl != null) {
+                            window.add(new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + artifactUrl
+                                    + "\" target=\"_new\">" + artifactUrl + "</a>"));
+                        } else {
+                            window.add(new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url
+                                    + "\" target=\"_new\">" + filename + "</a>"));
+                        }
+
                         window.layout();
                         window.show();
                         if (catalogModulePageUrl != null && catalogModulePageUrl.length() > 0) {

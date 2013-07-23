@@ -54,6 +54,10 @@ public class GWTModuleReleaseInfo extends RpcMap {
         return (String) get("catalogModulePageUrl");
     }
 
+    public String getArtifactUrl() {
+        return (String) get("artifactUrl");
+    }
+
     public String getCatalogPassword() {
         return (String) get("catalogPassword");
     }
@@ -88,6 +92,10 @@ public class GWTModuleReleaseInfo extends RpcMap {
 
     public void setCatalogModulePageUrl(String pageUrl) {
         put("catalogModulePageUrl", pageUrl);
+    }
+
+    public void setArtifactUrl(String artifactUrl) {
+        put("artifactUrl", artifactUrl);
     }
 
     public void setCatalogPassword(String catalogPassword) {

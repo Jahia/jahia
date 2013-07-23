@@ -1000,42 +1000,21 @@ public class ContentManagerHelper {
             try {
                 if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
-<<<<<<< .working
-                } else {
-                    if (node.getLockedLocales().contains(currentUserSession.getLocale()) ||
-                            (!node.hasI18N(currentUserSession.getLocale()) && node.isLocked())) {
-                        if (!toLock) {
-                            try {
-                                node.unlock();
-                            } catch (LockException e) {
-                                logger.error(e.toString(), e);
-                                missedPaths
-                                        .add(new StringBuilder(node.getName()).append(": repository exception").toString());
-                            }
-=======
                 } else if (node.getLockedLocales().contains(currentUserSession.getLocale()) || (node.getLockedLocales().isEmpty() && node.isLocked())) {
                     if (!toLock) {
                         try {
                             node.unlock();
->>>>>>> .merge-right.r46773
-                        } else {
-                            String lockOwner = node.getLockOwner();
-                            if (lockOwner != null && !lockOwner.equals(user.getUsername())) {
-                                missedPaths.add(new StringBuilder(node.getName()).append(": locked by ").append(lockOwner).toString());
-                            }
+                        } catch (LockException e) {
+                            logger.error(e.toString(), e);
+                            missedPaths
+                                    .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
                     } else {
-                        if (toLock) {
-                            if (!node.lockAndStoreToken("user")) {
-                                missedPaths
-                                        .add(new StringBuilder(node.getName()).append(": repository exception").toString());
-                            }
-                        } else {
-                            node.unlock();
+                        String lockOwner = node.getLockOwner();
+                        if (lockOwner != null && !lockOwner.equals(user.getUsername())) {
+                            missedPaths.add(new StringBuilder(node.getName()).append(": locked by ").append(lockOwner).toString());
                         }
                     }
-<<<<<<< .working
-=======
                 } else {
                     if (toLock) {
                         if (!node.lockAndStoreToken("user")) {
@@ -1045,7 +1024,6 @@ public class ContentManagerHelper {
                     } else {
                         node.unlock();
                     }
->>>>>>> .merge-right.r46773
                 }
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);

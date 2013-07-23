@@ -40,11 +40,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         WorkflowObservationManagerAware {
 
     private transient static Logger logger = LoggerFactory.getLogger(JBPM6WorkflowProvider.class);
+    private transient static JBPM6WorkflowProvider instance = new JBPM6WorkflowProvider();
 
     private String key;
     private WorkflowService workflowService;
     private WorkflowObservationManager observationManager;
-    private static JBPM6WorkflowProvider instance;
     private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
     private KieRepository kieRepository;
@@ -52,6 +52,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private KieSession kieSession;
     private TaskService taskService;
     private JBPMListener listener = new JBPMListener(this);
+
+    public static JBPM6WorkflowProvider getInstance() {
+        return instance;
+    }
 
     public void setKey(String key) {
         this.key = key;

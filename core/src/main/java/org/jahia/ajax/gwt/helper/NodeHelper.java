@@ -595,7 +595,7 @@ class NodeHelper {
             n.setLockInfos(results);
             if (node.getSession().getLocale() != null) {
                 String l = node.getSession().getLocale().toString();
-                n.setCanLock(infos.isEmpty() || !infos.containsKey(l));
+                n.setCanLock(infos.isEmpty() || (!infos.containsKey(l) && infos.size() > 1));
                 n.setCanUnlock(infos.containsKey(null)
                         && infos.get(null).contains(username + ":user")
                         && (infos.size() == 1 || infos.containsKey(l)

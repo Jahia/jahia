@@ -45,7 +45,7 @@ import org.jahia.services.render.Resource;
 
 import java.util.Properties;
 
-public class TemplateCacheKeyPartGenerator implements CacheKeyPartGenerator {
+public class TemplateDefaultViewCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String getKey() {
         return "template";
@@ -53,23 +53,14 @@ public class TemplateCacheKeyPartGenerator implements CacheKeyPartGenerator {
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        String template;
-        if (resource.getContextConfiguration().equals("page") && resource.getNode().getPath().equals(
-                renderContext.getMainResource().getNode().getPath())) {
-            template = renderContext.getMainResource().getResolvedTemplate();
-
-        } else {
-            template = resource.getResolvedTemplate();
-        }
-        String defaultView = (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
-        if (defaultView != null && "default".equals(template)) {
-            template = defaultView;
-        }
-        return template;
+        return (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
     }
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
+        if (keyPart != null && !"null".equals(keyPart)) {
+            renderContext.getRequest().setAttribute("org.jahia.template.defaultView", keyPart);
+        }
         return keyPart;
     }
 

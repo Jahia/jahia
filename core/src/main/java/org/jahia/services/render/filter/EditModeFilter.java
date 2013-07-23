@@ -47,6 +47,7 @@ import net.htmlparser.jericho.StartTag;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class EditModeFilter extends AbstractFilter {
             List<StartTag> tags = source.getAllStartTags("a");
             for (StartTag tag : tags) {
                 String href = tag.getAttributeValue("href");
-                if (href != null && ((href.startsWith("/") && !href.startsWith(renderContext.getServletPath())) || href.contains("://"))) {
+                if (href != null && ((href.startsWith("/") && !href.startsWith(renderContext.getRequest().getContextPath() + renderContext.getServletPath())) || href.contains("://"))) {
                     if (tag.getAttributeValue("target") == null) {
                         document.insert(tag.getEnd()-1, " target=\"_parent\"");
                     }

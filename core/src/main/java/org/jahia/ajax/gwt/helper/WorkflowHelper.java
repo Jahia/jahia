@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -245,6 +246,16 @@ public class WorkflowHelper {
     }
 
     public void abortWorkflow(String processId, String provider) {
+        try {
+            Workflow w = service.getWorkflow(provider, processId, null);
+            if (w != null && w.getWorkflowDefinition().getWorkflowType().equals("publish")) {
+                List<String> info = (List<String>) w.getVariables().get("nodeIds");
+                String workspace = (String) w.getVariables().get("workspace");
+                JCRPublicationService.getInstance().unlockForPublication(info, workspace, "publication-process-"+processId);
+            }
+        } catch (Exception e) {
+            logger.error("Cannot clear workflow locks",e);
+        }
         service.abortProcess(processId, provider);
     }
 

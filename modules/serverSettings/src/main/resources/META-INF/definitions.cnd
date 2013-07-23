@@ -32,3 +32,7 @@
 [jnt:serverSettingsSystemInfos] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
 [jnt:serverSettingsManageWebProjects] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsManageForges] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsManageForgesModules] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

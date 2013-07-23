@@ -11,13 +11,11 @@
     <name>Jahia Server Settings</name>
     <packaging>bundle</packaging>
     <description>Server settings</description>
-
     <scm>
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</developerConnection>
         <url>https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</url>
     </scm>
-
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -32,7 +30,6 @@
             </snapshots>
         </repository>
     </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -43,7 +40,7 @@
                     <instructions>
                         <Import-Package>*, ${jahia.plugin.projectPackageImport}</Import-Package>  
                         <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
-                        <Jahia-Depends>default</Jahia-Depends>
+            <Jahia-Depends>default,tabularList</Jahia-Depends> 
                     </instructions>
                 </configuration>
             </plugin>

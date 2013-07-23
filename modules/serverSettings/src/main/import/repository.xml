@@ -3,14 +3,12 @@
          xmlns:jcr="http://www.jcp.org/jcr/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <serverSettings j:dependencies="default"
+        <serverSettings j:dependencies="default tabularList"
                       j:installedModules="serverSettings"
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <serveradmin jcr:primaryType="jnt:folder">
@@ -202,7 +200,6 @@
                         <aboutJahia j:applyOn="jnt:globalSettings"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
-                           j:icon="/modules/serverSettings/templates/files/aboutJahia.png"
                            j:requiredPermissions="#/permissions/admin/adminAbout"
                            j:titleKey="serverSettings.aboutJahia"
                            jcr:mixinTypes="jmix:rbTitle"
@@ -267,7 +264,20 @@
                                  jcr:mixinTypes="jmix:rbTitle"
                                  jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
-                                    <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
+                                    <tabular-list jcr:primaryType="jnt:tabularList">
+                                        <installed-modules jcr:primaryType="jnt:contentList">
+                                            <j:translation_en jcr:language="en"
+                                                jcr:primaryType="jnt:translation"
+                                                jcr:title="Installed modules"/>
+                                            <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
+                                        </installed-modules>
+                                        <available-modules jcr:primaryType="jnt:contentList">
+                                            <j:translation_en jcr:language="en"
+                                                jcr:primaryType="jnt:translation"
+                                                jcr:title="Available modules"/>
+                                            <serversettingsmanageforgesmodule jcr:primaryType="jnt:serverSettingsManageForgesModules"/>
+                                        </available-modules>
+                                    </tabular-list>
                                 </pagecontent>
                             </manageModules>
                             <managePortlets j:applyOn="jnt:globalSettings"
@@ -282,6 +292,18 @@
                                     <manage-portlets jcr:primaryType="jnt:serverSettingsManagePortlets"/>
                                 </pagecontent>
                             </managePortlets>
+                            <forges j:applyOn="jnt:globalSettings"
+                          j:defaultTemplate="false"
+                          j:hiddenTemplate="false"
+                          jcr:primaryType="jnt:contentTemplate">
+                                <j:translation_en jcr:language="en"
+                                       jcr:mixinTypes="mix:title"
+                                       jcr:primaryType="jnt:translation"
+                                       jcr:title="Forges"/>
+                                <pagecontent jcr:primaryType="jnt:contentList">
+                                    <serversettingsmanageforges jcr:primaryType="jnt:serverSettingsManageForges"/>
+                                </pagecontent>
+                            </forges>
                         </system-components>
                         <users-and-roles j:hiddenTemplate="false"
                                 j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/users_and_roles.png"
@@ -381,7 +403,9 @@
                         </system-health>
                 </serverSettingsBase>
             </templates>
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
                 
         </serverSettings>
     </modules>

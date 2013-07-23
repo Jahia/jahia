@@ -281,6 +281,16 @@
  - j:to (string) indexed=no
  - j:notificationLevel (string,choicelist[resourceBundle]) = 'Disabled' indexed=no < 'Disabled','Standard','Wary','Paranoid'
 
+
+[jnt:forgeServerSettings] > nt:base
+ - j:url (string) indexed=no
+ - j:user (string) indexed=no
+ - j:password (string) indexed=no
+
+[jnt:forgesServerSettings] > nt:base
+  + * (jnt:forgeServerSettings)
+
+
 //---------------------------------------------------------
 // Users and groups
 //---------------------------------------------------------

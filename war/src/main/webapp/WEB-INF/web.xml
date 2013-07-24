@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          version="2.5" id="WebApp_Jahia">
 
     <display-name>Jahia</display-name>
@@ -46,6 +45,12 @@
         <description>Spring Expression Language Support</description>
         <param-name>springJspExpressionSupport</param-name>
         <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Setting to deactivate Seam transaction listener</description>
+        <param-name>org.jboss.seam.transaction.disableListener</param-name>
+        <param-value>true</param-value>
     </context-param>
 
     <filter>

@@ -27,6 +27,8 @@
         </td>
         <td>
             <c:forEach items="${entry.value}" var="version">
+                <c:choose>
+                    <c:when test="${!empty version.value}">
                 <c:set var="isActiveVersion" value="${version.key == currentModule.version}"/>
                 <c:set var="displayVersionAndState" value="true"/>
                 <c:if test="${not isStudio}">
@@ -37,6 +39,13 @@
                         ${version.key}
                     </div>
                 </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="update-available">
+                                ${version.key}
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </c:forEach>
         </td>
 

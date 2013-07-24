@@ -132,7 +132,18 @@ public class ForgeService {
         }
     }
 
+    public Module findModule(String name,String groupId) {
+        for (Module m : modules) {
+            if (StringUtils.equals(name,m.getName())) {
+                return m;
+            }
+        }
+        return  null;
+    }
+
+
     public Set<Module> loadModules() {
+        modules.clear();
         for (Forge forge : forges) {
             String url = forge.getUrl() + "/contents/forge-modules-repository.forgeModuleList.json";
             String jsonModuleList = httpClientService.executeGet(url);

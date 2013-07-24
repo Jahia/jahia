@@ -68,6 +68,8 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.modules.serversettings.forge.ForgeService;
+import org.jahia.modules.serversettings.forge.Module;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
 import org.jahia.modules.serversettings.moduleManagement.ModuleVersionState;
 import org.jahia.osgi.BundleUtils;
@@ -104,6 +106,9 @@ public class ModuleManagementFlowHandler implements Serializable {
 
     @Autowired
     private transient JahiaSitesService sitesService;
+
+    @Autowired
+    private transient ForgeService forgeService;
 
     private String moduleName;
 

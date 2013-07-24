@@ -1,5 +1,7 @@
 package org.jahia.modules.serversettings.forge;
 
+import org.jahia.services.templates.ModuleVersion;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,7 @@ public class Module implements Serializable {
     private String version;
     private String downloadUrl;
     private String title;
+    private String groupId;
 
     public String getName() {
         return name;
@@ -52,5 +55,13 @@ public class Module implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

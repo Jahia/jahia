@@ -45,6 +45,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -70,7 +71,39 @@ import java.util.*;
  *        Created : 17 nov. 2009
  */
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesChoiceListInitializerImpl.class);
+    /**
+     * We use this View wrapper because for filtering common views we just want to compare the keys, not all the attributes like in
+     * View.equals()
+     * 
+     * @author guillaume
+     */
+    public class ViewWrapper implements Comparable<ViewWrapper> {
+        private final View view;
+
+        public ViewWrapper(View view) {
+            this.view = view;
+        }
+
+        public View getView() {
+            return view;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof ViewWrapper && view.getKey().equals(((ViewWrapper) obj).view.getKey());
+        }
+
+        @Override
+        public int hashCode() {
+            return view.getKey().hashCode();
+        }
+
+        public int compareTo(ViewWrapper o) {
+            return view.getKey().compareTo(((ViewWrapper) o).getView().getKey());
+        }
+    }
+    
+    private transient static Logger logger = LoggerFactory.getLogger(TemplatesChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, String param,
                                                      List<ChoiceListValue> values, Locale locale,
@@ -211,30 +244,31 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 nodeTypeList.add("nt:base");
             }
 
-			SortedSet<ViewWrapper> wrappedViews = new TreeSet<ViewWrapper>();
-			Set<ViewWrapper> wrappedViewsSet = new HashSet<ViewWrapper>();
-			for (String s : nodeTypeList) {
-				SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(NodeTypeRegistry.getInstance().getNodeType(s), site, "html");
-							
-				if (!viewsSet.isEmpty()) {
-					// use of wrapper class to get a simpler equals method, based on the key
-					// to keep only views in common between sub nodes
-					for (Iterator<View> iterator = viewsSet.iterator(); iterator.hasNext();) {
-						wrappedViewsSet.add(new ViewWrapper(iterator.next()));					
-					}
-					
-					if (wrappedViews.isEmpty()) {
-						wrappedViews.addAll(wrappedViewsSet);
-					} else {
-						wrappedViews.retainAll(wrappedViewsSet);
-					}
-				}
-				wrappedViewsSet.clear();
+            SortedSet<ViewWrapper> wrappedViews = new TreeSet<ViewWrapper>();
+            Set<ViewWrapper> wrappedViewsSet = new HashSet<ViewWrapper>();
+            for (String s : nodeTypeList) {
+                SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(
+                        NodeTypeRegistry.getInstance().getNodeType(s), site, "html");
+
+                if (!viewsSet.isEmpty()) {
+                    // use of wrapper class to get a simpler equals method, based on the key
+                    // to keep only views in common between sub nodes
+                    for (Iterator<View> iterator = viewsSet.iterator(); iterator.hasNext();) {
+                        wrappedViewsSet.add(new ViewWrapper(iterator.next()));
+                    }
+
+                    if (wrappedViews.isEmpty()) {
+                        wrappedViews.addAll(wrappedViewsSet);
+                    } else {
+                        wrappedViews.retainAll(wrappedViewsSet);
+                    }
+                }
+                wrappedViewsSet.clear();
             }
-			
-			for (Iterator<ViewWrapper> iterator = wrappedViews.iterator(); iterator.hasNext();) {
-				views.add(iterator.next().getView());
-			}
+
+            for (Iterator<ViewWrapper> iterator = wrappedViews.iterator(); iterator.hasNext();) {
+                views.add(iterator.next().getView());
+            }
 
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -280,36 +314,4 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             map.put(entry.getKey().toString(), entry.getValue());
         }
     }
-    
-	/**
-	 * We use this View wrapper because for filtering common views 
-	 * we just want to compare the keys, not all the attributes like in View.equals()
-	 * @author guillaume
-	 *
-	 */
-	public class ViewWrapper implements Comparable<ViewWrapper> {
-	    private final View view;
-	    
-	    public ViewWrapper(View view) {
-	        this.view = view;
-	    }
-
-	    public View getView() {
-	        return view;
-	    }
-
-	    @Override
-	    public boolean equals(Object obj) {
-	        return obj instanceof ViewWrapper && view.getKey().equals(((ViewWrapper) obj).view.getKey());
-	    }
-
-	    @Override
-	    public int hashCode() {
-	        return view.getKey().hashCode();
-	    }
-
-		public int compareTo(ViewWrapper o) {
-			return view.getKey().compareTo(((ViewWrapper) o).getView().getKey());
-		}
-	}
 }

@@ -72,6 +72,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
@@ -264,8 +265,9 @@ public class RenderService {
         try {
             JCRNodeWrapper site;
             String jsite = null;
-            if (renderContext.getRequest() != null) {
-                jsite = renderContext.getRequest().getParameter("jsite");
+            HttpServletRequest request = renderContext.getRequest();
+            if (request != null) {
+                jsite = request.getParameter("jsite");
             }
             if (jsite == null && renderContext.getMainResource() != null) {
                 jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
@@ -342,9 +344,9 @@ public class RenderService {
 
                         templateNode = templateNode.getParent();
                     }
-                    if(templateNode.isNodeType("jnt:templatesFolder") && templateNode.hasProperty("j:defaultView")) {
+                    if(request != null && templateNode.isNodeType("jnt:templatesFolder") && templateNode.hasProperty("j:defaultView")) {
                         String defaultView = templateNode.getProperty("j:defaultView").getString();
-                        renderContext.getRequest().setAttribute("org.jahia.template.defaultView",defaultView);
+                        request.setAttribute("org.jahia.template.defaultView", defaultView);
                     }
                     template = addContextualTemplates(resource, renderContext, templateName, template, templateNode, installedModules);
                 } else {

@@ -1629,7 +1629,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             headers.put("Authorization", "Basic " + Base64.encode((username + ":" + password).getBytes()));
         }
         headers.put("accept", "application/json");
-        String result = httpClientService.executePost(url, params, headers);
+        String result = httpClientService.executePost(url + "/contents/forge-modules-repository.createModule.do", params, headers);
         if (StringUtils.isNotEmpty(result)) {
             try {
                 JSONObject json = new JSONObject(result);

@@ -54,16 +54,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.RpcMap;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.MarginData;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
@@ -71,78 +62,13 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class ReleaseModuleActionItem extends BaseActionItem {
 
-    private abstract class DistributionServerWindow extends Window {
-        protected abstract void callback(String id, String url);
-
-        @Override
-        protected void onRender(Element parent, int pos) {
-            super.onRender(parent, pos);
-
-            setLayout(new FitLayout());
-            setHeading(Messages.get("label.releaseModule.distributionServer", "Distribution server (Maven)"));
-            setModal(true);
-            setWidth(500);
-            setHeight(270);
-
-            VerticalPanel p = new VerticalPanel();
-            p.add(new Label(Messages.get("label.releaseModule.distributionServer.notProvided",
-                    "No target distribution server configured for this module yet.")));
-            p.add(new HTML("<br/>"));
-            p.add(new Label(Messages.get("label.releaseModule.distributionServer.purpose",
-                    "A target distribution server is a Maven repository,"
-                            + " where built module artifacts (module JAR file)"
-                            + " are pushed to during module release process.")));
-            p.add(new Label(Messages.get("label.releaseModule.distributionServer.authentication",
-                    "If your distribution server requires authentication, please, provide the corresponding"
-                            + " <server/> section in your Maven's settings.xml file.")));
-            p.add(new HTML("<br/>"));
-            p.add(new Label(Messages.get("label.releaseModule.distributionServer.provideNow",
-                    "Would you like to configure the distribution server now?")));
-
-            final FormPanel formPanel = new FormPanel();
-            formPanel.setHeaderVisible(false);
-            formPanel.setLabelWidth(50);
-            formPanel.setFieldWidth(380);
-            formPanel.setButtonAlign(HorizontalAlignment.CENTER);
-            formPanel.setBorders(false);
-
-            final TextField<String> tfRepoId = new TextField<String>();
-            tfRepoId.setFieldLabel(Messages.get("label.id", "ID"));
-            tfRepoId.setAllowBlank(false);
-            formPanel.add(tfRepoId);
-
-            final TextField<String> tfRepoUrl = new TextField<String>();
-            tfRepoUrl.setFieldLabel(Messages.get("label.url", "URL"));
-            tfRepoUrl.setAllowBlank(false);
-            formPanel.add(tfRepoUrl);
-
-            final Window w = this;
-            formPanel.addButton(new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent event) {
-                    w.hide();
-                    callback(tfRepoId.getValue(), tfRepoUrl.getValue());
-                }
-            }));
-            formPanel.addButton(new Button(Messages.get("label.skip", "Skip"), new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent event) {
-                    w.hide();
-                    callback(null, null);
-                }
-            }));
-
-            p.add(formPanel);
-
-            add(p, new MarginData(5));
-        }
-    }
-
     private static final long serialVersionUID = 4466321584782980102L;
 
     protected boolean areModuleSourcesAvailable() {
         return JahiaGWTParameters.getSiteNode().get("j:sourcesFolder") != null;
     }
 
-    protected void doRelease(GWTModuleReleaseInfo info, final ReleaseModuleWindow window) {
+    protected void doRelease(final GWTModuleReleaseInfo info, final ReleaseModuleWindow window) {
         JahiaContentManagementService.App.getInstance().releaseModule(JahiaGWTParameters.getSiteKey(), info,
                 new BaseAsyncCallback<RpcMap>() {
                     public void onApplicationFailure(Throwable caught) {
@@ -186,7 +112,11 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         window.layout();
                         window.show();
                         if (catalogModulePageUrl != null && catalogModulePageUrl.length() > 0) {
-                            com.google.gwt.user.client.Window.open(catalogModulePageUrl, "CatalogModulePage", "");
+                            if (info.getCatalogUsername() != null && info.getCatalogPassword() != null) {
+                                catalogModulePageUrl +="?username="+info.getCatalogUsername()+"&password="+info.getCatalogPassword()+"&doLogin=true";
+                            }
+
+                            MainModule.getInstance().goToExternalUrl(catalogModulePageUrl);
                         }
                     }
                 });
@@ -196,7 +126,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
-        if (s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
+        if (s != null && s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
             setEnabled(true);
         } else {
             setEnabled(false);
@@ -237,12 +167,12 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                                 new BaseAsyncCallback<GWTModuleReleaseInfo>() {
                                     public void onApplicationFailure(Throwable caught) {
                                         linker.loaded();
-                                        Info.display(
+                                        MessageBox.alert(
                                                 Messages.get("label.error", "Error"),
                                                 Messages.get("label.releaseModule.distributionServer.updating.failure",
                                                         "Cannot update distribution server information")
                                                         + ":\n"
-                                                        + caught.getMessage());
+                                                        + caught.getMessage(), null);
                                     }
 
                                     @Override

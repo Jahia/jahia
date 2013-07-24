@@ -2541,7 +2541,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result = moduleHelper.getModuleDistributionInfo(moduleName, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e);
+            return null;
         }
         return result;
     }

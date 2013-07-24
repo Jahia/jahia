@@ -175,15 +175,16 @@ public class ModuleHelper {
         logger.info("Trying to retrieve Jahia Catalog information from resourec at {}", catalogFileUrl);
         long timer = System.currentTimeMillis();
 
-        String catalogInfo = httpClient.executeGet(catalogFileUrl);
+        String catalogInfo = null;
+        try {
+            catalogInfo = httpClient.executeGet(catalogFileUrl);
+        } catch (IllegalArgumentException e) {
+            // Malformed URL
+            return null;
+        }
 
         if (catalogInfo != null) {
             catalogInfo = catalogInfo.trim();
-            if (!catalogInfo.endsWith(".do")) {
-                // assume we have a URL to the Jahia server where the Jahi Catalog is hosted
-                catalogInfo = catalogInfo.endsWith("/") ? (catalogInfo + "sites/forge/contents/forge-modules-repository.createModule.do")
-                        : (catalogInfo + "/sites/forge/contents/forge-modules-repository.createModule.do");
-            }
         }
 
         logger.info("Retrieved Jahia Catalog information in {} ms. The URL to the catalog is: {}", System.currentTimeMillis() - timer,
@@ -210,15 +211,14 @@ public class ModuleHelper {
         if (distributionManagement != null && distributionManagement.getRepository() != null) {
             String repositoryUrl = distributionManagement.getRepository().getUrl();
 
-            String catalogUrl = null;
-            if (repositoryUrl != null) {
-                catalogUrl = getJahiaCatalogUrl(repositoryUrl);
-            }
-
             info = new GWTModuleReleaseInfo();
             info.setRepositoryId(distributionManagement.getRepository().getId());
             info.setRepositoryUrl(repositoryUrl);
-            info.setCatalogUrl(catalogUrl);
+            if (repositoryUrl != null) {
+                String catalogUrl = getJahiaCatalogUrl(repositoryUrl);
+                info.setCatalogUrl(catalogUrl);
+                info.setCatalogModulePageUrl(catalogUrl + "/contents/forge-modules-repository/" + moduleName + ".html");
+            }
         }
 
         return info;

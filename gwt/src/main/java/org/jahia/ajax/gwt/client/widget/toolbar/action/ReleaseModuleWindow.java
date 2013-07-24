@@ -178,10 +178,12 @@ public class ReleaseModuleWindow extends Window {
 
             tfUsername = new TextField<String>();
             tfUsername.setFieldLabel(Messages.get("label.username", "Username"));
+            tfUsername.setValue(ForgeLoginWindow.username);
             fsCatalog.add(tfUsername);
 
             tfPassword = new TextField<String>();
             tfPassword.setFieldLabel(Messages.get("label.password", "Password"));
+            tfPassword.setValue(ForgeLoginWindow.password);
             tfPassword.setPassword(true);
             fsCatalog.add(tfPassword);
 
@@ -224,6 +226,8 @@ public class ReleaseModuleWindow extends Window {
                 if (releaseInfo.isPublishToCatalog()) {
                     releaseInfo.setCatalogUsername(finalTfUsername.getValue());
                     releaseInfo.setCatalogPassword(finalTfPassword.getValue());
+                    ForgeLoginWindow.username = finalTfUsername.getValue();
+                    ForgeLoginWindow.password = finalTfPassword.getValue();
                 }
 
                 callback.handle(releaseInfo);

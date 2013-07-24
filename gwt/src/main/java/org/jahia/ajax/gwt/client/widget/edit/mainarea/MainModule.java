@@ -885,6 +885,11 @@ public class MainModule extends Module {
         return true;
     }-*/;
 
+    public void goToExternalUrl(String url) {
+        mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        frame.setExternalUrl(url);
+    }
+
     private class EditFrame extends Frame {
         private String url = null;
         private boolean forceImageRefresh = false;
@@ -896,78 +901,82 @@ public class MainModule extends Module {
 
         public void onBrowserEvent(Event event) {
             if (event.getTypeInt() == Event.ONLOAD) {
-                final IFrameElement iframe = IFrameElement.as(frame.getElement());
-                Document contentDocument = iframe.getContentDocument();
-                Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
-                Element head = (Element) contentDocument.getElementsByTagName("head").getItem(0);
+                if (isValidUrl(url)) {
+                    final IFrameElement iframe = IFrameElement.as(frame.getElement());
+                    Document contentDocument = iframe.getContentDocument();
+                    Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
+                    Element head = (Element) contentDocument.getElementsByTagName("head").getItem(0);
 
-                setHashMarker(getCurrentFrameUrl());
-                if (forceImageRefresh) {
-                    refreshImages(body);
-                }
-                if (head != null) {
-                    if (forceCssRefresh) {
-                        refreshCSS(head);
+                    setHashMarker(getCurrentFrameUrl());
+                    if (forceImageRefresh) {
+                        refreshImages(body);
                     }
-                    if (forceJavascriptRefresh) {
-                        refreshScripts(head);
-                    }
-                }
-                Hover.getInstance().removeAll();
-                List<Element> el = null;
-                List<Element> elBody = null;
-                if ("true".equals(body.getAttribute("jahia-parse-html"))) {
-                    Element innerElement = getInnerElement();
-                    elBody = ModuleHelper.getAllJahiaTypedElementsRec(body);
-                    if (body.equals(innerElement)) {
-                        el = elBody;
-                    } else {
-                        el = ModuleHelper.getAllJahiaTypedElementsRec(getInnerElement());
-                    }
-
-                } else {
-                    NodeList<com.google.gwt.dom.client.Element> el1 = body.getElementsByTagName("div");
-                    int i = 0;
-                    Element e = null;
-                    while (i < el1.getLength()) {
-                        e = (Element) el1.getItem(i);
-                        if ("mainmodule".equals(e.getAttribute(ModuleHelper.JAHIA_TYPE))) {
-                            el = Arrays.asList(e);
-                            elBody = Arrays.asList(e);
-                            break;
+                    if (head != null) {
+                        if (forceCssRefresh) {
+                            refreshCSS(head);
                         }
-                        i ++;
+                        if (forceJavascriptRefresh) {
+                            refreshScripts(head);
+                        }
                     }
-
-
-                }
-                if (el != null) {
-                    ModuleHelper.initAllModules(MainModule.this, body,elBody, config);
-                    ModuleHelper.buildTree(MainModule.this,el);
-                    parse(el);
-                }
-                editLinker.getMainModule().unmask();
-                needParseAfterLayout = true;
-                layout();
-                DOM.sinkEvents(body, Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK/*+ Event.ONMOUSEDOWN*/);
-                DOM.setEventListener(body, new EventListener() {
-                    public void onBrowserEvent(Event event) {
-                        if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP) {
-                            inframe = true;
-                            Event.fireNativePreviewEvent(event);
-                            inframe = false;
+                    Hover.getInstance().removeAll();
+                    List<Element> el = null;
+                    List<Element> elBody = null;
+                    if ("true".equals(body.getAttribute("jahia-parse-html"))) {
+                        Element innerElement = getInnerElement();
+                        elBody = ModuleHelper.getAllJahiaTypedElementsRec(body);
+                        if (body.equals(innerElement)) {
+                            el = elBody;
                         } else {
-                            GWT.log("event:" + event.getTypeInt());
-                            scrollContainer.onBrowserEvent(event);
+                            el = ModuleHelper.getAllJahiaTypedElementsRec(getInnerElement());
                         }
+
+                    } else {
+                        NodeList<com.google.gwt.dom.client.Element> el1 = body.getElementsByTagName("div");
+                        int i = 0;
+                        Element e = null;
+                        while (i < el1.getLength()) {
+                            e = (Element) el1.getItem(i);
+                            if ("mainmodule".equals(e.getAttribute(ModuleHelper.JAHIA_TYPE))) {
+                                el = Arrays.asList(e);
+                                elBody = Arrays.asList(e);
+                                break;
+                            }
+                            i ++;
+                        }
+
+
                     }
-                });
-                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                    @Override
-                    public void execute() {
-                        onGWTFrameReady(iframe);
+                    if (el != null) {
+                        ModuleHelper.initAllModules(MainModule.this, body,elBody, config);
+                        ModuleHelper.buildTree(MainModule.this,el);
+                        parse(el);
                     }
-                });
+                    editLinker.getMainModule().unmask();
+                    needParseAfterLayout = true;
+                    layout();
+                    DOM.sinkEvents(body, Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK/*+ Event.ONMOUSEDOWN*/);
+                    DOM.setEventListener(body, new EventListener() {
+                        public void onBrowserEvent(Event event) {
+                            if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP) {
+                                inframe = true;
+                                Event.fireNativePreviewEvent(event);
+                                inframe = false;
+                            } else {
+                                GWT.log("event:" + event.getTypeInt());
+                                scrollContainer.onBrowserEvent(event);
+                            }
+                        }
+                    });
+                    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                        @Override
+                        public void execute() {
+                            onGWTFrameReady(iframe);
+                        }
+                    });
+                } else {
+                    editLinker.getMainModule().unmask();
+                }
             }
         }
 
@@ -988,6 +997,15 @@ public class MainModule extends Module {
             }
         }
 
+        public void setExternalUrl(String url) {
+            if (isAttached()) {
+                this.url = url;
+                super.setUrl(url);
+            } else {
+                this.url = url;
+            }
+        }
+
         public void setForceImageRefresh(boolean forceImageRefresh) {
             this.forceImageRefresh = forceImageRefresh;
         }
@@ -1005,6 +1023,7 @@ public class MainModule extends Module {
             super.onAttach();
             IFrameElement iframe = IFrameElement.as(frame.getElement());
             iframe.setAttribute("frameborder","0");
+//            iframe.setAttribute("sandbox","allows-scripts");
             if (url != null) {
                 super.setUrl(url);
             }

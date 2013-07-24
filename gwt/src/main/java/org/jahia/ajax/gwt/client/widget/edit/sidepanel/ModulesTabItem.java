@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
@@ -141,6 +142,7 @@ public class ModulesTabItem extends BrowseTabItem {
         toolbar = new ActionToolbar(config.getTableContextMenu(), linker);
         toolbar.createToolBar();
         layoutContainer.add(toolbar);
+        checkIfCurrentNodeIsModule();
     }
 
     @Override
@@ -175,17 +177,30 @@ public class ModulesTabItem extends BrowseTabItem {
         return super.needRefresh(data);
     }
 
+
+    @Override
+    public void markForAutoRefresh(Map<String, Object> data) {
+        checkIfCurrentNodeIsModule();
+        super.markForAutoRefresh(data);
+    }
+
     @Override
     public void doRefresh() {
         tree.getTreeStore().removeAll();
-        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
-        if (siteNode.get("j:sourcesFolder") == null) {
-            tree.mask("Sources required - Get them from source control");
-        } else {
-            tree.unmask();
+        if (checkIfCurrentNodeIsModule()) {
             tree.getTreeStore().getLoader().load();
             listLoader.load();
         }
+    }
+
+    private boolean checkIfCurrentNodeIsModule() {
+        GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
+        if (siteNode.get("j:sourcesFolder") == null) {
+            ((TabPanel)tab.getParent()).mask();
+        } else {
+            ((TabPanel)tab.getParent()).unmask();
+        }
+        return siteNode.get("j:sourcesFolder") != null;
     }
 
     @Override

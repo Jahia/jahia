@@ -91,6 +91,14 @@
                             <property name="icon" value="modulesList"/>
                         </bean>
 
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToModuleHomeActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.moduleHome"/>
+                            <property name="icon" value="moduleHome"/>
+                        </bean>
+
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.new"/>
                             <property name="items">
@@ -576,41 +584,72 @@
                                 <list>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CommitModuleActionItem">
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.commitModule"/>
-                                        <property name="icon" value="saveModule"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UpdateModuleActionItem">
-                                            </bean>
-                                        </property>
-                                        <property name="titleKey" value="label.updateModule"/>
-                                        <property name="icon" value="updateModule"/>
-                                    </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CompileActionItem">
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.compileModule"/>
                                         <property name="icon" value="compileModule"/>
                                     </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                                        <property name="titleKey" value="label.sourceControl"/>
+                                        <property name="icon" value="sourceControl"/>
+                                        <property name="items">
+                                            <list>
+                                                <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                                    <property name="actionItem">
+                                                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CommitModuleActionItem">
+                                                        </bean>
+                                                    </property>
+                                                    <property name="titleKey" value="label.commitModule"/>
+                                                    <property name="icon" value="saveModule"/>
+                                                </bean>
+                                                <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                                    <property name="actionItem">
+                                                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UpdateModuleActionItem">
+                                                        </bean>
+                                                    </property>
+                                                    <property name="titleKey" value="label.updateModule"/>
+                                                    <property name="icon" value="updateModule"/>
+                                                </bean>
+                                            </list>
                                         </property>
-                                        <property name="titleKey" value="label.exportWar"/>
-                                        <property name="icon" value="templateExport"/>
                                     </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReleaseModuleActionItem"/>
-                                        </property>
-                                        <property name="titleKey" value="label.releaseWar"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                                        <property name="titleKey" value="label.distribution"/>
                                         <property name="icon" value="releaseModule"/>
+                                        <property name="items">
+                                            <list>
+                                                <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                                    <property name="actionItem">
+                                                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
+                                                    </property>
+                                                    <property name="titleKey" value="label.exportWar"/>
+                                                    <property name="icon" value="templateExport"/>
+                                                </bean>
+                                                <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                                    <property name="actionItem">
+                                                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReleaseModuleActionItem"/>
+                                                    </property>
+                                                    <property name="titleKey" value="label.releaseWar"/>
+                                                    <property name="icon" value="releaseModule"/>
+                                                </bean>
+                                                <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                                    <property name="actionItem">
+                                                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditDistributionManagementActionItem"/>
+                                                    </property>
+                                                    <property name="titleKey" value="label.editDistributionManagement"/>
+                                                    <property name="icon" value="editDistributionManagement"/>
+                                                </bean>
+                                                <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                                    <property name="actionItem">
+                                                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToForgeActionItem"/>
+                                                    </property>
+                                                    <property name="titleKey" value="label.goToForge"/>
+                                                    <property name="icon" value="goToForge"/>
+                                                </bean>
+
+                                            </list>
+                                        </property>
                                     </bean>
                                 </list>
                             </property>

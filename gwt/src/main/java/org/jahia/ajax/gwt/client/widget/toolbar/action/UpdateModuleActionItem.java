@@ -169,7 +169,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                 updateTitle(Messages.get("label.sendToSourceControl", "Send to source control"));
             }
         } else {
-            updateTitle(Messages.get("label.getSource", "Get sources for module"));
+            setEnabled(false);
         }
     }
  }

@@ -52,7 +52,6 @@ import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,12 +76,12 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     private Resource[] processes;
     private Resource[] mailTemplates;
-    private KieRepository kieRepository;
     private MailTemplateRegistry mailTemplateRegistry;
     private JahiaTemplatesPackage module;
+    private JBPM6WorkflowProvider jbpm6WorkflowProvider;
 
-    public void setKieRepository(KieRepository kieRepository) {
-        this.kieRepository = kieRepository;
+    public void setJbpm6WorkflowProvider(JBPM6WorkflowProvider jbpm6WorkflowProvider) {
+        this.jbpm6WorkflowProvider = jbpm6WorkflowProvider;
     }
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
@@ -109,7 +108,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
         if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
             ReleaseId moduleReleaseId = new ReleaseIdImpl("org.jahia.modules", module.getName(), module.getVersion().toString());
-            KieModule kieModule = kieRepository.getKieModule(moduleReleaseId);
+            KieModule kieModule = jbpm6WorkflowProvider.getKieRepository().getKieModule(moduleReleaseId);
             for (Resource process : processes) {
                 long lastModified = process.lastModified();
 
@@ -157,7 +156,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                     if (kieModule == null) {
                         kieModule = new ZipKieModule(moduleReleaseId, KieServices.Factory.get().newKieModuleModel(), new File(module.getFilePath()));
                     }
-                    kieRepository.addKieModule(kieModule);
+                    jbpm6WorkflowProvider.getKieRepository().addKieModule(kieModule);
                     logger.info("... done");
                 } else {
                     logger.info("Found workflow process " + fileName + ". It is up-to-date.");

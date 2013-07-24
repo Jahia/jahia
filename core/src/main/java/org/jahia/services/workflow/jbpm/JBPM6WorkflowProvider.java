@@ -16,10 +16,13 @@ import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -50,6 +53,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private JahiaGroupManagerService groupManager;
     private KieRepository kieRepository;
     private KieServices kieServices;
+    private KieFileSystem kieFileSystem;
+    private KieBuilder kieBuilder;
+    private KieContainer kieContainer;
     private KieSession kieSession;
     private TaskService taskService;
     private JBPMListener listener = new JBPMListener(this);
@@ -94,14 +100,38 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         this.userManager = userManager;
     }
 
+    public KieRepository getKieRepository() {
+        return kieRepository;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
-        JBPMTaskLifeCycleEventListener.setProvider(this);
-        JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
-        JBPMTaskLifeCycleEventListener.setTaskService(taskService);
     }
 
     public void start() {
+
+        kieServices = KieServices.Factory.get();
+        kieRepository = kieServices.getRepository();
+
+        List<org.kie.api.io.Resource> fileSystemResources = new ArrayList<org.kie.api.io.Resource>();
+
+        kieFileSystem = kieServices.newKieFileSystem();
+
+        for (org.kie.api.io.Resource kieResource : fileSystemResources) {
+            kieFileSystem.write(kieResource);
+        }
+
+        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+
+        kieBuilder.buildAll();
+
+        kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+
+        kieSession = kieContainer.newKieSession();
+
+        JBPMTaskLifeCycleEventListener.setProvider(this);
+        JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
+        JBPMTaskLifeCycleEventListener.setTaskService(taskService);
 
     }
 

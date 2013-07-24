@@ -52,7 +52,7 @@
     </bean>
 
     <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
-        <property name="processEngine" ref="processEngine"/>
+        <property name="jbpm6WorkflowProvider" ref="jBPMProvider"/>
         <property name="processes">
             <list>
                 <value>osgibundle:org/jahia/modules/custom/workflow/*.jpdl.xml</value>

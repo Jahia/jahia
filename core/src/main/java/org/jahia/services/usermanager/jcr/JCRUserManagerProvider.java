@@ -313,7 +313,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    HashSet<String> users = new HashSet<String>();
+                    Set<String> users = new TreeSet<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
                         String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
@@ -325,7 +325,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             users.add(userName);
                         }
                     }
-                    return new ArrayList(users);
+                    return new ArrayList<String>(users);
                 }
             });
         } catch (RepositoryException e) {

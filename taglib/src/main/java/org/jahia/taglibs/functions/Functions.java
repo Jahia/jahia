@@ -251,6 +251,9 @@ public class Functions {
     }
 
     public static String removeHtmlTags(String value) {
+        if (value == null || value.length() == 0) {
+            return value;
+        }
         Source source = new Source(value);
         TextExtractor textExtractor = source.getTextExtractor();
         textExtractor.setExcludeNonHTMLElements(true);

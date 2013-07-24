@@ -17,7 +17,7 @@
             <evaluate expression="flowHandler.forge" result="flowScope.forge"/>
         </on-render>
         <transition on="submit">
-            <evaluate expression="flowHandler.save()" />
+            <evaluate expression="flowHandler.save(flowRequestContext)" />
         </transition>
     </view-state>
 

@@ -8,7 +8,7 @@ public class Forge implements Serializable {
     String url;
     String user;
     String password;
-    String oldUrl;
+    String id;
 
     public String getUrl() {
         return url;
@@ -34,13 +34,11 @@ public class Forge implements Serializable {
         this.password = password;
     }
 
-    public String getOldUrl() {
-        return oldUrl;
+    public String getId() {
+        return id;
     }
 
-    public void setOldUrl(String oldUrl) {
-        this.oldUrl = oldUrl;
+    public void setId(String id) {
+        this.id = id;
     }
-
-
 }

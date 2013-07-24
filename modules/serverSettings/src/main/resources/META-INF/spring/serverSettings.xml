@@ -15,5 +15,7 @@
             </map>
         </property>
     </bean>
-
+    <bean class="org.jahia.modules.serversettings.forge.ForgeService" id="forgeService">
+        <property name="httpClientService" ref="HttpClientService"/>
+    </bean>
 </beans>

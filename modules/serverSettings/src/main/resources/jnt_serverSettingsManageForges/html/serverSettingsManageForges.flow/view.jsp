@@ -17,17 +17,24 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="forge" type="org.jahia.modules.serversettings.forge.Forge"--%>
 <script>
-    function populateForgeForm(url,user) {
+    function populateForgeForm(id,url,user) {
         $("#forge input[name=url]").val(url);
-        $("#forge input[name=oldUrl]").val(url);
+        $("#forge input[name=id]").val(id);
         $("#forge input[name=user]").val(user);
         $("#forgeTitle").html('<fmt:message key="serverSettings.manageForges.title.edit"/> '+url);
     }
     function resetForgeForm() {
-        $("#forge input[name=url]").val(url);
-        $("#forge input[name=oldUrl]").val(url);
-        $("#forge input[name=user]").val(user);
+        $("#forge input[name=id]").val('');
+        $("#forge input[name=oldUrl]").val('');
+        $("#forge input[name=user]").val('');
+        $("#forge input[name=actionType]").val('add');
         $("#forgeTitle").html('<fmt:message key="serverSettings.manageForges.title.add"/>');
+    }
+    function deleteForge(id) {
+        $("#forge input[name=id]").val(id);
+        $("#forge input[name=actionType]").val('delete');
+        $('#submit').click();
+
     }
 </script>
 <table class="table table-bordered table-striped table-hover">
@@ -49,8 +56,8 @@
         <tr>
             <td>${forge.url}</td>
             <td> ${forge.user}</td>
-            <td><a href="#" onclick="populateForgeForm('${forge.url}','${forge.user}');">edit</a>
-            <a href="#" >delete</a>
+            <td><a href="#" onclick="populateForgeForm('${forge.id}','${forge.url}','${forge.user}');">edit</a>
+            <a href="#" onclick="deleteForge('${forge.id}')">delete</a>
             </td>
         </tr>
     </c:forEach>
@@ -62,13 +69,14 @@
 </c:forEach>
 <div class="box-1">
     <form:form modelAttribute="forge" cssClass="form" autocomplete="off">
+        <input type="hidden" name="actionType" value="add"/>
         <h3 id="forgeTitle"><fmt:message key="serverSettings.manageForges.title.add"/></h3>
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span8">
                     <label for="url"><fmt:message key="serverSettings.manageForges.url"/></label>
                     <form:input class="span12" type="text" id="url" path="url"/>
-                    <form:input path="oldUrl" type="hidden"/>
+                    <form:input path="id" type="hidden"/>
                 </div>
             </div>
             <div class="row-fluid">

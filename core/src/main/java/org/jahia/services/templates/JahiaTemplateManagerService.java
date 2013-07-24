@@ -802,14 +802,22 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             // release using maven-release-plugin
             String tag = StringUtils.replace(releaseVersion, ".", "_");
 
-            String goals = "install";
+            int ret;
             if (publishToMaven) {
-                goals = "deploy";
+                String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
+                        "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
+                        "-DignoreSnapshots=true", "--batch-mode" };
+                ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+            } else {
+                File tmpRepo = new File(System.getProperty("java.io.tmpdir"),"repo");
+                tmpRepo.mkdir();
+                String[] installParams = new String[] { "release:prepare", "release:stage", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
+                        "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
+                        "-DignoreSnapshots=true", "-DstagingRepository=tmp::default::"+tmpRepo.toURI().toString(), "--batch-mode" };
+                ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+                FileUtils.deleteDirectory(tmpRepo);
             }
-            String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
-                    "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
-                    "-DignoreSnapshots=true", "-Dgoals="+goals, "--batch-mode" };
-            int ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+
             if (ret > 0) {
                 cli.doMain(new String[] { "release:rollback" }, sources.getPath(), System.out, System.err);
                 throw new IOException("Maven invocation failed");

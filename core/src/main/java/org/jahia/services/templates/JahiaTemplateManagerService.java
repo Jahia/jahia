@@ -733,7 +733,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             ModuleReleaseInfo releaseInfo, Model model) throws IOException {
         Map<String, String> forgeParams = new HashMap<String, String>();
         // module
-        forgeParams.put("moduleName", module.getName());
+        forgeParams.put("moduleName", module.getRootFolder());
         if (module.getDescription() != null) {
             forgeParams.put("description", module.getDescription());
         } else {

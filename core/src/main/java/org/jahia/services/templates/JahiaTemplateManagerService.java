@@ -414,6 +414,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         + ",local",
                 "-DarchetypeGroupId=org.jahia.archetypes",
                 "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
+                "-Dversion=1.0-SNAPSHOT",
                 "-DmoduleName=" + moduleName,
                 "-DartifactId=" + moduleName,
                 "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION,

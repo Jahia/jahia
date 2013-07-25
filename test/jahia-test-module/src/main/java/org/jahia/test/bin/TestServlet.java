@@ -102,12 +102,8 @@ public class TestServlet extends BaseTestController {
                             .getResources(
                                     "classpath*:"
                                             + xmlTest
-                                            + (!xmlTest.contains("org/jahia") ? ";classpath*:org/jahia/selenium/scripts/"
-                                                    + xmlTest
-                                                    : "")
-                                            + (StringUtils.endsWith(pathInfo,
-                                                    ".xml") ? ";classpath*:"
-                                                    + pathInfo : ""));
+                                            + ";classpath*:selenium/"
+                                                    + xmlTest);
                 }
                 if (resources != null) {
                     List<XmlSuite> allSuites = new ArrayList<XmlSuite>();

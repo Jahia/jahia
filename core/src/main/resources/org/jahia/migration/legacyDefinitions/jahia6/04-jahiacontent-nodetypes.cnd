@@ -1,0 +1,90 @@
+/* Jahia content base definitions  */
+
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:contentmetadata] > mix:created, mix:createdBy, mix:lastModified, jmix:lastPublished, jmix:categorized, jmix:description mixin
+
+[jnt:jahialink]
+ - j:key (string)
+ - j:target (reference)
+
+[jnt:workflow]
+ - j:type (string)
+
+[jnt:jahiacontent] > nt:base, jmix:contentmetadata, mix:referenceable, jmix:collection
+ + j:acl (jnt:acl)
+ + j:workflow (jnt:workflow)
+ + j:workflowState (jnt:workflowState)
+ + j:jahialink (jnt:jahialink) *
+ - j:diff (string)
+
+[jnt:page] > jnt:jahiacontent
+ - j:pageTitle (string) primary mandatory i15d sortable
+ - j:template (string)
+ - j:pid (long)
+ + * (jnt:page) *
+
+[jnt:containerList] > jnt:jahiacontent
+
+[jnt:pageLink] > jnt:jahiacontent
+ - j:pageTitle (string) primary mandatory i15d
+
+[jnt:directPageLink] > jnt:pageLink
+ - j:link (reference) < jnt:page
+
+[jnt:internalPageLink] > jnt:pageLink
+ - j:link (reference) < jnt:page
+
+[jnt:externalPageLink] > jnt:pageLink
+ - j:url (string)
+
+[jnt:container] > jnt:jahiacontent
+
+[jnt:jahiaVirtualsite] > nt:base, jmix:collection
+ - j:name (string)
+ - j:server (string)
+ + * (jnt:page)
+
+[jnt:systemRoot] > nt:base, jmix:collection
+ + * (jnt:jahiaVirtualsite) multiple
+
+[jnt:portletDefinition]
+ - j:name (string)
+ - j:description (string)
+ - j:isVisible (boolean)
+
+[jnt:portlet] > nt:base, mix:referenceable, jmix:hierarchyNode
+ - j:application (string,portletdefinition) hidden
+ - j:cacheScope (string, choicelist) < 'portlet.private-scope','portlet.public-scope'
+ - j:expirationTime (long)
+
+[jnt:contentPortlet] > jnt:portlet
+
+[jnt:layoutItem]  > nt:base, mix:referenceable, jmix:hierarchyNode
+ - j:columnIndex (long)
+ - j:rowIndex (long)
+ - j:status (string)
+ - j:portlet (reference) < jnt:portlet
+
+[jnt:layout]  > nt:base, mix:referenceable, jmix:hierarchyNode, jmix:collection
+ - j:page (weakreference)
+ - j:nbColumns (long)
+ - j:liveEditable (boolean)
+ - j:liveDraggable (boolean)
+ + j:item (jnt:layoutItem) multiple
+
+[jnt:layoutManager] > jnt:folder, jmix:collection
++ j:layout (jnt:layout) multiple
+
+[jnt:reference] > nt:base, jmix:hierarchyNode
+ - j:node (weakreference)
+ - j:propertyName (string)
+ - j:originalUuid (string)
+
+[jnt:referencesKeeper] > nt:base, jmix:hierarchyNode, jmix:collection
+ + j:reference (jnt:reference) multiple

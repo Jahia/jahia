@@ -1,0 +1,58 @@
+/* Extensions types */
+
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:extension] mixin
+
+[jmix:document] > jmix:extension mixin
+ - j:subject (string)
+ - j:pageCount (long) protected
+ - j:wordCount (long) protected
+ - j:charCount (long) protected
+ - j:appName (string) protected
+ - j:codePage (string) protected
+
+[jmix:image] > jmix:extension mixin
+ + * (jnt:extraResource)
+ - j:height (long) protected
+ - j:width (long) protected
+ 
+[jmix:photo] > jmix:extension mixin
+ - j:model (string)
+
+                          
+[jmix:test] > jmix:extension mixin
+ - j:long (long)
+ - j:text (string)
+ - j:protectedText (string) protected
+ - j:bigtext (string,richtext)
+ - j:protectedBigText (string,richtext) protected
+ - j:cat (string,category)
+ - j:multiplecat (string,category) multiple
+ - j:protectedCat (string,category) protected
+ - j:menu (string,choicelist) < 'item1','item2'
+ - j:date (date)
+ - j:protectedDate (date) protected
+ - j:boolean (boolean) = false
+
+ [jmix:SysDocProto] > jmix:extension mixin
+ - j:SysDocProto_DateCreation (date, datetimepicker)
+ - j:SysDocProto_CodeProjet (string,category[root=Projets])
+ - j:SysDocProto_CodeService (string,category[root=Services])
+ - j:SysDocProto_CodeGroupeConfidentialite (string)
+ - j:SysDocProto_CodeGroupeDiffusion (string)
+ - j:SysDocProto_NoDossier (string)
+ - j:SysDocProto_CodeStatutDocument (string,choicelist) < 'Ouvert','Ferme'
+ - j:SysDocProto_CoteClassement (string,category[root='plan de classement'])
+ - j:SysDocProto_CodeServiceCopieA (string,category[Services])
+ - j:SysDocProto_CodeTypeProcessus (string)
+ 
+[jmix:doc] > jmix:extension mixin
+ - j:dateCreation (date, datetimepicker)
+ - j:codeProjet (string,category[root=Projets])
+ - j:codeStatutDocument (string,choicelist) < 'Ouvert','Ferme'

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * This file is part of Jahia, next-generation open source CMS:
  * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
  * of enterprise application convergence - web, search, document, social and portal -
@@ -47,6 +47,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.importexport.validation.*;
@@ -849,20 +850,61 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         // Import legacy content from 5.x and 6.x
         if (legacyImport) {
             long timerLegacy = System.currentTimeMillis();
-            logger.info("Start legacy import");
+            final String originatingJahiaRelease = (String) infos.get("originatingJahiaRelease");
+            logger.info("Start legacy import, source version is " + originatingJahiaRelease);
             if(legacyMappingFilePath!=null) {
                 mapping = new DefinitionsMapping();
-                mapping.load(new FileInputStream(legacyMappingFilePath));
+                final FileInputStream fileInputStream = new FileInputStream(legacyMappingFilePath);
+                try {
+                    mapping.load(fileInputStream);
+                } finally {
+                    IOUtils.closeQuietly(fileInputStream);
+                }
             }
-            if(legacyDefinitionsFilePath!=null) {
+            if (legacyDefinitionsFilePath != null) {
                 reg = new NodeTypeRegistry();
+                if ("6.1".equals(originatingJahiaRelease)) {
+                    logger.info("Loading the built in 6.1 definitions before processing the provided custom ones");
+                    final List<String> builtInLegacyDefs = Arrays.asList(
+                            "01-system-nodetypes.cnd",
+                            "02-jahiacore-nodetypes.cnd",
+                            "03-files-nodetypes.cnd",
+                            "04-jahiacontent-nodetypes.cnd",
+                            "05-standard-types.cnd",
+                            "10-extension-nodetypes.cnd",
+                            "11-preferences-nodetypes.cnd"
+                    );
+
+                    for (String builtInLegacyDefsFile : builtInLegacyDefs) {
+                        InputStreamReader inputStreamReader = null;
+                        try {
+                            final InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("org/jahia/migration/legacyDefinitions/jahia6/" + builtInLegacyDefsFile);
+                            if (inputStream != null) {
+                                inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                                final JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(inputStreamReader, builtInLegacyDefsFile,
+                                        file.getName(), reg);
+                                r.parse();
+                            } else {
+                                logger.error("Couldn't load " + builtInLegacyDefsFile);
+                            }
+                        } catch (ParseException e) {
+                            logger.error(e.getMessage(), e);
+                        } finally {
+                            IOUtils.closeQuietly(inputStreamReader);
+                        }
+                    }
+                }
+                InputStreamReader streamReader = null;
                 try {
                     File cndFile = new File(legacyDefinitionsFilePath);
-                    JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(new FileInputStream(legacyDefinitionsFilePath), "UTF-8"), cndFile.getName(),
+                    streamReader = new InputStreamReader(new FileInputStream(legacyDefinitionsFilePath), "UTF-8");
+                    JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(streamReader, cndFile.getName(),
                             file.getName(), reg);
                     r.parse();
                 } catch (ParseException e) {
                     logger.error(e.getMessage(), e);
+                } finally {
+                    IOUtils.closeQuietly(streamReader);
                 }
             }
             // Old import
@@ -886,7 +928,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
-                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping,LanguageCodeConverters.languageCodeToLocale(languageCode),infos != null ? (String) infos.get("originatingJahiaRelease") : null,legacyPidMappingTool);
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping,LanguageCodeConverters.languageCodeToLocale(languageCode),infos != null ? originatingJahiaRelease : null,legacyPidMappingTool);
                         importHandler.setReferences(references);
 
                         InputStream documentInput = zis;
@@ -894,7 +936,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             documentInput = new ZipInputStream(new FileInputStream(file));
                             while (!name.equals(((ZipInputStream) documentInput).getNextEntry().getName())) ;
                             byte[] buffer = new byte[2048];
-                            File document = File.createTempFile("export_" + languageCode + "_initial_", ".xml");
+                            final File tmpDirectoryForSite = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-migration"),
+                                    FastDateFormat.getInstance("yyyy_MM_dd-HH_mm_ss_SSS").format(timerSite) + "_" + site.getSiteKey());
+                            tmpDirectoryForSite.mkdirs();
+                            File document = new File(tmpDirectoryForSite, "export_" + languageCode + "_00_extracted.xml");
                             final OutputStream output = new BufferedOutputStream(new FileOutputStream(document), 2048);
                             int count = 0;
                             while ((count = documentInput.read(buffer, 0, 2048)) > 0) {
@@ -904,7 +949,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             output.close();
                             documentInput.close();
                             for (XMLContentTransformer xct : xmlContentTransformers) {
-                                document = xct.transform(document);
+                                document = xct.transform(document, tmpDirectoryForSite);
                             }
                             documentInput = new FileInputStream(document);
                         }
@@ -929,14 +974,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Resolving cross references");
         ReferencesHelper.resolveCrossReferences(session, references);
         logger.info("Done resolving cross references in {} ms", System.currentTimeMillis() - timerXR);
-        if (legacyImport && this.postImportPatcher != null) {
-            long timerPIP = System.currentTimeMillis();
-            logger.info("Executing post import patches");
-            this.postImportPatcher.executePatches(session, site);
-            logger.info("Executed post import patches in {} ms", System.currentTimeMillis() - timerPIP);
-        }
         session.save(JCRObservationManager.IMPORT);
         cleanFilesList(fileList);
+
+        if (legacyImport && this.postImportPatcher != null) {
+            final long timerPIP = System.currentTimeMillis();
+            logger.info("Executing post import patches");
+            this.postImportPatcher.executePatches(site);
+            logger.info("Executed post import patches in {} ms", System.currentTimeMillis() - timerPIP);
+        }
 
         logger.info("Done importing site {} in {} ms", site != null ? site.getSiteKey() : "", System.currentTimeMillis() - timerSite);
     }

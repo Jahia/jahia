@@ -164,6 +164,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 }
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
             } else {
+<<<<<<< .working
                 for (JahiaTemplatesPackage pack : packages) {
                     String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
                     String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path :
@@ -174,7 +175,16 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     Resource templateResource = pack.getResource("/" + type + "/" + resource);
                     if (templateResource != null && templateResource.exists()) {
                         // we found it
+=======
+                for (String lookupPath : lookupPaths) {
+                    String path = lookupPath + resource;
+                    String pathWithContext = renderContext.getRequest().getContextPath() + path;
+                    try {
+                        if (pageContext.getServletContext().getResource(path) != null) {
+                            // we found it
+>>>>>>> .merge-right.r46801
 
+<<<<<<< .working
                         // apply mapping
                         if (mapping.containsKey(path)) {
                             for (String mappedResource : mapping.get(path).split(" ")) {
@@ -182,14 +192,34 @@ public class AddResourcesTag extends AbstractJahiaTag {
                                 pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ?
                                         renderContext.getRequest().getContextPath() + path : path;
                                 writeResourceTag(type, pathWithContext, resource);
+=======
+                            // apply mapping
+                            if (mapping.containsKey(path)) {
+                                for (String mappedResource : mapping.get(path).split(" ")) {
+                                    path = mappedResource;
+                                    pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                    writeResourceTag(type, pathWithContext, resource);
+                                }
+                            } else {
+                                writeResourceTag(type, pathWithContext, resource);
+>>>>>>> .merge-right.r46801
                             }
                         } else {
                             writeResourceTag(type, pathWithContext, resource);
                         }
 
+<<<<<<< .working
                         found = true;
                         if (builder.length() > 0) {
                             builder.append(",");
+=======
+                            found = true;
+                            if (builder.length() > 0) {
+                                builder.append(",");
+                            }
+                            builder.append(pathWithContext);
+                            break;
+>>>>>>> .merge-right.r46801
                         }
                         builder.append(pathWithContext);
                         break;

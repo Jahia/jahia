@@ -37,6 +37,7 @@ public class ForgesSettingsHandler implements Serializable {
             forgeService.removeForge(forge);
         }
         forgeService.saveForges();
+        forgeService.loadModules();
         forge = new Forge();
     }
 

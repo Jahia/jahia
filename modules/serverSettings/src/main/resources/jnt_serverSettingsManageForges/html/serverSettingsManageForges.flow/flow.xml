@@ -19,6 +19,8 @@
         <transition on="submit">
             <evaluate expression="flowHandler.save(flowRequestContext)" />
         </transition>
+        <transition on="deleteForge" to="deleteForge" />
+
     </view-state>
 
 </flow>

@@ -57,7 +57,9 @@
             <td>${forge.url}</td>
             <td> ${forge.user}</td>
             <td><a href="#" onclick="populateForgeForm('${forge.id}','${forge.url}','${forge.user}');">edit</a>
-            <a href="#" onclick="deleteForge('${forge.id}')">delete</a>
+            <a href="#" onclick="deleteForge('${forge.id}')">
+                <i class="icon-remove"></i>
+                <fmt:message key="label.delete"/></a>
             </td>
         </tr>
     </c:forEach>

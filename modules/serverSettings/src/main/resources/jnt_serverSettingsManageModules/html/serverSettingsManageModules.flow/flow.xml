@@ -18,6 +18,8 @@
         <on-render>
             <evaluate expression="flowHandler.allModuleVersions"
                       result="requestScope.allModuleVersions"/>
+            <evaluate expression="flowHandler.availableUpdates"
+                      result="requestScope.availableUpdates"/>
             <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules"
                       result="requestScope.registeredModules"/>
             <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls"

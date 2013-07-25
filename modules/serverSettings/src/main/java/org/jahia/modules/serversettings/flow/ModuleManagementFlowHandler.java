@@ -295,6 +295,21 @@ public class ModuleManagementFlowHandler implements Serializable {
         return result;
     }
 
+    public Map<String,String> getAvailableUpdates() {
+        Map<String,String> availableUpdate = new HashMap<String, String>();
+        Map<Bundle,ModuleState> moduleStates = templateManagerService.getModuleStates();
+        forgeService.loadModules();
+        for (Bundle bundle : moduleStates.keySet()) {
+            JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
+            Module forgeModule = forgeService.findModule(module.getRootFolder(),"");
+            if (forgeModule != null && (new ModuleVersion(forgeModule.getVersion()).compareTo(module.getVersion())) > 0) {
+                availableUpdate.put(module.getRootFolder(),forgeModule.getVersion());
+            }
+
+        }
+        return availableUpdate;
+    }
+
     private void populateModuleVersionStateInfo(RequestContext context, Map<String, List<String>> directSiteDep,
             Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep) {
         Map<String, Map<ModuleVersion, ModuleVersionState>> states = new TreeMap<String, Map<ModuleVersion, ModuleVersionState>>();

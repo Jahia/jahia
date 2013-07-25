@@ -78,4 +78,13 @@ public interface XMLContentTransformer {
      * @return The updated file
      */
     public File transform(File input);
+
+    /**
+     * Performs some custom modifications in an Jahia exported content xml file, and returns the updated file.
+     *
+     * @param input A Jahia exported content xml file
+     * @param tmpDirectory Temporary directory where the XMLContentTransformer should write some output for troubleshooting purpose
+     * @return The updated file
+     */
+    public File transform(File input, File tmpDirectory);
 }

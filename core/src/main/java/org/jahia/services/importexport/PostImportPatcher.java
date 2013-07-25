@@ -53,6 +53,15 @@ public interface PostImportPatcher {
      *
      * @param session The JCR session used to perform the import. Do not save it in the patch(es).
      * @param site The just imported website.
+     *
+     * @deprecated
      */
     public void executePatches(JCRSessionWrapper session, JahiaSite site);
+
+    /**
+     * This method is called at the end of each site import, after the JCR session used for the import has been saved.
+     *
+     * @param site The just imported website.
+     */
+    public void executePatches(JahiaSite site);
 }

@@ -1,0 +1,38 @@
+/* Core jahia definitions */
+
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+// Jahia base types
+
+[jmix:description] mixin
+ - jcr:description (string, richtext)
+
+[jmix:categorized] mixin
+ - j:keywords (string)
+ - j:defaultCategory (string, category[autoSelectParent=false]) multiple facetable
+
+[jmix:lastPublished] mixin
+ - j:lastPublishingDate (date) protected
+ - j:lastPublisher (string) protected
+
+[jnt:ace] > nt:base
+ - j:aceType (string) mandatory < 'GRANT', 'DENY'
+ - j:principal (string) mandatory
+ - j:privileges (name) mandatory multiple
+ - j:protected (boolean) mandatory
+
+[jnt:acl] > nt:base
+ orderable
+ + * (jnt:ace) = jnt:ace
+ - j:inherit (boolean)
+
+[jmix:lockable] > mix:lockable mixin
+ - j:locktoken (string) protected indexed=no
+
+[jnt:workflowState] > nt:base
+ - * (string) 

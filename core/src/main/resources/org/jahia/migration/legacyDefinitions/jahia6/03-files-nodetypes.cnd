@@ -1,0 +1,92 @@
+/* Jahia content base definitions  */
+
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:filemetadata] > mix:createdBy, mix:lastModified, mix:title, jmix:categorized mixin
+
+[jmix:hierarchyNode] > jmix:filemetadata, mix:referenceable mixin
+ - j:filename (string) protected
+ - j:fullpath (string) protected
+ - j:hidden (boolean) hidden
+ + j:acl (jnt:acl)
+ + thumbnail (jnt:extraResource)
+
+[jmix:collection] mixin
+
+[jnt:query] > nt:query, jmix:hierarchyNode
+
+[jnt:textExtracts] > nt:folder
+ + * (nt:folder)
+ + * (jnt:textExtract)
+
+[jnt:textExtract] > nt:base
+ - j:extractedText (string)
+ - j:lastExtractionDate (date)
+ - j:originalUuid (string)
+
+// Files
+[jnt:resource] > nt:resource
+ - j:extractedText (string)
+ - j:lastExtractionDate (date)
+
+[jnt:extraResource] > nt:resource
+ - j:name
+
+[jnt:generatedExtraResource] > jnt:extraResource
+    - j:generationID (long)
+
+[jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection
+ + * (jmix:hierarchyNode)
+
+[jnt:systemfolder] > jnt:folder
+
+[jnt:file] > nt:file, jmix:lockable, jmix:hierarchyNode
+ - j:fieldsinuse (long) multiple
+
+[jmix:usersFolder] mixin
+ - j:usersFolderConfig (string)
+ - j:usersFolderSkeleton (string)
+
+[jnt:userFolder] > jnt:folder
+
+[jmix:groupsFolder] mixin
+ - j:groupsFolderConfig (string)
+
+[jmix:virtualsitesFolder] mixin
+ - j:virtualsitesFolderConfig (string)
+ - j:virtualsitesFolderSkeleton (string)
+
+[jnt:axisView] > jnt:systemfolder
+ - j:nodetype (name) multiple
+ - j:writeable (boolean) = false
+ + j:property (jnt:axisProperty) multiple
+
+[jnt:axisProperty] > nt:base
+ - j:name (name) mandatory
+ - j:format (string)
+
+[jnt:axisFolder] > jnt:systemfolder
+
+[jnt:symLink] > nt:hierarchyNode, jmix:hierarchyNode
+ - j:link (reference)
+
+// Virtual site
+[jnt:virtualsite] > jnt:folder
+ - j:name (string) protected
+ - j:server (string) protected
+
+[jnt:importDropBox] > jnt:folder
+
+[jnt:externalResource] > jnt:file
+ - j:type (string)
+ - j:url (string)
+
+[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection
+
+[jnt:vfsMountPoint] > jnt:mountPoint
+ - j:root (string)

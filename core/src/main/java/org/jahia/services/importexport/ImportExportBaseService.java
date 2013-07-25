@@ -901,7 +901,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             if (legacyDefinitionsFilePath != null) {
                 reg = new NodeTypeRegistry();
-                reg.initSystemDefinitions();
                 if ("6.1".equals(originatingJahiaRelease)) {
                     logger.info("Loading the built in 6.1 definitions before processing the provided custom ones");
                     final List<String> builtInLegacyDefs = Arrays.asList(

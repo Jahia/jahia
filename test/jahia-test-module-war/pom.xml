@@ -49,11 +49,27 @@
     <artifactId>jahia-test-module-war</artifactId>
     <name>Jahia Test Module War Package</name>
     <packaging>war</packaging>
+<<<<<<< .working
     <scm>
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</developerConnection>
         <url>https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</url>
     </scm>
+=======
+
+    <repositories>
+        <repository>
+        	<id>jboss-public</id>
+        	<url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        	<snapshots>
+        		<enabled>false</enabled>
+        	</snapshots>
+        </repository>
+    </repositories>
+>>>>>>> .merge-right.r46809
     <profiles>
         <profile>
             <id>eclipse-integration</id>

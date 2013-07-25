@@ -178,6 +178,12 @@ public abstract class Action {
                 newNode.addMixin(mixin);
             }
         }
+        setProperties(newNode, parameters);
+
+        return newNode;
+    }
+
+    protected void setProperties(JCRNodeWrapper newNode, Map<String, List<String>> parameters) throws RepositoryException {
         Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
         for (Map.Entry<String, List<String>> entry : set) {
             String key = entry.getKey();
@@ -200,8 +206,6 @@ public abstract class Action {
                 }
             }
         }
-
-        return newNode;
     }
 
     protected JSONObject getJSONConstraintError(ConstraintViolationException e) throws RepositoryException {

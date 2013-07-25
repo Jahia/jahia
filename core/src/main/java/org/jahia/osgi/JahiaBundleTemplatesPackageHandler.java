@@ -40,6 +40,7 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
@@ -78,7 +79,7 @@ class JahiaBundleTemplatesPackageHandler {
                 .getVersion().toString())));
 
         pkg.setRootFolder(StringUtils.defaultString(getHeader(bundle, "Jahia-Root-Folder"), bundle.getSymbolicName()));
-
+        pkg.setDescription(getHeader(bundle, "Bundle-Description"));
         detectResourceBundle(bundle, pkg);
 
         String srcFolder = getHeader(bundle, "Jahia-Source-Folders");

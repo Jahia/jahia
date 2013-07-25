@@ -744,12 +744,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         // forgeParams.put("category", module.getModuleType());
         // forgeParams.put("icon", "");
+        forgeParams.put("jcr:title", module.getName());
         forgeParams.put("authorNameDisplayedAs", "username");
         forgeParams.put("authorURL", "");
         forgeParams.put("authorEmail", "");
         forgeParams.put("howToInstall", "");
         forgeParams.put("FAQ", "");
-        forgeParams.put("codeRepository", "");
+        forgeParams.put("codeRepository", module.getScmURI());
 
         // version
 

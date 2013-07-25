@@ -901,9 +901,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             if (legacyDefinitionsFilePath != null) {
                 reg = new NodeTypeRegistry();
-<<<<<<< .working
                 reg.initSystemDefinitions();
-=======
                 if ("6.1".equals(originatingJahiaRelease)) {
                     logger.info("Loading the built in 6.1 definitions before processing the provided custom ones");
                     final List<String> builtInLegacyDefs = Arrays.asList(
@@ -923,7 +921,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             if (inputStream != null) {
                                 inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                                 final JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(inputStreamReader, builtInLegacyDefsFile,
-                                        file.getName(), reg);
+                                        file.getURL().getPath(), reg);
                                 r.parse();
                             } else {
                                 logger.error("Couldn't load " + builtInLegacyDefsFile);
@@ -936,7 +934,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
                 }
                 InputStreamReader streamReader = null;
->>>>>>> .merge-right.r46819
                 try {
                     File cndFile = new File(legacyDefinitionsFilePath);
                     streamReader = new InputStreamReader(new FileInputStream(legacyDefinitionsFilePath), "UTF-8");

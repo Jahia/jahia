@@ -95,12 +95,23 @@ public class HttpClientService implements ServletContextAware {
 
     /**
      * Executes a request with GET method to the specified URL and reads the response content as a string.
-     * 
+     *
      * @param url a URL to connect to
      * @return the string representation of the URL connection response
      * @throws {@link IllegalArgumentException} in case of a malformed URL
      */
     public String executeGet(String url) throws IllegalArgumentException {
+        return executeGet(url,null);
+    }
+    /**
+     * Executes a request with GET method to the specified URL and reads the response content as a string.
+     * 
+     * @param url a URL to connect to
+     * @param headers request headers to be set for connection; <code>null</code> if no additional headers needs to be set
+     * @return the string representation of the URL connection response
+     * @throws {@link IllegalArgumentException} in case of a malformed URL
+     */
+    public String executeGet(String url, Map<String, String> headers) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("Provided URL is null");
         }
@@ -111,7 +122,11 @@ public class HttpClientService implements ServletContextAware {
         String content = null;
 
         GetMethod httpMethod = new GetMethod(url);
-
+        if (headers != null && !headers.isEmpty()) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpMethod.addRequestHeader(header.getKey(), header.getValue());
+            }
+        }
         try {
             httpClient.executeMethod(httpMethod);
             StatusLine statusLine = httpMethod.getStatusLine();

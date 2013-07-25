@@ -1,6 +1,7 @@
 package org.jahia.modules.serversettings.forge;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -15,7 +16,9 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -146,7 +149,11 @@ public class ForgeService {
         modules.clear();
         for (Forge forge : forges) {
             String url = forge.getUrl() + "/contents/forge-modules-repository.forgeModuleList.json";
-            String jsonModuleList = httpClientService.executeGet(url);
+            Map<String, String> headers = new HashMap<String, String>();
+            headers.put("Authorization", "Basic " + Base64.encode((forge.getUser()+ ":" + forge.getPassword()).getBytes()));
+            headers.put("accept", "application/json");
+
+            String jsonModuleList = httpClientService.executeGet(url,headers);
             try {
                 JSONArray modulesRoot = new JSONArray(jsonModuleList);
 

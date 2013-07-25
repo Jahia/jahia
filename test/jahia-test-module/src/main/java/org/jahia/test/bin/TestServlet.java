@@ -142,7 +142,7 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                             .getResources(
                                     "classpath*:"
                                             + xmlTest
-                                            + ";classpath*:selenium/"
+                                            + ";classpath*:testng/"
                                                     + xmlTest);
                 }
                 if (resources != null) {

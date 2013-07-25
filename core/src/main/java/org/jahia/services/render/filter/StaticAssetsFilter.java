@@ -531,7 +531,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
 
-                newCss.put(minifiedAggregatedPath, new HashMap<String, String>());
+                String ctx = Jahia.getContextPath();
+                newCss.put(ctx.length() > 0 ?  (ctx + minifiedAggregatedPath) : minifiedAggregatedPath, new HashMap<String, String>());
             }
             if (i < entries.size()) {
                 newCss.put(entries.get(i).getKey(), entries.get(i).getValue());

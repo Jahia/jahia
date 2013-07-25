@@ -29,6 +29,9 @@
             <fmt:message key="serverSettings.manageForgesModules.version"/>
         </th>
         <th>
+            <fmt:message key="serverSettings.manageForgesModules.detail"/>
+        </th>
+        <th>
             <fmt:message key="serverSettings.manageForgesModules.download"/>
         </th>
     </tr>
@@ -40,6 +43,8 @@
             <td> ${module.title}</td>
             <td> ${module.name}</td>
             <td> ${module.version}</td>
+            <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>
+            <td> <a href="${remoteUrl}" target="_self">view details</a></td>
             <td>${module.downloadUrl}</td>
         </tr>
     </c:forEach>

@@ -1,7 +1,5 @@
 package org.jahia.modules.serversettings.forge;
 
-import org.jahia.services.templates.ModuleVersion;
-
 import java.io.Serializable;
 
 /**
@@ -11,9 +9,10 @@ public class Module implements Serializable {
 
     private static final long serialVersionUID = 5507292105100115258L;
     private String name;
-    private boolean used;
     private String version;
     private String downloadUrl;
+    private String remotePath;
+    private String remoteUrl;
     private String title;
     private String groupId;
 
@@ -23,14 +22,6 @@ public class Module implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void setUsed(boolean used) {
-        this.used = used;
     }
 
     public String getVersion() {
@@ -64,4 +55,21 @@ public class Module implements Serializable {
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
+
+    public String getRemotePath() {
+        return remotePath;
+    }
+
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath;
+    }
+
+    public String getRemoteUrl() {
+        return remoteUrl;
+    }
+
+    public void setRemoteUrl(String remoteUrl) {
+        this.remoteUrl = remoteUrl;
+    }
 }
+

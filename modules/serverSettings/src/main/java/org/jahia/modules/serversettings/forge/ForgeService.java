@@ -170,6 +170,8 @@ public class ForgeService {
                     }
                     if (add) {
                         Module module = new Module();
+                        module.setRemoteUrl(moduleList.getJSONObject(i).getString("remoteUrl"));
+                        module.setRemotePath(moduleList.getJSONObject(i).getString("path"));
                         module.setVersion(moduleList.getJSONObject(i).getString("version"));
                         module.setTitle(moduleList.getJSONObject(i).getString("title"));
                         module.setName(moduleList.getJSONObject(i).getString("name"));

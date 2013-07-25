@@ -142,6 +142,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
             } else {
                 for (String lookupPath : lookupPaths) {
                     String path = lookupPath + resource;
+                    String pathWithContext = renderContext.getRequest().getContextPath() + path;
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
                             // we found it
@@ -150,17 +151,18 @@ public class AddResourcesTag extends AbstractJahiaTag {
                             if (mapping.containsKey(path)) {
                                 for (String mappedResource : mapping.get(path).split(" ")) {
                                     path = mappedResource;
-                                    writeResourceTag(type, path, resource);
+                                    pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                                    writeResourceTag(type, pathWithContext, resource);
                                 }
                             } else {
-                                writeResourceTag(type, path, resource);
+                                writeResourceTag(type, pathWithContext, resource);
                             }
 
                             found = true;
                             if (builder.length() > 0) {
                                 builder.append(",");
                             }
-                            builder.append(path);
+                            builder.append(pathWithContext);
                             break;
                         }
                     } catch (MalformedURLException e) {

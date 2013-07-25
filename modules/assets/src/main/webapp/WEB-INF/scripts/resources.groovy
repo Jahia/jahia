@@ -30,7 +30,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
           condition = css.value.get("condition");
           if (condition != null) println("<!--["+condition+"]>");
           media = css.value.get("media");
-          println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${contextPath}${css.key}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
+          println "<link id=\"staticAssetCSS${i}\" rel=\"stylesheet\" href=\"${css.key}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
           if (condition != null) println("<![endif]-->");
         }
         break;
@@ -38,7 +38,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
         type.value.eachWithIndex { javascript, i ->
           condition = javascript.value != null ? javascript.value.get("condition") : null;
           if (condition != null) println("<!--["+condition+"]>");
-          println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${contextPath}${javascript.key}\"></script>";
+          println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${javascript.key}\"></script>";
           if (condition != null) println("<![endif]-->");
         }
         break;
@@ -49,7 +49,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
 	        type.value.eachWithIndex { javascript, i ->
 	          condition = javascript.value != null ? javascript.value.get("condition") : null;
 	          if (condition != null) println("<!--["+condition+"]>");
-	          println "jAggregatedStaticAssetsJavascript.push('${contextPath}${javascript.key}');";
+	          println "jAggregatedStaticAssetsJavascript.push('${javascript.key}');";
 	          if (condition != null) println("<![endif]-->");
 	        }
       		println "</script>";

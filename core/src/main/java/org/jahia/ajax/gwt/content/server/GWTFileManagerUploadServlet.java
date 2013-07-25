@@ -96,7 +96,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         String location = null;
         String type = null;
         boolean unzip = false;
-
+        response.setContentType("text/plain; charset=" + Jahia.getSettings().getCharacterEncoding());
         final PrintWriter printWriter = response.getWriter();
         try {
             List<FileItem> items = upload.parseRequest(request);
@@ -132,7 +132,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 locMsg = "File upload exceeding limit of " + settingsBean.getJahiaFileUploadMaxSize() + " bytes";
             }
             logger.error(locMsg, e);
+<<<<<<< .working
             response.setContentType("text/plain; charset=" + settingsBean.getCharacterEncoding());
+=======
+>>>>>>> .merge-right.r46805
             printWriter.write("UPLOAD-ISSUE: " + locMsg + "\n");
             return;
         } catch (FileUploadException e) {

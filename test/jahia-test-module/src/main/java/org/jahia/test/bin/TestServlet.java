@@ -102,7 +102,7 @@ public class TestServlet extends BaseTestController {
                             .getResources(
                                     "classpath*:"
                                             + xmlTest
-                                            + ";classpath*:selenium/"
+                                            + ";classpath*:testng/"
                                                     + xmlTest);
                 }
                 if (resources != null) {

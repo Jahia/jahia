@@ -16,15 +16,16 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="module" type="org.jahia.modules.serversettings.forge.Module"--%>
+
+<fmt:message key="serverSettings.manageModules.details" var="i18nModuleDetails" />
+
 <h3><fmt:message key="serverSettings.manageForgesModules.availableModules"/></h3>
 
 <table class="table table-bordered table-striped table-hover">
     <thead>
     <tr>
-        <th><fmt:message key="serverSettings.manageForgesModules.title"/></th>
-        <th>
-            <fmt:message key="serverSettings.manageForgesModules.name"/>
-        </th>
+        <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
+        <th></th>
         <th>
             <fmt:message key="serverSettings.manageForgesModules.version"/>
         </th>
@@ -44,8 +45,35 @@
             <td> ${module.name}</td>
             <td> ${module.version}</td>
             <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>
-            <td> <a href="${remoteUrl}" target="_self">view details</a></td>
-            <td>${module.downloadUrl}</td>
+            <td>
+                <button class="btn btn-info" type="button" onclick='window.location.assign("${remoteUrl}")'>
+                    <i class="icon-zoom-in icon-white"></i>
+                    &nbsp;${i18nModuleDetails}
+                </button>
+
+            <td>
+
+            <c:choose>
+
+            <c:when test="${not empty allModuleVersions[module.name] and functions:contains(allModuleVersions[module.name],module.version)}">
+                Already installed
+            </c:when>
+            <%--<c:when test="${not empty allModuleVersions[module.name]}">--%>
+                <%--Other versions installed--%>
+            <%--</c:when>--%>
+            <c:otherwise>
+                <form style="margin: 0;" action="${flowExecutionUrl}&displayTab=available-modules" method="POST">
+                    <input type="hidden" name="forgeId" value="${module.forgeId}"/>
+                    <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
+                    <button class="btn btn-block button-download" type="submit" name="_eventId_installModule" onclick="">
+                        <i class="icon-download"></i>
+                        &nbsp;<fmt:message key="serverSettings.manageForgesModules.download"/>
+                    </button>
+                </form>
+            </c:otherwise>
+            </c:choose>
+
+            </td>
         </tr>
     </c:forEach>
     </tbody>

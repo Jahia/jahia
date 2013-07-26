@@ -40,6 +40,7 @@
 package org.jahia.modules.serversettings.flow;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +129,21 @@ public class ModuleManagementFlowHandler implements Serializable {
         return new ModuleFile();
     }
 
+    public boolean installModule(String forgeId, String url, MessageContext context) {
+        try {
+            File file = forgeService.downloadModuleFromForge(forgeId, url);
+            installModule(file, context);
+        } catch (Exception e) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .defaultText(getMessage("serverSettings.manageModules.install.failed"))
+                    .arg(e.getMessage())
+                    .error()
+                    .build());
+            logger.error(e.getMessage(), e);
+        }
+        return true;
+    }
+
     public boolean uploadModule(ModuleFile moduleFile, MessageContext context) {
         String originalFilename = moduleFile.getModuleFile().getOriginalFilename();
         if (!FilenameUtils.isExtension(originalFilename, Arrays.<String>asList("war","jar","WAR","JAR"))) {
@@ -137,50 +154,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         try {
             final File file = File.createTempFile("module-", "."+StringUtils.substringAfterLast(originalFilename,"."));
             moduleFile.getModuleFile().transferTo(file);
-            Manifest manifest = new JarFile(file).getManifest();
-            String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
-            if (symbolicName == null) {
-                symbolicName = manifest.getMainAttributes().getValue("root-folder");
-            }
-            String version = manifest.getMainAttributes().getValue("Implementation-Version");
-            Bundle bundle = templateManagerService.findBundle(symbolicName, version);
-
-            String location = file.toURI().toString();
-            if (file.getName().toLowerCase().endsWith(".war")) {
-                location = "jahiawar:"+location;
-            }
-
-            if (bundle != null) {
-                bundle.update(new URL(location).openStream());
-            } else {
-                bundle = FrameworkService.getBundleContext().installBundle(location, new URL(location).openStream());
-            }
-            List<String> deps = BundleUtils.getModule(bundle).getDepends();
-            List<String> missingDeps = new ArrayList<String>();
-            for (String dep : deps) {
-                if (templateManagerService.getTemplatePackageByFileName(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
-                    missingDeps.add(dep);
-                }
-            }
-            if (!missingDeps.isEmpty()) {
-                context.addMessage(new MessageBuilder().source("moduleFile")
-                        .defaultText(getMessage("serverSettings.manageModules.install.missingDependencies"))
-                        .arg(StringUtils.join(missingDeps, ","))
-                        .error()
-                        .build());
-            } else {
-                Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
-                if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
-                    bundle.start();
-                    context.addMessage(new MessageBuilder().source("moduleFile")
-                            .defaultText(getMessage("serverSettings.manageModules.install.uploadedAndStarted"))
-                            .build());
-                } else {
-                    context.addMessage(new MessageBuilder().source("moduleFile")
-                            .defaultText(getMessage("serverSettings.manageModules.install.uploaded"))
-                            .build());
-                }
-            }
+            installModule(file, context);
         } catch (Exception e) {
             context.addMessage(new MessageBuilder().source("moduleFile")
                     .defaultText(getMessage("serverSettings.manageModules.install.failed"))
@@ -190,6 +164,53 @@ public class ModuleManagementFlowHandler implements Serializable {
             logger.error(e.getMessage(), e);
         }
         return true;
+    }
+
+    private void installModule(File file, MessageContext context) throws IOException, BundleException {
+        Manifest manifest = new JarFile(file).getManifest();
+        String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
+        if (symbolicName == null) {
+            symbolicName = manifest.getMainAttributes().getValue("root-folder");
+        }
+        String version = manifest.getMainAttributes().getValue("Implementation-Version");
+        Bundle bundle = templateManagerService.findBundle(symbolicName, version);
+
+        String location = file.toURI().toString();
+        if (file.getName().toLowerCase().endsWith(".war")) {
+            location = "jahiawar:"+location;
+        }
+
+        if (bundle != null) {
+            bundle.update(new URL(location).openStream());
+        } else {
+            bundle = FrameworkService.getBundleContext().installBundle(location, new URL(location).openStream());
+        }
+        List<String> deps = BundleUtils.getModule(bundle).getDepends();
+        List<String> missingDeps = new ArrayList<String>();
+        for (String dep : deps) {
+            if (templateManagerService.getTemplatePackageByFileName(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
+                missingDeps.add(dep);
+            }
+        }
+        if (!missingDeps.isEmpty()) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .defaultText(getMessage("serverSettings.manageModules.install.missingDependencies"))
+                    .arg(StringUtils.join(missingDeps, ","))
+                    .error()
+                    .build());
+        } else {
+            Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
+            if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
+                bundle.start();
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .defaultText(getMessage("serverSettings.manageModules.install.uploadedAndStarted"))
+                        .build());
+            } else {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .defaultText(getMessage("serverSettings.manageModules.install.uploaded"))
+                        .build());
+            }
+        }
     }
 
     public void loadModuleInformation(RequestContext context) {
@@ -295,17 +316,18 @@ public class ModuleManagementFlowHandler implements Serializable {
         return result;
     }
 
-    public Map<String,String> getAvailableUpdates() {
-        Map<String,String> availableUpdate = new HashMap<String, String>();
-        Map<Bundle,ModuleState> moduleStates = templateManagerService.getModuleStates();
-        forgeService.loadModules();
-        for (Bundle bundle : moduleStates.keySet()) {
-            JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
-            Module forgeModule = forgeService.findModule(module.getRootFolder(),"");
-            if (forgeModule != null && (new ModuleVersion(forgeModule.getVersion()).compareTo(module.getVersion())) > 0) {
-                availableUpdate.put(module.getRootFolder(),forgeModule.getVersion());
-            }
+    public Map<String,Module> getAvailableUpdates() {
+        Map<String,Module> availableUpdate = new HashMap<String, Module>();
+        Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> moduleStates = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();
 
+        for (String key : moduleStates.keySet()) {
+            Module forgeModule = forgeService.findModule(key,"");
+            if (forgeModule != null) {
+                ModuleVersion forgeVersion = new ModuleVersion(forgeModule.getVersion());
+                if (!moduleStates.get(key).containsKey(forgeVersion) && forgeVersion.compareTo(moduleStates.get(key).lastKey()) > 0) {
+                    availableUpdate.put(key,forgeModule);
+                }
+            }
         }
         return availableUpdate;
     }
@@ -427,6 +449,15 @@ public class ModuleManagementFlowHandler implements Serializable {
 
         return modules;
     }
+
+    public void initModules() {
+        forgeService.loadModules();
+    }
+
+    public Set<Module> getForgeModules() {
+        return forgeService.getModules();
+    }
+
 
     /**
      * Logs the specified exception details.

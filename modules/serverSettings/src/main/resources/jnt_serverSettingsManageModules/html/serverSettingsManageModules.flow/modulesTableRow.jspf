@@ -5,12 +5,6 @@
             <c:if test="${isMandatoryDependency}">
                 <span class="text-error" title="${i18nMandatoryDependency}"><a href="#mandatory-dependency" class="text-error"><strong>*</strong></a></span>
             </c:if>
-            <c:forEach items="${availableUpdates}" var="update">
-                <c:if test="${update.key eq currentModule.rootFolder}">
-                    <br/>Update available to version ${update.value}!
-                </c:if>
-
-            </c:forEach>
         </td>
         <td>${entry.key}</td>
         <td>
@@ -32,6 +26,7 @@
             </c:if>
         </td>
         <td>
+            <c:set var="sourcesFound" value="false"/>
             <c:forEach items="${entry.value}" var="version">
                 <c:set var="isActiveVersion" value="${version.key == currentModule.version}"/>
                 <c:set var="displayVersionAndState" value="true"/>
@@ -40,10 +35,25 @@
                 </c:if>
                 <c:if test="${isStudio and isActiveVersion}">
                     <div class="active-version">
-                        ${version.key}
+                            ${version.key}
                     </div>
                 </c:if>
+                <c:if test="${not empty version.value.sourcesFolder}">
+                    <c:set var="sourcesFound" value="true"/>
+                </c:if>
             </c:forEach>
+            <c:if test="${not empty availableUpdates[entry.key]}">
+                <br/>Update available to version ${availableUpdates[entry.key].version}!
+                <form style="margin: 0;" action="${flowExecutionUrl}&displayTab=installed-modules" method="POST">
+                    <input type="hidden" name="forgeId" value="${availableUpdates[entry.key].forgeId}"/>
+                    <input type="hidden" name="moduleUrl" value="${availableUpdates[entry.key].downloadUrl}"/>
+                    <button class="btn btn-block button-download" type="submit" name="_eventId_installModule" onclick="">
+                        <i class="icon-download"></i>
+                        &nbsp;<fmt:message key="serverSettings.manageForgesModules.download"/>
+                    </button>
+                </form>
+
+            </c:if>
         </td>
 
 
@@ -62,15 +72,14 @@
             <td>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
-                        <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${currentModule.rootFolder}.html"/>
-                        <button class="btn btn-block" type="button" name="_eventId_startModule" onclick='window.parent.location.assign("${urlToStudio}")'>
+                        <c:url var="urlToStudio" value="/cms/studio/default/${currentResource.locale}/modules/${currentModule.rootFolder}.html"/>
+                        <button class="btn btn-block" type="button" onclick='window.parent.location.assign("${urlToStudio}")'>
                             <i class="icon-circle-arrow-right"></i>
                             &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                         </button>
                     </c:when>
-                    <c:when test="${not empty defaultVersion.sourcesFolder}">
-                        <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${defaultVersion.rootFolder}.html"/>
-                        <button class="btn btn-block" disabled="disabled" type="button" name="_eventId_startModule">
+                    <c:when test="${sourcesFound}">
+                        <button class="btn btn-block" disabled="disabled" type="button" >
                             <i class="icon-circle-arrow-right"></i>
                             &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                         </button>

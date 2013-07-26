@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Bean for Forge Module
  */
-public class Module implements Serializable {
+public class Module implements Serializable, Comparable<Module> {
 
     private static final long serialVersionUID = 5507292105100115258L;
     private String name;
@@ -15,6 +15,7 @@ public class Module implements Serializable {
     private String remoteUrl;
     private String title;
     private String groupId;
+    private String forgeId;
 
     public String getName() {
         return name;
@@ -70,6 +71,19 @@ public class Module implements Serializable {
 
     public void setRemoteUrl(String remoteUrl) {
         this.remoteUrl = remoteUrl;
+    }
+
+    public String getForgeId() {
+        return forgeId;
+    }
+
+    public void setForgeId(String forgeId) {
+        this.forgeId = forgeId;
+    }
+
+    @Override
+    public int compareTo(Module o) {
+        return name.compareTo(o.name);
     }
 }
 

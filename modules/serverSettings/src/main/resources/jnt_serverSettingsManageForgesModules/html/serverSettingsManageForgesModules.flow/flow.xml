@@ -4,17 +4,22 @@
       xsi:schemaLocation="
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
-    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ForgesModulesSettingsHandler"/>
+    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ModuleManagementFlowHandler"/>
 
     <on-start>
-        <evaluate expression="flowHandler.init()" />
+        <evaluate expression="flowHandler.initModules()" />
     </on-start>
-
 
     <view-state id="view" model="module">
         <on-render>
-            <evaluate expression="flowHandler.modules" result="requestScope.modules"/>
+            <evaluate expression="flowHandler.forgeModules" result="requestScope.modules"/>
+            <evaluate expression="flowHandler.allModuleVersions" result="requestScope.allModuleVersions"/>
+
         </on-render>
+
+        <transition on="installModule" to="view">
+            <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>
+        </transition>
     </view-state>
 
 </flow>

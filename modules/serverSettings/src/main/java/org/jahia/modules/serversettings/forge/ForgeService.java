@@ -1,5 +1,8 @@
 package org.jahia.modules.serversettings.forge;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.services.content.JCRCallback;
@@ -16,10 +19,10 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Service to manage Forges
@@ -31,7 +34,8 @@ public class ForgeService {
 
     private HttpClientService httpClientService;
     private Set<Forge> forges = new HashSet<Forge>();
-    private Set<Module> modules = new HashSet<Module>();
+    private Set<Module> modules = new TreeSet<Module>();
+
     public ForgeService() {
         loadForges();
     }
@@ -58,7 +62,7 @@ public class ForgeService {
 
     public void removeForge(Forge forge) {
         for (Forge f : forges) {
-            if (StringUtils.equals(forge.getId(),f.getId())) {
+            if (StringUtils.equals(forge.getId(), f.getId())) {
                 forges.remove(f);
                 return;
             }
@@ -70,24 +74,26 @@ public class ForgeService {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node forgesRoot = session.getNode("/settings/forgesSettings");
-                    if (forgesRoot != null) {
-                        NodeIterator ni = forgesRoot.getNodes();
-                        while (ni.hasNext()) {
-                            Node n = ni.nextNode();
-                            Forge f = new Forge();
-                            f.setId(n.getIdentifier());
-                            f.setUrl(n.getProperty("j:url").getString());
-                            f.setUser(n.getProperty("j:user").getString());
-                            f.setPassword(n.getProperty("j:password").getString());
-                            forges.add(f);
+                    if (session.itemExists("/settings/forgesSettings")) {
+                        Node forgesRoot = session.getNode("/settings/forgesSettings");
+                        if (forgesRoot != null) {
+                            NodeIterator ni = forgesRoot.getNodes();
+                            while (ni.hasNext()) {
+                                Node n = ni.nextNode();
+                                Forge f = new Forge();
+                                f.setId(n.getIdentifier());
+                                f.setUrl(n.getProperty("j:url").getString());
+                                f.setUser(n.getProperty("j:user").getString());
+                                f.setPassword(n.getProperty("j:password").getString());
+                                forges.add(f);
+                            }
                         }
                     }
-                    return  null;
+                    return null;
                 }
             });
 
-        }catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             e.printStackTrace();
         }
     }
@@ -135,13 +141,13 @@ public class ForgeService {
         }
     }
 
-    public Module findModule(String name,String groupId) {
+    public Module findModule(String name, String groupId) {
         for (Module m : modules) {
-            if (StringUtils.equals(name,m.getName())) {
+            if (StringUtils.equals(name, m.getName())) {
                 return m;
             }
         }
-        return  null;
+        return null;
     }
 
 
@@ -150,20 +156,20 @@ public class ForgeService {
         for (Forge forge : forges) {
             String url = forge.getUrl() + "/contents/forge-modules-repository.forgeModuleList.json";
             Map<String, String> headers = new HashMap<String, String>();
-            headers.put("Authorization", "Basic " + Base64.encode((forge.getUser()+ ":" + forge.getPassword()).getBytes()));
+            headers.put("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));
             headers.put("accept", "application/json");
 
-            String jsonModuleList = httpClientService.executeGet(url,headers);
+            String jsonModuleList = httpClientService.executeGet(url, headers);
             try {
                 JSONArray modulesRoot = new JSONArray(jsonModuleList);
 
                 JSONArray moduleList = modulesRoot.getJSONObject(0).getJSONArray("modules");
-                for (int i = 0; i < moduleList.length(); i++ ) {
+                for (int i = 0; i < moduleList.length(); i++) {
                     boolean add = true;
 
                     for (Module m : modules) {
                         // todo add also groupId
-                        if (StringUtils.equals(m.getName(),moduleList.getJSONObject(i).getString("name"))) {
+                        if (StringUtils.equals(m.getName(), moduleList.getJSONObject(i).getString("name"))) {
                             add = false;
                             break;
                         }
@@ -176,6 +182,7 @@ public class ForgeService {
                         module.setTitle(moduleList.getJSONObject(i).getString("title"));
                         module.setName(moduleList.getJSONObject(i).getString("name"));
                         module.setDownloadUrl(moduleList.getJSONObject(i).getString("downloadUrl"));
+                        module.setForgeId(forge.getId());
                         modules.add(module);
                     }
                 }
@@ -184,6 +191,29 @@ public class ForgeService {
             }
         }
         return modules;
+    }
+
+    public File downloadModuleFromForge(String forgeId, String url) {
+        for (Forge forge : forges) {
+            if (forgeId.equals(forge.getId())) {
+                GetMethod httpMethod = new GetMethod(url);
+                httpMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));
+                HttpClient httpClient = httpClientService.getHttpClient();
+                try {
+                    int status = httpClient.executeMethod(httpMethod);
+                    if (status == HttpServletResponse.SC_OK) {
+                        File f = File.createTempFile("module", "." + StringUtils.substringAfterLast(url, "."));
+                        FileUtils.copyInputStreamToFile(httpMethod.getResponseBodyAsStream(), f);
+                        return f;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+
+            }
+        }
+        return null;
     }
 
     public void setHttpClientService(HttpClientService httpClientService) {

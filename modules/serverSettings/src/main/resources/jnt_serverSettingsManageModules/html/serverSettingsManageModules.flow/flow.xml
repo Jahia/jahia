@@ -7,6 +7,10 @@
 
     <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ModuleManagementFlowHandler"/>
 
+    <on-start>
+        <evaluate expression="flowHandler.initModules()" />
+    </on-start>
+
     <decision-state id="moreAnswersNeeded">
         <if test="flowHandler.isInModule(externalContext.requestMap.renderContext)" then="detailedView" else="view" />
     </decision-state>
@@ -42,6 +46,10 @@
 
         <transition on="upload" to="view">
             <evaluate expression="flowHandler.uploadModule(moduleFile, messageContext)"/>
+        </transition>
+
+        <transition on="installModule" to="view">
+            <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>
         </transition>
 
         <transition on="viewDetails" to="detailedView"/>

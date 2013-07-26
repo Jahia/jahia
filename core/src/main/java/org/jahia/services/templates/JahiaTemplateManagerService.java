@@ -400,7 +400,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return null;
     }
 
-    public JCRNodeWrapper createModule(String moduleName, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+    public JCRNodeWrapper createModule(String moduleName, String artifactId, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             sources.mkdirs();
@@ -429,7 +429,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
                 "-Dversion=1.0-SNAPSHOT",
                 "-DmoduleName=" + moduleName,
-                "-DartifactId=" + moduleName,
+                "-DartifactId=" + artifactId,
                 "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION,
                 "-DinteractiveMode=false"};
 
@@ -440,7 +440,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             return null;
         }
 
-        File path = new File(sources, moduleName);
+        File path = new File(sources, artifactId);
         if (finalFolderName != null && !path.getName().equals(finalFolderName)) {
             try {
                 File newPath = new File(sources, finalFolderName);
@@ -460,7 +460,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 //            }
 //        }
 
-        JahiaTemplatesPackage pack = compileAndDeploy(moduleName, path, session);
+        JahiaTemplatesPackage pack = compileAndDeploy(artifactId, path, session);
 
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
         setSourcesFolderInPackageAndNode(pack, path, node);

@@ -146,7 +146,7 @@ public class ModuleHelper {
         String shortName = JCRContentUtils.generateNodeName(key);
         if (baseSet == null) {
             try {
-                JCRNodeWrapper node = templateManagerService.createModule(shortName, siteType,
+                JCRNodeWrapper node = templateManagerService.createModule(key, shortName, siteType,
                         sources != null ? new File(sources) : null, session);
                 return node != null ? navigation.getGWTJahiaNode(node.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS)
                         : null;

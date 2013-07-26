@@ -467,6 +467,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     req.setAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE, fileUpload);
                     if (fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                         boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
+                        boolean isAction = urlResolver.getPath().endsWith(".do");
                         boolean isContributePost = fileUpload.getParameterNames().contains(CONTRIBUTE_POST);
                         final String requestWith = req.getHeader("x-requested-with");
                         boolean isAjaxRequest =
@@ -477,7 +478,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         List<String> urls = new LinkedList<String>();
                         // If target directory is defined or if it is an ajax request then save the file now
                         // otherwise we delay the save of the file to the node creation
-                        if (isContributePost || isTargetDirectoryDefined || isAjaxRequest) {
+                        if (!isAction && (isContributePost || isTargetDirectoryDefined || isAjaxRequest)) {
                             JCRSessionWrapper session =
                                     jcrSessionFactory.getCurrentUserSession(workspace, locale);
                             String target;
@@ -563,7 +564,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             session.save();
                         }
 
-                        if (!isAjaxRequest && !isContributePost) {
+                        if (isAction || (!isAjaxRequest && !isContributePost)) {
                             parameters.putAll(fileUpload.getParameterMap());
                             if (isTargetDirectoryDefined) {
                                 parameters.put(NODE_NAME, files);

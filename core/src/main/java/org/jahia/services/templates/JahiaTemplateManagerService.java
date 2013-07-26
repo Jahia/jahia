@@ -48,11 +48,20 @@ import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.StatusLine;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.cli.MavenCli;
 import org.apache.maven.model.Model;
@@ -110,10 +119,14 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 
 /**
  * Template and template set deployment and management service.
@@ -704,69 +717,157 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             FileUtils.moveFileToDirectory(generatedWar, releasedModules, true);
             generatedWar = new File(releasedModules, generatedWar.getName());
         } else {
-            generatedWar = null;
+            throw new IOException("Module release failed.");
         }
 
-        if (generatedWar != null) {
-            FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(),
-                    new FileInputStream(generatedWar));
-            JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
-            JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
-            node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
-            if (scmUrl != null) {
-                node.getNode("j:versionInfo").setProperty("j:scmURI", scmUrl);
-            }
-            session.save();
-
-            undeployModule(module);
+        FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(),
+                new FileInputStream(generatedWar));
+        JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
+        JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+        node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
+        if (scmUrl != null) {
+            node.getNode("j:versionInfo").setProperty("j:scmURI", scmUrl);
         }
+        session.save();
+
+        undeployModule(module);
 
         activateModuleVersion(module.getRootFolder(), releaseInfo.getNextVersion());
 
-        if (releaseInfo.isPublishToMaven() && releaseInfo.isPublishToCatalog()) {
-            publishToCatalog(module, releaseVersion, releaseInfo, model);
+        if (releaseInfo.isPublishToMaven() || releaseInfo.isPublishToCatalog()) {
+            releaseInfo.setArtifactUrl(computeModuleJarUrl(releaseVersion, releaseInfo, model));
+            if (releaseInfo.isPublishToCatalog() && releaseInfo.getCatalogUrl() != null) {
+                String forgeModuleUrl = createForgeModule(releaseInfo, generatedWar);
+                releaseInfo.setCatalogModulePageUrl(forgeModuleUrl);
+            } else if (releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryUrl() != null) {
+                deployToMaven(releaseInfo, generatedWar);
+            }
         }
 
         return generatedWar;
     }
 
-    private void publishToCatalog(final JahiaTemplatesPackage module, String releaseVersion,
-            ModuleReleaseInfo releaseInfo, Model model) throws IOException {
-        Map<String, String> forgeParams = new HashMap<String, String>();
-        // module
-        forgeParams.put("moduleName", module.getRootFolder());
-        if (module.getDescription() != null) {
-            forgeParams.put("description", module.getDescription());
-        } else {
-            forgeParams.put("description", "not set yet");
+    /**
+     * Manage forge
+     */
+    public String createForgeModule(ModuleReleaseInfo releaseInfo, File jar) throws IOException {
+        String moduleUrl = null;
+
+        Part[] parts = { new StringPart("action","action"), new FilePart("file",jar) };
+
+        final String url = releaseInfo.getCatalogUrl();
+        PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
+        postMethod.getParams().setSoTimeout(0);
+        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getCatalogUsername() + ":" + releaseInfo.getCatalogPassword()).getBytes()));
+        postMethod.addRequestHeader("accept", "application/json");
+        postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
+        HttpClient client = httpClientService.getHttpClient();
+
+        String result = null;
+        try {
+            client.executeMethod(null, postMethod);
+            StatusLine statusLine = postMethod.getStatusLine();
+
+            if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
+                result = postMethod.getResponseBodyAsString();
+            } else {
+                logger.warn("Connection to URL: " + url + " failed with status " + statusLine);
+            }
+
+        } catch (HttpException e) {
+            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
+        } finally {
+            postMethod.releaseConnection();
         }
 
-        // deploy the module on the forge
+        if (StringUtils.isNotEmpty(result)) {
+            try {
+                JSONObject json = new JSONObject(result);
+                if (!json.isNull("moduleAbsoluteUrl")) {
+                    moduleUrl = json.getString("moduleAbsoluteUrl");
+                } else if (!json.isNull("error")) {
+                    throw new IOException(json.getString("error"));
+                } else {
+                    logger.warn("Cannot find 'moduleAbsoluteUrl' entry in the create module actin response: {}", result);
+                    throw new IOException("unknown");
+                }
+            } catch (JSONException e) {
+                logger.error("Unable to parse the response of the module creation action. Cause: " + e.getMessage(), e);
+            }
+        }
 
-        // forgeParams.put("category", module.getModuleType());
-        // forgeParams.put("icon", "");
-        forgeParams.put("jcr:title", module.getName());
-        forgeParams.put("authorNameDisplayedAs", "username");
-        forgeParams.put("authorURL", "");
-        forgeParams.put("authorEmail", "");
-        forgeParams.put("howToInstall", "");
-        forgeParams.put("FAQ", "");
-        forgeParams.put("codeRepository", module.getScmURI());
-
-        // version
-
-        // forgeParams.put("requiredVersion", "");
-        forgeParams.put("releaseType", "hotfix");
-        // forgeParams.put("status", "");
-        forgeParams.put("activeVersion", "true");
-
-        forgeParams.put("versionNumber", releaseVersion);
-        forgeParams.put("url", releaseInfo.getArtifactUrl());
-
-        releaseInfo.setCatalogModulePageUrl(createForgeModule(releaseInfo.getCatalogUrl(),
-                releaseInfo.getCatalogUsername(), releaseInfo.getCatalogPassword(), forgeParams));
+        return moduleUrl;
     }
-    
+
+    public void deployToMaven(ModuleReleaseInfo releaseInfo, File generatedWar) throws IOException {
+        File settings = null;
+        File pomFile = null;
+        try {
+            if (!StringUtils.isEmpty(releaseInfo.getCatalogUsername()) && !StringUtils.isEmpty(releaseInfo.getCatalogPassword())) {
+                settings = File.createTempFile("settings",".xml");
+                BufferedWriter w = new BufferedWriter(new FileWriter(settings));
+                w.write("<settings><servers><server><id>"+releaseInfo.getRepositoryId()+"</id><username>");
+                w.write(releaseInfo.getCatalogUsername());
+                w.write("</username><password>");
+                w.write(releaseInfo.getCatalogPassword() );
+                w.write("</password></server></servers></settings>");
+                w.close();
+            }
+            JarFile jar = new JarFile(generatedWar);
+            pomFile = extractPomFromJar(jar);
+            jar.close();
+
+            Model pom;
+            try {
+                pom = PomUtils.read(pomFile);
+            } catch (XmlPullParserException e) {
+                throw new IOException(e);
+            }
+
+            String[] deployParams = {"deploy:deploy-file",
+                    "-Dfile="+generatedWar,
+                    "-DrepositoryId=" + releaseInfo.getRepositoryId(),
+                    "-Durl=" + releaseInfo.getRepositoryUrl(),
+                    "-DpomFile=" + pomFile.getPath(),
+                    "-Dpackaging="+ StringUtils.substringAfterLast(generatedWar.getName(),"."),
+                    "-DgroupId=" + pom.getGroupId(),
+                    "-DartifactId=" + pom.getArtifactId(),
+                    "-Dversion=" + pom.getVersion()};
+            if (settings != null) {
+                deployParams = (String[]) ArrayUtils.addAll(deployParams, new String[] { "--settings", settings.getPath()});
+            }
+            int ret = cli.doMain(deployParams, generatedWar.getParent(),
+                    System.out, System.err);
+            if (ret > 0) {
+                logger.error("Maven archetype call returned " + ret);
+                throw new IOException("Maven invocation failed");
+            }
+        } finally {
+            FileUtils.deleteQuietly(settings);
+            FileUtils.deleteQuietly(pomFile);
+        }
+    }
+
+    public File extractPomFromJar(JarFile jar) throws IOException {
+        // deploy artifacts to Maven distribution server
+        Enumeration<JarEntry> jarEntries = jar.entries();
+        JarEntry jarEntry = null;
+        while (jarEntries.hasMoreElements()) {
+            jarEntry = jarEntries.nextElement();
+            String name = jarEntry.getName();
+            if (StringUtils.startsWith(name, "META-INF/maven/") && StringUtils.endsWith(name,"/pom.xml")) {
+                break;
+            }
+        }
+        InputStream is = jar.getInputStream(jarEntry);
+        File pomFile = File.createTempFile("pom",".xml");
+        FileUtils.copyInputStreamToFile(is, pomFile);
+        return pomFile;
+    }
+
+
     private String computeModuleJarUrl(String releaseVersion, ModuleReleaseInfo releaseInfo, Model model) {
         StringBuilder url = new StringBuilder(64);
         url.append(releaseInfo.getRepositoryUrl());
@@ -797,28 +898,21 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         String nextVersion = releaseInfo.getNextVersion();
         String artifactId = model.getArtifactId();
         File pom = new File(sources, "pom.xml");
-        File generatedWar = null;
-        boolean publishToMaven = releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryId() != null
-                && releaseInfo.getRepositoryUrl() != null;
+        File generatedWar;
+
         if (scmUrl != null) {
             // release using maven-release-plugin
             String tag = StringUtils.replace(releaseVersion, ".", "_");
 
             int ret;
-            if (publishToMaven) {
-                String[] installParams = { "release:prepare", "release:perform", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
-                        "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
-                        "-DignoreSnapshots=true", "--batch-mode" };
-                ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
-            } else {
-                File tmpRepo = new File(System.getProperty("java.io.tmpdir"),"repo");
-                tmpRepo.mkdir();
-                String[] installParams = new String[] { "release:prepare", "release:stage", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
-                        "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
-                        "-DignoreSnapshots=true", "-DstagingRepository=tmp::default::"+tmpRepo.toURI().toString(), "--batch-mode" };
-                ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
-                FileUtils.deleteDirectory(tmpRepo);
-            }
+
+            File tmpRepo = new File(System.getProperty("java.io.tmpdir"),"repo");
+            tmpRepo.mkdir();
+            String[] installParams = new String[] { "release:prepare", "release:stage", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
+                    "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
+                    "-DignoreSnapshots=true", "-DstagingRepository=tmp::default::"+tmpRepo.toURI().toString(), "--batch-mode" };
+            ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+            FileUtils.deleteDirectory(tmpRepo);
 
             if (ret > 0) {
                 cli.doMain(new String[] { "release:rollback" }, sources.getPath(), System.out, System.err);
@@ -846,23 +940,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             generatedWar = compileModule(sources).getFile();
             
-            if (publishToMaven) {
-                // deploy artifacts to Maven distribution server
-                int ret = cli.doMain(new String[] { "deploy", "-Dmaven.home=" + getMavenHome() },
-                        sources.getPath(), System.out, System.err);
-                if (ret > 0) {
-                    logger.warn(
-                            "mvn deploy:deploy failed for module {}. Please see server console output for details.",
-                            sources.getPath());
-                    PomUtils.updateVersion(pom, lastVersion);
-                    throw new IOException("Maven invocation failed");
-                }
-            }
-
             PomUtils.updateVersion(pom, nextVersion);
-        }
-        if (publishToMaven) {
-            releaseInfo.setArtifactUrl(computeModuleJarUrl(releaseVersion, releaseInfo, model));
         }
         return generatedWar;
     }
@@ -1618,37 +1696,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setMavenArchetypeCatalog(String mavenArchetypeCatalog) {
         this.mavenArchetypeCatalog = mavenArchetypeCatalog;
-    }
-
-    /**
-     * Manage forge
-     */
-    protected String createForgeModule(String url, String username, String password, Map<String, String> params) throws IOException {
-        String moduleUrl = null;
-        Map<String, String> headers = new HashMap<String, String>();
-
-        if (username != null && password != null) {
-            headers.put("Authorization", "Basic " + Base64.encode((username + ":" + password).getBytes()));
-        }
-        headers.put("accept", "application/json");
-        String result = httpClientService.executePost(url + "/contents/forge-modules-repository.createModule.do", params, headers);
-        if (StringUtils.isNotEmpty(result)) {
-            try {
-                JSONObject json = new JSONObject(result);
-                if (!json.isNull("moduleAbsoluteUrl")) {
-                    moduleUrl = json.getString("moduleAbsoluteUrl");
-                } else if (!json.isNull("error")) {
-                    throw new IOException(json.getString("error"));
-                } else {
-                    logger.warn("Cannot find 'moduleAbsoluteUrl' entry in the create module actin response: {}", result);
-                    throw new IOException("unknown");
-                }
-            } catch (JSONException e) {
-                logger.error("Unable to parse the response of the module creation action. Cause: " + e.getMessage(), e);
-            }
-        }
-
-        return moduleUrl;
     }
 
     public void setHttpClientService(HttpClientService httpClientService) {

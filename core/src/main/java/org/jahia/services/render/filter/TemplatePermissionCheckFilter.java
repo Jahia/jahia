@@ -50,8 +50,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -59,17 +58,44 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
- * 
- * User: toto
- * Date: Dec 8, 2009
- * Time: 11:54:06 AM
- * 
+ * Performs accessibility check for the content: permissions, required mode etc.
+ *  
+ * @author Thomas Draier
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
+    
+    class RequiredModeException extends AccessDeniedException {
 
-    private static Logger logger = LoggerFactory.getLogger(TemplatePermissionCheckFilter.class);
+        private static final long serialVersionUID = -984310772102680834L;
+
+        private Locale locale;
+
+        private String localizedMessage;
+
+        private String mode;
+
+        RequiredModeException(String mode, Locale locale) {
+            super("Content can only be accessed in " + mode);
+            this.mode = mode;
+            this.locale = locale;
+        }
+
+        @Override
+        public String getLocalizedMessage() {
+            if (localizedMessage == null && locale != null) {
+                if (locale != null) {
+                    localizedMessage = JahiaResourceBundle.getJahiaInternalResource("message.requiredMode." + mode,
+                            locale, getMessage());
+                } else {
+                    return super.getLocalizedMessage();
+                }
+            }
+            return localizedMessage;
+        }
+    }
 
     public String prepare(RenderContext renderContext, final Resource resource, RenderChain chain) throws Exception {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
@@ -102,7 +128,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             if (node.hasProperty("j:requiredMode")) {
                 String req = node.getProperty("j:requiredMode").getString();
                 if (!renderContext.getMode().equals(req) && !invert) {
-                    throw new AccessDeniedException("Content can only be accessed in "+req);
+                    throw new RequiredModeException(req, renderContext.getMainResourceLocale());
                 }
             }
         }
@@ -225,8 +251,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             // Handle case of required mode
             if(e instanceof AccessDeniedException && renderContext.getMode().equals("preview") && resource.getNode().hasProperty("j:requiredMode")) {
                 // Returns a fragment with an error comment
-                logger.warn("Access Denied Exception occurred : "+e.getMessage(),e);
-                return "<p>"+e.getMessage()+"</p>";
+                return "<p>" + e.getLocalizedMessage() + "</p>";
             }
         } catch (Exception e1) {
             return null;

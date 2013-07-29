@@ -40,12 +40,14 @@
 
 package org.jahia.taglibs.template.include;
 
+import com.google.common.collect.Ordering;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
@@ -541,8 +543,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         buffer.append(" path=\"").append(path).append("\"");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
+            nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');
             buffer.append(" nodetypes=\"" + nodeTypes + "\"");
         } else if (!StringUtils.isEmpty(constraints)) {
+            constraints = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(constraints))),' ');
             buffer.append(" nodetypes=\"" + constraints + "\"");
         }
 

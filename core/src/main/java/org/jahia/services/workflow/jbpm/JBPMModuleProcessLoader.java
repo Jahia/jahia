@@ -45,6 +45,7 @@ import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.osgi.compiler.OsgiKieModule;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.templates.JahiaModuleAware;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
@@ -108,7 +109,8 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
         if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
             ReleaseId moduleReleaseId = new ReleaseIdImpl("org.jahia.modules", module.getName(), module.getVersion().toString());
-            KieModule kieModule = jbpm6WorkflowProvider.getKieRepository().getKieModule(moduleReleaseId);
+            OsgiKieModule osgiKieModule = OsgiKieModule.create(module.getBundle().getEntry("META-INF/kmodule.xml"));
+            KieModule kieModule = osgiKieModule;
             for (Resource process : processes) {
                 long lastModified = process.lastModified();
 

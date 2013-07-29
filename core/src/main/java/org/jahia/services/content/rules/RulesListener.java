@@ -222,7 +222,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 compiledRulesDir.mkdirs();
             }
 
-            kieFileSystem.write(kieServices.getResources().newInputStreamResource(dsrlFile.getInputStream()));
+            kieFileSystem.write(kieServices.getResources().newUrlResource(dsrlFile.getURL()));
             kieBuilder.buildAll();
 
         } catch (Exception e) {

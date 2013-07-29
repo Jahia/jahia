@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -114,6 +115,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         kieRepository = kieServices.getRepository();
 
         List<org.kie.api.io.Resource> fileSystemResources = new ArrayList<org.kie.api.io.Resource>();
+
+        for (Resource process : processes) {
+            try {
+                fileSystemResources.add(kieServices.getResources().newUrlResource(process.getURL()));
+            } catch (IOException e) {
+                logger.error("Error while trying to add process resource " + process, e);
+            }
+        }
 
         kieFileSystem = kieServices.newKieFileSystem();
 

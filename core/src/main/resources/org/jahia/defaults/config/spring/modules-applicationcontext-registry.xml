@@ -79,7 +79,7 @@
         <webflow:flow-location-pattern value="**/*.flow/**/flow.xml"/>
     </webflow:flow-registry>
 
-    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
           depends-on="settingsBean" lazy-init="true">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="org.jahia.modules"/>
@@ -90,7 +90,7 @@
                         <entry key="hibernate.dialect" value="${hibernate.dialect}"/>
                         <entry key="hibernate.hbm2ddl.auto" value="none"/>
                         <entry key="hibernate.show_sql" value="false"/>
-                        <entry key="hibernate.cache.provider_class"
+                        <entry key="hibernate.cache.region.factory_class"
                                value="org.hibernate.cache.ehcache.SharingEhcacheRegionFactory"/>
                         <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                         <entry key="hibernate.cache.use_query_cache" value="false"/>

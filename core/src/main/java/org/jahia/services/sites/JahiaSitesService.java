@@ -382,10 +382,10 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                         }
                         String target = "/sites/" + siteKey;
                         try {
-                            logger.info("Deploying modules to {}", target);
+                            logger.info("Deploying modules {} to {}", modules.toString(), target);
                             templateService.installModules(modules, target, session);
                         } catch (RepositoryException re) {
-                            logger.error("Unable to deploy modules to "
+                            logger.error("Unable to deploy modules " + modules.toString() + " to "
                                     + target + ". Cause: " + re.getMessage(), re);
                         }
                         //Auto deploy all modules that define this behavior on site creation

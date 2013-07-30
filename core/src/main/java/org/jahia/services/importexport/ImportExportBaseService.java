@@ -1275,7 +1275,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
                 if (!installedModules.contains(value) && !templateSet.equals(value)) {
-                    modules.add(templateManagerService.getAnyDeployedTemplatePackage(value));
+                    JahiaTemplatesPackage pkg = templateManagerService.getAnyDeployedTemplatePackage(value);
+                    if (pkg != null) {
+                        modules.add(pkg);
+                    } else {
+                        logger.info("unable to find module {} in deployed modules",value);
+                    }
                 }
             }
         }

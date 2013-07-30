@@ -573,6 +573,11 @@
 // @since Jahia 6.6
 [jmix:hiddenNode] mixin
 
+// @since Jahia 6.6.1.8
+[jmix:unstructured] > nt:unstructured mixin
+  - * (UNDEFINED) i18n multiple
+  - * (UNDEFINED) i18n
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

@@ -58,6 +58,8 @@
     <properties>
         <jahia.modules.test.importPackage>
             ${jahia.modules.importPackage},
+			com.google.inject;resolution:=optional,
+			org.apache.bsf.util;resolution:=optional,
             com.google.protobuf;resolution:=optional,
             com.sun.tools.apt;resolution:=optional,
             com.sun.tools.javac;resolution:=optional,

@@ -799,4 +799,12 @@ public class Category extends JahiaObject {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+    public boolean equals(Object category) {
+        if (category != null && category instanceof Category && getID() != null && getID().equals(((Category) category).getID())) {
+            return true;
+        }
+        return false;
+    }
+
 }

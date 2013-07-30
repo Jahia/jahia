@@ -1,3 +1,6 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+%><?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -6,17 +9,18 @@
 <%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@ page import="org.jahia.services.content.JCRTemplate" %>
+<%@ page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" %>
 <%@ page import="org.jahia.utils.RequestLoadAverage" %>
 <%@ page import="org.quartz.JobDetail" %>
 <%@ page import="org.quartz.SchedulerException" %>
 <%@ page import="javax.jcr.*" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
+<%@ page import="org.apache.commons.collections.CollectionUtils" %>
+<%@ page import="org.apache.commons.io.IOUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
 <%@ page import="org.apache.jackrabbit.core.lock.LockInfo" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -55,6 +59,13 @@
 
         .warning {
             color: brown;
+        }
+        .fix {
+            color: blue;
+        }
+        fieldset {
+            color: red;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -103,6 +114,7 @@
             final Map<String, Long> results = new HashMap<String, Long>();
             results.put("nodesRead", 0L);
             startTime = System.currentTimeMillis();
+            final List<File> lockFiles = fix ? new LinkedList<File>() : null;
             for (String workspaceName : workspaces) {
                 if (chosenWorkspace == null || chosenWorkspace.isEmpty() || chosenWorkspace.equals(workspaceName)) {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
@@ -114,7 +126,6 @@
                             Workspace workspace = jcrSession.getWorkspace();
 
                             LinkedHashMap<String, LockData> locks = loadLocks(out, servletContext, workspace.getName());
-                            int originalLockFileSize = locks.size();
                             try {
                                 println(out, "Traversing " + workspace.getName() + " workspace ...");
                                 processNode(out, jcrRootNode, locks, results, fix);
@@ -126,8 +137,11 @@
                                 checkLockFile(out, locks, sessionWrapper, fix);
                             }
 
-                            if (fix && originalLockFileSize != locks.size()) {
-                                saveLocks(out, servletContext, locks, workspace.getName());
+                            if (fix && !CollectionUtils.isEqualCollection(locks.entrySet(), loadLocks(out, servletContext, workspace.getName()).entrySet())) {
+                                File lockFile = saveLocks(out, servletContext, locks, workspace.getName());
+                                if (lockFile != null) {
+                                    lockFiles.add(lockFile);
+                                }
                             }
                             return null;
                         }
@@ -146,8 +160,24 @@
             long nodesRead = results.get("nodesRead");
             totalTime = System.currentTimeMillis() - startTime;
             println(out, "Total time to process all JCR " + nodesRead + " nodes data : " + totalTime + "ms");
+            
+            if (fix && !lockFiles.isEmpty()) {
+                System.out.println("Please shutdown Jahia, rename existing locks file to locks.backup and rename the following files to 'locks':");
+                out.append("<fieldset><legend>WARNING!</legend>");
+                out.append("<p>Please shutdown Jahia, rename existing locks file to locks.backup and rename the following files to 'locks':\n");
+                out.append("<ul>");
+                for (File f : lockFiles) {
+                    System.out.println(f.getPath());
+                    out.append("<li>").append(f.getPath()).append("</li>");
+                }
+                out.append("</ul></p>");
+                if (Boolean.getBoolean("cluster.activated")) {
+                    out.append("<p>Please, copy those lock files to the correspondng locations on other Jahia cluster nodes</p>");
+                }
+                out.append("</fieldset>");
+            }
         } catch (Throwable t) {
-            errorPrintln(out, "Error reading JCR ", t, false);
+            errorPrintln(out, "Error reading JCR ", t);
         } finally {
             running = false;
             mustStop = false;
@@ -161,31 +191,7 @@
         out.println("</h3>");
     }
 
-    private static SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
-
-    private String generatePadding(int depth, boolean withNbsp) {
-        StringBuffer padding = new StringBuffer();
-        for (int i = 0; i < depth; i++) {
-            if (withNbsp) {
-                padding.append("&nbsp;&nbsp;");
-            } else {
-                padding.append("  ");
-            }
-        }
-        return padding.toString();
-    }
-
     int errorCount = 0;
-
-    private void print(JspWriter out, String message) {
-        System.out.print(message);
-        try {
-            out.print(message);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void println(JspWriter out, String message) {
         System.out.println(message);
@@ -197,20 +203,11 @@
         }
     }
 
-    private void depthPrintln(JspWriter out, int depth, String message) {
-        System.out.println(generatePadding(depth, false) + message);
+    private void printlnFix(JspWriter out, String message) {
+        System.out.println("FIX: " + message);
         try {
-            out.println(generatePadding(depth, true) + message + "<br/>");
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void debugPrintln(JspWriter out, String message) {
-        System.out.println("DEBUG: " + message);
-        try {
-            out.println("<!--" + message + "-->");
+            out.println("<span class='fix'>" + message + "</span>");
+            out.println("<br/>");
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -218,27 +215,15 @@
     }
 
     private void errorPrintln(JspWriter out, String message) {
-        System.out.println("ERROR: " + message);
-        try {
-            out.println("<span class='error'>" + message + "</span><br/>");
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        errorPrintln(out, message, null, false);
     }
 
-    private void depthErrorPrintln(JspWriter out, int depth, String message) {
-        System.out.println(generatePadding(depth, false) + "ERROR: " + message);
-        try {
-            out.println(generatePadding(depth, true) + "<span class='error'>" + message + "</span><br/>");
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void errorPrintln(JspWriter out, String message, Throwable t) {
+        errorPrintln(out, message, t, false);
     }
-
+    
     private void errorPrintln(JspWriter out, String message, Throwable t, boolean warning) {
-        System.out.println(message);
+        System.out.println("ERROR: " + message);
         if (t != null) {
             t.printStackTrace();
         }
@@ -273,182 +258,7 @@
             }
             results.put("nodesRead", nodesRead);
             if (node.isNodeType("mix:lockable")) {
-                if (node.hasProperty("jcr:lockIsDeep")) {
-                    if (node.hasProperty("jcr:lockOwner")) {
-                        if (node.isNodeType("jmix:lockable")) {
-                            if (node.hasProperty("j:locktoken")) {
-                                String lockToken = node.getProperty("j:locktoken").getString();
-                                if (locks.containsKey(node.getIdentifier())) {
-                                    LockData lockData = locks.get(node.getIdentifier());
-                                    if (lockToken.equals(lockData.getToken())) {
-                                        // all is good, nothing to do here.
-                                        StringBuffer lockTypes = new StringBuffer();
-                                        if (node.hasProperty("j:lockTypes")) {
-                                            Property lockTypeProperty = node.getProperty("j:lockTypes");
-                                            Value[] lockTypeValues = lockTypeProperty.getValues();
-                                            for (Value lockTypeValue : lockTypeValues) {
-                                                lockTypes.append(lockTypeValue.getString());
-                                                lockTypes.append(" ");
-                                            }
-                                        }
-                                        println(out, "Normal lock found at " + node.getPath() +
-                                                " token=" + lockToken +
-                                                " lockTypes=" + lockTypes.toString() +
-                                                " lockOwner=" + node.getProperty("jcr:lockOwner").getString() +
-                                                " lockIsDeep=" + node.getProperty("jcr:lockIsDeep").getBoolean()
-                                        );
-                                    } else {
-                                        errorPrintln(out, "Property j:locktoken (=" + lockToken + ") on node " + node.getPath() + " and lock file token (=" + lockData.getToken() + ") do not match !");
-                                        if (fix) {
-                                            errorPrintln(out, "Setting property j:locktoken on node " + node.getPath() + " to value of lock file =" + lockData.getToken());
-                                            boolean checkedOut = false;
-                                            if (!node.isCheckedOut()) {
-                                                node.checkout();
-                                                checkedOut = true;
-                                            }
-                                            node.setProperty("j:locktoken", lockData.getToken());
-                                            if (checkedOut) {
-                                                node.checkin();
-                                            }
-                                            node.getSession().save();
-                                        }
-                                    }
-                                } else {
-                                    // missing the lock token in the locks file
-                                    errorPrintln(out, "Lock token is missing in the lock file !");
-                                    if (fix) {
-                                        errorPrintln(out, "Generating new lock token for lock file...");
-                                        String lockIdentifier = node.getIdentifier();
-                                        String newLockToken = getLockToken(lockIdentifier);
-                                        String lockLine = newLockToken;
-                                        LockData lockData = new LockData(node.getIdentifier(), newLockToken, lockLine, Long.MAX_VALUE);
-                                        locks.put(lockIdentifier, lockData);
-                                    }
-                                }
-                            } else {
-                                errorPrintln(out, "Missing j:locktoken on node " + node.getPath());
-                                if (fix) {
-                                    // let's try to find the token in the lock map to see if we can rebuild it.
-                                    if (locks.containsKey(node.getIdentifier())) {
-                                        errorPrintln(out, "Rebuilding j:locktoken property from lock file");
-                                        LockData lockData = locks.get(node.getIdentifier());
-                                        boolean checkedOut = false;
-                                        if (!node.isCheckedOut()) {
-                                            node.checkout();
-                                            checkedOut = true;
-                                        }
-                                        node.setProperty("j:locktoken", lockData.getToken());
-                                        if (checkedOut) {
-                                            node.checkin();
-                                        }
-                                        node.getSession().save();
-                                    } else {
-                                        // no token was found, we will clear the lock from both the properties
-                                        // and the locks
-                                        errorPrintln(out, "Couldn't find lock token in lock file, will regenerate it and");
-                                        String newLockToken = getLockToken(node.getIdentifier());
-                                        String lockLine = newLockToken;
-                                        LockData lockData = new LockData(node.getIdentifier(), newLockToken, lockLine, Long.MAX_VALUE);
-                                        locks.put(node.getIdentifier(), lockData);
-                                        boolean checkedOut = false;
-                                        if (!node.isCheckedOut()) {
-                                            node.checkout();
-                                            checkedOut = true;
-                                        }
-                                        node.setProperty("j:locktoken", newLockToken);
-                                        if (checkedOut) {
-                                            node.checkin();
-                                        }
-                                        node.getSession().save();
-                                    }
-                                }
-                            }
-                            if (node.isNodeType("jnt:translation")) {
-                                // we are in a locked translation node, we need to check the status of the parent.
-                                Node parentNode = node.getParent();
-                                // test if parent is locked
-                                if (parentNode.isNodeType("mix:lockable") &&
-                                        !parentNode.hasProperty("jcr:lockIsDeep") &&
-                                        !parentNode.hasProperty("jcr:lockOwner") &&
-                                        parentNode.isNodeType("jmix:lockable") &&
-                                        !parentNode.hasProperty("j:locktoken")) {
-                                    // parent doesn't appear to be locked, we must remove the lock on the translation node
-                                    errorPrintln(out, "Parent node of translation node " + node.getPath() + " is not locked but translation node is locked !");
-                                    if (fix) {
-                                        errorPrintln(out, "Unlocking translation node");
-                                        boolean checkedOut = false;
-                                        if (!node.isCheckedOut()) {
-                                            node.checkout();
-                                            checkedOut = true;
-                                        }
-                                        if (node.hasProperty("jcr:lockIsDeep")) {
-                                            node.getProperty("jcr:lockIsDeep").remove();
-                                        }
-                                        if (node.hasProperty("jcr:lockOwner")) {
-                                            node.getProperty("jcr:lockOwner").remove();
-                                        }
-                                        if (checkedOut) {
-                                            node.checkin();
-                                        }
-                                        node.getSession().save();
-                                        if (locks.containsKey(node.getIdentifier())) {
-                                            locks.remove(node.getIdentifier());
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            // now we must check if the lock is present in the lock file
-                            if (locks.containsKey(node.getIdentifier())) {
-                                // this is ok
-                            } else {
-                                errorPrintln(out, "Entry missing in lock file for node " + node.getPath());
-                                if (fix) {
-                                    errorPrintln(out, "Generating new lock token for node " + node.getPath() + " and storing in locks file");
-                                    String newLockToken = getLockToken(node.getIdentifier());
-                                    String lockLine = newLockToken;
-                                    LockData lockData = new LockData(node.getIdentifier(), newLockToken, lockLine, Long.MAX_VALUE);
-                                    locks.put(node.getIdentifier(), lockData);
-                                }
-                            }
-                        }
-                    } else {
-                        errorPrintln(out, "Found jcr:lockIsDeep property on node " + node.getPath() + " but no matching jcr:lockOwner is present !");
-                        if (fix) {
-                            errorPrintln(out, "NOT YET IMPLEMENTED !");
-                        }
-                    }
-                } else {
-                    if (node.isNodeType("jmix:lockable") && node.hasProperty("j:locktoken")) {
-                        // the node doesn't have a jcr:lockIsDeep but a j:locktoken, so we need to decide
-                        // if the node should be locked or not.
-                        errorPrintln(out, "Found node " + node.getPath() + " with a j:locktoken property but no jcr:lockIsDeep is present");
-                        if (fix) {
-                            errorPrintln(out, "Clean(removing) lock properties on node " + node.getPath());
-                            boolean checkedOut = false;
-                            if (!node.isCheckedOut()) {
-                                node.checkout();
-                                checkedOut = true;
-                            }
-                            if (node.hasProperty("j:locktoken")) {
-                                node.getProperty("j:locktoken").remove();
-                            }
-                            if (node.hasProperty("jcr:lockOwner")) {
-                                node.getProperty("jcr:lockOwner").remove();
-                            }
-                            if (node.hasProperty("j:lockTypes")) {
-                                node.getProperty("j:lockTypes").remove();
-                            }
-                            if (checkedOut) {
-                                node.checkin();
-                            }
-                            node.getSession().save();
-                            if (locks.containsKey(node.getIdentifier())) {
-                                locks.remove(node.getIdentifier());
-                            }
-                        }
-                    }
-                }
+                doProcessNode(out, node, locks, results, fix);
             }
             NodeIterator childNodeIterator = node.getNodes();
             while (childNodeIterator.hasNext() && !mustStop) {
@@ -456,16 +266,137 @@
                 if (childNode.getName().equals("jcr:system")) {
                     println(out, "Ignoring jcr:system node and it's child objects");
                 } else {
-                    processNode(out, childNode, locks, results, fix);
+                    try {
+                        processNode(out, childNode, locks, results, fix);
+                    } catch (RepositoryException re) {
+                        errorPrintln(out, "RepositoryException while processing node" + childNode.getPath(), re);
+                    }
                 }
             }
         } catch (ValueFormatException vfe) {
-            errorPrintln(out, "ValueFormatException while processing node" + node.getPath(), vfe, false);
+            errorPrintln(out, "ValueFormatException while processing node" + node.getPath(), vfe);
         } catch (RepositoryException re) {
-            errorPrintln(out, "RepositoryException while processing node" + node.getPath(), re, false);
+            errorPrintln(out, "RepositoryException while processing node" + node.getPath(), re);
         }
     }
 
+    protected void doProcessNode(JspWriter out, Node node, LinkedHashMap<String, LockData> locks, Map<String, Long> results, boolean fix) throws IOException, RepositoryException {
+        boolean hasLockIsDeep = node.hasProperty("jcr:lockIsDeep");
+        boolean hasLockOwner = node.hasProperty("jcr:lockOwner");
+        boolean isJmixLockable = node.isNodeType("jmix:lockable");
+        
+        // check special case for locked translation nodes
+        if ((hasLockIsDeep || hasLockOwner) && node.isNodeType("jnt:translation")) {
+            // we are in a locked translation node, we need to check the status of the parent.
+            Node parentNode = node.getParent();
+            // test if parent is locked
+            if (parentNode.isNodeType("mix:lockable") &&
+                    !parentNode.hasProperty("jcr:lockIsDeep") &&
+                    !parentNode.hasProperty("jcr:lockOwner")) {
+                // parent doesn't appear to be locked, we must remove the lock on the translation node
+                errorPrintln(out, "Parent node of translation node " + node.getPath() + " is not locked but translation node is locked!");
+                if (fix) {
+                    printlnFix(out, "Unlocking translation node");
+                    node.unlock();
+                    if (locks.containsKey(node.getIdentifier())) {
+                        locks.remove(node.getIdentifier());
+                    }
+                    hasLockIsDeep = false;
+                    hasLockOwner = false;
+                }
+            }
+        }
+        if (hasLockIsDeep || hasLockOwner) {
+            // node locked in Jackrabbit
+            // now we must check if the lock is present in the lock file
+            String referenceToken = null;
+            if (!locks.containsKey(node.getIdentifier())) {
+                errorPrintln(out, "Entry missing in lock file for node " + node.getPath());
+                if (fix) {
+                    printlnFix(out, "Generating new lock token for node " + node.getPath() + " and storing in locks file");
+                    referenceToken = getLockToken(node.getIdentifier());
+                    locks.put(node.getIdentifier(), new LockData(node.getIdentifier(), referenceToken, referenceToken, Long.MAX_VALUE));
+                }
+            } else {
+                referenceToken = locks.get(node.getIdentifier()).getToken();
+            }
+            if (isJmixLockable) {
+                // we have Jahia mixin
+                boolean hasLockToken = node.hasProperty("j:locktoken");
+                String lockToken = null;
+                if (!hasLockToken || !StringUtils.equals(referenceToken, lockToken = node.getProperty("j:locktoken").getString())) {
+                    if (hasLockToken) {
+                        errorPrintln(out, "Property j:locktoken (=" + lockToken + ") on node " + node.getPath() + " and lock file token (=" + referenceToken + ") do not match!");
+                    } else {
+                        errorPrintln(out, "Missing j:locktoken on node " + node.getPath());
+                    }
+                    if (fix) {
+                        // setting it
+                        printlnFix(out, "Setting property j:locktoken on node " + node.getPath() + " to value of lock file =" + referenceToken);
+                        boolean checkedOut = false;
+                        if (!node.isCheckedOut()) {
+                            node.checkout();
+                            checkedOut = true;
+                        }
+                        node.setProperty("j:locktoken", referenceToken);
+                        node.getSession().save();
+                        if (checkedOut) {
+                            node.checkin();
+                        }
+                    }
+                } else {
+                    // all is good, nothing to do here.
+                    StringBuilder lockTypes = new StringBuilder();
+                    if (node.hasProperty("j:lockTypes")) {
+                        Property lockTypeProperty = node.getProperty("j:lockTypes");
+                        Value[] lockTypeValues = lockTypeProperty.getValues();
+                        for (Value lockTypeValue : lockTypeValues) {
+                        	lockTypes.append(lockTypeValue.getString());
+                            lockTypes.append(" ");
+                        }
+                    }
+                    println(out, "Locked node found at " + node.getPath() +
+                                " token=" + referenceToken +
+                                " lockTypes=" + lockTypes.toString() +
+                                " lockOwner=" + node.getProperty("jcr:lockOwner").getString() +
+                                " lockIsDeep=" + node.getProperty("jcr:lockIsDeep").getBoolean()
+                    );
+                }
+            }
+        } else {
+            // node is not locked in Jackrabbit
+            if (isJmixLockable) {
+                boolean hasLockToken = node.hasProperty("j:locktoken");
+                boolean hasLockTypes = node.hasProperty("j:lockTypes");
+                if (hasLockToken || hasLockTypes) {
+                    // but Jahia properties are present
+                    errorPrintln(out, "Found node " + node.getPath() + " with a j:locktoken property but no jcr:lockIsDeep is present");
+                    if (fix) {
+                        printlnFix(out, "Clean(removing) lock properties on node " + node.getPath());
+                        boolean checkedOut = false;
+                        if (!node.isCheckedOut()) {
+                            node.checkout();
+                            checkedOut = true;
+                        }
+                        if (hasLockToken) {
+                            node.getProperty("j:locktoken").remove();
+                        }
+                        if (hasLockTypes) {
+                            node.getProperty("j:lockTypes").remove();
+                        }
+                        node.getSession().save();
+                        if (checkedOut) {
+                            node.checkin();
+                        }
+                        if (locks.containsKey(node.getIdentifier())) {
+                            locks.remove(node.getIdentifier());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     protected void checkLockFile(JspWriter out, LinkedHashMap<String, LockData> locks, Session session, boolean fix) {
         println(out, "Checking lock file data...");
         for (Map.Entry<String, LockData> lockDataEntry : locks.entrySet()) {
@@ -486,7 +417,7 @@
                             // we have the mandatory system properties, we can simply reconstruct the j:locktoken property
                             errorPrintln(out, "Missing property j:locktoken on node " + node.getPath() + " ");
                             if (fix) {
-                                errorPrintln(out, "Rebuilding property j:locktoken on node " + node.getPath() + " ");
+                                printlnFix(out, "Rebuilding property j:locktoken on node " + node.getPath() + " ");
                                 boolean checkedOut = false;
                                 if (!node.isCheckedOut()) {
                                     node.checkout();
@@ -502,9 +433,6 @@
                             // we are missing one of the mandatory JCR system properties and the lock token, we should
                             // probably try to clean out the lock
                             errorPrintln(out, "Missing property j:locktoken on node " + node.getPath() + " and also jcr:lockIsDeep and/or jcr:lockOwner ");
-                            if (fix) {
-
-                            }
                         }
                     }
                 }
@@ -553,17 +481,26 @@
         }
         return false;
     }
+    
+    private File getLocksFile(String workspaceName) throws IOException {
+        File repoHome = ((SpringJackrabbitRepository) SpringContextSingleton.getBean("jackrabbit")).getHomeDir().getFile();
+        if (!repoHome.isDirectory()) {
+            System.out.println("Unable to locate repository home at " + repoHome);
+            return null;
+        }
+        return new File(repoHome, "workspaces/" + workspaceName + "/locks");
+    }
 
     private LinkedHashMap<String, LockData> loadLocks(JspWriter out, ServletContext servletContext, String workspaceName) {
         LinkedHashMap<String, LockData> locks = new LinkedHashMap<String, LockData>();
 
         BufferedReader reader = null;
         try {
-            String lockFilePath = "/WEB-INF/var/repository/workspaces/" + workspaceName + "/locks";
+            File locksFile = getLocksFile(workspaceName);
 
-            InputStream locksInputStream = servletContext.getResourceAsStream(lockFilePath);
+            InputStream locksInputStream = locksFile.exists() ? new FileInputStream(locksFile) : null;
             if (locksInputStream == null) {
-                println(out, "No lock file found at " + lockFilePath);
+                println(out, "No lock file found at " + locksFile);
                 return locks;
             }
 
@@ -586,10 +523,9 @@
                     }
                 }
                 NodeId id = LockInfo.parseLockToken(token);
-                LockData lockData = new LockData(id.toString(), token, s, timeoutHint);
-                locks.put(id.toString(), lockData);
+                locks.put(id.toString(), new LockData(id.toString(), token, s, timeoutHint));
             }
-            println(out, "Loaded " + locks.size() + " locks from lock file " + lockFilePath);
+            println(out, "Loaded " + locks.size() + " locks from lock file " + locksFile);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -604,17 +540,12 @@
         return locks;
     }
 
-    private boolean saveLocks(JspWriter out, ServletContext servletContext, LinkedHashMap<String, LockData> locks, String workspaceName) {
-
-        String lockFileDiskPath = servletContext.getRealPath("/WEB-INF/var/repository/workspaces/" + workspaceName + "/locks.corrected");
-        if (lockFileDiskPath == null) {
-            return false;
-        }
-        File lockFile = new File(lockFileDiskPath);
-
+    private File saveLocks(JspWriter out, ServletContext servletContext, LinkedHashMap<String, LockData> locks, String workspaceName) {
         BufferedWriter writer = null;
 
         try {
+            File lockFile = new File(getLocksFile(workspaceName).getParentFile(), "locks.corrected");
+
             writer = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(lockFile)));
             for (Map.Entry<String, LockData> info : locks.entrySet()) {
@@ -628,9 +559,8 @@
 
                 writer.newLine();
             }
-            println(out, "Successfully wrote " + locks.size() + " locks to file " + lockFile);
-            println(out, "Please shutdown Jahia, rename existing locks file to locks.backup and rename " + lockFile + " to locks");
-            return true;
+            printlnFix(out, "Successfully wrote " + locks.size() + " locks to file " + lockFile);
+            return lockFile;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -644,7 +574,7 @@
                 }
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -731,6 +661,22 @@
 
         public long getTimeoutHint() {
             return timeoutHint;
+        }
+        
+        public boolean equals(Object obj) {
+            if (super.equals(obj)) {
+                return true;
+            }
+            if (obj instanceof LockData) {
+                LockData other = (LockData) obj;
+                return other.getUuid().equals(getUuid()) && other.getToken().equals(getToken());
+            }
+            
+            return false;
+        }
+        
+        public int hashCode() {
+            return (17 * 37 + uuid.hashCode()) * 37 + token.hashCode();
         }
     }
 %>

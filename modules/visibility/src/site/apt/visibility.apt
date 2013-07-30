@@ -46,6 +46,12 @@ public interface VisibilityConditionRule {
      * @return Return the associated display template that will be used by gwt.
      */
     String getGWTDisplayTemplate(Locale locale);
+    /**
+     * Returns a list of field names, required to display the info.
+     *
+     * @return a list of field names, required to display the info
+     */
+     List<String> getRequiredFieldNamesForTemplate();
 }
 +------------------------------------
 
@@ -62,29 +68,19 @@ public interface VisibilityConditionRule {
  * If the current date is after the start date or if start date is not defined then the node is visible unless
  * end date is defined and we are after end date.
  */
-public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
-    private transient static Logger logger = Logger.getLogger(StartEndDateConditionRuleImpl.class);
-    private String associatedNodeType;
-    private String displayTemplateKey;
-
-    public void setAssociatedNodeType(String associatedNodeType) {
-        this.associatedNodeType = associatedNodeType;
-    }
-
-    public String getAssociatedNodeType() {
-        return associatedNodeType;
-    }
+public class StartEndDateConditionRuleImpl extends BaseVisibilityConditionRule {
+    private transient static Logger logger = LoggerFactory.getLogger(StartEndDateConditionRuleImpl.class);
 
     /**
      * Return the associated display template that will be used by gwt.
      *
      * @return Return the associated display template that will be used by gwt.
      */
-    public String getGWTDisplayTemplate(Locale locale) {
-        return JahiaResourceBundle.getString("JahiaVisibility", displayTemplateKey,locale, "Jahia Visibility");
-    }
+     public String getGWTDisplayTemplate(Locale locale) {
+        return JahiaResourceBundle.getString("JahiaVisibility", "label.startEndDateCondition.xtemplate",locale, "Jahia Visibility");
+     }
 
-    public boolean matches(JCRNodeWrapper nodeWrapper) {
+     public boolean matches(JCRNodeWrapper nodeWrapper) {
         Calendar start = null;
         Calendar end = null;
         try {
@@ -120,15 +116,7 @@ public class StartEndDateConditionRuleImpl implements VisibilityConditionRule {
             }
         }
         return true;
-    }
-
-    public void setDisplayTemplateKey(String displayTemplateKey) {
-        this.displayTemplateKey = displayTemplateKey;
-    }
-
-    public String getDisplayTemplateKey() {
-        return displayTemplateKey;
-    }
+     }
 }
 +-----------------------------------
 
@@ -180,40 +168,77 @@ end
  The code of the action itself
 
 +----------------------------------
-public abstract class DateVisibilityConditionBackgroundAction implements BackgroundAction {
-    private transient static Logger logger = Logger.getLogger(DateVisibilityConditionBackgroundAction.class);
+public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
+
+    private static Logger logger = LoggerFactory.getLogger(FlushCacheOnNodeBackgroundAction.class);
+
+    private FileCacheManager fileCacheManager;
     private ModuleCacheProvider cacheProvider;
+
+    private int startLevel;
+
+    private int levelsUp;
+
+    public FlushCacheOnNodeBackgroundAction() {
+        fileCacheManager = FileCacheManager.getInstance();
+    }
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
     }
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
+        String workspace = Constants.LIVE_WORKSPACE;
         try {
-            cacheProvider.invalidate(node.getParent().getPath());
-            cacheProvider.invalidate(node.getParent().getParent().getPath());
+            JCRNodeWrapper currentNode = node;
+            workspace = node.getSession().getWorkspace().getName();
+            for (int level = 0; level <= (startLevel + levelsUp); level++) {
+                if (level >= startLevel) {
+                    cacheProvider.invalidate(currentNode.getPath());
+                    if (currentNode.isFile()) {
+                        fileCacheManager.invalidate(workspace, currentNode.getPath());
+                    }
+                }
+                currentNode = currentNode.getParent();
+            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            //Flush by path directly as node might not be visible anymore
+            String currentNode = node.getPath();
+            for (int level = 0; level <= (startLevel + levelsUp); level++) {
+                if (level >= startLevel) {
+                    cacheProvider.invalidate(currentNode);
+                    fileCacheManager.invalidate(workspace, currentNode);
+                }
+                currentNode = StringUtils.substringBeforeLast(currentNode,"/");
+            }
         }
     }
-}
 
+    public void setStartLevel(int startLevel) {
+        this.startLevel = startLevel;
+    }
 
-public class StartDateVisibilityConditionBackgroundActionImpl extends DateVisibilityConditionBackgroundAction {
-    private transient static Logger logger = Logger.getLogger(StartDateVisibilityConditionBackgroundActionImpl.class);
-
-    public String getName() {
-        return "startDateVisibilityAction";
+    public void setLevelsUp(int endLevel) {
+        this.levelsUp = endLevel;
     }
 }
++----------------------------------
 
-public class EndDateVisibilityConditionBackgroundActionImpl extends DateVisibilityConditionBackgroundAction {
-    private transient static Logger logger = Logger.getLogger(EndDateVisibilityConditionBackgroundActionImpl.class);
+Then the <<real actions>> are instantiated by Spring on module startup
 
-    public String getName() {
-        return "endDateVisibilityAction";
-    }
-}
++----------------------------------
+<bean id="abstractFlushCacheOnVisibilityNodeBackgroundAction" parent="abstractFlushCacheOnNodeBackgroundAction" abstract="true">
+    <property name="startLevel" value="2"/>
+    <property name="levelsUp" value="1"/>
+</bean>
+
+<bean parent="abstractFlushCacheOnVisibilityNodeBackgroundAction">
+    <property name="name" value="startDateVisibilityAction"/>
+</bean>
+
+<bean parent="abstractFlushCacheOnVisibilityNodeBackgroundAction">
+    <property name="name" value="endDateVisibilityAction"/>
+</bean>
 +----------------------------------
 
   <<A node can only have one job of the same name at he same time>>. The job name is determined by the action name,

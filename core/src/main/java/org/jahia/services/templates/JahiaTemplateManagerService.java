@@ -144,11 +144,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
 
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
-<<<<<<< .working
-=======
-
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/templateSets/[^/]*/templates/(.*)");
->>>>>>> .merge-right.r46847
 
     private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
         public boolean equals(Object o, Object o1) {
@@ -183,7 +178,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private MavenCli cli = new MavenCli(new ClassWorld("plexus.core", getClass().getClassLoader()));
 
     private SourceControlFactory sourceControlFactory;
-    
+
     private ModuleInstallationHelper moduleInstallationHelper;
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -261,44 +256,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", tempName);
         }
 
-<<<<<<< .working
         if (sources.exists()) {
             throw new IOException("Sources folder already exist");
-=======
-    /**
-     * Returns the lookup map for template packages by the JCR node name.
-     *
-     * @return the lookup map for template packages by the JCR node name
-     */
-    @SuppressWarnings("unchecked")
-    public Map<String, JahiaTemplatesPackage> getTemplatePackageByNodeName() {
-        return LazyMap.decorate(new HashMap<String, JahiaTemplatesPackage>(), new Transformer() {
-            public Object transform(Object input) {
-                return templatePackageRegistry.lookupByNodeName(String.valueOf(input));
-            }
-        });
-    }
-
-    /**
-     * Returns the requested template package for the specified site or
-     * <code>null</code> if the package with the specified fileName is not
-     * registered in the repository.
-     *
-     * @param fileName the template package fileName to search for
-     * @return the requested template package or <code>null</code> if the
-     *         package with the specified name is not registered in the
-     *         repository
-     */
-    public JahiaTemplatesPackage getTemplatePackageByFileName(String fileName) {
-        return templatePackageRegistry.lookupByFileName(fileName);
-    }
-
-    public String getTemplateSourcePath(String templateName, int siteId) {
-        String sourcePath = null;
-        JahiaTemplatesPackage pkg = getTemplatePackage(siteId);
-        if (pkg != null && pkg.getTemplateMap().containsKey(templateName)) {
-            sourcePath = pkg.lookupTemplate(templateName).getFilePath();
->>>>>>> .merge-right.r46847
         }
 
         sources.getParentFile().mkdirs();
@@ -980,7 +939,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             PomUtils.updateVersion(pom, releaseVersion);
 
             generatedWar = compileModule(sources).getFile();
-            
+
             PomUtils.updateVersion(pom, nextVersion);
         }
         return generatedWar;
@@ -1590,17 +1549,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checks if the specified template is available either in the requested template set or in one of the deployed modules.
-<<<<<<< .working
      *
      * @param templateName    the path of the template to be checked
      * @param templateSetName the name of the target template set
-=======
-     *
-     * @param templatePath
-     *            the path of the template to be checked
-     * @param templateSetName
-     *            the name of the target template set
->>>>>>> .merge-right.r46847
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
      */
     public boolean isTemplatePresent(String templateName, String templateSetName) {
@@ -1609,17 +1560,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checks if the specified template is available either in one of the requested template sets or modules.
-<<<<<<< .working
      *
      * @param templateName     the path of the template to be checked
      * @param templateSetNames the set of template sets and modules we should check for the presence of the specified template
-=======
-     *
-     * @param templatePath
-     *            the path of the template to be checked
-     * @param templateSetNames
-     *            the set of template sets and modules we should check for the presence of the specified template
->>>>>>> .merge-right.r46847
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
      */
     public boolean isTemplatePresent(final String templateName, final Set<String> templateSetNames) {
@@ -1728,7 +1671,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public Map<Bundle, ModuleState> getModuleStates() {
         return moduleStates;
     }
-    
+
     /**
      * Returns list of module bundles in the specified state.
      *
@@ -1799,7 +1742,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             return moduleName;
         }
     }
-<<<<<<< .working
 
     public class CompiledModuleInfo {
         private final File file;
@@ -1828,7 +1770,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public void setModuleInstallationHelper(ModuleInstallationHelper moduleInstallationHelper) {
         this.moduleInstallationHelper = moduleInstallationHelper;
     }
-=======
 
     /**
      * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
@@ -1840,5 +1781,4 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public final boolean hasEncounteredIssuesWithDefinitions() {
         return this.templatePackageRegistry.hasEncounteredIssuesWithDefinitions();
     }
->>>>>>> .merge-right.r46847
 }

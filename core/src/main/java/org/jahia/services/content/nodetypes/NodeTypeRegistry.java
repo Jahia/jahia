@@ -83,13 +83,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private boolean propertiesLoaded = false;
     private final Properties deploymentProperties = new Properties();
 
-<<<<<<< .working
     private static NodeTypeRegistry instance;
-
-=======
     private static boolean hasEncounteredIssuesWithDefinitions = false;
 
->>>>>>> .merge-right.r46847
     public static NodeTypeRegistry getInstance() {
         if (instance == null) {
             instance = new NodeTypeRegistry();
@@ -102,15 +98,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
         return instance;
     }
-<<<<<<< .working
 
     public void flushLabels() {
         for (ExtendedNodeType nodeType : nodetypes.values()) {
-=======
-
-    public static void flushLabels() {
-        for (ExtendedNodeType nodeType : getInstance().nodetypes.values()) {
->>>>>>> .merge-right.r46847
             nodeType.clearLabels();
         }
         for (Set<ExtendedItemDefinition> itemSet : typedItems.values()) {
@@ -205,15 +195,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
         } else if (ext.equalsIgnoreCase(".grp")) {
             Reader resourceReader = null;
             try {
-<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
                 r.parse();
-=======
-                defsReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-                JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
-                r.parse();
->>>>>>> .merge-right.r46847
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }

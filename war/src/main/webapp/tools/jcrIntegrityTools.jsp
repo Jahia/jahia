@@ -387,13 +387,8 @@
             renderWorkspaceSelector(out);
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
-<<<<<<< .working
             renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", true);
-            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix!", false);            
-=======
-            renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", false);
-            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix !", false);
->>>>>>> .merge-right.r46847
+            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix!", false);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {

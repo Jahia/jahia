@@ -609,19 +609,15 @@
 // @since Jahia 6.6
 [jmix:hiddenNode] mixin
 
-<<<<<<< .working
-// @since Jahia 6.7
-[jmix:hasIcon] mixin
- - j:icon (weakreference,picker[type='image']) < jmix:image
-
-
-=======
 // @since Jahia 6.6.1.8
 [jmix:unstructured] > nt:unstructured mixin
   - * (UNDEFINED) i18n multiple
   - * (UNDEFINED) i18n
 
->>>>>>> .merge-right.r46853
+// @since Jahia 6.7
+[jmix:hasIcon] mixin
+ - j:icon (weakreference,picker[type='image']) < jmix:image
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

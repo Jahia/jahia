@@ -1,5 +1,6 @@
 package org.jahia.services.workflow.jbpm;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -7,6 +8,9 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
+import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
+import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
@@ -34,7 +38,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -60,18 +66,19 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private KieSession kieSession;
     private TaskService taskService;
     private JBPMListener listener = new JBPMListener(this);
-    private List<Resource> processes;
-    private List<Resource> mailTemplates;
+    private Resource[] processes;
+    private Resource[] mailTemplates;
+    private MailTemplateRegistry mailTemplateRegistry = new MailTemplateRegistry();
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
     }
 
-    public void setProcesses(List<Resource> processes) {
+    public void setProcesses(Resource[] processes) {
         this.processes = processes;
     }
 
-    public void setMailTemplates(List<Resource> mailTemplates) {
+    public void setMailTemplates(Resource[] mailTemplates) {
         this.mailTemplates = mailTemplates;
     }
 
@@ -141,6 +148,51 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         JBPMTaskLifeCycleEventListener.setProvider(this);
         JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
         JBPMTaskLifeCycleEventListener.setTaskService(taskService);
+
+        if (mailTemplates != null && mailTemplates.length > 0) {
+            logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
+
+            List keys = Arrays.asList("from", "to", "cc", "bcc",
+                    "from-users", "to-users", "cc-users", "bcc-users",
+                    "from-groups", "to-groups", "cc-groups", "bcc-groups",
+                    "subject", "text", "html", "language");
+
+            for (Resource mailTemplateResource : mailTemplates) {
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
+                    MailTemplate mailTemplate = new MailTemplate();
+                    mailTemplate.setLanguage("velocity");
+                    mailTemplate.setFrom(new AddressTemplate());
+                    mailTemplate.setTo(new AddressTemplate());
+                    mailTemplate.setCc(new AddressTemplate());
+                    mailTemplate.setBcc(new AddressTemplate());
+
+                    int currentField = -1;
+                    String currentLine;
+                    StringBuilder buf = new StringBuilder();
+                    while ((currentLine = reader.readLine()) != null) {
+                        if (currentLine.contains(":")) {
+                            String prefix = StringUtils.substringBefore(currentLine, ":");
+                            if (keys.contains(prefix.toLowerCase())) {
+                                JBPMModuleProcessLoader.setMailTemplateField(mailTemplate, currentField, buf);
+                                buf = new StringBuilder();
+                                currentField = keys.indexOf(prefix.toLowerCase());
+                                currentLine = StringUtils.substringAfter(currentLine, ":").trim();
+                            }
+                        } else {
+                            buf.append('\n');
+                        }
+                        buf.append(currentLine);
+                    }
+                    JBPMModuleProcessLoader.setMailTemplateField(mailTemplate, currentField, buf);
+                    mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."), mailTemplate);
+                } catch (IOException e) {
+                    logger.error("Error reading mail template " + mailTemplateResource, e);
+                }
+
+            }
+        }
 
     }
 

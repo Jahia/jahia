@@ -106,14 +106,6 @@
                 </property>
             </bean>
         </property>
-        <property name="eventListeners">
-            <map>
-                <entry key="merge">
-                    <bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
-                </entry>
-            </map>
-        </property>
-        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
     </bean>
 
 </beans>

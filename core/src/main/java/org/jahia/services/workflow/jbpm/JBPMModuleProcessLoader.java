@@ -106,7 +106,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void deployDeclaredProcesses() throws IOException {
-        if (processes != null && processes.length > 0) {
+        if (processes != null && processes.length > 0 && module.getBundle().getEntry("META-INF/kmodule.xml") != null) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
             ReleaseId moduleReleaseId = new ReleaseIdImpl("org.jahia.modules", module.getName(), module.getVersion().toString());
             OsgiKieModule osgiKieModule = OsgiKieModule.create(module.getBundle().getEntry("META-INF/kmodule.xml"));
@@ -183,7 +183,6 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 mailTemplate.setCc(new AddressTemplate());
                 mailTemplate.setBcc(new AddressTemplate());
 
-
                 int currentField = -1;
                 String currentLine;
                 StringBuilder buf = new StringBuilder();
@@ -208,7 +207,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     }
 
-    private void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {
+    public static void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {
         switch (currentField) {
             case 0:
                 t.getFrom().setAddresses(buf.toString());

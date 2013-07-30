@@ -42,6 +42,8 @@ package org.jahia.services.content.rules;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.files.FileCacheManager;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
@@ -74,19 +76,29 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
     }
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
+        String workspace = Constants.LIVE_WORKSPACE;
         try {
             JCRNodeWrapper currentNode = node;
+            workspace = node.getSession().getWorkspace().getName();
             for (int level = 0; level <= (startLevel + levelsUp); level++) {
                 if (level >= startLevel) {
                     cacheProvider.invalidate(currentNode.getPath());
                     if (currentNode.isFile()) {
-                        fileCacheManager.invalidate(currentNode.getSession().getWorkspace().getName(), currentNode.getPath());
+                        fileCacheManager.invalidate(workspace, currentNode.getPath());
                     }
                 }
                 currentNode = currentNode.getParent();
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            //Flush by path directly as node might not be visible anymore
+            String currentNode = node.getPath();
+            for (int level = 0; level <= (startLevel + levelsUp); level++) {
+                if (level >= startLevel) {
+                    cacheProvider.invalidate(currentNode);
+                    fileCacheManager.invalidate(workspace, currentNode);
+                }
+                currentNode = StringUtils.substringBeforeLast(currentNode,"/");
+            }
         }
     }
 

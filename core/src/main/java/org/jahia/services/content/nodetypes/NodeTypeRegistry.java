@@ -83,8 +83,13 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private boolean propertiesLoaded = false;
     private final Properties deploymentProperties = new Properties();
 
+<<<<<<< .working
     private static NodeTypeRegistry instance;
 
+=======
+    private static boolean hasEncounteredIssuesWithDefinitions = false;
+
+>>>>>>> .merge-right.r46847
     public static NodeTypeRegistry getInstance() {
         if (instance == null) {
             instance = new NodeTypeRegistry();
@@ -97,9 +102,15 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
         return instance;
     }
+<<<<<<< .working
 
     public void flushLabels() {
         for (ExtendedNodeType nodeType : nodetypes.values()) {
+=======
+
+    public static void flushLabels() {
+        for (ExtendedNodeType nodeType : getInstance().nodetypes.values()) {
+>>>>>>> .merge-right.r46847
             nodeType.clearLabels();
         }
         for (Set<ExtendedItemDefinition> itemSet : typedItems.values()) {
@@ -185,15 +196,24 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
                 r.parse();
+                if (r.hasEncounteredIssuesWithDefinitions()) {
+                    hasEncounteredIssuesWithDefinitions = true;
+                }
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }
         } else if (ext.equalsIgnoreCase(".grp")) {
             Reader resourceReader = null;
             try {
+<<<<<<< .working
                 resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
                 r.parse();
+=======
+                defsReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+                JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
+                r.parse();
+>>>>>>> .merge-right.r46847
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }
@@ -455,5 +475,16 @@ public class NodeTypeRegistry implements NodeTypeManager {
         for (String name : names) {
             unregisterNodeType(name);
         }
+    }
+
+    /**
+     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
+     * returns true, the only way to get back false as a return value is to restart Jahia.
+     *
+     * @return true if an issue with the def has been encountered, false otherwise.
+     * @since 6.6.1.8
+     */
+    public final boolean hasEncounteredIssuesWithDefinitions() {
+        return hasEncounteredIssuesWithDefinitions;
     }
 }

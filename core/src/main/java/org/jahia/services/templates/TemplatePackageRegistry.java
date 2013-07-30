@@ -93,6 +93,14 @@ import java.util.*;
 public class TemplatePackageRegistry {
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
 
+<<<<<<< .working
+=======
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
+
+    private final static String MODULES_ROOT_PATH = "modules.";
+    private static boolean hasEncounteredIssuesWithDefinitions = false;
+
+>>>>>>> .merge-right.r46847
     private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             if (o1.isDefault()) return 99;
@@ -116,6 +124,7 @@ public class TemplatePackageRegistry {
     private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new HashMap<String, JahiaTemplatesPackage>();
     private boolean afterInitializeDone = false;
 
+<<<<<<< .working
     /**
      * Initializes an instance of this class.
      */
@@ -125,10 +134,21 @@ public class TemplatePackageRegistry {
         actions = new CaseInsensitiveMap();
         backgroundActions = new CaseInsensitiveMap();
     }
+=======
+        private TemplatePackageRegistry templatePackageRegistry;
 
+        private ChoiceListInitializerService choiceListInitializers;
+>>>>>>> .merge-right.r46847
+
+<<<<<<< .working
     public Map<String, Action> getActions() {
         return actions;
     }
+=======
+        private ChoiceListRendererService choiceListRendererService;
+
+        private RenderService renderService;
+>>>>>>> .merge-right.r46847
 
     public Map<String, BackgroundAction> getBackgroundActions() {
         return backgroundActions;
@@ -138,6 +158,7 @@ public class TemplatePackageRegistry {
         return springHandlerMappings;
     }
 
+<<<<<<< .working
     /**
      * Returns a list of {@link ErrorHandler} instances
      *
@@ -160,6 +181,13 @@ public class TemplatePackageRegistry {
             JahiaTemplatesPackage dependentPack = registry.get(depends);
             if (dependentPack == null) {
                 dependentPack = fileNameRegistry.get(depends);
+=======
+        private Map<String, String> staticAssetMapping;
+
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+            if (bean instanceof RenderServiceAware) {
+                ((RenderServiceAware) bean).setRenderService(renderService);
+>>>>>>> .merge-right.r46847
             }
             if (dependentPack == null) {
                 return false;
@@ -170,6 +198,109 @@ public class TemplatePackageRegistry {
                 }
                 pack.addDependency(dependentPack);
             }
+<<<<<<< .working
+=======
+            if (bean instanceof Action) {
+                Action action = (Action) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering Action '" + action.getName() + "' (" + beanName + ")");
+                }
+                templatePackageRegistry.actions.put(action.getName(), action);
+            }
+            if (bean instanceof ModuleChoiceListInitializer) {
+                ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
+                }
+                choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
+            }
+
+            if (bean instanceof ModuleChoiceListRenderer) {
+                ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ChoiceListRenderer '" + choiceListRenderer.getKey() + "' (" + beanName + ")");
+                }
+                choiceListRendererService.getRenderers().put(choiceListRenderer.getKey(),choiceListRenderer);
+            }
+            if (bean instanceof ModuleGlobalObject) {
+                ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ModuleGlobalObject '" + beanName + "'");
+                }
+                if(moduleGlobalObject.getGlobalRulesObject()!=null) {
+                    for (RulesListener listener : RulesListener.getInstances()) {
+                        for (Map.Entry<String, Object> entry : moduleGlobalObject.getGlobalRulesObject().entrySet()) {
+                            listener.addGlobalObject(entry.getKey(),entry.getValue());
+                        }
+                    }
+                }
+            }
+            if (bean instanceof StaticAssetMapping) {
+                StaticAssetMapping mappings = (StaticAssetMapping) bean;
+                staticAssetMapping.putAll(mappings.getMapping());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering static asset mappings '" + mappings.getMapping() + "'");
+                }
+            }
+            if (bean instanceof DefaultEventListener) {
+                final DefaultEventListener eventListener = (DefaultEventListener) bean;
+                if (eventListener.getEventTypes() > 0) {
+	                try {
+	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
+	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+	                            final Workspace workspace = session.getWorkspace();
+
+	                            ObservationManager observationManager = workspace.getObservationManager();
+                                //first remove existing listener of same type
+                                final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
+                                javax.jcr.observation.EventListener toBeRemoved = null;
+                                while (registeredEventListeners.hasNext()) {
+                                    javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
+                                    if(next.getClass().equals(eventListener.getClass())) {
+                                        toBeRemoved = next;
+                                        break;
+                                    }
+                                }
+                                observationManager.removeEventListener(toBeRemoved);
+                                observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
+	                            return null;
+	                        }
+	                    });
+	                    if (logger.isDebugEnabled()) {
+	                        logger.debug("Registering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
+	                    }
+	                } catch (RepositoryException e) {
+	                    logger.error(e.getMessage(), e);
+	                }
+                } else {
+                	logger.info("Skipping listener {} as it has no event types configured.",
+					        eventListener.getClass().getName());
+                }
+            }
+            if (bean instanceof BackgroundAction) {
+                BackgroundAction backgroundAction = (BackgroundAction) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Registering Background Action '" + backgroundAction.getName() + "' (" + beanName + ")");
+                }
+                templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
+            }
+
+            if(bean instanceof WorklowTypeRegistration) {
+                WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
+                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getPermissions());
+            }
+
+            if (bean instanceof VisibilityConditionRule) {
+                VisibilityConditionRule conditionRule = (VisibilityConditionRule) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Registering Visibility Condition Rule '" + conditionRule.getClass().getName() + "' (" + beanName + ")");
+                }
+                visibilityService.addCondition(conditionRule.getAssociatedNodeType(),conditionRule);
+            }
+            return bean;
+>>>>>>> .merge-right.r46847
         }
         return true;
     }
@@ -303,6 +434,17 @@ public class TemplatePackageRegistry {
     }
 
     /**
+     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
+     * returns true, the only way to get back false as a return value is to restart Jahia.
+     *
+     * @return true if an issue with the def has been encountered, false otherwise.
+     * @since 6.6.1.8
+     */
+    public final boolean hasEncounteredIssuesWithDefinitions() {
+        return hasEncounteredIssuesWithDefinitions;
+    }
+
+    /**
      * Returns the requested template package or <code>null</code> if the
      * package with the specified name is not registered in the repository.
      *
@@ -317,10 +459,20 @@ public class TemplatePackageRegistry {
     }
 
     /**
+<<<<<<< .working
      * Returns the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered.
      *
      * @param osgiBundle the corresponding OSGi bundle
      * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered
+=======
+     * Returns the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
+     * repository.
+     *
+     * @param nodeName
+     *            the corresponding JCR node name to search for
+     * @return the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
+     *         repository
+>>>>>>> .merge-right.r46847
      */
     public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle) {
         if (registry == null) {
@@ -362,6 +514,7 @@ public class TemplatePackageRegistry {
             return null;
         }
     }
+<<<<<<< .working
 
     public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
         if (fileName == null || registry == null) return null;
@@ -396,6 +549,9 @@ public class TemplatePackageRegistry {
         }
     }
 
+=======
+
+>>>>>>> .merge-right.r46847
     /**
      * Adds the template package to the repository.
      *
@@ -494,14 +650,25 @@ public class TemplatePackageRegistry {
         File rootFolder = new File(templatePackage.getFilePath());
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {
             try {
+                final NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
                 for (String name : templatePackage.getDefinitionsFiles()) {
-                    NodeTypeRegistry.getInstance().addDefinitionsFile(
+                    nodeTypeRegistry.addDefinitionsFile(
                             new File(rootFolder, name),
                             templatePackage.getRootFolder(), templatePackage.getVersion());
                 }
+<<<<<<< .working
                 jcrStoreService.deployDefinitions(templatePackage.getRootFolder());
+=======
+                hasEncounteredIssuesWithDefinitions |= nodeTypeRegistry.hasEncounteredIssuesWithDefinitions();
+                jcrStoreService.deployDefinitions(templatePackage.getName());
+>>>>>>> .merge-right.r46847
             } catch (Exception e) {
+<<<<<<< .working
                 logger.warn("Cannot parse definitions for " + templatePackage.getName(), e);
+=======
+                hasEncounteredIssuesWithDefinitions = true;
+                logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
+>>>>>>> .merge-right.r46847
             }
         }
         // add rules descriptor
@@ -531,6 +698,54 @@ public class TemplatePackageRegistry {
                 logger.warn("Cannot parse rules for " + templatePackage.getName(), e);
             }
         }
+<<<<<<< .working
+=======
+
+        // handle resource bundles
+        for (JahiaTemplatesPackage sourcePack : registry.values()) {
+            sourcePack.getResourceBundleHierarchy().clear();
+            if (sourcePack.getResourceBundleName() != null) {
+        	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
+            }
+            for (String s : sourcePack.getDepends()) {
+                JahiaTemplatesPackage dependency = lookup(s);
+                if (dependency == null) {
+                    dependency = lookupByFileName(s);
+                }
+                if (!dependency.isDefault() && dependency.getResourceBundleName() != null) {
+                    sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + dependency.getRootFolder() + "." + dependency.getResourceBundleName());
+                }
+            }
+            if (!sourcePack.isDefault()) {
+            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default.resources.DefaultJahiaTemplates");
+            	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
+                sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
+            } else {
+                sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
+                sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
+            }
+        }
+
+        // handle dependencies
+        for (JahiaTemplatesPackage pack : registry.values()) {
+            pack.getDependencies().clear();
+            computeDependencies(pack.getDependencies(), pack);
+        }
+
+        File[] files = rootFolder.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                String key = file.getName();
+                if (!packagesPerModule.containsKey(key)) {
+                    packagesPerModule.put(key, new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR));
+                }
+                if (!packagesPerModule.get(key).contains(templatePackage)) {
+                    packagesPerModule.get(key).add(templatePackage);
+                }
+            }
+        }
+        logger.info("Registered "+templatePackage.getName() + " version=" + templatePackage.getVersion());
+>>>>>>> .merge-right.r46847
     }
 
     public void reset() {

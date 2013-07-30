@@ -87,9 +87,53 @@ public class ServicesRegistry {
     private static ServicesRegistry theObject = new ServicesRegistry();
 
 
+<<<<<<< .working
+=======
+    /**
+     * Jahia Application Dispatching Service Name *
+     */
+    private static final String APPLICATIONS_DISPATCH_SERVICE =
+            "DispatchingService";
+
+    // Jahia Application Manager Service
+    private static final String APPLICATIONS_MANAGER_SERVICE =
+            "ApplicationsManagerService";
+
+    // Jahia User Manager Service
+    private static final String JAHIA_USER_MANAGER_SERVICE = "JahiaUserManagerService";
+    private static final String JAHIA_GROUP_MANAGER_SERVICE =
+            "JahiaGroupManagerService";
+
+    // Jahia FileWatcher Service
+    private static final String JAHIA_FILE_WATCHER_SERVICE = "JahiaFileWatcherService";
+
+    // Jahia Multi Sites Manager Service
+    private static final String JAHIA_SITES_SERVICE = "JahiaSitesService";
+
+    // Jahia Cache factory for every cache except the HTML one
+    private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
+
+    private static final String MAIL_SERVICE = "MailService";
+
+    private static final String CATEGORY_SERVICE = "CategoryService";
+
+    private static final String SCHEDULER_SERVICE = "SchedulerService";
+
+    private static final String JCRSTORE_SERVICE = "JCRStoreService";
+
+    private static final String JCRPUBLICATION_SERVICE = "jcrPublicationService";
+
+    private static final String JCRVERSION_SERVICE = "jcrVersionService";
+
+    private static final String IMPORTEXPORT_SERVICE = "ImportExportService";
+
+    private static final String PREFERENCES_SERVICE = "JahiaPreferencesService";
+    private static final String JAHIATEMPLATEMANAGER_SERVICE = "JahiaTemplateManagerService";
+
+>>>>>>> .merge-right.r46847
     // This map is an optimization to avoid synchronization issues.
     private FastHashMap servicesCache;
-    
+
     {
     	 servicesCache = new FastHashMap();
     	 servicesCache.setFast(true);
@@ -226,7 +270,7 @@ public class ServicesRegistry {
     }
 
     public JahiaTemplateManagerService getJahiaTemplateManagerService() {
-        return (JahiaTemplateManagerService) getService("JahiaTemplateManagerService");
+        return (JahiaTemplateManagerService) getService(JAHIATEMPLATEMANAGER_SERVICE);
     }
 
     public QueryService getQueryService() {

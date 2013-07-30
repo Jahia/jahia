@@ -71,6 +71,7 @@
 </p>
 
 <h2>Integrity checks</h2>
+<%@ include file="functions.jspf" %>
 <%!
 
     private void runJCRTest(final JspWriter out, HttpServletRequest request, JspContext pageContext, final boolean fix) throws IOException {
@@ -84,7 +85,7 @@
         if (fix) {
             if (RequestLoadAverage.getInstance().getOneMinuteLoad() > 1) {
                 println(out, "ABORTING: request load is above 1, users are using the platform and we cannot run a fix while this is the case !");
-                return;                
+                return;
             }
             try {
                 List<JobDetail> activeJobs = ServicesRegistry.getInstance().getSchedulerService().getAllActiveJobs();
@@ -116,7 +117,7 @@
                 }
                 exclusions.append("no references");
             }
-            
+
             printTestName(out, "JCR Integrity Check " + (exclusions.length() > 0 ? "(" + exclusions.toString() + ")" : ""));
         }
         try {
@@ -172,84 +173,7 @@
 
     }
 
-    private void printTestName(JspWriter out, String testName) throws IOException {
-        out.println("<h3>");
-        println(out, testName);
-        out.println("</h3>");
-    }
-
     private static SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
-
-    private String generatePadding(int depth, boolean withNbsp) {
-        StringBuffer padding = new StringBuffer();
-        for (int i = 0; i < depth; i++) {
-            if (withNbsp) {
-                padding.append("&nbsp;&nbsp;");
-            } else {
-                padding.append("  ");
-            }
-        }
-        return padding.toString();
-    }
-
-    int errorCount = 0;
-
-    private void print(JspWriter out, String message) throws IOException {
-        System.out.print(message);
-        out.print(message);
-        out.flush();
-    }
-
-    private void println(JspWriter out, String message) throws IOException {
-        System.out.println(message);
-        out.println(message + "<br/>");
-        out.flush();
-    }
-
-    private void depthPrintln(JspWriter out, int depth, String message) throws IOException {
-        System.out.println(generatePadding(depth, false) + message);
-        out.println(generatePadding(depth, true) + message + "<br/>");
-        out.flush();
-    }
-
-    private void debugPrintln(JspWriter out, String message) throws IOException {
-        System.out.println("DEBUG: " + message);
-        out.println("<!--" + message + "-->");
-        out.flush();
-    }
-
-    private void errorPrintln(JspWriter out, String message) throws IOException {
-        System.out.println("ERROR: " + message);
-        out.println("<span class='error'>" + message + "</span><br/>");
-        out.flush();
-    }
-
-    private void depthErrorPrintln(JspWriter out, int depth, String message) throws IOException {
-        System.out.println(generatePadding(depth, false) + "ERROR: " + message);
-        out.println(generatePadding(depth, true) + "<span class='error'>" + message + "</span><br/>");
-        out.flush();
-    }
-
-    private void println(JspWriter out, String message, Throwable t, boolean warning) throws IOException {
-        System.out.println(message);
-        if (t != null) {
-            t.printStackTrace();
-        }
-        if (warning) {
-            out.println("<span class='warning'>" + message + "</span>");
-        } else {
-            out.println("<span class='error'>" + message + "</span>");
-        }
-        errorCount++;
-        if (t != null) {
-        out.println("<a href=\"javascript:toggleLayer('error" + errorCount + "');\" title=\"Click here to view error details\">Show/hide details</a>");
-        out.println("<div id='error" + errorCount + "' class='hiddenDetails'><pre>");
-        t.printStackTrace(new PrintWriter(out));
-        out.println("</pre></div>");
-        }
-        out.println("<br/>");
-        out.flush();
-    }
 
     protected boolean processPropertyValue(JspWriter out, Node node, Property property, Value propertyValue, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws RepositoryException, IOException {
         int propertyType = propertyValue.getType();
@@ -427,46 +351,6 @@
         }
     }
 
-    private void renderRadio(JspWriter out, String radioValue, String radioLabel, boolean checked) throws IOException {
-        out.println("<input type=\"radio\" name=\"operation\" value=\"" + radioValue
-                + "\" id=\"" + radioValue + "\""
-                + (checked ? " checked=\"checked\" " : "")
-                + "/><label for=\"" + radioValue + "\">"
-                + radioLabel
-                + "</label><br/>");
-    }    
-    
-    private void renderCheckbox(JspWriter out, String checkboxValue, String checkboxLabel, boolean checked) throws IOException {
-        out.println("<input type=\"checkbox\" name=\"option\" value=\"" + checkboxValue
-                + "\" id=\"" + checkboxValue + "\""
-                + (checked ? " checked=\"checked\" " : "")
-                + "/><label for=\"" + checkboxValue + "\">"
-                + checkboxLabel
-                + "</label><br/>");
-    }
-
-    private void renderWorkspaceSelector(JspWriter out) throws IOException {
-        out.println("<label for=\"workspaceSelector\">Choose workspace:</label>" +
-            "<select id=\"workspaceSelector\" name=\"workspace\"><option value=\"\">All Workspaces</option>");
-        for (String workspace : workspaces) {    
-            out.println("<option value=\"" + workspace + "\">" + workspace + "</option>");
-        }
-        out.println("</select><br/>");
-    }    
-    
-    private boolean isParameterActive(HttpServletRequest request, String parameterName, String operationName) {
-        String[] operationValues = request.getParameterValues(parameterName);
-        if (operationValues == null) {
-            return false;
-        }
-        for (String operationValue : operationValues) {
-            if (operationValue.equals(operationName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // by default in the case of an invalid reference we will simply reset it to null, but if the node type is listed
     // in the following list, we will remove the parent node completely. This can be the case for group members, where
     // if the reference doesn't exist we want to remove the parent node completely. It is recommended that this list
@@ -479,7 +363,6 @@
 
     static boolean running = false;
     static boolean mustStop = false;
-    static String[] workspaces = new String[]{"default", "live"};
 %>
 <%
     if (request.getParameterMap().size() > 0) {
@@ -504,8 +387,13 @@
             renderWorkspaceSelector(out);
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
+<<<<<<< .working
             renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", true);
             renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix!", false);            
+=======
+            renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", false);
+            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix !", false);
+>>>>>>> .merge-right.r46847
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {

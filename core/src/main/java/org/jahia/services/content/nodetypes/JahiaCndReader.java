@@ -135,6 +135,8 @@ import java.util.*;
 public class JahiaCndReader {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaCndReader.class);
 
+    private boolean hasEncounteredIssuesWithDefinitions = false;
+
     protected String systemId;
     protected String filename;
 
@@ -306,6 +308,7 @@ public class JahiaCndReader {
                 }
                 nodeTypesList.add(ntd);
             } catch (ParseException e) {
+                this.hasEncounteredIssuesWithDefinitions = true;
                 logger.error(e.getMessage(), e);
                 nextToken();
                 while (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME) && !currentTokenEquals(Lexer.EOF)) {
@@ -325,6 +328,7 @@ public class JahiaCndReader {
                     type.validate();
                 }
             } catch (NoSuchNodeTypeException e) {
+                this.hasEncounteredIssuesWithDefinitions = true;
                 throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
             }
         }
@@ -1015,5 +1019,16 @@ public class JahiaCndReader {
             lexer.fail("Cannot parse name: " + name);
         }
         return res;
+    }
+
+    /**
+     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
+     * returns true, the only way to get back false as a return value is to restart Jahia.
+     *
+     * @return true if an issue with the def has been encountered, false otherwise.
+     * @since 6.6.1.8
+     */
+    public final boolean hasEncounteredIssuesWithDefinitions() {
+        return hasEncounteredIssuesWithDefinitions;
     }
 }

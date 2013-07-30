@@ -73,10 +73,12 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     private static final NodeTypeRegistry instance = new NodeTypeRegistry();
 
+    private static boolean hasEncounteredIssuesWithDefinitions = false;
+
     public static NodeTypeRegistry getInstance() {
         return instance;
     }
-    
+
     public static void flushLabels() {
         for (ExtendedNodeType nodeType : getInstance().nodetypes.values()) {
             nodeType.clearLabels();
@@ -116,6 +118,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
                 JahiaCndReader r = new JahiaCndReader(defsReader, file.getPath(), systemId, this);
                 r.parse();
+                if (r.hasEncounteredIssuesWithDefinitions()) {
+                    hasEncounteredIssuesWithDefinitions = true;
+                }
             } finally {
                 IOUtils.closeQuietly(defsReader);
             }
@@ -124,7 +129,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
             try {
                 defsReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(defsReader, file.getName(),systemId, this);
-                r.parse();            
+                r.parse();
             } finally {
                 IOUtils.closeQuietly(defsReader);
             }
@@ -320,5 +325,16 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     public void unregisterNodeTypes(String[] names) throws UnsupportedRepositoryOperationException, NoSuchNodeTypeException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
+    }
+
+    /**
+     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
+     * returns true, the only way to get back false as a return value is to restart Jahia.
+     *
+     * @return true if an issue with the def has been encountered, false otherwise.
+     * @since 6.6.1.8
+     */
+    public final boolean hasEncounteredIssuesWithDefinitions() {
+        return hasEncounteredIssuesWithDefinitions;
     }
 }

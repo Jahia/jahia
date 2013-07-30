@@ -127,10 +127,11 @@ public class ServicesRegistry {
     private static final String IMPORTEXPORT_SERVICE = "ImportExportService";
 
     private static final String PREFERENCES_SERVICE = "JahiaPreferencesService";
+    private static final String JAHIATEMPLATEMANAGER_SERVICE = "JahiaTemplateManagerService";
 
     // This map is an optimization to avoid synchronization issues.
     private FastHashMap servicesCache;
-    
+
     {
     	 servicesCache = new FastHashMap();
     	 servicesCache.setFast(true);
@@ -277,7 +278,7 @@ public class ServicesRegistry {
     }
 
     public JahiaTemplateManagerService getJahiaTemplateManagerService() {
-        return (JahiaTemplateManagerService) getService("JahiaTemplateManagerService");
+        return (JahiaTemplateManagerService) getService(JAHIATEMPLATEMANAGER_SERVICE);
     }
 
     public QueryService getQueryService() {

@@ -82,8 +82,9 @@ import java.util.EventListener;
 class TemplatePackageRegistry {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
-    
+
     private final static String MODULES_ROOT_PATH = "modules.";
+    private static boolean hasEncounteredIssuesWithDefinitions = false;
 
     private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
@@ -96,11 +97,11 @@ class TemplatePackageRegistry {
     static class ModuleRegistry implements BeanPostProcessor {
 
         private TemplatePackageRegistry templatePackageRegistry;
-        
+
         private ChoiceListInitializerService choiceListInitializers;
 
         private ChoiceListRendererService choiceListRendererService;
-        
+
         private RenderService renderService;
 
         private WorkflowService workflowService;
@@ -108,7 +109,7 @@ class TemplatePackageRegistry {
         private VisibilityService visibilityService;
 
         private Map<String, String> staticAssetMapping;
-        
+
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(renderService);
@@ -139,7 +140,7 @@ class TemplatePackageRegistry {
                 }
                 choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
             }
-            
+
             if (bean instanceof ModuleChoiceListRenderer) {
                 ModuleChoiceListRenderer choiceListRenderer = (ModuleChoiceListRenderer) bean;
                 if (logger.isDebugEnabled()) {
@@ -159,7 +160,7 @@ class TemplatePackageRegistry {
                         }
                     }
                 }
-            } 
+            }
             if (bean instanceof StaticAssetMapping) {
                 StaticAssetMapping mappings = (StaticAssetMapping) bean;
                 staticAssetMapping.putAll(mappings.getMapping());
@@ -174,7 +175,7 @@ class TemplatePackageRegistry {
 	                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
 	                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 	                            final Workspace workspace = session.getWorkspace();
-	
+
 	                            ObservationManager observationManager = workspace.getObservationManager();
                                 //first remove existing listener of same type
                                 final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
@@ -199,7 +200,7 @@ class TemplatePackageRegistry {
 	                }
                 } else {
                 	logger.info("Skipping listener {} as it has no event types configured.",
-					        eventListener.getClass().getName());                	
+					        eventListener.getClass().getName());
                 }
             }
             if (bean instanceof BackgroundAction) {
@@ -351,7 +352,7 @@ class TemplatePackageRegistry {
 
     /**
      * Returns a list of {@link RenderFilter} instances, configured for the specified templates package.
-     * 
+     *
      * @return a list of {@link RenderFilter} instances, configured for the specified templates package
      */
     public List<RenderFilter> getRenderFilters() {
@@ -372,6 +373,17 @@ class TemplatePackageRegistry {
     }
 
     /**
+     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
+     * returns true, the only way to get back false as a return value is to restart Jahia.
+     *
+     * @return true if an issue with the def has been encountered, false otherwise.
+     * @since 6.6.1.8
+     */
+    public final boolean hasEncounteredIssuesWithDefinitions() {
+        return hasEncounteredIssuesWithDefinitions;
+    }
+
+    /**
      * Returns the requested template package or <code>null</code> if the
      * package with the specified name is not registered in the repository.
      *
@@ -388,7 +400,7 @@ class TemplatePackageRegistry {
     /**
      * Returns the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
      * repository.
-     * 
+     *
      * @param nodeName
      *            the corresponding JCR node name to search for
      * @return the requested template package or <code>null</code> if the package with the specified JCR node name is not registered in the
@@ -430,7 +442,7 @@ class TemplatePackageRegistry {
             register(pack);
         }
     }
-    
+
     /**
      * Adds the template package to the repository.
      *
@@ -448,13 +460,16 @@ class TemplatePackageRegistry {
         // register content definitions
         if (!templatePackage.getDefinitionsFiles().isEmpty()) {
             try {
+                final NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
                 for (String name : templatePackage.getDefinitionsFiles()) {
-                    NodeTypeRegistry.getInstance().addDefinitionsFile(
+                    nodeTypeRegistry.addDefinitionsFile(
                             new File(rootFolder, name),
                             templatePackage.getName());
                 }
+                hasEncounteredIssuesWithDefinitions |= nodeTypeRegistry.hasEncounteredIssuesWithDefinitions();
                 jcrStoreService.deployDefinitions(templatePackage.getName());
             } catch (Exception e) {
+                hasEncounteredIssuesWithDefinitions = true;
                 logger.warn("Cannot parse definitions for "+templatePackage.getName(),e);
             }
         }
@@ -510,13 +525,13 @@ class TemplatePackageRegistry {
                 sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             }
         }
-        
+
         // handle dependencies
         for (JahiaTemplatesPackage pack : registry.values()) {
             pack.getDependencies().clear();
             computeDependencies(pack.getDependencies(), pack);
-        }        
-        
+        }
+
         File[] files = rootFolder.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {

@@ -1,0 +1,120 @@
+<%!
+    private static final String[] workspaces = new String[]{"default", "live"};
+
+    int errorCount = 0;
+
+    private void printTestName(JspWriter out, String testName) throws IOException {
+        out.println("<h3>");
+        println(out, testName);
+        out.println("</h3>");
+    }
+
+    private String generatePadding(int depth, boolean withNbsp) {
+        StringBuffer padding = new StringBuffer();
+        for (int i = 0; i < depth; i++) {
+            if (withNbsp) {
+                padding.append("&nbsp;&nbsp;");
+            } else {
+                padding.append("  ");
+            }
+        }
+        return padding.toString();
+    }
+
+    private void print(JspWriter out, String message) throws IOException {
+        System.out.print(message);
+        out.print(message);
+        out.flush();
+    }
+
+    private void println(JspWriter out, String message) throws IOException {
+        System.out.println(message);
+        out.println(message + "<br/>");
+        out.flush();
+    }
+
+    private void depthPrintln(JspWriter out, int depth, String message) throws IOException {
+        System.out.println(generatePadding(depth, false) + message);
+        out.println(generatePadding(depth, true) + message + "<br/>");
+        out.flush();
+    }
+
+    private void debugPrintln(JspWriter out, String message) throws IOException {
+        System.out.println("DEBUG: " + message);
+        out.println("<!--" + message + "-->");
+        out.flush();
+    }
+
+    private void errorPrintln(JspWriter out, String message) throws IOException {
+        System.out.println("ERROR: " + message);
+        out.println("<span class='error'>" + message + "</span><br/>");
+        out.flush();
+    }
+
+    private void depthErrorPrintln(JspWriter out, int depth, String message) throws IOException {
+        System.out.println(generatePadding(depth, false) + "ERROR: " + message);
+        out.println(generatePadding(depth, true) + "<span class='error'>" + message + "</span><br/>");
+        out.flush();
+    }
+
+    private void println(JspWriter out, String message, Throwable t, boolean warning) throws IOException {
+        System.out.println(message);
+        if (t != null) {
+            t.printStackTrace();
+        }
+        if (warning) {
+            out.println("<span class='warning'>" + message + "</span>");
+        } else {
+            out.println("<span class='error'>" + message + "</span>");
+        }
+        errorCount++;
+        if (t != null) {
+            out.println("<a href=\"javascript:toggleLayer('error" + errorCount + "');\" title=\"Click here to view error details\">Show/hide details</a>");
+            out.println("<div id='error" + errorCount + "' class='hiddenDetails'><pre>");
+            t.printStackTrace(new PrintWriter(out));
+            out.println("</pre></div>");
+        }
+        out.println("<br/>");
+        out.flush();
+    }
+
+    private void renderRadio(JspWriter out, String radioValue, String radioLabel, boolean checked) throws IOException {
+        out.println("<input type=\"radio\" name=\"operation\" value=\"" + radioValue
+                + "\" id=\"" + radioValue + "\""
+                + (checked ? " checked=\"checked\" " : "")
+                + "/><label for=\"" + radioValue + "\">"
+                + radioLabel
+                + "</label><br/>");
+    }
+
+    private void renderCheckbox(JspWriter out, String checkboxValue, String checkboxLabel, boolean checked) throws IOException {
+        out.println("<input type=\"checkbox\" name=\"option\" value=\"" + checkboxValue
+                + "\" id=\"" + checkboxValue + "\""
+                + (checked ? " checked=\"checked\" " : "")
+                + "/><label for=\"" + checkboxValue + "\">"
+                + checkboxLabel
+                + "</label><br/>");
+    }
+
+    private void renderWorkspaceSelector(JspWriter out) throws IOException {
+        out.println("<label for=\"workspaceSelector\">Choose workspace:</label>" +
+                "<select id=\"workspaceSelector\" name=\"workspace\"><option value=\"\">All Workspaces</option>");
+        for (String workspace : workspaces) {
+            out.println("<option value=\"" + workspace + "\">" + workspace + "</option>");
+        }
+        out.println("</select><br/>");
+    }
+
+    private boolean isParameterActive(HttpServletRequest request, String parameterName, String operationName) {
+        String[] operationValues = request.getParameterValues(parameterName);
+        if (operationValues == null) {
+            return false;
+        }
+        for (String operationValue : operationValues) {
+            if (operationValue.equals(operationName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+%>

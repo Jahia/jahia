@@ -98,17 +98,17 @@ import java.util.regex.Pattern;
  * @author Sergiy Shyrkov
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
-    
+
     public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
     public static final String MODULE_TYPE_MODULE = "module";
-    
+
     public static final String MODULE_TYPE_PROFILE_MODULE = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_PROFILE_MODULE;
-    
+
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
-    
+
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
-    
+
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/templateSets/[^/]*/templates/(.*)");
 
     /**
@@ -349,7 +349,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Returns the lookup map for template packages by the JCR node name.
-     * 
+     *
      * @return the lookup map for template packages by the JCR node name
      */
     @SuppressWarnings("unchecked")
@@ -1052,7 +1052,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checks if the specified template is available either in the requested template set or in one of the deployed modules.
-     * 
+     *
      * @param templatePath
      *            the path of the template to be checked
      * @param templateSetName
@@ -1065,7 +1065,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checks if the specified template is available either in one of the requested template sets or modules.
-     * 
+     *
      * @param templatePath
      *            the path of the template to be checked
      * @param templateSetNames
@@ -1178,7 +1178,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Returns a set of existing template sets that are available for site creation.
-     * 
+     *
      * @return a set of existing template sets that are available for site creation
      */
     public Set<String> getTemplateSetNames() {
@@ -1223,5 +1223,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
+    }
+
+    /**
+     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
+     * returns true, the only way to get back false as a return value is to restart Jahia.
+     *
+     * @return true if an issue with the def has been encountered, false otherwise.
+     * @since 6.6.1.8
+     */
+    public final boolean hasEncounteredIssuesWithDefinitions() {
+        return this.templatePackageRegistry.hasEncounteredIssuesWithDefinitions();
     }
 }

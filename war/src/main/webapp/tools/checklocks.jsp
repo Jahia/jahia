@@ -404,7 +404,7 @@
             try {
                 Node node = session.getNodeByIdentifier(lockData.getUuid());
                 if (node == null) {
-
+                    // no corresponding node
                 } else if (node.hasProperty("jcr:lockIsDeep") && node.hasProperty("jcr:lockOwner") && node.hasProperty("j:locktoken")) {
                     // everything checks out, nothing to do
                 } else {
@@ -413,23 +413,7 @@
                         // this is more serious, we have a lock token but no JCR lock properties on the node itself
                         errorPrintln(out, "Found property j:locktoken on node " + node.getPath() + " but couldn't find property jcr:lockIsDeep or jcr:lockOwner !");
                     } else {
-                        if (node.hasProperty("jcr:lockIsDeep") && node.hasProperty("jcr:lockOwner")) {
-                            // we have the mandatory system properties, we can simply reconstruct the j:locktoken property
-                            errorPrintln(out, "Missing property j:locktoken on node " + node.getPath() + " ");
-                            if (fix) {
-                                printlnFix(out, "Rebuilding property j:locktoken on node " + node.getPath() + " ");
-                                boolean checkedOut = false;
-                                if (!node.isCheckedOut()) {
-                                    node.checkout();
-                                    checkedOut = true;
-                                }
-                                node.setProperty("j:locktoken", lockData.getToken());
-                                if (checkedOut) {
-                                    node.checkin();
-                                }
-                                node.getSession().save();
-                            }
-                        } else {
+                        if (!node.hasProperty("jcr:lockIsDeep") && !node.hasProperty("jcr:lockOwner")) {
                             // we are missing one of the mandatory JCR system properties and the lock token, we should
                             // probably try to clean out the lock
                             errorPrintln(out, "Missing property j:locktoken on node " + node.getPath() + " and also jcr:lockIsDeep and/or jcr:lockOwner ");

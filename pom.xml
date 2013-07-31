@@ -466,7 +466,6 @@
                                     <minmemory>128m</minmemory>
                                     <maxmemory>1g</maxmemory>
                                     <failOnError>false</failOnError>
-                                    <javadocExecutable>${env.JAVA_6_HOME}/bin/javadoc</javadocExecutable>
                                     <quiet>true</quiet>
                                 </configuration>
                             </execution>
@@ -499,7 +498,6 @@
                                     <minmemory>128m</minmemory>
                                     <maxmemory>1g</maxmemory>
                                     <failOnError>false</failOnError>
-                                    <javadocExecutable>${env.JAVA_6_HOME}/bin/javadoc</javadocExecutable>
                                     <quiet>true</quiet>
                                 </configuration>
                             </execution>

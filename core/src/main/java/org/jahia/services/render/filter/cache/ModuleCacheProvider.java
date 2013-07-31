@@ -61,6 +61,7 @@ import java.util.Set;
 public class ModuleCacheProvider implements InitializingBean {
 
     private static final String CACHE_NAME = "HTMLCache";
+    private static final String CACHE_SYNC_NAME = "HTMLCacheEventSync";
     private static final String DEPS_CACHE_NAME = "HTMLDependenciesCache";
     private static final String REGEXPDEPS_CACHE_NAME = "HTMLREGEXPDependenciesCache";
 
@@ -80,6 +81,7 @@ public class ModuleCacheProvider implements InitializingBean {
     private int blockingTimeout = 5000;
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
+    private Cache syncCache;
 
     private CacheKeyGenerator keyGenerator;
 
@@ -114,6 +116,13 @@ public class ModuleCacheProvider implements InitializingBean {
             cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
             regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         }
+
+        syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
+        if (syncCache == null) {
+            cacheManager.addCache(CACHE_SYNC_NAME);
+            syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
+        }
+        syncCache.setStatisticsEnabled(false);
     }
 
     /**
@@ -134,22 +143,31 @@ public class ModuleCacheProvider implements InitializingBean {
      * @throws ParseException in case of a malformed key
      */
     @SuppressWarnings("unchecked")
-    public void invalidate(String nodePath, boolean propageToOtherClusterNodes) {
+    public void invalidate(String nodePath, boolean propagateToOtherClusterNodes) {
         Element element = dependenciesCache.get(nodePath);
         if (element != null) {
             Set<String> deps = (Set<String>) element.getValue();
             if (deps.contains("ALL")) {
-                blockingCache.removeAll(!propageToOtherClusterNodes);
+                blockingCache.removeAll(!propagateToOtherClusterNodes);
             } else {
-                invalidateDependencies(deps, propageToOtherClusterNodes);
+                invalidateDependencies(deps, propagateToOtherClusterNodes);
+            }
+            if(propagateToOtherClusterNodes) {
+                syncCache.put(new Element("FLUSH_PATH", nodePath));
             }
         }
     }
 
-    private void invalidateDependencies(Set<String> deps, boolean propageToOtherClusterNodes) {
+    private void invalidateDependencies(Set<String> deps, boolean propagateToOtherClusterNodes) {
         for (String dep : deps) {
+<<<<<<< .working
             if (dep != null) {
                 boolean removed = blockingCache.remove(dep, !propageToOtherClusterNodes);
+=======
+            String key = dep;
+            if (key != null) {
+                boolean removed = blockingCache.remove(key, !propagateToOtherClusterNodes);
+>>>>>>> .merge-right.r46885
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + dep + " from cache");
                 }
@@ -212,5 +230,7 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-
+    public Cache getSyncCache() {
+        return syncCache;
+    }
 }

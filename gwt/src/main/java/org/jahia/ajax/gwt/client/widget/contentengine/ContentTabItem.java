@@ -259,6 +259,7 @@ public class ContentTabItem extends PropertiesTabItem {
                         autoUpdateName.setEnabled(false);
                     }
                 }
+                tab.setData("NodeName", null);
             }
 
             String nodeName = (String) tab.getData("NodeName");
@@ -427,6 +428,7 @@ public class ContentTabItem extends PropertiesTabItem {
     public void setProcessed(boolean processed) {
         if (!processed) {
             isNodeNameFieldDisplayed = false;
+            nameText = null;
             nameEditable = true;
         }
         super.setProcessed(processed);

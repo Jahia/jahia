@@ -234,6 +234,82 @@ public class ContentTabItem extends PropertiesTabItem {
         // handle jcr:title property
         setNameField(engine, tab);
 
+<<<<<<< .working
+=======
+            PropertiesEditor.PropertyAdapterField titleField = propertiesEditor.getFieldsMap().get("jcr:title");
+
+            if (nameText == null) {
+                nameFieldSet = new FieldSet();
+                nameFieldSet.setHeading(Messages.get("label.systemName", "System name"));
+                nameFieldSet.setLayout(fl);
+
+                nameText = new TextField<String>();
+                nameText.setId("JahiaGxtField_systemName");
+                nameText.setWidth("250");
+                nameText.setMaxLength(maxNameSize);
+                nameText.setAllowBlank(false);
+                nameText.setStyleAttribute("padding-left", "0");
+//                nameText.setValue(engine.getNodeName());
+                nameText.setFireChangeEventOnSetValue(true);
+//                nameText.addListener(Events.Change, new Listener<FieldEvent>() {
+//                    public void handleEvent(FieldEvent fe) {
+//                        nameText.setFireChangeEventOnSetValue(false);
+//                        nameText.setValue(generateNodeName(nameText.getValue()));
+//                        nameText.setFireChangeEventOnSetValue(true);
+//                    }
+//                });
+
+//                tab.setData("NodeName", engine.getNodeName());
+
+
+                final HBoxLayout hBoxLayout = new HBoxLayout();
+                hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
+                final LayoutContainer panel = new LayoutContainer(hBoxLayout);
+
+                panel.add(this.nameText, new HBoxLayoutData(0,5,0,5));
+
+                autoUpdateLabel = new Label("");
+                panel.add(autoUpdateLabel, new HBoxLayoutData(0,5,0,5));
+                if (titleField != null) {
+                    autoUpdateName = new CheckBox();
+                    autoUpdateName.setId("JahiaGxtCheckbox_syncSystemNameWithTitle");
+                    autoUpdateName.setWidth(10);
+                    panel.add(autoUpdateName, new HBoxLayoutData(0,5,5,5));
+                }
+
+                name = new AdapterField(panel);
+                name.setFieldLabel(Messages.get("label.systemName", "System name"));
+
+                FormData fd = new FormData("98%");
+                fd.setMargins(new Margins(0));
+                nameFieldSet.add(name, fd);
+                if(engine.getNode() !=null && engine.getNode().isLocked()) {
+                    nameText.setReadOnly(true);
+                    if(autoUpdateName!=null) {
+                        autoUpdateName.setEnabled(false);
+                    }
+                }
+                tab.setData("NodeName", null);
+            }
+
+            String nodeName = (String) tab.getData("NodeName");
+            if (nodeName == null || !nodeName.equals(engine.getNodeName())) {
+                tab.setData("NodeName", engine.getNodeName());
+                if (titleField != null) {
+                    List<Listener<? extends BaseEvent>> listeners = new ArrayList<Listener<? extends BaseEvent>>(titleField.getListeners(Events.KeyUp));
+                    for (Listener listener : listeners) {
+                        titleField.removeListener(Events.KeyUp, listener);
+                    }
+                }
+                nameText.setValue(engine.getNodeName());
+                if (autoUpdateName != null) {
+                    autoUpdateName.removeAllListeners();
+                    autoUpdateName.setData("realValue", null);
+                }
+            }
+        }
+
+>>>>>>> .merge-right.r46882
         // attach properties node
         // Add information field
         FieldSet fieldSet = new FieldSet();
@@ -517,6 +593,7 @@ public class ContentTabItem extends PropertiesTabItem {
     public void setProcessed(boolean processed) {
         if (!processed) {
             isNodeNameFieldDisplayed = false;
+            nameText = null;
             nameEditable = true;
         }
         super.setProcessed(processed);

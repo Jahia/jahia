@@ -211,6 +211,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 service.initializeEditEngine(node.getPath(), false,
                         new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
                             public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                                if (selectedNodes == null || !selectedNodes.contains(result.getNode())) {
+                                    return;
+                                }
                                 types = result.getNodeTypes();
                                 properties = result.getProperties();
                                 language = result.getCurrentLocale();

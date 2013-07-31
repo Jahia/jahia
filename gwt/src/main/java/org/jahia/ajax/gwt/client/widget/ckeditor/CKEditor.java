@@ -106,9 +106,11 @@ public class CKEditor extends Component {
 
     @Override
     protected void onDetach() {
-        destroyEditor();
-        isDetached = true;
-        super.onDetach();
+        if (isLoaded) {
+            destroyEditor();
+            isDetached = true;
+            super.onDetach();
+        }
     }
 
     @Override

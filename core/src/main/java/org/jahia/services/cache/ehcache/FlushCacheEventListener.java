@@ -46,8 +46,8 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
 import java.util.Properties;
 
 /**
@@ -59,34 +59,27 @@ import java.util.Properties;
  *         Time: 3:54:36 PM
  */
 public class FlushCacheEventListener implements CacheEventListener {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FlushCacheEventListener.class);
+    private static Logger logger = LoggerFactory.getLogger(FlushCacheEventListener.class);
 
     public FlushCacheEventListener(Properties properties) {
     }
 
     public void notifyElementRemoved(Ehcache ehcache, Element element) throws CacheException {
-        if (logger.isDebugEnabled()) {
-            logger.debug(ehcache.getName() + ": Element " + element.getKey() + " remotely removed.");
-        }
 
-        ModuleCacheProvider instance = ModuleCacheProvider.getInstance();
-        try {
-            String path = instance.getKeyGenerator().getPath((String) element.getKey());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Calling invalidation on path : "+path);
-            }
-            instance.invalidate(path);
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
-        }
     }
 
     public void notifyElementPut(Ehcache ehcache, Element element) throws CacheException {
+        logger.info(ehcache.getName() + ": Received command " + element.getKey() + " remotely.");
 
+        String command = (String) element.getObjectKey();
+        if ("FLUSH_PATH".equals(command)) {
+            // We want to avoid loops of events so we do not propagate
+            ModuleCacheProvider.getInstance().invalidate((String) element.getValue(), false);
+        }
     }
 
     public void notifyElementUpdated(Ehcache ehcache, Element element) throws CacheException {
-
+        notifyElementPut(ehcache, element);
     }
 
     public void notifyElementExpired(Ehcache ehcache, Element element) {

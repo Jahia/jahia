@@ -96,7 +96,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
-            boolean propageToOtherClusterNodes = !isExternal(event);
+            boolean propagateToOtherClusterNodes = !isExternal(event);
             try {
                 String path = event.getPath();
                 boolean flushParent = false;
@@ -126,48 +126,48 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
                     if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
                         DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                        generator.flushUsersGroupsKey(propageToOtherClusterNodes);
+                        generator.flushUsersGroupsKey(propagateToOtherClusterNodes);
                     }
                     flushParent = true;
                     flushChilds = true;
                 }
                 path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
-                flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
+                flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                 try {
-                    flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
+                    flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                 } catch (PathNotFoundException e) {
                     if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                        flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propagateToOtherClusterNodes);
                     }
                 }
-                flushRegexpDependenciesOfPath(regexpDepCache, path, propageToOtherClusterNodes);
+                flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
                 
                 if(flushChilds) {
-                    flushChildsDependenciesOfPath(depCache, path, propageToOtherClusterNodes);
+                    flushChildsDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
                 }
 
                 if (flushParent) {
                     path = StringUtils.substringBeforeLast(path, "/");
-                    flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
+                    flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
                         if (event instanceof EventImpl  && (((EventImpl) event).getParentId() != null)) {
                             flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getParentId().toString(),
-                                    propageToOtherClusterNodes);
+                                    propagateToOtherClusterNodes);
                         }
                     }
-                    flushRegexpDependenciesOfPath(regexpDepCache,path, propageToOtherClusterNodes);
+                    flushRegexpDependenciesOfPath(regexpDepCache,path, propagateToOtherClusterNodes);
                 }
 
                 if (flushForVanityUrl) {
                     path = StringUtils.substringBeforeLast(path, "/vanityUrlMapping");
-                    flushDependenciesOfPath(depCache, flushed, path, propageToOtherClusterNodes);
+                    flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propageToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
                         if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                            flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propageToOtherClusterNodes);
+                            flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propagateToOtherClusterNodes);
                         }
                     }
                 }

@@ -767,6 +767,7 @@
                         <value>jnt:virtualsitesFolder</value>
                     </list>
                 </property>
+                <property name="defaultAutoUpdate" value="${jahia.ui.contentTab.defaultSynchronizeNameWithTitle:true}"/>
             </bean>            
         </property>
     </bean>

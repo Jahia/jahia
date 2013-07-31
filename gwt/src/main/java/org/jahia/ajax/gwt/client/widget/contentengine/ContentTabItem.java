@@ -85,7 +85,12 @@ public class ContentTabItem extends PropertiesTabItem {
     private boolean nameEditable = true;
 
     private List<String> nameNotEditableForTypes;
+<<<<<<< .working
     private List<String> invalidLanguagesAvailableForTypes;
+=======
+    
+    private boolean defaultAutoUpdate = true;
+>>>>>>> .merge-right.r46872
 
     private transient List<CheckBox> invalidLanguagesCheckBoxes;
     private transient FieldSet invalidLanguagesFieldSet;
@@ -155,7 +160,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     }
                 }
                 isNodeNameFieldDisplayed = true;
-                boolean autoUpdate = true;
+                boolean autoUpdate = defaultAutoUpdate;
 
                 boolean nameEditingAllowed = isNameEditableForType(engine);
 
@@ -529,6 +534,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 || engine == null || !engine.isExistingNode()
                 || !engine.getNode().isNodeType(nameNotEditableForTypes);
     }
+<<<<<<< .working
 
     public void setInvalidLanguagesAvailableForTypes(List<String> invalidLanguagesAvailableForTypes) {
         this.invalidLanguagesAvailableForTypes = invalidLanguagesAvailableForTypes;
@@ -550,4 +556,10 @@ public class ContentTabItem extends PropertiesTabItem {
         return false;
     }
 
+=======
+
+    public void setDefaultAutoUpdate(boolean defaultAutoUpdate) {
+        this.defaultAutoUpdate = defaultAutoUpdate;
+    }
+>>>>>>> .merge-right.r46872
 }

@@ -100,14 +100,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         final Set<String> flushed = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
-<<<<<<< .working
             if (logger.isDebugEnabled()) {
                 logger.debug("Event: {}", event);
             }
-            boolean propageToOtherClusterNodes = !isExternal(event);
-=======
             boolean propagateToOtherClusterNodes = !isExternal(event);
->>>>>>> .merge-right.r46885
             try {
                 String path = event.getPath();
                 boolean flushParent = false;
@@ -133,16 +129,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
                 if (path.contains("j:acl") || type == Event.NODE_MOVED) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
-<<<<<<< .working
                     AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
                     if (cacheKeyGenerator != null) {
-                        cacheKeyGenerator.flushUsersGroupsKey(propageToOtherClusterNodes);
-=======
-                    CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
-                    if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
-                        DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                        generator.flushUsersGroupsKey(propagateToOtherClusterNodes);
->>>>>>> .merge-right.r46885
+                        cacheKeyGenerator.flushUsersGroupsKey(propagateToOtherClusterNodes);
                     }
                     flushParent = true;
                     flushChilds = true;
@@ -204,7 +193,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             if (logger.isDebugEnabled()) {
                 logger.debug("Flushing path: {}", path);
             }
-            Set<String> deps = (Set<String>) element.getValue();
+            Set<String> deps = (Set<String>) element.getObjectValue();
             if(deps.contains("ALL")){
                 AggregateCacheFilter.flushNotCacheableFragment();
             } else {
@@ -213,7 +202,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
             }
             cacheProvider.invalidate(path, propageToOtherClusterNodes);
-            depCache.remove(element.getKey());
+            depCache.remove(element.getObjectKey());
         }
     }
 

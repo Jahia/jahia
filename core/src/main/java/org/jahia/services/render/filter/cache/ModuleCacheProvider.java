@@ -122,7 +122,6 @@ public class ModuleCacheProvider implements InitializingBean {
             cacheManager.addCache(CACHE_SYNC_NAME);
             syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
         }
-        syncCache.setStatisticsEnabled(false);
     }
 
     /**
@@ -146,7 +145,7 @@ public class ModuleCacheProvider implements InitializingBean {
     public void invalidate(String nodePath, boolean propagateToOtherClusterNodes) {
         Element element = dependenciesCache.get(nodePath);
         if (element != null) {
-            Set<String> deps = (Set<String>) element.getValue();
+            Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
                 blockingCache.removeAll(!propagateToOtherClusterNodes);
             } else {
@@ -160,14 +159,8 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private void invalidateDependencies(Set<String> deps, boolean propagateToOtherClusterNodes) {
         for (String dep : deps) {
-<<<<<<< .working
             if (dep != null) {
-                boolean removed = blockingCache.remove(dep, !propageToOtherClusterNodes);
-=======
-            String key = dep;
-            if (key != null) {
-                boolean removed = blockingCache.remove(key, !propagateToOtherClusterNodes);
->>>>>>> .merge-right.r46885
+                boolean removed = blockingCache.remove(dep, !propagateToOtherClusterNodes);
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + dep + " from cache");
                 }
@@ -225,7 +218,7 @@ public class ModuleCacheProvider implements InitializingBean {
         Element element = regexpDependenciesCache.get(key);
         if (element != null) {
             @SuppressWarnings("unchecked")
-            Set<String> deps = (Set<String>) element.getValue();
+            Set<String> deps = (Set<String>) element.getObjectValue();
             invalidateDependencies(deps, propageToOtherClusterNodes);
         }
     }

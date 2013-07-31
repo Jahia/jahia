@@ -2921,15 +2921,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return null;
         }
         if (!"shared".equals(provider.getAuthenticationType())) {
-            StringBuffer owners = new StringBuffer();
             List<String> lockOwners = getLockOwners(objectNode);
             if (lockOwners.isEmpty()) {
                 return null;
             }
-            for (String s : lockOwners) {
-                owners.append(s).append(" ");
+            if (lockOwners.isEmpty()) {
+                return StringUtils.EMPTY;
             }
-            return owners.toString().trim();
+            if (lockOwners.size() == 1) {
+                return String.valueOf(lockOwners.get(0)).trim();
+            } else {
+                StringBuilder owners = new StringBuilder();
+                for (String s : lockOwners) {
+                    owners.append(s).append(" ");
+                }
+                return owners.toString().trim();
+            }
         } else {
             return getSession().getUserID();
         }

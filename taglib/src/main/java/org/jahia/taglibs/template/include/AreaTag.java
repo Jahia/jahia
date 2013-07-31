@@ -52,6 +52,7 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -68,7 +69,9 @@ import java.util.*;
  */
 public class AreaTag extends ModuleTag implements ParamParent {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AreaTag.class);
+    private static final long serialVersionUID = -6195547330532753697L;
+
+    private static Logger logger = LoggerFactory.getLogger(AreaTag.class);
 
     private String areaType = "jnt:contentList";
 
@@ -166,18 +169,14 @@ public class AreaTag extends ModuleTag implements ParamParent {
             if (!StringUtils.isEmpty(mockupStyle)) {
                 additionalParameters.append(" mockupStyle=\"").append(mockupStyle).append("\"");
             }
-<<<<<<< .working
-            additionalParameters += " areaHolder=\""+resource.getNode().getIdentifier()+"\"";
-            printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters);
-=======
+            additionalParameters.append(" areaHolder=\"").append(resource.getNode().getIdentifier()).append("\"");
             
             if (isEdiatble && JCRContentUtils.isLockedAndCannotBeEdited(parent)) {
                 // if the parent is locked -> disable area editing
                 additionalParameters.append(" editable=\"false\"");
             }
             
-            printModuleStart(getModuleType(renderContext), areaPath, null, "No script", additionalParameters.toString());
->>>>>>> .merge-right.r46879
+            printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString());
             if (getBodyContent() != null) {
                 getPreviousOut().write(getBodyContent().getString());
             }
@@ -277,6 +276,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     boolean notMainResource = false;
 
                     Set<String> allPaths = new HashSet<String>();
+                    @SuppressWarnings("unchecked")
                     Set<String> storedAllPaths = (Set<String>) renderContext.getRequest().getAttribute("org.jahia.area.stack.cache");
                     if(storedAllPaths!=null) {
                         allPaths.addAll(storedAllPaths);

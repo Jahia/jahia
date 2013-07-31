@@ -81,6 +81,8 @@ public class ContentTabItem extends PropertiesTabItem {
     private boolean nameEditable = true;
 
     private List<String> nameNotEditableForTypes;
+    
+    private boolean defaultAutoUpdate = true;
 
     public Field<String> getName() {
         return nameText;
@@ -129,7 +131,7 @@ public class ContentTabItem extends PropertiesTabItem {
                     }
                 }
                 isNodeNameFieldDisplayed = true;
-                boolean autoUpdate = true;
+                boolean autoUpdate = defaultAutoUpdate;
 
                 boolean nameEditingAllowed = isNameEditableForType(engine);
 
@@ -438,5 +440,9 @@ public class ContentTabItem extends PropertiesTabItem {
         return nameNotEditableForTypes == null || nameNotEditableForTypes.isEmpty()
                 || engine == null || !engine.isExistingNode()
                 || !engine.getNode().isNodeType(nameNotEditableForTypes);
+    }
+
+    public void setDefaultAutoUpdate(boolean defaultAutoUpdate) {
+        this.defaultAutoUpdate = defaultAutoUpdate;
     }
 }

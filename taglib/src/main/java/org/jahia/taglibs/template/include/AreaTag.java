@@ -40,7 +40,9 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -118,30 +120,60 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 logger.error("Error when getting list constraints", e);
             }
 
+            JCRNodeWrapper parent = null;
             String areaPath = path;
             if (!path.startsWith("/")) {
                 if (areaAsSubNode && resource.getNode().getPath().startsWith(renderContext.getMainResource().getNode().getPath())) {
                     areaPath = resource.getNode().getPath() + "/" + path;
+                    if (path.indexOf('/') == -1) {
+                        parent = resource.getNode();
+                    } else {
+                        try {
+                            parent = resource.getNode().getSession()
+                                    .getNode(StringUtils.substringBeforeLast(areaPath, "/"));
+                        } catch (PathNotFoundException e) {
+                            // ignore
+                        }
+                    }
                 } else {
                     areaPath = renderContext.getMainResource().getNode().getPath() + "/" + path;
+                    if (path.indexOf('/') == -1) {
+                        parent = renderContext.getMainResource().getNode();
+                    }
+                }
+            } else {
+                try {
+                    parent = renderContext.getMainResource().getNode().getSession()
+                            .getNode(StringUtils.substringBeforeLast(areaPath, "/"));
+                } catch (PathNotFoundException e) {
+                    // ignore
                 }
             }
 
-            String additionalParameters = "missingList=\"true\"";
+            boolean isEdiatble = true;
+            
+            StringBuilder additionalParameters = new StringBuilder();
+            additionalParameters.append("missingList=\"true\"");
             if (conflictsWith != null) {
-                additionalParameters += " conflictsWith=\"" + conflictsWith + "\"";
+                additionalParameters.append(" conflictsWith=\"").append(conflictsWith).append("\"");
             }
             if (renderContext.getEditModeConfigName().equals("contributemode")) {
                 JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
                 if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
-                    additionalParameters += " editable=\"false\"";
+                    additionalParameters.append(" editable=\"false\"");
+                    isEdiatble = false;
                 }
             }
             if (mockupStyle != null) {
-                additionalParameters += " mockupStyle=\"" + mockupStyle + "\"";
+                additionalParameters.append(" mockupStyle=\"").append(mockupStyle).append("\"");
             }
-
-            printModuleStart(getModuleType(renderContext), areaPath, null, "No script", additionalParameters);
+            
+            if (isEdiatble && JCRContentUtils.isLockedAndCannotBeEdited(parent)) {
+                // if the parent is locked -> disable area editing
+                additionalParameters.append(" editable=\"false\"");
+            }
+            
+            printModuleStart(getModuleType(renderContext), areaPath, null, "No script", additionalParameters.toString());
             if (getBodyContent() != null) {
                 getPreviousOut().write(getBodyContent().getString());
             }

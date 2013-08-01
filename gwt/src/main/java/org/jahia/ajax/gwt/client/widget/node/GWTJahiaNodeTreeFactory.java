@@ -233,6 +233,11 @@ public class GWTJahiaNodeTreeFactory {
                     public void handleEvent(TreePanelEvent el) {
                         GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) el.getItem();
                         String path = gwtJahiaNode.getPath();
+                        for (String subPath : new ArrayList<String>(openPath)) {
+                            if (subPath.startsWith(path+"/")) {
+                                openPath.remove(subPath);
+                            }
+                        }
                         openPath.remove(path);
                         Log.debug("Save Path on collapse " + openPath);
                         gwtJahiaNode.setExpandOnLoad(false);
@@ -278,6 +283,11 @@ public class GWTJahiaNodeTreeFactory {
                     public void handleEvent(TreeGridEvent el) {
                         GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) el.getModel();
                         String path = gwtJahiaNode.getPath();
+                        for (String subPath : new ArrayList<String>(openPath)) {
+                            if (subPath.startsWith(path+"/")) {
+                                openPath.remove(subPath);
+                            }
+                        }
                         openPath.remove(path);
                         Log.debug("Save Path on collapse " + openPath);
                         gwtJahiaNode.setExpandOnLoad(false);

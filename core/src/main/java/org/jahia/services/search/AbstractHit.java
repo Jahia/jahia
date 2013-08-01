@@ -40,9 +40,6 @@
 
 package org.jahia.services.search;
 
-import javax.jcr.Value;
-import javax.jcr.query.Row;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -53,18 +50,20 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Value;
+import javax.jcr.query.Row;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Abstract search result item, used as a view object in JSP templates.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class AbstractHit<T> implements Hit<T> {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractHit.class);    
-    
+    private static Logger logger = LoggerFactory.getLogger(AbstractHit.class);
+
     private String excerpt;
     protected T resource;
     private float score;
@@ -74,7 +73,7 @@ public abstract class AbstractHit<T> implements Hit<T> {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param resource search result item to be wrapped
      * @param context
      */
@@ -89,36 +88,6 @@ public abstract class AbstractHit<T> implements Hit<T> {
             try {
                 // this is Jackrabbit specific, so if other implementations
                 // throw exceptions, we have to do a check here
-<<<<<<< .working
-                Value excerptValue = row.getValue("rep:excerpt(.)");
-                if (excerptValue != null) {
-                    if (excerptValue.getString().contains(
-                            "###" + JahiaExcerptProvider.TAG_TYPE + "#")
-                            || excerptValue.getString().contains(
-                                    "###" + JahiaExcerptProvider.CATEGORY_TYPE
-                                            + "#")) {
-                        String r = "";
-                        String separator = "";
-                        String type = "";
-                        for (String s : Patterns.COMMA.split(excerptValue
-                                .getString())) {
-                            String s2 = Messages.getInternal(s
-                                    .contains(JahiaExcerptProvider.TAG_TYPE) ? "label.tags"
-                                    : "label.category", context.getRequest().getLocale());
-                            String s1 = s.substring(s.indexOf("###"),
-                                    s.lastIndexOf("###"));
-                            String identifier = s1.substring(s1
-                                    .lastIndexOf("#") + 1);
-                            String v = "";
-                            if (identifier.startsWith("<span")) {
-                                identifier = identifier.substring(
-                                        identifier.indexOf(">") + 1,
-                                        identifier.lastIndexOf("</span>"));
-                                v = "<span class=\" searchHighlightedText\">"
-                                        + getTitle() + "</span>";
-                            } else {
-                                v = getTitle();
-=======
                 for (Row row : rows) {
                     Value excerptValue = row.getValue("rep:excerpt(.)");
                     if (excerptValue != null) {
@@ -132,15 +101,9 @@ public abstract class AbstractHit<T> implements Hit<T> {
                             String type = "";
                             for (String s : Patterns.COMMA.split(excerptValue
                                     .getString())) {
-                                String s2 = s
-                                        .contains(JahiaExcerptProvider.TAG_TYPE) ? JahiaResourceBundle
-                                        .getJahiaInternalResource("label.tags",
-                                                context.getRequest().getLocale())
-                                        : JahiaResourceBundle
-                                        .getJahiaInternalResource(
-                                                "label.category", context
-                                                .getRequest()
-                                                .getLocale());
+                                String s2 = Messages.getInternal(s
+                                        .contains(JahiaExcerptProvider.TAG_TYPE) ? "label.tags"
+                                        : "label.category", context.getRequest().getLocale());
                                 String s1 = s.substring(s.indexOf("###"),
                                         s.lastIndexOf("###"));
                                 String identifier = s1.substring(s1
@@ -163,7 +126,6 @@ public abstract class AbstractHit<T> implements Hit<T> {
                                 r += separator + v;
                                 separator = ", ";
 
->>>>>>> .merge-right.r46894
                             }
                             setExcerpt(r);
                             break;
@@ -232,5 +194,5 @@ public abstract class AbstractHit<T> implements Hit<T> {
             this.rows = new ArrayList<Row>();
         }
         rows.add(row);
-    }    
+    }
 }

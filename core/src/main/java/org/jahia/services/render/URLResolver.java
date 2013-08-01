@@ -42,6 +42,8 @@ package org.jahia.services.render;
 
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -150,6 +152,12 @@ public class URLResolver {
         this.workspace = workspace;
 
         this.urlPathInfo = urlPathInfo;
+        
+        Date date = getVersionDate(request);
+        String versionLabel = getVersionLabel(request);
+        setVersionDate(date);
+        setVersionLabel(versionLabel);
+        
         if (urlPathInfo != null) {
             servletPart = StringUtils.substring(getUrlPathInfo(), 1,
                     StringUtils.indexOf(getUrlPathInfo(), "/", 1));
@@ -222,7 +230,29 @@ public class URLResolver {
             mappable = true;
         }
     }
-
+    
+    private Date getVersionDate(HttpServletRequest req) {
+        // we assume here that the date has been passed as milliseconds.
+        String msString = req.getParameter("v");
+        if (msString == null) {
+            return null;
+        }
+        try {
+            long msLong = Long.parseLong(msString);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Display version of date : " + SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(msLong)));
+            }
+            return new Date(msLong);
+        } catch (NumberFormatException nfe) {
+            logger.warn("Invalid version date found in URL " + msString);
+            return null;
+        }
+    }
+    
+    private String getVersionLabel(HttpServletRequest req) {
+        return req.getParameter("l");
+    }
+    
     private boolean isServletAllowingUrlMapping() {
         boolean isServletAllowingUrlMapping = false;
         for (String servletAllowingUrlMapping : servletsAllowingUrlMapping) {

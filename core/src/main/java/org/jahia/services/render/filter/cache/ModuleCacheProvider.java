@@ -40,13 +40,6 @@
 
 package org.jahia.services.render.filter.cache;
 
-<<<<<<< .working
-=======
-import java.text.ParseException;
-import java.util.Set;
-import java.util.UUID;
-
->>>>>>> .merge-right.r46896
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -58,6 +51,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.text.ParseException;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Instantiates and provides access to the module output and dependency caches.

@@ -396,15 +396,17 @@ public class Activator implements BundleActivator {
 
             scanForImportFiles(bundle, pkg);
 
-            try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        templatePackageDeployer.initializeModuleContent(pkg, session);
-                        return null;
-                    }
-                });
-            } catch (RepositoryException e) {
-                logger.error("Error while initializing module content for module " + pkg, e);
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            templatePackageDeployer.initializeModuleContent(pkg, session);
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    logger.error("Error while initializing module content for module " + pkg, e);
+                }
             }
             logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
@@ -615,14 +617,12 @@ public class Activator implements BundleActivator {
 
     private void scanForImportFiles(Bundle bundle, JahiaTemplatesPackage jahiaTemplatesPackage) {
         List<Resource> importFiles = new ArrayList<Resource>();
-        @SuppressWarnings("unchecked")
         Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
         if (importXMLEntryEnum != null) {
             while (importXMLEntryEnum.hasMoreElements()) {
                 importFiles.add(new BundleResource(importXMLEntryEnum.nextElement(), bundle));
             }
         }
-        @SuppressWarnings("unchecked")
         Enumeration<URL> importZIPEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
         if (importZIPEntryEnum != null) {
             while (importZIPEntryEnum.hasMoreElements()) {

@@ -330,8 +330,12 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         }
 
         Long l = (Long) testStarts.get(result.getName());
-        currentTest.setAttribute(ATTR_TIME, ""
+        if (l != null) {
+            currentTest.setAttribute(ATTR_TIME, ""
                 + ((System.currentTimeMillis() - l.longValue()) / ONE_SECOND));
+        } else {
+            currentTest.setAttribute(ATTR_TIME, "0");
+        }
     }
 
     /**

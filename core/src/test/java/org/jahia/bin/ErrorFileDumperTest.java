@@ -42,6 +42,7 @@ package org.jahia.bin;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.RequestLoadAverage;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -75,7 +76,7 @@ public class ErrorFileDumperTest {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         Date now = new Date();
-        todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-errors"), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+        todaysDirectory = new File(SettingsBean.getErrorDir(), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
     }
 
     @AfterClass

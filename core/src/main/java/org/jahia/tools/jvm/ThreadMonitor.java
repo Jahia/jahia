@@ -131,8 +131,7 @@ public class ThreadMonitor {
     private static String INDENT = "    ";
     private static File getNextThreadDumpFile(String postfix) {
         Date now = new Date();
-        File todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"),
-                "jahia-threads"), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+        File todaysDirectory = new File(SettingsBean.getThreadDir(), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
         todaysDirectory.mkdirs();
         return new File(todaysDirectory, "thread-dump-"
                 + ErrorFileDumper.DATE_FORMAT_FILE.format(now) + (postfix != null ? postfix : "")

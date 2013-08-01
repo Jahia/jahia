@@ -302,7 +302,7 @@ public class ErrorFileDumper {
 
     private static File getNextErrorFile() {
         Date now = new Date();
-        File todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-errors"), DATE_FORMAT_DIRECTORY.format(now));
+        File todaysDirectory = new File(SettingsBean.getErrorDir(), DATE_FORMAT_DIRECTORY.format(now));
         todaysDirectory.mkdirs();
         return new File(todaysDirectory,
                 "error-" + DATE_FORMAT_FILE.format(now) + "-" + Long.toString(exceptionCount) + ".txt");

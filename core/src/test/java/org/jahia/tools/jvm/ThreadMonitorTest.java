@@ -42,6 +42,7 @@ package org.jahia.tools.jvm;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
+import org.jahia.settings.SettingsBean;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -74,8 +75,7 @@ public class ThreadMonitorTest {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         Date now = new Date();
-        todaysDirectory = new File(new File(System.getProperty("java.io.tmpdir"),
-                "jahia-threads"), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+        todaysDirectory = new File(SettingsBean.getThreadDir(), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
     }
 
     @AfterClass

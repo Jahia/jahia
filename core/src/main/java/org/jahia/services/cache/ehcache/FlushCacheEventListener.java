@@ -69,12 +69,12 @@ public class FlushCacheEventListener implements CacheEventListener {
     }
 
     public void notifyElementPut(Ehcache ehcache, Element element) throws CacheException {
-        logger.info(ehcache.getName() + ": Received command " + element.getKey() + " remotely.");
-
         String command = (String) element.getObjectKey();
-        if ("FLUSH_PATH".equals(command)) {
+        if (command.startsWith("FLUSH_PATH")) {
             // We want to avoid loops of events so we do not propagate
-            ModuleCacheProvider.getInstance().invalidate((String) element.getValue(), false);
+            String pathToFlush = (String) element.getValue();
+            logger.info(ehcache.getName() + ": Received command FLUSH_PATH ("+ pathToFlush +")remotely.");
+            ModuleCacheProvider.getInstance().invalidate(pathToFlush, false);
         }
     }
 

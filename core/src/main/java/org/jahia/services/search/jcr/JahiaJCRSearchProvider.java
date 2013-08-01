@@ -44,13 +44,7 @@ import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
 import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.jcr.*;
@@ -135,7 +129,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         List<Hit<?>> results = new LinkedList<Hit<?>>();
         response.setResults(results);
 
-        Set<String> addedHits = new HashSet<String>();
+        Map<String, JCRNodeHit> addedHits = new HashMap<String,JCRNodeHit>();
         Set<String> addedNodes = new HashSet<String>();
 
         try {
@@ -187,19 +181,18 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         }
                         if (node != null && addedNodes.add(node.getIdentifier())) {
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
-                                    
-                            Hit<?> hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
+
+                            JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
                             
                             if (!skipNode && usageFilterSites != null
-                                    && !usageFilterSites.contains(node.getResolveSite().getName())
-                                    && hit instanceof JCRNodeHit) {
-                                JCRNodeHit jcrNodeHit = (JCRNodeHit) hit;
-                                skipNode = jcrNodeHit.getUsages().isEmpty();
+                                    && !usageFilterSites.contains(node.getResolveSite().getName())) {
+                                skipNode = hit.getUsages().isEmpty();
                             }
                             if (!skipNode) {
                                 SearchServiceImpl.executeURLModificationRules(hit, context);
 
-                                if (addedHits.add(hit.getLink())) {
+                                if (!addedHits.containsKey(hit.getLink())) {
+                                    addedHits.put(hit.getLink(), hit);
                                     if (index >= offset) {
                                         if (index>=limit+offset) {
                                             response.setHasMore(true);
@@ -215,6 +208,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                         results.add(hit);
                                     }
                                     index++;
+                                } else {
+                                    hit = addedHits.get(hit.getLink());
+                                    hit.addRow(row);
                                 }
                             }
                         }
@@ -286,7 +282,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return skipNode;
     }
 
-    private Hit<?> buildHit(Row row, JCRNodeWrapper node, RenderContext context, Set<String> usageFilterSites) throws RepositoryException {
+    private JCRNodeHit buildHit(Row row, JCRNodeWrapper node, RenderContext context, Set<String> usageFilterSites) throws RepositoryException {
         JCRNodeHit searchHit = null;
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
             searchHit = new FileHit(node, context);
@@ -298,7 +294,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             searchHit.setUsageFilterSites(usageFilterSites);
             searchHit.setScore((float) (row.getScore() / 1000.));
             
-            searchHit.setRow(row);
+            searchHit.addRow(row);
         } catch (Exception e) {
             logger.warn("Search details cannot be retrieved", e);
         }

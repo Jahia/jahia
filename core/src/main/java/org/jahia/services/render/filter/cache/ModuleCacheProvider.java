@@ -42,6 +42,7 @@ package org.jahia.services.render.filter.cache;
 
 import java.text.ParseException;
 import java.util.Set;
+import java.util.UUID;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -156,9 +157,10 @@ public class ModuleCacheProvider implements InitializingBean {
             } else {
                 invalidateDependencies(deps, propagateToOtherClusterNodes);
             }
-            if(propagateToOtherClusterNodes) {
-                syncCache.put(new Element("FLUSH_PATH", nodePath));
-            }
+        }
+        if(propagateToOtherClusterNodes) {
+            logger.info("Sending flush of "+nodePath+" across cluster");
+            syncCache.put(new Element("FLUSH_PATH-"+ UUID.randomUUID(), nodePath));
         }
     }
 

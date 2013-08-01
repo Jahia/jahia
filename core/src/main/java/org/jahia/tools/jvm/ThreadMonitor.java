@@ -150,8 +150,6 @@ public class ThreadMonitor {
 
     private String dumpPrefix = "\nFull thread dump ";
     
-    private MBeanServerConnection server;
-
     private ThreadMXBean tmbean;
 
     private volatile static ThreadMonitor instance;
@@ -302,19 +300,20 @@ public class ThreadMonitor {
      * Prints the thread dump information to System.out or/and to a file.
      * @param toSysOut print the generated thread dump to a System.out
      * @param toFile print the generated thread dump to a file
+     * @return the file where the thread dumps will be performed into, if the dumps are done into a file
      */
-    public void dumpThreadInfo(boolean toSysOut, boolean toFile) {
+    public File dumpThreadInfo(boolean toSysOut, boolean toFile) {
 
         if (!activated) {
-            return;
+            return null;
         }
 
         if (!(toSysOut || toFile)) {
-            return;
+            return null;
         }
 
         if (acquireAlreadyDumping()) {
-            return;
+            return null;
         }
 
         long startTime = System.currentTimeMillis();
@@ -323,8 +322,9 @@ public class ThreadMonitor {
             System.out.print(threadInfo);
         }
         
+        File dumpFile = null; 
         if (toFile) {
-            final File dumpFile = getNextThreadDumpFile(null);
+            dumpFile = getNextThreadDumpFile(null);
             try {
                 FileUtils.writeStringToFile(dumpFile, threadInfo, "UTF-8");
                 long dumpTime = System.currentTimeMillis() - startTime;
@@ -335,6 +335,8 @@ public class ThreadMonitor {
         }
 
         releaseAlreadyDumping();
+        
+        return dumpFile;
     }
 
     private void dumpThreadInfo(StringBuilder dump) {
@@ -375,19 +377,20 @@ public class ThreadMonitor {
      *            the number of thread dumps to do
      * @param intervalSeconds
      *            the interval between thread dumps in seconds
+     * @return the file where the thread dumps will be performed into, if the dumps are done into a file
      */
-    public void dumpThreadInfoWithInterval(boolean toSysOut, boolean toFile, int threadDumpCount,
+    public File dumpThreadInfoWithInterval(boolean toSysOut, boolean toFile, int threadDumpCount,
             int intervalSeconds) {
         if (!activated) {
-            return;
+            return null;
         }
 
         if (threadDumpCount < 1 || intervalSeconds < 1 || !(toSysOut || toFile)) {
-            return;
+            return null;
         }
 
         if (acquireAlreadyDumping()) {
-            return;
+            return null;
         }
 
         if (timer == null) {
@@ -397,6 +400,7 @@ public class ThreadMonitor {
         timer.schedule(new ThreadDumpTask(threadDumpCount, toSysOut, file), 0,
                 intervalSeconds * 1000L);
 
+        return file;
         // releaseAlreadyDumping is done in ThreadDumpTask class.
     }
 
@@ -555,7 +559,6 @@ public class ThreadMonitor {
      * @param mbs
      */
     void setMBeanServerConnection(MBeanServerConnection mbs) {
-        this.server = mbs;
         this.tmbean = (ThreadMXBean) ManagementFactory.getThreadMXBean();
     }
 

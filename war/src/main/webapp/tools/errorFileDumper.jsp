@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="org.jahia.bin.errors.ErrorFileDumper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -23,6 +24,13 @@ ErrorFileDumper.setFileDumpActivated(Boolean.valueOf(request.getParameter("activ
 	<p>The dumping of error and thread information to a file is currently <strong>OFF</strong>.<br/>Click here to <a href="?active=true">enable error file dumper</a></p>
 </c:if>
 <p>Please note that these settings are valid only during server run time and are not persisted between server restarts.</p>
+
+<p>The error file dumper is using the following directory:</p>
+<pre>        <%= SettingsBean.getErrorDir() %></pre>
+<p>
+This location can be overridden with a system property named <code>jahia.error.dir</code>,<br/>
+e.g. by adding <code>-Djahia.error.dir=/var/logs/jahia/errors</code> to the JVM options (<code>CATALINA_OPTS</code> for Apache Tomcat).
+</p>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

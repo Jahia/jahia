@@ -104,7 +104,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (dir != null) {
                 errorDir = new File(dir);
             } else {
-                errorDir = new File(System.getProperty("java.io.tmpdir"), "jahia-errors");
+                errorDir = new File(StringUtils.defaultIfEmpty(System.getProperty("jahia.log.dir"),
+                        System.getProperty("java.io.tmpdir")), "jahia-errors");
             }
         }
 
@@ -122,7 +123,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (dir != null) {
                 threadDir = new File(dir);
             } else {
-                threadDir = new File(System.getProperty("java.io.tmpdir"), "jahia-threads");
+                threadDir = new File(StringUtils.defaultIfEmpty(System.getProperty("jahia.log.dir"),
+                        System.getProperty("java.io.tmpdir")), "jahia-threads");
             }
         }
 

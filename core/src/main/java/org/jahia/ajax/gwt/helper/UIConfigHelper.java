@@ -79,7 +79,6 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.security.Privilege;
 import javax.script.*;
@@ -88,6 +87,8 @@ import java.io.StringWriter;
 import java.util.*;
 
 /**
+ * Utility class for populating GWT UI configuration data.
+ * 
  * User: ktlili
  * Date: Apr 13, 2010
  * Time: 5:25:09 PM
@@ -789,13 +790,14 @@ public class UIConfigHelper {
         if (logger.isDebugEnabled()) {
             logger.debug("Resources key: " + key);
         }
+        String baseName = null;
         String value = null;
         if (key.contains("@")) {
-            String baseName = StringUtils.substringAfter(key, "@");
+            baseName = StringUtils.substringAfter(key, "@");
             key = StringUtils.substringBefore(key, "@");
-            value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, key);
         }
         
+        value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, null);
         if (value == null || value.length() == 0) {
             value = Messages.getInternal(key, locale);
         }

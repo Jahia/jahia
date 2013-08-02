@@ -56,7 +56,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Instantiates and provides access to the module output and dependency caches.
- * 
+ *
  * @author rincevent
  * @author Sergiy Shyrkov
  */
@@ -69,16 +69,16 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private static Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
     private Cache regexpDependenciesCache;
-    
+
     /**
      * Returns an instance of this class
-     * 
+     *
      * @return an instance of this class
      */
     public static ModuleCacheProvider getInstance() {
         return (ModuleCacheProvider) SpringContextSingleton.getBean("ModuleCacheProvider");
     }
-    
+
     private Cache blockingCache;
     private int blockingTimeout = 5000;
     private EhCacheProvider cacheProvider;
@@ -94,7 +94,7 @@ public class ModuleCacheProvider implements InitializingBean {
      * This method allows the bean instance to perform initialization only
      * possible when all bean properties have been set and to throw an exception
      * in the event of misconfiguration.
-     * 
+     *
      * @throws Exception in the event of misconfiguration (such as failure to
      *             set an essential property) or if initialization fails.
      */
@@ -107,14 +107,14 @@ public class ModuleCacheProvider implements InitializingBean {
 //          blockingCache.setTimeoutMillis(blockingTimeout);
         }
         blockingCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
-        
+
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         if (dependenciesCache == null) {
             cacheManager.addCache(DEPS_CACHE_NAME);
             dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         }
         dependenciesCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
-        
+
         regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         if (regexpDependenciesCache == null) {
         	cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
@@ -132,17 +132,17 @@ public class ModuleCacheProvider implements InitializingBean {
 
     /**
      * Flushes all the cache entries, related to the specified node.
-     * 
+     *
      * @param nodePath the node path to be invalidated.
      * @throws ParseException in case of a malformed key
      */
     public void invalidate(String nodePath) {
         invalidate(nodePath, true);
     }
-    
+
     /**
      * Flushes all the cache entries, related to the specified node.
-     * 
+     *
      * @param nodePath the node path to be invalidated.
      * @param propageToOtherClusterNodes do notify replicators of this event
      * @throws ParseException in case of a malformed key
@@ -160,8 +160,10 @@ public class ModuleCacheProvider implements InitializingBean {
             }
         }
         if(propagateToOtherClusterNodes) {
-            logger.info("Sending flush of "+nodePath+" across cluster");
-            syncCache.put(new Element("FLUSH_PATH-"+ UUID.randomUUID(), nodePath));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of " + nodePath + " across cluster");
+            }
+            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), nodePath));
         }
     }
 
@@ -202,7 +204,7 @@ public class ModuleCacheProvider implements InitializingBean {
 
     /**
      * Injects the cache key generator implementation.
-     * 
+     *
      * @param keyGenerator the cache key generator implementation to use
      */
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
@@ -234,8 +236,10 @@ public class ModuleCacheProvider implements InitializingBean {
             invalidateDependencies(deps);
         }
         if(propagateToOtherClusterNodes) {
-            logger.info("Sending flush of regexp "+key+" across cluster");
-            syncCache.put(new Element("FLUSH_REGEXP-"+ UUID.randomUUID(), key));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of regexp " + key + " across cluster");
+            }
+            syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), key));
         }
     }
 

@@ -52,13 +52,12 @@ import java.util.Properties;
 
 /**
  * A listener that will invalidate HTMLCache upon messages received.
- *
+ * <p/>
  * Right now there is two commands :
  * FLUSH_PATH with the path to flush as a value
  * FLUSH_REGEXP with the regexp to flush as a value
  *
  * @author cedric . mailleux @ jahia . com
- *
  * @since 6.6.2
  */
 public class FlushCacheEventListener implements CacheEventListener {
@@ -76,13 +75,16 @@ public class FlushCacheEventListener implements CacheEventListener {
         if (command.startsWith("FLUSH_PATH")) {
             // We want to avoid loops of events so we do not propagate
             String pathToFlush = (String) element.getValue();
-            logger.info(ehcache.getName() + ": Received command FLUSH_PATH ("+ pathToFlush +")remotely.");
+            if (logger.isDebugEnabled()) {
+                logger.debug(ehcache.getName() + ": Received command FLUSH_PATH (" + pathToFlush + ")remotely.");
+            }
             ModuleCacheProvider.getInstance().invalidate(pathToFlush, false);
-        }
-        else if (command.startsWith("FLUSH_REGEXP")) {
+        } else if (command.startsWith("FLUSH_REGEXP")) {
             // We want to avoid loops of events so we do not propagate
             String regexpToFlush = (String) element.getValue();
-            logger.info(ehcache.getName() + ": Received command FLUSH_REGEXP ("+ regexpToFlush +")remotely.");
+            if (logger.isDebugEnabled()) {
+                logger.debug(ehcache.getName() + ": Received command FLUSH_REGEXP (" + regexpToFlush + ")remotely.");
+            }
             ModuleCacheProvider.getInstance().invalidateRegexp(regexpToFlush, false);
         }
     }

@@ -2434,9 +2434,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        JCRNodeWrapper parent = getParent();
+        if (parent instanceof JCRNodeWrapperImpl) {
+            ((JCRNodeWrapperImpl)parent).checkLock();
+        }
         if (!getSession().getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && provider.getMountPoint().equals("/")) {
             try {
-                JCRNodeWrapper parent = getParent();
                 getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                 if (!parent.isNodeType("jmix:deletedChildren")) {
                     parent.addMixin("jmix:deletedChildren");
@@ -2753,7 +2756,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     protected void checkLock() throws RepositoryException {
-        if (isLocked() && !session.isSystem()) {
+        if (!session.isSystem() && isLocked()) {
             List<String> owners = getLockOwners(objectNode);
             if (owners.size() == 1 && owners.contains(session.getUserID())) {
                 session.addLockToken(objectNode.getProperty("j:locktoken").getString());

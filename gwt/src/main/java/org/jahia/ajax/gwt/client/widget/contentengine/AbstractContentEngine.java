@@ -329,10 +329,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 for (PropertiesEditor pe : ((PropertiesTabItem) item).getLangPropertiesEditorMap().values()) {
                     if (pe != null) {
                         for (Field<?> field : pe.getFields()) {
-                            if (dependentProperties.contains(field.getName())) {
-                                dependentValues.put(field.getName(), PropertiesEditor
-                                        .getPropertyValues(field, pe
-                                                .getGWTJahiaItemDefinition(field.getName())));
+                            if (field instanceof PropertiesEditor.PropertyAdapterField) {
+                                String name = ((PropertiesEditor.PropertyAdapterField) field).getDefinition().getName();
+                                if (dependentProperties.contains(name)) {
+                                    dependentValues.put(name, PropertiesEditor.getPropertyValues(field,
+                                            pe.getGWTJahiaItemDefinition(name)));
+                                }
                             }
                         }
                     }

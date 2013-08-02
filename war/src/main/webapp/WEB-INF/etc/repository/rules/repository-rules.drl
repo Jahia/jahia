@@ -165,3 +165,12 @@ rule "Flush group cache"
     then
         Flush group cache
 end
+
+rule "Flush URL resolver cache"
+    when
+        A property has been set on a node
+			- the node has the type jnt:virtualsite
+    then
+        Flush urlResolverNodePath
+        Flush urlResolverSiteInfo
+end

@@ -220,7 +220,7 @@ public class PublicationHelper {
                     String lastTitle = null;
                     Locale l = new Locale(language);
                     for (GWTJahiaPublicationInfo info : infoList) {
-                        if ((info.isPublishable() && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow()))) {
+                        if (((info.isPublishable() || info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow()))) {
                             res.put(language + "/" + info.getUuid(), info);
                             if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
                                 lastGroup = info.getWorkflowGroup();

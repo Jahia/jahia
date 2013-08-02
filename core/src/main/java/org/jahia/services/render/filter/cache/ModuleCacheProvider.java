@@ -105,13 +105,23 @@ public class ModuleCacheProvider implements InitializingBean {
             blockingCache = cacheManager.getCache(CACHE_NAME);
 //          blockingCache.setTimeoutMillis(blockingTimeout);
         }
+<<<<<<< .working
 
+=======
+        blockingCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
+
+>>>>>>> .merge-right.r46925
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         if (dependenciesCache == null) {
             cacheManager.addCache(DEPS_CACHE_NAME);
             dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         }
+<<<<<<< .working
 
+=======
+        dependenciesCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
+
+>>>>>>> .merge-right.r46925
         regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         if (regexpDependenciesCache == null) {
             cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
@@ -137,8 +147,13 @@ public class ModuleCacheProvider implements InitializingBean {
 
     /**
      * Flushes all the cache entries, related to the specified node.
+<<<<<<< .working
      *
      * @param nodePath                   the node path to be invalidated.
+=======
+     *
+     * @param nodePath the node path to be invalidated.
+>>>>>>> .merge-right.r46925
      * @param propageToOtherClusterNodes do notify replicators of this event
      * @throws ParseException in case of a malformed key
      */
@@ -155,8 +170,10 @@ public class ModuleCacheProvider implements InitializingBean {
             }
         }
         if(propagateToOtherClusterNodes) {
-            logger.info("Sending flush of "+nodePath+" across cluster");
-            syncCache.put(new Element("FLUSH_PATH-"+ UUID.randomUUID(), nodePath));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of " + nodePath + " across cluster");
+            }
+            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), nodePath));
         }
     }
 
@@ -231,8 +248,10 @@ public class ModuleCacheProvider implements InitializingBean {
             invalidateDependencies(deps);
         }
         if(propagateToOtherClusterNodes) {
-            logger.info("Sending flush of regexp "+key+" across cluster");
-            syncCache.put(new Element("FLUSH_REGEXP-"+ UUID.randomUUID(), key));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of regexp " + key + " across cluster");
+            }
+            syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), key));
         }
     }
 

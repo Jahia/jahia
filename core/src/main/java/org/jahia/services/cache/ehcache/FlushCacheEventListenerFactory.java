@@ -46,12 +46,11 @@ import net.sf.ehcache.event.CacheEventListenerFactory;
 import java.util.Properties;
 
 /**
- * A very simpler cache event listener factory that creates simple debugging
- * listeners that log all events to the Jahia logs.
+ * A very simple cache event listener factory that creates flush listeners.
  *
- * @author loom
- *         Date: Sep 14, 2009
- *         Time: 3:53:25 PM
+ * @author cedric . mailleux @ jahia . com
+ *
+ * @since 6.6.2
  */
 public class FlushCacheEventListenerFactory extends CacheEventListenerFactory {
     public CacheEventListener createCacheEventListener(Properties properties) {

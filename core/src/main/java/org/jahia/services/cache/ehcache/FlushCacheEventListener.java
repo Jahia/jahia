@@ -51,12 +51,15 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 /**
- * A very simple EHCache logging cache listeners that logs all the
- * cache events to Jahia's logs.
+ * A listener that will invalidate HTMLCache upon messages received.
  *
- * @author loom
- *         Date: Sep 14, 2009
- *         Time: 3:54:36 PM
+ * Right now there is two commands :
+ * FLUSH_PATH with the path to flush as a value
+ * FLUSH_REGEXP with the regexp to flush as a value
+ *
+ * @author cedric . mailleux @ jahia . com
+ *
+ * @since 6.6.2
  */
 public class FlushCacheEventListener implements CacheEventListener {
     private static Logger logger = LoggerFactory.getLogger(FlushCacheEventListener.class);
@@ -75,6 +78,12 @@ public class FlushCacheEventListener implements CacheEventListener {
             String pathToFlush = (String) element.getValue();
             logger.info(ehcache.getName() + ": Received command FLUSH_PATH ("+ pathToFlush +")remotely.");
             ModuleCacheProvider.getInstance().invalidate(pathToFlush, false);
+        }
+        else if (command.startsWith("FLUSH_REGEXP")) {
+            // We want to avoid loops of events so we do not propagate
+            String regexpToFlush = (String) element.getValue();
+            logger.info(ehcache.getName() + ": Received command FLUSH_REGEXP ("+ regexpToFlush +")remotely.");
+            ModuleCacheProvider.getInstance().invalidateRegexp(regexpToFlush, false);
         }
     }
 

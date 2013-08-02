@@ -1021,7 +1021,7 @@ public class ContentManagerHelper {
                             missedPaths
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }
-                    } else {
+                    } else if (node.isLocked()) {
                         node.unlock();
                     }
                 }

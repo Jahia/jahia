@@ -78,7 +78,7 @@
  - flashvars (string) indexed=no
 
 [jnt:text] > jnt:content, jmix:basicContent, jmix:editorialContent
- - text (string) i18n
+ - text (string) i18n primary
 
 [jnt:bigText] > jnt:content, jmix:basicContent, jmix:editorialContent
  - text (string, richtext) i18n primary

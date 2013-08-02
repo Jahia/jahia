@@ -53,6 +53,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -88,7 +89,9 @@ public class CndBundleObserver implements BundleObserver<URL> {
                 module.setDefinitionsFile(bundleResource.getURL().getPath().substring(1));
                 NodeTypeRegistry.getInstance().addDefinitionsFile(bundleResource, bundle.getSymbolicName(),
                         module.getVersion());
-                jcrStoreService.deployDefinitions(bundle.getSymbolicName());
+                if (SettingsBean.getInstance().isProcessingServer()) {
+                    jcrStoreService.deployDefinitions(bundle.getSymbolicName());
+                }
                 logger.info("Registered definitions from file {} for bundle {}", url, bundleName);
             } catch (IOException e) {
                 logger.error("Error registering node type definition file " + url + " for bundle " + bundle, e);

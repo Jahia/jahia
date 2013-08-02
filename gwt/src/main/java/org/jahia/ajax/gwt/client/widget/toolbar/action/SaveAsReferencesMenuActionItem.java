@@ -40,13 +40,9 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -56,7 +52,6 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -103,12 +98,15 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                                                 }
                                             });
                                 }
+                            } else {
+                                MessageBox.alert(Messages.get("label.saveAsPortalComponent"),Messages.get("label.saveAsPortalComponent.denied"), null);
                             }
                         }
                     }
 
                     public void onApplicationFailure(Throwable caught) {
-
+                        Info.display("Portal Components",
+                                "Error while getting My Portal nodes.");
                     }
                 });
     }

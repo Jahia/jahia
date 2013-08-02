@@ -172,7 +172,7 @@
                 }
                 out.append("</ul></p>");
                 if (Boolean.getBoolean("cluster.activated")) {
-                    out.append("<p>Please, copy those lock files to the correspondng locations on other Jahia cluster nodes</p>");
+                    out.append("<p>Please, copy those lock files to the correspondng locations on other Jahia cluster nodes (while they are stopped).</p>");
                 }
                 out.append("</fieldset>");
             }
@@ -685,7 +685,7 @@
             out.println("<form>");
             renderWorkspaceSelector(out);
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
-            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix ! Also you MUST RESTART JAHIA after running this fix !", false);
+            renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING!). If you are running in cluster, please, shut down other cluster nodes when running this fix. As this tool performs low-level operations on the repository content, please, backup your data before running this fix! Also you MUST RESTART JAHIA after running this fix!", false);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {

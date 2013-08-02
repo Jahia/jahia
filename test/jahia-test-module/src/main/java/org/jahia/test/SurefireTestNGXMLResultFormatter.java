@@ -266,8 +266,8 @@ public class SurefireTestNGXMLResultFormatter implements ISuiteListener,
         rootElement.setAttribute(ATTR_FAILURES, "" + failures);
         rootElement.setAttribute(ATTR_ERRORS, "" + failures);
         rootElement.setAttribute(ATTR_SKIPPED, "" + skipped);
-        rootElement.setAttribute(ATTR_TIME, ""
-                + ((endDate.getTime() - startDate.getTime()) / ONE_SECOND));
+        rootElement.setAttribute(ATTR_TIME, endDate != null ? ""
+                + ((endDate.getTime() - startDate.getTime()) / ONE_SECOND) : "0");
         if (out != null) {
             Writer wri = null;
             try {

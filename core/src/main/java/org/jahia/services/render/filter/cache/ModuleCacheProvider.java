@@ -103,25 +103,12 @@ public class ModuleCacheProvider implements InitializingBean {
         if (blockingCache == null) {
             cacheManager.addCache(CACHE_NAME);
             blockingCache = cacheManager.getCache(CACHE_NAME);
-//          blockingCache.setTimeoutMillis(blockingTimeout);
         }
-<<<<<<< .working
-
-=======
-        blockingCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
-
->>>>>>> .merge-right.r46925
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         if (dependenciesCache == null) {
             cacheManager.addCache(DEPS_CACHE_NAME);
             dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         }
-<<<<<<< .working
-
-=======
-        dependenciesCache.setStatisticsEnabled(cacheProvider.isStatisticsEnabled());
-
->>>>>>> .merge-right.r46925
         regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         if (regexpDependenciesCache == null) {
             cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
@@ -147,13 +134,7 @@ public class ModuleCacheProvider implements InitializingBean {
 
     /**
      * Flushes all the cache entries, related to the specified node.
-<<<<<<< .working
-     *
-     * @param nodePath                   the node path to be invalidated.
-=======
-     *
      * @param nodePath the node path to be invalidated.
->>>>>>> .merge-right.r46925
      * @param propageToOtherClusterNodes do notify replicators of this event
      * @throws ParseException in case of a malformed key
      */
@@ -179,14 +160,8 @@ public class ModuleCacheProvider implements InitializingBean {
 
     private void invalidateDependencies(Set<String> deps) {
         for (String dep : deps) {
-<<<<<<< .working
             if (dep != null) {
-                boolean removed = blockingCache.remove(dep, !propagateToOtherClusterNodes);
-=======
-            String key = dep;
-            if (key != null) {
-                boolean removed = blockingCache.remove(key);
->>>>>>> .merge-right.r46923
+                boolean removed = blockingCache.remove(dep);
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + dep + " from cache");
                 }

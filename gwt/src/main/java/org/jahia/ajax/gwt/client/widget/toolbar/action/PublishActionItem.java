@@ -41,6 +41,8 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -55,7 +57,9 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -182,7 +186,38 @@ public class PublishActionItem extends BaseActionItem {
         if (result.isEmpty()) {
             MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
         } else {
-            PublicationWorkflow.create(result, linker, checkForUnpublication);
+            Map<Integer, List<String>> unpublishable = new HashMap<Integer, List<String>>();
+            for (GWTJahiaPublicationInfo info : result) {
+                Integer status = info.getStatus();
+                if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                    if (!unpublishable.containsKey(status)) {
+                        unpublishable.put(status, new ArrayList<String>());
+                    }
+                    unpublishable.get(status).add(info.getTitle());
+                }
+            }
+            if (unpublishable.isEmpty()) {
+                PublicationWorkflow.create(result, linker, checkForUnpublication);
+            } else {
+                String message = "";
+                for (Map.Entry<Integer, List<String>> entry : unpublishable.entrySet()) {
+                    Integer status = entry.getKey();
+                    List<String> values = entry.getValue();
+                    final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
+                    message += Messages.get("label.publication." + labelKey, labelKey) + " : " + values.get(0);
+                    if (values.size() > 10) {
+                        for (int i = 1; i < 10; i++) {
+                            message += ", " + values.get(i);
+                        }
+                        message += ", ...";
+                    } else {
+                        for (int i = 1; i < values.size(); i++) {
+                            message += ", " + values.get(i);
+                        }
+                    }
+                }
+                MessageBox.info(Messages.get("label.publish", "Publication"), message, null);
+            }
         }
     }
 }

@@ -149,7 +149,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                              ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
             final GWTJahiaPublicationInfo info = node.getQuickPublicationInfo();
             if (info != null) {
-                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED
+                        || info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
                     HorizontalPanel p = new HorizontalPanel();
                     Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
                     p.add(res);
@@ -242,7 +243,9 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 classes += "markedForDeletion ";
             }
             if (node.getQuickPublicationInfo() != null &&
-                    (node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED)) {
+                    (node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED ||
+                            node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED
+                            || node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE)) {
                 classes += "notPublished ";
             }
             if (!PermissionsUtils.isPermitted("editModeAccess", node) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {

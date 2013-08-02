@@ -122,15 +122,19 @@ public class DeleteItemWindow extends Window {
 		/* Buttons */
 		Button submit = new Button(Messages.get("label.yes"), new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent event) {
+                hide();
+                linker.loading(Messages.get("label.executing"));
 				final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
 
 				BaseAsyncCallback<Object> baseAsyncCallback = new BaseAsyncCallback<Object>() {
 					public void onApplicationFailure(Throwable throwable) {
+                        linker.loaded();
 						Log.error(throwable.getMessage(), throwable);
 						MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
 					}
 
 					public void onSuccess(Object o) {
+                        linker.loaded();
 						EditLinker el = null;
 						if (linker instanceof SidePanelTabItem.SidePanelLinker) {
 							el = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
@@ -144,7 +148,6 @@ public class DeleteItemWindow extends Window {
 							linker.refresh(EditLinker.REFRESH_ALL);
 							linker.select(null);
 						}
-						hide();
 					}
 				};
 				if (permanentlyDelete) {

@@ -229,6 +229,11 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
     }
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        if (!SettingsBean.getInstance().isProcessingServer()) {
+            logger.info("Script watchdog is disabled on a non-processing Jahia server");
+            return;
+        }
+        
         if (interval > 5000 && SettingsBean.getInstance().isDevelopmentMode()) {
             // in development mode reduce monitoring interval to 5 seconds
             interval = 5000;

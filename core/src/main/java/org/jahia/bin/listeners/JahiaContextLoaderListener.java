@@ -205,8 +205,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 requireLicense();
             }
             
+            boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
+            
             // execute patches after root context initialization
-            GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
+            if (isProcessingServer) {
+                GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
+            }
             
             // start OSGi container
             timer = System.currentTimeMillis();
@@ -234,7 +238,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             contextInitialized = true;
             
             // execute patches after the complete initialization
-            GroovyPatcher.executeScripts(servletContext, "contextInitialized");
+            if (isProcessingServer) {
+                GroovyPatcher.executeScripts(servletContext, "contextInitialized");
+            } else {
+                // we leave the possibility to provide Groovy scripts for non-processing servers 
+                GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
+            }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
             throw new JahiaRuntimeException(e);

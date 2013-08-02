@@ -148,9 +148,10 @@ public class ModuleCacheProvider implements InitializingBean {
         if (element != null) {
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
-                blockingCache.removeAll(!propagateToOtherClusterNodes);
+                // do not propagate
+                blockingCache.removeAll(true);
             } else {
-                invalidateDependencies(deps, propagateToOtherClusterNodes);
+                invalidateDependencies(deps);
             }
         }
         if(propagateToOtherClusterNodes) {
@@ -159,10 +160,16 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-    private void invalidateDependencies(Set<String> deps, boolean propagateToOtherClusterNodes) {
+    private void invalidateDependencies(Set<String> deps) {
         for (String dep : deps) {
+<<<<<<< .working
             if (dep != null) {
                 boolean removed = blockingCache.remove(dep, !propagateToOtherClusterNodes);
+=======
+            String key = dep;
+            if (key != null) {
+                boolean removed = blockingCache.remove(key);
+>>>>>>> .merge-right.r46923
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove " + dep + " from cache");
                 }
@@ -216,12 +223,16 @@ public class ModuleCacheProvider implements InitializingBean {
         invalidateRegexp(key, true);
     }
 
-    public void invalidateRegexp(String key, boolean propageToOtherClusterNodes) {
+    public void invalidateRegexp(String key, boolean propagateToOtherClusterNodes) {
         Element element = regexpDependenciesCache.get(key);
         if (element != null) {
             @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
-            invalidateDependencies(deps, propageToOtherClusterNodes);
+            invalidateDependencies(deps);
+        }
+        if(propagateToOtherClusterNodes) {
+            logger.info("Sending flush of regexp "+key+" across cluster");
+            syncCache.put(new Element("FLUSH_REGEXP-"+ UUID.randomUUID(), key));
         }
     }
 

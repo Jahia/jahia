@@ -243,6 +243,11 @@
             <artifactId>drools-osgi-integration</artifactId>
             <version>${drools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-persistence-jpa</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
         <!--Lucene dependencies-->
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -983,6 +988,16 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-audit</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-runtime-manager</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-persistence-jpa</artifactId>
             <version>${jbpm.version}</version>
         </dependency>
 

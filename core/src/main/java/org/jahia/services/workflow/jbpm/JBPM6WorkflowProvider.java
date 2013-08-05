@@ -16,6 +16,7 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
@@ -28,11 +29,16 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.*;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -69,6 +75,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private Resource[] processes;
     private Resource[] mailTemplates;
     private MailTemplateRegistry mailTemplateRegistry;
+    private RuntimeManager runtimeManager;
+    private RuntimeEngine runtimeEngine;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -121,6 +129,18 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public void start() {
+
+        // EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                // .entityManagerFactory(emf)
+                // .userGroupCallback(userGroupCallback)
+                // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
+                .get();
+        runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
+        taskService = runtimeEngine.getTaskService();
+        kieSession = runtimeEngine.getKieSession();
+
 
         kieServices = KieServices.Factory.get();
         kieRepository = kieServices.getRepository();

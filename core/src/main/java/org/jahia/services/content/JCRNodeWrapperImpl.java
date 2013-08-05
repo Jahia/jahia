@@ -2558,6 +2558,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+<<<<<<< .working
         JCRNodeWrapper parent = getParent();
         if (parent instanceof JCRNodeWrapperImpl) {
             ((JCRNodeWrapperImpl)parent).checkLock();
@@ -2575,7 +2576,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             } catch (ItemNotFoundException e) {
                 // no live
+=======
+        try {
+            JCRNodeWrapper parent = getParent();
+            if (parent instanceof JCRNodeWrapperImpl) {
+                ((JCRNodeWrapperImpl)parent).checkLock();
+>>>>>>> .merge-right.r46944
             }
+            if (!getSession().getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && provider.getMountPoint().equals("/")) {
+                    getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
+                    if (!parent.isNodeType("jmix:deletedChildren")) {
+                        parent.addMixin("jmix:deletedChildren");
+                        parent.setProperty("j:deletedChildren", new String[] {getIdentifier()});
+                    } else {
+                        parent.getProperty("j:deletedChildren").addValue(getIdentifier());
+                    }
+            }
+        } catch (ItemNotFoundException e) {
+            // no live
         }
         getSession().unregisterNewNode(this);
         if (!this.hasNodes()) {

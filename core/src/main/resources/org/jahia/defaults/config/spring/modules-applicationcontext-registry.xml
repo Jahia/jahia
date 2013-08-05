@@ -53,6 +53,7 @@
 
     <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
         <property name="jbpm6WorkflowProvider" ref="jBPMProvider"/>
+        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="processes">
             <list>
                 <value>osgibundle:org/jahia/modules/custom/workflow/*.jpdl.xml</value>

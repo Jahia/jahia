@@ -68,7 +68,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private JBPMListener listener = new JBPMListener(this);
     private Resource[] processes;
     private Resource[] mailTemplates;
-    private MailTemplateRegistry mailTemplateRegistry = new MailTemplateRegistry();
+    private MailTemplateRegistry mailTemplateRegistry;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -84,6 +84,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
+        this.mailTemplateRegistry = mailTemplateRegistry;
     }
 
     public WorkflowService getWorkflowService() {
@@ -194,6 +198,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             }
         }
 
+        workflowService.addProvider(this);
     }
 
     @Override

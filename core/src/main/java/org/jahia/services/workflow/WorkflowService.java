@@ -274,7 +274,9 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         for (WorkflowRule ruledef : rules) {
             WorkflowDefinition definition =
                     lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), locale);
-            workflows.add(definition);
+            if (definition != null) {
+                workflows.add(definition);
+            }
         }
         return new LinkedList<WorkflowDefinition>(workflows);
     }

@@ -4,10 +4,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="mailTemplateRegistry" class="org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry">
+
+    </bean>
+
     <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider"
           factory-method="getInstance" init-method="start">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
+        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="processes">
             <list>
                 <value>classpath*:org/jahia/modules/workflow/*.jpdl.xml</value>

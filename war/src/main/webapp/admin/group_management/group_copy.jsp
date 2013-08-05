@@ -33,7 +33,7 @@ int stretcherToOpen   = 1; %>
           <div class="dex-TabPanelBottom">
             <div class="tabContent">
                 <jsp:include page="/admin/include/left_menu.jsp">
-                    <jsp:param name="mode" value="server"/>
+                    <jsp:param name="mode" value="site"/>
                 </jsp:include>
               <div id="content" class="fit">
                   <div class="head">

@@ -163,7 +163,6 @@ rule "Flush group cache"
             - the parent has the type jnt:virtualsitesFolder
     then
         Flush group cache
-<<<<<<< .working
 end
 
 rule "Clear site cache when updated"
@@ -181,8 +180,6 @@ rule "Update language availability on system site"
     then
 >       service.updateSystemSiteLanguages(node, drools);
 end
-=======
-end
 
 rule "Flush URL resolver cache"
     when
@@ -191,4 +188,4 @@ rule "Flush URL resolver cache"
     then
         Flush urlResolverNodePath
         Flush urlResolverSiteInfo
-end>>>>>>> .merge-right.r46917
+end

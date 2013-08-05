@@ -124,7 +124,7 @@ public class EhCacheStatisticsWrapper {
     }
 
     public long getLocalOffHeapPutCount() {
-        return statisticsGateway.localOfHeapPutCount();
+        return statisticsGateway.localOffHeapPutCount();
     }
 
     public long getLocalOffHeapRemoveCount() {

@@ -167,7 +167,9 @@ public class JahiaNodeTypeInstanceHandler extends NodeTypeInstanceHandler {
                 for (Value v : expandedDefValues) {
                     values[i] = InternalValue.create(v, null);
                 }
-                logger.info("Dynamic values for property {}: {}", name, values[0].getString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Dynamic values for property {}: {}", name, values[0].getString());
+                }
             } else {
                 values = InternalValue.create(def.getDefaultValues());
             }

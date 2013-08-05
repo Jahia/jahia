@@ -171,6 +171,12 @@
                 <value>testReference(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
                 <value>testWeakReference(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
                 <value>testIllegalArgumentException(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
+                <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.ChildNodeJoinConditionTest)</value>
+                <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.DescendantNodeJoinConditionTest)</value>
+                <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
+                <value>testLeftOuterJoin(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
+                <value>testRightOuterJoinWithPath(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
+                <value>testLeftOuterJoinWithPath(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
                 <value>testGetLockJcr2(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
                 <value>testHoldsLockJcr2(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
                 <value>testIsLockedJcr2(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>

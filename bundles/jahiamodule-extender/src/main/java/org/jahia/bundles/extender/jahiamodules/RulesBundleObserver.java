@@ -104,7 +104,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
                 }
 
                 logger.info("Registered rules from file {} for bundle {}", url, bundleName);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("Error registering rules file " + url + " for bundle " + bundle, e);
             }
         }

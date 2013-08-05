@@ -44,6 +44,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.compiler.DroolsParserException;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
@@ -187,11 +188,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return stringBuilder.toString();
     }
 
-    public void addRules(File dsrlFile) {
+    public void addRules(File dsrlFile) throws Exception {
         addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile), null);
     }
 
-    public void addRules(Resource dsrlFile, JahiaTemplatesPackage aPackage) {
+    public void addRules(Resource dsrlFile, JahiaTemplatesPackage aPackage) throws Exception {
         InputStreamReader drl = null;
         long start = System.currentTimeMillis();
         try {
@@ -268,15 +269,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     }
                     logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
                 } else {
-                    logger.error("---------------------------------------------------------------------------------");
-                    logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
-                    logger.error("---------------------------------------------------------------------------------");
+                    throw new DroolsParserException("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
                 }
             }
-        } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage(), e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(drl);
         }

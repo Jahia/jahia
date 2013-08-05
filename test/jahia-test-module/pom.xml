@@ -533,8 +533,10 @@
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
         
-                        <Import-Package>*,
-                            ${jahia.plugin.projectPackageImport}</Import-Package>
+                        <Import-Package>
+                            ${jahia.plugin.projectPackageImport},
+                            *
+                        </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
                         <Embed-Dependency>*;scope=compile;type=!pom;inline=false</Embed-Dependency>

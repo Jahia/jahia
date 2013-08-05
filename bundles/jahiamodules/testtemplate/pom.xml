@@ -20,7 +20,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>*,
+                        <Import-Package>
                             org.jahia.bundles.extender.jahiamodules,
                             org.jahia.taglibs,
                             org.jahia.taglibs.template.include,
@@ -29,7 +29,8 @@
                             org.jahia.services.content,
                             org.osgi.framework,
                             org.osgi.service.http,org.osgi.util.tracker,
-                            org.springframework.beans.factory.xml
+                            org.springframework.beans.factory.xml,
+                            *
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>

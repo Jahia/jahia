@@ -290,7 +290,7 @@
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
         
                         <Export-Package></Export-Package>
-                        <Import-Package>*,${jahia.plugin.projectPackageImport}</Import-Package>
+                        <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
                         <Embed-Dependency>*; scope=compile; type=!pom;

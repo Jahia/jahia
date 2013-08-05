@@ -1005,7 +1005,6 @@
                         <supportedProjectType>war</supportedProjectType>
                     </supportedProjectTypes>
                     <instructions>
-                        <Export-Package>*</Export-Package>
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>*</Embed-Transitive>
                         <_nodefaultversion>true</_nodefaultversion>

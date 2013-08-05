@@ -29,7 +29,7 @@
                         <Private-Package>
                             org.jahia.bundles.extender.jahiamodules.*
                         </Private-Package>
-                        <Import-Package>*,
+                        <Import-Package>
                             javax.el,
                             javax.servlet.jsp,
                             javax.servlet.jsp.tagext,
@@ -37,7 +37,8 @@
                             org.apache.jasper.runtime,
                             org.apache.taglibs.standard.functions,
                             org.apache.taglibs.standard.tei,
-                            org.apache.taglibs.standard.tlv
+                            org.apache.taglibs.standard.tlv,
+                            *
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>

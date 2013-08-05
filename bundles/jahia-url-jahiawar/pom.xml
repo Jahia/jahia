@@ -30,7 +30,7 @@
                         <Private-Package>
                             org.jahia.bundles.url.jahiawar.internal.*
                         </Private-Package>
-                        <Import-Package>*,
+                        <Import-Package>
                             javax.el,
                             javax.servlet.jsp,
                             javax.servlet.jsp.tagext,
@@ -40,7 +40,8 @@
                             org.apache.taglibs.standard.tei,
                             org.apache.taglibs.standard.tlv,
                             org.jdom;resolution:=optional,
-                            org.jdom.input;resolution:=optional
+                            org.jdom.input;resolution:=optional,
+							*
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true;artifactId=!slf4j-api</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>

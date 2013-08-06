@@ -1,7 +1,6 @@
 package org.jahia.modules.rolesmanager;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 public class RoleBean implements Serializable {
@@ -10,9 +9,7 @@ public class RoleBean implements Serializable {
 
     private String name;
 
-    private RolesAndPermissionsHandler.Scope scope;
-
-    private boolean isPrivileged;
+    private RoleType roleType;
 
     private int depth;
 
@@ -38,20 +35,12 @@ public class RoleBean implements Serializable {
         this.name = name;
     }
 
-    public RolesAndPermissionsHandler.Scope  getScope() {
-        return scope;
+    public RoleType getRoleType() {
+        return roleType;
     }
 
-    public void setScope(RolesAndPermissionsHandler.Scope scope) {
-        this.scope = scope;
-    }
-
-    public boolean isPrivileged() {
-        return isPrivileged;
-    }
-
-    public void setPrivileged(boolean privileged) {
-        isPrivileged = privileged;
+    public void setRoleType(RoleType scope) {
+        this.roleType = scope;
     }
 
     public int getDepth() {

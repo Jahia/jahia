@@ -3,4 +3,59 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+
+<bean id="roleTypesConfiguration" class="org.jahia.modules.rolesmanager.RoleTypeConfiguration">
+    <property name="roleTypes">
+        <list>
+            <bean class="org.jahia.modules.rolesmanager.RoleType">
+                <property name="name" value="live-role" />
+                <property name="privileged" value="false"/>
+                <property name="scopes">
+                    <set>
+                        <value>scope.CONTENT</value>
+                        <value>scope.JCR</value>
+                    </set>
+                </property>
+            </bean>
+            <bean class="org.jahia.modules.rolesmanager.RoleType">
+                <property name="name" value="edit-role" />
+                <property name="privileged" value="true"/>
+                <property name="scopes">
+                    <set>
+                        <value>scope.CONTENT</value>
+                        <value>scope.JCR</value>
+                        <value>context.$currentSite</value>
+                    </set>
+                </property>
+            </bean>
+            <bean class="org.jahia.modules.rolesmanager.RoleType">
+                <property name="name" value="site-role" />
+                <property name="privileged" value="true"/>
+                <property name="nodeType" value="jnt:virtualsite"/>
+                <property name="scopes">
+                    <set>
+                        <value>scope.SITE</value>
+                        <value>scope.CONTENT</value>
+                        <value>scope.JCR</value>
+                    </set>
+                </property>
+            </bean>
+            <bean class="org.jahia.modules.rolesmanager.RoleType">
+                <property name="name" value="server-role" />
+                <property name="privileged" value="true"/>
+                <property name="nodeType" value="rep:root"/>
+                <property name="scopes">
+                    <set>
+                        <value>scope.SERVER_SETTINGS</value>
+                        <value>scope.SITE</value>
+                        <value>scope.CONTENT</value>
+                        <value>scope.JCR</value>
+                    </set>
+                </property>
+            </bean>
+        </list>
+
+    </property>
+</bean>
+
 </beans>

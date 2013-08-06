@@ -19,10 +19,11 @@
         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" >
         <h3>Add role :</h3>
         <select name="roleScope">
-            <option value="CONTENT-false">CONTENT / LIVE ROLE</option>
-            <option value="CONTENT-true">CONTENT ROLE</option>
-            <option value="SITE-true">SITE ROLE</option>
-            <option value="SERVER-true">SERVER ROLE</option>
+            <c:forEach items="${handler.roleTypes.values}" var="roleType">
+                <option value="${roleType.name}">
+                <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${roleType.name}"/>
+                </option>
+            </c:forEach>
         </select>
         <input type="text" id="addRoleField" name="newRole"/>
         <button class="btn btn-primary" type="submit" name="_eventId_addRole" >
@@ -42,7 +43,8 @@
 
 <c:forEach items="${roles}" var="entry" varStatus="loopStatus">
     <fieldset>
-           <h3> ${entry.key}</h3>
+
+           <h3> <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${entry.key}"/></h3>
 
         <table class="table table-bordered table-striped table-hover">
             <thead>
@@ -63,7 +65,6 @@
                     <td><input name="selectedSites" type="checkbox" value="${role.name}"/></td>
                     <td>
                         <strong><a href="#" onclick="viewRole('${role.uuid}')">${role.name}</a></strong>
-                        [<c:forEach items="${role.permissions}" var="item">${item.key},</c:forEach>]
                     </td>
                     <%--<td>--%>
                             <%--${role.scope} &nbsp; ${role.privileged ? '' : 'LIVE'}--%>

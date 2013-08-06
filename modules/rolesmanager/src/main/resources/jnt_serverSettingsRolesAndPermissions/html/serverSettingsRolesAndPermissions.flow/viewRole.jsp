@@ -160,7 +160,12 @@
         <div class="btn-group">
             <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
                 <button class="btn ${handler.currentTab eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchTab" onclick="$('#tabField').val('${permissionGroup.key}')">
-                        ${permissionGroup.key}
+                    <c:if test="${fn:startsWith(permissionGroup.key, 'context./')}">
+                        <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${fn:substringAfter(permissionGroup.key, 'context.')}
+                    </c:if>
+                    <c:if test="${not fn:startsWith(permissionGroup.key, 'context./')}">
+                        <fmt:message key="rolesmanager.rolesAndPermissions.${permissionGroup.key}"/>
+                    </c:if>
                 </button>
             </c:forEach>
         </div>
@@ -175,13 +180,13 @@
         <%--</div>--%>
     <%--</c:forEach>--%>
     </div>
-
-    <Add context : <input type="text" id="addContextField" name="newContext"/>
+    <div>
+    Add context : <input type="text" id="addContextField" name="newContext"/>
     <button class="btn btn-primary" type="submit" name="_eventId_addContext" id="addContextButton">
         <i class="icon-plus  icon-white"></i>
         &nbsp;Add
     </button>
-
+    </div>
     <div>
 
         <div class="box-1">
@@ -204,10 +209,10 @@
             <thead>
             <tr>
                 <th  width="3%">&nbsp;</th>
-                <th width="90%">
+                <th width="82%">
                     <fmt:message key="label.name"/>
                 </th>
-                <th width="7%">
+                <th width="15%">
                     Scope
                 </th>
             </tr>

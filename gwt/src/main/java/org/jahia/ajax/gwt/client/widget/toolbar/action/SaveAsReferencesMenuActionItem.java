@@ -40,8 +40,19 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -77,30 +88,61 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         JahiaContentManagementService.App.getInstance().getPortalNodes(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
-                        if (result != null && result.size() >= 1) {
-                            GWTJahiaNode page = result.get(0);
-                            if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                                LinkerSelectionContext lh = linker.getSelectionContext();
-                                GWTJahiaNode target = lh.getSingleSelection();
-                                if (target != null) {
-                                    JahiaContentManagementService.App.getInstance().pasteReferences(
-                                            Arrays.asList(target.getPath()), page.getPath(), null,
-                                            new BaseAsyncCallback() {
-                                                public void onApplicationFailure(Throwable caught) {
-                                                    Info.display("Portal Components",
-                                                            "Error while making your component available for users in their portal page.");
-                                                }
+                        if (result == null || result.size() == 0) {
+                            MessageBox.alert(Messages.get("label.saveAsPortalComponent"), Messages.get("label.saveAsPortalComponent.portal-components.nonedeclared", "There is no Portal Components folder declared. The component can not be saved"), null);
+                        } else if (result.size() == 1) {
+                            saveInPortalNode(result.get(0));
+                        } else {
+                            final Window popup = new Window();
+                            popup.setHeading(Messages.get("label.saveAsPortalComponent.portal-components.select", "Select a Portal Components folder"));
+                            popup.setWidth(500);
+                            popup.setAutoHeight(true);
+                            popup.setModal(true);
+                            FormPanel f = new FormPanel();
+                            f.setHeaderVisible(false);
+                            final ComboBox<GWTJahiaNode> portalNodesCombo = new ComboBox<GWTJahiaNode>();
+                            portalNodesCombo.setStore(new ListStore<GWTJahiaNode>());
+                            portalNodesCombo.setDisplayField(GWTJahiaNode.PATH);
+                            portalNodesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+                            portalNodesCombo.setForceSelection(true);
+                            portalNodesCombo.getStore().add(result);
+                            ContentPanel p = new ContentPanel();
+                            p.setLayout(new FitLayout());
+                            p.setCollapsible(false);
+                            p.setFrame(false);
+                            p.setAnimCollapse(false);
+                            p.setBorders(false);
+                            p.setBodyBorder(false);
+                            p.setHeaderVisible(false);
+                            p.add(portalNodesCombo);
+                            f.add(p);
 
-                                                public void onSuccess(Object result) {
-                                                    //Info.display("Portal Components",
-                                                    //        "Your components is now available for users in their portal page.");
-                                                    com.google.gwt.user.client.Window.alert(Messages.get("label.saveAsPortalComponent.success"));
-                                                }
-                                            });
+                            Button b = new Button(Messages.get("label.save", "Save"));
+                            f.addButton(b);
+                            b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent buttonEvent) {
+                                    GWTJahiaNode portalNode = portalNodesCombo.getValue();
+                                    if (portalNode != null) {
+                                        saveInPortalNode(portalNode);
+                                    }
+                                    popup.hide();
                                 }
-                            } else {
-                                MessageBox.alert(Messages.get("label.saveAsPortalComponent"),Messages.get("label.saveAsPortalComponent.denied"), null);
-                            }
+                            });
+                            Button c = new Button(Messages.get("label.cancel", "Cancel"));
+                            c.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent buttonEvent) {
+                                    popup.hide();
+                                }
+                            });
+                            f.addButton(c);
+                            f.setButtonAlign(Style.HorizontalAlignment.CENTER);
+
+                            FormButtonBinding binding = new FormButtonBinding(f);
+                            binding.addButton(b);
+                            popup.add(f);
+                            popup.show();
                         }
                     }
 
@@ -116,5 +158,29 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && lh.getSingleSelection().getInheritedNodeTypes().contains(allowedNodeType.getValue()));
     }
 
+    private void saveInPortalNode(final GWTJahiaNode portalNode) {
+        if (PermissionsUtils.isPermitted("jcr:write", portalNode.getPermissions())) {
+            LinkerSelectionContext lh = linker.getSelectionContext();
+            GWTJahiaNode target = lh.getSingleSelection();
+            if (target != null) {
+                JahiaContentManagementService.App.getInstance().pasteReferences(
+                        Arrays.asList(target.getPath()), portalNode.getPath(), null,
+                        new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable caught) {
+                                Info.display("Portal Components",
+                                        "Error while making your component available for users in their portal page.");
+                            }
+
+                            public void onSuccess(Object result) {
+                                com.google.gwt.user.client.Window.alert(Messages.getWithArgs("label.saveAsPortalComponent.success",
+                                        "Component saved in {0}. It will be available for My Portal users only after publication. To proceed, go in the Content Tab to the selected Portal Components folder, select the component you want to publish in the lower tab then publish it (use right click).",
+                                        new Object[] {portalNode.getPath()}));
+                            }
+                        });
+            }
+        } else {
+            MessageBox.alert(Messages.get("label.saveAsPortalComponent"), Messages.get("label.saveAsPortalComponent.denied"), null);
+        }
+    }
 }
 

@@ -1,5 +1,6 @@
 package org.jahia.services.workflow.jbpm;
 
+import bitronix.tm.TransactionManagerServices;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -27,6 +28,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -135,6 +137,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER,
+                        TransactionManagerServices.getTransactionManager())
                         // .userGroupCallback(userGroupCallback)
                         // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
                 .get();

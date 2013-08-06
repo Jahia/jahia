@@ -5,8 +5,8 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns="http://java.sun.com/xml/ns/persistence">
 
-    <persistence-unit name="org.jahia.services.workflow.jbpm" transaction-type="JTA">
-        <jta-data-source>java:jdbc/jahia</jta-data-source>
+    <persistence-unit name="org.jahia.services.workflow.jbpm">
+        <non-jta-data-source>java:comp/env/jdbc/jahia</non-jta-data-source>
         <mapping-file>META-INF/JBPMorm.xml</mapping-file>
         <mapping-file>META-INF/Taskorm.xml</mapping-file>
         <class>org.drools.persistence.info.SessionInfo</class>
@@ -53,9 +53,7 @@
             <property name="hibernate.max_fetch_depth" value="3"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.transaction.manager_lookup_class"
-                      value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.id.new_generator_mappings" value="false"/>
         </properties>
     </persistence-unit>

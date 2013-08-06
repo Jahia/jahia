@@ -9,7 +9,7 @@
     </bean>
 
     <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider"
-          factory-method="getInstance" init-method="start">
+          factory-method="getInstance" init-method="start" destroy-method="stop">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>

@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -130,11 +132,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public void start() {
 
-        // EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
-                // .entityManagerFactory(emf)
-                // .userGroupCallback(userGroupCallback)
-                // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
+                .entityManagerFactory(emf)
+                        // .userGroupCallback(userGroupCallback)
+                        // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
                 .get();
         runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
@@ -219,6 +221,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
 
         workflowService.addProvider(this);
+    }
+
+    public void stop() {
+        // workflowService.removeProvider(this); @todo implement this method
+
+        // @todo implement clean shutdown of all jBPM & Drools environment
     }
 
     @Override

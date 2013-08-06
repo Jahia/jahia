@@ -43,20 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -319,15 +306,20 @@ public class ModuleManagementFlowHandler implements Serializable {
     public Map<String,Module> getAvailableUpdates() {
         Map<String,Module> availableUpdate = new HashMap<String, Module>();
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> moduleStates = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();
-
+        Set<Module> forgeModules = new HashSet<Module>();
+        forgeModules.addAll(forgeService.getModules());
         for (String key : moduleStates.keySet()) {
             Module forgeModule = forgeService.findModule(key,"");
             if (forgeModule != null) {
+                forgeModules.remove(forgeModule);
                 ModuleVersion forgeVersion = new ModuleVersion(forgeModule.getVersion());
                 if (!moduleStates.get(key).containsKey(forgeVersion) && forgeVersion.compareTo(moduleStates.get(key).lastKey()) > 0) {
                     availableUpdate.put(key,forgeModule);
                 }
             }
+        }
+        for (Module module : forgeModules) {
+            availableUpdate.put(module.getName(),module);
         }
         return availableUpdate;
     }

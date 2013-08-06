@@ -851,15 +851,29 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public File extractPomFromJar(JarFile jar) throws IOException {
+        return extractPomFromJar(jar,null);
+    }
+
+    public File extractPomFromJar(JarFile jar, String groupId) throws IOException {
         // deploy artifacts to Maven distribution server
         Enumeration<JarEntry> jarEntries = jar.entries();
         JarEntry jarEntry = null;
+        boolean found = false;
+        String moduleName = jar.getManifest().getMainAttributes().getValue("Jahia-Root-Folder");
+        if (jar.getName().endsWith(".war")) {
+            moduleName = jar.getManifest().getMainAttributes().getValue("root-folder");
+        }
         while (jarEntries.hasMoreElements()) {
             jarEntry = jarEntries.nextElement();
             String name = jarEntry.getName();
-            if (StringUtils.startsWith(name, "META-INF/maven/") && StringUtils.endsWith(name,"/pom.xml")) {
+            String path = groupId!=null?groupId:"";
+            if (StringUtils.startsWith(name, "META-INF/maven/" + path) && StringUtils.endsWith(name, moduleName + "/pom.xml")) {
+                found = true;
                 break;
             }
+        }
+        if (!found) {
+            throw  new IOException("unable to find pom.xml file within while looking for " + moduleName);
         }
         InputStream is = jar.getInputStream(jarEntry);
         File pomFile = File.createTempFile("pom",".xml");

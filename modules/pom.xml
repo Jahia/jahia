@@ -276,7 +276,7 @@
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Category>jahia-module</Bundle-Category>
-        
+
                         <Implementation-Title>${project.name}</Implementation-Title>
                         <Implementation-Version>${project.version}</Implementation-Version>
                         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
@@ -289,6 +289,7 @@
                         <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Module-Type>module</Jahia-Module-Type>
                         <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
+                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
                         <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
@@ -298,8 +299,7 @@
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
-                        <Embed-Dependency>*; scope=compile; type=!pom;
-                            inline=true</Embed-Dependency>
+                        <Embed-Dependency>*; scope=compile; type=!pom</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,

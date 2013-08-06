@@ -57,66 +57,66 @@
                                 j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
         </j:acl>
         <repository-permissions jcr:primaryType="jnt:permission">
-            <jcr:all_default jcr:primaryType="jnt:permission">
+            <jcr:all_default jcr:primaryType="jnt:permission" j:requirePrivileged="true">
 
-                <jcr:read_default jcr:primaryType="jnt:permission"/>
+                <jcr:read_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
 
                 <jcr:write_default jcr:primaryType="jnt:permission"
-                                   j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default">
+                                   j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default" j:requirePrivileged="true">
                     <jcr:modifyProperties_default jcr:primaryType="jnt:permission"
-                                                  j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                                                  j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default" j:requirePrivileged="true"/>
                     <jcr:addChildNodes_default jcr:primaryType="jnt:permission"
-                                               j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                                               j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default" j:requirePrivileged="true"/>
                     <jcr:removeNode_default jcr:primaryType="jnt:permission"
-                                            j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                                            j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default" j:requirePrivileged="true"/>
                     <jcr:removeChildNodes_default jcr:primaryType="jnt:permission"
-                                                  j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default"/>
+                                                  j:dependencies="/permissions/repository-permissions/jcr:all_default/jcr:read_default" j:requirePrivileged="true"/>
                 </jcr:write_default>
-                <jcr:readAccessControl_default jcr:primaryType="jnt:permission"/>
-                <jcr:modifyAccessControl_default jcr:primaryType="jnt:permission"/>
-                <jcr:lockManagement_default jcr:primaryType="jnt:permission"/>
-                <jcr:versionManagement_default jcr:primaryType="jnt:permission"/>
-                <jcr:nodeTypeManagement_default jcr:primaryType="jnt:permission"/>
-                <jcr:retentionManagement_default jcr:primaryType="jnt:permission"/>
-                <jcr:lifecycleManagement_default jcr:primaryType="jnt:permission"/>
+                <jcr:readAccessControl_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <jcr:modifyAccessControl_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <jcr:lockManagement_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <jcr:versionManagement_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <jcr:nodeTypeManagement_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <jcr:retentionManagement_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <jcr:lifecycleManagement_default jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
             </jcr:all_default>
 
-            <jcr:all_live jcr:primaryType="jnt:permission">
-                <jcr:read_live jcr:primaryType="jnt:permission"/>
-                <jcr:write_live jcr:primaryType="jnt:permission">
-                    <jcr:modifyProperties_live jcr:primaryType="jnt:permission"/>
-                    <jcr:addChildNodes_live jcr:primaryType="jnt:permission"/>
-                    <jcr:removeNode_live jcr:primaryType="jnt:permission"/>
-                    <jcr:removeChildNodes_live jcr:primaryType="jnt:permission"/>
+            <jcr:all_live jcr:primaryType="jnt:permission" j:requirePrivileged="false">
+                <jcr:read_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:write_live jcr:primaryType="jnt:permission" j:requirePrivileged="false">
+                    <jcr:modifyProperties_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                    <jcr:addChildNodes_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                    <jcr:removeNode_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                    <jcr:removeChildNodes_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
                 </jcr:write_live>
-                <jcr:readAccessControl_live jcr:primaryType="jnt:permission"/>
-                <jcr:modifyAccessControl_live jcr:primaryType="jnt:permission"/>
-                <jcr:lockManagement_live jcr:primaryType="jnt:permission"/>
-                <jcr:versionManagement_live jcr:primaryType="jnt:permission"/>
-                <jcr:nodeTypeManagement_live jcr:primaryType="jnt:permission"/>
-                <jcr:retentionManagement_live jcr:primaryType="jnt:permission"/>
-                <jcr:lifecycleManagement_live jcr:primaryType="jnt:permission"/>
+                <jcr:readAccessControl_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:modifyAccessControl_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:lockManagement_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:versionManagement_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:nodeTypeManagement_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:retentionManagement_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
+                <jcr:lifecycleManagement_live jcr:primaryType="jnt:permission" j:requirePrivileged="false"/>
             </jcr:all_live>
 
-            <publish jcr:primaryType="jnt:permission"/>
+            <publish jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
         </repository-permissions>
-        <admin jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" >
+        <admin jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" >
             <!-- server settings -->
-            <administrationAccess jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminVirtualSites jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminPortlets jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminEmailSettings jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminRootUser jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminCache jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminPasswordPolicy jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminIssueTracking jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminDocumentation jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminAbout jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminUsers jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminDBSettings jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminTemplates jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminSystemInfos jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
-            <adminManageMemory jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true" />
+            <administrationAccess jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminVirtualSites jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminPortlets jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminEmailSettings jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminRootUser jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminCache jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminPasswordPolicy jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminIssueTracking jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminDocumentation jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminAbout jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminUsers jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminDBSettings jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminTemplates jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminSystemInfos jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
+            <adminManageMemory jcr:primaryType="jnt:permission" j:nodeTypes="jnt:globalSettings" j:requirePrivileged="true" />
         </admin>
 
         <site-admin jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" >
@@ -130,11 +130,11 @@
             <siteAdminWcagCompliance jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true" />
         </site-admin>
 
-        <studioMode jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true">
-            <studioModeAccess jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true"/>
-            <studioSelector jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true">
-                <templatesSelector jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true"/>
-                <dependenciesSelector jcr:primaryType="jnt:permission" j:nodeTypes="rep:root" j:requirePrivileged="true"/>
+        <studioMode jcr:primaryType="jnt:permission" j:nodeTypes="jnt:modules" j:requirePrivileged="true">
+            <studioModeAccess jcr:primaryType="jnt:permission" j:nodeTypes="jnt:modules" j:requirePrivileged="true"/>
+            <studioSelector jcr:primaryType="jnt:permission" j:nodeTypes="jnt:modules" j:requirePrivileged="true">
+                <templatesSelector jcr:primaryType="jnt:permission" j:nodeTypes="jnt:modules" j:requirePrivileged="true"/>
+                <dependenciesSelector jcr:primaryType="jnt:permission" j:nodeTypes="jnt:modules" j:requirePrivileged="true"/>
             </studioSelector>
         </studioMode>
 
@@ -215,7 +215,7 @@
 
         <actions jcr:primaryType="jnt:permission"/>
 
-        <templates jcr:primaryType="jnt:permission"/>
+        <templates jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
     </permissions>
 
     <roles jcr:primaryType="jnt:roles">
@@ -314,20 +314,16 @@
                 j:privilegedAccess="true"
                 />
 
-        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="edit-role"
+        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="server-role"
                       j:privilegedAccess="true">
             <studio-access jcr:primaryType="jnt:externalPermissions" j:path="/modules"
-                           j:permissions="/permissions/editMode
-                                          /permissions/studioMode
+                           j:permissions="/permissions/studioMode
                                           /permissions/repository-permissions/jcr:all_default" />
-            <modules-management jcr:primaryType="jnt:externalPermissions" j:path="/settings"
-                                j:permissions="/permissions/editMode
-                                               /permissions/studioMode
-                                               /permissions/repository-permissions/jcr:all_default
-                                               /permissions/admin/adminTemplates" />
+            <modules-management jcr:primaryType="jnt:externalPermissions" j:path="/"
+                                j:permissions="/permissions/admin/adminTemplates" />
         </web-designer>
 
-        <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="edit-role"
+        <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="site-role"
                             j:permissions="/permissions/repository-permissions/jcr:all_default
                             /permissions/editMode
                             /permissions/contributeMode
@@ -342,7 +338,7 @@
                             /permissions/templates"
                             j:privilegedAccess="true" />
 
-        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="edit-role"
+        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="server-role"
                               j:permissions="/permissions/admin" j:privilegedAccess="true">
             <root-access jcr:primaryType="jnt:externalPermissions" j:path="/"
                          j:permissions="/permissions/repository-permissions/jcr:all_default" />

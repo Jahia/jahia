@@ -89,12 +89,12 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
                         if (result == null || result.size() == 0) {
-                            MessageBox.alert(Messages.get("label.saveAsPortalComponent"), Messages.get("label.saveAsPortalComponent.portal-components.nonedeclared", "There is no Portal Components folder declared. The component can not be saved"), null);
+                            MessageBox.alert(Messages.get("label.saveAsPortalComponent"), Messages.get("label.saveAsPortalComponent.portalComponents.nonedeclared", "There is no Portal Components folder declared. The component can not be saved"), null);
                         } else if (result.size() == 1) {
                             saveInPortalNode(result.get(0));
                         } else {
                             final Window popup = new Window();
-                            popup.setHeading(Messages.get("label.saveAsPortalComponent.portal-components.select", "Select a Portal Components folder"));
+                            popup.setHeading(Messages.get("label.saveAsPortalComponent.portalComponents.select", "Select a Portal Components folder"));
                             popup.setWidth(500);
                             popup.setAutoHeight(true);
                             popup.setModal(true);

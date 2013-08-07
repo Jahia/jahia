@@ -860,7 +860,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         JarEntry jarEntry = null;
         boolean found = false;
         String moduleName = jar.getManifest().getMainAttributes().getValue("Jahia-Root-Folder");
-        if (jar.getName().endsWith(".war")) {
+        if (StringUtils.isEmpty(moduleName)) {
             moduleName = jar.getManifest().getMainAttributes().getValue("root-folder");
         }
         while (jarEntries.hasMoreElements()) {

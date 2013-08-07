@@ -221,10 +221,10 @@ public class RolesAndPermissionsHandler implements Serializable {
                 }
             }
         } else {
-            List<JCRNodeWrapper> perms;
+            List<JCRNodeWrapper> perms = new ArrayList<JCRNodeWrapper>(allPermissions.get("nt:base"));
 
-            perms = new ArrayList<JCRNodeWrapper>(allPermissions.get("nt:base"));
             String type="nt:base";
+
             if (context.equals("currentSite")) {
                 type = "jnt:virtualsite";
             } else {
@@ -247,10 +247,17 @@ public class RolesAndPermissionsHandler implements Serializable {
                 perms.addAll(allPermissions.get(type));
             }
 
+            Map<String,String> allGroups = new HashMap<String,String>();
+            for (String s : permissions.get(context).keySet()) {
+                for (String s1 : Arrays.asList(s.split(","))) {
+                    allGroups.put(s1,s);
+                }
+            }
+
             for (JCRNodeWrapper permissionNode : perms) {
-                JCRNodeWrapper nn = (JCRNodeWrapper) permissionNode.getAncestor(2);
-                if (permissions.get(context).containsKey(nn.getName())) {
-                    Map<String,PermissionBean> p = permissions.get(context).get(nn.getName());
+                JCRNodeWrapper permissionGroup = (JCRNodeWrapper) permissionNode.getAncestor(2);
+                if (allGroups.containsKey(permissionGroup.getName())) {
+                    Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
                     if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
                         ExternalPermissionBean bean = new ExternalPermissionBean();
                         bean.setUuid(permissionNode.getIdentifier());

@@ -431,7 +431,13 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.5</version>
-        </dependency>         
+        </dependency>
+        <!--  BSF dependency required by TestNG but missing from BSH pom -->
+        <dependency>
+		    <groupId>bsf</groupId>
+		    <artifactId>bsf</artifactId>
+		    <version>2.4.0</version>
+		</dependency>
     </dependencies>
 
     <build>

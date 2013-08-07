@@ -541,6 +541,7 @@
         
                         <Import-Package>
                             ${jahia.plugin.projectPackageImport},
+                            COM.ibm.netrexx.process;resolution:=optional,
                             *
                         </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>

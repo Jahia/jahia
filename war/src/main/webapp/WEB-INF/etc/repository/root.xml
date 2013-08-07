@@ -277,7 +277,7 @@
                 /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
                 j:privilegedAccess="true"
                 >
-            <currentSite-access j:path="$currentSite"
+            <currentSite-access j:path="currentSite"
                                 j:permissions="/permissions/managers"
                                 jcr:primaryType="jnt:externalPermissions"/>
         </editor>
@@ -339,9 +339,9 @@
                             j:privilegedAccess="true" />
 
         <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="server-role"
-                              j:permissions="/permissions/admin" j:privilegedAccess="true">
-            <root-access jcr:primaryType="jnt:externalPermissions" j:path="/"
-                         j:permissions="/permissions/repository-permissions/jcr:all_default" />
+                              j:permissions="/permissions/repository-permissions/jcr:all_default" j:privilegedAccess="true">
+            <settings-access jcr:primaryType="jnt:externalPermissions" j:path="/settings"
+                         j:permissions="/permissions/admin" />
             <permissions-access jcr:primaryType="jnt:externalPermissions" j:path="/permissions"
                                 j:permissions="/permissions/repository-permissions/jcr:all_default" />
             <roles-access jcr:primaryType="jnt:externalPermissions" j:path="/roles"

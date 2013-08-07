@@ -153,25 +153,29 @@
         <i class="icon-ok icon-white"></i>
         &nbsp;SAVE
     </button>
-        </div>
+    </div>
+    <p>
 
+    </p>
+    <input type="hidden" name="tab" id="tabField" value=""/>
     <div class="btn-group">
-        <input type="hidden" name="tab" id="tabField" value=""/>
-        <div class="btn-group">
-            <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
-                <button class="btn ${handler.currentTab eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchTab" onclick="$('#tabField').val('${permissionGroup.key}')">
-                    <c:if test="${fn:startsWith(permissionGroup.key, 'context./')}">
-                        <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${fn:substringAfter(permissionGroup.key, 'context.')}
-                    </c:if>
-                    <c:if test="${not fn:startsWith(permissionGroup.key, 'context./')}">
-                        <fmt:message key="rolesmanager.rolesAndPermissions.${permissionGroup.key}"/>
-                    </c:if>
-                </button>
-            </c:forEach>
-        </div>
-    <%--<c:forEach items="${handler.roleBean.externalPermissions}" var="permissionGroup">--%>
+        <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
+            <button class="btn ${handler.currentContext eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchContext" onclick="$('#tabField').val('${permissionGroup.key}')">
+                    ${permissionGroup.key}
+                    <%--<c:if test="${fn:startsWith(permissionGroup.key, 'context./')}">--%>
+                            <%--<fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${fn:substringAfter(permissionGroup.key, 'context.')}--%>
+                            <%--</c:if>--%>
+                            <%--<c:if test="${not fn:startsWith(permissionGroup.key, 'context./')}">--%>
+                            <%--<fmt:message key="rolesmanager.rolesAndPermissions.${permissionGroup.key}"/>--%>
+                            <%--</c:if>--%>
+            </button>
+            <button class="btn btn-danger" type="submit" name="_eventId_switchContext" onclick="$('#tabField').val('${permissionGroup.key}')">
+            x
+            </button>
+        </c:forEach>
+        <%--<c:forEach items="${handler.roleBean.externalPermissions}" var="permissionGroup">--%>
         <%--<div style="float:left;">--%>
-            <%--<form style="margin: 0;" action="${flowExecutionUrl}" method="POST">--%>
+        <%--<form style="margin: 0;" action="${flowExecutionUrl}" method="POST">--%>
                 <%--<input type="hidden" name="tab" value="${permissionGroup.key}"/>--%>
                 <%--<button class="btn btn-block" type="submit" name="_eventId_switchTab" onclick="">--%>
                         <%--${permissionGroup.key}--%>
@@ -179,32 +183,51 @@
             <%--</form>--%>
         <%--</div>--%>
     <%--</c:forEach>--%>
-    </div>
-    <div>
-    Add context : <input type="text" id="addContextField" name="newContext"/>
-    <button class="btn btn-primary" type="submit" name="_eventId_addContext" id="addContextButton">
-        <i class="icon-plus  icon-white"></i>
-        &nbsp;Add
-    </button>
-    </div>
-    <div>
 
+            <input type="text" id="addContextField" name="newContext"/>
+            <button class="btn btn-primary" type="submit" name="_eventId_addContext" id="addContextButton">
+                <i class="icon-plus  icon-white"></i>
+                &nbsp;Add
+            </button>
+
+    </div>
+
+    <p>
+
+    </p>
+
+    <div class="btn-group">
+        <div class="btn-group">
+            <c:forEach items="${handler.roleBean.permissions[handler.currentContext]}" var="permissionGroup">
+                <button class="btn ${handler.currentGroup eq permissionGroup.key ? 'btn-success':''}" type="submit" name="_eventId_switchGroup" onclick="$('#tabField').val('${permissionGroup.key}')">
+                    ${permissionGroup.key}
+                    <%--<c:if test="${fn:startsWith(permissionGroup.key, 'context./')}">--%>
+                        <%--<fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${fn:substringAfter(permissionGroup.key, 'context.')}--%>
+                    <%--</c:if>--%>
+                    <%--<c:if test="${not fn:startsWith(permissionGroup.key, 'context./')}">--%>
+                        <%--<fmt:message key="rolesmanager.rolesAndPermissions.${permissionGroup.key}"/>--%>
+                    <%--</c:if>--%>
+                </button>
+            </c:forEach>
+        </div>
+    </div>
+
+
+    <div>
         <div class="box-1">
             <h3>Permissions :</h3>
-            <ul class="nav nav-tabs nav-stacked">
-                <c:forEach items="${handler.roleBean.permissions[handler.currentTab]}" var="entry">
-                    <c:set value="${entry.value}" var="permission"/>
-                    <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentTab][permission.parentPath].set}">
-                    <li><a href="#${permission.path}" > ${permission.name} </a></li>
-                    </c:if>
-                </c:forEach>
-            </ul>
+            <c:forEach items="${handler.roleBean.permissions[handler.currentContext][handler.currentGroup]}" var="entry">
+                <c:set value="${entry.value}" var="permission"/>
+                <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentContext][handler.currentGroup][permission.parentPath].set}">
+                    <a href="#${permission.path}" > ${permission.name} </a>
+                </c:if>
+            </c:forEach>
         </div>
     </div>
     <fieldset>
         <h3>${permissionGroup.key}</h3>
 
-        <c:if test="${not empty handler.roleBean.permissions[handler.currentTab]}">
+        <c:if test="${not empty handler.roleBean.permissions[handler.currentContext][handler.currentGroup]}">
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
@@ -220,7 +243,7 @@
 
             <tbody>
 
-            <c:forEach items="${handler.roleBean.permissions[handler.currentTab]}" var="entry">
+            <c:forEach items="${handler.roleBean.permissions[handler.currentContext][handler.currentGroup]}" var="entry">
                 <c:set value="${entry.value}" var="permission"/>
                 <tr>
                     <td ali>

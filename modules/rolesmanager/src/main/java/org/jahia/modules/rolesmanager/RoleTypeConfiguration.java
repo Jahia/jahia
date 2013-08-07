@@ -5,6 +5,8 @@ import java.util.*;
 public class RoleTypeConfiguration {
     private LinkedHashMap<String, RoleType> roleTypes = new LinkedHashMap<String, RoleType>();
 
+    private Map<String,List<String>> permissionsGroups;
+
     public RoleTypeConfiguration() {
     }
 
@@ -20,5 +22,14 @@ public class RoleTypeConfiguration {
 
     public Collection<RoleType> getValues() {
         return roleTypes.values();
+    }
+
+
+    public Map<String, List<String>> getPermissionsGroups() {
+        return permissionsGroups;
+    }
+
+    public void setPermissionsGroups(Map<String, List<String>> permissionsGroups) {
+        this.permissionsGroups = permissionsGroups;
     }
 }

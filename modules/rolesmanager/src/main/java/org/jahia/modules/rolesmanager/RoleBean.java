@@ -13,7 +13,7 @@ public class RoleBean implements Serializable {
 
     private int depth;
 
-    private Map<String, Map<String,PermissionBean>> permissions;
+    private Map<String, Map<String, Map<String,PermissionBean>>> permissions;
 
 //    private Map<String, List<PermissionBean>> externalPermissions;
 
@@ -51,11 +51,11 @@ public class RoleBean implements Serializable {
         this.depth = depth;
     }
 
-    public Map<String, Map<String,PermissionBean>> getPermissions() {
+    public  Map<String, Map<String, Map<String,PermissionBean>>> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Map<String, Map<String,PermissionBean>> permissions) {
+    public void setPermissions( Map<String, Map<String, Map<String,PermissionBean>>> permissions) {
         this.permissions = permissions;
     }
 

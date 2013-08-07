@@ -10,7 +10,7 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     private boolean partialSet;
     private boolean set;
     private int depth;
-    private RolesAndPermissionsHandler.Scope  scope;
+    private String scope;
 
     public String getUuid() {
         return uuid;
@@ -68,11 +68,11 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
         this.depth = depth;
     }
 
-    public RolesAndPermissionsHandler.Scope  getScope() {
+    public String getScope() {
         return scope;
     }
 
-    public void setScope(RolesAndPermissionsHandler.Scope  scope) {
+    public void setScope(String  scope) {
         this.scope = scope;
     }
 

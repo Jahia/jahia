@@ -30,9 +30,14 @@
             <evaluate expression="handler.save()"/>
         </transition>
 
-        <transition on="switchTab" to="viewRole">
+        <transition on="switchContext" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.setCurrentTab(requestParameters.tab)" />
+            <evaluate expression="handler.setCurrentContext(requestParameters.tab)" />
+        </transition>
+
+        <transition on="switchGroup" to="viewRole">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+            <evaluate expression="handler.setCurrentGroup(requestParameters.tab)" />
         </transition>
 
         <transition on="addContext" to="viewRole">

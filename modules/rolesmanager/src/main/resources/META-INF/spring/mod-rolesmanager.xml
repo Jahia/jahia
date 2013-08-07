@@ -12,8 +12,8 @@
                 <property name="privileged" value="false"/>
                 <property name="scopes">
                     <set>
-                        <value>scope.CONTENT</value>
-                        <value>scope.JCR</value>
+                        <!--<value>scope.CONTENT</value>-->
+                        <!--<value>scope.JCR</value>-->
                     </set>
                 </property>
             </bean>
@@ -22,9 +22,9 @@
                 <property name="privileged" value="true"/>
                 <property name="scopes">
                     <set>
-                        <value>scope.CONTENT</value>
-                        <value>scope.JCR</value>
-                        <value>context.$currentSite</value>
+                        <!--<value>scope.CONTENT</value>-->
+                        <!--<value>scope.JCR</value>-->
+                        <value>currentSite</value>
                     </set>
                 </property>
             </bean>
@@ -34,9 +34,9 @@
                 <property name="nodeType" value="jnt:virtualsite"/>
                 <property name="scopes">
                     <set>
-                        <value>scope.SITE</value>
-                        <value>scope.CONTENT</value>
-                        <value>scope.JCR</value>
+                        <!--<value>scope.SITE</value>-->
+                        <!--<value>scope.CONTENT</value>-->
+                        <!--<value>scope.JCR</value>-->
                     </set>
                 </property>
             </bean>
@@ -46,15 +46,52 @@
                 <property name="nodeType" value="rep:root"/>
                 <property name="scopes">
                     <set>
-                        <value>scope.SERVER_SETTINGS</value>
-                        <value>scope.SITE</value>
-                        <value>scope.CONTENT</value>
-                        <value>scope.JCR</value>
+                        <value>/settings</value>
+                        <!--<value>scope.SITE</value>-->
+                        <!--<value>scope.CONTENT</value>-->
+                        <!--<value>scope.JCR</value>-->
                     </set>
                 </property>
             </bean>
         </list>
 
+    </property>
+
+    <property name="permissionsGroups">
+        <map>
+            <entry key="rep:root" >
+                <list>
+                    <value>repository-permissions</value>
+                </list>
+            </entry>
+            <entry key="nt:base" >
+                <list>
+                    <value>repository-permissions</value>
+                    <value>workflow-tasks</value>
+                    <value>actions</value>
+                </list>
+            </entry>
+            <entry key="jnt:virtualsite">
+                <list>
+                    <value>site-admin</value>
+                    <value>repository-permissions</value>
+                    <value>workflow-tasks</value>
+                    <value>actions</value>
+                    <value>editMode,contributeMode,templates,wysiwyg-editor-toolbar</value>
+                </list>
+            </entry>
+            <entry key="jnt:globalSettings">
+                <list>
+                    <value>admin</value>
+                </list>
+            </entry>
+            <entry key="jnt:modules">
+                <list>
+                    <value>studioMode</value>
+                    <value>repository-permissions</value>
+                </list>
+            </entry>
+        </map>
     </property>
 </bean>
 

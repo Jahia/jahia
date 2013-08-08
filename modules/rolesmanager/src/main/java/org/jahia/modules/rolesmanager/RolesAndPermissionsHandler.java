@@ -365,11 +365,20 @@ public class RolesAndPermissionsHandler implements Serializable {
             return;
         }
 
-        String tab = newContext;
-        if (!roleBean.getPermissions().containsKey(tab)) {
-            addPermissionsForTab(roleBean, tab, new ArrayList<String>(), new HashMap<String, List<String>>());
+        if (!roleBean.getPermissions().containsKey(newContext)) {
+            addPermissionsForTab(roleBean, newContext, new ArrayList<String>(), new HashMap<String, List<String>>());
         }
-        setCurrentContext(tab);
+        setCurrentContext(newContext);
+    }
+
+    public void removeContext(String context) throws RepositoryException {
+
+        if (roleBean.getPermissions().containsKey(context)) {
+            roleBean.getPermissions().remove(context);
+        }
+        if (currentContext.equals(context)) {
+            setCurrentContext(roleBean.getPermissions().keySet().iterator().next());
+        }
     }
 
     public void save() throws RepositoryException {
@@ -388,11 +397,9 @@ public class RolesAndPermissionsHandler implements Serializable {
                         }
                     }
                 }
-            }
-            if (entry.getKey().startsWith("context.")) {
-                String path = StringUtils.substringAfter(entry.getKey(), "context.");
+            } else {
                 ArrayList<Value> values = new ArrayList<Value>();
-                externalPermissions.put(path, values);
+                externalPermissions.put(entry.getKey(), values);
                 for (Map<String, PermissionBean> map : entry.getValue().values()) {
                     for (PermissionBean bean : map.values()) {
                         PermissionBean parentBean = map.get(bean.getParentPath());
@@ -409,6 +416,7 @@ public class RolesAndPermissionsHandler implements Serializable {
 
         JCRNodeWrapper role = currentUserSession.getNodeByIdentifier(roleBean.getUuid());
         role.setProperty("j:permissions", permissionsValues.toArray(new Value[permissionsValues.size()]));
+        Set<String> externalPermissionNodes = new HashSet<String>();
         for (Map.Entry<String, List<Value>> s : externalPermissions.entrySet()) {
             String key = s.getKey();
             if (key.equals("/")) {
@@ -423,7 +431,14 @@ public class RolesAndPermissionsHandler implements Serializable {
             } else {
                 role.getNode(key).setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
             }
-
+            externalPermissionNodes.add(key);
+        }
+        NodeIterator ni = role.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            if (next.getPrimaryNodeTypeName().equals("jnt:externalPermissions") && !externalPermissionNodes.contains(next.getName())) {
+                next.remove();
+            }
         }
         role.setProperty("jcr:title", roleBean.getTitle());
         role.setProperty("jcr:description", roleBean.getDescription());

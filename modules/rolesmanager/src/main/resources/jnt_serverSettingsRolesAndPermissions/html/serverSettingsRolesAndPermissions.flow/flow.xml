@@ -49,6 +49,11 @@
             <evaluate expression="handler.addContext(requestParameters.newContext)" />
         </transition>
 
+        <transition on="removeContext" to="viewRole">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+            <evaluate expression="handler.removeContext(requestParameters.tab)" />
+        </transition>
+
     </view-state>
 
     <view-state id="viewRoleDetails">

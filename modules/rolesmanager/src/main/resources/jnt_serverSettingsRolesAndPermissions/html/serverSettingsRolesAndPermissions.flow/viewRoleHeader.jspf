@@ -65,7 +65,7 @@
                 </c:if>
             </button>
             <c:if test="${not functions:contains(handler.roleBean.roleType.scopes,permissionGroup.key)}">
-                <button class="btn btn-danger" type="submit" name="_eventId_switchContext"
+                <button class="btn btn-danger" type="submit" name="_eventId_removeContext"
                         onclick="$('#tabField').val('${permissionGroup.key}')">
                     x
                 </button>

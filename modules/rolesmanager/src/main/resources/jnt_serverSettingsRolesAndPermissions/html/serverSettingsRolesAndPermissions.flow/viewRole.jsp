@@ -132,7 +132,7 @@
             <c:forEach items="${handler.roleBean.permissions[handler.currentContext]}" var="gentry">
             <c:forEach items="${gentry.value}" var="entry">
                 <c:set value="${entry.value}" var="permission"/>
-                <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentContext][handler.currentGroup][permission.parentPath].set}">
+                <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].set}">
                     <a href="#${permission.path}" > ${permission.name} </a>
                 </c:if>
             </c:forEach>

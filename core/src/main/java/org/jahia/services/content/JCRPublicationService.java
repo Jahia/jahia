@@ -870,6 +870,22 @@ public class JCRPublicationService extends JahiaService {
                     if (uuid != null) {
                         JCRNodeWrapper destNode = sourceSession.getNodeByIdentifier(uuid);
                         destNode.setProperty("j:published", false);
+                        boolean doLogging = loggingService.isEnabled();
+                        if (doLogging) {
+                            Integer operationType = JCRObservationManager.getCurrentOperationType();
+                            if (operationType != null && operationType == JCRObservationManager.IMPORT) {
+                                doLogging = false;
+                            }
+                        }
+                        if (doLogging) {
+                            String userID = destNode.getSession().getUserID();
+                            if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+                                userID = userID.substring(JahiaLoginModule.SYSTEM.length());
+                            }
+                            loggingService
+                                    .logContentEvent(userID, "", "", destNode.getIdentifier(), destNode.getPath(), destNode.getPrimaryNodeTypeName(),
+                                            "unpublishedNode", destNode.getSession().getWorkspace().getName());
+                        }
                     }
                 }
                 sourceSession.save();

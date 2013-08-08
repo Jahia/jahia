@@ -353,12 +353,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<Workflow> getWorkflowsForDefinition(String definition, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final List<Workflow> workflows = new LinkedList<Workflow>();
+        return workflows;
     }
 
     @Override
     public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final List<Workflow> workflows = new LinkedList<Workflow>();
+        return workflows;
     }
 
     @Override
@@ -392,12 +394,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final List<HistoryWorkflow> workflows = new LinkedList<HistoryWorkflow>();
+        return workflows;
     }
 
     @Override
     public List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final List<HistoryWorkflow> workflows = new LinkedList<HistoryWorkflow>();
+        return workflows;
     }
 
     @Override
@@ -426,7 +430,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale locale) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        final List<HistoryWorkflowTask> workflows = new LinkedList<HistoryWorkflowTask>();
+        return workflows;
     }
 
     @Override

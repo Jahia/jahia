@@ -137,8 +137,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
-                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER,
-                        TransactionManagerServices.getTransactionManager())
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager())
                         // .userGroupCallback(userGroupCallback)
                         // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
                 .get();

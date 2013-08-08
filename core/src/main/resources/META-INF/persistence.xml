@@ -6,7 +6,7 @@
              xmlns="http://java.sun.com/xml/ns/persistence">
 
     <persistence-unit name="org.jahia.services.workflow.jbpm">
-        <non-jta-data-source>java:comp/env/jdbc/jahia</non-jta-data-source>
+        <jta-data-source>java:comp/env/jdbc/jahiatx</jta-data-source>
         <mapping-file>META-INF/JBPMorm.xml</mapping-file>
         <mapping-file>META-INF/Taskorm.xml</mapping-file>
         <class>org.drools.persistence.info.SessionInfo</class>
@@ -55,6 +55,10 @@
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.id.new_generator_mappings" value="false"/>
+            <property name="connection.release_mode" value="after_statement"/>
+            <!--property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JTATransactionFactory" /-->
+            <property name="hibernate.transaction.manager_lookup_class"
+                      value="org.hibernate.transaction.BTMTransactionManagerLookup"/>
         </properties>
     </persistence-unit>
 

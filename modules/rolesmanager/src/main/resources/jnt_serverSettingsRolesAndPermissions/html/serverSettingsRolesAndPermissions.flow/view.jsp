@@ -50,8 +50,11 @@
             <thead>
             <tr>
                 <th width="3%">&nbsp;</th>
-                <th width="90%">
+                <th width="25%">
                     <fmt:message key="label.name"/>
+                </th>
+                <th width="67%">
+                    <fmt:message key="label.description"/>
                 </th>
                 <%--<th width="7%">--%>
                     <%--Scope--%>
@@ -64,7 +67,10 @@
                 <tr>
                     <td><input name="selectedSites" type="checkbox" value="${role.name}"/></td>
                     <td>
-                        <strong><a href="#" onclick="viewRole('${role.uuid}')">${role.name}</a></strong>
+                        <strong><a href="#" onclick="viewRole('${role.uuid}')">${role.title} (${role.name})</a></strong>
+                    </td>
+                    <td>
+                        ${role.description}
                     </td>
                     <%--<td>--%>
                             <%--${role.scope} &nbsp; ${role.privileged ? '' : 'LIVE'}--%>

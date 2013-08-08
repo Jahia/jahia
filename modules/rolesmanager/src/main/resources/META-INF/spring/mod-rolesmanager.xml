@@ -12,8 +12,7 @@
                 <property name="privileged" value="false"/>
                 <property name="scopes">
                     <set>
-                        <!--<value>scope.CONTENT</value>-->
-                        <!--<value>scope.JCR</value>-->
+                        <value>current</value>
                     </set>
                 </property>
             </bean>
@@ -22,8 +21,7 @@
                 <property name="privileged" value="true"/>
                 <property name="scopes">
                     <set>
-                        <!--<value>scope.CONTENT</value>-->
-                        <!--<value>scope.JCR</value>-->
+                        <value>current</value>
                         <value>currentSite</value>
                     </set>
                 </property>
@@ -34,9 +32,7 @@
                 <property name="nodeType" value="jnt:virtualsite"/>
                 <property name="scopes">
                     <set>
-                        <!--<value>scope.SITE</value>-->
-                        <!--<value>scope.CONTENT</value>-->
-                        <!--<value>scope.JCR</value>-->
+                        <value>current</value>
                     </set>
                 </property>
             </bean>
@@ -46,10 +42,8 @@
                 <property name="nodeType" value="rep:root"/>
                 <property name="scopes">
                     <set>
+                        <value>current</value>
                         <value>/settings</value>
-                        <!--<value>scope.SITE</value>-->
-                        <!--<value>scope.CONTENT</value>-->
-                        <!--<value>scope.JCR</value>-->
                     </set>
                 </property>
             </bean>
@@ -77,7 +71,7 @@
                     <value>repository-permissions</value>
                     <value>workflow-tasks</value>
                     <value>actions</value>
-                    <value>editMode,contributeMode,templates,wysiwyg-editor-toolbar</value>
+                    <value>editMode,contributeMode,managers,templates,wysiwyg-editor-toolbar</value>
                 </list>
             </entry>
             <entry key="jnt:globalSettings">

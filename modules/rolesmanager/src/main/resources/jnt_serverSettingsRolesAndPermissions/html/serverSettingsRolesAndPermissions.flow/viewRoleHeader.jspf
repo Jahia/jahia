@@ -1,0 +1,81 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("a.switchTab").click(function () {
+            var tab = $(this).attr('tab');
+            alert(tab);
+            $("#switchTabForm").submit();
+            return false;
+        });
+
+        $('#addContextField').keypress(function(e) {
+            // Enter pressed?
+            if(e.which == 10 || e.which == 13) {
+                $("#addContextButton").click();
+                return false;
+            }
+
+        });
+    });
+</script>
+
+<div class="clearfix">
+
+    <h2>
+        <form class="pull-left" action="${flowExecutionUrl}" method="POST">
+            <button class="btn" name="_eventId_rolesList"><i class=" icon-chevron-left"></i>&nbsp;Back</button>
+        </form>
+        &nbsp;Roles and permissions : ${handler.roleBean.name}
+    </h2>
+</div>
+<c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
+    <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+            ${fn:escapeXml(msg.text)}
+    </div>
+</c:forEach>
+
+
+<form id="form" action="${flowExecutionUrl}" method="post">
+    <input id="selectedPermissions" type="hidden" name="selectedPermissions"/>
+    <input id="partialSelectedPermissions" type="hidden" name="partialSelectedPermissions"/>
+
+    <div class="btn-group">
+        <button class="btn btn-primary" type="submit" name="_eventId_saveRole">
+            <i class="icon-ok icon-white"></i>
+            &nbsp;SAVE
+        </button>
+    </div>
+    <p>
+
+    </p>
+    <input type="hidden" name="tab" id="tabField" value=""/>
+
+    <div class="btn-group">
+        <button class="btn ${flowRequestContext.currentState.id eq 'viewRoleDetails' ? 'btn-success':''}" type="submit" name="_eventId_viewRoleDetails">
+            <fmt:message key="rolesmanager.rolesAndPermissions.roleDetails"/> &nbsp; ${permissionGroup.key}
+        </button>
+        <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
+            <button class="btn ${flowRequestContext.currentState.id eq 'viewRole' and handler.currentContext eq permissionGroup.key ? 'btn-success':''}" type="submit"
+                    name="_eventId_switchContext" onclick="$('#tabField').val('${permissionGroup.key}')">
+                <c:if test="${fn:startsWith(permissionGroup.key, '/')}">
+                    <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${permissionGroup.key}
+                </c:if>
+                <c:if test="${not fn:startsWith(permissionGroup.key, '/')}">
+                    <fmt:message key="rolesmanager.rolesAndPermissions.context.${permissionGroup.key}"/>
+                </c:if>
+            </button>
+            <c:if test="${not functions:contains(handler.roleBean.roleType.scopes,permissionGroup.key)}">
+                <button class="btn btn-danger" type="submit" name="_eventId_switchContext"
+                        onclick="$('#tabField').val('${permissionGroup.key}')">
+                    x
+                </button>
+            </c:if>
+        </c:forEach>
+
+        <input type="text" id="addContextField" name="newContext"/>
+        <button class="btn btn-primary" type="submit" name="_eventId_addContext" id="addContextButton">
+            <i class="icon-plus  icon-white"></i>
+            &nbsp;Add
+        </button>
+
+    </div>

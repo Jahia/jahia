@@ -12,11 +12,11 @@
             <evaluate expression="handler.roles" result="requestScope.roles"/>
         </on-render>
 
-        <transition on="addRole" to="viewRole">
+        <transition on="addRole" to="viewRoleDetails">
             <evaluate expression="handler.addRole(requestParameters.newRole, requestParameters.roleScope)" result="handler.roleBean"/>
         </transition>
 
-        <transition on="viewRole" to="viewRole">
+        <transition on="viewRole" to="viewRoleDetails">
             <evaluate expression="handler.getRole(requestParameters.uuid)" result="handler.roleBean"/>
         </transition>
 
@@ -30,6 +30,10 @@
             <evaluate expression="handler.save()"/>
         </transition>
 
+        <transition on="viewRoleDetails" to="viewRoleDetails">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+        </transition>
+
         <transition on="switchContext" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
             <evaluate expression="handler.setCurrentContext(requestParameters.tab)" />
@@ -41,6 +45,31 @@
         </transition>
 
         <transition on="addContext" to="viewRole">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+            <evaluate expression="handler.addContext(requestParameters.newContext)" />
+        </transition>
+
+    </view-state>
+
+    <view-state id="viewRoleDetails">
+        <transition on="rolesList" to="view"/>
+
+        <transition on="saveRole" to="viewRoleDetails">
+            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden)" />
+            <evaluate expression="handler.save()"/>
+        </transition>
+
+        <transition on="viewRoleDetails" to="viewRoleDetails">
+            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden)" />
+        </transition>
+
+        <transition on="switchContext" to="viewRole">
+            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden)" />
+            <evaluate expression="handler.setCurrentContext(requestParameters.tab)" />
+        </transition>
+
+        <transition on="addContext" to="viewRole">
+            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden)" />
             <evaluate expression="handler.addContext(requestParameters.newContext)" />
         </transition>
 

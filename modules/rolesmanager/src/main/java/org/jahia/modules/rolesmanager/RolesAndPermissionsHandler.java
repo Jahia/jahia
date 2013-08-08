@@ -8,6 +8,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
@@ -59,9 +60,13 @@ public class RolesAndPermissionsHandler implements Serializable {
         this.currentGroup = roleBean.getPermissions().get(currentContext).keySet().iterator().next();
     }
 
+    private JCRSessionWrapper getSession() throws RepositoryException {
+        return JCRSessionFactory.getInstance().getCurrentUserSession("default", LocaleContextHolder.getLocale());
+    }
+
     public Map<String, List<RoleBean>> getRoles() throws RepositoryException {
 
-        QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
+        QueryManager qm = getSession().getWorkspace().getQueryManager();
         Query q = qm.createQuery("select * from [jnt:role]", Query.JCR_SQL2);
         Map<String, List<RoleBean>> all = new LinkedHashMap<String, List<RoleBean>>();
         for (RoleType roleType : roleTypes.getValues()) {
@@ -91,7 +96,7 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public RoleBean getRole(String uuid) throws RepositoryException {
-        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper currentUserSession = getSession();
 
         JCRNodeWrapper role = currentUserSession.getNodeByIdentifier(uuid);
 
@@ -99,6 +104,16 @@ public class RolesAndPermissionsHandler implements Serializable {
         roleBean.setUuid(uuid);
         roleBean.setName(role.getName());
         roleBean.setDepth(role.getDepth());
+        if (role.hasProperty("jcr:title")) {
+            roleBean.setTitle(role.getProperty("jcr:title").getString());
+        }
+        if (role.hasProperty("jcr:description")) {
+            roleBean.setDescription(role.getProperty("jcr:description").getString());
+        }
+        if (role.hasProperty("j:hidden")) {
+            roleBean.setHidden(role.getProperty("j:hidden").getBoolean());
+        }
+
         String roleGroup = role.getProperty("j:roleGroup").getString();
 
         RoleType roleType = roleTypes.get(roleGroup);
@@ -142,7 +157,6 @@ public class RolesAndPermissionsHandler implements Serializable {
         Map<String, Map<String, Map<String,PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String,PermissionBean>>>();
         roleBean.setPermissions(permsForRole);
 
-        addPermissionsForTab(roleBean, "current", setPermIds, setExternalPermIds);
         for (String tab : tabs) {
             addPermissionsForTab(roleBean, tab, setPermIds, setExternalPermIds);
         }
@@ -152,7 +166,7 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public RoleBean addRole(String roleName, String scope) throws RepositoryException {
-        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper currentUserSession = getSession();
         JCRNodeWrapper role = currentUserSession.getNode("/roles").addNode(roleName, "jnt:role");
         RoleType roleType = roleTypes.get(scope);
         role.setProperty("j:roleGroup", roleType.getName());
@@ -229,7 +243,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 type = "jnt:virtualsite";
             } else {
                 try {
-                    JCRNodeWrapper contextNode = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(context);
+                    JCRNodeWrapper contextNode = getSession().getNode(context);
                     String ntname = contextNode.getPrimaryNodeTypeName();
                     if (roleTypes.getPermissionsGroups().containsKey(ntname)) {
                         type = ntname;
@@ -359,7 +373,7 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public void save() throws RepositoryException {
-        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper currentUserSession = getSession();
 
         List<Value> permissionsValues = new ArrayList<Value>();
         Map<String, List<Value>> externalPermissions = new HashMap<String, List<Value>>();
@@ -411,7 +425,9 @@ public class RolesAndPermissionsHandler implements Serializable {
             }
 
         }
-
+        role.setProperty("jcr:title", roleBean.getTitle());
+        role.setProperty("jcr:description", roleBean.getDescription());
+        role.setProperty("j:hidden", roleBean.isHidden());
         currentUserSession.save();
     }
 
@@ -421,7 +437,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
 
         allPermissions = new LinkedHashMap<String, List<JCRNodeWrapper>>();
-        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper currentUserSession = getSession();
 
 //        for (Scope scope : Scope.values()) {
 //            allPermissions.put(scope.name(), new ArrayList<JCRNodeWrapper>());
@@ -453,6 +469,12 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
 
         return allPermissions;
+    }
+
+    public void storeDetails(String title, String description, Boolean hidden) {
+        roleBean.setTitle(title);
+        roleBean.setDescription(description);
+        roleBean.setHidden(hidden != null && hidden);
     }
 
 }

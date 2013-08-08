@@ -307,7 +307,13 @@
             <name>format</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>                
+        </attribute> 
+        <attribute>
+            <description>Var name to store the result</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>                         
     </tag>
 
 </taglib>

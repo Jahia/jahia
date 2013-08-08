@@ -40,7 +40,6 @@
 
 package org.jahia.taglibs.utility;
 
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.jahia.taglibs.internal.date.AbstractDateTag;
 import org.joda.time.*;
 
@@ -60,7 +59,7 @@ public class DateDiffTag extends AbstractDateTag {
     private Date endDate;
     private String format;
 
-    public void setEndDate(Date endDate) {
+	public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
@@ -83,13 +82,28 @@ public class DateDiffTag extends AbstractDateTag {
     public int doEndTag() throws JspException {
         try {
             if("years".equals(format)) {
-                pageContext.getOut().print(Years.yearsBetween(new DateTime(startDate), new DateTime(endDate)).getYears());
+            	int years = Years.yearsBetween(new DateTime(startDate), new DateTime(endDate)).getYears();
+                if(getVar() != null) {
+                	pageContext.setAttribute(getVar(), new Integer(years));
+                } else {
+                	pageContext.getOut().print(years);
+                }
             }
             else if("months".equals(format)) {
-                pageContext.getOut().print(Months.monthsBetween(new DateTime(startDate), new DateTime(endDate)).getMonths());
+            	int months = Months.monthsBetween(new DateTime(startDate), new DateTime(endDate)).getMonths();
+                if(getVar() != null) {
+               	    pageContext.setAttribute(getVar(), new Integer(months));
+                } else {
+            	    pageContext.getOut().print(months);
+                }
             }
             else if("days".equals(format)) {
-                pageContext.getOut().print(Days.daysBetween(new DateTime(startDate), new DateTime(endDate)).getDays());
+            	int days = Days.daysBetween(new DateTime(startDate), new DateTime(endDate)).getDays();
+                if(getVar() != null) {
+               	  	pageContext.setAttribute(getVar(), new Integer(days));
+                } else {
+            	    pageContext.getOut().print(days); 
+                }
             }
         } catch (IOException e) {
             throw new JspException(e);

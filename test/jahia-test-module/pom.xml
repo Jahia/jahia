@@ -543,6 +543,7 @@
                             ${jahia.plugin.projectPackageImport},
                             COM.ibm.netrexx.process;resolution:=optional,
                             netrexx.lang;resolution:=optional,
+                            org.apache.avalon.framework.logger;resolution:=optional,
                             *
                         </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>

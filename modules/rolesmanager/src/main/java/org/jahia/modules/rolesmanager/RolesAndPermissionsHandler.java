@@ -5,6 +5,7 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,12 +217,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                     Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
                     if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
                         PermissionBean bean = new PermissionBean();
-                        bean.setUuid(permissionNode.getIdentifier());
-                        bean.setParentPath(permissionNode.getParent().getPath());
-                        bean.setName(permissionNode.getName());
-                        bean.setPath(permissionNode.getPath());
-                        bean.setDepth(permissionNode.getDepth());
-                        bean.setScope(getScope(permissionNode));
+                        setPermissionBeanProperties(permissionNode, bean);
                         PermissionBean parentBean = p.get(bean.getParentPath());
                         if (setPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSet())) {
                             bean.setSet(true);
@@ -274,13 +270,8 @@ public class RolesAndPermissionsHandler implements Serializable {
                     Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
                     if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
                         ExternalPermissionBean bean = new ExternalPermissionBean();
-                        bean.setUuid(permissionNode.getIdentifier());
-                        bean.setParentPath(permissionNode.getParent().getPath());
-                        bean.setName(permissionNode.getName());
-                        bean.setPath(permissionNode.getPath());
-                        bean.setDepth(permissionNode.getDepth());
+                        setPermissionBeanProperties(permissionNode, bean);
                         bean.setTargetPath(context);
-                        bean.setScope(getScope(permissionNode));
                         PermissionBean parentBean = p.get(bean.getParentPath());
                         if ((setExternalPermIds.get(context) != null && setExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
                                 || (parentBean != null && parentBean.isSet())) {
@@ -295,6 +286,21 @@ public class RolesAndPermissionsHandler implements Serializable {
                 }
             }
         }
+    }
+
+    private void setPermissionBeanProperties(JCRNodeWrapper permissionNode, PermissionBean bean) throws RepositoryException {
+        bean.setUuid(permissionNode.getIdentifier());
+        bean.setParentPath(permissionNode.getParent().getPath());
+        bean.setName(permissionNode.getName());
+        String title = permissionNode.getName();
+        if (title.contains(":")) {
+            title = StringUtils.substringAfter(title, ":");
+        }
+        title = StringUtils.capitalize(title.replaceAll("([A-Z])", " $0").replaceAll("[_-]"," ").toLowerCase());
+        bean.setTitle(Messages.getInternal("label.permission." + permissionNode.getName(), LocaleContextHolder.getLocale(), title));
+        bean.setPath(permissionNode.getPath());
+        bean.setDepth(permissionNode.getDepth());
+        bean.setScope(getScope(permissionNode));
     }
 
     public String getCurrentContext() {

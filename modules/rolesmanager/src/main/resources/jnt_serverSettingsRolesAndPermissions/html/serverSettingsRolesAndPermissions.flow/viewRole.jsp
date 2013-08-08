@@ -133,7 +133,7 @@
             <c:forEach items="${gentry.value}" var="entry">
                 <c:set value="${entry.value}" var="permission"/>
                 <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].set}">
-                    <a href="#${permission.path}" > ${permission.name} </a>
+                    <a href="#${permission.path}" > ${permission.title} </a>
                 </c:if>
             </c:forEach>
             </c:forEach>
@@ -175,7 +175,7 @@
                         <c:forEach var="i" begin="3" end="${permission.depth}" step="1" varStatus="status5">
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </c:forEach>
-                            ${permission.depth == 2 ? '<h3>' : '' }${permission.name} ${permission.depth == 2 ? '</h3>' : '' }
+                            ${permission.depth == 2 ? '<h3>' : '' }${permission.title} ${permission.depth == 2 ? '</h3>' : '' }
                     </td>
                     <td>
                             ${permission.scope}

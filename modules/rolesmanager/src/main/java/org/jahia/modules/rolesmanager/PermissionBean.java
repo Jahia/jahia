@@ -6,6 +6,8 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     private String uuid;
     private String parentPath;
     private String name;
+    private String title;
+    private String description;
     private String path;
     private boolean partialSet;
     private boolean set;
@@ -34,6 +36,22 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPath() {

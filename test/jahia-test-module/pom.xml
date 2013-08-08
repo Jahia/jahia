@@ -58,7 +58,7 @@
     <properties>
         <jahia.modules.test.importPackage>
             ${jahia.modules.importPackage},
-			com.google.inject;resolution:=optional,
+			com.google.inject;resolution:=mvn,
 			org.apache.bsf.util;resolution:=optional,
             com.google.protobuf;resolution:=optional,
             com.sun.tools.apt;resolution:=optional,
@@ -114,7 +114,11 @@
             sun.tools.native2ascii;resolution:=optional,
             weblogic;resolution:=optional,
             net.sf.jasperreports.engine;resolution:=optional,
-            net.sf.jasperreports.engine.query;resolution:=optional
+            net.sf.jasperreports.engine.query;resolution:=optional,
+            COM.ibm.netrexx.process;resolution:=optional,
+            netrexx.lang;resolution:=optional,
+            org.apache.avalon.framework.logger;resolution:=optional,
+            org.apache.log;resolution:=optional
         </jahia.modules.test.importPackage>
     </properties>
 
@@ -541,9 +545,6 @@
         
                         <Import-Package>
                             ${jahia.plugin.projectPackageImport},
-                            COM.ibm.netrexx.process;resolution:=optional,
-                            netrexx.lang;resolution:=optional,
-                            org.apache.avalon.framework.logger;resolution:=optional,
                             *
                         </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>

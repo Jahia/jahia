@@ -1326,6 +1326,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         moduleInstallationHelper.autoInstallModulesToSites(module, session);
     }
 
+    /**
+     * Install module in provided list of site
+     * @param module : module to install
+     * @param sessionWrapper : session to use
+     * @param sites : list of sites on which deploy the module
+     * @throws RepositoryException
+     */
     public void installModuleOnAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
         moduleInstallationHelper.installModuleOnAllSites(module, sessionWrapper, sites);
     }

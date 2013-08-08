@@ -118,7 +118,10 @@
             COM.ibm.netrexx.process;resolution:=optional,
             netrexx.lang;resolution:=optional,
             org.apache.avalon.framework.logger;resolution:=optional,
-            org.apache.log;resolution:=optional
+            org.apache.log;resolution:=optional,
+            org.python.core;resolution:=optional,
+            org.python.util;resolution:=optional,
+            tcl.lang;resolution:=optional,
         </jahia.modules.test.importPackage>
     </properties>
 

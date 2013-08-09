@@ -1,7 +1,11 @@
 package org.jahia.services.workflow.jbpm;
 
-import bitronix.tm.TransactionManagerServices;
 import org.apache.commons.lang.StringUtils;
+import org.drools.container.spring.beans.persistence.DroolsSpringJpaManager;
+import org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.persistence.PersistenceContextManager;
+import org.drools.persistence.TransactionManager;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -28,6 +32,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -39,12 +44,12 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.*;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -81,6 +86,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private MailTemplateRegistry mailTemplateRegistry;
     private RuntimeManager runtimeManager;
     private RuntimeEngine runtimeEngine;
+    private AbstractPlatformTransactionManager platformTransactionManager;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -128,6 +134,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return kieRepository;
     }
 
+    public void setPlatformTransactionManager(AbstractPlatformTransactionManager platformTransactionManager) {
+        this.platformTransactionManager = platformTransactionManager;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
     }
@@ -135,13 +145,24 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public void start() {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        TransactionManager transactionManager = new DroolsSpringTransactionManager(platformTransactionManager);
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, emf);
+        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, emf);
+        env.set("IS_JTA_TRANSACTION", false);
+        env.set("IS_SHARED_ENTITY_MANAGER", true);
+        env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);
+        PersistenceContextManager persistenceContextManager = new DroolsSpringJpaManager(env);
+        env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager);
+        RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
-                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager())
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
+                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
                         // .userGroupCallback(userGroupCallback)
                         // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
                 .get();
-        runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
         runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
         taskService = runtimeEngine.getTaskService();
         kieSession = runtimeEngine.getKieSession();

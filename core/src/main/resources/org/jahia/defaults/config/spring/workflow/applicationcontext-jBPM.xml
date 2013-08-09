@@ -13,6 +13,7 @@
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
+        <property name="platformTransactionManager" ref="transactionManager"/>
         <property name="processes">
             <list>
                 <value>classpath*:org/jahia/modules/workflow/*.jpdl.xml</value>

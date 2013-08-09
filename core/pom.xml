@@ -1000,6 +1000,11 @@
             <artifactId>jbpm-persistence-jpa</artifactId>
             <version>${jbpm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-spring</artifactId>
+            <version>${jbpm.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>jboss</groupId>

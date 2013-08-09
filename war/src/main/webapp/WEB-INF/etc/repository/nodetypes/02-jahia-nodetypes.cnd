@@ -140,6 +140,7 @@
  - j:hidden (boolean) protected hidden
  - j:roleGroup (string)
  + * (jnt:externalPermissions)
+ + * (jnt:role)
 
 [jnt:roles] > nt:base, jmix:autoPublish, jmix:observable
  + * (jnt:role)

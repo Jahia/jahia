@@ -9,9 +9,11 @@
                j:permissions="/permissions/actions/default/publish /permissions/actions/default/startWorkflow"/>
     <reader jcr:primaryType="jnt:role"
              j:permissions="/permissions/actions/default/executeTask /permissions/actions/default/commentTask /permissions/actions/comments/addComment"/>
-    <editor-in-chief jcr:primaryType="jnt:role"
+    <editor jcr:primaryType="jnt:role">
+        <editor-in-chief jcr:primaryType="jnt:role"
                      j:permissions="/permissions/actions/comments"
                      j:privilegedAccess="true"
             />
+    </editor>
 
 </roles>

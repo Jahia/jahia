@@ -72,6 +72,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicy;
@@ -659,20 +661,44 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         } else {
             Set<Privilege> list = new HashSet<Privilege>();
             try {
-                Node roleNode = securitySession.getNode("/roles/" + role);
-                if (roleNode.hasProperty("j:permissions")) {
-                    Value[] perms = roleNode.getProperty("j:permissions").getValues();
-                    for (Value value : perms) {
-                        Node p = s.getNodeByIdentifier(value.getString());
-                        Privilege privilege = privilegeRegistry.getPrivilege(p);
-                        list.add(privilege);
-                    }
+                NodeIterator nodes = securitySession.getWorkspace().getQueryManager().createQuery(
+                        "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
+                        Query.JCR_SQL2).execute().getNodes();
+                if (nodes.hasNext()) {
+                    Node roleNode = nodes.nextNode();
+                    list = getPrivileges(roleNode);
+                    privilegesInRole.put(roleNode.getName(), list);
                 }
-                privilegesInRole.put(roleNode.getName(), list);
             } catch (PathNotFoundException e) {
             }
             return list;
         }
+    }
+
+    private Set<Privilege> getPrivileges(Node roleNode) throws RepositoryException {
+        Set<Privilege> privileges = new HashSet<Privilege>();
+
+        Node roleParent = roleNode.getParent();
+        if (roleParent.isNodeType(Constants.JAHIANT_ROLE)) {
+            privileges = getPrivileges(roleParent);
+        }
+
+        Session s = roleNode.getSession();
+        if (roleNode.hasProperty("j:permissions")) {
+            Value[] perms = roleNode.getProperty("j:permissions").getValues();
+            for (Value value : perms) {
+                Node p = s.getNodeByIdentifier(value.getString());
+                try {
+                    Privilege privilege = privilegeRegistry.getPrivilege(p);
+                    privileges.add(privilege);
+                } catch (AccessControlException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Permission not available : " + p, e);
+                    }
+                }
+            }
+        }
+        return privileges;
     }
 
     public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
@@ -762,27 +788,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         for (String role : grantedRoles) {
             Node node = null;
-            try {
-                node = securitySession.getNode("/roles/" + role);
-            } catch (PathNotFoundException pnfe) {
+            NodeIterator nodes = securitySession.getWorkspace().getQueryManager().createQuery(
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
+                    Query.JCR_SQL2).execute().getNodes();
+            if (nodes.hasNext()) {
+                node = nodes.nextNode();
+            } else {
                 logger.warn("Role " + role + " is missing despite still being in use in path " + absPath + " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
                 continue;
             }
-            if (node.hasProperty("j:permissions")) {
-                Value[] perms = node.getProperty("j:permissions").getValues();
-
-                for (Value value : perms) {
-                    Node p = s.getNodeByIdentifier(value.getString());
-                    try {
-                        Privilege privilege = privilegeRegistry.getPrivilege(p);
-                        results.add(privilege);
-                    } catch (AccessControlException e) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Permission not available : " + p, e);
-                        }
-                    }
-                }
-            }
+            results.addAll(getPrivileges(node));
         }
 
         return results.toArray(new Privilege[results.size()]);

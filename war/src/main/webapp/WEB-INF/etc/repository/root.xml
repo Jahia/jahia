@@ -280,6 +280,14 @@
             <currentSite-access j:path="currentSite"
                                 j:permissions="/permissions/managers"
                                 jcr:primaryType="jnt:externalPermissions"/>
+
+            <editor-in-chief jcr:primaryType="jnt:role" j:roleGroup="edit-role"
+                             j:permissions="/permissions/workflow-tasks
+                             /permissions/repository-permissions/publish
+                             /permissions/jobs
+                             /permissions/editMode"
+                             j:privilegedAccess="true"
+                    />
         </editor>
 
         <reviewer jcr:primaryType="jnt:role" j:roleGroup="edit-role"
@@ -296,22 +304,6 @@
                    /permissions/workflow-tasks/1-step-publication-review
                    /permissions/workflow-tasks/1-step-unpublication-unpublish"
                    j:privilegedAccess="true"
-                />
-
-        <editor-in-chief jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                j:permissions="/permissions/workflow-tasks /permissions/repository-permissions/jcr:all_default
-                /permissions/repository-permissions/publish
-                /permissions/managers/categoryManager
-                /permissions/managers/editorialContentManager
-                /permissions/managers/fileManager
-                /permissions/managers/portletManager
-                /permissions/managers/siteManager
-                /permissions/managers/tagManager
-                /permissions/jobs
-                /permissions/editMode
-                /permissions/wysiwyg-editor-toolbar/view-basic-wysiwyg-editor
-                /permissions/templates"
-                j:privilegedAccess="true"
                 />
 
         <web-designer jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="server-role"

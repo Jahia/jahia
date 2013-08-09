@@ -71,7 +71,8 @@
                     <value>repository-permissions</value>
                     <value>workflow-tasks</value>
                     <value>actions</value>
-                    <value>editMode,contributeMode,managers,templates,wysiwyg-editor-toolbar</value>
+                    <value>editMode,contributeMode,managers,wysiwyg-editor-toolbar</value>
+                    <value>templates,components</value>
                 </list>
             </entry>
             <entry key="jnt:globalSettings">

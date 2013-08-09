@@ -145,8 +145,11 @@
             <thead>
             <tr>
                 <th  width="3%">&nbsp;</th>
-                <th width="82%">
+                <th width="40%">
                     <fmt:message key="label.name"/>
+                </th>
+                <th width="42%">
+                    <fmt:message key="label.description"/>
                 </th>
                 <th width="15%">
                     Scope
@@ -159,7 +162,7 @@
             <c:forEach items="${handler.roleBean.permissions[handler.currentContext][handler.currentGroup]}" var="entry">
                 <c:set value="${entry.value}" var="permission"/>
                 <tr>
-                    <td ali>
+                    <td>
                         <a name="${permission.path}"/>
                         <div class="triState" style="height:13px; overflow: hidden">
 
@@ -178,6 +181,9 @@
                             ${permission.depth == 2 ? '<h3>' : '' }${permission.title} ${permission.depth == 2 ? '</h3>' : '' }
                     </td>
                     <td>
+                            ${permission.description}
+                    </td>
+                    <td>
                             ${permission.scope}
                     </td>
                 </tr>
@@ -185,85 +191,6 @@
             </tbody>
         </table>
         </c:if>
-
-        <%--<c:if test="${not empty handler.roleBean.externalPermissions[handler.currentTab]}">--%>
-            <%--<c:forEach items="${handler.roleBean.externalPermissions[handler.currentTab]}" var="permission">--%>
-                <%--<c:set var="paths" value="${permission.targetPaths}"/>--%>
-            <%--</c:forEach>--%>
-
-            <%--<c:if test="${fn:length(paths) == 1}">--%>
-                <%--<c:forEach items="${paths}" var="tmppath">--%>
-                    <%--<c:set var="path" value="${tmppath}"/>--%>
-                <%--</c:forEach>--%>
-
-                <%--<table class="table table-bordered table-striped table-hover">--%>
-                    <%--<thead>--%>
-                    <%--<tr>--%>
-                        <%--<th>&nbsp;</th>--%>
-                        <%--<th>--%>
-                            <%--<fmt:message key="label.name"/>--%>
-                        <%--</th>--%>
-                        <%--<th>--%>
-                            <%--Scope--%>
-                        <%--</th>--%>
-                    <%--</tr>--%>
-                    <%--</thead>--%>
-
-                    <%--<tbody>--%>
-
-                    <%--<c:forEach items="${handler.roleBean.externalPermissions[handler.currentTab]}" var="permission">--%>
-                        <%--<tr>--%>
-                            <%--<td><input name="selectedSites" type="checkbox"--%>
-                                       <%--value="${permission.name}-${path}" ${permission.setForPath[path] ? 'checked="checked"':''} />--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                <%--<c:forEach var="i" begin="4" end="${permission.depth}" step="1" varStatus="status5">--%>
-                                    <%--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--%>
-                                <%--</c:forEach>--%>
-                                    <%--${permission.name}--%>
-                            <%--</td>--%>
-                            <%--<td>--%>
-                                    <%--${permission.scope}--%>
-                            <%--</td>--%>
-                        <%--</tr>--%>
-                    <%--</c:forEach>--%>
-                    <%--</tbody>--%>
-                <%--</table>--%>
-            <%--</c:if>--%>
-            <%--<c:if test="${fn:length(paths) > 1}">--%>
-                <%--<table class="table table-bordered table-striped table-hover">--%>
-                    <%--<thead>--%>
-                    <%--<tr>--%>
-                        <%--<c:forEach items="${handler.roleBean.externalPermissions[handler.currentTab]}" var="permission">--%>
-                            <%--<th>--%>
-                                <%--${permission.name}--%>
-                            <%--</th>--%>
-                        <%--</c:forEach>--%>
-                        <%--<th>--%>
-                            <%--Scope--%>
-                        <%--</th>--%>
-                    <%--</tr>--%>
-                    <%--</thead>--%>
-
-                    <%--<tbody>--%>
-
-                    <%--<c:forEach items="${paths}" var="path">--%>
-                        <%--<tr>--%>
-                            <%--<c:forEach items="${handler.roleBean.externalPermissions[handler.currentTab]}" var="permission">--%>
-                                <%--<td><input name="selectedSites" type="checkbox"--%>
-                                           <%--value="${permission.name}-${path}" ${permission.setForPath[path] ? 'checked="checked"':''} />--%>
-                                <%--</td>--%>
-                            <%--</c:forEach>--%>
-                            <%--<td>--%>
-                                <%--${path}--%>
-                            <%--</td>--%>
-                        <%--</tr>--%>
-                    <%--</c:forEach>--%>
-                    <%--</tbody>--%>
-                <%--</table>--%>
-            <%--</c:if>--%>
-        <%--</c:if>--%>
-
     </fieldset>
 
 </form>

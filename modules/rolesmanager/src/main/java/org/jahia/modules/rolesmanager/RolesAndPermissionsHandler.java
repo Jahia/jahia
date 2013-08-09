@@ -292,12 +292,14 @@ public class RolesAndPermissionsHandler implements Serializable {
         bean.setUuid(permissionNode.getIdentifier());
         bean.setParentPath(permissionNode.getParent().getPath());
         bean.setName(permissionNode.getName());
-        String title = permissionNode.getName();
-        if (title.contains(":")) {
-            title = StringUtils.substringAfter(title, ":");
+        String localName = permissionNode.getName();
+        if (localName.contains(":")) {
+            localName = StringUtils.substringAfter(localName, ":");
         }
-        title = StringUtils.capitalize(title.replaceAll("([A-Z])", " $0").replaceAll("[_-]"," ").toLowerCase());
-        bean.setTitle(Messages.getInternal("label.permission." + permissionNode.getName(), LocaleContextHolder.getLocale(), title));
+        String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]"," ").toLowerCase());
+        final String rbName = localName.replaceAll("-", "_");
+        bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+        bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
         bean.setPath(permissionNode.getPath());
         bean.setDepth(permissionNode.getDepth());
         bean.setScope(getScope(permissionNode));

@@ -69,6 +69,7 @@
             kaffe.util;resolution:=optional,
             net.sf.cglib.proxy;resolution:=optional,
             net.sf.cglib.reflect;resolution:=optional,
+            org.apache.bsf;resolution:=optional,
             org.apache.cactus;resolution:=optional,
             org.apache.cactus.server;resolution:=optional,
             org.apache.commons.cli2;resolution:=optional,
@@ -114,14 +115,7 @@
             sun.tools.native2ascii;resolution:=optional,
             weblogic;resolution:=optional,
             net.sf.jasperreports.engine;resolution:=optional,
-            net.sf.jasperreports.engine.query;resolution:=optional,
-            COM.ibm.netrexx.process;resolution:=optional,
-            netrexx.lang;resolution:=optional,
-            org.apache.avalon.framework.logger;resolution:=optional,
-            org.apache.log;resolution:=optional,
-            org.python.core;resolution:=optional,
-            org.python.util;resolution:=optional,
-            tcl.lang;resolution:=optional,
+            net.sf.jasperreports.engine.query;resolution:=optional
         </jahia.modules.test.importPackage>
     </properties>
 
@@ -438,13 +432,7 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.5</version>
-        </dependency>
-        <!--  BSF dependency required by TestNG but missing from BSH pom -->
-        <dependency>
-		    <groupId>bsf</groupId>
-		    <artifactId>bsf</artifactId>
-		    <version>2.4.0</version>
-		</dependency>
+        </dependency>         
     </dependencies>
 
     <build>

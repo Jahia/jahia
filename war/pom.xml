@@ -898,12 +898,12 @@
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-api</artifactId>
-                                    <version>${pax.web.version}</version>
+                                    <version>3.0.2</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-jsp</artifactId>
-                                    <version>${pax.web.version}</version>
+                                    <version>3.0.2-patch1</version>
                                 </artifactItem>
 
                                 <artifactItem>

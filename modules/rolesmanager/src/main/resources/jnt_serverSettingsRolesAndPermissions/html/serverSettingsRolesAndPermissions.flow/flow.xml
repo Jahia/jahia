@@ -20,6 +20,10 @@
             <evaluate expression="handler.getRole(requestParameters.uuid)" result="handler.roleBean"/>
         </transition>
 
+        <transition on="deleteRoles" to="view">
+            <evaluate expression="handler.deleteRoles(requestParameters.uuids)" />
+        </transition>
+
     </view-state>
 
     <view-state id="viewRole">

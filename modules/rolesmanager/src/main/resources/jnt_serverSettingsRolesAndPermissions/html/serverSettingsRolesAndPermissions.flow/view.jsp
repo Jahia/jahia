@@ -27,16 +27,26 @@
         function addSubRole() {
             var uuids = getUuids();
             if (uuids.length == 0) {
-                alert('<fmt:message key="rolesmanager.rolesAndPermissions.add.subRole.selectParent" />');
+                alert('<fmt:message key="rolesmanager.rolesAndPermissions.subRole.selectParent" />');
                 return false;
             }
             if (uuids.length > 1) {
-                alert('<fmt:message key="rolesmanager.rolesAndPermissions.add.subRole.selectOnlyOneParent" />');
+                alert('<fmt:message key="rolesmanager.rolesAndPermissions.subRole.selectOnlyOneParent" />');
                 return false;
             }
             $('#roleScope').val($("#"+uuids[0]).attr("roleScope"));
             $('#parentRoleId').val(uuids[0]);
             $('#roleForm').submit();
+        }
+        function deleteRoles() {
+            var uuids = getUuids();
+            if (uuids.length == 0) {
+                return false;
+            }
+            if(confirm('<fmt:message key="rolesmanager.rolesAndPermissions.role.delete.confirm" />')) {
+                $('#roleToDeleteUuids').val(uuids.join(","));
+                $('#deleteRolesForm').submit();
+            }
         }
     </script>
 </template:addResources>
@@ -44,7 +54,6 @@
     <fieldset>
         <h2>Roles and permissions</h2>
         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="roleForm">
-        <h3>Add role :</h3>
         <select id="roleScope" name="roleScope">
             <c:forEach items="${handler.roleTypes.values}" var="roleType">
                 <option value="${roleType.name}">
@@ -57,14 +66,22 @@
         <input type="hidden" name="_eventId_addRole"/>
         <button class="btn btn-primary" type="submit" onclick="${'#parentRoleId'}.val('')">
             <i class="icon-plus  icon-white"></i>
-            <fmt:message key="rolesmanager.rolesAndPermissions.add.role" />
+            <fmt:message key="rolesmanager.rolesAndPermissions.role.add" />
         </button>
         <button class="btn btn-primary" type="button" onclick="addSubRole()">
             <i class="icon-plus  icon-white"></i>
-            <fmt:message key="rolesmanager.rolesAndPermissions.add.subRole" />
+            <fmt:message key="rolesmanager.rolesAndPermissions.subRole.add" />
         </button>
         </form>
 
+        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="deleteRolesForm">
+            <input type="hidden" id="roleToDeleteUuids" name="uuids"/>
+            <input type="hidden" name="_eventId_deleteRoles"/>
+            <button class="btn btn-danger" type="button" onclick="deleteRoles()">
+                <i class="icon-remove  icon-white"></i>
+                <fmt:message key="rolesmanager.rolesAndPermissions.role.delete" />
+            </button>
+        </form>
     </fieldset>
 </div>
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">

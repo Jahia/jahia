@@ -1,6 +1,5 @@
 package org.jahia.modules.rolesmanager;
 
-import com.ibm.icu.text.Normalizer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
@@ -200,7 +199,7 @@ public class RolesAndPermissionsHandler implements Serializable {
 
         if (StringUtils.isBlank(roleName)) {
             messageContext.addMessage(new MessageBuilder().source("roleName")
-                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.add.role.noName"))
+                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.role.noName"))
                     .error()
                     .build());
             return false;
@@ -212,7 +211,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 Query.JCR_SQL2).execute().getNodes();
         if (nodes.hasNext()) {
             messageContext.addMessage(new MessageBuilder().source("roleName")
-                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.add.role.exists"))
+                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.role.exists"))
                     .error()
                     .build());
             return false;
@@ -235,6 +234,16 @@ public class RolesAndPermissionsHandler implements Serializable {
 
         currentUserSession.save();
         this.setRoleBean(getRole(role.getIdentifier()));
+        return true;
+    }
+
+    public boolean deleteRoles(String uuids) throws RepositoryException {
+        JCRSessionWrapper currentUserSession = getSession();
+        String[] uuidsArray = uuids.split(",");
+        for (String uuid : uuidsArray) {
+            currentUserSession.getNodeByIdentifier(uuid).remove();
+        }
+        currentUserSession.save();
         return true;
     }
 

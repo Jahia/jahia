@@ -51,8 +51,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -87,6 +87,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private RuntimeManager runtimeManager;
     private RuntimeEngine runtimeEngine;
     private AbstractPlatformTransactionManager platformTransactionManager;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -138,17 +140,24 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         this.platformTransactionManager = platformTransactionManager;
     }
 
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    public void setEm(EntityManager em) {
+        this.em = em;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
     }
 
     public void start() {
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jahia.services.workflow.jbpm");
         TransactionManager transactionManager = new DroolsSpringTransactionManager(platformTransactionManager);
         Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, emf);
-        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, emf);
+        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, em);
+        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, em);
         env.set("IS_JTA_TRANSACTION", false);
         env.set("IS_SHARED_ENTITY_MANAGER", true);
         env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);

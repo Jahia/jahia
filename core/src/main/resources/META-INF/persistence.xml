@@ -6,6 +6,7 @@
              xmlns="http://java.sun.com/xml/ns/persistence">
 
     <persistence-unit name="org.jahia.services.workflow.jbpm" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/jahia</non-jta-data-source>
         <mapping-file>META-INF/JBPMorm.xml</mapping-file>
         <mapping-file>META-INF/Taskorm.xml</mapping-file>

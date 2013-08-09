@@ -8,12 +8,34 @@
 
     </bean>
 
+    <bean id="jbpmDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/jahia"/>
+    </bean>
+
+
+    <bean id="jbpmEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="jbpmDataSource"/>
+        <property name="persistenceUnitName" value="org.jahia.services.workflow.jbpm"/>
+        <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+    </bean>
+
+    <bean id="jbpmEm"
+          class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="jbpmEmf"/>
+    </bean>
+
+    <bean id="jbpmTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="jbpmEmf"/>
+    </bean>
+
     <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider"
           factory-method="getInstance" init-method="start" destroy-method="stop">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
-        <property name="platformTransactionManager" ref="transactionManager"/>
+        <property name="platformTransactionManager" ref="jbpmTxManager"/>
+        <property name="emf" ref="jbpmEmf"/>
+        <property name="em" ref="jbpmEm"/>
         <property name="processes">
             <list>
                 <value>classpath*:org/jahia/modules/workflow/*.jpdl.xml</value>

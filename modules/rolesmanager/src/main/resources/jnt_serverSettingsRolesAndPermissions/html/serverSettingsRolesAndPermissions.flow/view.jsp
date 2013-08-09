@@ -13,12 +13,39 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <jsp:useBean id="nowDate" class="java.util.Date"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+<template:addResources>
+    <script type="text/javascript">
+        function getUuids() {
+            var uuids = new Array();
+            i = 0;
+            $(".roleCheckbox:checked").each(function (index) {
+                uuids[i++] = $(this).val();
+            });
+            return uuids;
+        }
+
+        function addSubRole() {
+            var uuids = getUuids();
+            if (uuids.length == 0) {
+                alert('<fmt:message key="rolesmanager.rolesAndPermissions.add.subRole.selectParent" />');
+                return false;
+            }
+            if (uuids.length > 1) {
+                alert('<fmt:message key="rolesmanager.rolesAndPermissions.add.subRole.selectOnlyOneParent" />');
+                return false;
+            }
+            $('#roleScope').val($("#"+uuids[0]).attr("roleScope"));
+            $('#parentRoleId').val(uuids[0]);
+            $('#roleForm').submit();
+        }
+    </script>
+</template:addResources>
 <div class="box-1">
     <fieldset>
         <h2>Roles and permissions</h2>
-        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" >
+        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="roleForm">
         <h3>Add role :</h3>
-        <select name="roleScope">
+        <select id="roleScope" name="roleScope">
             <c:forEach items="${handler.roleTypes.values}" var="roleType">
                 <option value="${roleType.name}">
                 <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${roleType.name}"/>
@@ -26,9 +53,15 @@
             </c:forEach>
         </select>
         <input type="text" id="addRoleField" name="newRole"/>
-        <button class="btn btn-primary" type="submit" name="_eventId_addRole" >
+        <input type="hidden" id="parentRoleId" name="parentRoleId"/>
+        <input type="hidden" name="_eventId_addRole"/>
+        <button class="btn btn-primary" type="submit" onclick="${'#parentRoleId'}.val('')">
             <i class="icon-plus  icon-white"></i>
-            Add
+            <fmt:message key="rolesmanager.rolesAndPermissions.add.role" />
+        </button>
+        <button class="btn btn-primary" type="button" onclick="addSubRole()">
+            <i class="icon-plus  icon-white"></i>
+            <fmt:message key="rolesmanager.rolesAndPermissions.add.subRole" />
         </button>
         </form>
 
@@ -44,7 +77,7 @@
 <c:forEach items="${roles}" var="entry" varStatus="loopStatus">
     <fieldset>
 
-           <h3> <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${entry.key}"/></h3>
+           <h3><fmt:message key="rolesmanager.rolesAndPermissions.roleType.${entry.key}"/></h3>
 
         <table class="table table-bordered table-striped table-hover">
             <thead>
@@ -63,10 +96,13 @@
             </thead>
 
             <tbody>
-            <c:forEach items="${entry.value}" var="role" varStatus="loopStatus">
+            <c:forEach items="${entry.value}" var="role" varStatus="loopStatus2">
                 <tr>
-                    <td><input name="selectedSites" type="checkbox" value="${role.name}"/></td>
+                    <td><input id="${role.uuid}" name="selectedRoles" class="roleCheckbox" type="checkbox" value="${role.uuid}" roleScope="${entry.key}" /></td>
                     <td>
+                        <c:forEach var="i" begin="3" end="${role.depth}" step="1" varStatus="loopStatus3">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </c:forEach>
                         <strong><a href="#" onclick="viewRole('${role.uuid}')">${role.title} (${role.name})</a></strong>
                     </td>
                     <td>

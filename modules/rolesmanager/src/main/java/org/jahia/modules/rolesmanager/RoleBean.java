@@ -9,6 +9,8 @@ public class RoleBean implements Serializable {
 
     private String name;
 
+    private String path;
+
     private String title;
 
     private String description;
@@ -22,7 +24,6 @@ public class RoleBean implements Serializable {
     private Map<String, Map<String, Map<String,PermissionBean>>> permissions;
 
 //    private Map<String, List<PermissionBean>> externalPermissions;
-
 
 
     public String getUuid() {
@@ -39,6 +40,14 @@ public class RoleBean implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getTitle() {

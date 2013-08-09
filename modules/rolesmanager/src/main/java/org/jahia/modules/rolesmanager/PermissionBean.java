@@ -11,6 +11,7 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     private String path;
     private boolean partialSet;
     private boolean set;
+    private boolean superSet;
     private int depth;
     private String scope;
 
@@ -76,6 +77,14 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
 
     public void setSet(boolean set) {
         this.set = set;
+    }
+
+    public boolean isSuperSet() {
+        return superSet;
+    }
+
+    public void setSuperSet(boolean superSet) {
+        this.superSet = superSet;
     }
 
     public int getDepth() {

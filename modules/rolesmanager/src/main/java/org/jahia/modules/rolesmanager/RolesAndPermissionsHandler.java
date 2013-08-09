@@ -1,7 +1,10 @@
 package org.jahia.modules.rolesmanager;
 
+import com.ibm.icu.text.Normalizer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -9,6 +12,8 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.NodeIterator;
@@ -88,7 +93,7 @@ public class RolesAndPermissionsHandler implements Serializable {
             Collections.sort(roleBeans, new Comparator<RoleBean>() {
                 @Override
                 public int compare(RoleBean o1, RoleBean o2) {
-                    return o1.getName().compareTo(o2.getName());
+                    return o1.getPath().compareTo(o2.getPath());
                 }
             });
         }
@@ -102,8 +107,9 @@ public class RolesAndPermissionsHandler implements Serializable {
         JCRNodeWrapper role = currentUserSession.getNodeByIdentifier(uuid);
 
         RoleBean roleBean = new RoleBean();
-        roleBean.setUuid(uuid);
+        roleBean.setUuid(role.getIdentifier());
         roleBean.setName(role.getName());
+        roleBean.setPath(role.getPath());
         roleBean.setDepth(role.getDepth());
         if (role.hasProperty("jcr:title")) {
             roleBean.setTitle(role.getProperty("jcr:title").getString());
@@ -120,17 +126,46 @@ public class RolesAndPermissionsHandler implements Serializable {
         RoleType roleType = roleTypes.get(roleGroup);
         roleBean.setRoleType(roleType);
 
+        List<String> tabs = new ArrayList<String>(roleBean.getRoleType().getScopes());
         List<String> setPermIds = new ArrayList<String>();
+        Map<String, List<String>> setExternalPermIds = new HashMap<String, List<String>>();
+        fillPermIds(role, tabs, setPermIds, setExternalPermIds, false);
+
+        List<String> setInheritedPermIds = new ArrayList<String>();
+        Map<String, List<String>> setInheritedExternalPermIds = new HashMap<String, List<String>>();
+        fillPermIds(role.getParent(), tabs, setInheritedPermIds, setInheritedExternalPermIds, true);
+
+        Map<String, Map<String, Map<String,PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String,PermissionBean>>>();
+        roleBean.setPermissions(permsForRole);
+
+        for (String tab : tabs) {
+            addPermissionsForTab(roleBean, tab, setPermIds, setExternalPermIds, setInheritedPermIds, setInheritedExternalPermIds);
+        }
+
+
+        return roleBean;
+    }
+
+    private void fillPermIds(JCRNodeWrapper role, List<String> tabs, List<String> setPermIds, Map<String, List<String>> setExternalPermIds, boolean recursive) throws RepositoryException {
+        if (!role.isNodeType(Constants.JAHIANT_ROLE)) {
+            return;
+        }
+
+        if (recursive) {
+            fillPermIds(role.getParent(), tabs, setPermIds, setExternalPermIds, true);
+        }
+
         if (role.hasProperty("j:permissions")) {
             Value[] values = role.getProperty("j:permissions").getValues();
             for (Value value : values) {
-                setPermIds.add(value.getString());
+                String valueString = value.getString();
+                if (!setPermIds.contains(valueString)) {
+                    setPermIds.add(valueString);
+                }
             }
         }
 
-        List<String> tabs = new ArrayList<String>(roleBean.getRoleType().getScopes());
 
-        Map<String, List<String>> setExternalPermIds = new HashMap<String, List<String>>();
         NodeIterator ni = role.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
@@ -140,7 +175,11 @@ public class RolesAndPermissionsHandler implements Serializable {
                     setExternalPermIds.put(path, new ArrayList<String>());
                     Value[] values = next.getProperty("j:permissions").getValues();
                     for (Value value : values) {
-                        setExternalPermIds.get(path).add(value.getString());
+                        List<String> xIds = setExternalPermIds.get(path);
+                        String valueString = value.getString();
+                        if (!xIds.contains(valueString)) {
+                            xIds.add(valueString);
+                        }
                         if (!tabs.contains(path)) {
                             tabs.add(path);
                         }
@@ -154,21 +193,38 @@ public class RolesAndPermissionsHandler implements Serializable {
                 }
             }
         }
-
-        Map<String, Map<String, Map<String,PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String,PermissionBean>>>();
-        roleBean.setPermissions(permsForRole);
-
-        for (String tab : tabs) {
-            addPermissionsForTab(roleBean, tab, setPermIds, setExternalPermIds);
-        }
-
-
-        return roleBean;
     }
 
-    public RoleBean addRole(String roleName, String scope) throws RepositoryException {
+    public boolean addRole(String roleName, String parentRoleId, String scope, MessageContext messageContext) throws RepositoryException {
         JCRSessionWrapper currentUserSession = getSession();
-        JCRNodeWrapper role = currentUserSession.getNode("/roles").addNode(roleName, "jnt:role");
+
+        if (StringUtils.isBlank(roleName)) {
+            messageContext.addMessage(new MessageBuilder().source("roleName")
+                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.add.role.noName"))
+                    .error()
+                    .build());
+            return false;
+        }
+        roleName = JCRContentUtils.generateNodeName(roleName);
+
+        NodeIterator nodes = currentUserSession.getWorkspace().getQueryManager().createQuery(
+                "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + roleName + "' and isdescendantnode(r,['/roles'])",
+                Query.JCR_SQL2).execute().getNodes();
+        if (nodes.hasNext()) {
+            messageContext.addMessage(new MessageBuilder().source("roleName")
+                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.add.role.exists"))
+                    .error()
+                    .build());
+            return false;
+        }
+
+        JCRNodeWrapper parent;
+        if (StringUtils.isBlank(parentRoleId)) {
+            parent = currentUserSession.getNode("/roles");
+        } else {
+            parent = currentUserSession.getNodeByIdentifier(parentRoleId);
+        }
+        JCRNodeWrapper role = parent.addNode(roleName, "jnt:role");
         RoleType roleType = roleTypes.get(scope);
         role.setProperty("j:roleGroup", roleType.getName());
         role.setProperty("j:privilegedAccess", roleType.isPrivileged());
@@ -178,10 +234,11 @@ public class RolesAndPermissionsHandler implements Serializable {
         role.setProperty("j:roleGroup", roleType.getName());
 
         currentUserSession.save();
-        return getRole(role.getIdentifier());
+        this.setRoleBean(getRole(role.getIdentifier()));
+        return true;
     }
 
-    private void addPermissionsForTab(RoleBean roleBean, String context, List<String> setPermIds, Map<String, List<String>> setExternalPermIds) throws RepositoryException {
+    private void addPermissionsForTab(RoleBean roleBean, String context, List<String> setPermIds, Map<String, List<String>> setExternalPermIds, List<String> setInheritedPermIds, Map<String, List<String>> setInheritedExternalPermIds) throws RepositoryException {
         final Map<String, Map<String, Map<String,PermissionBean>>> permissions = roleBean.getPermissions();
         if (!permissions.containsKey(context)) {
             permissions.put(context, new LinkedHashMap<String, Map<String, PermissionBean>>());
@@ -221,7 +278,15 @@ public class RolesAndPermissionsHandler implements Serializable {
                         PermissionBean parentBean = p.get(bean.getParentPath());
                         if (setPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSet())) {
                             bean.setSet(true);
-                            while (parentBean != null && !parentBean.isSet()) {
+                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                parentBean.setPartialSet(true);
+                                parentBean = p.get(parentBean.getParentPath());
+                            }
+                        }
+                        parentBean = p.get(bean.getParentPath());
+                        if (setInheritedPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSuperSet())) {
+                            bean.setSuperSet(true);
+                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
                                 parentBean.setPartialSet(true);
                                 parentBean = p.get(parentBean.getParentPath());
                             }
@@ -276,7 +341,16 @@ public class RolesAndPermissionsHandler implements Serializable {
                         if ((setExternalPermIds.get(context) != null && setExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
                                 || (parentBean != null && parentBean.isSet())) {
                             bean.setSet(true);
-                            while (parentBean != null && !parentBean.isSet()) {
+                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                parentBean.setPartialSet(true);
+                                parentBean = p.get(parentBean.getParentPath());
+                            }
+                        }
+                        parentBean = p.get(bean.getParentPath());
+                        if ((setInheritedExternalPermIds.get(context) != null && setInheritedExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
+                                || (parentBean != null && parentBean.isSuperSet())) {
+                            bean.setSuperSet(true);
+                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
                                 parentBean.setPartialSet(true);
                                 parentBean = p.get(parentBean.getParentPath());
                             }
@@ -374,7 +448,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
 
         if (!roleBean.getPermissions().containsKey(newContext)) {
-            addPermissionsForTab(roleBean, newContext, new ArrayList<String>(), new HashMap<String, List<String>>());
+            addPermissionsForTab(roleBean, newContext, new ArrayList<String>(), new HashMap<String, List<String>>(), new ArrayList<String>(), new HashMap<String, List<String>>());
         }
         setCurrentContext(newContext);
     }
@@ -498,6 +572,10 @@ public class RolesAndPermissionsHandler implements Serializable {
         roleBean.setTitle(title);
         roleBean.setDescription(description);
         roleBean.setHidden(hidden != null && hidden);
+    }
+
+    private String getMessage(String key) {
+        return Messages.get("resources.JahiaRolesManager", key, LocaleContextHolder.getLocale());
     }
 
 }

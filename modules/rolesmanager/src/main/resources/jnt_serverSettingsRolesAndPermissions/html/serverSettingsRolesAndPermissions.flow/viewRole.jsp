@@ -136,7 +136,7 @@
             <c:forEach items="${handler.roleBean.permissions[handler.currentContext]}" var="gentry" varStatus="status">
                 <c:forEach items="${gentry.value}" var="entry">
                     <c:set value="${entry.value}" var="permission"/>
-                    <c:if test="${permission.set and not handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].set}">
+                    <c:if test="${(permission.set or permission.superSet) and not (handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].set or handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].superSet)}">
                         <c:if test="${gentry.key eq handler.currentGroup}">
                             <a href="#${permission.path}" > ${permission.title} </a>
                         </c:if>
@@ -190,6 +190,7 @@
                         <div class="triState" style="height:13px; overflow: hidden">
 
                             <c:choose>
+                                <c:when test="${permission.superSet}"><span class="checkbox super-checked"></span></c:when>
                                 <c:when test="${permission.set}"><a class="checkbox checked" path="${permission.path}" parent="${permission.parentPath}" href=""></a></c:when>
                                 <c:when test="${permission.partialSet}"><a class="checkbox partial" path="${permission.path}" parent="${permission.parentPath}" href=""></a></c:when>
                                 <c:otherwise><a class="checkbox" path="${permission.path}" parent="${permission.parentPath}" href=""></a></c:otherwise>

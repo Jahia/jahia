@@ -764,10 +764,15 @@ public class Service extends JahiaService {
                         if (facetField.getValues() != null) {
                             for (Count facetFieldValue : facetField.getValues()) {
                                 try {
-                                    JCRNodeWrapper roleNode = session.getNode("/roles/"+facetFieldValue.getName());
-                                    if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
-                                        needPrivileged = true;
-                                        break;
+                                    NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
+                                            "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + facetFieldValue.getName() + "' and isdescendantnode(r,['/roles'])",
+                                            Query.JCR_SQL2).execute().getNodes();
+                                    if (ni.hasNext()) {
+                                        JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.nextNode();
+                                        if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
+                                            needPrivileged = true;
+                                            break;
+                                        }
                                     }
                                 } catch (PathNotFoundException e) {
                                     // ignore exception

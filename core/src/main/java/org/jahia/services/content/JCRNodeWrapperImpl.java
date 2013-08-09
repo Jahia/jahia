@@ -293,42 +293,41 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException {
-        JCRNodeWrapper roles = session.getNode("/roles");
         Map<String,List<JCRNodeWrapper>> res = new HashMap<String,List<JCRNodeWrapper>>();
-        NodeIterator ni = roles.getNodes();
+        NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
+                "select * from [" + Constants.JAHIANT_ROLE + "] as r where isdescendantnode(r,['/roles'])",
+                Query.JCR_SQL2).execute().getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper role = (JCRNodeWrapper) ni.nextNode();
-            if (role.isNodeType("jnt:role")) {
-                boolean add = false;
-                if (role.hasProperty("j:hidden") && role.getProperty("j:hidden").getBoolean()) {
-                    // skip
-                } else if (role.hasProperty("j:nodeTypes")) {
-                    Value[] values = role.getProperty("j:nodeTypes").getValues();
-                    if (values.length > 0) {
-                        for (Value value : values) {
-                            if (isNodeType(value.getString())) {
-                                add = true;
-                                break;
-                            }
+            boolean add = false;
+            if (role.hasProperty("j:hidden") && role.getProperty("j:hidden").getBoolean()) {
+                // skip
+            } else if (role.hasProperty("j:nodeTypes")) {
+                Value[] values = role.getProperty("j:nodeTypes").getValues();
+                if (values.length > 0) {
+                    for (Value value : values) {
+                        if (isNodeType(value.getString())) {
+                            add = true;
+                            break;
                         }
-                    } else {
-                        add = true;
                     }
                 } else {
                     add = true;
                 }
-                if (add) {
-                    String roleGroup;
-                    if (role.hasProperty("j:roleGroup")) {
-                        roleGroup = role.getProperty("j:roleGroup").getString();
-                    } else {
-                        roleGroup = "default";
-                    }
-                    if (!res.containsKey(roleGroup)) {
-                        res.put(roleGroup, new ArrayList<JCRNodeWrapper>());
-                    }
-                    res.get(roleGroup).add(role);
+            } else {
+                add = true;
+            }
+            if (add) {
+                String roleGroup;
+                if (role.hasProperty("j:roleGroup")) {
+                    roleGroup = role.getProperty("j:roleGroup").getString();
+                } else {
+                    roleGroup = "default";
                 }
+                if (!res.containsKey(roleGroup)) {
+                    res.put(roleGroup, new ArrayList<JCRNodeWrapper>());
+                }
+                res.get(roleGroup).add(role);
             }
         }
         return res;

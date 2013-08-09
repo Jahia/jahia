@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.jahia.api.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,8 +125,11 @@ public class AclListener extends DefaultEventListener {
                 }
 
                 for (String role : roles) {
-                    if (session.itemExists("/roles/"+role)) {
-                        JCRNodeWrapper roleNode = session.getNode("/roles/"+role);
+                    NodeIterator nodes = session.getWorkspace().getQueryManager().createQuery(
+                            "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
+                            Query.JCR_SQL2).execute().getNodes();
+                    if (nodes.hasNext()) {
+                        JCRNodeWrapper roleNode = (JCRNodeWrapper) nodes.nextNode();
                         NodeIterator r = roleNode.getNodes();
                         while (r.hasNext()) {
                             JCRNodeWrapper externalPermissions = (JCRNodeWrapper) r.nextNode();

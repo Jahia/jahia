@@ -45,12 +45,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
+import javax.jcr.query.Query;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +120,7 @@ public final class RBACUtils {
         }
         String name = StringUtils.substringAfterLast(path, "/");
         JCRNodeWrapper role = null;
-        JCRNodeWrapper base = session.getNode("/roles");
+        JCRNodeWrapper base = session.getNode(StringUtils.substringBeforeLast(path, "/"));
         if (!base.hasNode(name)) {
             session.checkout(base);
             role = base.addNode(name, "jnt:role");
@@ -162,8 +161,20 @@ public final class RBACUtils {
 
         JCRNodeWrapper permission = session.getNode(permissionPath);
         String permissionId = permission.getIdentifier();
-        JCRNodeWrapper role = session.getNode(rolePath.contains("/") ? rolePath : "/roles/"
-                + rolePath);
+        JCRNodeWrapper role = null;
+        if (rolePath.contains("/")) {
+            role = session.getNode(rolePath);
+        } else {
+            NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + rolePath + "' and isdescendantnode(r,['/roles'])",
+                    Query.JCR_SQL2).execute().getNodes();
+            if (ni.hasNext()) {
+                role = (JCRNodeWrapper) ni.nextNode();
+            }
+        }
+        if (role == null) {
+            throw new RepositoryException("Failed to get role: " + rolePath);
+        }
 
         if (role.hasProperty("j:permissions")) {
             Value[] values = role.getProperty("j:permissions").getValues();
@@ -222,8 +233,20 @@ public final class RBACUtils {
 
         JCRNodeWrapper permission = session.getNode(permissionPath);
         String permissionId = permission.getIdentifier();
-        JCRNodeWrapper role = session.getNode(rolePath.contains("/") ? rolePath : "/roles/"
-                + rolePath);
+        JCRNodeWrapper role = null;
+        if (rolePath.contains("/")) {
+            role = session.getNode(rolePath);
+        } else {
+            NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + rolePath + "' and isdescendantnode(r,['/roles'])",
+                    Query.JCR_SQL2).execute().getNodes();
+            if (ni.hasNext()) {
+                role = (JCRNodeWrapper) ni.nextNode();
+            }
+        }
+        if (role == null) {
+            throw new RepositoryException("Failed to get role: " + rolePath);
+        }
 
         if (!role.hasProperty("j:permissions")) {
             return false;
@@ -274,8 +297,20 @@ public final class RBACUtils {
 
         JCRNodeWrapper permission = session.getNode(permissionPath);
         String permissionId = permission.getIdentifier();
-        JCRNodeWrapper role = session.getNode(rolePath.contains("/") ? rolePath : "/roles/"
-                + rolePath);
+        JCRNodeWrapper role = null;
+        if (rolePath.contains("/")) {
+            role = session.getNode(rolePath);
+        } else {
+            NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + rolePath + "' and isdescendantnode(r,['/roles'])",
+                    Query.JCR_SQL2).execute().getNodes();
+            if (ni.hasNext()) {
+                role = (JCRNodeWrapper) ni.nextNode();
+            }
+        }
+        if (role == null) {
+            throw new RepositoryException("Failed to get role: " + rolePath);
+        }
 
         if (!role.hasProperty("j:permissions")) {
             return false;

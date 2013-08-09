@@ -208,7 +208,11 @@
                                         <li><a class="taskaction taskaction-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
                                         <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
                                         <c:if test="${not empty task.properties['targetNode'].node}">
-                                            <li><a class="taskaction taskaction-preview" target="_blank" href="<c:url value="${url.basePreview}${task.properties['targetNode'].node.path}.html"/>"><fmt:message key="label.preview"/></a></li>
+              	   							   <c:set var="currentTaskNode" value="${task.properties['targetNode'].node}" />
+                                        	   <c:if test="${not jcr:isNodeType(currentTaskNode,'jnt:page')}">
+                                        	     	<c:set var="currentTaskNode" value="${jcr:getParentOfType(currentTaskNode,'jnt:page')}" />
+                                        	   </c:if> 
+                                            <li><a class="taskaction taskaction-preview" target="_blank" href="<c:url value="${url.basePreview}${currentTaskNode.path}.html"/>"><fmt:message key="label.preview"/></a></li>
                                         </c:if>
                                         <c:if test="${not empty task.properties['possibleOutcomes']}">
                                             <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">

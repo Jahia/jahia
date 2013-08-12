@@ -40,10 +40,13 @@
 
 package org.jahia.taglibs.utility;
 
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.taglibs.internal.date.AbstractDateTag;
 import org.joda.time.*;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -58,7 +61,12 @@ public class DateDiffTag extends AbstractDateTag {
     private Date startDate;
     private Date endDate;
     private String format;
+    private int scope = PageContext.PAGE_SCOPE;
 
+    public void setScope(String scope) {
+        this.scope = Util.getScope(scope);
+    }
+    
 	public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
@@ -84,7 +92,7 @@ public class DateDiffTag extends AbstractDateTag {
             if("years".equals(format)) {
             	int years = Years.yearsBetween(new DateTime(startDate), new DateTime(endDate)).getYears();
                 if(getVar() != null) {
-                	pageContext.setAttribute(getVar(), new Integer(years));
+                	pageContext.setAttribute(getVar(), new Integer(years), scope);
                 } else {
                 	pageContext.getOut().print(years);
                 }
@@ -92,7 +100,7 @@ public class DateDiffTag extends AbstractDateTag {
             else if("months".equals(format)) {
             	int months = Months.monthsBetween(new DateTime(startDate), new DateTime(endDate)).getMonths();
                 if(getVar() != null) {
-               	    pageContext.setAttribute(getVar(), new Integer(months));
+               	    pageContext.setAttribute(getVar(), new Integer(months), scope);
                 } else {
             	    pageContext.getOut().print(months);
                 }
@@ -100,7 +108,7 @@ public class DateDiffTag extends AbstractDateTag {
             else if("days".equals(format)) {
             	int days = Days.daysBetween(new DateTime(startDate), new DateTime(endDate)).getDays();
                 if(getVar() != null) {
-               	  	pageContext.setAttribute(getVar(), new Integer(days));
+               	  	pageContext.setAttribute(getVar(), new Integer(days), scope);
                 } else {
             	    pageContext.getOut().print(days); 
                 }

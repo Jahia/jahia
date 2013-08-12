@@ -96,6 +96,21 @@ public final class JahiaPrivilegeRegistry {
         }
     }
 
+    public static void addModulePrivileges(Session session, String path) throws RepositoryException {
+        Node perms = session.getNode(path + "/permissions");
+
+        Set<Privilege> privileges = new HashSet<Privilege>(20);
+
+        registerPrivileges(perms, privileges);
+
+        for (Privilege p : privileges) {
+            map.put(p.getName(), p);
+            if (!allPrivileges.contains(p.getName())) {
+                allPrivileges.add(p.getName());
+            }
+        }
+    }
+
     public JahiaPrivilegeRegistry(NamespaceRegistry ns) {
         this.ns = ns;
     }
@@ -115,7 +130,12 @@ public final class JahiaPrivilegeRegistry {
         try {
             String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
             boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
-            Privilege priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges);
+            PrivilegeImpl priv =(PrivilegeImpl) map.get(expandedName);
+            if (priv == null) {
+                priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges);
+            } else {
+                priv.addPrivileges(subPrivileges);
+            }
             privileges.add(priv);
             return priv;
         } catch (NamespaceException ne) {

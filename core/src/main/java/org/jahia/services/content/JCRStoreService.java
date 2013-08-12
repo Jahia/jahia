@@ -212,7 +212,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JahiaPrivilegeRegistry.init(session);
+//                    JahiaPrivilegeRegistry.init(session);
                     Query query = session.getWorkspace().getQueryManager().createQuery(
                             "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
                     QueryResult queryResult = query.execute();

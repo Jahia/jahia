@@ -154,7 +154,27 @@ public class TemplatePackageDeployer {
                         JCRSessionFactory.getInstance().setCurrentUser(user);
                     }
                 } else {
-                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
+                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, new HashSet<String>(Arrays.asList("permissions.xml","roles.xml")));
+                    if (targetPath.equals("/")) {
+                        List<String> fileList = new ArrayList<String>();
+                        Map<String, Long> sizes = new HashMap<String, Long>();
+                        importExportService.getFileList(importFile ,sizes, fileList);
+                        if (sizes.containsKey("permissions.xml")) {
+                            Set<String> s = new HashSet<String>(sizes.keySet());
+                            s.remove("permissions.xml");
+                            if (!session.itemExists("/modules/" + aPackage.getRootFolderWithVersion()+"/permissions")) {
+                                session.getNode("/modules/" + aPackage.getRootFolderWithVersion()).addNode("permissions","jnt:permission");
+                            }
+                            importExportService.importZip("/modules/" + aPackage.getRootFolderWithVersion(), importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s);
+                        }
+                        if (sizes.containsKey("roles.xml")) {
+                            Set<String> s = new HashSet<String>(sizes.keySet());
+                            s.remove("roles.xml");
+                            session.getPathMapping().put("/permissions", "/modules/" + aPackage.getRootFolderWithVersion() + "/permissions");
+                            importExportService.importZip("/", importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s);
+                            session.getPathMapping().remove("/permissions");
+                        }
+                    }
                 }
             } catch (IOException e) {
                 throw new RepositoryException(e);

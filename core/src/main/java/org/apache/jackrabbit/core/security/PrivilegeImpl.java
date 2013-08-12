@@ -70,6 +70,18 @@ public class PrivilegeImpl implements Privilege {
         }
     }
 
+    void addPrivileges(Set<Privilege> p) {
+        declaredAggregates.removeAll(p);
+        if (declaredAggregates.addAll(p)) {
+            aggregates.addAll(declaredAggregates);
+            for (Privilege priv : p) {
+                for (Privilege privilege : priv.getAggregatePrivileges()) {
+                    aggregates.add(privilege);
+                }
+            }
+        }
+    }
+
     public String getName() {
         return expandedName;
     }

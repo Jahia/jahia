@@ -42,6 +42,7 @@ package org.jahia.services.templates;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -435,6 +436,21 @@ public class TemplatePackageRegistry {
 //        for (JahiaTemplatesPackage sourcePack : registry.values()) {
 //        computeResourceBundleHierarchy(templatePackage);
 //        }
+
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    if (session.itemExists("/modules/" + templatePackage.getRootFolderWithVersion()+"/permissions")) {
+                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + templatePackage.getRootFolderWithVersion());
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Cannot get permissions in module",e);
+        }
+
 
         Resource[] rootResources = templatePackage.getResources("");
         for (Resource rootResource : rootResources) {

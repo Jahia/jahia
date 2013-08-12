@@ -1598,7 +1598,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     ZipEntry zipentry = zis.getNextEntry();
                     if (zipentry == null) break;
                     String name = zipentry.getName();
-                    if (name.equals(LIVE_REPOSITORY_XML)) {
+                    if (name.equals(LIVE_REPOSITORY_XML)&& !filesToIgnore.contains(name)) {
                         long timerLive = System.currentTimeMillis();
                         logger.info("Start importing " + LIVE_REPOSITORY_XML);
 
@@ -1667,7 +1667,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 ZipEntry zipentry = zis.getNextEntry();
                 if (zipentry == null) break;
                 String name = zipentry.getName();
-                if (name.equals(REPOSITORY_XML)) {
+                if (name.equals(REPOSITORY_XML)&& !filesToIgnore.contains(name)) {
                     long timerDefault = System.currentTimeMillis();
                     logger.info("Start importing " + REPOSITORY_XML);
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
@@ -1762,7 +1762,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Done importing file {} in {} ms", file, System.currentTimeMillis() - timer);
     }
 
-    private void getFileList(Resource file, Map<String, Long> sizes, List<String> fileList) throws IOException {
+    public void getFileList(Resource file, Map<String, Long> sizes, List<String> fileList) throws IOException {
         NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
         try {
             while (true) {

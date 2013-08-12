@@ -389,35 +389,8 @@ public class MainModule extends Module {
         center.layout(true);
     }
 
-<<<<<<< .working
     public static void waitingMask(String text) {
         getInstance().mask(text,"x-mask-loading");
-=======
-                        scrollContainer.setVScrollPosition(i);
-                        List<String> list = new ArrayList<String>(1);
-                        list.add(path);
-                        editLinker.getMainModule().unmask();
-                        editLinker.onModuleSelection(MainModule.this);
-
-                        if (contextMenu != null) {
-                            contextMenu.hide();
-                        }
-
-                        switchStaticAssets(result.getStaticAssets());
-                    }
-
-                    @Override
-                    public void onApplicationFailure(Throwable caught) {
-                        if (!previousPath.equals(path)) {
-                            path = previousPath;
-                            template = previousTemplate;
-                            editLinker.onMainSelection(previousPath, previousTemplate, null);
-                        }
-                        editLinker.getMainModule().unmask();
-                    }
-                });
-
->>>>>>> .merge-right.r47006
     }
 
     private String getUrl(String path, String template) {
@@ -974,7 +947,9 @@ public class MainModule extends Module {
 
 
                     }
-                    contextMenu.hide();
+                    if (contextMenu != null) {
+                        contextMenu.hide();
+                    }
                     if (el != null) {
                         ModuleHelper.initAllModules(MainModule.this, body,elBody, config);
                         ModuleHelper.buildTree(MainModule.this,el);

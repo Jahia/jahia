@@ -130,34 +130,37 @@ public class AclListener extends DefaultEventListener {
                             Query.JCR_SQL2).execute().getNodes();
                     if (nodes.hasNext()) {
                         JCRNodeWrapper roleNode = (JCRNodeWrapper) nodes.nextNode();
-                        NodeIterator r = roleNode.getNodes();
-                        while (r.hasNext()) {
-                            JCRNodeWrapper externalPermissions = (JCRNodeWrapper) r.nextNode();
-                            if (externalPermissions.isNodeType("jnt:externalPermissions")) {
-                                String path = externalPermissions.getProperty("j:path").getString();
-                                path = path.replace("$currentSite", ace.getResolveSite().getPath());
-                                logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() +" on " + path);
-                                JCRNodeWrapper refNode = session.getNode(path);
-                                if (!refNode.hasNode("j:acl")) {
-                                    refNode.addMixin("jmix:accessControlled");
-                                    refNode.addNode("j:acl","jnt:acl");
-                                }
-                                JCRNodeWrapper acl = refNode.getNode("j:acl");
-                                String n = "REF" + externalPermissions.getName() + "_" + JCRContentUtils.replaceColon(principal);
-                                if (!acl.hasNode(n)) {
-                                    JCRNodeWrapper refAce = acl.addNode(n, "jnt:externalAce");
-                                    refAce.setProperty("j:aceType", "GRANT");
-                                    refAce.setProperty("j:principal", principal);
-                                    refAce.setProperty("j:roles", new String[] {role});
-                                    refAce.setProperty("j:externalPermissionsName", externalPermissions.getName());
-                                    refAce.setProperty("j:protected", true);
-                                    refAce.setProperty("j:sourceAce", new Value[] { session.getValueFactory().createValue(ace, true)});
-                                } else {
-                                    JCRNodeWrapper refAce = acl.getNode(n);
-                                    refAce.getProperty("j:sourceAce").addValue(session.getValueFactory().createValue(ace, true));
+                        do {
+                            NodeIterator r = roleNode.getNodes();
+                            while (r.hasNext()) {
+                                JCRNodeWrapper externalPermissions = (JCRNodeWrapper) r.nextNode();
+                                if (externalPermissions.isNodeType("jnt:externalPermissions")) {
+                                    String path = externalPermissions.getProperty("j:path").getString();
+                                    path = path.replaceFirst("^currentSite", ace.getResolveSite().getPath());
+                                    logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() +" on " + path);
+                                    JCRNodeWrapper refNode = session.getNode(path);
+                                    if (!refNode.hasNode("j:acl")) {
+                                        refNode.addMixin("jmix:accessControlled");
+                                        refNode.addNode("j:acl","jnt:acl");
+                                    }
+                                    JCRNodeWrapper acl = refNode.getNode("j:acl");
+                                    String n = "REF" + externalPermissions.getName() + "_" + JCRContentUtils.replaceColon(principal);
+                                    if (!acl.hasNode(n)) {
+                                        JCRNodeWrapper refAce = acl.addNode(n, "jnt:externalAce");
+                                        refAce.setProperty("j:aceType", "GRANT");
+                                        refAce.setProperty("j:principal", principal);
+                                        refAce.setProperty("j:roles", new String[] {roleNode.getName()});
+                                        refAce.setProperty("j:externalPermissionsName", externalPermissions.getName());
+                                        refAce.setProperty("j:protected", true);
+                                        refAce.setProperty("j:sourceAce", new Value[] { session.getValueFactory().createValue(ace, true)});
+                                    } else {
+                                        JCRNodeWrapper refAce = acl.getNode(n);
+                                        refAce.getProperty("j:sourceAce").addValue(session.getValueFactory().createValue(ace, true));
+                                    }
                                 }
                             }
-                        }
+                            roleNode = roleNode.getParent();
+                        } while (roleNode.isNodeType(Constants.JAHIANT_ROLE));
                     }
                 }
                 session.save();

@@ -12,7 +12,6 @@ expander rules.dsl
 global User user
 global Service service
 global Logger logger
-global SeoService seoService
 global JCRContentUtils jcrUtils
 ###############################################################################
 

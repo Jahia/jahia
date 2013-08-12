@@ -988,7 +988,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected boolean hasAccess(JCRNodeWrapper node) {
         if (requiredPermission != null) {
-            return node.hasPermission(requiredPermission);
+            try {
+                return node.getResolveSite().hasPermission(requiredPermission);
+            } catch (RepositoryException e) {
+                return false;
+            }
         }
         return true;
     }

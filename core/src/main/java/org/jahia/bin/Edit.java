@@ -89,10 +89,10 @@ public class Edit extends Render {
                 logger.error("Someone have tried to access the live repository in edit mode");
                 return false;
             }
+            return node.getResolveSite().hasPermission(editConfiguration.getRequiredPermission()) && super.hasAccess(node);
         } catch (RepositoryException e) {
             return false;
         }
-        return node.hasPermission(editConfiguration.getRequiredPermission()) && super.hasAccess(node);
     }
 
     @Override

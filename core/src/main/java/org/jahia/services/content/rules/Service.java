@@ -709,8 +709,9 @@ public class Service extends JahiaService {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper node = session.getNode(path);
-                if (!node.hasNode(name)) {
-                    node.addNode(name, "jnt:permission");
+                String replacedname = name.replace(":","_");
+                if (!node.hasNode(replacedname)) {
+                    node.addNode(replacedname, "jnt:permission");
                 }
                 session.save();
                 return null;

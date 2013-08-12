@@ -138,51 +138,51 @@
             </studioSelector>
         </studioMode>
 
-        <editMode jcr:primaryType="jnt:permission" j:requirePrivileged="true">
-            <editModeAccess jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-            <useComponent jcr:primaryType="jnt:permission" j:nodeTypes="jnt:component" j:requirePrivileged="true">
-                <useComponentForCreate jcr:primaryType="jnt:permission" j:nodeTypes="jnt:component" j:requirePrivileged="true"/>
-                <useComponentForEdit jcr:primaryType="jnt:permission" j:nodeTypes="jnt:component" j:requirePrivileged="true"/>
+        <editMode jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite">
+            <editModeAccess jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+            <useComponent jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true">
+                <useComponentForCreate jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
+                <useComponentForEdit jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true"/>
             </useComponent>
-            <editSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true">
-                <categoriesSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <contentSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <createSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <filesAndImagesSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <latestSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <portletsSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <searchSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <sitemapSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+            <editSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite">
+                <categoriesSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <contentSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <createSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <filesAndImagesSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <latestSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <portletsSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <searchSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <sitemapSelector jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
             </editSelector>
 
-            <engineTabs jcr:primaryType="jnt:permission" j:requirePrivileged="true">
-                <viewCategoriesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewContentTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewLayoutTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewMetadataTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewOptionsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true">
-                    <viewComponentRightsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                    <viewLiveRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                    <viewEditRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+            <engineTabs jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite">
+                <viewCategoriesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewContentTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewLayoutTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewMetadataTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewOptionsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite">
+                    <viewComponentRightsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                    <viewLiveRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                    <viewEditRolesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
                 </viewRolesTab>
-                <viewSeoTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewTagsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewUsagesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewWorkflowTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewHistoryTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewVersioningTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewVisibilityTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
-                <viewContributeModeTab jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+                <viewSeoTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewTagsTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewUsagesTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewWorkflowTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewHistoryTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewVersioningTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewVisibilityTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
+                <viewContributeModeTab jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
             </engineTabs>
             
-            <editModeActions jcr:primaryType="jnt:permission" j:requirePrivileged="true">
-                <createPageAction jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+            <editModeActions jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite">
+                <createPageAction jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
             </editModeActions>
         </editMode>
 
-        <contributeMode jcr:primaryType="jnt:permission" j:requirePrivileged="true">
-            <contributeModeAccess jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+        <contributeMode jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite">
+            <contributeModeAccess jcr:primaryType="jnt:permission" j:requirePrivileged="true" j:nodeTypes="jnt:virtualsite"/>
         </contributeMode>
 
         <managers jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true">
@@ -203,10 +203,10 @@
             <_x0031_-step-unpublication-unpublish jcr:primaryType="jnt:permission" />
         </workflow-tasks>
 
-        <wysiwyg-editor-toolbar jcr:primaryType="jnt:permission">
-            <view-full-wysiwyg-editor jcr:primaryType="jnt:permission"/>
-            <view-basic-wysiwyg-editor jcr:primaryType="jnt:permission"/>
-            <view-light-wysiwyg-editor jcr:primaryType="jnt:permission"/>
+        <wysiwyg-editor-toolbar jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite">
+            <view-full-wysiwyg-editor jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite"/>
+            <view-basic-wysiwyg-editor jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite"/>
+            <view-light-wysiwyg-editor jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite"/>
         </wysiwyg-editor-toolbar>
 
         <jobs jcr:primaryType="jnt:permission" j:nodeTypes="jnt:virtualsite" j:requirePrivileged="true">
@@ -216,6 +216,8 @@
         <actions jcr:primaryType="jnt:permission"/>
 
         <templates jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
+
+        <components jcr:primaryType="jnt:permission" j:requirePrivileged="true"/>
     </permissions>
 
     <roles jcr:primaryType="jnt:roles">
@@ -243,102 +245,165 @@
                     /permissions/editMode/useComponent"
                     />
 
-        <contributor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
+        <contributor j:hidden="false"
                      j:permissions="/permissions/repository-permissions/jcr:all_default
-                     /permissions/contributeMode
-                     /permissions/editMode/engineTabs/viewContentTab
-                     /permissions/editMode/engineTabs/viewMetadataTab
-                     /permissions/editMode/engineTabs/viewCategoriesTab
-                     /permissions/editMode/engineTabs/viewTagsTab
                      /permissions/workflow-tasks/1-step-publication-start
                      /permissions/workflow-tasks/1-step-unpublication-start
-                     /permissions/wysiwyg-editor-toolbar/view-basic-wysiwyg-editor"
-                     j:privilegedAccess="true"/>
-
-        <editor jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                j:permissions="/permissions/repository-permissions/jcr:all_default
-                /permissions/editMode/editModeActions
-                /permissions/editMode/editModeAccess
-                /permissions/editMode/editSelector
-                /permissions/editMode/engineTabs/viewContentTab
-                /permissions/editMode/engineTabs/viewLayoutTab
-                /permissions/editMode/engineTabs/viewMetadataTab
-                /permissions/editMode/engineTabs/viewOptionsTab
-                /permissions/editMode/engineTabs/viewCategoriesTab
-                /permissions/editMode/engineTabs/viewRolesTab/viewLiveRolesTab
-                /permissions/editMode/engineTabs/viewTagsTab
-                /permissions/editMode/engineTabs/viewSeoTab
-                /permissions/editMode/engineTabs/viewVisibilityTab
-                /permissions/editMode/engineTabs/viewContributeModeTab
-                /permissions/contributeMode
-                /permissions/templates
+                     /permissions/workflow-tasks/2-step-publication-finish-correction
+                     /permissions/workflow-tasks/2-step-publication-start"
+                     j:privilegedAccess="true"
+                     j:roleGroup="edit-role"
+                     jcr:primaryType="jnt:role">
+            <currentSite-access j:path="currentSite"
+                                j:permissions="/permissions/contributeMode
+                                /permissions/managers/editorialContentManager
+                                /permissions/managers/fileManager"
+                                jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Can edit content using contribute mode"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Contributor"/>
+        </contributor>
+        <editor j:hidden="false"
+                j:permissions="/modules/default/permissions/actions/default/move
+                /permissions/repository-permissions/jcr:all_default
                 /permissions/workflow-tasks/1-step-publication-start
                 /permissions/workflow-tasks/1-step-unpublication-start
-                /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
+                /permissions/workflow-tasks/2-step-publication-finish-correction
+                /permissions/workflow-tasks/2-step-publication-start"
                 j:privilegedAccess="true"
-                >
+                j:roleGroup="edit-role"
+                jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissions="/permissions/managers"
+                                j:permissions="/permissions/editMode/editModeAccess
+                                /permissions/editMode/editModeActions
+                                /permissions/editMode/editSelector
+                                /permissions/editMode/engineTabs/viewCategoriesTab
+                                /permissions/editMode/engineTabs/viewContentTab
+                                /permissions/editMode/engineTabs/viewContributeModeTab
+                                /permissions/editMode/engineTabs/viewLayoutTab
+                                /permissions/editMode/engineTabs/viewMetadataTab
+                                /permissions/editMode/engineTabs/viewOptionsTab
+                                /permissions/editMode/engineTabs/viewSeoTab
+                                /permissions/editMode/engineTabs/viewTagsTab
+                                /permissions/editMode/engineTabs/viewVisibilityTab
+                                /permissions/managers
+                                /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
                                 jcr:primaryType="jnt:externalPermissions"/>
-
-            <editor-in-chief jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                             j:permissions="/permissions/workflow-tasks
-                             /permissions/repository-permissions/publish
-                             /permissions/jobs
-                             /permissions/editMode"
+            <editor-in-chief j:hidden="false"
+                             j:permissions="/modules/wiki/permissions/actions/wiki
+                             /permissions/repository-permissions/publish /permissions/workflow-tasks"
                              j:privilegedAccess="true"
-                    />
+                             j:roleGroup="edit-role"
+                             jcr:primaryType="jnt:role">
+                <j:translation_en jcr:description="View all engine tabs, is also allowed to grant and revoke roles on content"
+                                  jcr:language="en"
+                                  jcr:primaryType="jnt:translation"
+                                  jcr:title="Editor in chief"/>
+                <currentSite-access j:path="currentSite"
+                                    j:permissions="/permissions/editMode"
+                                    jcr:primaryType="jnt:externalPermissions"/>
+            </editor-in-chief>
+            <j:translation_en jcr:description="Can edit content using edit mode"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Editor"/>
         </editor>
 
-        <reviewer jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                   j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default
-                   /permissions/repository-permissions/publish
-                   /permissions/editMode/editModeAccess
-                   /permissions/editMode/engineTabs/viewContentTab
-                   /permissions/editMode/engineTabs/viewMetadataTab
-                   /permissions/editMode/engineTabs/viewCategoriesTab
-                   /permissions/editMode/engineTabs/viewTagsTab
-                   /permissions/editMode/engineTabs/viewSeoTab
-                   /permissions/editMode/editSelector/sitemapSelector
-                   /permissions/contributeMode/contributeModeAccess
-                   /permissions/workflow-tasks/1-step-publication-review
-                   /permissions/workflow-tasks/1-step-unpublication-unpublish"
-                   j:privilegedAccess="true"
-                />
+        <reviewer j:hidden="false"
+                  j:permissions="/modules/default/permissions/actions/default/startWorkflow
+                  /permissions/repository-permissions/jcr:all_default/jcr:read_default
+                  /permissions/repository-permissions/publish
+                  /permissions/workflow-tasks/1-step-publication-choose-remote-publication
+                  /permissions/workflow-tasks/1-step-publication-review
+                  /permissions/workflow-tasks/1-step-unpublication-choose-remote-publication
+                  /permissions/workflow-tasks/1-step-unpublication-unpublish
+                  /permissions/workflow-tasks/2-step-publication-choose-remote-publication
+                  /permissions/workflow-tasks/2-step-publication-final-review
+                  /permissions/workflow-tasks/2-step-publication-first-review"
+                  j:privilegedAccess="true"
+                  j:roleGroup="edit-role"
+                  jcr:primaryType="jnt:role">
+            <currentSite-access j:path="currentSite"
+                                j:permissions="/permissions/contributeMode
+                                /permissions/editMode/editModeAccess
+                                /permissions/editMode/editSelector/sitemapSelector
+                                /permissions/editMode/engineTabs/viewCategoriesTab
+                                /permissions/editMode/engineTabs/viewContentTab
+                                /permissions/editMode/engineTabs/viewLayoutTab
+                                /permissions/editMode/engineTabs/viewMetadataTab
+                                /permissions/editMode/engineTabs/viewSeoTab
+                                /permissions/editMode/engineTabs/viewTagsTab"
+                                jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Grant access to view the content and validate changes done by editors before publication"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Reviewer"/>
+        </reviewer>
 
-        <web-designer jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="server-role"
-                      j:privilegedAccess="true">
-            <studio-access jcr:primaryType="jnt:externalPermissions" j:path="/modules"
-                           j:permissions="/permissions/studioMode
-                                          /permissions/repository-permissions/jcr:all_default" />
-            <modules-management jcr:primaryType="jnt:externalPermissions" j:path="/"
-                                j:permissions="/permissions/admin/adminTemplates" />
-        </web-designer>
-
-        <site-administrator jcr:primaryType="jnt:role" j:nodeTypes="jnt:virtualsite" j:roleGroup="site-role"
+        <web-designer j:hidden="false"
+                      j:nodeTypes="rep:root"
+                      j:permissions=""
+                      j:privilegedAccess="true"
+                      j:roleGroup="server-role"
+                      jcr:primaryType="jnt:role">
+            <settings-access j:path="/settings"
+                             j:permissions="/permissions/admin/adminTemplates"
+                             jcr:primaryType="jnt:externalPermissions"/>
+            <modules-access j:path="/modules"
                             j:permissions="/permissions/repository-permissions/jcr:all_default
+                            /permissions/studioMode"
+                            jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Gives full access to the studio"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Web designer"/>
+        </web-designer>
+        <site-administrator j:hidden="false"
+                            j:nodeTypes="jnt:virtualsite"
+                            j:permissions="/permissions/contributeMode
                             /permissions/editMode
-                            /permissions/contributeMode
                             /permissions/managers/categoryManager
                             /permissions/managers/editorialContentManager
                             /permissions/managers/fileManager
                             /permissions/managers/portletManager
+                            /permissions/managers/remotePublicationManager
+                            /permissions/managers/repositoryExplorer
                             /permissions/managers/siteManager
                             /permissions/managers/tagManager
-                            /permissions/wysiwyg-editor-toolbar
+                            /permissions/repository-permissions/jcr:all_default
                             /permissions/site-admin
-                            /permissions/templates"
-                            j:privilegedAccess="true" />
-
-        <server-administrator jcr:primaryType="jnt:role" j:nodeTypes="rep:root" j:roleGroup="server-role"
-                              j:permissions="/permissions/repository-permissions/jcr:all_default" j:privilegedAccess="true">
-            <settings-access jcr:primaryType="jnt:externalPermissions" j:path="/settings"
-                         j:permissions="/permissions/admin" />
-            <permissions-access jcr:primaryType="jnt:externalPermissions" j:path="/permissions"
-                                j:permissions="/permissions/repository-permissions/jcr:all_default" />
-            <roles-access jcr:primaryType="jnt:externalPermissions" j:path="/roles"
-                          j:permissions="/permissions/repository-permissions/jcr:all_default" />
+                            /permissions/templates
+                            /permissions/wysiwyg-editor-toolbar"
+                            j:privilegedAccess="true"
+                            j:roleGroup="site-role"
+                            jcr:primaryType="jnt:role">
+            <j:translation_en jcr:description=""
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title=""/>
+        </site-administrator>
+        <server-administrator j:hidden="false"
+                              j:nodeTypes="rep:root"
+                              j:permissions="/permissions/repository-permissions/jcr:all_default"
+                              j:privilegedAccess="true"
+                              j:roleGroup="server-role"
+                              jcr:primaryType="jnt:role">
+            <settings-access j:path="/settings"
+                             j:permissions="/modules/translation/permissions/admin"
+                             jcr:primaryType="jnt:externalPermissions"/>
+            <permissions-access j:path="/permissions"
+                                j:permissions="/permissions/repository-permissions/jcr:all_default"
+                                jcr:primaryType="jnt:externalPermissions"/>
+            <roles-access j:path="/roles"
+                          j:permissions="/permissions/repository-permissions/jcr:all_default"
+                          jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Grant access to the server administration"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Server administrator"/>
         </server-administrator>
+
 
     </roles>
 </content>

@@ -174,7 +174,7 @@ public class TemplateHelper {
             }
 
             if (permission != null) {
-                if (!node.hasPermission(permission)) {
+                if (!node.getResolveSite().hasPermission(permission)) {
                     throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.access.denied",uiLocale));
                 }
             }

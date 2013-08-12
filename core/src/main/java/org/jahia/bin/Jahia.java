@@ -108,7 +108,16 @@ public final class Jahia {
     
     private static String EDITION;
 
-    private static final Version JAHIA_VERSION = new Version(Constants.JAHIA_PROJECT_VERSION);
+    private static final Version JAHIA_VERSION;
+
+    static {
+        Version v = null;
+        try {
+            v = new Version(Constants.JAHIA_PROJECT_VERSION);
+        } catch (NumberFormatException e) {
+        }
+        JAHIA_VERSION = v != null ? v : new Version("6.7.0.0");
+    }
 
     /** Jahia server release number */
     private static double RELEASE_NUMBER = -1.0;

@@ -282,7 +282,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 if (allGroups.containsKey(permissionGroup.getName())) {
                     Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
                     if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
-                        if (!p.containsKey(getPermissionPath(permissionNode))) {
+                        if (!p.containsKey(getPermissionPath(permissionNode)) || permissionNode.getPath().startsWith("/permissions")) {
                             PermissionBean bean = new PermissionBean();
                             setPermissionBeanProperties(permissionNode, bean);
                             PermissionBean parentBean = p.get(bean.getParentPath());
@@ -307,7 +307,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 }
             }
         } else {
-            List<JCRNodeWrapper> perms = new ArrayList<JCRNodeWrapper>(allPermissions.get("nt:base"));
+            List<JCRNodeWrapper> perms = new ArrayList<JCRNodeWrapper>();
 
             String type="nt:base";
 
@@ -332,6 +332,8 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (!type.equals("nt:base") && allPermissions.containsKey(type)) {
                 perms.addAll(allPermissions.get(type));
             }
+
+            perms.addAll(allPermissions.get("nt:base"));
 
             Map<String,String> allGroups = new HashMap<String,String>();
             for (String s : permissions.get(context).keySet()) {

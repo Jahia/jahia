@@ -313,7 +313,9 @@ public class MainModule extends Module {
                         editLinker.getMainModule().unmask();
                         editLinker.onModuleSelection(MainModule.this);
 
-                        contextMenu.hide();
+                        if (contextMenu != null) {
+                            contextMenu.hide();
+                        }
 
                         switchStaticAssets(result.getStaticAssets());
                     }

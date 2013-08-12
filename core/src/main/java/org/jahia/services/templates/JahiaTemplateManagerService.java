@@ -833,7 +833,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     NodeIterator ni2 = q.execute().getNodes();
                     while (ni2.hasNext()) {
                         JCRNodeWrapper i = (JCRNodeWrapper) ni2.next();
-                        i.remove();
+                        if (!child.hasNode(StringUtils.substringAfter(i.getPath(),"/components/"))) {
+                            i.remove();
+                        }
                     }
                 }
                 templatesSynchro(child, node, session, references, newNode, false, true, moduleName, child.isNodeType("jnt:templatesFolder") || child.isNodeType("jnt:componentFolder"));
@@ -929,7 +931,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             mixin = destinationNode.getMixinNodeTypes();
             for (NodeType aMixin : mixin) {
-                if (!source.isNodeType(aMixin.getName())) {
+                if (!source.isNodeType(aMixin.getName()) && !aMixin.getName().equals("jmix:accessControlled")) {
                     destinationNode.removeMixin(aMixin.getName());
                 }
             }

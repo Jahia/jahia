@@ -1155,6 +1155,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 if (transCodeTarget != null) {
                     sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
                 }
+<<<<<<< .working
                 Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
                 if (!patch.getDeltas().isEmpty()) {
                     targetContent = (List<String>) patch.applyTo(targetContent);
@@ -1171,6 +1172,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         output = new FileOutputStream(target);
                         IOUtils.write(sourceArray, output);
                         return true;
+=======
+                if (child.isNodeType("jnt:componentFolder")) {
+                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from['jnt:component'] as c where ['j:moduleName']='"+moduleName+"' and isdescendantnode(c,'"+destinationNode.getPath()+"')", Query.JCR_SQL2);
+                    NodeIterator ni2 = q.execute().getNodes();
+                    while (ni2.hasNext()) {
+                        JCRNodeWrapper i = (JCRNodeWrapper) ni2.next();
+                        if (!child.hasNode(StringUtils.substringAfter(i.getPath(),"/components/"))) {
+                            i.remove();
+                        }
+>>>>>>> .merge-right.r46985
                     }
                 } finally {
                     IOUtils.closeQuietly(input);
@@ -1247,6 +1258,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             } catch (Exception e) {
                 logger.error("Cannot get source control", e);
             }
+<<<<<<< .working
+=======
+
+            mixin = destinationNode.getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                if (!source.isNodeType(aMixin.getName()) && !aMixin.getName().equals("jmix:accessControlled")) {
+                    destinationNode.removeMixin(aMixin.getName());
+                }
+            }
+>>>>>>> .merge-right.r46985
         }
     }
 

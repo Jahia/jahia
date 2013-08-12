@@ -120,19 +120,20 @@ public class PublicationHelper {
     public Map<String,GWTJahiaPublicationInfo> getAggregatedPublicationInfosByLanguage(JCRNodeWrapper node, Set<String> languages, JCRSessionWrapper currentUserSession, boolean includesReferences, boolean includesSubnodes) throws GWTJahiaServiceException {
         try {
             HashMap<String, GWTJahiaPublicationInfo> infos = new HashMap<String, GWTJahiaPublicationInfo>(languages.size());
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(node.getIdentifier(), languages, includesReferences, includesSubnodes, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
-            if (!includesSubnodes) {
-                // We don't include subnodes, but we still need the translation nodes to get the correct status
-                final JCRSessionWrapper unlocalizedSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-                NodeIterator ni = unlocalizedSession.getNodeByIdentifier(node.getIdentifier()).getNodes(JCRNodeWrapperImpl.TRANSLATION_NODES_PATTERN);
-                while (ni.hasNext()) {
-                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                    PublicationInfo translationInfo = publicationService.getPublicationInfo(next.getIdentifier(), languages, includesReferences, false, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
-                    pubInfo.getRoot().addChild(translationInfo.getRoot());
-                }
-            }
 
             for (String language : languages) {
+                PublicationInfo pubInfo = publicationService.getPublicationInfo(node.getIdentifier(), Collections.singleton(language), includesReferences, includesSubnodes, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+                if (!includesSubnodes) {
+                    // We don't include subnodes, but we still need the translation nodes to get the correct status
+                    final JCRSessionWrapper unlocalizedSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+                    NodeIterator ni = unlocalizedSession.getNodeByIdentifier(node.getIdentifier()).getNodes(JCRNodeWrapperImpl.TRANSLATION_NODES_PATTERN);
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                        PublicationInfo translationInfo = publicationService.getPublicationInfo(next.getIdentifier(), Collections.singleton(language), includesReferences, false, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+                        pubInfo.getRoot().addChild(translationInfo.getRoot());
+                    }
+                }
+
                 GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getUuid(), pubInfo.getRoot().getStatus());
 //                if (pubInfo.getRoot().isLocked()  ) {
 //                gwtInfo.setLocked(true);
@@ -209,12 +210,12 @@ public class PublicationHelper {
                                                                  boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
         try {
             if (!checkForUnpublication) {
-                List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
-                for (PublicationInfo info : infos) {
-                    info.clearInternalAndPublishedReferences(uuids);
-                }
                 LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
                 for (String language : languages) {
+                    List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, Collections.singleton(language), true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+                    for (PublicationInfo info : infos) {
+                        info.clearInternalAndPublishedReferences(uuids);
+                    }
                     final List<GWTJahiaPublicationInfo> infoList = convert(infos, currentUserSession, language, "publish");
                     String lastGroup = null;
                     String lastTitle = null;

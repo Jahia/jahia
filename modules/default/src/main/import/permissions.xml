@@ -5,7 +5,6 @@
              xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <actions jcr:primaryType="jnt:permission">
         <default jcr:primaryType="jnt:permission">
-            <publish jcr:primaryType="jnt:permission"/>
             <startWorkflow jcr:primaryType="jnt:permission"/>
             <executeTask jcr:primaryType="jnt:permission"/>
             <commentTask jcr:primaryType="jnt:permission"/>

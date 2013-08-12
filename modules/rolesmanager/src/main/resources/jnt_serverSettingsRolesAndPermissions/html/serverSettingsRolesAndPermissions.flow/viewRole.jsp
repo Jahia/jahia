@@ -26,8 +26,6 @@
 
             $("#selectedPermissions").val(selectedPermissions)
             $("#partialSelectedPermissions").val(partialSelectedPermissions)
-
-            window.alert(partial);
         })
 
         $(".checkbox").click(function() {

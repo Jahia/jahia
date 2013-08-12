@@ -278,29 +278,31 @@ public class RolesAndPermissionsHandler implements Serializable {
             }
 
             for (JCRNodeWrapper permissionNode : perms) {
-                JCRNodeWrapper permissionGroup = (JCRNodeWrapper) permissionNode.getAncestor(2);
+                JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
                 if (allGroups.containsKey(permissionGroup.getName())) {
                     Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
                     if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
-                        PermissionBean bean = new PermissionBean();
-                        setPermissionBeanProperties(permissionNode, bean);
-                        PermissionBean parentBean = p.get(bean.getParentPath());
-                        if (setPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSet())) {
-                            bean.setSet(true);
-                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                parentBean.setPartialSet(true);
-                                parentBean = p.get(parentBean.getParentPath());
+                        if (!p.containsKey(getPermissionPath(permissionNode))) {
+                            PermissionBean bean = new PermissionBean();
+                            setPermissionBeanProperties(permissionNode, bean);
+                            PermissionBean parentBean = p.get(bean.getParentPath());
+                            if (setPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSet())) {
+                                bean.setSet(true);
+                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                    parentBean.setPartialSet(true);
+                                    parentBean = p.get(parentBean.getParentPath());
+                                }
                             }
-                        }
-                        parentBean = p.get(bean.getParentPath());
-                        if (setInheritedPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSuperSet())) {
-                            bean.setSuperSet(true);
-                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                parentBean.setPartialSet(true);
-                                parentBean = p.get(parentBean.getParentPath());
+                            parentBean = p.get(bean.getParentPath());
+                            if (setInheritedPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSuperSet())) {
+                                bean.setSuperSet(true);
+                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                    parentBean.setPartialSet(true);
+                                    parentBean = p.get(parentBean.getParentPath());
+                                }
                             }
+                            p.put(getPermissionPath(permissionNode), bean);
                         }
-                        p.put(permissionNode.getPath(), bean);
                     }
                 }
             }
@@ -339,41 +341,68 @@ public class RolesAndPermissionsHandler implements Serializable {
             }
 
             for (JCRNodeWrapper permissionNode : perms) {
-                JCRNodeWrapper permissionGroup = (JCRNodeWrapper) permissionNode.getAncestor(2);
+                JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
                 if (allGroups.containsKey(permissionGroup.getName())) {
                     Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
                     if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
-                        ExternalPermissionBean bean = new ExternalPermissionBean();
-                        setPermissionBeanProperties(permissionNode, bean);
-                        bean.setTargetPath(context);
-                        PermissionBean parentBean = p.get(bean.getParentPath());
-                        if ((setExternalPermIds.get(context) != null && setExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
-                                || (parentBean != null && parentBean.isSet())) {
-                            bean.setSet(true);
-                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                parentBean.setPartialSet(true);
-                                parentBean = p.get(parentBean.getParentPath());
+                        if (!p.containsKey(getPermissionPath(permissionNode))) {
+                            ExternalPermissionBean bean = new ExternalPermissionBean();
+                            setPermissionBeanProperties(permissionNode, bean);
+                            bean.setTargetPath(context);
+                            PermissionBean parentBean = p.get(bean.getParentPath());
+                            if ((setExternalPermIds.get(context) != null && setExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
+                                    || (parentBean != null && parentBean.isSet())) {
+                                bean.setSet(true);
+                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                    parentBean.setPartialSet(true);
+                                    parentBean = p.get(parentBean.getParentPath());
+                                }
                             }
-                        }
-                        parentBean = p.get(bean.getParentPath());
-                        if ((setInheritedExternalPermIds.get(context) != null && setInheritedExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
-                                || (parentBean != null && parentBean.isSuperSet())) {
-                            bean.setSuperSet(true);
-                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                parentBean.setPartialSet(true);
-                                parentBean = p.get(parentBean.getParentPath());
+                            parentBean = p.get(bean.getParentPath());
+                            if ((setInheritedExternalPermIds.get(context) != null && setInheritedExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
+                                    || (parentBean != null && parentBean.isSuperSet())) {
+                                bean.setSuperSet(true);
+                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                    parentBean.setPartialSet(true);
+                                    parentBean = p.get(parentBean.getParentPath());
+                                }
                             }
+                            p.put(getPermissionPath(permissionNode), bean);
                         }
-                        p.put(permissionNode.getPath(), bean);
                     }
                 }
             }
         }
     }
 
+    private String getPermissionPath(JCRNodeWrapper permissionNode) {
+        String path = permissionNode.getPath();
+        if (path.startsWith("/modules")) {
+            path = "/permissions/" + StringUtils.substringAfter(path, "/permissions/");
+        }
+        return path;
+    }
+
+    private int getPermissionDepth(JCRNodeWrapper permissionNode) throws RepositoryException {
+        String path = permissionNode.getPath();
+        if (path.startsWith("/modules")) {
+            return permissionNode.getDepth() - 3;
+        }
+        return permissionNode.getDepth();
+    }
+
+    private JCRNodeWrapper getPermissionGroupNode(JCRNodeWrapper permissionNode) throws RepositoryException {
+        JCRNodeWrapper permissionGroup = (JCRNodeWrapper) permissionNode.getAncestor(2);
+        if (permissionGroup.isNodeType("jnt:module")) {
+            permissionGroup = (JCRNodeWrapper) permissionNode.getAncestor(5);
+        }
+        return permissionGroup;
+    }
+
     private void setPermissionBeanProperties(JCRNodeWrapper permissionNode, PermissionBean bean) throws RepositoryException {
         bean.setUuid(permissionNode.getIdentifier());
-        bean.setParentPath(permissionNode.getParent().getPath());
+
+        bean.setParentPath(getPermissionPath(permissionNode.getParent()));
         bean.setName(permissionNode.getName());
         String localName = permissionNode.getName();
         if (localName.contains(":")) {
@@ -383,8 +412,8 @@ public class RolesAndPermissionsHandler implements Serializable {
         final String rbName = localName.replaceAll("-", "_");
         bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
         bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
-        bean.setPath(permissionNode.getPath());
-        bean.setDepth(permissionNode.getDepth());
+        bean.setPath(getPermissionPath(permissionNode));
+        bean.setDepth(getPermissionDepth(permissionNode));
         bean.setScope(getScope(permissionNode));
     }
 
@@ -425,6 +454,8 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
         return scope;
     }
+
+
 
 //    private Scope getScopeForType(String s) throws RepositoryException {
 //        Scope scope = Scope.OTHER;
@@ -513,16 +544,18 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (key.equals("/")) {
                 key = "root-access";
             } else {
-                key = ISO9075.encode(key.substring(1).replace("/", "-")) + "-access";
+                key = ISO9075.encode((key.startsWith("/") ? key.substring(1) : key).replace("/", "-")) + "-access";
             }
-            if (!role.hasNode(key)) {
-                JCRNodeWrapper extPermissions = role.addNode(key, "jnt:externalPermissions");
-                extPermissions.setProperty("j:path", s.getKey());
-                extPermissions.setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
-            } else {
-                role.getNode(key).setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+            if (!s.getValue().isEmpty()) {
+                if (!role.hasNode(key)) {
+                    JCRNodeWrapper extPermissions = role.addNode(key, "jnt:externalPermissions");
+                    extPermissions.setProperty("j:path", s.getKey());
+                    extPermissions.setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                } else {
+                    role.getNode(key).setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                }
+                externalPermissionNodes.add(key);
             }
-            externalPermissionNodes.add(key);
         }
         NodeIterator ni = role.getNodes();
         while (ni.hasNext()) {
@@ -557,8 +590,12 @@ public class RolesAndPermissionsHandler implements Serializable {
         NodeIterator ni = q.execute().getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            if (next.getDepth() > 1) {
-                String scope = getScope((JCRNodeWrapper)next.getAncestor(2));
+            int depth = 2;
+            if (((JCRNodeWrapper)next.getAncestor(1)).isNodeType("jnt:modules")) {
+                depth = 5;
+            }
+            if (next.getDepth() >= depth) {
+                String scope = getScope((JCRNodeWrapper)next.getAncestor(depth));
                 if (!allPermissions.containsKey(scope)) {
                     allPermissions.put(scope,new ArrayList<JCRNodeWrapper>());
                 }
@@ -569,7 +606,10 @@ public class RolesAndPermissionsHandler implements Serializable {
             Collections.sort(list, new Comparator<JCRNodeWrapper>() {
                 @Override
                 public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
-                    return o1.getPath().compareTo(o2.getPath());
+                    if (getPermissionPath(o1).equals(getPermissionPath(o2))) {
+                        return -o1.getPath().compareTo(o2.getPath());
+                    }
+                    return getPermissionPath(o1).compareTo(getPermissionPath(o2));
                 }
             });
         }

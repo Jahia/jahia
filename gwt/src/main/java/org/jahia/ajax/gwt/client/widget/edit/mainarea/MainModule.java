@@ -389,8 +389,33 @@ public class MainModule extends Module {
         center.layout(true);
     }
 
+<<<<<<< .working
     public static void waitingMask(String text) {
         getInstance().mask(text,"x-mask-loading");
+=======
+                        scrollContainer.setVScrollPosition(i);
+                        List<String> list = new ArrayList<String>(1);
+                        list.add(path);
+                        editLinker.getMainModule().unmask();
+                        editLinker.onModuleSelection(MainModule.this);
+
+                        contextMenu.hide();
+
+                        switchStaticAssets(result.getStaticAssets());
+                    }
+
+                    @Override
+                    public void onApplicationFailure(Throwable caught) {
+                        if (!previousPath.equals(path)) {
+                            path = previousPath;
+                            template = previousTemplate;
+                            editLinker.onMainSelection(previousPath, previousTemplate, null);
+                        }
+                        editLinker.getMainModule().unmask();
+                    }
+                });
+
+>>>>>>> .merge-right.r46988
     }
 
     private String getUrl(String path, String template) {

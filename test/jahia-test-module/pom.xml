@@ -44,7 +44,7 @@
     <parent>
         <artifactId>jahia-test-parent</artifactId>
         <groupId>org.jahia.test</groupId>
-        <version>6.6.1.8-SNAPSHOT</version>
+        <version>6.6.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>jahia-test-module</artifactId>
     <name>Jahia Test Module Package</name>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.6.1.8-SNAPSHOT</version>
+            <version>6.6.2.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>6.6.1.8-SNAPSHOT</version>
+            <version>6.6.2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     	<dependency>

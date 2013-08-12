@@ -60,6 +60,7 @@
         <li><a href="jcrIntegrityTools.jsp">JCR integrity tools</a></li>
         <li><a href="jcrExternalProviders.jsp">JCR external providers</a></li>
         <li><a href="jcrComponents.jsp">JCR components and nodetypes integrity tools</a></li>
+        <li><a href="checklocks.jsp">JCR check locks tools</a></li>
     </ul>
 </fieldset>
 <fieldset>

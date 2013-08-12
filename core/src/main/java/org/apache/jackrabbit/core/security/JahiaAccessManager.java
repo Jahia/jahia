@@ -73,7 +73,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicy;
@@ -124,6 +123,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     protected JahiaPrincipal jahiaPrincipal;
 
     private Session securitySession;
+    private Session defaultWorkspaceSecuritySession;
+
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
@@ -192,6 +193,25 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return securitySession;
     }
 
+    public Session getDefaultWorkspaceSecuritySession() throws RepositoryException {
+        if (workspaceConfig.getName().equals("default")) {
+            return getSecuritySession();
+        }
+
+        if (defaultWorkspaceSecuritySession != null) {
+            return defaultWorkspaceSecuritySession;
+        }
+
+        // create subject with SystemPrincipal
+        Set<SystemPrincipal> principals = new HashSet<SystemPrincipal>();
+        principals.add(new SystemPrincipal());
+        Subject systemSubject = new Subject(true, principals, Collections.EMPTY_SET, Collections.EMPTY_SET);
+
+        defaultWorkspaceSecuritySession = new JahiaSystemSession(repositoryContext, systemSubject,
+                repositoryContext.getRepository().getConfig().getWorkspaceConfig("default"));
+        return defaultWorkspaceSecuritySession;
+    }
+
     public boolean isSystemPrincipal() {
         return jahiaPrincipal != null && jahiaPrincipal.isSystem();
     }
@@ -235,6 +255,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public void close() throws Exception {
         if (securitySession != null) {
             securitySession.logout();
+        }
+        if (defaultWorkspaceSecuritySession != null) {
+            defaultWorkspaceSecuritySession.logout();
         }
     }
 
@@ -634,7 +657,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                     if (!perm.granted) {
                         continue;
                     }
-                    if (matchPermission(permissions, role, s)) {
+                    if (matchPermission(permissions, role)) {
                         return true;
                     }
                 }
@@ -655,19 +678,22 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    public Set<Privilege> getPermissionsInRole(String role, Session s) throws RepositoryException {
+    public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
         if (privilegesInRole.containsKey(role)) {
             return privilegesInRole.get(role);
         } else {
             Set<Privilege> list = new HashSet<Privilege>();
             try {
-                NodeIterator nodes = securitySession.getWorkspace().getQueryManager().createQuery(
-                        "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
+                NodeIterator nodes = getDefaultWorkspaceSecuritySession().getWorkspace().getQueryManager().createQuery(
+                        "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + StringUtils.substringBefore(role,"/") + "' and isdescendantnode(r,['/roles'])",
                         Query.JCR_SQL2).execute().getNodes();
                 if (nodes.hasNext()) {
                     Node roleNode = nodes.nextNode();
+                    if (role.contains("/")) {
+                        roleNode = roleNode.getNode(StringUtils.substringAfter(role,"/"));
+                    }
                     list = getPrivileges(roleNode);
-                    privilegesInRole.put(roleNode.getName(), list);
+                    privilegesInRole.put(role, list);
                 }
             } catch (PathNotFoundException e) {
             }
@@ -701,8 +727,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return privileges;
     }
 
-    public boolean matchPermission(Set<String> permissions, String role, Session s) throws RepositoryException {
-        Set<Privilege> permsInRole = getPermissionsInRole(role, s);
+    public boolean matchPermission(Set<String> permissions, String role) throws RepositoryException {
+        Set<Privilege> permsInRole = getPermissionsInRole(role);
         if (logger.isDebugEnabled()) {
             logger.debug("Checking role {}", role);
         }
@@ -783,12 +809,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (isAdmin(jahiaPrincipal.getName(), 0)) {
             return getSupportedPrivileges(absPath);
         }
-        Session s = getSecuritySession();
+
         Set<String> grantedRoles = getRoles(absPath);
 
         for (String role : grantedRoles) {
             Node node = null;
-            NodeIterator nodes = securitySession.getWorkspace().getQueryManager().createQuery(
+            NodeIterator nodes = getDefaultWorkspaceSecuritySession().getWorkspace().getQueryManager().createQuery(
                     "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
                     Query.JCR_SQL2).execute().getNodes();
             if (nodes.hasNext()) {
@@ -845,7 +871,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
         Set<String> grantedRoles = new HashSet<String>();
         Set<String> foundRoles = new HashSet<String>();
-        Session s = getSecuritySession();
+        Session s = getDefaultWorkspaceSecuritySession();
         Node n = s.getNode(absPath);
 
         String site = null;

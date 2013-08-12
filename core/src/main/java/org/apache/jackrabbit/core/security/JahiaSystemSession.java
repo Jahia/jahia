@@ -77,7 +77,7 @@ public class JahiaSystemSession extends SessionImpl {
      * @param repositoryContext
      * @param wspConfig
      */
-    JahiaSystemSession(RepositoryContext repositoryContext, Subject subject,
+    public JahiaSystemSession(RepositoryContext repositoryContext, Subject subject,
                        WorkspaceConfig wspConfig)
             throws RepositoryException {
         super(repositoryContext, subject, wspConfig);

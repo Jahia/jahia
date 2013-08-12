@@ -144,7 +144,7 @@ public class AclListener extends DefaultEventListener {
                                         refNode.addNode("j:acl","jnt:acl");
                                     }
                                     JCRNodeWrapper acl = refNode.getNode("j:acl");
-                                    String n = "REF" + externalPermissions.getName() + "_" + JCRContentUtils.replaceColon(principal);
+                                    String n = "REF" + roleNode.getName() + "_" + externalPermissions.getName() + "_" + JCRContentUtils.replaceColon(principal);
                                     if (!acl.hasNode(n)) {
                                         JCRNodeWrapper refAce = acl.addNode(n, "jnt:externalAce");
                                         refAce.setProperty("j:aceType", "GRANT");

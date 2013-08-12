@@ -269,17 +269,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 boolean isVisible = true;
 
                 try {
-<<<<<<< .working
                     isVisible = renderContext.getEditModeConfig() == null || renderContext.isVisible(node);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
-=======
-                    boolean canEdit = node.hasPermission("jcr:write") && canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource);
->>>>>>> .merge-right.r46980
 
                 try {
-                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
+                    boolean canEdit = node.hasPermission("jcr:write") && canEdit(renderContext) && contributeAccess(renderContext,
                             resource.getNode()) && !isExcluded(renderContext, resource);
 
                     pageContext.getRequest().setAttribute("editableModule", canEdit && checkStudioLock(renderContext, node));

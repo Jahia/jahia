@@ -131,7 +131,7 @@
 // Role based access control
 //---------------------------------------------------------
 
-[jnt:role] > nt:base, mix:title, jmix:autoPublish, jmix:observable
+[jnt:role] > nt:base, mix:title, jmix:observable, jmix:nolive
  - jcr:description (string,textarea) i18n itemtype = content
  - j:nodeTypes (string,choicelist[nodetypes=nt:base]) multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
@@ -142,14 +142,14 @@
  + * (jnt:externalPermissions)
  + * (jnt:role)
 
-[jnt:roles] > nt:base, jmix:autoPublish, jmix:observable
+[jnt:roles] > nt:base, jmix:observable, jmix:nolive
  + * (jnt:role)
 
 [jnt:externalPermissions]
  - j:path (string)
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
 
-[jnt:permission] > nt:base, mix:title, jmix:autoPublish, jmix:observable
+[jnt:permission] > nt:base, jmix:rbTitle, jmix:observable, jmix:nolive
  - j:isAbstract (boolean)
  - j:dependencies (weakreference) protected hidden multiple < jnt:permission
  - j:nodeTypes (string,choicelist[nodetypes=nt:base]) multiple
@@ -586,7 +586,7 @@
  + * (jnt:componentFolder)
 
 // @since Jahia 6.6
-[jnt:component] > nt:base, jmix:nodenameInfo, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
+[jnt:component] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:nolive, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:i18n, jmix:originWS, jmix:description, mix:title
  - j:moduleName (string) hidden nofulltext
 
 // @since Jahia 6.6

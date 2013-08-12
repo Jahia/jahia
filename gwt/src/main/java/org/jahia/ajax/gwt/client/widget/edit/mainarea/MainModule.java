@@ -312,6 +312,9 @@ public class MainModule extends Module {
                         list.add(path);
                         editLinker.getMainModule().unmask();
                         editLinker.onModuleSelection(MainModule.this);
+
+                        contextMenu.hide();
+
                         switchStaticAssets(result.getStaticAssets());
                     }
 

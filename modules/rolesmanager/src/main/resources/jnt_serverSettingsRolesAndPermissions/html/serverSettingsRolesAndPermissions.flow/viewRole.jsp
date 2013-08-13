@@ -169,11 +169,8 @@
                 <th width="40%">
                     <fmt:message key="label.name"/>
                 </th>
-                <th width="42%">
+                <th width="57%">
                     <fmt:message key="label.description"/>
-                </th>
-                <th width="15%">
-                    Scope
                 </th>
             </tr>
             </thead>
@@ -204,9 +201,6 @@
                     </td>
                     <td>
                             ${permission.description}
-                    </td>
-                    <td>
-                            ${permission.scope}
                     </td>
                 </tr>
             </c:forEach>

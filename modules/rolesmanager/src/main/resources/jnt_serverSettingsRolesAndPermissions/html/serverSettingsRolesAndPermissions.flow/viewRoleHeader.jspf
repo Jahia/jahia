@@ -43,7 +43,7 @@
                     <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${permissionGroup.key}
                 </c:if>
                 <c:if test="${not fn:startsWith(permissionGroup.key, '/')}">
-                    <fmt:message key="rolesmanager.rolesAndPermissions.context.${permissionGroup.key}"/>
+                    <fmt:message key="rolesmanager.rolesAndPermissions.context.${permissionGroup.key}.${fn:replace(handler.roleBean.roleType.name,'-','_')}"/>
                 </c:if>
             </button>
             <c:if test="${not functions:contains(handler.roleBean.roleType.scopes,permissionGroup.key)}">

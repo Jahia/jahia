@@ -34,7 +34,7 @@
                 alert('<fmt:message key="rolesmanager.rolesAndPermissions.subRole.selectOnlyOneParent" />');
                 return false;
             }
-            $('#roleScope').val($("#"+uuids[0]).attr("roleScope"));
+            $('#roleType').val($("#"+uuids[0]).attr("roleType"));
             $('#parentRoleId').val(uuids[0]);
             $('#roleForm').submit();
         }
@@ -54,7 +54,7 @@
     <fieldset>
         <h2>Roles and permissions</h2>
         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="roleForm">
-        <select id="roleScope" name="roleScope">
+        <select id="roleType" name="roleType">
             <c:forEach items="${handler.roleTypes.values}" var="roleType">
                 <option value="${roleType.name}">
                 <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${roleType.name}"/>
@@ -115,7 +115,7 @@
             <tbody>
             <c:forEach items="${entry.value}" var="role" varStatus="loopStatus2">
                 <tr>
-                    <td><input id="${role.uuid}" name="selectedRoles" class="roleCheckbox" type="checkbox" value="${role.uuid}" roleScope="${entry.key}" /></td>
+                    <td><input id="${role.uuid}" name="selectedRoles" class="roleCheckbox" type="checkbox" value="${role.uuid}" roleType="${entry.key}" /></td>
                     <td>
                         <c:forEach var="i" begin="3" end="${role.depth}" step="1" varStatus="loopStatus3">
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

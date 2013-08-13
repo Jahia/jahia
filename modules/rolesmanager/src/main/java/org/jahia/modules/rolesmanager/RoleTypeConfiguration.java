@@ -7,6 +7,8 @@ public class RoleTypeConfiguration {
 
     private Map<String,List<String>> permissionsGroups;
 
+    private Map<String,List<String>> permissionsMapping;
+
     public RoleTypeConfiguration() {
     }
 
@@ -31,5 +33,13 @@ public class RoleTypeConfiguration {
 
     public void setPermissionsGroups(Map<String, List<String>> permissionsGroups) {
         this.permissionsGroups = permissionsGroups;
+    }
+
+    public Map<String, List<String>> getPermissionsMapping() {
+        return permissionsMapping;
+    }
+
+    public void setPermissionsMapping(Map<String, List<String>> permissionsMapping) {
+        this.permissionsMapping = permissionsMapping;
     }
 }

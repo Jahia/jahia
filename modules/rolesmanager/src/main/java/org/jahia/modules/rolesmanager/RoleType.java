@@ -1,6 +1,8 @@
 package org.jahia.modules.rolesmanager;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class RoleType implements Serializable {
@@ -9,6 +11,10 @@ public class RoleType implements Serializable {
     private boolean isPrivileged;
 
     private Set<String> scopes;
+
+    private Map<String,List<String>> permissionsGroups;
+
+
 
     public RoleType() {
     }
@@ -44,4 +50,13 @@ public class RoleType implements Serializable {
     public void setScopes(Set<String> scopes) {
         this.scopes = scopes;
     }
+
+    public Map<String, List<String>> getPermissionsGroups() {
+        return permissionsGroups;
+    }
+
+    public void setPermissionsGroups(Map<String, List<String>> permissionsGroups) {
+        this.permissionsGroups = permissionsGroups;
+    }
+
 }

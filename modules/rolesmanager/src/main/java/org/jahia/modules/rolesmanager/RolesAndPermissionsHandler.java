@@ -39,16 +39,11 @@ public class RolesAndPermissionsHandler implements Serializable {
     private String currentContext;
     private String currentGroup;
 
-    private transient Map<String,List<JCRNodeWrapper>> allPermissions;
+    private boolean usePermissionMapping = true;
+
+    private transient List<JCRNodeWrapper> allPermissions;
 
     public RolesAndPermissionsHandler() {
-
-//        defaultTabsForRoleByScope = new HashMap<RoleType, List<String>>();
-//        defaultTabsForRoleByScope.put(RoleType.SERVER_ROLE, Arrays.asList("scope." + Scope.SERVER_SETTINGS.name(), "scope." + Scope.SITE.name(), "scope." + Scope.CONTENT.name(), "scope." + Scope.JCR.name()));
-//        defaultTabsForRoleByScope.put(RoleType.SITE_ROLE, Arrays.asList("scope." + Scope.SITE.name(), "scope." + Scope.CONTENT.name(), "scope." + Scope.JCR.name()));
-//        defaultTabsForRoleByScope.put(RoleType.EDIT_ROLE, Arrays.asList("scope." + Scope.CONTENT.name(), "scope." + Scope.JCR.name(), "context.$currentSite"));
-//        defaultTabsForRoleByScope.put(RoleType.LIVE_ROLE, Arrays.asList("scope." + Scope.CONTENT.name(), "scope." + Scope.JCR.name()));
-
     }
 
     public RoleTypeConfiguration getRoleTypes() {
@@ -126,33 +121,38 @@ public class RolesAndPermissionsHandler implements Serializable {
         roleBean.setRoleType(roleType);
 
         List<String> tabs = new ArrayList<String>(roleBean.getRoleType().getScopes());
-        List<String> setPermIds = new ArrayList<String>();
-        Map<String, List<String>> setExternalPermIds = new HashMap<String, List<String>>();
-        fillPermIds(role, tabs, setPermIds, setExternalPermIds, false);
 
-        List<String> setInheritedPermIds = new ArrayList<String>();
-        Map<String, List<String>> setInheritedExternalPermIds = new HashMap<String, List<String>>();
-        fillPermIds(role.getParent(), tabs, setInheritedPermIds, setInheritedExternalPermIds, true);
+        Map<String, List<String>> permIdsMap = new HashMap<String, List<String>>();
+        fillPermIds(role, tabs, permIdsMap, false);
 
-        Map<String, Map<String, Map<String,PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String,PermissionBean>>>();
+        Map<String, List<String>> inheritedPermIdsMap = new HashMap<String, List<String>>();
+        fillPermIds(role.getParent(), tabs, inheritedPermIdsMap, true);
+
+
+        Map<String, Map<String, Map<String, PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String, PermissionBean>>>();
         roleBean.setPermissions(permsForRole);
 
         for (String tab : tabs) {
-            addPermissionsForTab(roleBean, tab, setPermIds, setExternalPermIds, setInheritedPermIds, setInheritedExternalPermIds);
+            long l = System.currentTimeMillis();
+            addPermissionsForScope(roleBean, tab, permIdsMap, inheritedPermIdsMap);
+            System.out.println(tab+ " fill perms = "+(System.currentTimeMillis() -l));
         }
 
 
         return roleBean;
     }
 
-    private void fillPermIds(JCRNodeWrapper role, List<String> tabs, List<String> setPermIds, Map<String, List<String>> setExternalPermIds, boolean recursive) throws RepositoryException {
+    private void fillPermIds(JCRNodeWrapper role, List<String> tabs, Map<String, List<String>> permIdsMap, boolean recursive) throws RepositoryException {
         if (!role.isNodeType(Constants.JAHIANT_ROLE)) {
             return;
         }
 
         if (recursive) {
-            fillPermIds(role.getParent(), tabs, setPermIds, setExternalPermIds, true);
+            fillPermIds(role.getParent(), tabs, permIdsMap, true);
         }
+
+        final ArrayList<String> setPermIds = new ArrayList<String>();
+        permIdsMap.put("current", setPermIds);
 
         if (role.hasProperty("j:permissions")) {
             Value[] values = role.getProperty("j:permissions").getValues();
@@ -171,30 +171,28 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (next.isNodeType("jnt:externalPermissions")) {
                 try {
                     String path = next.getProperty("j:path").getString();
-                    setExternalPermIds.put(path, new ArrayList<String>());
+                    permIdsMap.put(path, new ArrayList<String>());
                     Value[] values = next.getProperty("j:permissions").getValues();
                     for (Value value : values) {
-                        List<String> xIds = setExternalPermIds.get(path);
+                        List<String> ids = permIdsMap.get(path);
                         String valueString = value.getString();
-                        if (!xIds.contains(valueString)) {
-                            xIds.add(valueString);
+                        if (!ids.contains(valueString)) {
+                            ids.add(valueString);
                         }
                         if (!tabs.contains(path)) {
                             tabs.add(path);
                         }
                     }
                 } catch (RepositoryException e) {
-                    System.out.println(next.getPath());
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("Cannot initialize role " + next.getPath(), e);
                 } catch (IllegalStateException e) {
-                    System.out.println(next.getPath());
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("Cannot initialize role " + next.getPath(), e);
                 }
             }
         }
     }
 
-    public boolean addRole(String roleName, String parentRoleId, String scope, MessageContext messageContext) throws RepositoryException {
+    public boolean addRole(String roleName, String parentRoleId, String roleTypeString, MessageContext messageContext) throws RepositoryException {
         JCRSessionWrapper currentUserSession = getSession();
 
         if (StringUtils.isBlank(roleName)) {
@@ -224,7 +222,7 @@ public class RolesAndPermissionsHandler implements Serializable {
             parent = currentUserSession.getNodeByIdentifier(parentRoleId);
         }
         JCRNodeWrapper role = parent.addNode(roleName, "jnt:role");
-        RoleType roleType = roleTypes.get(scope);
+        RoleType roleType = roleTypes.get(roleTypeString);
         role.setProperty("j:roleGroup", roleType.getName());
         role.setProperty("j:privilegedAccess", roleType.isPrivileged());
         if (roleType.getNodeType() != null) {
@@ -247,129 +245,120 @@ public class RolesAndPermissionsHandler implements Serializable {
         return true;
     }
 
-    private void addPermissionsForTab(RoleBean roleBean, String context, List<String> setPermIds, Map<String, List<String>> setExternalPermIds, List<String> setInheritedPermIds, Map<String, List<String>> setInheritedExternalPermIds) throws RepositoryException {
-        final Map<String, Map<String, Map<String,PermissionBean>>> permissions = roleBean.getPermissions();
-        if (!permissions.containsKey(context)) {
-            permissions.put(context, new LinkedHashMap<String, Map<String, PermissionBean>>());
+    private void addPermissionsForScope(RoleBean roleBean, String scope, Map<String, List<String>> permIdsMap, Map<String, List<String>> inheritedPermIdsMap) throws RepositoryException {
+        final Map<String, Map<String, Map<String, PermissionBean>>> permissions = roleBean.getPermissions();
+        if (!permissions.containsKey(scope)) {
+            permissions.put(scope, new LinkedHashMap<String, Map<String, PermissionBean>>());
         }
-        Map<String, List<JCRNodeWrapper>> allPermissions = getPermissions();
+        List<JCRNodeWrapper> allPermissions = getAllPermissions();
 
-        if (context.equals("current")) {
-            List<JCRNodeWrapper> perms = new ArrayList<JCRNodeWrapper>(allPermissions.get("nt:base"));
+        String type = null;
+        final Map<String, List<String>> globalPermissionsGroups = roleTypes.getPermissionsGroups();
+        final Map<String, List<String>> permissionsGroupsForRoleType = roleBean.getRoleType().getPermissionsGroups();
 
-            String type = "nt:base";
-
-            if (roleBean.getRoleType().getNodeType() != null && roleTypes.getPermissionsGroups().containsKey(roleBean.getRoleType().getNodeType())) {
-                type = roleBean.getRoleType().getNodeType();
-            }
-            for (String s : roleTypes.getPermissionsGroups().get(type)) {
-                permissions.get(context).put(s, new TreeMap<String, PermissionBean>());
-            }
-
-            if (!type.equals("nt:base") && allPermissions.containsKey(type)) {
-                perms.addAll(allPermissions.get(type));
-            }
-
-            Map<String,String> allGroups = new HashMap<String,String>();
-            for (String s : permissions.get(context).keySet()) {
-                for (String s1 : Arrays.asList(s.split(","))) {
-                    allGroups.put(s1,s);
-                }
-            }
-
-            for (JCRNodeWrapper permissionNode : perms) {
-                JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
-                if (allGroups.containsKey(permissionGroup.getName())) {
-                    Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
-                    if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
-                        if (!p.containsKey(getPermissionPath(permissionNode)) || permissionNode.getPath().startsWith("/permissions")) {
-                            PermissionBean bean = new PermissionBean();
-                            setPermissionBeanProperties(permissionNode, bean);
-                            PermissionBean parentBean = p.get(bean.getParentPath());
-                            if (setPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSet())) {
-                                bean.setSet(true);
-                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                    parentBean.setPartialSet(true);
-                                    parentBean = p.get(parentBean.getParentPath());
-                                }
-                            }
-                            parentBean = p.get(bean.getParentPath());
-                            if (setInheritedPermIds.contains(permissionNode.getIdentifier()) || (parentBean != null && parentBean.isSuperSet())) {
-                                bean.setSuperSet(true);
-                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                    parentBean.setPartialSet(true);
-                                    parentBean = p.get(parentBean.getParentPath());
-                                }
-                            }
-                            p.put(getPermissionPath(permissionNode), bean);
-                        }
-                    }
-                }
-            }
+        if (scope.equals("current")) {
+            type = roleBean.getRoleType().getNodeType();
         } else {
-            List<JCRNodeWrapper> perms = new ArrayList<JCRNodeWrapper>();
-
-            String type="nt:base";
-
-            if (context.equals("currentSite")) {
+            if (scope.equals("currentSite")) {
                 type = "jnt:virtualsite";
             } else {
                 try {
-                    JCRNodeWrapper contextNode = getSession().getNode(context);
-                    String ntname = contextNode.getPrimaryNodeTypeName();
-                    if (roleTypes.getPermissionsGroups().containsKey(ntname)) {
-                        type = ntname;
-                    }
+                    type = getSession().getNode(scope).getPrimaryNodeTypeName();
                 } catch (RepositoryException e) {
                     e.printStackTrace();
                 }
             }
-
-            for (String s : roleTypes.getPermissionsGroups().get(type)) {
-                permissions.get(context).put(s, new TreeMap<String, PermissionBean>());
+        }
+        if (type == null || (!globalPermissionsGroups.containsKey(type) && (permissionsGroupsForRoleType == null || !permissionsGroupsForRoleType.containsKey(type)))) {
+            type = "nt:base";
+        }
+        if (permissionsGroupsForRoleType != null && permissionsGroupsForRoleType.containsKey(type)) {
+            for (String s : permissionsGroupsForRoleType.get(type)) {
+                permissions.get(scope).put(s, new TreeMap<String, PermissionBean>());
             }
-
-            if (!type.equals("nt:base") && allPermissions.containsKey(type)) {
-                perms.addAll(allPermissions.get(type));
+        } else {
+            for (String s : globalPermissionsGroups.get(type)) {
+                permissions.get(scope).put(s, new TreeMap<String, PermissionBean>());
             }
+        }
 
-            perms.addAll(allPermissions.get("nt:base"));
+        Map<String, String> mappedPermissions = new HashMap<String, String>();
 
-            Map<String,String> allGroups = new HashMap<String,String>();
-            for (String s : permissions.get(context).keySet()) {
-                for (String s1 : Arrays.asList(s.split(","))) {
-                    allGroups.put(s1,s);
+        Map<String, String> allGroups = new HashMap<String, String>();
+        for (String s : permissions.get(scope).keySet()) {
+            for (String s1 : Arrays.asList(s.split(","))) {
+                allGroups.put(s1, s);
+            }
+        }
+
+
+        if (usePermissionMapping) {
+            for (Map.Entry<String, List<String>> entry : roleTypes.getPermissionsMapping().entrySet()) {
+                String[] splitPath = entry.getKey().split("/");
+                String permissionGroup = splitPath[2];
+                if (allGroups.containsKey(permissionGroup)) {
+                    Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(permissionGroup));
+                    PermissionBean bean = new PermissionBean();
+                    bean.setUuid(null);
+                    bean.setParentPath(StringUtils.substringBeforeLast(entry.getKey(), "/"));
+                    bean.setName(StringUtils.substringAfterLast(entry.getKey(), "/"));
+                    String localName = StringUtils.substringAfterLast(entry.getKey(), "/");
+                    if (localName.contains(":")) {
+                        localName = StringUtils.substringAfter(localName, ":");
+                    }
+                    String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]", " ").toLowerCase());
+                    final String rbName = localName.replaceAll("-", "_");
+                    bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+                    bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
+                    bean.setPath(entry.getKey());
+                    bean.setDepth(splitPath.length - 1);
+                    bean.setMappedUuid(new ArrayList<String>());
+
+                    p.put(entry.getKey(), bean);
+                }
+                for (String s : entry.getValue()) {
+                    mappedPermissions.put(s, entry.getKey());
                 }
             }
-
-            for (JCRNodeWrapper permissionNode : perms) {
-                JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
-                if (allGroups.containsKey(permissionGroup.getName())) {
-                    Map<String,PermissionBean> p = permissions.get(context).get(allGroups.get(permissionGroup.getName()));
-                    if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
-                        if (!p.containsKey(getPermissionPath(permissionNode))) {
-                            ExternalPermissionBean bean = new ExternalPermissionBean();
+        }
+        for (JCRNodeWrapper permissionNode : allPermissions) {
+            JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
+            if (allGroups.containsKey(permissionGroup.getName())) {
+                Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(permissionGroup.getName()));
+                if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
+                    final String permissionPath = getPermissionPath(permissionNode);
+                    if (!mappedPermissions.containsKey(permissionPath) && mappedPermissions.containsKey(getPermissionPath(permissionNode.getParent()))) {
+                        mappedPermissions.put(permissionPath, mappedPermissions.get(getPermissionPath(permissionNode.getParent())));
+                    }
+                    if (!p.containsKey(permissionPath) || permissionNode.getPath().startsWith("/permissions")) {
+                        PermissionBean bean;
+                        if (!mappedPermissions.containsKey(permissionPath)) {
+                            bean = new PermissionBean();
                             setPermissionBeanProperties(permissionNode, bean);
-                            bean.setTargetPath(context);
-                            PermissionBean parentBean = p.get(bean.getParentPath());
-                            if ((setExternalPermIds.get(context) != null && setExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
-                                    || (parentBean != null && parentBean.isSet())) {
-                                bean.setSet(true);
-                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                    parentBean.setPartialSet(true);
-                                    parentBean = p.get(parentBean.getParentPath());
-                                }
+                            p.put(permissionPath, bean);
+                        } else {
+                            bean = p.get(mappedPermissions.get(permissionPath));
+                            bean.getMappedUuid().add(permissionNode.getIdentifier());
+                        }
+                        List<String> permIds = permIdsMap.get(scope);
+                        List<String> inheritedPermIds = inheritedPermIdsMap.get(scope);
+                        PermissionBean parentBean = p.get(bean.getParentPath());
+                        if ((permIds != null && permIds.contains(permissionNode.getIdentifier()))
+                                || (parentBean != null && parentBean.isSet())) {
+                            bean.setSet(true);
+                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                parentBean.setPartialSet(true);
+                                parentBean = p.get(parentBean.getParentPath());
                             }
-                            parentBean = p.get(bean.getParentPath());
-                            if ((setInheritedExternalPermIds.get(context) != null && setInheritedExternalPermIds.get(context).contains(permissionNode.getIdentifier()))
-                                    || (parentBean != null && parentBean.isSuperSet())) {
-                                bean.setSuperSet(true);
-                                while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                    parentBean.setPartialSet(true);
-                                    parentBean = p.get(parentBean.getParentPath());
-                                }
+                        }
+                        parentBean = p.get(bean.getParentPath());
+                        if ((inheritedPermIds != null && inheritedPermIds.contains(permissionNode.getIdentifier()))
+                                || (parentBean != null && parentBean.isSuperSet())) {
+                            bean.setSuperSet(true);
+                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                                parentBean.setPartialSet(true);
+                                parentBean = p.get(parentBean.getParentPath());
                             }
-                            p.put(getPermissionPath(permissionNode), bean);
                         }
                     }
                 }
@@ -410,13 +399,12 @@ public class RolesAndPermissionsHandler implements Serializable {
         if (localName.contains(":")) {
             localName = StringUtils.substringAfter(localName, ":");
         }
-        String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]"," ").toLowerCase());
+        String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]", " ").toLowerCase());
         final String rbName = localName.replaceAll("-", "_");
         bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
         bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
         bean.setPath(getPermissionPath(permissionNode));
         bean.setDepth(getPermissionDepth(permissionNode));
-        bean.setScope(getScope(permissionNode));
     }
 
     public String getCurrentContext() {
@@ -435,41 +423,6 @@ public class RolesAndPermissionsHandler implements Serializable {
     public void setCurrentGroup(String currentGroup) {
         this.currentGroup = currentGroup;
     }
-
-    private String getScope(JCRNodeWrapper node) throws RepositoryException {
-        String scope = "nt:base";
-
-//        if (node.getPath().startsWith("/permissions/repository-permissions")) {
-//            scope = Scope.JCR;
-//        }
-        if (node.hasProperty("j:nodeTypes")) {
-            Set<String> s = new HashSet<String>();
-            Value[] values = node.getProperty("j:nodeTypes").getValues();
-            for (Value value : values) {
-                return value.getString();
-//                scope = getScopeForType(value.getString());
-//                if (scope != Scope.OTHER) {
-//                    return scope;
-//                }
-            }
-
-        }
-        return scope;
-    }
-
-
-
-//    private Scope getScopeForType(String s) throws RepositoryException {
-//        Scope scope = Scope.OTHER;
-//        if (s.equals("jnt:globalSettings")) {
-//            scope = Scope.SERVER_SETTINGS;
-//        } else if (s.equals("jnt:virtualsite")) {
-//            scope = Scope.SITE;
-//        } else if (s.equals("jnt:modules")) {
-//            scope = Scope.STUDIO;
-//        }
-//        return scope;
-//    }
 
     public void storeValues(String[] selectedValues, String[] partialSelectedValues) {
         Map<String, PermissionBean> permissionBeans = roleBean.getPermissions().get(currentContext).get(currentGroup);
@@ -490,17 +443,17 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
 
         if (!roleBean.getPermissions().containsKey(newContext)) {
-            addPermissionsForTab(roleBean, newContext, new ArrayList<String>(), new HashMap<String, List<String>>(), new ArrayList<String>(), new HashMap<String, List<String>>());
+            addPermissionsForScope(roleBean, newContext, new HashMap<String, List<String>>(), new HashMap<String, List<String>>());
         }
         setCurrentContext(newContext);
     }
 
-    public void removeContext(String context) throws RepositoryException {
+    public void removeContext(String scope) throws RepositoryException {
 
-        if (roleBean.getPermissions().containsKey(context)) {
-            roleBean.getPermissions().remove(context);
+        if (roleBean.getPermissions().containsKey(scope)) {
+            roleBean.getPermissions().remove(scope);
         }
-        if (currentContext.equals(context)) {
+        if (currentContext.equals(scope)) {
             setCurrentContext(roleBean.getPermissions().keySet().iterator().next());
         }
     }
@@ -508,55 +461,49 @@ public class RolesAndPermissionsHandler implements Serializable {
     public void save() throws RepositoryException {
         JCRSessionWrapper currentUserSession = getSession();
 
-        List<Value> permissionsValues = new ArrayList<Value>();
-        Map<String, List<Value>> externalPermissions = new HashMap<String, List<Value>>();
+        Map<String, List<Value>> permissions = new HashMap<String, List<Value>>();
 
         for (Map.Entry<String, Map<String, Map<String, PermissionBean>>> entry : roleBean.getPermissions().entrySet()) {
-            if (entry.getKey().equals("current")) {
-                for (Map<String, PermissionBean> map : entry.getValue().values()) {
-                    for (PermissionBean bean : map.values()) {
-                        PermissionBean parentBean = map.get(bean.getParentPath());
-                        if (bean.isSet() && (parentBean == null || !parentBean.isSet())) {
-                            permissionsValues.add(currentUserSession.getValueFactory().createValue(bean.getUuid(), PropertyType.WEAKREFERENCE));
-                        }
-                    }
-                }
-            } else {
-                ArrayList<Value> values = new ArrayList<Value>();
-                externalPermissions.put(entry.getKey(), values);
-                for (Map<String, PermissionBean> map : entry.getValue().values()) {
-                    for (PermissionBean bean : map.values()) {
-                        PermissionBean parentBean = map.get(bean.getParentPath());
-                        if (bean.isSet() && (parentBean == null || !parentBean.isSet())) {
-                            values.add(currentUserSession.getValueFactory().createValue(bean.getUuid(), PropertyType.WEAKREFERENCE));
+            ArrayList<Value> permissionValues = new ArrayList<Value>();
+            permissions.put(entry.getKey(), permissionValues);
+            for (Map<String, PermissionBean> map : entry.getValue().values()) {
+                for (PermissionBean bean : map.values()) {
+                    PermissionBean parentBean = map.get(bean.getParentPath());
+                    if (bean.isSet() && (parentBean == null || !parentBean.isSet())) {
+                        if (bean.getMappedUuid() != null) {
+                            for (String s : bean.getMappedUuid()) {
+                                permissionValues.add(currentUserSession.getValueFactory().createValue(s, PropertyType.WEAKREFERENCE));
+                            }
+                        } else {
+                            permissionValues.add(currentUserSession.getValueFactory().createValue(bean.getUuid(), PropertyType.WEAKREFERENCE));
                         }
                     }
                 }
             }
-//            if (entry.getKey().startsWith("special.")) {
-//
-//            }
         }
 
         JCRNodeWrapper role = currentUserSession.getNodeByIdentifier(roleBean.getUuid());
-        role.setProperty("j:permissions", permissionsValues.toArray(new Value[permissionsValues.size()]));
         Set<String> externalPermissionNodes = new HashSet<String>();
-        for (Map.Entry<String, List<Value>> s : externalPermissions.entrySet()) {
+        for (Map.Entry<String, List<Value>> s : permissions.entrySet()) {
             String key = s.getKey();
-            if (key.equals("/")) {
-                key = "root-access";
+            if (key.equals("current")) {
+                role.setProperty("j:permissions", permissions.get("current").toArray(new Value[permissions.get("current").size()]));
             } else {
-                key = ISO9075.encode((key.startsWith("/") ? key.substring(1) : key).replace("/", "-")) + "-access";
-            }
-            if (!s.getValue().isEmpty()) {
-                if (!role.hasNode(key)) {
-                    JCRNodeWrapper extPermissions = role.addNode(key, "jnt:externalPermissions");
-                    extPermissions.setProperty("j:path", s.getKey());
-                    extPermissions.setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                if (key.equals("/")) {
+                    key = "root-access";
                 } else {
-                    role.getNode(key).setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                    key = ISO9075.encode((key.startsWith("/") ? key.substring(1) : key).replace("/", "-")) + "-access";
                 }
-                externalPermissionNodes.add(key);
+                if (!s.getValue().isEmpty()) {
+                    if (!role.hasNode(key)) {
+                        JCRNodeWrapper extPermissions = role.addNode(key, "jnt:externalPermissions");
+                        extPermissions.setProperty("j:path", s.getKey());
+                        extPermissions.setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                    } else {
+                        role.getNode(key).setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                    }
+                    externalPermissionNodes.add(key);
+                }
             }
         }
         NodeIterator ni = role.getNodes();
@@ -572,18 +519,13 @@ public class RolesAndPermissionsHandler implements Serializable {
         currentUserSession.save();
     }
 
-    public Map<String, List<JCRNodeWrapper>> getPermissions() throws RepositoryException {
+    public List<JCRNodeWrapper> getAllPermissions() throws RepositoryException {
         if (allPermissions != null) {
             return allPermissions;
         }
 
-        allPermissions = new LinkedHashMap<String, List<JCRNodeWrapper>>();
+        allPermissions = new ArrayList<JCRNodeWrapper>();
         JCRSessionWrapper currentUserSession = getSession();
-
-//        for (Scope scope : Scope.values()) {
-//            allPermissions.put(scope.name(), new ArrayList<JCRNodeWrapper>());
-//        }
-
 
         QueryManager qm = currentUserSession.getWorkspace().getQueryManager();
         String statement = "select * from [jnt:permission]";
@@ -593,28 +535,22 @@ public class RolesAndPermissionsHandler implements Serializable {
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
             int depth = 2;
-            if (((JCRNodeWrapper)next.getAncestor(1)).isNodeType("jnt:modules")) {
+            if (((JCRNodeWrapper) next.getAncestor(1)).isNodeType("jnt:modules")) {
                 depth = 5;
             }
             if (next.getDepth() >= depth) {
-                String scope = getScope((JCRNodeWrapper)next.getAncestor(depth));
-                if (!allPermissions.containsKey(scope)) {
-                    allPermissions.put(scope,new ArrayList<JCRNodeWrapper>());
-                }
-                allPermissions.get(scope).add(next);
+                allPermissions.add(next);
             }
         }
-        for (List<JCRNodeWrapper> list : allPermissions.values()) {
-            Collections.sort(list, new Comparator<JCRNodeWrapper>() {
-                @Override
-                public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
-                    if (getPermissionPath(o1).equals(getPermissionPath(o2))) {
-                        return -o1.getPath().compareTo(o2.getPath());
-                    }
-                    return getPermissionPath(o1).compareTo(getPermissionPath(o2));
+        Collections.sort(allPermissions, new Comparator<JCRNodeWrapper>() {
+            @Override
+            public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
+                if (getPermissionPath(o1).equals(getPermissionPath(o2))) {
+                    return -o1.getPath().compareTo(o2.getPath());
                 }
-            });
-        }
+                return getPermissionPath(o1).compareTo(getPermissionPath(o2));
+            }
+        });
 
         return allPermissions;
     }

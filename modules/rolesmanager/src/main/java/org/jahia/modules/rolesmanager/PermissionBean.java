@@ -1,6 +1,7 @@
 package org.jahia.modules.rolesmanager;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PermissionBean implements Serializable, Comparable<PermissionBean> {
     private String uuid;
@@ -9,6 +10,8 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     private String title;
     private String description;
     private String path;
+    private String targetPath;
+    private List<String> mappedUuid;
     private boolean partialSet;
     private boolean set;
     private boolean superSet;
@@ -61,6 +64,22 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public void setTargetPath(String targetPath) {
+        this.targetPath = targetPath;
+    }
+
+    public List<String> getMappedUuid() {
+        return mappedUuid;
+    }
+
+    public void setMappedUuid(List<String> mappedUuid) {
+        this.mappedUuid = mappedUuid;
     }
 
     public boolean isPartialSet() {

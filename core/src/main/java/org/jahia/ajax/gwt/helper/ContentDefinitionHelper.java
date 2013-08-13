@@ -834,6 +834,7 @@ public class ContentDefinitionHelper {
 
             List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
 
+<<<<<<< .working
             if (site.isNodeType("jnt:module")) {
                 JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getTemplateFolder());
                 packages.add(aPackage);
@@ -841,6 +842,10 @@ public class ContentDefinitionHelper {
                 for (String s : site.getInstalledModules()) {
                     JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s);
                     packages.add(aPackage);
+=======
+                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName()) && !StringUtils.equals(node.getPath(),site.getPath())) {
+                    continue;
+>>>>>>> .merge-right.r47025
                 }
             }
 

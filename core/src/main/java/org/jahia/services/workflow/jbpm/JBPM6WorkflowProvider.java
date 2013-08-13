@@ -154,29 +154,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public void start() {
 
-        TransactionManager transactionManager = new DroolsSpringTransactionManager(platformTransactionManager);
-        Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, em);
-        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, em);
-        env.set("IS_JTA_TRANSACTION", false);
-        env.set("IS_SHARED_ENTITY_MANAGER", true);
-        env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);
-        PersistenceContextManager persistenceContextManager = new DroolsSpringJpaManager(env);
-        env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager);
-        RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
-                .entityManagerFactory(emf)
-                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
-                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
-                        // .userGroupCallback(userGroupCallback)
-                        // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
-                .get();
-        // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
-        runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
-        runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
-        taskService = runtimeEngine.getTaskService();
-        kieSession = runtimeEngine.getKieSession();
-
-
         kieServices = KieServices.Factory.get();
         kieRepository = kieServices.getRepository();
 
@@ -202,7 +179,31 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
         kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
 
-        kieSession = kieContainer.newKieSession();
+        TransactionManager transactionManager = new DroolsSpringTransactionManager(platformTransactionManager);
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, em);
+        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, em);
+        env.set("IS_JTA_TRANSACTION", false);
+        env.set("IS_SHARED_ENTITY_MANAGER", true);
+        env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);
+        PersistenceContextManager persistenceContextManager = new DroolsSpringJpaManager(env);
+        env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager);
+        RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
+                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
+                        // .userGroupCallback(userGroupCallback)
+                        // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
+                .knowledgeBase(kieContainer.getKieBase())
+                .get();
+        // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
+        runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
+        taskService = runtimeEngine.getTaskService();
+        kieSession = runtimeEngine.getKieSession();
+
+        // @todo we still have to register the work item handlers, preferably with Spring
+        // kieSession.getWorkItemManager().registerWorkItemHandler("");
 
         JBPMTaskLifeCycleEventListener.setProvider(this);
         JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());

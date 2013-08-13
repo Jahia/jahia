@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definitions_1" targetNamespace="http://www.jboss.org/drools">
+  <bpmn2:itemDefinition id="ItemDefinition_901" itemKind="Physical" structureRef="String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_11366" itemKind="Physical" structureRef="Boolean"/>
   <bpmn2:process id="oneStepPublication" drools:version="1" drools:packageName="org.jahia.services.workflow" drools:adHoc="false" name="One step publication workflow" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:global identifier="nodeId" type="String"/>
+      <drools:global identifier="nodePath" type="String"/>
+      <drools:global identifier="workspace" type="String"/>
+      <drools:global identifier="user" type="String"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="publicationOutcome" itemSubjectRef="ItemDefinition_901"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start">
       <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -48,6 +57,7 @@
         <bpmn2:dataInput id="_DataInput_13" name="Skippable"/>
         <bpmn2:dataInput id="_DataInput_14" name="Content"/>
         <bpmn2:dataInput id="_DataInput_15" name="Locale"/>
+        <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="ItemDefinition_901" name="outcome"/>
         <bpmn2:inputSet id="_InputSet_3" name="Input Set 3">
           <bpmn2:dataInputRefs>_DataInput_9</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_DataInput_10</bpmn2:dataInputRefs>
@@ -57,7 +67,9 @@
           <bpmn2:dataInputRefs>_DataInput_14</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_DataInput_15</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_OutputSet_3" name="Output Set"/>
+        <bpmn2:outputSet id="_OutputSet_3" name="Output Set">
+          <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
       </bpmn2:ioSpecification>
       <bpmn2:dataInputAssociation id="_DataInputAssociation_9">
         <bpmn2:targetRef>_DataInput_9</bpmn2:targetRef>
@@ -84,6 +96,10 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_15">
         <bpmn2:targetRef>_DataInput_15</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>DataOutput_1</bpmn2:sourceRef>
+        <bpmn2:targetRef>publicationOutcome</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_5" drools:priority="1" sourceRef="UserTask_1" targetRef="ExclusiveGateway_1"/>
     <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="" gatewayDirection="Diverging">
@@ -92,10 +108,10 @@
       <bpmn2:outgoing>SequenceFlow_31</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_29" drools:priority="1" name="" sourceRef="ExclusiveGateway_1" targetRef="Task_13">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_18" language="http://www.java.com/java">true</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_18" language="http://www.java.com/java">return publicationOutcome.equals(&quot;accept&quot;);</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_31" drools:priority="1" name="" sourceRef="ExclusiveGateway_1" targetRef="Task_14">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_19" language="http://www.java.com/java">false</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_19" language="http://www.java.com/java">return publicationOutcome.equals(&quot;reject&quot;);</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:task id="Task_11" name="Lock Node">
       <bpmn2:incoming>SequenceFlow_25</bpmn2:incoming>
@@ -103,8 +119,8 @@
     </bpmn2:task>
     <bpmn2:sequenceFlow id="SequenceFlow_27" drools:priority="1" name="" sourceRef="Task_11" targetRef="Task_12"/>
     <bpmn2:exclusiveGateway id="ExclusiveGateway_3" name="" gatewayDirection="Converging">
-      <bpmn2:incoming>SequenceFlow_34</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_36</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_34</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_16</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_16" drools:priority="1" name="" sourceRef="ExclusiveGateway_3" targetRef="EndEvent_3"/>

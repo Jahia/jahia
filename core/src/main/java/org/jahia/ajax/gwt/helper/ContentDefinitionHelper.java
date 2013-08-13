@@ -807,7 +807,7 @@ public class ContentDefinitionHelper {
             for (int i = 0; i < allNodes.size(); i++) {
                 GWTJahiaNode node = allNodes.get(i);
 
-                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName())) {
+                if (node.getNodeTypes() != null && node.getNodeTypes().contains("jnt:virtualsite") && dependencies != null && !dependencies.contains(node.getName()) && !StringUtils.equals(node.getPath(),site.getPath())) {
                     continue;
                 }
 

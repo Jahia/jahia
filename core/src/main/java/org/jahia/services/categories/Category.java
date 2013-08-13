@@ -800,7 +800,15 @@ public class Category extends JahiaObject {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    @Override
+    public int hashCode() {
+        return getID() != null ? getID().hashCode() : 0;
+    }
+
     public boolean equals(Object category) {
+        if (this == category) {
+            return true;
+        }
         if (category != null && category instanceof Category && getID() != null && getID().equals(((Category) category).getID())) {
             return true;
         }

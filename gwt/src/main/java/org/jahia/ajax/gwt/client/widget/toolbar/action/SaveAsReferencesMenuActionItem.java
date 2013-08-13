@@ -87,8 +87,8 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                                             Arrays.asList(target.getPath()), page.getPath(), null,
                                             new BaseAsyncCallback() {
                                                 public void onApplicationFailure(Throwable caught) {
-                                                    Info.display("Portal Components",
-                                                            "Error while making your component available for users in their portal page.");
+                                                    Info.display(Messages.get("label.saveAsPortalComponent"),
+                                                            Messages.get("label.saveAsPortalComponent.failure"));
                                                 }
 
                                                 public void onSuccess(Object result) {
@@ -105,8 +105,8 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                     }
 
                     public void onApplicationFailure(Throwable caught) {
-                        Info.display("Portal Components",
-                                "Error while getting My Portal nodes.");
+                        Info.display(Messages.get("label.saveAsPortalComponent"),
+                                Messages.get("label.saveAsPortalComponent.cannotGetPortalNodes"));
                     }
                 });
     }

@@ -104,8 +104,8 @@ public final class JahiaPrivilegeRegistry {
         registerPrivileges(perms, privileges);
 
         for (Privilege p : privileges) {
-            map.put(p.getName(), p);
             if (!allPrivileges.contains(p.getName())) {
+                map.put(p.getName(), p);
                 allPrivileges.add(p.getName());
             }
         }

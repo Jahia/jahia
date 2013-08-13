@@ -736,7 +736,11 @@ public class Service extends JahiaService {
 
     public void updatePrivileges(NodeFact node) throws RepositoryException {
         final JCRSiteNode site = node.getParent().getNode().getResolveSite();
-        String principal = StringUtils.substringAfter(StringUtils.substringAfterLast(node.getPath(), "/"), "_").replaceFirst("_", ":");
+        final String name = StringUtils.substringAfterLast(node.getPath(), "/");
+        if (name.startsWith("REF")) {
+            return;
+        }
+        String principal = StringUtils.substringAfter(name, "_").replaceFirst("_", ":");
         if (principal.startsWith("jcr:read") || principal.startsWith("jcr:write")) {
             principal = StringUtils.substringAfter(principal,"_").replaceFirst("_", ":");
         }
@@ -748,6 +752,7 @@ public class Service extends JahiaService {
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final JahiaGroup priv = groupService.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
         Principal p = null;
+        System.out.println(principal);
         if (principal.startsWith("u:")) {
             p = userManagerService.lookupUser(principal.substring(2));
         } else if (principal.length() > 2) {

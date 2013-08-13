@@ -52,10 +52,6 @@
     </j:workflowRules>
 
     <permissions jcr:primaryType="jnt:permission">
-        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="reader privileged"
-                                j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        </j:acl>
         <repository-permissions jcr:primaryType="jnt:permission">
             <jcr:all_default jcr:primaryType="jnt:permission" j:requirePrivileged="true">
 
@@ -221,11 +217,6 @@
     </permissions>
 
     <roles jcr:primaryType="jnt:roles">
-        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_g_privileged j:protected="false" j:principal="g:privileged" j:roles="reader privileged"
-                                j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        </j:acl>
-
         <reader jcr:primaryType="jnt:role" j:roleGroup="live-role"
                  j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live"/>
 
@@ -390,14 +381,8 @@
                               j:roleGroup="server-role"
                               jcr:primaryType="jnt:role">
             <settings-access j:path="/settings"
-                             j:permissions="/modules/translation/permissions/admin"
+                             j:permissions="/permissions/admin"
                              jcr:primaryType="jnt:externalPermissions"/>
-            <permissions-access j:path="/permissions"
-                                j:permissions="/permissions/repository-permissions/jcr:all_default"
-                                jcr:primaryType="jnt:externalPermissions"/>
-            <roles-access j:path="/roles"
-                          j:permissions="/permissions/repository-permissions/jcr:all_default"
-                          jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Grant access to the server administration"
                               jcr:language="en"
                               jcr:primaryType="jnt:translation"

@@ -88,7 +88,6 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
         JahiaContentManagementService.App.getInstance().getPortalNodes(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> result) {
-<<<<<<< .working
                         if (result == null || result.size() == 0) {
                             MessageBox.alert(Messages.get("label.saveAsPortalComponent"), Messages.get("label.saveAsPortalComponent.portalComponents.nonedeclared", "There is no Portal Components folder declared. The component can not be saved"), null);
                         } else if (result.size() == 1) {
@@ -117,21 +116,6 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                             p.setHeaderVisible(false);
                             p.add(portalNodesCombo);
                             f.add(p);
-=======
-                        if (result != null && result.size() >= 1) {
-                            GWTJahiaNode page = result.get(0);
-                            if (PermissionsUtils.isPermitted("jcr:write", page.getPermissions())) {
-                                LinkerSelectionContext lh = linker.getSelectionContext();
-                                GWTJahiaNode target = lh.getSingleSelection();
-                                if (target != null) {
-                                    JahiaContentManagementService.App.getInstance().pasteReferences(
-                                            Arrays.asList(target.getPath()), page.getPath(), null,
-                                            new BaseAsyncCallback() {
-                                                public void onApplicationFailure(Throwable caught) {
-                                                    Info.display(Messages.get("label.saveAsPortalComponent"),
-                                                            Messages.get("label.saveAsPortalComponent.failure"));
-                                                }
->>>>>>> .merge-right.r47021
 
                             Button b = new Button(Messages.get("label.save", "Save"));
                             f.addButton(b);
@@ -183,8 +167,8 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                         Arrays.asList(target.getPath()), portalNode.getPath(), null,
                         new BaseAsyncCallback() {
                             public void onApplicationFailure(Throwable caught) {
-                                Info.display("Portal Components",
-                                        "Error while making your component available for users in their portal page.");
+                                Info.display(Messages.get("label.saveAsPortalComponent"),
+                                        Messages.get("label.saveAsPortalComponent.failure"));
                             }
 
                             public void onSuccess(Object result) {

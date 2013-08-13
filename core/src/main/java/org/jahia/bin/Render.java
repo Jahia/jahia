@@ -81,8 +81,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -234,28 +232,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         RenderContext context = new RenderContext(req, resp, user);
         context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, req.getPathInfo().indexOf("/", 1)));
         return context;
-    }
-
-    protected Date getVersionDate(HttpServletRequest req) {
-        // we assume here that the date has been passed as milliseconds.
-        String msString = req.getParameter("v");
-        if (msString == null) {
-            return null;
-        }
-        try {
-            long msLong = Long.parseLong(msString);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Display version of date : " + SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date(msLong)));
-            }
-            return new Date(msLong);
-        } catch (NumberFormatException nfe) {
-            logger.warn("Invalid version date found in URL " + msString);
-            return null;
-        }
-    }
-
-    protected String getVersionLabel(HttpServletRequest req) {
-        return req.getParameter("l");
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
@@ -713,11 +689,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (logger.isInfoEnabled()) {
                 sessionId = session.getId();
             }
-            Date date = getVersionDate(req);
-            String versionLabel = getVersionLabel(req);
             URLResolver urlResolver = urlResolverFactory.createURLResolver(req.getPathInfo(), req.getServerName(), workspace, req);
-            urlResolver.setVersionDate(date);
-            urlResolver.setVersionLabel(versionLabel);
 
             req.setAttribute("urlResolver", urlResolver);
 

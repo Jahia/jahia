@@ -183,8 +183,7 @@ end
 
 rule "Flush URL resolver cache"
     when
-        A property has been set on a node
-			- the node has the type jnt:virtualsite
+>       property : ChangedPropertyFact ( propertyName : name == "j:languages" || name == 'j:inactiveLiveLanguages' || name =='j:inactiveLanguages', propertyValue : stringValues , node : node, node.types contains "jnt:virtualsite" )
     then
         Flush urlResolverNodePath
         Flush urlResolverSiteInfo

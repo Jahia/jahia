@@ -2,7 +2,7 @@
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definitions_1" targetNamespace="http://www.jboss.org/drools">
   <bpmn2:itemDefinition id="ItemDefinition_901" itemKind="Physical" structureRef="String"/>
   <bpmn2:itemDefinition id="ItemDefinition_11366" itemKind="Physical" structureRef="Boolean"/>
-  <bpmn2:process id="oneStepPublication" drools:version="1" drools:packageName="org.jahia.services.workflow" drools:adHoc="false" name="One step publication workflow" isExecutable="true">
+  <bpmn2:process id="_x0031_-step-publication" drools:version="1" drools:packageName="org.jahia.services.workflow" drools:adHoc="false" name="1-step-publication" isExecutable="true">
     <bpmn2:extensionElements>
       <drools:global identifier="nodeId" type="String"/>
       <drools:global identifier="nodePath" type="String"/>
@@ -130,8 +130,8 @@
     </bpmn2:task>
     <bpmn2:sequenceFlow id="SequenceFlow_34" drools:priority="1" name="" sourceRef="Task_15" targetRef="ExclusiveGateway_3"/>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="One step publication workflow">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="oneStepPublication">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="1-step-publication">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_x0031_-step-publication">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="40.0" y="103.0"/>
       </bpmndi:BPMNShape>

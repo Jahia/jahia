@@ -38,7 +38,7 @@
         <property name="em" ref="jbpmEm"/>
         <property name="processes">
             <list>
-                <value>classpath*:org/jahia/modules/workflow/*.bpmn</value>
+                <value>classpath*:org/jahia/modules/workflow/*.bpmn2</value>
             </list>
         </property>
         <property name="mailTemplates">

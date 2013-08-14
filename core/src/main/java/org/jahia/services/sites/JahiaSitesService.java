@@ -660,7 +660,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         for (String s : site.getLanguages()) {
             if (!languages.contains(s)) {
                 Node permission = n.addNode("jcr:modifyProperties_" + ws + "_" + s, "jnt:permission");
-                permission.setProperty("j:requirePrivileged", ws.equals("default"));
             }
         }
     }

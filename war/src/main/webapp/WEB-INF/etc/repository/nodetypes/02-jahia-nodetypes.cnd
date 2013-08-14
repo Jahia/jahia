@@ -152,8 +152,6 @@
 [jnt:permission] > nt:base, jmix:rbTitle, jmix:observable, jmix:nolive
  - j:isAbstract (boolean)
  - j:dependencies (weakreference) protected hidden multiple < jnt:permission
- - j:nodeTypes (string,choicelist[nodetypes=nt:base]) multiple
- - j:requirePrivileged (boolean)
  + * (jnt:permission)
 
 //---------------------------------------------------------

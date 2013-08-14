@@ -368,22 +368,14 @@
                 <value>testGetUUID(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testInitialNodePredecessors(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
-<<<<<<< .working
-                <!--Not working tests or uninteresting results-->
-=======
                 <!--Test needs to be removed or rewritten-->
->>>>>>> .merge-right.r47032
                 <value>testPublishUnpublishPageWithContent(org.jahia.test.services.publication.PublicationTest)</value>
-<<<<<<< .working
-                <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>
-=======
                 <value>testCreateMultipleTags(org.jahia.test.services.logging.ServiceLoggingTest)</value>
->>>>>>> .merge-right.r47032
+                <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>
             </list>   
         </property>
 
     </bean>
-<<<<<<< .working
 
     <bean class="org.jahia.services.content.decorator.JCRNodeDecoratorDefinition">
         <property name="decorators">
@@ -393,10 +385,7 @@
         </property>
     </bean>
 
-=======
-
     <bean class="org.jahia.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="-99"/>
     </bean>
->>>>>>> .merge-right.r46492
 </beans>

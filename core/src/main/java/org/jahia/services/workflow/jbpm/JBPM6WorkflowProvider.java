@@ -1,6 +1,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
 import org.drools.container.spring.beans.persistence.DroolsSpringJpaManager;
 import org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager;
 import org.drools.core.impl.EnvironmentFactory;
@@ -335,8 +336,15 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public String startProcess(String processKey, Map<String, Object> args) {
-        ProcessInstance processInstance = getKieSession().startProcess(processKey, args);
+        ProcessInstance processInstance = getKieSession().startProcess(getEncodedProcessKey(processKey), args);
         return Long.toString(processInstance.getId());
+    }
+
+    private String getEncodedProcessKey(String processKey) {
+        if (Character.isDigit(processKey.charAt(0))) {
+            processKey = ISO9075.encode(processKey);
+        }
+        return processKey;
     }
 
     @Override

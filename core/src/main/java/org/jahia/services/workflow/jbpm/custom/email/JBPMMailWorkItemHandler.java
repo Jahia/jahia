@@ -1,5 +1,6 @@
 package org.jahia.services.workflow.jbpm.custom.email;
 
+import org.jahia.services.workflow.jbpm.custom.AbstractWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -8,13 +9,9 @@ import javax.mail.Message;
 import java.util.Collection;
 
 /**
- * Created with IntelliJ IDEA.
- * User: loom
- * Date: 28.06.13
- * Time: 22:05
- * To change this template use File | Settings | File Templates.
+ * A custom jBPM mailing work item handler that uses a mail template registry to send localized emails
  */
-public class JBPMMailWorkItemHandler implements WorkItemHandler {
+public class JBPMMailWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
     private JBPMMailProducer mailProducer;
     private JBPMMailSession mailSession;

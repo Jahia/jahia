@@ -51,7 +51,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import javax.jcr.RepositoryException;
 import java.util.List;
 
-public class CustomLockWorkItemHandler implements WorkItemHandler {
+public class CustomLockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
     private String type;
 

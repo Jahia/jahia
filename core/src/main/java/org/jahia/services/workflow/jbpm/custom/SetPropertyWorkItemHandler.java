@@ -54,7 +54,7 @@ import java.util.List;
 /**
  * Sets a property on a node
  */
-public class SetPropertyWorkItemHandler implements WorkItemHandler {
+public class SetPropertyWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishWorkItemHandler.class);
 

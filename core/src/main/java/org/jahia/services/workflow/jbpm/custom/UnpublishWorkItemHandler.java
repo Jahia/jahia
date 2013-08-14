@@ -61,7 +61,7 @@ import java.util.Locale;
  * <p/>
  * Publish the current node
  */
-public class UnpublishWorkItemHandler implements WorkItemHandler {
+public class UnpublishWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(UnpublishWorkItemHandler.class);
 

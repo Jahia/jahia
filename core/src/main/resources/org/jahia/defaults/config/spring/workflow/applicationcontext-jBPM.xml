@@ -49,4 +49,43 @@
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
     </bean>
+
+    <!-- Work item handler instances -->
+    <bean abstract="true" id="abstractWH" class="org.jahia.services.workflow.jbpm.custom.AbstractWorkItemHandler">
+        <property name="workflowProvider" ref="jBPMProvider"/>
+    </bean>
+
+    <bean id="addLabelWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.AddLabelWorkItemHandler">
+        <property name="name" value="Add Label"/>
+    </bean>
+
+    <bean id="customLockWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.CustomLockWorkItemHandler">
+        <property name="name" value="Custom lock node"/>
+    </bean>
+    <bean id="customUnlockWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.CustomUnlockWorkItemHandler">
+        <property name="name" value="Custom unlock node"/>
+    </bean>
+    <bean id="lockWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.LockWorkItemHandler">
+        <property name="name" value="Lock node"/>
+    </bean>
+    <bean id="unlockWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.UnlockWorkItemHandler">
+        <property name="name" value="Unlock node"/>
+    </bean>
+    <bean id="publishWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.PublishWorkItemHandler">
+        <property name="name" value="Publish node"/>
+    </bean>
+    <bean id="unpublishWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.UnpublishWorkItemHandler">
+        <property name="name" value="Unpublish node"/>
+    </bean>
+    <bean id="setPropertyWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.SetPropertyWorkItemHandler">
+        <property name="name" value="Set node property"/>
+    </bean>
+    <bean id="jBPMMailWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailWorkItemHandler">
+        <property name="name" value="Send mail"/>
+    </bean>
+
 </beans>

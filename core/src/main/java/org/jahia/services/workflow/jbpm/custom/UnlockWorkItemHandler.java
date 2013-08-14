@@ -53,7 +53,7 @@ import java.util.List;
  * <p/>
  * Lock the current node
  */
-public class UnlockWorkItemHandler implements WorkItemHandler {
+public class UnlockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
 
     @Override

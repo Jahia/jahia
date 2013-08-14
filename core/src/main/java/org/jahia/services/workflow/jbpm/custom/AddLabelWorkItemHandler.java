@@ -49,7 +49,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import javax.jcr.RepositoryException;
 import java.util.List;
 
-public class AddLabelWorkItemHandler implements WorkItemHandler {
+public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
     private String label;
 

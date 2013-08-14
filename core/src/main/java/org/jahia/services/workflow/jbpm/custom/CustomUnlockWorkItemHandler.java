@@ -53,7 +53,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import java.util.List;
 
-public class CustomUnlockWorkItemHandler implements WorkItemHandler {
+public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
     private String type;
 

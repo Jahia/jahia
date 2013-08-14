@@ -41,6 +41,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.*;
@@ -90,6 +91,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private AbstractPlatformTransactionManager platformTransactionManager;
     private EntityManagerFactory emf;
     private EntityManager em;
+    private Map<String, WorkItemHandler> workItemHandlers = new TreeMap<String, WorkItemHandler>();
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -153,6 +155,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public void afterPropertiesSet() throws Exception {
     }
 
+    public void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {
+        workItemHandlers.put(name, workItemHandler);
+    }
+
+    public WorkItemHandler unregisterWorkItemHandler(String name) {
+        return workItemHandlers.remove(name);
+    }
+
     public void start() {
 
         kieServices = KieServices.Factory.get();
@@ -203,14 +213,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
         runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
         taskService = runtimeEngine.getTaskService();
-        kieSession = runtimeEngine.getKieSession();
-
-        // @todo we still have to register the work item handlers, preferably with Spring
-        // kieSession.getWorkItemManager().registerWorkItemHandler("");
-
-        JBPMTaskLifeCycleEventListener.setProvider(this);
-        JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
-        JBPMTaskLifeCycleEventListener.setTaskService(taskService);
 
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
@@ -263,9 +265,28 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public void stop() {
         workflowService.removeProvider(this);
 
+        kieSession.dispose();
+
         // @todo implement clean shutdown of all jBPM & Drools environment
         runtimeManager.disposeRuntimeEngine(runtimeEngine);
         runtimeManager.close();
+    }
+
+    public KieSession getKieSession() {
+        if (kieSession != null) {
+            return kieSession;
+        }
+        kieSession = runtimeEngine.getKieSession();
+
+        for (Map.Entry<String, WorkItemHandler> workItemHandlerEntry : workItemHandlers.entrySet()) {
+            kieSession.getWorkItemManager().registerWorkItemHandler(workItemHandlerEntry.getKey(), workItemHandlerEntry.getValue());
+        }
+
+        JBPMTaskLifeCycleEventListener.setProvider(this);
+        JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
+        JBPMTaskLifeCycleEventListener.setTaskService(taskService);
+
+        return kieSession;
     }
 
     @Override
@@ -275,7 +296,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {
-        KieBase kieBase = kieSession.getKieBase();
+        KieBase kieBase = getKieSession().getKieBase();
         Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
         List<WorkflowDefinition> workflowDefinitions = new ArrayList<WorkflowDefinition>();
         for (org.kie.api.definition.process.Process process : processes) {
@@ -286,7 +307,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale) {
-        KieBase kieBase = kieSession.getKieBase();
+        KieBase kieBase = getKieSession().getKieBase();
         Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
         for (org.kie.api.definition.process.Process process : processes) {
             if (process.getName().equals(key)) {
@@ -297,14 +318,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public WorkflowDefinition getWorkflowDefinitionById(String id, Locale locale) {
-        KieBase kieBase = kieSession.getKieBase();
+        KieBase kieBase = getKieSession().getKieBase();
         org.kie.api.definition.process.Process process = kieBase.getProcess(id);
         return convertToWorkflowDefinition(process, locale);
     }
 
     @Override
     public List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale) {
-        Collection<ProcessInstance> processInstances = kieSession.getProcessInstances();
+        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
         List<Workflow> activeWorkflows = new ArrayList<Workflow>();
         for (ProcessInstance processInstance : processInstances) {
             activeWorkflows.add(convertToWorkflow(processInstance, locale));
@@ -314,27 +335,27 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public String startProcess(String processKey, Map<String, Object> args) {
-        ProcessInstance processInstance = kieSession.startProcess(processKey, args);
+        ProcessInstance processInstance = getKieSession().startProcess(processKey, args);
         return Long.toString(processInstance.getId());
     }
 
     @Override
     public void abortProcess(String processId) {
-        kieSession.abortProcessInstance(Long.parseLong(processId));
+        getKieSession().abortProcessInstance(Long.parseLong(processId));
     }
 
     @Override
     public Workflow getWorkflow(String processId, Locale locale) {
-        ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
+        ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
         String processDefinitionId = processInstance.getProcessId();
-        KieBase kieBase = kieSession.getKieBase();
+        KieBase kieBase = getKieSession().getKieBase();
 
         return convertToWorkflow(processInstance, locale);
     }
 
     @Override
     public Set<WorkflowAction> getAvailableActions(String processId, Locale locale) {
-        ProcessInstance processInstance = kieSession.getProcessInstance(Long.parseLong(processId));
+        ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
         Set<String> connectionIds = new TreeSet<String>();
         if (processInstance instanceof WorkflowProcessInstance) {
             WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
@@ -567,7 +588,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         // Get form resource name
         long contentId = task.getTaskData().getDocumentContentId();
         Content taskContent = taskService.getContentById(contentId);
-        Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), kieSession.getEnvironment());
+        Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), getKieSession().getEnvironment());
         if (contentData instanceof Map) {
             Map<String, Object> taskParameters = (Map<String, Object>) contentData;
             workflowTask.setFormResourceName((String) taskParameters.get("FormName"));
@@ -575,7 +596,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
 
         // Get Tasks variables
-        final ProcessInstance instance = kieSession.getProcessInstance(task.getTaskData().getProcessInstanceId());
+        final ProcessInstance instance = getKieSession().getProcessInstance(task.getTaskData().getProcessInstanceId());
         if (instance != null) {
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale);
             workflowTask.setWorkflowDefinition(definition);
@@ -586,7 +607,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public Set<String> getTaskOutcomes(Task task) {
         long workItemId = task.getTaskData().getWorkItemId();
-        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) kieSession.getProcessInstance(task.getTaskData().getProcessInstanceId());
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) getKieSession().getProcessInstance(task.getTaskData().getProcessInstanceId());
         NodeInstance nodeInstance = workflowProcessInstance.getNodeInstance(workItemId);
         Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
         Set<String> connectionIds = new TreeSet<String>();

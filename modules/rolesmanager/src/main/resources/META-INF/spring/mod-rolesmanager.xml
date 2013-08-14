@@ -15,6 +15,17 @@
                         <value>current</value>
                     </set>
                 </property>
+                <property name="permissionsGroups">
+                    <map>
+                        <entry key="nt:base" >
+                            <list>
+                                <value>repository-live</value>
+                                <value>actions</value>
+                            </list>
+                        </entry>
+                    </map>
+                </property>
+
             </bean>
             <bean class="org.jahia.modules.rolesmanager.RoleType">
                 <property name="name" value="edit-role" />
@@ -40,7 +51,7 @@
                         <entry key="jnt:virtualsite">
                             <list>
                                 <value>site-admin</value>
-                                <value>repository-permissions</value>
+                                <value>repository-default</value>
                                 <value>editMode,contributeMode,managers,wysiwyg-editor-toolbar</value>
                                 <value>templates,components</value>
                             </list>
@@ -66,21 +77,21 @@
 
     <property name="permissionsGroups">
         <map>
-            <entry key="rep:root" >
-                <list>
-                    <value>repository-permissions</value>
-                </list>
-            </entry>
             <entry key="nt:base" >
                 <list>
-                    <value>repository-permissions</value>
+                    <value>repository-default</value>
                     <value>workflow-tasks</value>
                     <value>actions</value>
                 </list>
             </entry>
+            <entry key="rep:root" >
+                <list>
+                    <value>repository-default</value>
+                </list>
+            </entry>
             <entry key="jnt:virtualsite">
                 <list>
-                    <value>repository-permissions</value>
+                    <value>repository-default</value>
                     <value>editMode,contributeMode,managers,wysiwyg-editor-toolbar</value>
                     <value>templates,components</value>
                 </list>
@@ -93,7 +104,7 @@
             <entry key="jnt:modules">
                 <list>
                     <value>studioMode</value>
-                    <value>repository-permissions</value>
+                    <value>repository-default</value>
                 </list>
             </entry>
         </map>
@@ -101,13 +112,18 @@
 
     <property name="permissionsMapping" >
         <map>
-            <entry key="/permissions/repository-permissions/jcr:all_default/jcr-mapped:read">
+            <entry key="/permissions/repository-default/jcr:all">
+                <list>
+                    <value>/permissions/repository-permissions/jcr:all_default</value>
+                </list>
+            </entry>
+            <entry key="/permissions/repository-default/jcr:all/jcr-mapped:read">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:read_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-permissions/jcr:all_default/jcr-mapped:write">
+            <entry key="/permissions/repository-default/jcr:all/jcr-mapped:write">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:write_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:lockManagement_default</value>
@@ -115,11 +131,37 @@
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:nodeTypeManagement_default</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-permissions/jcr:all_default/jcr-mapped:admin">
+            <entry key="/permissions/repository-default/jcr:all/jcr-mapped:admin">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:modifyAccessControl_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:retentionManagement_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:lifecycleManagement_default</value>
+                </list>
+            </entry>
+            <entry key="/permissions/repository-live/jcr:all">
+                <list>
+                    <value>/permissions/repository-permissions/jcr:all_live</value>
+                </list>
+            </entry>
+            <entry key="/permissions/repository-live/jcr:all/jcr-mapped:read">
+                <list>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:read_live</value>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live</value>
+                </list>
+            </entry>
+            <entry key="/permissions/repository-live/jcr:all/jcr-mapped:write">
+                <list>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:write_live</value>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:lockManagement_live</value>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:versionManagement_live</value>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:nodeTypeManagement_live</value>
+                </list>
+            </entry>
+            <entry key="/permissions/repository-live/jcr:all/jcr-mapped:admin">
+                <list>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:modifyAccessControl_live</value>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:retentionManagement_live</value>
+                    <value>/permissions/repository-permissions/jcr:all_live/jcr:lifecycleManagement_live</value>
                 </list>
             </entry>
         </map>

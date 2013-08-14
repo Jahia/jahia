@@ -133,9 +133,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         roleBean.setPermissions(permsForRole);
 
         for (String tab : tabs) {
-            long l = System.currentTimeMillis();
             addPermissionsForScope(roleBean, tab, permIdsMap, inheritedPermIdsMap);
-            System.out.println(tab+ " fill perms = "+(System.currentTimeMillis() -l));
         }
 
 
@@ -282,7 +280,7 @@ public class RolesAndPermissionsHandler implements Serializable {
             }
         }
 
-        Map<String, String> mappedPermissions = new HashMap<String, String>();
+        Map<String, PermissionBean> mappedPermissions = new HashMap<String, PermissionBean>();
 
         Map<String, String> allGroups = new HashMap<String, String>();
         for (String s : permissions.get(scope).keySet()) {
@@ -290,7 +288,6 @@ public class RolesAndPermissionsHandler implements Serializable {
                 allGroups.put(s1, s);
             }
         }
-
 
         if (usePermissionMapping) {
             for (Map.Entry<String, List<String>> entry : roleTypes.getPermissionsMapping().entrySet()) {
@@ -315,53 +312,57 @@ public class RolesAndPermissionsHandler implements Serializable {
                     bean.setMappedUuid(new ArrayList<String>());
 
                     p.put(entry.getKey(), bean);
-                }
-                for (String s : entry.getValue()) {
-                    mappedPermissions.put(s, entry.getKey());
+
+                    for (String s : entry.getValue()) {
+                        mappedPermissions.put(s, bean);
+                    }
                 }
             }
         }
         for (JCRNodeWrapper permissionNode : allPermissions) {
             JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
-            if (allGroups.containsKey(permissionGroup.getName())) {
+            final String permissionPath = getPermissionPath(permissionNode);
+
+            if (!mappedPermissions.containsKey(permissionPath) && mappedPermissions.containsKey(getPermissionPath(permissionNode.getParent()))) {
+                mappedPermissions.put(permissionPath, mappedPermissions.get(getPermissionPath(permissionNode.getParent())));
+            }
+
+            if (allGroups.containsKey(permissionGroup.getName()) && !mappedPermissions.containsKey(permissionPath)) {
                 Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(permissionGroup.getName()));
-                if (!permissionNode.hasProperty("j:requirePrivileged") || permissionNode.getProperty("j:requirePrivileged").getBoolean() == roleBean.getRoleType().isPrivileged()) {
-                    final String permissionPath = getPermissionPath(permissionNode);
-                    if (!mappedPermissions.containsKey(permissionPath) && mappedPermissions.containsKey(getPermissionPath(permissionNode.getParent()))) {
-                        mappedPermissions.put(permissionPath, mappedPermissions.get(getPermissionPath(permissionNode.getParent())));
-                    }
-                    if (!p.containsKey(permissionPath) || permissionNode.getPath().startsWith("/permissions")) {
-                        PermissionBean bean;
-                        if (!mappedPermissions.containsKey(permissionPath)) {
-                            bean = new PermissionBean();
-                            setPermissionBeanProperties(permissionNode, bean);
-                            p.put(permissionPath, bean);
-                        } else {
-                            bean = p.get(mappedPermissions.get(permissionPath));
-                            bean.getMappedUuid().add(permissionNode.getIdentifier());
-                        }
-                        List<String> permIds = permIdsMap.get(scope);
-                        List<String> inheritedPermIds = inheritedPermIdsMap.get(scope);
-                        PermissionBean parentBean = p.get(bean.getParentPath());
-                        if ((permIds != null && permIds.contains(permissionNode.getIdentifier()))
-                                || (parentBean != null && parentBean.isSet())) {
-                            bean.setSet(true);
-                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                parentBean.setPartialSet(true);
-                                parentBean = p.get(parentBean.getParentPath());
-                            }
-                        }
-                        parentBean = p.get(bean.getParentPath());
-                        if ((inheritedPermIds != null && inheritedPermIds.contains(permissionNode.getIdentifier()))
-                                || (parentBean != null && parentBean.isSuperSet())) {
-                            bean.setSuperSet(true);
-                            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
-                                parentBean.setPartialSet(true);
-                                parentBean = p.get(parentBean.getParentPath());
-                            }
-                        }
-                    }
+                if (!p.containsKey(permissionPath) || permissionNode.getPath().startsWith("/permissions")) {
+                    PermissionBean bean = new PermissionBean();
+                    setPermissionBeanProperties(permissionNode, bean);
+                    p.put(permissionPath, bean);
+                    setPermissionFlags(permissionNode, p, bean, permIdsMap.get(scope), inheritedPermIdsMap.get(scope), p.get(bean.getParentPath()));
                 }
+            }
+            if (mappedPermissions.containsKey(permissionPath)) {
+                PermissionBean bean = mappedPermissions.get(permissionPath);
+
+                bean.getMappedUuid().add(permissionNode.getIdentifier());
+
+                Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(bean.getPath().split("/")[2]));
+                setPermissionFlags(permissionNode, p, bean, permIdsMap.get(scope), inheritedPermIdsMap.get(scope), p.get(bean.getParentPath()));
+            }
+        }
+    }
+
+    private void setPermissionFlags(JCRNodeWrapper permissionNode, Map<String, PermissionBean> permissions, PermissionBean bean, List<String> permIds, List<String> inheritedPermIds, PermissionBean parentBean) throws RepositoryException {
+        if ((permIds != null && permIds.contains(permissionNode.getIdentifier()))
+                || (parentBean != null && parentBean.isSet())) {
+            bean.setSet(true);
+            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                parentBean.setPartialSet(true);
+                parentBean = permissions.get(parentBean.getParentPath());
+            }
+        }
+        parentBean = permissions.get(bean.getParentPath());
+        if ((inheritedPermIds != null && inheritedPermIds.contains(permissionNode.getIdentifier()))
+                || (parentBean != null && parentBean.isSuperSet())) {
+            bean.setSuperSet(true);
+            while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
+                parentBean.setPartialSet(true);
+                parentBean = permissions.get(parentBean.getParentPath());
             }
         }
     }

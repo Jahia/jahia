@@ -57,7 +57,7 @@
         <select id="roleType" name="roleType">
             <c:forEach items="${handler.roleTypes.values}" var="roleType">
                 <option value="${roleType.name}">
-                <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${roleType.name}"/>
+                <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${fn:replace(roleType.name,'-','_')}"/>
                 </option>
             </c:forEach>
         </select>
@@ -94,7 +94,7 @@
 <c:forEach items="${roles}" var="entry" varStatus="loopStatus">
     <fieldset>
 
-           <h3><fmt:message key="rolesmanager.rolesAndPermissions.roleType.${entry.key}"/></h3>
+           <h3><fmt:message key="rolesmanager.rolesAndPermissions.roleType.${fn:replace(entry.key,'-','_')}"/></h3>
 
         <table class="table table-bordered table-striped table-hover">
             <thead>

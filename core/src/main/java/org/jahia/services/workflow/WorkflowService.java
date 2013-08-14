@@ -163,6 +163,10 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    public void removeProvider(final WorkflowProvider provider) {
+        providers.remove(provider.getKey());
+    }
+
     private void initializePermission(final WorkflowProvider provider) {
         try {
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {

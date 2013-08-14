@@ -21,6 +21,7 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -195,6 +196,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                         // .userGroupCallback(userGroupCallback)
                         // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
                 .knowledgeBase(kieContainer.getKieBase())
+                .classLoader(kieContainer.getClassLoader())
+                .registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, null))
                 .get();
         // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
@@ -258,9 +261,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public void stop() {
-        // workflowService.removeProvider(this); @todo implement this method
+        workflowService.removeProvider(this);
 
         // @todo implement clean shutdown of all jBPM & Drools environment
+        runtimeManager.disposeRuntimeEngine(runtimeEngine);
+        runtimeManager.close();
     }
 
     @Override

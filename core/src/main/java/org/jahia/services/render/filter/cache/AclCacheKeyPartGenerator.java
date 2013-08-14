@@ -69,6 +69,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -157,7 +158,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             String nodePath = node.getPath();
             final Set<String> aclsKeys = new LinkedHashSet<String>();
 
-            aclsKeys.add(URLEncoder.encode(nodePath,"UTF-8"));
+            aclsKeys.add(URLEncoder.encode(nodePath, "UTF-8"));
             final Set<String> dependencies = resource.getDependencies();
 
             for (final String dependency : dependencies) {
@@ -168,7 +169,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
                                     try {
-                                        aclsKeys.add(URLEncoder.encode(nodeByIdentifier.getPath(),"UTF-8"));
+                                        aclsKeys.add(URLEncoder.encode(nodeByIdentifier.getPath(), "UTF-8"));
                                     } catch (UnsupportedEncodingException e) {
                                     }
                                     return null;
@@ -236,11 +237,11 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     @SuppressWarnings("unchecked")
     public String getAclKeyPartForNode(RenderContext renderContext, String nodePath,
-                                                          JahiaUser principal, Set<String> aclPathChecked)
+                                       JahiaUser principal, Set<String> aclPathChecked)
             throws RepositoryException {
         List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
 
-        l.add(getPrincipalAcl("u:"+principal.getName(),0));
+        l.add(getPrincipalAcl("u:" + principal.getName(), 0));
 
         List<String> groups = groupManagerService.getUserMembership(principal);
 
@@ -270,76 +271,95 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         String r = "";
         for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
             try {
-                r += URLEncoder.encode(StringUtils.join(entry.getValue(),","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
+                r += URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
             } catch (UnsupportedEncodingException e) {
             }
         }
         return r;
     }
 
+    private final Map<String, Object> processings = new ConcurrentHashMap<String, Object>();
+
     private Map<String, Set<String>> getPrincipalAcl(final String key, final int siteId) throws RepositoryException {
-        Element element = cache.get(key + ":" + siteId);
+        final String cacheKey = key + ":" + siteId;
+        Element element = cache.get(cacheKey);
         if (element == null) {
-            Map<String, Set<String>> map = template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Map<String, Set<String>>>() {
-                @SuppressWarnings("unchecked")
-                public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Query query = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:ace] as ace where ace.[j:principal] = '" + key + "'",
-                            Query.JCR_SQL2);
-                    QueryResult queryResult = query.execute();
-                    NodeIterator rowIterator = queryResult.getNodes();
+            synchronized (processings) {
+                if (!processings.containsKey(cacheKey)) {
+                    processings.put(cacheKey, new Object());
+                }
+            }
+            synchronized (processings.get(cacheKey)) {
+                element = cache.get(cacheKey);
+                if (element != null) {
+                    return (Map<String, Set<String>>) element.getObjectValue();
+                }
 
-                    Map<String, Set<String>> mapGranted = new LinkedHashMap<String, Set<String>>();
-                    Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
+                logger.debug("Getting ACL for "+cacheKey);
+                long l = System.currentTimeMillis();
 
-                    while (rowIterator.hasNext()) {
-                        JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
-                        if (key.startsWith("g:") && siteId != node.getResolveSite().getID() && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteId != 0)) {
-                            continue;
-                        }
-                        String path = node.getParent().getParent().getPath();
-                        if (path.startsWith("/sites/")) {
+                Map<String, Set<String>> map = template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Map<String, Set<String>>>() {
+                    @SuppressWarnings("unchecked")
+                    public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        Query query = session.getWorkspace().getQueryManager().createQuery(
+                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + key + "'",
+                                Query.JCR_SQL2);
+                        QueryResult queryResult = query.execute();
+                        NodeIterator rowIterator = queryResult.getNodes();
 
-                        }
-                        Set<String> foundRoles = new HashSet<String>();
-                        boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
-                        Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
-                        for (Value r : roles) {
-                            String role = r.getString();
-                            if (!foundRoles.contains(role)) {
-                                foundRoles.add(role);
+                        Map<String, Set<String>> mapGranted = new LinkedHashMap<String, Set<String>>();
+                        Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
+
+                        while (rowIterator.hasNext()) {
+                            JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
+                            if (key.startsWith("g:") && siteId != node.getResolveSite().getID() && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteId != 0)) {
+                                continue;
+                            }
+                            String path = node.getParent().getParent().getPath();
+                            if (path.startsWith("/sites/")) {
+
+                            }
+                            Set<String> foundRoles = new HashSet<String>();
+                            boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                            Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
+                            for (Value r : roles) {
+                                String role = r.getString();
+                                if (!foundRoles.contains(role)) {
+                                    foundRoles.add(role);
+                                }
+                            }
+                            if (granted) {
+                                mapGranted.put(path, foundRoles);
+                            } else {
+                                mapDenied.put(path, foundRoles);
                             }
                         }
-                        if (granted) {
-                            mapGranted.put(path, foundRoles);
-                        } else {
-                            mapDenied.put(path, foundRoles);
-                        }
-                    }
-                    for (String deniedPath : mapDenied.keySet()) {
-                        String grantedPath = deniedPath;
-                        while (grantedPath.length()>0) {
-                            grantedPath = StringUtils.substringBeforeLast(grantedPath,"/");
-                            if (mapGranted.containsKey(grantedPath)) {
-                                Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath),mapDenied.get(deniedPath));
-                                mapGranted.get(grantedPath).removeAll(intersection);
-                                for (String s : intersection) {
-                                    mapGranted.get(grantedPath).add(s + " -> " +deniedPath);
+                        for (String deniedPath : mapDenied.keySet()) {
+                            String grantedPath = deniedPath;
+                            while (grantedPath.length() > 0) {
+                                grantedPath = StringUtils.substringBeforeLast(grantedPath, "/");
+                                if (mapGranted.containsKey(grantedPath)) {
+                                    Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath), mapDenied.get(deniedPath));
+                                    mapGranted.get(grantedPath).removeAll(intersection);
+                                    for (String s : intersection) {
+                                        mapGranted.get(grantedPath).add(s + " -> " + deniedPath);
+                                    }
                                 }
                             }
                         }
+
+                        return mapGranted;
                     }
+                });
+                element = new Element(cacheKey, map);
+                element.setEternal(true);
+                cache.put(element);
+                logger.debug("Getting ACL for "+cacheKey+" took " +  (System.currentTimeMillis() - l)+"ms");
+            }
 
-                    return mapGranted;
-                }
-            });
-
-            element = new Element(key + ":" + siteId, map);
-            element.setEternal(true);
-            cache.put(element);
 
         }
-        return (Map<String, Set<String>>) element.getValue();
+        return (Map<String, Set<String>>) element.getObjectValue();
     }
 
     public void flushUsersGroupsKey() {
@@ -350,6 +370,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         synchronized (objForSync) {
             cache.removeAll(!propageToOtherClusterNodes);
             cache.flush();
+            logger.debug("Flushed HTMLNodeUsersACLs cache");
         }
     }
 

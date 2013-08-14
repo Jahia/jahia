@@ -71,7 +71,7 @@ public class JahiaLoginModule implements LoginModule {
     public static final String SYSTEM = " system ";
     public static final String GUEST = " guest ";
 
-    private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
+    private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();
     private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
 
     private JahiaUserManagerService userService;
@@ -185,7 +185,7 @@ public class JahiaLoginModule implements LoginModule {
         return true;
     }
 
-    private static synchronized String getSystemPass(String user, List<String> deniedPathes) {
+    private static String getSystemPass(String user, List<String> deniedPathes) {
         String p = idGen.nextIdentifier().toString();
         systemPass.put(p, new Token(user, deniedPathes));
         return p;

@@ -752,7 +752,6 @@ public class Service extends JahiaService {
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final JahiaGroup priv = groupService.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
         Principal p = null;
-        System.out.println(principal);
         if (principal.startsWith("u:")) {
             p = userManagerService.lookupUser(principal.substring(2));
         } else if (principal.length() > 2) {

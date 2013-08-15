@@ -28,9 +28,11 @@ public class JBPMMailWorkItemHandler extends AbstractWorkItemHandler implements 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         Collection<Message> messages = mailProducer.produce(workItem);
         mailSession.send(messages);
+        manager.completeWorkItem(workItem.getId(), null);
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        manager.abortWorkItem(workItem.getId());
     }
 }

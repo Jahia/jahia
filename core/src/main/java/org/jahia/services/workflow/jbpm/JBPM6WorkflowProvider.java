@@ -20,6 +20,7 @@ import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
@@ -426,12 +427,31 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     @Override
     public List<Workflow> getWorkflowsForDefinition(String definition, Locale locale) {
         final List<Workflow> workflows = new LinkedList<Workflow>();
+        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
+        for (ProcessInstance processInstance : processInstances) {
+            if (processInstance instanceof WorkflowProcessInstance) {
+                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+                if (workflowProcessInstance.getProcessName().equals(definition)) {
+                    workflows.add(convertToWorkflow(workflowProcessInstance, locale));
+                }
+            }
+        }
         return workflows;
     }
 
     @Override
     public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
         final List<Workflow> workflows = new LinkedList<Workflow>();
+        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
+        for (ProcessInstance processInstance : processInstances) {
+            if (processInstance instanceof WorkflowProcessInstance) {
+                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+                String userKey = (String) workflowProcessInstance.getVariable("user");
+                if (user.getUserKey().equals(userKey)) {
+                    workflows.add(convertToWorkflow(processInstance, locale));
+                }
+            }
+        }
         return workflows;
     }
 
@@ -502,8 +522,20 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale locale) {
-        final List<HistoryWorkflowTask> workflows = new LinkedList<HistoryWorkflowTask>();
-        return workflows;
+        final List<HistoryWorkflowTask> workflowTaskHistory = new LinkedList<HistoryWorkflowTask>();
+        ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
+        List<NodeInstanceLog> nodeInstanceLogs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceLog.getProcessInstanceId());
+        for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
+            workflowTaskHistory.add(new HistoryWorkflowTask(nodeInstanceLog.getWorkItemId().toString(),
+                    nodeInstanceLog.getProcessId(),
+                    nodeInstanceLog.getNodeName(),
+                    key,
+                    "user", // @todo properly implement this
+                    nodeInstanceLog.getDate(),
+                    nodeInstanceLog.getDate(),
+                    "outcome")); // @todo properly implement this.
+        }
+        return workflowTaskHistory;
     }
 
     @Override

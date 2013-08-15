@@ -89,9 +89,11 @@ public class UnpublishWorkItemHandler extends AbstractWorkItemHandler implements
             throw new RuntimeException(e);
         }
         sessionFactory.setCurrentUser(currentUser);
+        manager.completeWorkItem(workItem.getId(), null);
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        manager.abortWorkItem(workItem.getId());
     }
 }

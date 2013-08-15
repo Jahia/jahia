@@ -88,10 +88,11 @@ public class SetPropertyWorkItemHandler extends AbstractWorkItemHandler implemen
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }
-
+        manager.completeWorkItem(workItem.getId(), null);
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        manager.abortWorkItem(workItem.getId());
     }
 }

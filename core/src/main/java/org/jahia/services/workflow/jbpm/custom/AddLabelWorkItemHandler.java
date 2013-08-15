@@ -74,10 +74,11 @@ public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements 
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }
+        manager.completeWorkItem(workItem.getId(), null);
     }
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        manager.abortWorkItem(workItem.getId());
     }
 }

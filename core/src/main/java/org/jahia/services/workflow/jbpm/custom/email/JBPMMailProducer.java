@@ -94,22 +94,9 @@ public class JBPMMailProducer {
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
-    private String templateKey;
     private ThreadLocal<MailTemplate> template = new ThreadLocal<MailTemplate>();
     private MailTemplateRegistry mailTemplateRegistry;
     private TaskIdentityService taskIdentityService;
-
-    public String getTemplateKey() {
-        return templateKey;
-    }
-
-    public void setTemplateKey(String templateKey) {
-        this.templateKey = templateKey;
-    }
-
-    public MailTemplateRegistry getMailTemplateRegistry() {
-        return mailTemplateRegistry;
-    }
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
         this.mailTemplateRegistry = mailTemplateRegistry;
@@ -130,6 +117,7 @@ public class JBPMMailProducer {
     public Collection<Message> produce(final WorkItem workItem) {
         final Map<String, Object> vars = workItem.getParameters();
         Locale locale = (Locale) vars.get("locale");
+        String templateKey = (String) vars.get("templateKey");
 
         if (templateKey != null) {
             MailTemplate template = null;

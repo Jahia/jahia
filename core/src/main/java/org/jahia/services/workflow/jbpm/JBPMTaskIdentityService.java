@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -171,20 +172,40 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             this.businessEmail = businessEmail;
         }
 
+        protected UserImpl() {
+        }
+
+        @Id
         public String getId() {
             return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public String getGivenName() {
             return givenName;
         }
 
+        public void setGivenName(String givenName) {
+            this.givenName = givenName;
+        }
+
         public String getFamilyName() {
             return familyName;
         }
 
+        public void setFamilyName(String familyName) {
+            this.familyName = familyName;
+        }
+
         public String getBusinessEmail() {
             return businessEmail;
+        }
+
+        public void setBusinessEmail(String businessEmail) {
+            this.businessEmail = businessEmail;
         }
 
         /**
@@ -277,16 +298,32 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             this.type = type;
         }
 
+        protected GroupImpl() {
+        }
+
+        @Id
         public String getId() {
             return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public String getName() {
             return name;
         }
 
+        public void setName(String name) {
+            this.name = name;
+        }
+
         public String getType() {
             return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
         }
 
         @Override

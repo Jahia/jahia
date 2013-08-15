@@ -44,7 +44,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailServiceImpl;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -63,8 +62,8 @@ public class JBPMMailSession implements DisposableBean {
     private MailServiceImpl mailService;
     private ProducerTemplate template;
 
-    public JBPMMailSession() {
-        mailService = (MailServiceImpl) SpringContextSingleton.getBean("MailService");
+    public void setMailService(MailServiceImpl mailService) {
+        this.mailService = mailService;
         template = mailService.getCamelContext().createProducerTemplate();
     }
 

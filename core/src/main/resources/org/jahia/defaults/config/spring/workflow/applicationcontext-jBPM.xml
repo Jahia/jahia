@@ -83,8 +83,22 @@
           class="org.jahia.services.workflow.jbpm.custom.SetPropertyWorkItemHandler">
         <property name="name" value="Set node property"/>
     </bean>
+
+    <bean id="taskIdentityService" class="org.jahia.services.workflow.jbpm.JBPMTaskIdentityService"/>
+
+    <bean id="mailProducer" class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer">
+        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
+        <property name="taskIdentityService" ref="taskIdentityService"/>
+    </bean>
+
+    <bean id="mailSession" class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailSession">
+        <property name="mailService" ref="MailService"/>
+    </bean>
+
     <bean id="jBPMMailWH" parent="abstractWH"
           class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailWorkItemHandler">
+        <property name="mailProducer" ref="mailProducer"/>
+        <property name="mailSession" ref="mailSession"/>
         <property name="name" value="Send mail"/>
     </bean>
 

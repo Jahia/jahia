@@ -340,6 +340,13 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return Long.toString(processInstance.getId());
     }
 
+    /**
+     * This method is used to handle process IDs that start with a number, in order to retain compatibility with
+     * older versions of Jahia that used process IDs that start with such characters
+     *
+     * @param processKey
+     * @return
+     */
     private String getEncodedProcessKey(String processKey) {
         if (Character.isDigit(processKey.charAt(0))) {
             processKey = ISO9075.encode(processKey);

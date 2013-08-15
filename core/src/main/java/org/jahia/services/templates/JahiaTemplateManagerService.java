@@ -1797,7 +1797,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * returns true, the only way to get back false as a return value is to restart Jahia.
      *
      * @return true if an issue with the def has been encountered, false otherwise.
-     * @since 6.6.1.8
+     * @since 6.6.2.0
      */
     public final boolean hasEncounteredIssuesWithDefinitions() {
         return this.templatePackageRegistry.hasEncounteredIssuesWithDefinitions();

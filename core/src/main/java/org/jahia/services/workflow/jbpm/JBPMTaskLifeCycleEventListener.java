@@ -60,8 +60,9 @@ import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.lifecycle.listeners.DefaultTaskLifeCycleEventListener;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.kie.api.runtime.Environment;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
@@ -84,7 +85,7 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 4 févr. 2010
  */
-public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventListener {
+public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Task> implements TaskLifeCycleEventListener {
 
     private static final long serialVersionUID = 4434614988996316632L;
 
@@ -123,6 +124,41 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
 
     public static WorkflowObservationManager getObservationManager() {
         return observationManager;
+    }
+
+    @Override
+    public void afterTaskActivatedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskClaimedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskSkippedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskStartedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskStoppedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskCompletedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskFailedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -166,6 +202,11 @@ public class JBPMTaskLifeCycleEventListener extends DefaultTaskLifeCycleEventLis
         } catch (RepositoryException e) {
             throw new RuntimeException("Error while setting up task assignees and creating a JCR task", e);
         }
+    }
+
+    @Override
+    public void afterTaskExitedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     protected void createTask(final Task task, final Map<String, Object> taskParameters, final List<JahiaPrincipal> candidates) throws RepositoryException {

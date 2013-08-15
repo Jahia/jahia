@@ -49,6 +49,7 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.*;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -287,6 +288,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         JBPMTaskLifeCycleEventListener.setProvider(this);
         JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
         JBPMTaskLifeCycleEventListener.setTaskService(taskService);
+        if (taskService instanceof EventService) {
+            ((EventService) taskService).registerTaskLifecycleEventListener(new JBPMTaskLifeCycleEventListener());
+        }
 
         return kieSession;
     }

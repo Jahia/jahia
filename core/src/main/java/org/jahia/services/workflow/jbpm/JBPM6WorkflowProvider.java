@@ -26,7 +26,9 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -628,8 +630,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         Set<String> connectionIds = getTaskOutcomes(task);
         workflowTask.setOutcome(connectionIds);
         PeopleAssignments peopleAssignements = task.getPeopleAssignments();
+        List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
         if (peopleAssignements.getPotentialOwners().size() > 0) {
-            List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
             for (OrganizationalEntity organizationalEntity : peopleAssignements.getPotentialOwners()) {
                 if (organizationalEntity instanceof Group) {
                     Group group = (Group) organizationalEntity;
@@ -645,8 +647,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     }
                 }
             }
-            workflowTask.setParticipations(participations);
         }
+        workflowTask.setParticipations(participations);
         // Get form resource name
         long contentId = task.getTaskData().getDocumentContentId();
         Content taskContent = taskService.getContentById(contentId);
@@ -668,18 +670,38 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public Set<String> getTaskOutcomes(Task task) {
+        Set<String> connectionIds = new TreeSet<String>();
         long workItemId = task.getTaskData().getWorkItemId();
         WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) getKieSession().getProcessInstance(task.getTaskData().getProcessInstanceId());
-        NodeInstance nodeInstance = workflowProcessInstance.getNodeInstance(workItemId);
-        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
-        Set<String> connectionIds = new TreeSet<String>();
-        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
-            for (Connection connection : outgoingConnectionEntry.getValue()) {
-                String uniqueId = (String) connection.getMetaData().get("UniqueId");
-                connectionIds.add(uniqueId);
+        NodeInstance taskNodeInstance = null;
+        for (NodeInstance nodeInstance : workflowProcessInstance.getNodeInstances()) {
+            if (nodeInstance instanceof WorkItemNodeInstance) {
+                WorkItemNodeInstance workItemNodeInstance = (WorkItemNodeInstance) nodeInstance;
+                if (workItemNodeInstance.getWorkItem().getId() == workItemId) {
+                    taskNodeInstance = nodeInstance;
+                    break;
+                }
             }
         }
+        if (taskNodeInstance == null) {
+            return connectionIds;
+        }
+        getOutgoingConnectionNames(connectionIds, taskNodeInstance.getNode());
         return connectionIds;
+    }
+
+    private void getOutgoingConnectionNames(Set<String> connectionIds, Node node) {
+        Map<String, List<Connection>> outgoingConnections = node.getOutgoingConnections();
+        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
+            for (Connection connection : outgoingConnectionEntry.getValue()) {
+                if (connection.getTo() instanceof Split) {
+                    getOutgoingConnectionNames(connectionIds, connection.getTo());
+                } else {
+                    String uniqueId = (String) connection.getMetaData().get("UniqueId");
+                    connectionIds.add(uniqueId);
+                }
+            }
+        }
     }
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
@@ -745,6 +767,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public static String getI18NText(List<I18NText> i18NTexts, Locale locale) {
+        if (locale == null || i18NTexts == null || i18NTexts.size() == 0) {
+            return "";
+        }
         for (I18NText i18NText : i18NTexts) {
             if (i18NText.getLanguage().equals(locale.toString())) {
                 return i18NText.getText();

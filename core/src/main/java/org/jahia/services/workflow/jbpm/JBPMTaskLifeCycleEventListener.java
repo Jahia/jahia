@@ -240,7 +240,11 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
                     }
                     jcrTask.setProperty("candidates", candidatesArray.toArray(new Value[candidatesArray.size()]));
                     Set<String> outcomes = getProvider().getTaskOutcomes(task);
-                    jcrTask.setProperty("possibleOutcomes", outcomes.toArray(new Value[outcomes.size()]));
+                    List<Value> outcomesArray = new ArrayList<Value>();
+                    for (String outcome : outcomes) {
+                        outcomesArray.add(valueFactory.createValue(outcome));
+                    }
+                    jcrTask.setProperty("possibleOutcomes", outcomesArray.toArray(new Value[outcomes.size()]));
                     jcrTask.setProperty("state", "active");
                     jcrTask.setProperty("type", "workflow");
                     jcrTask.setProperty("jcr:title", "##resourceBundle(" +

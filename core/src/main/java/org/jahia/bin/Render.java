@@ -40,10 +40,7 @@
 
 package org.jahia.bin;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.HTMLElementName;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
@@ -135,6 +132,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String MARK_FOR_DELETION_MESSAGE = "jcrDeletionMessage";
     public static final String PREVIEW_DATE = "prevdate";
     public static final String DISABLE_XSS_FILTERING = "disableXSSFiltering";
+    public static final List<String> EVENT_ATTRIBUTE_NAMES = Arrays.asList(
+            "onblur", "onchange", "onclick", "ondblclick", "onfocus", "onkeydown", "onkeypress", "onkeyup", "onload",
+            "onmousedown", "onmousemove", "onmouseover", "onmouseout", "onmouseup", "onselect", "onsubmit", "onabort",
+            "oncanplay", "oncanplaythrough", "oncontextmenu", "ondrag", "ondragend", "ondragenter", "ondragleave",
+            "ondragstart", "ondrop", "ondurationchange", "onemptied", "onended", "onerror", "onformchange",
+            "onforminput", "oninput", "oninvalid", "onloadeddata", "onloadedmetadata", "onloadstart", "onmousewheel",
+            "onpause", "onplay", "onplaying", "onprogress", "onratechange", "onreadystatechange", "onscroll",
+            "onseeked", "onseeking", "onshow", "onstalled", "onsuspend", "ontimeupdate", "onvolumechange", "onwaiting"
+    );
     public static final String ALLOWS_MULTIPLE_SUBMITS = "allowsMultipleSubmits";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
@@ -417,6 +423,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 outputDocument.remove(element.getStartTag());
                 if (!element.getStartTag().isSyntacticalEmptyElementTag()) {
                     outputDocument.remove(element.getEndTag());
+                }
+            }
+            for (Attribute attribute : element.getAttributes()) {
+                if (EVENT_ATTRIBUTE_NAMES.contains(attribute.getName())) {
+                    outputDocument.remove(attribute);
                 }
             }
         }

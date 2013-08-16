@@ -57,17 +57,12 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.utils.Patterns;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.kie.api.runtime.Environment;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 
 import javax.enterprise.event.Observes;
@@ -177,25 +172,9 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
         JCRNodeWrapper node = null;
         try {
             node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
-            String name = JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText();
+            String name = JBPM6WorkflowProvider.getI18NText(task.getNames(), locale);
 
-            PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
-            List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
             final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name, Long.toString(task.getTaskData().getProcessInstanceId()));
-            for (JahiaPrincipal principal : principals) {
-                if (principal instanceof JahiaGroup) {
-                    potentialOwners.add(new GroupImpl(((JahiaGroup) principal).getGroupKey()));
-                } else if (principal instanceof JahiaUser) {
-                    potentialOwners.add(new UserImpl(((JahiaUser) principal).getUserKey()));
-                }
-            }
-            List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
-            administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
-            peopleAssignments.getBusinessAdministrators().addAll(administrators);
-            peopleAssignments.getPotentialOwners().addAll(potentialOwners);
-
-            // @todo we need to update the task in the service and serialize the changes
-
             createTask(task, taskParameters, principals);
 
             observationManager.notifyNewTask("jBPM", Long.toString(task.getId()));
@@ -232,9 +211,9 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
                     } else {
                         tasks = n.getNode("workflowTasks");
                     }
-                    JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText()), "jnt:workflowTask");
+                    JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, JBPM6WorkflowProvider.getI18NText(task.getNames(), locale)), "jnt:workflowTask");
                     String definitionKey = task.getTaskData().getProcessId();
-                    jcrTask.setProperty("taskName", JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText());
+                    jcrTask.setProperty("taskName", JBPM6WorkflowProvider.getI18NText(task.getNames(), locale));
                     String bundle = WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll("");
                     jcrTask.setProperty("taskBundle", bundle);
                     jcrTask.setProperty("taskId", task.getId());
@@ -265,7 +244,7 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
                     jcrTask.setProperty("state", "active");
                     jcrTask.setProperty("type", "workflow");
                     jcrTask.setProperty("jcr:title", "##resourceBundle(" +
-                            Patterns.SPACE.matcher(JBPM6WorkflowProvider.getI18NText(task.getNames(), locale).getText()).replaceAll(".").trim().toLowerCase() +
+                            Patterns.SPACE.matcher(JBPM6WorkflowProvider.getI18NText(task.getNames(), locale)).replaceAll(".").trim().toLowerCase() +
                             "," +
                             bundle +
                             ")## : " +

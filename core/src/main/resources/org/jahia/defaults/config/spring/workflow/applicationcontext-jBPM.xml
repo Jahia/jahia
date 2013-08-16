@@ -28,6 +28,15 @@
         <property name="entityManagerFactory" ref="jbpmEmf"/>
     </bean>
 
+    <bean id="peopleAssignmentPipeline" class="org.jahia.pipelines.impl.GenericPipeline" init-method="initialize">
+        <property name="name" value="peopleAssignmentPipeline"/>
+        <property name="valves">
+            <list>
+                <bean id="aclPeopleAssignmentValve" class="org.jahia.services.workflow.jbpm.AclPeopleAssignmentValve"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider"
           factory-method="getInstance" init-method="start" destroy-method="stop">
         <property name="key" value="jBPM"/>
@@ -48,6 +57,7 @@
         </property>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
+        <property name="peopleAssignmentPipeline" ref="peopleAssignmentPipeline"/>
     </bean>
 
     <!-- Work item handler instances -->

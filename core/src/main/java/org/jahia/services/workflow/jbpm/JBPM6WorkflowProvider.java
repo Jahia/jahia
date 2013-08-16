@@ -8,6 +8,7 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.TransactionManager;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.pipelines.Pipeline;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -23,7 +24,6 @@ import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
-import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -95,6 +95,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private EntityManagerFactory emf;
     private EntityManager em;
     private Map<String, WorkItemHandler> workItemHandlers = new TreeMap<String, WorkItemHandler>();
+    private Pipeline peopleAssignmentPipeline;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -136,6 +137,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public void setUserManager(JahiaUserManagerService userManager) {
         this.userManager = userManager;
+    }
+
+    public void setPeopleAssignmentPipeline(Pipeline peopleAssignmentPipeline) {
+        this.peopleAssignmentPipeline = peopleAssignmentPipeline;
     }
 
     public KieRepository getKieRepository() {
@@ -210,7 +215,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                         // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
                 .knowledgeBase(kieContainer.getKieBase())
                 .classLoader(kieContainer.getClassLoader())
-                .registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, null))
+                .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
                 .get();
         // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
@@ -291,6 +296,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         if (taskService instanceof EventService) {
             ((EventService) taskService).registerTaskLifecycleEventListener(new JBPMTaskLifeCycleEventListener());
         }
+
+        Map<String, Object> pipelineEnvironment = new HashMap<String, Object>();
+        pipelineEnvironment.put(AbstractPeopleAssignmentValve.ENV_JBPM_WORKFLOW_PROVIDER, this);
+        peopleAssignmentPipeline.setEnvironment(pipelineEnvironment);
+
+        kieSession.addEventListener(new JBPMListener(this));
 
         return kieSession;
     }
@@ -395,7 +406,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
         for (Long taskId : taskIds) {
             Task task = taskService.getTaskById(taskId);
-            String taskName = getI18NText(task.getNames(), locale).getText();
+            String taskName = getI18NText(task.getNames(), locale);
             if (connectionIds.contains(taskName)) {
                 WorkflowAction workflowAction = convertToWorkflowTask(task, locale);
                 workflowActions.add(workflowAction);
@@ -606,7 +617,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private WorkflowTask convertToWorkflowTask(Task task, Locale locale) {
         WorkflowTask workflowTask = new WorkflowTask(task.getTaskData().getProcessId(), key);
         workflowTask.setDueDate(task.getTaskData().getExpirationTime());
-        workflowTask.setDescription(getI18NText(task.getDescriptions(), locale).getText());
+        workflowTask.setDescription(getI18NText(task.getDescriptions(), locale));
         workflowTask.setCreateTime(task.getTaskData().getCreatedOn());
         workflowTask.setProcessId(task.getTaskData().getProcessId());
         if (task.getTaskData().getActualOwner() != null) {
@@ -733,15 +744,15 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
     }
 
-    public static I18NText getI18NText(List<I18NText> i18NTexts, Locale locale) {
+    public static String getI18NText(List<I18NText> i18NTexts, Locale locale) {
         for (I18NText i18NText : i18NTexts) {
             if (i18NText.getLanguage().equals(locale.toString())) {
-                return i18NText;
+                return i18NText.getText();
             } else if (i18NText.getLanguage().equals(locale.getLanguage())) {
-                return i18NText;
+                return i18NText.getText();
             }
         }
-        return null;
+        return "";
     }
 
 }

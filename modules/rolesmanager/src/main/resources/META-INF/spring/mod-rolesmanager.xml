@@ -97,6 +97,7 @@
             <entry key="rep:root" >
                 <list>
                     <value>repository-default</value>
+                    <value>admin</value>
                 </list>
             </entry>
             <entry key="jnt:virtualsite">
@@ -104,11 +105,6 @@
                     <value>repository-default</value>
                     <value>editMode,contributeMode,managers,wysiwyg-editor-toolbar</value>
                     <value>templates,components</value>
-                </list>
-            </entry>
-            <entry key="jnt:globalSettings">
-                <list>
-                    <value>admin</value>
                 </list>
             </entry>
             <entry key="jnt:modules">

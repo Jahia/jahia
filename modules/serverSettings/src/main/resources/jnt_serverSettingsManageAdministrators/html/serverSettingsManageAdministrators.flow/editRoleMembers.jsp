@@ -24,14 +24,14 @@
                        resources="admin-bootstrap.css,jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
-<c:set var="members" value="${group.members}"/>
+
 <c:set var="memberCount" value="${fn:length(members)}"/>
 <c:set var="membersFound" value="${memberCount > 0}"/>
 
 <fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
 <fmt:message var="i18nContinue" key="label.confirmContinue"/>
 
-<c:set var="memberDisplayLimit" value="${siteSettingsProperties.memberDisplayLimit}"/>
+<c:set var="memberDisplayLimit" value="10"/>
 
 <c:set var="isGroupEditable" value="${!providers[group.providerName].readOnly}"/>
 
@@ -94,9 +94,9 @@
 <div>
     <form action="${flowExecutionUrl}" method="post" style="display: inline;">
         <div>
-            <button class="btn" type="submit" name="_eventId_editGroup">
+            <button class="btn" type="submit" name="_eventId_rolesList">
                 <i class="icon-arrow-left"></i>
-                &nbsp;<fmt:message key="siteSettings.label.backToGroup"/>
+                &nbsp;<fmt:message key="serverSettings.label.backToRoles"/>
             </button>
             <button class="btn ${displayUsers}" type="submit" name="_eventId_users">
                 <i class="icon-user"></i>
@@ -201,7 +201,7 @@
                     <tr>
                         <td><input class="selectedMember" type="checkbox" name="selectedMembers" value="${principal.name}" ${functions:contains(members, principal) ? 'checked="checked"' : ''}/> </td>
                         <td>
-                            ${fn:escapeXml(user:displayName(principal))}
+                                ${fn:escapeXml(user:displayName(principal))}
                         </td>
                         <c:if test="${multipleProvidersAvailable}">
                             <fmt:message var="i18nProviderLabel" key="providers.${principal.providerName}.label"/>
@@ -213,6 +213,7 @@
         </c:choose>
         </tbody>
     </table>
+
 
 </div>
 

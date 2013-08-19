@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+		http://www.springframework.org/schema/webflow
+		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ServerRolesHandler"/>
+
+    <view-state id="view">
+        <on-render>
+            <evaluate expression="flowHandler.serverRoles" result="requestScope.serverRoles"/>
+            <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.memberSearchCriteria"/>
+        </on-render>
+
+        <transition on="editRoleMembers" to="editRoleMembers">
+            <evaluate expression="flowHandler.setRole(requestParameters.role)" />
+        </transition>
+
+        <transition on="revokeRole" to="view">
+            <evaluate expression="flowHandler.setRole(requestParameters.role)" />
+            <evaluate expression="flowHandler.revokeRole(requestParameters.principal, messageContext)" />
+        </transition>
+
+
+    </view-state>
+
+    <view-state id="editRoleMembers" model="memberSearchCriteria">
+        <on-render>
+            <evaluate expression="flowHandler.searchNewMembers(memberSearchCriteria)" result="requestScope.principals"/>
+            <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.roleMembers" result="requestScope.members"/>
+        </on-render>
+
+        <transition on="rolesList" to="view"/>
+        <transition on="search" to="editRoleMembers"/>
+        <transition on="users" to="editRoleMembers" validate="false">
+            <evaluate expression="'users'" result="flowHandler.searchType"/>
+        </transition>
+        <transition on="groups" to="editRoleMembers" validate="false">
+            <evaluate expression="'groups'" result="flowHandler.searchType"/>
+        </transition>
+        <transition on="save" to="view" validate="false">
+            <evaluate expression="flowHandler.revokeRole(requestParameters.removedMembers, messageContext)" />
+            <evaluate expression="flowHandler.grantRole(requestParameters.addedMembers, messageContext)"/>
+        </transition>
+
+    </view-state>
+
+</flow>

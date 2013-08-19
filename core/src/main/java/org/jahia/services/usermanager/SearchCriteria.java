@@ -38,7 +38,7 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.modules.sitesettings.groups;
+package org.jahia.services.usermanager;
 
 import java.io.Serializable;
 

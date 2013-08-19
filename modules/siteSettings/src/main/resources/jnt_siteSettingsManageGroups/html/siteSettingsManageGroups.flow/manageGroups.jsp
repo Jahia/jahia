@@ -17,7 +17,7 @@
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
-<%--@elvariable id="searchCriteria" type="org.jahia.modules.sitesettings.groups.SearchCriteria"--%>
+<%--@elvariable id="searchCriteria" type="org.jahia.services.usermanager.SearchCriteria"--%>
 
 <c:set var="groupDisplayLimit" value="${siteSettingsProperties.groupDisplayLimit}"/>
 

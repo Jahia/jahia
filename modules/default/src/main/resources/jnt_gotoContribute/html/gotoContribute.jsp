@@ -15,11 +15,12 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="css" resources="goto-links.css"/>
-<c:if test="${!renderContext.settings.distantPublicationServerMode
+<c:if test="${!renderContext.settings.readOnlyMode
+and !renderContext.settings.distantPublicationServerMode
 and renderContext.mainResource.node.properties['j:originWS'].string ne 'live'
 and not jcr:isNodeType(renderContext.mainResource.node.resolveSite, 'jmix:remotelyPublished')}">
+<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="css" resources="goto-links.css"/>
     <c:if test="${not renderContext.contributionMode}">
     <img src="${url.context}/icons/contribute.png" width="16" height="16" alt=" " role="presentation"
          style="position:relative; top: 4px; margin-right:2px; " />

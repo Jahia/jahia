@@ -97,8 +97,9 @@ public class Edit extends Render {
 
     @Override
     protected boolean isDisabled() {
-        return (settingsBean.isDistantPublicationServerMode() && !isAvailableInDistantPublicationServerMode()) ||
-                (settingsBean.isProductionMode() && !isAvailableInProductionMode());
+        return settingsBean.isReadOnlyMode()
+                || (settingsBean.isDistantPublicationServerMode() && !isAvailableInDistantPublicationServerMode())
+                || (settingsBean.isProductionMode() && !isAvailableInProductionMode());
     }
 
     public EditConfiguration getEditConfiguration() {

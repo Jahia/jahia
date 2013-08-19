@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<c:if test="${!renderContext.settings.readOnlyMode}">
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="css" resources="goto-links.css"/>
 <c:if test="${!empty currentNode.properties['toAdminComponent']}">
@@ -38,4 +39,4 @@
     </a>
     </c:otherwise>
 </c:choose>
-
+</c:if>

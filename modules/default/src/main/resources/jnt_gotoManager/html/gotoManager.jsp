@@ -3,10 +3,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<template:addResources type="css" resources="gotomanager.css"/>
 <c:set var="gotoType" value="${currentNode.propertiesAsString.type}"/>
-<c:if test="${!renderContext.settings.distantPublicationServerMode}">
+<c:if test="${!renderContext.settings.readOnlyMode and !renderContext.settings.distantPublicationServerMode}">
 <c:if test="${gotoType != 'roles' || renderContext.enterpriseEdition}">
+<template:addResources type="css" resources="gotomanager.css"/>
     <c:if test="${currentResource.workspace eq 'live'}">
         <template:addResources type="javascript" resources="jquery.min.js"/>
         <template:addResources type="css" resources="goto-links.css"/>

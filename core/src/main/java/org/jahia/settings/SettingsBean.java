@@ -214,9 +214,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private ServerDeploymentInterface serverDeployer = null;
 
-	private boolean maintenanceMode;
-	
-	private int sessionExpiryTime;
+    private boolean maintenanceMode;
+
+    private int sessionExpiryTime;
 
     private ServletContext servletContext;
 
@@ -250,6 +250,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int queryApproxCountLimit;
 
     private boolean globalGroupMembershipCheckActivated = false;
+    
+    private boolean readOnlyMode;
 
     /**
      * Default constructor.
@@ -424,6 +426,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             queryApproxCountLimit = getInt("queryApproxCountLimit", 100);
 
             globalGroupMembershipCheckActivated = getBoolean("globalGroupMembershipCheckActivated", false);
+            
+            readOnlyMode = getBoolean("readOnlyMode", false);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1139,5 +1143,26 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isGlobalGroupMembershipCheckActivated() {
         return globalGroupMembershipCheckActivated;
+    }
+
+    /**
+     * Returns <code>true</code> if this Jahia instance operates in "read-only" mode, i.e. access to the edit/studio/administration modes is
+     * not allowed.
+     * 
+     * @return <code>true</code> if this Jahia instance operates in "read-only" mode, i.e. access to the edit/studio/administration modes is
+     *         not allowed; otherwise returns <code>false</code>
+     */
+    public boolean isReadOnlyMode() {
+        return readOnlyMode;
+    }
+
+    /**
+     * If set to <code>true</code>, access to the edit/studio/administration modes is disabled on this Jahia instance.
+     * 
+     * @param readOnlyMode
+     *            set to <code>true</code> to disable access to the edit/studio/administration modes on this Jahia instance
+     */
+    public void setReadOnlyMode(boolean readOnlyMode) {
+        this.readOnlyMode = readOnlyMode;
     }
 }

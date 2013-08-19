@@ -6,10 +6,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="tools.css" type="text/css" />
-<title>Maintenance Mode</title>
+<title>System Maintenance</title>
 </head>
 <body>
-<h1>Maintenance Mode</h1>
+<h1>System Maintenance</h1>
+<h2>Maintenance Mode</h2>
 <c:if test="${not empty param.maintenance}">
 <%
 Jahia.setMaintenance(Boolean.valueOf(request.getParameter("maintenance")));
@@ -19,12 +20,25 @@ properties.storeProperties();
 %>
 </c:if>
 <% pageContext.setAttribute("maintenance", Boolean.valueOf(Jahia.isMaintenance())); %>
-<c:if test="${maintenance}">
-	<p>The maintenance mode is currently <strong>ON</strong>.<br/>Click here to <a href="?maintenance=false">disable maintenance mode</a></p>
+<p>
+If the maintenance mode is enabled only requests to the Jahia Tools Area are allowed. Requests to all other pages, will be blocked.<br/>
+The maintenance mode is currently <strong>${maintenance ? 'ON' : 'OFF'}</strong>.<br/>Click here to <a href="?maintenance=${!maintenance}">${maintenance ? 'disable' : 'enable'} maintenance mode</a>
+</p>
+<h2>Read-only Mode</h2>
+<c:if test="${not empty param.readOnlyMode}">
+<%
+Boolean readOnly = Boolean.valueOf(request.getParameter("readOnlyMode"));
+Jahia.getSettings().setReadOnlyMode(readOnly);
+PropertiesManager properties = new PropertiesManager(pageContext.getServletContext().getRealPath(SettingsBean.JAHIA_PROPERTIES_FILE_PATH));
+properties.setProperty("readOnlyMode", Boolean.toString(readOnly));
+properties.storeProperties();
+%>
 </c:if>
-<c:if test="${not maintenance}">
-	<p>The maintenance mode is currently <strong>OFF</strong>.<br/>Click here to <a href="?maintenance=true">enable maintenance mode</a></p>
-</c:if>
+<% pageContext.setAttribute("readOnlyMode", Boolean.valueOf(Jahia.getSettings().isReadOnlyMode())); %>
+<p>
+If the read-only mode is enabled, requests to the edit/contribute/studio/administration modes will be blocked.<br/>
+The read-only mode is currently <strong>${readOnlyMode ? 'ON' : 'OFF'}</strong>.<br/>Click here to <a href="?readOnlyMode=${!readOnlyMode}">${readOnlyMode ? 'disable' : 'enable'} read-only mode</a>
+</p>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

@@ -194,10 +194,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean productionMode = false;
     private boolean distantPublicationServerMode = true;
     
-    // Settings to control servlet response wrapper flushing
-    private boolean wrapperBufferFlushingActivated = true;
-
-
     private static SettingsBean instance = null;
     private boolean considerPreferredLanguageAfterLogin;
     
@@ -390,8 +386,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             operatingMode = getString("operatingMode", "development");
             productionMode = !"development".equalsIgnoreCase(operatingMode);
             distantPublicationServerMode = "distantPublicationServer".equalsIgnoreCase(operatingMode);
-
-            wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
 
             permanentMoveForVanityURL = getBoolean("permanentMoveForVanityURL", true);
 
@@ -872,14 +866,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public boolean getSiteErrorEnabled() {
         return isSiteErrorEnabled;
-    }
-
-    public boolean isWrapperBufferFlushingActivated() {
-        return wrapperBufferFlushingActivated;
-    }
-
-    public void setWrapperBufferFlushingActivated(boolean wrapperBufferFlushingActivated) {
-        this.wrapperBufferFlushingActivated = wrapperBufferFlushingActivated;
     }
 
     public boolean isConsiderDefaultJVMLocale() {

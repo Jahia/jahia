@@ -15,10 +15,7 @@ import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import java.io.Serializable;
@@ -38,6 +35,7 @@ public class RolesAndPermissionsHandler implements Serializable {
 
     private String currentContext;
     private String currentGroup;
+    private List<String> uuids;
 
     private boolean usePermissionMapping = true;
 
@@ -65,11 +63,33 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public Map<String, List<RoleBean>> getRoles() throws RepositoryException {
+        return getRoles(false);
+    }
+
+    public Map<String, List<RoleBean>> getSelectedRoles() throws RepositoryException {
+        return getRoles(true);
+    }
+
+    public Map<String, List<RoleBean>> getRoles(boolean filterUUIDs) throws RepositoryException {
+
         QueryManager qm = getSession().getWorkspace().getQueryManager();
-        Query q = qm.createQuery("select * from [jnt:role]", Query.JCR_SQL2);
+        String statement = "select * from [jnt:role]";
+        if (filterUUIDs) {
+            statement += " where ";
+            Iterator<String> it = uuids.iterator();
+            while (it.hasNext()) {
+                statement += "[jcr:uuid] = '" + it.next() + "'";
+                if (it.hasNext()) {
+                    statement += " or ";
+                }
+            }
+        }
+        Query q = qm.createQuery(statement, Query.JCR_SQL2);
         Map<String, List<RoleBean>> all = new LinkedHashMap<String, List<RoleBean>>();
-        for (RoleType roleType : roleTypes.getValues()) {
-            all.put(roleType.getName(), new ArrayList<RoleBean>());
+        if (!filterUUIDs) {
+            for (RoleType roleType : roleTypes.getValues()) {
+                all.put(roleType.getName(), new ArrayList<RoleBean>());
+            }
         }
 
         NodeIterator ni = q.execute().getNodes();
@@ -236,11 +256,20 @@ public class RolesAndPermissionsHandler implements Serializable {
         return true;
     }
 
-    public boolean deleteRoles(String uuids) throws RepositoryException {
+    public void selectRoles(String uuids) throws RepositoryException {
+        this.uuids = Arrays.asList(uuids.split(","));
+    }
+
+    public boolean deleteRoles() throws RepositoryException {
         JCRSessionWrapper currentUserSession = getSession();
-        String[] uuidsArray = uuids.split(",");
-        for (String uuid : uuidsArray) {
-            currentUserSession.getNodeByIdentifier(uuid).remove();
+        for (String uuid : uuids) {
+            try {
+                currentUserSession.getNodeByIdentifier(uuid).remove();
+            } catch (ItemNotFoundException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Cannot find role " + uuid);
+                }
+            }
         }
         currentUserSession.save();
         return true;

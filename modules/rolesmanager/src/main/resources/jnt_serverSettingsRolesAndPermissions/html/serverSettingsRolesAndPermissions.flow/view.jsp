@@ -35,18 +35,25 @@
                 return false;
             }
             $('#roleType').val($("#"+uuids[0]).attr("roleType"));
-            $('#parentRoleId').val(uuids[0]);
+            $('#uuid').val(uuids[0]);
+            $('#eventId').val('addRole');
             $('#roleForm').submit();
         }
+
         function deleteRoles() {
             var uuids = getUuids();
             if (uuids.length == 0) {
                 return false;
             }
-            if(confirm('<fmt:message key="rolesmanager.rolesAndPermissions.role.delete.confirm" />')) {
-                $('#roleToDeleteUuids').val(uuids.join(","));
-                $('#deleteRolesForm').submit();
-            }
+            $('#uuid').val(uuids.join(","));
+            $('#eventId').val('deleteRoles');
+            $('#roleForm').submit();
+        }
+
+        function viewRole(uuid) {
+            $('#uuid').val(uuid);
+            $('#eventId').val('viewRole');
+            $('#roleForm').submit();
         }
     </script>
 </template:addResources>
@@ -62,8 +69,8 @@
             </c:forEach>
         </select>
         <input type="text" id="addRoleField" name="newRole"/>
-        <input type="hidden" id="parentRoleId" name="parentRoleId"/>
-        <input type="hidden" name="_eventId_addRole"/>
+        <input type="hidden" id="uuid" name="uuid"/>
+        <input type="hidden" id="eventId" name="_eventId" value="addRole" />
         <button class="btn btn-primary" type="submit" onclick="${'#parentRoleId'}.val('')">
             <i class="icon-plus  icon-white"></i>
             <fmt:message key="rolesmanager.rolesAndPermissions.role.add" />
@@ -72,11 +79,6 @@
             <i class="icon-plus  icon-white"></i>
             <fmt:message key="rolesmanager.rolesAndPermissions.subRole.add" />
         </button>
-        </form>
-
-        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="deleteRolesForm">
-            <input type="hidden" id="roleToDeleteUuids" name="uuids"/>
-            <input type="hidden" name="_eventId_deleteRoles"/>
             <button class="btn btn-danger" type="button" onclick="deleteRoles()">
                 <i class="icon-remove  icon-white"></i>
                 <fmt:message key="rolesmanager.rolesAndPermissions.role.delete" />
@@ -103,12 +105,9 @@
                 <th width="25%">
                     <fmt:message key="label.name"/>
                 </th>
-                <th width="67%">
+                <th width="72%">
                     <fmt:message key="label.description"/>
                 </th>
-                <%--<th width="7%">--%>
-                    <%--Scope--%>
-                <%--</th>--%>
             </tr>
             </thead>
 
@@ -125,9 +124,6 @@
                     <td>
                         ${role.description}
                     </td>
-                    <%--<td>--%>
-                            <%--${role.scope} &nbsp; ${role.privileged ? '' : 'LIVE'}--%>
-                    <%--</td>--%>
                 </tr>
             </c:forEach>
             </tbody>
@@ -135,18 +131,3 @@
 
     </fieldset>
 </c:forEach>
-
-
-<script type="text/javascript">
-    function viewRole(uuid) {
-        $('#uuid').val(uuid)
-        $('#viewRole').submit();
-    }
-</script>
-
-<form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="viewRole">
-    <input type="hidden" name="uuid" value="" id="uuid"/>
-    <input type="hidden" name="_eventId_viewRole" value="on">
-</form>
-
-

@@ -11,7 +11,6 @@ jahia.database.schemascriptdir = sql/schema/postgresql
 jahia.database.popuplationscriptdir = sql/population
 jahia.database.datasource = jdbc/jahia
 jahia.database.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
-jahia.nested_transaction_allowed = false
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.pool.PostgreSQLPersistenceManager
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem

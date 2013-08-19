@@ -84,10 +84,4 @@
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory">
-            <ref local="sessionFactory"/>
-        </property>
-        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}"/>
-    </bean>
 </beans>

@@ -11,7 +11,6 @@ jahia.database.schemascriptdir = sql/schema/derby
 jahia.database.popuplationscriptdir = sql/population
 jahia.database.datasource = jdbc/jahia
 jahia.database.hibernate.dialect = org.hibernate.dialect.DerbyDialect
-jahia.nested_transaction_allowed = false
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.pool.DerbyPersistenceManager
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DerbyFileSystem

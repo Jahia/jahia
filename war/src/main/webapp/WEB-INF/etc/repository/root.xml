@@ -99,6 +99,7 @@
         <admin jcr:primaryType="jnt:permission" >
             <!-- server settings -->
             <administrationAccess jcr:primaryType="jnt:permission" />
+            <adminAdministrators jcr:primaryType="jnt:permission" />
             <adminVirtualSites jcr:primaryType="jnt:permission" />
             <adminPortlets jcr:primaryType="jnt:permission" />
             <adminEmailSettings jcr:primaryType="jnt:permission" />
@@ -334,13 +335,10 @@
 
         <web-designer j:hidden="false"
                       j:nodeTypes="rep:root"
-                      j:permissions=""
+                      j:permissions="/permissions/admin/adminTemplates"
                       j:privilegedAccess="true"
                       j:roleGroup="server-role"
                       jcr:primaryType="jnt:role">
-            <settings-access j:path="/settings"
-                             j:permissions="/permissions/admin/adminTemplates"
-                             jcr:primaryType="jnt:externalPermissions"/>
             <modules-access j:path="/modules"
                             j:permissions="/permissions/repository-permissions/jcr:all_default
                             /permissions/studioMode"
@@ -376,13 +374,10 @@
         </site-administrator>
         <server-administrator j:hidden="false"
                               j:nodeTypes="rep:root"
-                              j:permissions="/permissions/repository-permissions/jcr:all_default"
+                              j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/admin"
                               j:privilegedAccess="true"
                               j:roleGroup="server-role"
                               jcr:primaryType="jnt:role">
-            <settings-access j:path="/settings"
-                             j:permissions="/permissions/admin"
-                             jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Grant access to the server administration"
                               jcr:language="en"
                               jcr:primaryType="jnt:translation"

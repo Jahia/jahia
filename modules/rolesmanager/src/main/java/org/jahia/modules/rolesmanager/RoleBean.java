@@ -11,15 +11,17 @@ public class RoleBean implements Serializable {
 
     private String path;
 
-    private String title;
+    private String title = "";
 
-    private String description;
+    private String description = "";
 
-    private boolean hidden;
+    private boolean hidden = false;
 
     private RoleType roleType;
 
     private int depth;
+
+    private boolean isDirty = false;
 
     private Map<String, Map<String, Map<String,PermissionBean>>> permissions;
 
@@ -88,6 +90,14 @@ public class RoleBean implements Serializable {
 
     public void setDepth(int depth) {
         this.depth = depth;
+    }
+
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        isDirty = dirty;
     }
 
     public  Map<String, Map<String, Map<String,PermissionBean>>> getPermissions() {

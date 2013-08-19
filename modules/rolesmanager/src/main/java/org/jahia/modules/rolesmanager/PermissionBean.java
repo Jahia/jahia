@@ -103,6 +103,8 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     }
 
     public void setSuperSet(boolean superSet) {
+        this.set = false;
+        this.partialSet = false;
         this.superSet = superSet;
     }
 

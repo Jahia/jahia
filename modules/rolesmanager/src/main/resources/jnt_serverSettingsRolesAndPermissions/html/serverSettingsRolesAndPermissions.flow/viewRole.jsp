@@ -29,7 +29,7 @@
         })
 
         $(".checkbox").click(function() {
-
+            $('.submitButton').addClass('btn-danger')
             if ($(this).hasClass('checked')) {
                 uncheck(this)
             } else if ($(this).hasClass('partial')) {
@@ -103,17 +103,25 @@
                 setParent(p)
             }
         }
+
+        $("a.switchTab").click(function () {
+            var tab = $(this).attr('tab');
+            alert(tab);
+            $("#switchTabForm").submit();
+            return false;
+        });
+
+        $('#addContextField').keypress(function(e) {
+            // Enter pressed?
+            if(e.which == 10 || e.which == 13) {
+                $("#addContextButton").click();
+                return false;
+            }
+
+        });
     });
 </script>
 
-<div class="clearfix">
-    <h2>
-        <form class="pull-left" action="${flowExecutionUrl}" method="POST">
-            <button class="btn" name="_eventId_rolesList"><i class=" icon-chevron-left"></i>&nbsp;Back</button>
-        </form>
-        &nbsp;Roles and permissions : ${handler.roleBean.name}
-    </h2>
-</div>
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -124,29 +132,106 @@
 
 
 <form id="form" action="${flowExecutionUrl}" method="post">
-    <%@include file="viewRoleHeader.jspf"%>
+    <div class="box-1">
+    <fieldset>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span4">
+                    <label for="title"><fmt:message key="label.title"/></label>
+                    <input type="text" name="title" id="title" value="${handler.roleBean.title}" onchange="$('.submitButton').addClass('btn-danger')"/>
+                    <label for="hidden"><fmt:message key="rolesmanager.rolesAndPermissions.hidden"/></label>
+                    <input name="hidden" id="hidden" type="checkbox" ${handler.roleBean.hidden?'checked="true"':''} onchange="$('.submitButton').addClass('btn-danger')" />
 
+                </div>
+                <div class="span4">
+                    <label for="description"><fmt:message key="label.description"/></label>
+                    <textarea id="description" name="description"  onchange="$('.submitButton').addClass('btn-danger')">${handler.roleBean.description}</textarea>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    </div>
+
+    <input id="selectedPermissions" type="hidden" name="selectedPermissions"/>
+    <input id="partialSelectedPermissions" type="hidden" name="partialSelectedPermissions"/>
+
+        <button class="btn" name="_eventId_rolesList"><i class=" icon-chevron-left"></i>&nbsp;Back</button>
+
+        <button class="submitButton btn ${handler.roleBean.dirty ? 'btn-danger' : 'btn-primary'}" type="submit" name="_eventId_saveRole">
+            <i class="icon-ok icon-white"></i>
+            &nbsp;<fmt:message key="label.save"/>
+        </button>
+
+        <button class="submitButton btn ${handler.roleBean.dirty ? 'btn-danger' : 'btn-primary'}" type="submit" name="_eventId_revertRole">
+            <i class="icon-ok icon-white"></i>
+            &nbsp;<fmt:message key="label.cancel"/>
+        </button>
 
     <p>
+
     </p>
+
     <div>
         <div class="box-1">
-            <c:forEach items="${handler.roleBean.permissions[handler.currentContext]}" var="gentry" varStatus="status">
+            <c:forEach items="${handler.roleBean.permissions}" var="centry" varStatus="status">
+                <p>
+                <c:set var="key" >${centry.key}.${handler.roleBean.roleType.name}</c:set>
+                <c:set var="key" value="${fn:replace(key,'-','_')}" />
+                <c:set var="key" value="${fn:replace(key,'/','_')}" />
+                <fmt:message key="rolesmanager.rolesAndPermissions.context.${key}" var="label"/>
+                <c:if test="${not fn:startsWith(label, '???')}">
+                    ${label} :
+                </c:if>
+                <c:if test="${fn:startsWith(label, '???')}">
+                    <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${permissionGroup.key} :
+                </c:if>
+
+            <c:forEach items="${centry.value}" var="gentry" varStatus="status">
                 <c:forEach items="${gentry.value}" var="entry">
                     <c:set value="${entry.value}" var="permission"/>
-                    <c:if test="${(permission.set or permission.superSet) and not (handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].set or handler.roleBean.permissions[handler.currentContext][gentry.key][permission.parentPath].superSet)}">
-                        <c:if test="${gentry.key eq handler.currentGroup}">
-                            <a href="#${permission.path}" > ${permission.title} </a>
-                        </c:if>
-                        <c:if test="${gentry.key ne handler.currentGroup}">
-                            <a href="#" onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#switchToGroup${status.index}').click()"> ${permission.title} </a>
-                        </c:if>
+                    <c:if test="${(permission.set or permission.superSet) and not (centry.value[gentry.key][permission.parentPath].set or centry.value[gentry.key][permission.parentPath].superSet)}">
+                        <c:choose>
+                            <c:when test="${centry.key ne handler.currentContext}">
+                                <a href="#" onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#contextSelector').val('${centry.key}');$('#tabField').val('${gentry.key}');$('#eventField').attr('name','_eventId_switchGroup');$('#form').submit()"> ${permission.title} </a> |
+                            </c:when>
+                            <c:when test="${gentry.key ne handler.currentGroup}">
+                                <a href="#" onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#switchToGroup${status.index}').click()"> ${permission.title} </a> |
+                            </c:when>
+                            <c:otherwise>
+                                <a href="#${permission.path}" > ${permission.title} </a> |
+                            </c:otherwise>
+                        </c:choose>
                     </c:if>
                 </c:forEach>
+            </c:forEach>
+                </p>
             </c:forEach>
         </div>
     </div>
 
+    <input type="hidden" id="eventField" name="eventField" value="on"/>
+    <select id="contextSelector" name="context" onchange="$('#eventField').attr('name','_eventId_switchContext');$('#form').submit()">
+        <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
+            <option ${flowRequestContext.currentState.id eq 'viewRole' and handler.currentContext eq permissionGroup.key ? 'selected':''} value="${permissionGroup.key}">
+                <c:set var="key" >${permissionGroup.key}.${handler.roleBean.roleType.name}</c:set>
+                <c:set var="key" value="${fn:replace(key,'-','_')}" />
+                <c:set var="key" value="${fn:replace(key,'/','_')}" />
+                <fmt:message key="rolesmanager.rolesAndPermissions.context.${key}" var="label"/>
+                <c:if test="${not fn:startsWith(label, '???')}">
+                    ${label}
+                </c:if>
+                <c:if test="${fn:startsWith(label, '???')}">
+                    <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${permissionGroup.key}
+                </c:if>
+            </option>
+        </c:forEach>
+    </select>
+
+
+    <p>
+    </p>
+
+    <input type="hidden" name="groupTab" id="tabField" value=""/>
     <div class="btn-group">
         <div class="btn-group">
             <c:forEach items="${handler.roleBean.permissions[handler.currentContext]}" var="permissionGroup" varStatus="status">

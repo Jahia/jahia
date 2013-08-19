@@ -65,7 +65,6 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public Map<String, List<RoleBean>> getRoles() throws RepositoryException {
-
         QueryManager qm = getSession().getWorkspace().getQueryManager();
         Query q = qm.createQuery("select * from [jnt:role]", Query.JCR_SQL2);
         Map<String, List<RoleBean>> all = new LinkedHashMap<String, List<RoleBean>>();
@@ -76,7 +75,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         NodeIterator ni = q.execute().getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            RoleBean role = getRole(next.getIdentifier());
+            RoleBean role = getRole(next.getIdentifier(), false);
             String key = role.getRoleType().getName();
             if (!all.containsKey(key)) {
                 all.put(key, new ArrayList<RoleBean>());
@@ -95,7 +94,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         return all;
     }
 
-    public RoleBean getRole(String uuid) throws RepositoryException {
+    public RoleBean getRole(String uuid, boolean getPermissions) throws RepositoryException {
         JCRSessionWrapper currentUserSession = getSession();
 
         JCRNodeWrapper role = currentUserSession.getNodeByIdentifier(uuid);
@@ -119,25 +118,29 @@ public class RolesAndPermissionsHandler implements Serializable {
 
         RoleType roleType = roleTypes.get(roleGroup);
         roleBean.setRoleType(roleType);
+        if (getPermissions) {
+            List<String> tabs = new ArrayList<String>(roleBean.getRoleType().getScopes());
 
-        List<String> tabs = new ArrayList<String>(roleBean.getRoleType().getScopes());
+            Map<String, List<String>> permIdsMap = new HashMap<String, List<String>>();
+            fillPermIds(role, tabs, permIdsMap, false);
 
-        Map<String, List<String>> permIdsMap = new HashMap<String, List<String>>();
-        fillPermIds(role, tabs, permIdsMap, false);
-
-        Map<String, List<String>> inheritedPermIdsMap = new HashMap<String, List<String>>();
-        fillPermIds(role.getParent(), tabs, inheritedPermIdsMap, true);
+            Map<String, List<String>> inheritedPermIdsMap = new HashMap<String, List<String>>();
+            fillPermIds(role.getParent(), tabs, inheritedPermIdsMap, true);
 
 
-        Map<String, Map<String, Map<String, PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String, PermissionBean>>>();
-        roleBean.setPermissions(permsForRole);
+            Map<String, Map<String, Map<String, PermissionBean>>> permsForRole = new LinkedHashMap<String, Map<String, Map<String, PermissionBean>>>();
+            roleBean.setPermissions(permsForRole);
 
-        for (String tab : tabs) {
-            addPermissionsForScope(roleBean, tab, permIdsMap, inheritedPermIdsMap);
+            for (String tab : tabs) {
+                addPermissionsForScope(roleBean, tab, permIdsMap, inheritedPermIdsMap);
+            }
         }
 
-
         return roleBean;
+    }
+
+    public void revertRole() throws RepositoryException {
+        roleBean = getRole(roleBean.getUuid(), true);
     }
 
     private void fillPermIds(JCRNodeWrapper role, List<String> tabs, Map<String, List<String>> permIdsMap, boolean recursive) throws RepositoryException {
@@ -229,7 +232,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         role.setProperty("j:roleGroup", roleType.getName());
 
         currentUserSession.save();
-        this.setRoleBean(getRole(role.getIdentifier()));
+        this.setRoleBean(getRole(role.getIdentifier(), true));
         return true;
     }
 
@@ -421,7 +424,8 @@ public class RolesAndPermissionsHandler implements Serializable {
         return currentGroup;
     }
 
-    public void setCurrentGroup(String currentGroup) {
+    public void setCurrentGroup(String context, String currentGroup) {
+        setCurrentContext(context);
         this.currentGroup = currentGroup;
     }
 
@@ -429,12 +433,19 @@ public class RolesAndPermissionsHandler implements Serializable {
         Map<String, PermissionBean> permissionBeans = roleBean.getPermissions().get(currentContext).get(currentGroup);
         List<String> perms = selectedValues != null ? Arrays.asList(selectedValues) : new ArrayList<String>();
         for (PermissionBean permissionBean : permissionBeans.values()) {
-            permissionBean.setSet(perms.contains(permissionBean.getPath()));
+            if (permissionBean.isSet() != perms.contains(permissionBean.getPath())) {
+                roleBean.setDirty(true);
+                permissionBean.setSet(perms.contains(permissionBean.getPath()));
+            }
+
         }
 
         perms = partialSelectedValues != null ? Arrays.asList(partialSelectedValues) : new ArrayList<String>();
         for (PermissionBean permissionBean : permissionBeans.values()) {
-            permissionBean.setPartialSet(perms.contains(permissionBean.getPath()));
+            if (permissionBean.isPartialSet() != perms.contains(permissionBean.getPath())) {
+                roleBean.setDirty(true);
+                permissionBean.setPartialSet(perms.contains(permissionBean.getPath()));
+            }
         }
     }
 
@@ -517,6 +528,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         role.setProperty("jcr:title", roleBean.getTitle());
         role.setProperty("jcr:description", roleBean.getDescription());
         role.setProperty("j:hidden", roleBean.isHidden());
+        roleBean.setDirty(false);
         currentUserSession.save();
     }
 
@@ -557,8 +569,14 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public void storeDetails(String title, String description, Boolean hidden) {
-        roleBean.setTitle(title);
-        roleBean.setDescription(description);
+        if (!title.equals(roleBean.getTitle())) {
+            roleBean.setDirty(true);
+            roleBean.setTitle(title);
+        }
+        if (!description.equals(roleBean.getDescription())) {
+            roleBean.setDirty(true);
+            roleBean.setDescription(description);
+        }
         roleBean.setHidden(hidden != null && hidden);
     }
 

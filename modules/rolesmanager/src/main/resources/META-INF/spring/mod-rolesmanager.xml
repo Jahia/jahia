@@ -36,6 +36,16 @@
                         <value>currentSite</value>
                     </set>
                 </property>
+                <property name="permissionsGroups">
+                    <map>
+                        <entry key="jnt:virtualsite">
+                            <list>
+                                <value>editMode,contributeMode,managers,wysiwyg-editor-toolbar</value>
+                                <value>templates,components</value>
+                            </list>
+                        </entry>
+                    </map>
+                </property>
             </bean>
             <bean class="org.jahia.modules.rolesmanager.RoleType">
                 <property name="name" value="site-role" />
@@ -67,7 +77,7 @@
                 <property name="scopes">
                     <set>
                         <value>current</value>
-                        <value>/settings</value>
+                        <value>/modules</value>
                     </set>
                 </property>
             </bean>
@@ -112,18 +122,18 @@
 
     <property name="permissionsMapping" >
         <map>
-            <entry key="/permissions/repository-default/jcr:all">
+            <entry key="/permissions/repository-default/jcr:allBasicPermissions">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-default/jcr:all/jcr-mapped:read">
+            <entry key="/permissions/repository-default/jcr:allBasicPermissions/jcr-mapped:read">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:read_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-default/jcr:all/jcr-mapped:write">
+            <entry key="/permissions/repository-default/jcr:allBasicPermissions/jcr-mapped:write">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:write_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:lockManagement_default</value>
@@ -131,25 +141,30 @@
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:nodeTypeManagement_default</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-default/jcr:all/jcr-mapped:admin">
+            <entry key="/permissions/repository-default/jcr:allBasicPermissions/jcr-mapped:manageAcl">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:modifyAccessControl_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:retentionManagement_default</value>
                     <value>/permissions/repository-permissions/jcr:all_default/jcr:lifecycleManagement_default</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-live/jcr:all">
+            <entry key="/permissions/repository-default/jcr-mapped:publish">
+                <list>
+                    <value>/permissions/repository-permissions/publish</value>
+                </list>
+            </entry>
+            <entry key="/permissions/repository-live/jcr:allBasicPermissions">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_live</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-live/jcr:all/jcr-mapped:read">
+            <entry key="/permissions/repository-live/jcr:allBasicPermissions/jcr-mapped:read">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:read_live</value>
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-live/jcr:all/jcr-mapped:write">
+            <entry key="/permissions/repository-live/jcr:allBasicPermissions/jcr-mapped:write">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:write_live</value>
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:lockManagement_live</value>
@@ -157,7 +172,7 @@
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:nodeTypeManagement_live</value>
                 </list>
             </entry>
-            <entry key="/permissions/repository-live/jcr:all/jcr-mapped:admin">
+            <entry key="/permissions/repository-live/jcr:allBasicPermissions/jcr-mapped:manageAcl">
                 <list>
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:modifyAccessControl_live</value>
                     <value>/permissions/repository-permissions/jcr:all_live/jcr:retentionManagement_live</value>

@@ -420,10 +420,6 @@ public class TemplatePackageRegistry {
         if (registry.get(templatePackage.getName()) != null) {
             JahiaTemplatesPackage previousPack = registry.get(templatePackage.getName());
             previousPack.setActiveVersion(false);
-            if (previousPack.getContext() != null) {
-                previousPack.getContext().close();
-                previousPack.setContext(null);
-            }
         }
 
         registry.put(templatePackage.getName(), templatePackage);

@@ -275,8 +275,8 @@
     </build>
 
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-6-6-X-X-BRANCH/jahia-test-parent/jahia-test-module</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_6_6_2_0_RC/jahia-test-parent/jahia-test-module</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_6_6_2_0_RC/jahia-test-parent/jahia-test-module</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_6_6_2_0_RC/jahia-test-parent/jahia-test-module</url>
   </scm>
 </project>

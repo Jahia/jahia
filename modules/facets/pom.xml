@@ -72,4 +72,26 @@
         </repository>
     </repositories>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            org.apache.commons.collections,
+                            org.apache.lucene.document,
+                            org.apache.solr.client.solrj.response,
+                            org.apache.solr.schema,
+                            ${jahia.plugin.projectPackageImport},
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -296,13 +296,17 @@
                 // parent doesn't appear to be locked, we must remove the lock on the translation node
                 errorPrintln(out, "Parent node of translation node " + node.getPath() + " is not locked but translation node is locked!");
                 if (fix) {
-                    printlnFix(out, "Unlocking translation node");
-                    node.unlock();
-                    if (locks.containsKey(node.getIdentifier())) {
-                        locks.remove(node.getIdentifier());
+                    if (node.isLocked()) {
+                        printlnFix(out, "Unlocking translation node" + node.getPath());
+                        node.unlock();
+                        if (locks.containsKey(node.getIdentifier())) {
+                            locks.remove(node.getIdentifier());
+                        }
+                        hasLockIsDeep = false;
+                        hasLockOwner = false;
+                    } else {
+                        errorPrintln(out, "Couldn't unlock because lock information is not coherent (missing from lock file ?). Please run fix a second time after restarting the server !");
                     }
-                    hasLockIsDeep = false;
-                    hasLockOwner = false;
                 }
             }
         }
@@ -313,9 +317,15 @@
             if (!locks.containsKey(node.getIdentifier())) {
                 errorPrintln(out, "Entry missing in lock file for node " + node.getPath());
                 if (fix) {
-                    printlnFix(out, "Generating new lock token for node " + node.getPath() + " and storing in locks file");
-                    referenceToken = getLockToken(node.getIdentifier());
-                    locks.put(node.getIdentifier(), new LockData(node.getIdentifier(), referenceToken, referenceToken, Long.MAX_VALUE));
+                    if (isJmixLockable && node.hasProperty("j:locktoken") && node.getProperty("j:locktoken").getString() != null) {
+                        printlnFix(out, "Retrieving lock token from node " + node.getPath() + "property j:locktoken  and storing in locks file");
+                        referenceToken = node.getProperty("j:locktoken").getString();;
+                        locks.put(node.getIdentifier(), new LockData(node.getIdentifier(), referenceToken, referenceToken, Long.MAX_VALUE));
+                    } else {
+                        printlnFix(out, "Generating new lock token for node " + node.getPath() + " and storing in locks file");
+                        referenceToken = getLockToken(node.getIdentifier());
+                        locks.put(node.getIdentifier(), new LockData(node.getIdentifier(), referenceToken, referenceToken, Long.MAX_VALUE));
+                    }
                 }
             } else {
                 referenceToken = locks.get(node.getIdentifier()).getToken();
@@ -331,17 +341,21 @@
                         errorPrintln(out, "Missing j:locktoken on node " + node.getPath());
                     }
                     if (fix) {
-                        // setting it
-                        printlnFix(out, "Setting property j:locktoken on node " + node.getPath() + " to value of lock file =" + referenceToken);
-                        boolean checkedOut = false;
-                        if (!node.isCheckedOut()) {
-                            node.checkout();
-                            checkedOut = true;
-                        }
-                        node.setProperty("j:locktoken", referenceToken);
-                        node.getSession().save();
-                        if (checkedOut) {
-                            node.checkin();
+                        if (referenceToken == null) {
+                            errorPrintln(out, "Lock file token is null, can't fix for node " + node.getPath() + "!");
+                        } else {
+                            // setting it
+                            printlnFix(out, "Setting property j:locktoken on node " + node.getPath() + " to value of lock file =" + referenceToken);
+                            boolean checkedOut = false;
+                            if (!node.isCheckedOut()) {
+                                node.checkout();
+                                checkedOut = true;
+                            }
+                            node.setProperty("j:locktoken", referenceToken);
+                            node.getSession().save();
+                            if (checkedOut) {
+                                node.checkin();
+                            }
                         }
                     }
                 } else {
@@ -372,7 +386,7 @@
                     // but Jahia properties are present
                     errorPrintln(out, "Found node " + node.getPath() + " with a j:locktoken property but no jcr:lockIsDeep is present");
                     if (fix) {
-                        printlnFix(out, "Clean(removing) lock properties on node " + node.getPath());
+                        printlnFix(out, "Clean (removing) lock properties on node " + node.getPath());
                         boolean checkedOut = false;
                         if (!node.isCheckedOut()) {
                             node.checkout();
@@ -399,12 +413,22 @@
     
     protected void checkLockFile(JspWriter out, LinkedHashMap<String, LockData> locks, Session session, boolean fix) {
         println(out, "Checking lock file data...");
+        Set<String> locksToRemove = new LinkedHashSet<String>();
         for (Map.Entry<String, LockData> lockDataEntry : locks.entrySet()) {
             LockData lockData = lockDataEntry.getValue();
             try {
-                Node node = session.getNodeByIdentifier(lockData.getUuid());
+                Node node = null;
+                try {
+                    node = session.getNodeByIdentifier(lockData.getUuid());
+                } catch (ItemNotFoundException infe) {
+                    // ignore this error.
+                }
                 if (node == null) {
                     // no corresponding node
+                    errorPrintln(out, "Couldn't find node with identifier " + lockData.getUuid() + " referenced in lock file");
+                    if (fix) {
+                        locksToRemove.add(lockData.getUuid());
+                    }
                 } else if (node.hasProperty("jcr:lockIsDeep") && node.hasProperty("jcr:lockOwner") && node.hasProperty("j:locktoken")) {
                     // everything checks out, nothing to do
                 } else {
@@ -423,6 +447,10 @@
             } catch (RepositoryException e) {
                 e.printStackTrace();
             }
+        }
+        for (String lockToRemove : locksToRemove) {
+            printlnFix(out, "Removing node " + locksToRemove + " from locks file");
+            locks.remove(lockToRemove);
         }
     }
 

@@ -28,10 +28,7 @@
 <c:set var="memberCount" value="${fn:length(members)}"/>
 <c:set var="membersFound" value="${memberCount > 0}"/>
 
-<fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
-<fmt:message var="i18nContinue" key="label.confirmContinue"/>
-
-<c:set var="memberDisplayLimit" value="10"/>
+<c:set var="memberDisplayLimit" value="${serverSettingsProperties.memberDisplayLimit}"/>
 
 <c:set var="isGroupEditable" value="${!providers[group.providerName].readOnly}"/>
 
@@ -172,7 +169,7 @@
 
     <c:if test="${principalsCount > memberDisplayLimit}">
         <div class="alert alert-info">
-            <fmt:message key="siteSettings.${flowHandler.searchType}.found">
+            <fmt:message key="serverSettings.${flowHandler.searchType}.found">
                 <fmt:param value="${principalsCount}"/>
                 <fmt:param value="${memberDisplayLimit}"/>
             </fmt:message>

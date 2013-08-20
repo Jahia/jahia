@@ -1,4 +1,4 @@
-package org.jahia.modules.serversettings.flow;
+package org.jahia.modules.sitesettings.flow;
 
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.*;
 
-public class ServerRolesHandler implements Serializable {
-    private static final Logger logger = LoggerFactory.getLogger(ServerRolesHandler.class);
+public class SiteRolesHandler implements Serializable {
+    private static final Logger logger = LoggerFactory.getLogger(SiteRolesHandler.class);
 
 
     @Autowired
@@ -31,7 +31,7 @@ public class ServerRolesHandler implements Serializable {
     @Autowired
     private transient JahiaGroupManagerService groupManagerService;
 
-    private String roleGroup = "server-role";
+    private String roleGroup = "site-role";
 
     private String searchType = "users";
 
@@ -53,7 +53,7 @@ public class ServerRolesHandler implements Serializable {
         this.role = role;
     }
 
-    public Map<String,List<Principal>> getServerRoles() throws Exception {
+    public Map<String,List<Principal>> getSiteRoles() throws Exception {
         Map<String,List<Principal>> m = new HashMap<String,List<Principal>>();
 
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -91,7 +91,7 @@ public class ServerRolesHandler implements Serializable {
     }
 
     public List<Principal> getRoleMembers() throws Exception{
-        return getServerRoles().get(role);
+        return getSiteRoles().get(role);
     }
 
     public void grantRole(String[] principals, MessageContext messageContext) throws Exception {

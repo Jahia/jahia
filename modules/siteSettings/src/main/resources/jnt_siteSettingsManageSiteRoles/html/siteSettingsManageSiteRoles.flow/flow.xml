@@ -5,11 +5,15 @@
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
-    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ServerRolesHandler"/>
+    <var name="flowHandler" class="org.jahia.modules.sitesettings.flow.SiteRolesHandler"/>
+
+    <on-start>
+        <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
+    </on-start>
 
     <view-state id="view">
         <on-render>
-            <evaluate expression="flowHandler.serverRoles" result="requestScope.serverRoles"/>
+            <evaluate expression="flowHandler.siteRoles" result="requestScope.siteRoles"/>
             <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.memberSearchCriteria"/>
         </on-render>
 

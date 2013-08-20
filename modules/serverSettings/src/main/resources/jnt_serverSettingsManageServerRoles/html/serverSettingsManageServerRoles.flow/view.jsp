@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <h2>
-    Manage server roles
+    <fmt:message key="serverSettings.manageServerRoles" />
 </h2>
 
 <script type="text/javascript">
@@ -16,7 +16,7 @@
     }
 
     function revokeRole(principal,role) {
-        if(confirm('revoke role ?')) {
+        if(confirm('<fmt:message key="serverSettings.manageServerRoles.revokeRole.confirm" />')) {
             $('#role').val(role);
             $('#principal').val(principal);
             $('#event').attr('name','_eventId_revokeRole');
@@ -36,27 +36,22 @@
         <div class="box-1">
             <fieldset>
 
-                <h3> ${entry.key}
-                </h3>
+                <h3> ${entry.key}</h3>
 
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
-                    <th width="2%"><input type="checkbox" name="selectedAllMembers" id="cbSelectedAllMembers"/></th>
                     <th width="3%">#</th>
-                    <th width="3%">&nbsp;</th>
+                    <th width="16px">&nbsp;</th>
                     <th width="25%"><fmt:message key="label.name"/></th>
                     <th><fmt:message key="label.properties"/></th>
-                    <th width="20%"><fmt:message key="label.actions"/></th>
+                    <th width="15%"><fmt:message key="label.actions"/></th>
                     </thead>
                     <tbody>
                     <c:forEach items="${entry.value}" var="member" varStatus="loopStatus">
                         <c:set var="principalType" value="${user:principalType(member)}"/>
                         <c:set var="principalIcon" value="${principalType == 'u' ? 'usersmall' : 'group-icon'}"/>
-                        <c:set var="principalKey" value="${principalType}:${principalType == 'u' ? member.userKey : member.groupKey}"/>
+                        <c:set var="principalKey" value="${principalType}:${member.name}"/>
                         <tr>
-                            <td>
-                                <input type="checkbox" name="selectedMembers" value="${principalKey}"/>
-                            </td>
                             <td>
                                     ${loopStatus.count}
                             </td>

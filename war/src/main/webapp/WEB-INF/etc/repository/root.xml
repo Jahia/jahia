@@ -99,7 +99,7 @@
         <admin jcr:primaryType="jnt:permission" >
             <!-- server settings -->
             <administrationAccess jcr:primaryType="jnt:permission" />
-            <adminAdministrators jcr:primaryType="jnt:permission" />
+            <adminServerRoles jcr:primaryType="jnt:permission" />
             <adminVirtualSites jcr:primaryType="jnt:permission" />
             <adminPortlets jcr:primaryType="jnt:permission" />
             <adminEmailSettings jcr:primaryType="jnt:permission" />
@@ -121,10 +121,11 @@
             <siteAdministrationAccess jcr:primaryType="jnt:permission" />
             <siteAdminGroups jcr:primaryType="jnt:permission" />
             <siteAdminLanguages jcr:primaryType="jnt:permission" />
-            <siteAadminHtmlSettings jcr:primaryType="jnt:permission" />
+            <siteAdminHtmlSettings jcr:primaryType="jnt:permission" />
             <siteAdminUrlmapping jcr:primaryType="jnt:permission" />
             <siteAdminTemplates jcr:primaryType="jnt:permission" />
             <siteAdminWcagCompliance jcr:primaryType="jnt:permission" />
+            <siteAdminSiteRoles jcr:primaryType="jnt:permission" />
         </site-admin>
 
         <studioMode jcr:primaryType="jnt:permission">

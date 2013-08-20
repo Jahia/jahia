@@ -310,18 +310,18 @@
                                 j:titleKey="serverSettings.usersAndRoles"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
-                            <manageAdministrators j:applyOn="jnt:globalSettings"
+                            <manageServerRoles j:applyOn="jnt:globalSettings"
                                          j:defaultTemplate="false"
                                          j:hiddenTemplate="false"
-                                         j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_users/manage_administrators.png"
-                                         j:requiredPermissions="#/permissions/admin/adminAdministrators"
-                                         j:titleKey="serverSettings.manageAdministrators"
+                                         j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_users/manage_users.png"
+                                         j:requiredPermissions="#/permissions/admin/adminServerRoles"
+                                         j:titleKey="serverSettings.manageServerRoles"
                                          jcr:mixinTypes="jmix:rbTitle"
                                          jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
-                                    <manage-administrators jcr:primaryType="jnt:serverSettingsManageAdministrators"/>
+                                    <manage-server-roles jcr:primaryType="jnt:serverSettingsManageServerRoles"/>
                                 </pagecontent>
-                            </manageAdministrators>
+                            </manageServerRoles>
                             <manageUsers j:applyOn="jnt:globalSettings"
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"

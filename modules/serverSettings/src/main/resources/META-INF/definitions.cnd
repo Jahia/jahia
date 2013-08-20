@@ -37,4 +37,4 @@
 
 [jnt:serverSettingsManageForgesModules] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
-[jnt:serverSettingsManageAdministrators] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+[jnt:serverSettingsManageServerRoles] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

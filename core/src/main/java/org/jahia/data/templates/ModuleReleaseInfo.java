@@ -40,23 +40,23 @@
 package org.jahia.data.templates;
 
 /**
- * Information required to perform module release operation, including target module catalog.
+ * Information required to perform module release operation, including target module forge.
  * 
  * @author Sergiy Shyrkov
  */
 public class ModuleReleaseInfo {
 
-    private String catalogModulePageUrl;
+    private String forgeModulePageUrl;
 
-    private String catalogPassword;
+    private String password;
 
-    private String catalogUrl;
+    private String forgeUrl;
 
-    private String catalogUsername;
+    private String username;
 
     private String nextVersion;
 
-    private boolean publishToCatalog;
+    private boolean publishToForge;
 
     private boolean publishToMaven;
 
@@ -66,20 +66,20 @@ public class ModuleReleaseInfo {
 
     private String artifactUrl;
 
-    public String getCatalogModulePageUrl() {
-        return catalogModulePageUrl;
+    public String getForgeModulePageUrl() {
+        return forgeModulePageUrl;
     }
 
-    public String getCatalogPassword() {
-        return catalogPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public String getCatalogUrl() {
-        return catalogUrl;
+    public String getForgeUrl() {
+        return forgeUrl;
     }
 
-    public String getCatalogUsername() {
-        return catalogUsername;
+    public String getUsername() {
+        return username;
     }
 
     public String getNextVersion() {
@@ -94,8 +94,8 @@ public class ModuleReleaseInfo {
         return repositoryUrl;
     }
 
-    public boolean isPublishToCatalog() {
-        return publishToCatalog;
+    public boolean isPublishToForge() {
+        return publishToForge;
     }
 
     public boolean isPublishToMaven() {
@@ -106,28 +106,28 @@ public class ModuleReleaseInfo {
         return artifactUrl;
     }
 
-    public void setCatalogModulePageUrl(String catalogModulePageUrl) {
-        this.catalogModulePageUrl = catalogModulePageUrl;
+    public void setForgeModulePageUrl(String forgeModulePageUrl) {
+        this.forgeModulePageUrl = forgeModulePageUrl;
     }
 
-    public void setCatalogPassword(String catalogPassword) {
-        this.catalogPassword = catalogPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setCatalogUrl(String catalogUrl) {
-        this.catalogUrl = catalogUrl;
+    public void setForgeUrl(String forgeUrl) {
+        this.forgeUrl = forgeUrl;
     }
 
-    public void setCatalogUsername(String catalogUsername) {
-        this.catalogUsername = catalogUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setNextVersion(String nextVersion) {
         this.nextVersion = nextVersion;
     }
 
-    public void setPublishToCatalog(boolean publishToCatalog) {
-        this.publishToCatalog = publishToCatalog;
+    public void setPublishToForge(boolean publishToForge) {
+        this.publishToForge = publishToForge;
     }
 
     public void setPublishToMaven(boolean publishToMaven) {

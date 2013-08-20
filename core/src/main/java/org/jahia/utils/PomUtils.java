@@ -151,6 +151,13 @@ public final class PomUtils {
         write(model, pomXmlFile);
     }
 
+    public static void updateForgeUrl(File pomXmlFile, String forgeUrl)
+            throws IOException, XmlPullParserException {
+        Model model = read(pomXmlFile);
+        model.getProperties().put("jahia-forge", forgeUrl);
+        write(model, pomXmlFile);
+    }
+
     /**
      * Updates the SCM connection URL in the specified Maven project file.
      * 

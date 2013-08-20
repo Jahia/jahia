@@ -46,6 +46,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
@@ -53,6 +55,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.tika.io.IOUtils;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -67,6 +70,8 @@ import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.utils.PomUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,10 +95,10 @@ public class ModuleHelper {
         info.setRepositoryId(gwtInfo.getRepositoryId());
         info.setRepositoryUrl(gwtInfo.getRepositoryUrl());
 
-        info.setPublishToCatalog(gwtInfo.isPublishToCatalog());
-        info.setCatalogUrl(gwtInfo.getCatalogUrl());
-        info.setCatalogUsername(gwtInfo.getCatalogUsername());
-        info.setCatalogPassword(gwtInfo.getCatalogPassword());
+        info.setPublishToForge(gwtInfo.isPublishToForge());
+        info.setForgeUrl(gwtInfo.getForgeUrl());
+        info.setUsername(gwtInfo.getUsername());
+        info.setPassword(gwtInfo.getPassword());
 
         return info;
     }
@@ -169,15 +174,48 @@ public class ModuleHelper {
         }
     }
 
-    private String getJahiaCatalogUrl(String repositoryUrl) {
-        String catalogFileUrl = repositoryUrl.endsWith("/") ? (repositoryUrl + "jahia-catalog.properties")
+    private String updateRepositoryUrlFromForge(File pomFile, String forgeUrl, String username, String password) {
+        String forgeFileUrl = forgeUrl + ".json";
+        logger.info("Trying to retrieve Jahia repository information from resource at {}", forgeFileUrl);
+        long timer = System.currentTimeMillis();
+
+        String info = null;
+        try {
+            Map<String,String> headers = new HashMap<String,String>();
+            if (username != null && password != null) {
+                headers.put("Authorization", "Basic " + Base64.encode((username + ":" + password).getBytes()));
+            }
+            info = httpClient.executeGet(forgeFileUrl, headers);
+        } catch (IllegalArgumentException e) {
+            // Malformed URL
+            return null;
+        }
+
+        if (info != null) {
+            info = info.trim();
+            try {
+                JSONObject obj = new JSONObject(info);
+
+                logger.info("Retrieved Jahia Catalog information in {} ms. The URL to the catalog is: {}", System.currentTimeMillis() - timer,
+                        info);
+
+                PomUtils.updateDistributionManagement(pomFile, obj.getString("forgeSettingsId"), obj.getString("forgeSettingsUrl"));
+            } catch (Exception e) {
+                logger.error("Cannot get info from forge",e);
+            }
+        }
+        return null;
+    }
+
+    private String getJahiaForgeUrl(String repositoryUrl) {
+        String forgeFileUrl = repositoryUrl.endsWith("/") ? (repositoryUrl + "jahia-catalog.properties")
                 : (repositoryUrl + "/jahia-catalog.properties");
-        logger.info("Trying to retrieve Jahia Catalog information from resourec at {}", catalogFileUrl);
+        logger.info("Trying to retrieve Jahia Catalog information from resourec at {}", forgeFileUrl);
         long timer = System.currentTimeMillis();
 
         String catalogInfo = null;
         try {
-            catalogInfo = httpClient.executeGet(catalogFileUrl);
+            catalogInfo = httpClient.executeGet(forgeFileUrl);
         } catch (IllegalArgumentException e) {
             // Malformed URL
             return null;
@@ -195,7 +233,6 @@ public class ModuleHelper {
 
     public GWTModuleReleaseInfo getModuleDistributionInfo(String moduleName, JCRSessionWrapper session)
             throws RepositoryException, IOException, XmlPullParserException {
-        GWTModuleReleaseInfo info = null;
         JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(moduleName);
         if (pack == null || !pack.getVersion().isSnapshot()) {
             return null;
@@ -208,17 +245,25 @@ public class ModuleHelper {
 
         Model pom = PomUtils.read(new File(sources, "pom.xml"));
         DistributionManagement distributionManagement = pom.getDistributionManagement();
+
+        GWTModuleReleaseInfo info = new GWTModuleReleaseInfo();
+
         if (distributionManagement != null && distributionManagement.getRepository() != null) {
             String repositoryUrl = distributionManagement.getRepository().getUrl();
 
-            info = new GWTModuleReleaseInfo();
             info.setRepositoryId(distributionManagement.getRepository().getId());
             info.setRepositoryUrl(repositoryUrl);
-            if (repositoryUrl != null) {
-                String catalogUrl = getJahiaCatalogUrl(repositoryUrl);
-                info.setCatalogUrl(catalogUrl);
-                info.setCatalogModulePageUrl(catalogUrl + "/contents/forge-modules-repository/" + moduleName + ".html");
-            }
+
+//            if (repositoryUrl != null) {
+//                String forgeUrl = getJahiaForgeUrl(repositoryUrl);
+//                info.setForgeUrl(forgeUrl);
+//                info.setForgeModulePageUrl(forgeUrl + "/contents/forge-modules-repository/" + moduleName + ".html");
+//            }
+        }
+        if (pom.getProperties().containsKey("jahia-forge")) {
+            final String property = pom.getProperties().getProperty("jahia-forge");
+            info.setForgeUrl(property);
+            info.setForgeModulePageUrl(property + "/contents/forge-modules-repository/" + moduleName + ".html");
         }
 
         return info;
@@ -236,7 +281,7 @@ public class ModuleHelper {
         if (nextVersion != null) {
             ModuleReleaseInfo releaseInfo = toModuleReleaseInfo(gwtReleaseInfo);
             f = templateManagerService.releaseModule(moduleName, releaseInfo, session);
-            gwtReleaseInfo.setCatalogModulePageUrl(releaseInfo.getCatalogModulePageUrl());
+            gwtReleaseInfo.setForgeModulePageUrl(releaseInfo.getForgeModulePageUrl());
             gwtReleaseInfo.setArtifactUrl(releaseInfo.getArtifactUrl());
         } else {
             JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
@@ -309,8 +354,49 @@ public class ModuleHelper {
     }
 
     /**
-     * Updates the module's pom.xml file with the specified distribution server details.
+     * Updates the module's pom.xml file with the specified forge server details.
      * 
+     *
+     * @param module
+     *            the module to update distribution management information
+     * @param forgeUrl
+     *            the target forge URL
+     * @param session
+     *            current JCR session
+     * @param username
+     *@param password @throws XmlPullParserException
+     *             in case of pom.xml parsing error
+     * @throws IOException
+     *             in case of an I/O failure
+     * @throws RepositoryException
+     *             when a repository access exception occurs
+     */
+    public void updateForgeUrlForModule(String module, String forgeUrl,
+                                        JCRSessionWrapper session, String username, String password) throws IOException, XmlPullParserException, RepositoryException {
+        File sources = getSources(module, session);
+        if (sources != null) {
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(module);
+            if (pack != null && templateManagerService.checkValidSources(pack, sources)) {
+                File pomFile = new File(sources, "pom.xml");
+                PomUtils.updateForgeUrl(pomFile, forgeUrl);
+
+                // fetch repository info from forge
+                updateRepositoryUrlFromForge(pomFile, forgeUrl, username, password);
+
+
+                SourceControlManagement scm = templateManagerService.getSourceControlFactory()
+                        .getSourceControlManagement(sources);
+                if (scm != null) {
+                    scm.setModifiedFile(Lists.newArrayList(pomFile));
+                    scm.commit("Updated distribution server information");
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the module's pom.xml file with the specified distribution server details.
+     *
      * @param module
      *            the module to update distribution management information
      * @param repositoryId

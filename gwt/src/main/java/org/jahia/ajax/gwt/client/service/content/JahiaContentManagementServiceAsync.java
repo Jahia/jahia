@@ -321,7 +321,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void setDistributionServerForModule(String module, String repositoryId, String repositoryUrl,
+    void setDistributionServerForModule(String module, GWTModuleReleaseInfo info,
             AsyncCallback<GWTModuleReleaseInfo> async);
 
     void setLock(List<String> paths, boolean locked, AsyncCallback async);

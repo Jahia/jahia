@@ -51,13 +51,13 @@ public class GoToForgeActionItem extends BaseActionItem {
             w.setCallback(new ForgeLoginWindow.Callback() {
                 @Override
                 public void handle(String username, String password) {
-                    String catalogModulePageUrl = result.getCatalogModulePageUrl();
+                    String forgeModulePageUrl = result.getForgeModulePageUrl();
 
                     if (username != null && password != null) {
-                        catalogModulePageUrl +="?username="+username+"&password="+password+"&doLogin=true";
+                        forgeModulePageUrl +="?username="+username+"&password="+password+"&doLogin=true";
                     }
 
-                    final String finalUrl = catalogModulePageUrl;
+                    final String finalUrl = forgeModulePageUrl;
 
                     RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(finalUrl));
                     MainModule.getInstance().goToExternalUrl(finalUrl);

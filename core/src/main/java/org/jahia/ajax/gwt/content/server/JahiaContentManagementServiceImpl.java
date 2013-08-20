@@ -1571,7 +1571,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             RpcMap r = new RpcMap();
             r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, retrieveCurrentSession(), getUILocale()));
             r.put("artifactUrl", releaseInfo.getArtifactUrl());
-            r.put("catalogModulePageUrl", releaseInfo.getCatalogModulePageUrl());
+            r.put("catalogModulePageUrl", releaseInfo.getForgeModulePageUrl());
             if (node != null) {
                 r.put("filename",node.getName());
                 r.put("downloadUrl",node.getUrl());
@@ -2551,12 +2551,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public GWTModuleReleaseInfo setDistributionServerForModule(String module, String repositoryId, String repositoryUrl)
+    public GWTModuleReleaseInfo setDistributionServerForModule(String module, GWTModuleReleaseInfo info)
             throws GWTJahiaServiceException {
         GWTModuleReleaseInfo result = null;
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
-            moduleHelper.updateDistributionServerForModule(module, repositoryId, repositoryUrl, session);
+            if (info.getForgeUrl() != null) {
+                moduleHelper.updateForgeUrlForModule(module, info.getForgeUrl(), session, info.getUsername(), info.getPassword());
+            } else {
+                moduleHelper.updateDistributionServerForModule(module, info.getRepositoryId(), info.getRepositoryUrl(), session);
+            }
             result = moduleHelper.getModuleDistributionInfo(module, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

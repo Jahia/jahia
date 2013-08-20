@@ -46,14 +46,14 @@ public class EditDistributionManagementActionItem extends BaseActionItem {
 
     protected void onInfoLoaded(final GWTModuleReleaseInfo result) {
         // if no distribution server defined and we have module sources ask for the server info
-        DistributionServerWindow distributionServerDialog = new DistributionServerWindow(result != null ? result.getRepositoryId() : null, result != null ? result.getRepositoryUrl() : null) {
+        DistributionServerWindow distributionServerDialog = new DistributionServerWindow(result) {
             @Override
-            protected void callback(String id, String url) {
-                if (id != null && url != null) {
+            protected void callback(GWTModuleReleaseInfo info) {
+                if (info != null) {
                     linker.loading(Messages.get("label.releaseModule.distributionServer.updating",
                             "Updating distribution management server information for module..."));
                     JahiaContentManagementService.App.getInstance().setDistributionServerForModule(
-                            JahiaGWTParameters.getSiteKey(), id, url,
+                            JahiaGWTParameters.getSiteKey(), info,
                             new BaseAsyncCallback<GWTModuleReleaseInfo>() {
                                 public void onApplicationFailure(Throwable caught) {
                                     linker.loaded();

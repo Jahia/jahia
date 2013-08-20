@@ -50,24 +50,24 @@ public class GWTModuleReleaseInfo extends RpcMap {
 
     private static final long serialVersionUID = -815808036831126232L;
 
-    public String getCatalogModulePageUrl() {
-        return (String) get("catalogModulePageUrl");
+    public String getForgeModulePageUrl() {
+        return (String) get("forgeModulePageUrl");
     }
 
     public String getArtifactUrl() {
         return (String) get("artifactUrl");
     }
 
-    public String getCatalogPassword() {
-        return (String) get("catalogPassword");
+    public String getPassword() {
+        return (String) get("password");
     }
 
-    public String getCatalogUrl() {
-        return (String) get("catalogUrl");
+    public String getForgeUrl() {
+        return (String) get("forgeUrl");
     }
 
-    public String getCatalogUsername() {
-        return (String) get("catalogUsername");
+    public String getUsername() {
+        return (String) get("username");
     }
 
     public String getNextVersion() {
@@ -82,40 +82,40 @@ public class GWTModuleReleaseInfo extends RpcMap {
         return (String) get("repositoryUrl");
     }
 
-    public boolean isPublishToCatalog() {
-        return containsKey("publishToCatalog") && (Boolean) get("publishToCatalog");
+    public boolean isPublishToForge() {
+        return containsKey("publishToForge") && (Boolean) get("publishToForge");
     }
 
     public boolean isPublishToMaven() {
         return containsKey("publishToMaven") && (Boolean) get("publishToMaven");
     }
 
-    public void setCatalogModulePageUrl(String pageUrl) {
-        put("catalogModulePageUrl", pageUrl);
+    public void setForgeModulePageUrl(String pageUrl) {
+        put("forgeModulePageUrl", pageUrl);
     }
 
     public void setArtifactUrl(String artifactUrl) {
         put("artifactUrl", artifactUrl);
     }
 
-    public void setCatalogPassword(String catalogPassword) {
-        put("catalogPassword", catalogPassword);
+    public void setPassword(String password) {
+        put("password", password);
     }
 
-    public void setCatalogUrl(String catalogUrl) {
-        put("catalogUrl", catalogUrl);
+    public void setForgeUrl(String forgeUrl) {
+        put("forgeUrl", forgeUrl);
     }
 
-    public void setCatalogUsername(String catalogUsername) {
-        put("catalogUsername", catalogUsername);
+    public void setUsername(String username) {
+        put("username", username);
     }
 
     public void setNextVersion(String nextVersion) {
         put("nextVersion", nextVersion);
     }
 
-    public void setPublishToCatalog(boolean publishToCatalog) {
-        put("publishToCatalog", Boolean.valueOf(publishToCatalog));
+    public void setPublishToForge(boolean publishToForge) {
+        put("publishToForge", Boolean.valueOf(publishToForge));
     }
 
     public void setPublishToMaven(boolean publishToMaven) {

@@ -44,7 +44,6 @@ import java.util.List;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -129,86 +128,55 @@ public class ReleaseModuleWindow extends Window {
         cbNextVersion.setSimpleValue(minorVersion);
         formPanel.add(cbNextVersion);
 
-        FieldSet fsMaven = null;
-        if (releaseInfo.getRepositoryUrl() != null) {
-            setHeight(200);
-            fsMaven = new FieldSet();
-            fsMaven.setCheckboxToggle(true);
-            final FormLayout fl = new FormLayout();
-            fl.setLabelWidth(30);
-            fl.setDefaultWidth(400);
-            fsMaven.setLayout(fl);
-            fsMaven.setHeading(Messages.get("label.releaseModule.publishToMaven",
-                    "Publish to Maven distribution server"));
+        final FieldSet fs = new FieldSet();
+        fs.setCheckboxToggle(true);
+        final FormLayout fl = new FormLayout();
+        fl.setLabelWidth(100);
+        fl.setDefaultWidth(330);
+        fs.setLayout(fl);
+
+        final TextField<String> tfUsername = new TextField<String>();
+        final TextField<String> tfPassword = new TextField<String>();
+        tfUsername.setFieldLabel(Messages.get("label.username", "Username"));
+        tfPassword.setFieldLabel(Messages.get("label.password", "Password"));
+        tfPassword.setPassword(true);
+
+        setHeight(300);
+
+        if (releaseInfo.getForgeUrl() != null) {
+            fs.setHeading(Messages.get("label.releaseModule.publishToModuleForge", "Publish to module forge"));
+
+            LabelField lbCatalogUrl = new LabelField();
+            lbCatalogUrl.setToolTip(releaseInfo.getForgeUrl());
+            lbCatalogUrl.setValue(releaseInfo.getForgeUrl());
+            lbCatalogUrl.setFieldLabel(Messages.get("label.url", "URL") + ":");
+
+            fs.add(lbCatalogUrl);
+            tfUsername.setValue(ForgeLoginWindow.username);
+            tfPassword.setValue(ForgeLoginWindow.password);
+
+            formPanel.add(fs);
+        } else if (releaseInfo.getRepositoryUrl() != null) {
+            fs.setHeading(Messages.get("label.releaseModule.publishToMaven", "Publish to Maven distribution server"));
 
             if (releaseInfo.getRepositoryId() != null) {
                 LabelField lbRepoId = new LabelField();
                 lbRepoId.setValue(releaseInfo.getRepositoryId());
                 lbRepoId.setFieldLabel(Messages.get("label.id", "ID") + ":");
-                fsMaven.add(lbRepoId);
+                fs.add(lbRepoId);
             }
             LabelField lbRepoUrl = new LabelField();
             lbRepoUrl.setToolTip(releaseInfo.getRepositoryUrl());
             lbRepoUrl.setValue(releaseInfo.getRepositoryUrl());
             lbRepoUrl.setFieldLabel(Messages.get("label.url", "URL") + ":");
-            fsMaven.add(lbRepoUrl);
+            fs.add(lbRepoUrl);
 
-            formPanel.add(fsMaven);
+            formPanel.add(fs);
         }
 
-        FieldSet fsCatalog = null;
-        TextField<String> tfUsername = null;
-        TextField<String> tfPassword = null;
-        if (fsMaven != null && releaseInfo.getCatalogUrl() != null) {
-            setHeight(340);
-            fsCatalog = new FieldSet();
-            fsCatalog.setCheckboxToggle(true);
-            final FormLayout fl = new FormLayout();
-            fl.setLabelWidth(80);
-            fl.setDefaultWidth(320);
-            fsCatalog.setLayout(fl);
-            fsCatalog.setHeading(Messages
-                    .get("label.releaseModule.publishToModuleCatalog", "Publish to module catalog"));
+        fs.add(tfUsername);
+        fs.add(tfPassword);
 
-            LabelField lbCatalogUrl = new LabelField();
-            lbCatalogUrl.setToolTip(releaseInfo.getCatalogUrl());
-            lbCatalogUrl.setValue(releaseInfo.getCatalogUrl());
-            lbCatalogUrl.setFieldLabel(Messages.get("label.url", "URL") + ":");
-            fsCatalog.add(lbCatalogUrl);
-
-            tfUsername = new TextField<String>();
-            tfUsername.setFieldLabel(Messages.get("label.username", "Username"));
-            tfUsername.setValue(ForgeLoginWindow.username);
-            fsCatalog.add(tfUsername);
-
-            tfPassword = new TextField<String>();
-            tfPassword.setFieldLabel(Messages.get("label.password", "Password"));
-            tfPassword.setValue(ForgeLoginWindow.password);
-            tfPassword.setPassword(true);
-            fsCatalog.add(tfPassword);
-
-            if (fsMaven.isCollapsible()) {
-                final FieldSet finalFsCatalog = fsCatalog;
-                Listener<FieldSetEvent> listener = new Listener<FieldSetEvent>() {
-                    @Override
-                    public void handleEvent(FieldSetEvent be) {
-                        if (be.getFieldSet().isExpanded()) {
-                            finalFsCatalog.show();
-                        } else {
-                            finalFsCatalog.hide();
-                        }
-                    }};
-                fsMaven.addListener(Events.Expand, listener);
-                fsMaven.addListener(Events.Collapse, listener);
-            }
-
-            formPanel.add(fsCatalog);
-        }
-
-        final FieldSet finalFsMaven = fsMaven;
-        final FieldSet finalFsCatalog = fsCatalog;
-        final TextField<String> finalTfUsername = tfUsername;
-        final TextField<String> finalTfPassword = tfPassword;
 
         Button b = new Button(Messages.get("label.release", "Release"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -220,14 +188,13 @@ public class ReleaseModuleWindow extends Window {
                 }
 
                 releaseInfo.setNextVersion(cbNextVersion.getRawValue());
-                releaseInfo.setPublishToMaven(finalFsMaven != null && finalFsMaven.isExpanded());
-                releaseInfo.setPublishToCatalog(finalFsCatalog != null && finalFsCatalog.isVisible()
-                        && finalFsCatalog.isExpanded());
-                if (releaseInfo.isPublishToCatalog()) {
-                    releaseInfo.setCatalogUsername(finalTfUsername.getValue());
-                    releaseInfo.setCatalogPassword(finalTfPassword.getValue());
-                    ForgeLoginWindow.username = finalTfUsername.getValue();
-                    ForgeLoginWindow.password = finalTfPassword.getValue();
+                releaseInfo.setPublishToForge(releaseInfo.getForgeUrl() != null && fs.isVisible() && fs.isExpanded());
+                releaseInfo.setPublishToMaven(releaseInfo.getRepositoryUrl() != null && fs.isVisible() && fs.isExpanded());
+                releaseInfo.setUsername(tfUsername.getValue());
+                releaseInfo.setPassword(tfPassword.getValue());
+                if (releaseInfo.isPublishToForge()) {
+                    ForgeLoginWindow.username = tfUsername.getValue();
+                    ForgeLoginWindow.password = tfPassword.getValue();
                 }
 
                 callback.handle(releaseInfo);

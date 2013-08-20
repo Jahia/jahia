@@ -734,11 +734,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         activateModuleVersion(module.getRootFolder(), releaseInfo.getNextVersion());
 
-        if (releaseInfo.isPublishToMaven() || releaseInfo.isPublishToCatalog()) {
+        if (releaseInfo.isPublishToMaven() || releaseInfo.isPublishToForge()) {
             releaseInfo.setArtifactUrl(computeModuleJarUrl(releaseVersion, releaseInfo, model));
-            if (releaseInfo.isPublishToCatalog() && releaseInfo.getCatalogUrl() != null) {
+            if (releaseInfo.isPublishToForge() && releaseInfo.getForgeUrl() != null) {
                 String forgeModuleUrl = createForgeModule(releaseInfo, generatedWar);
-                releaseInfo.setCatalogModulePageUrl(forgeModuleUrl);
+                releaseInfo.setForgeModulePageUrl(forgeModuleUrl);
             } else if (releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryUrl() != null) {
                 deployToMaven(releaseInfo, generatedWar);
             }
@@ -755,10 +755,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         Part[] parts = { new StringPart("action","action"), new FilePart("file",jar) };
 
-        final String url = releaseInfo.getCatalogUrl();
+        final String url = releaseInfo.getForgeUrl();
         PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
         postMethod.getParams().setSoTimeout(0);
-        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getCatalogUsername() + ":" + releaseInfo.getCatalogPassword()).getBytes()));
+        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
         postMethod.addRequestHeader("accept", "application/json");
         postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
         HttpClient client = httpClientService.getHttpClient();
@@ -805,13 +805,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         File settings = null;
         File pomFile = null;
         try {
-            if (!StringUtils.isEmpty(releaseInfo.getCatalogUsername()) && !StringUtils.isEmpty(releaseInfo.getCatalogPassword())) {
+            if (!StringUtils.isEmpty(releaseInfo.getUsername()) && !StringUtils.isEmpty(releaseInfo.getPassword())) {
                 settings = File.createTempFile("settings",".xml");
                 BufferedWriter w = new BufferedWriter(new FileWriter(settings));
                 w.write("<settings><servers><server><id>"+releaseInfo.getRepositoryId()+"</id><username>");
-                w.write(releaseInfo.getCatalogUsername());
+                w.write(releaseInfo.getUsername());
                 w.write("</username><password>");
-                w.write(releaseInfo.getCatalogPassword() );
+                w.write(releaseInfo.getPassword() );
                 w.write("</password></server></servers></settings>");
                 w.close();
             }

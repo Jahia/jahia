@@ -159,11 +159,11 @@ public interface JahiaContentManagementService extends RemoteService {
     RpcMap releaseModule(String moduleName, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException;
 
     /**
-     * Returns the information, required for performing a release of the module: distribution server, Jahia catalog (forge) etc.
+     * Returns the information, required for performing a release of the module: distribution server, Jahia forge etc.
      * 
      * @param moduleName
      *            the name of the module which will be released
-     * @return a map with the release info: distribution server, Jahia catalog (forge) etc
+     * @return a map with the release info: distribution server, Jahia forge etc
      * @throws GWTJahiaServiceException
      *             in case of an error
      */
@@ -392,15 +392,13 @@ public interface JahiaContentManagementService extends RemoteService {
      * 
      * @param module
      *            the module to update distribution management information
-     * @param repositoryId
-     *            the server ID for the repository
-     * @param repositoryUrl
-     *            the target repository URL
+     * @param info
+     *            the module info containing server ID,server URL or forge URL
      * @return the updated module release info
      * @throws GWTJahiaServiceException
      *             in case of an error
      */
-    GWTModuleReleaseInfo setDistributionServerForModule(String module, String repositoryId, String repositoryUrl)
+    GWTModuleReleaseInfo setDistributionServerForModule(String module, GWTModuleReleaseInfo info)
             throws GWTJahiaServiceException;
 
     void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException;

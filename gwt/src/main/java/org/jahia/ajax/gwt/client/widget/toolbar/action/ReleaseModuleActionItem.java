@@ -112,8 +112,8 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                         window.layout();
                         window.show();
                         if (catalogModulePageUrl != null && catalogModulePageUrl.length() > 0) {
-                            if (info.getCatalogUsername() != null && info.getCatalogPassword() != null) {
-                                catalogModulePageUrl +="?username="+info.getCatalogUsername()+"&password="+info.getCatalogPassword()+"&doLogin=true";
+                            if (info.getUsername() != null && info.getPassword() != null) {
+                                catalogModulePageUrl +="?username="+info.getUsername()+"&password="+info.getPassword()+"&doLogin=true";
                             }
 
                             MainModule.getInstance().goToExternalUrl(catalogModulePageUrl);
@@ -158,12 +158,12 @@ public class ReleaseModuleActionItem extends BaseActionItem {
             // if no distribution server defined and we have module sources ask for the server info
             DistributionServerWindow distributionServerDialog = new DistributionServerWindow() {
                 @Override
-                protected void callback(String id, String url) {
-                    if (id != null && url != null) {
+                protected void callback(GWTModuleReleaseInfo info) {
+                    if (info != null) {
                         linker.loading(Messages.get("label.releaseModule.distributionServer.updating",
                                 "Updating distribution management server information for module..."));
                         JahiaContentManagementService.App.getInstance().setDistributionServerForModule(
-                                JahiaGWTParameters.getSiteKey(), id, url,
+                                JahiaGWTParameters.getSiteKey(), info,
                                 new BaseAsyncCallback<GWTModuleReleaseInfo>() {
                                     public void onApplicationFailure(Throwable caught) {
                                         linker.loaded();

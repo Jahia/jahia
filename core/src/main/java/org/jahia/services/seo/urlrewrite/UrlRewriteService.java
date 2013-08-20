@@ -323,7 +323,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 logger.error("Cannot get vanity Url", e);
             }
         } else if (path.startsWith("/sites/")) {
-            targetSiteKey = StringUtils.substringBetween(path, "/sites/", "/");
+            targetSiteKey = StringUtils.substringAfter(path, "/sites/");
+            if (targetSiteKey.contains("/")) {
+                targetSiteKey = StringUtils.substringBefore(targetSiteKey,"/");
+            } else if (targetSiteKey.contains(".")) {
+                targetSiteKey = StringUtils.substringBeforeLast(targetSiteKey,".");
+            }
         }
 
         try {

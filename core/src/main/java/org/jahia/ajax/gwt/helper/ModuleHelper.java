@@ -174,7 +174,7 @@ public class ModuleHelper {
         }
     }
 
-    private String updateRepositoryUrlFromForge(File pomFile, String forgeUrl, String username, String password) {
+    private String updateRepositoryUrlFromForge(File pomFile, String forgeUrl, String username, String password) throws IOException{
         String forgeFileUrl = forgeUrl + ".json";
         logger.info("Trying to retrieve Jahia repository information from resource at {}", forgeFileUrl);
         long timer = System.currentTimeMillis();
@@ -203,6 +203,8 @@ public class ModuleHelper {
             } catch (Exception e) {
                 logger.error("Cannot get info from forge",e);
             }
+        } else {
+            throw new IOException("Cannot connect to forge server");
         }
         return null;
     }
@@ -378,11 +380,11 @@ public class ModuleHelper {
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(module);
             if (pack != null && templateManagerService.checkValidSources(pack, sources)) {
                 File pomFile = new File(sources, "pom.xml");
-                PomUtils.updateForgeUrl(pomFile, forgeUrl);
 
                 // fetch repository info from forge
                 updateRepositoryUrlFromForge(pomFile, forgeUrl, username, password);
 
+                PomUtils.updateForgeUrl(pomFile, forgeUrl);
 
                 SourceControlManagement scm = templateManagerService.getSourceControlFactory()
                         .getSourceControlManagement(sources);

@@ -5,6 +5,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.impl.dv.util.Base64;
+import org.jahia.bin.Jahia;
+import org.jahia.commons.Version;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -12,6 +14,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.notification.HttpClientService;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,15 +178,32 @@ public class ForgeService {
                         }
                     }
                     if (add) {
-                        Module module = new Module();
-                        module.setRemoteUrl(moduleList.getJSONObject(i).getString("remoteUrl"));
-                        module.setRemotePath(moduleList.getJSONObject(i).getString("path"));
-                        module.setVersion(moduleList.getJSONObject(i).getString("version"));
-                        module.setTitle(moduleList.getJSONObject(i).getString("title"));
-                        module.setName(moduleList.getJSONObject(i).getString("name"));
-                        module.setDownloadUrl(moduleList.getJSONObject(i).getString("downloadUrl"));
-                        module.setForgeId(forge.getId());
-                        modules.add(module);
+                        final JSONArray moduleVersions = moduleList.getJSONObject(i).getJSONArray("versions");
+
+                        SortedMap<Version, JSONObject> sortedVersions = new TreeMap<Version, JSONObject>();
+
+                        final Version jahiaVersion = new Version(Jahia.VERSION);
+
+                        for (int j = 0; j < moduleVersions.length(); j++) {
+                            JSONObject object = moduleVersions.getJSONObject(j);
+                            Version version = new Version(object.getString("version"));
+                            Version requiredVersion = new Version(StringUtils.substringAfter(object.getString("requiredVersion"), "version-"));
+                            if (requiredVersion.compareTo(jahiaVersion) <= 0) {
+                                sortedVersions.put(version, object);
+                            }
+                        }
+                        if (!sortedVersions.isEmpty()) {
+                            Module module = new Module();
+                            JSONObject versionObject = sortedVersions.get(sortedVersions.lastKey());
+                            module.setRemoteUrl(moduleList.getJSONObject(i).getString("remoteUrl"));
+                            module.setRemotePath(moduleList.getJSONObject(i).getString("path"));
+                            module.setVersion(versionObject.getString("version"));
+                            module.setTitle(moduleList.getJSONObject(i).getString("title"));
+                            module.setName(moduleList.getJSONObject(i).getString("name"));
+                            module.setDownloadUrl(versionObject.getString("downloadUrl"));
+                            module.setForgeId(forge.getId());
+                            modules.add(module);
+                        }
                     }
                 }
             } catch (JSONException e) {

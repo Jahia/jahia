@@ -245,7 +245,7 @@
                               jcr:title="Contributor"/>
         </contributor>
         <editor j:hidden="false"
-                j:permissionNames="move jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                j:permissionNames="jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
                 j:privilegedAccess="true"
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
@@ -253,7 +253,7 @@
                                 j:permissionNames="editModeAccess editModeActions editSelector viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewTagsTab viewVisibilityTab managers view-full-wysiwyg-editor"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <editor-in-chief j:hidden="false"
-                             j:permissionNames="wiki publish workflow-tasks"
+                             j:permissionNames="publish workflow-tasks"
                              j:privilegedAccess="true"
                              j:roleGroup="edit-role"
                              jcr:primaryType="jnt:role">
@@ -272,7 +272,7 @@
         </editor>
 
         <reviewer j:hidden="false"
-                  j:permissionNames="startWorkflow jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"
+                  j:permissionNames="jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"
                   j:privilegedAccess="true"
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">

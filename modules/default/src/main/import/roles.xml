@@ -3,13 +3,11 @@
        xmlns:jcr="http://www.jcp.org/jcr/1.0"
        xmlns:j="http://www.jahia.org/jahia/1.0"
        xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
-    <editor jcr:primaryType="jnt:role"
-            j:permissionNames="move"/>
     <reviewer jcr:primaryType="jnt:role"
                j:permissionNames="publish startWorkflow"/>
     <reader jcr:primaryType="jnt:role"
              j:permissionNames="executeTask commentTask addComment"/>
-    <editor jcr:primaryType="jnt:role">
+    <editor jcr:primaryType="jnt:role" j:permissionNames="move">
         <editor-in-chief jcr:primaryType="jnt:role"
                      j:permissionNames="comments"
                      j:privilegedAccess="true"

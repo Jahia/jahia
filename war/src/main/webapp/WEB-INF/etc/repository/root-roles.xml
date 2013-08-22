@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content jcr:primaryType="jnt:systemFolder"
+         jcr:mixinTypes="jmix:accessControlled jmix:workflowRulesable"
+         xmlns:jcr="http://www.jcp.org/jcr/1.0"
+         xmlns:j="http://www.jahia.org/jahia/1.0"
+         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <roles jcr:primaryType="jnt:roles">
+        <reader jcr:primaryType="jnt:role" j:roleGroup="live-role"
+                j:permissionNames="jcr:read_live"/>
+
+        <jahiapp-user jcr:primaryType="jnt:role" j:roleGroup="live-role" />
+
+        <owner jcr:primaryType="jnt:role" j:roleGroup="live-role"
+               j:permissionNames="jcr:all_default jcr:all_live actions engineTabs"/>
+
+        <privileged jcr:primaryType="jnt:role" j:roleGroup="edit-role"
+                    j:permissionNames="jcr:read_default jcr:readAccessControl_default jcr:readAccessControl_live sitemapSelector useComponent"
+                />
+
+        <contributor j:hidden="false"
+                     j:permissionNames="jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                     j:privilegedAccess="true"
+                     j:roleGroup="edit-role"
+                     jcr:primaryType="jnt:role">
+            <currentSite-access j:path="currentSite"
+                                j:permissionNames="contributeMode editorialContentManager fileManager"
+                                jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Can edit content using contribute mode"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Contributor"/>
+        </contributor>
+        <editor j:hidden="false"
+                j:permissionNames="jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                j:privilegedAccess="true"
+                j:roleGroup="edit-role"
+                jcr:primaryType="jnt:role">
+            <currentSite-access j:path="currentSite"
+                                j:permissionNames="editModeAccess editModeActions editSelector viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewTagsTab viewVisibilityTab managers view-full-wysiwyg-editor"
+                                jcr:primaryType="jnt:externalPermissions"/>
+            <editor-in-chief j:hidden="false"
+                             j:permissionNames="publish workflow-tasks"
+                             j:privilegedAccess="true"
+                             j:roleGroup="edit-role"
+                             jcr:primaryType="jnt:role">
+                <j:translation_en jcr:description="View all engine tabs, is also allowed to grant and revoke roles on content"
+                                  jcr:language="en"
+                                  jcr:primaryType="jnt:translation"
+                                  jcr:title="Editor in chief"/>
+                <currentSite-access j:path="currentSite"
+                                    j:permissionNames="editMode"
+                                    jcr:primaryType="jnt:externalPermissions"/>
+            </editor-in-chief>
+            <j:translation_en jcr:description="Can edit content using edit mode"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Editor"/>
+        </editor>
+
+        <reviewer j:hidden="false"
+                  j:permissionNames="jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"
+                  j:privilegedAccess="true"
+                  j:roleGroup="edit-role"
+                  jcr:primaryType="jnt:role">
+            <currentSite-access j:path="currentSite"
+                                j:permissionNames="contributeMode editModeAccess sitemapSelector viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewSeoTab viewTagsTab"
+                                jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Grant access to view the content and validate changes done by editors before publication"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Reviewer"/>
+        </reviewer>
+
+        <web-designer j:hidden="false"
+                      j:nodeTypes="rep:root"
+                      j:permissionNames="adminTemplates"
+                      j:privilegedAccess="true"
+                      j:roleGroup="server-role"
+                      jcr:primaryType="jnt:role">
+            <modules-access j:path="/modules"
+                            j:permissionNames="jcr:all_default studioMode"
+                            jcr:primaryType="jnt:externalPermissions"/>
+            <j:translation_en jcr:description="Gives full access to the studio"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Web designer"/>
+        </web-designer>
+        <site-administrator j:hidden="false"
+
+                            j:permissionNames="contributeMode editMode categoryManager editorialContentManager fileManager portletManager remotePublicationManager repositoryExplorer siteManager tagManager jcr:all_default site-admin templates wysiwyg-editor-toolbar"
+                            j:privilegedAccess="true"
+                            j:roleGroup="site-role"
+                            jcr:primaryType="jnt:role">
+            <j:translation_en jcr:description=""
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title=""/>
+        </site-administrator>
+        <server-administrator j:hidden="false"
+                              j:nodeTypes="rep:root"
+                              j:permissionNames="jcr:all_default admin"
+                              j:privilegedAccess="true"
+                              j:roleGroup="server-role"
+                              jcr:primaryType="jnt:role">
+            <j:translation_en jcr:description="Grant access to the server administration"
+                              jcr:language="en"
+                              jcr:primaryType="jnt:translation"
+                              jcr:title="Server administrator"/>
+        </server-administrator>
+
+
+    </roles>
+</content>

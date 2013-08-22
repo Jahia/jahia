@@ -100,12 +100,14 @@ public class RolesAndPermissionsHandler implements Serializable {
         NodeIterator ni = q.execute().getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            RoleBean role = getRole(next.getIdentifier(), false);
-            String key = role.getRoleType().getName();
-            if (!all.containsKey(key)) {
-                all.put(key, new ArrayList<RoleBean>());
+            if (!next.getName().equals("privileged")) {
+                RoleBean role = getRole(next.getIdentifier(), false);
+                String key = role.getRoleType().getName();
+                if (!all.containsKey(key)) {
+                    all.put(key, new ArrayList<RoleBean>());
+                }
+                all.get(key).add(role);
             }
-            all.get(key).add(role);
         }
         for (List<RoleBean> roleBeans : all.values()) {
             Collections.sort(roleBeans, new Comparator<RoleBean>() {

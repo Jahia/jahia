@@ -9,6 +9,10 @@
     <tlib-version>6.5</tlib-version>
     <short-name>uiComponents</short-name>
     <uri>http://www.jahia.org/tags/uiComponentsLib</uri>
+    <!--
+        Import-Package:
+            org.jahia.taglibs
+    -->
     <!-- Portlet decoration tags -->
     <tag>
         <description>Displays the GUI interface for portlet mode changes, as well
@@ -416,6 +420,10 @@
     <tag-file>
         <name>langBar</name>
         <path>/META-INF/tags/lang/langBar.tag</path>
+        <!--
+            Import-Package:
+                org.jahia.services.content
+        -->
     </tag-file>
     
     <tag-file>

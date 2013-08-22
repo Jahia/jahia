@@ -13,10 +13,26 @@
     <tag-file>
         <name>facetLabel</name>
         <path>/META-INF/tags/facet/facetLabel.tag</path>
+        <!--
+            Import-Package:
+                org.apache.solr.client.solrj.response
+        -->
     </tag-file>
     <tag-file>
         <name>facetValueLabel</name>
         <path>/META-INF/tags/facet/facetValueLabel.tag</path>
+        <!--
+            Import-Package:
+                java.text,
+                java.util,
+                org.apache.lucene.document,
+                org.apache.solr.client.solrj.response,
+                org.apache.solr.schema,
+                org.jahia.services.content.nodetypes,
+                org.jahia.services.content.nodetypes.renderer,
+                org.jahia.services.render,
+                org.jahia.taglibs.utility
+        -->
     </tag-file> 
 
     <function>

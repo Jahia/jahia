@@ -80,11 +80,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>
-                            org.joda.time.base,
-                            ${jahia.plugin.projectPackageImport},
-                            *
-                        </Import-Package>
                         <Jahia-Depends>default,profile</Jahia-Depends>
                     </instructions>
                 </configuration>

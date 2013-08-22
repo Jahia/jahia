@@ -9,6 +9,10 @@
     <tlib-version>6.5</tlib-version>
     <short-name>template</short-name>
     <uri>http://www.jahia.org/tags/templateLib</uri>
+    <!--
+        Import-Package:
+            org.jahia.taglibs
+    -->
     <tag>
         <description>
             Tag used to add parameters to the parent tag, that implements ParamParent, e.g. 'include' or 'module' tags

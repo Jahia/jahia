@@ -9,6 +9,10 @@
     <tlib-version>6.5</tlib-version>
     <short-name>workflow</short-name>
     <uri>http://www.jahia.org/tags/workflow</uri>
+    <!--
+        Import-Package:
+            org.jahia.taglibs
+    -->
     <tag>
         <description>Exposes the identified workflow.</description>
         <name>workflow</name>

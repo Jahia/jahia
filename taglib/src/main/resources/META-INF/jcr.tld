@@ -9,6 +9,11 @@
     <tlib-version>6.5</tlib-version>
     <short-name>jcr</short-name>
     <uri>http://www.jahia.org/tags/jcr</uri>
+    <!--
+        Import-Package:
+            org.jahia.taglibs,
+            org.jahia.taglibs.jcr
+    -->
     <tag>
         <description>Exposes the requested node type into the template scope.</description>
         <name>nodeType</name>

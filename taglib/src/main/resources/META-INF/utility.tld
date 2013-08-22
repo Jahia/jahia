@@ -9,6 +9,11 @@
     <tlib-version>6.5</tlib-version>
     <short-name>utility</short-name>
     <uri>http://www.jahia.org/tags/utilityLib</uri>
+    <!--
+        Import-Package:
+            org.jahia.taglibs,
+            org.jahia.taglibs.internal.date
+    -->
     <tag>
         <description>Utility tag in order to use a log4j Logger in a template</description>
         <name>logger</name>
@@ -45,6 +50,10 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <!--
+            Import-Package:
+                org.apache.taglibs.unstandard
+        -->
     </tag>
    
     <tag>

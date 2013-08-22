@@ -10,6 +10,10 @@
     <short-name>query</short-name>
     <uri>http://www.jahia.org/tags/queryLib</uri>
     
+    <!--
+        Import-Package:
+            org.jahia.taglibs
+    -->
     <tag>
         <description>Compound query QOM constraint that conjuncts (ANDs) its child constraints.</description>
         <name>and</name>

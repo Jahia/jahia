@@ -11,6 +11,10 @@
     <short-name>search</short-name>
     <uri>http://www.jahia.org/tags/search</uri>
 
+    <!--
+        Import-Package:
+            org.jahia.taglibs
+    -->
     <tag>
         <description>Exposes a descriptor for the specified node property into the page scope.
             The descriptor contains information about property type (boolean, text, date, category), if it is
@@ -252,6 +256,10 @@
     <tag-file>
         <name>fileType</name>
         <path>/META-INF/tags/search/fileType.tag</path>
+        <!--
+            Import-Package:
+                org.jahia.services.content
+        -->
     </tag-file>
     <tag-file>
         <name>form</name>
@@ -264,6 +272,11 @@
     <tag-file>
         <name>language</name>
         <path>/META-INF/tags/search/language.tag</path>
+        <!--
+            Import-Package:
+                java.util,
+                org.jahia.utils
+        -->
     </tag-file>
     <tag-file>
         <name>lastModified</name>
@@ -284,14 +297,27 @@
     <tag-file>
         <name>searchUrl</name>
         <path>/META-INF/tags/search/searchUrl.tag</path>
+        <!--
+            Import-Package:
+                org.jahia.services.render
+        -->
     </tag-file>
     <tag-file>
         <name>site</name>
         <path>/META-INF/tags/search/site.tag</path>
+        <!--
+            Import-Package:
+                org.jahia.services.sites,
+                org.jahia.services.content.decorator
+        -->
     </tag-file>
     <tag-file>
         <name>suggestedSearchUrl</name>
         <path>/META-INF/tags/search/suggestedSearchUrl.tag</path>
+        <!--
+            Import-Package:
+                org.jahia.taglibs.search
+        -->
     </tag-file>
     <tag-file>
         <name>term</name>

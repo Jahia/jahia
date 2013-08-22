@@ -9,6 +9,10 @@
     <tlib-version>6.5</tlib-version>
     <short-name>internal</short-name>
     <uri>http://www.jahia.org/tags/internalLib</uri>
+    <!--
+        Import-Package:
+            org.jahia.taglibs
+    -->
     <tag>
         <description>Lowest level support for resource bundle messages. This is inspired
             by the Struts been message tag except that it checks a session
@@ -180,9 +184,21 @@
     <tag-file>
         <name>contentManager</name>
         <path>/META-INF/tags/ajax/contentmanager.tag</path>
+        <!--
+            Import-Package:
+                java.util,
+                javax.jcr,
+                org.jahia.services.content
+        -->
     </tag-file>
     <tag-file>
         <name>contentPicker</name>
         <path>/META-INF/tags/ajax/contentpicker.tag</path>
+        <!--
+            Import-Package:
+                java.util,
+                javax.jcr,
+                org.jahia.services.content
+        -->
     </tag-file>
 </taglib>

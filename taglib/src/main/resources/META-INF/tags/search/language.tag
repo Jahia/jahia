@@ -1,5 +1,5 @@
 <%@ tag body-content="empty" description="Renders language selection control. By default all active languages of the site are used. This can be overridden by providing a list of languages to be displayed." %>
-<%@ tag import="java.util.Locale, org.jahia.services.sites.JahiaSite, org.jahia.utils.LanguageCodeConverters" %>
+<%@ tag import="java.util.Locale, org.jahia.utils.LanguageCodeConverters" %>
 <%@ tag import="java.util.Set" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"

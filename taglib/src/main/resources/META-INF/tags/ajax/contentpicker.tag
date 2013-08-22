@@ -1,7 +1,4 @@
-<%@ tag import="org.jahia.params.ProcessingContext" description="Displays a content picker" %>
-<%@ tag import="org.jahia.registries.ServicesRegistry" %>
-<%@ tag import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ tag import="org.jahia.services.content.JCRStoreService" %>
+<%@ tag description="Displays a content picker" import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ tag import="javax.jcr.RepositoryException" %>
 <%@ tag import="java.util.ArrayList" %>
 <%@ tag import="java.util.Iterator" %>
@@ -26,7 +23,6 @@
 
 
 <%
-    final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
     final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
 
 %>

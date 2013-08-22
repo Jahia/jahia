@@ -5,7 +5,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<%@tag import="org.jahia.params.valves.LoginEngineAuthValveImpl"%>
 <c:set var="org.jahia.tags.login.form.class" value="<%= this.getClass() %>" scope="request"/>
 <c:if test="${!currentRequest.logged}">
     <c:set var="formId" value="<%= this.toString() %>"/>
@@ -22,7 +21,6 @@
             <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
             <input type="hidden" name="failureRedirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
         </c:if>
-        <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>
         <jsp:doBody/>
     </form>
 </c:if>

@@ -1,5 +1,4 @@
 <%@ tag body-content="empty" description="Renders site selection language selection control. By default all sites are used. This can be overridden by providing a list of sites to be disaplyed for selection." %>
-<%@ tag import="org.jahia.services.sites.JahiaSite" %>
 <%@ tag import="org.jahia.services.sites.JahiaSitesService" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"

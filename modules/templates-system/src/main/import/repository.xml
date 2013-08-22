@@ -388,7 +388,7 @@
                                         <gotoAdmin j:contextNodePath="/settings"
                                                    j:requireLoggedUser="false"
                                                    j:requirePrivilegedUser="false"
-                                                   j:requiredPermissions="#/permissions/admin/administrationAccess"
+                                                   j:requiredPermissionNames="administrationAccess"
                                                    jcr:mixinTypes="jmix:requiredPermissions"
                                                    jcr:primaryType="jnt:gotoAdmin">
                                             <j:translation_en jcr:language="en"
@@ -399,7 +399,7 @@
                                         <gotoStudio j:contextNodePath="/modules"
                                                     j:requireLoggedUser="false"
                                                     j:requirePrivilegedUser="false"
-                                                    j:requiredPermissions="#/permissions/studioMode/studioModeAccess"
+                                                    j:requiredPermissionNames="studioModeAccess"
                                                     jcr:mixinTypes="jmix:requiredPermissions"
                                                     jcr:primaryType="jnt:gotoStudio">
                                             <j:translation_en jcr:language="en"
@@ -410,7 +410,7 @@
                                         <gotoManager j:contextNodePath="/"
                                                      j:requireLoggedUser="false"
                                                      j:requirePrivilegedUser="false"
-                                                     j:requiredPermissions="#/permissions/managers/repositoryExplorer"
+                                                     j:requiredPermissionNames="repositoryExplorer"
                                                      jcr:mixinTypes="jmix:requiredPermissions"
                                                      jcr:primaryType="jnt:gotoManager"
                                                      type="unitedContent">
@@ -428,7 +428,7 @@
                                                                    j:invertCondition="true"
                                                                    j:requireLoggedUser="false"
                                                                    j:requirePrivilegedUser="false"
-                                                                   j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                   j:requiredPermissionNames="jcr:read_default"
                                                                    jcr:mixinTypes="jmix:requiredPermissions"
                                                                    jcr:primaryType="jnt:modeDispatcher"
                                                                    mode="live">
@@ -442,7 +442,7 @@
                                                                       j:invertCondition="false"
                                                                       j:requireLoggedUser="false"
                                                                       j:requirePrivilegedUser="false"
-                                                                      j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                      j:requiredPermissionNames="jcr:read_default"
                                                                       jcr:mixinTypes="jmix:requiredPermissions"
                                                                       jcr:primaryType="jnt:modeDispatcher"
                                                                       mode="preview">
@@ -471,7 +471,7 @@
                                            j:hiddenTemplate="false"
                                            j:priority="15"
                                            j:requirePrivilegedUser="false"
-                                           j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:write_default"
+                                           j:requiredPermissionNames="jcr:write_default"
                                            jcr:primaryType="jnt:contentTemplate">
                             <pagecontent j:columns="2"
                                          j:id="user-edit-details"
@@ -544,7 +544,7 @@
                                     j:priority="20"
                                     j:requireLoggedUser="false"
                                     j:requirePrivilegedUser="true"
-                                    j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:write_default"
+                                    j:requiredPermissionNames="jcr:write_default"
                                     jcr:primaryType="jnt:contentTemplate">
                             <pagecontent j:id="user-tasks"
                                          jcr:mixinTypes="jmix:customSkin"
@@ -590,7 +590,7 @@
                                       j:priority="25"
                                       j:requireLoggedUser="false"
                                       j:requirePrivilegedUser="false"
-                                      j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:write_default"
+                                      j:requiredPermissionNames="jcr:write_default"
                                       jcr:primaryType="jnt:contentTemplate">
                             <pagecontent j:id="user-content"
                                          jcr:mixinTypes="jmix:customSkin"
@@ -636,7 +636,7 @@
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:priority="50"
-                                   j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:write_default"
+                                   j:requiredPermissionNames="jcr:write_default"
                                    jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <rich-text jcr:primaryType="jnt:bigText">
@@ -675,7 +675,6 @@
                                     <my-settings-1 j:invertCondition="false"
                                                    j:requireLoggedUser="false"
                                                    j:requirePrivilegedUser="true"
-                                                   j:requiredPermissions=""
                                                    j:skin="skins.box8"
                                                    j:style="blue"
                                                    jcr:mixinTypes="jmix:requiredPermissions jmix:skinnable jmix:style"
@@ -755,7 +754,7 @@
                                     j:defaultTemplate="false"
                                     j:hiddenTemplate="false"
                                     j:priority="30"
-                                    j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:write_default"
+                                    j:requiredPermissionNames="jcr:write_default"
                                     jcr:primaryType="jnt:contentTemplate">
                             <pagecontent j:id="user-sites"
                                          jcr:mixinTypes="jmix:customSkin"
@@ -773,7 +772,7 @@
                                                                j:invertCondition="true"
                                                                j:requireLoggedUser="false"
                                                                j:requirePrivilegedUser="false"
-                                                               j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                               j:requiredPermissionNames="jcr:read_default"
                                                                jcr:mixinTypes="jmix:requiredPermissions"
                                                                jcr:primaryType="jnt:modeDispatcher"
                                                                mode="live">
@@ -794,7 +793,7 @@
                                                                   j:invertCondition="false"
                                                                   j:requireLoggedUser="false"
                                                                   j:requirePrivilegedUser="false"
-                                                                  j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                  j:requiredPermissionNames="jcr:read_default"
                                                                   jcr:mixinTypes="jmix:requiredPermissions"
                                                                   jcr:primaryType="jnt:modeDispatcher"
                                                                   mode="preview">
@@ -841,7 +840,7 @@
                                                                    j:invertCondition="true"
                                                                    j:requireLoggedUser="false"
                                                                    j:requirePrivilegedUser="false"
-                                                                   j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                   j:requiredPermissionNames="jcr:read_default"
                                                                    jcr:mixinTypes="jmix:requiredPermissions"
                                                                    jcr:primaryType="jnt:modeDispatcher"
                                                                    mode="live">
@@ -856,7 +855,7 @@
                                                                       j:invertCondition="false"
                                                                       j:requireLoggedUser="false"
                                                                       j:requirePrivilegedUser="false"
-                                                                      j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                      j:requiredPermissionNames="jcr:read_default"
                                                                       jcr:mixinTypes="jmix:requiredPermissions"
                                                                       jcr:primaryType="jnt:modeDispatcher"
                                                                       mode="preview">
@@ -898,7 +897,7 @@
                                                                    j:invertCondition="true"
                                                                    j:requireLoggedUser="false"
                                                                    j:requirePrivilegedUser="false"
-                                                                   j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                   j:requiredPermissionNames="jcr:read_default"
                                                                    jcr:mixinTypes="jmix:requiredPermissions"
                                                                    jcr:primaryType="jnt:modeDispatcher"
                                                                    mode="live">
@@ -913,7 +912,7 @@
                                                                       j:invertCondition="false"
                                                                       j:requireLoggedUser="false"
                                                                       j:requirePrivilegedUser="false"
-                                                                      j:requiredPermissions="#/permissions/repository-permissions/jcr:all_default/jcr:read_default"
+                                                                      j:requiredPermissionNames="jcr:read_default"
                                                                       jcr:mixinTypes="jmix:requiredPermissions"
                                                                       jcr:primaryType="jnt:modeDispatcher"
                                                                       mode="preview">
@@ -953,8 +952,7 @@
                                                           jcr:mixinTypes="mix:title"
                                                           jcr:primaryType="jnt:translation"
                                                           jcr:title="##resourceBundle(system.facets)##"/>
-                                        <facets jcr:primaryType="jnt:facets"
-                                                j:type="jnt:content">
+                                            <facets j:type="jnt:content" jcr:primaryType="jnt:facets">
                                             <fieldFacet facet="tags"
                                                         field="jmix:tagged;j:tags"
                                                         jcr:primaryType="jnt:fieldFacet"
@@ -1024,8 +1022,7 @@
                                                           jcr:mixinTypes="mix:title"
                                                           jcr:primaryType="jnt:translation"
                                                           jcr:title="##resourceBundle(system.facets)##"/>
-                                        <facets jcr:primaryType="jnt:facets"
-                                                j:type="jnt:file">
+                                            <facets j:type="jnt:file" jcr:primaryType="jnt:facets">
                                             <fieldFacet facet="tags"
                                                         field="jmix:tagged;j:tags"
                                                         jcr:primaryType="jnt:fieldFacet"
@@ -1136,5 +1133,4 @@
 
         </templates-system>
     </modules>
-
 </content>

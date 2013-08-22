@@ -6,11 +6,11 @@
 
     <editor jcr:primaryType="jnt:role">
         <editor-in-chief jcr:primaryType="jnt:role"
-                     j:permissions="/permissions/admin/adminMicrosoftTranslation"
+                     j:permissionNames="adminMicrosoftTranslation"
                      j:privilegedAccess="true" />
     </editor>
 
     <site-administrator jcr:primaryType="jnt:role"
-                        j:permissions="/permissions/admin/adminMicrosoftTranslation"
+                        j:permissionNames="adminMicrosoftTranslation"
                         j:privilegedAccess="true" />
 </roles>

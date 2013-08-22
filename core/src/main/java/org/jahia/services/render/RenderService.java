@@ -471,17 +471,26 @@ public class RenderService {
                 return invert;
             }
         }
-        if (templateNode.hasProperty("j:requiredPermissions")) {
-            final Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
-            List<String> perms = JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
-                public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    List<String> permissionNames = new ArrayList<String>();
-                    for (Value value : values) {
-                        permissionNames.add(session.getNodeByUUID(value.getString()).getName());
+        if (templateNode.hasProperty("j:requiredPermissionNames") || templateNode.hasProperty("j:requiredPermissions")) {
+            final List<String> perms = new ArrayList<String>();
+            if (templateNode.hasProperty("j:requiredPermissions") && !templateNode.hasProperty("j:requiredPermissionNames")) {
+                final Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
+                perms.addAll(JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                    public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        List<String> permissionNames = new ArrayList<String>();
+                        for (Value value : values) {
+                            permissionNames.add(session.getNodeByUUID(value.getString()).getName());
+                        }
+                        return permissionNames;
                     }
-                    return permissionNames;
+                }));
+            } else {
+                final Value[] values = templateNode.getProperty("j:requiredPermissionNames").getValues();
+                for (Value value : values) {
+                    perms.add(value.getString());
                 }
-            });
+            }
+
             JCRNodeWrapper contextNode = resource.getNode();
             if (templateNode.hasProperty("j:contextNodePath")) {
                 String contextPath = templateNode.getProperty("j:contextNodePath").getString();

@@ -1680,6 +1680,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setPropertiesToSkip(props);
                         documentViewImportHandler.setEnforceUuid(true);
                         documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);
+                        documentViewImportHandler.setReplaceMultipleValues(true);
                     }
                     documentViewImportHandler.setReferences(references);
                     documentViewImportHandler.setRootBehavior(rootBehaviour);

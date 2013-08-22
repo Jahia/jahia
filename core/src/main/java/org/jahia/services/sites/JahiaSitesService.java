@@ -678,16 +678,16 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                 session.checkout(n);
                 Node translator = n.addNode("translator-" + s, "jnt:role");
                 List<Value> perms = new LinkedList<Value>();
-                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/editMode/editModeAccess"), true));
-                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/editMode/editSelector/sitemapSelector"), true));
-                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:versionManagement_default"), true));
-                perms.add(session.getValueFactory().createValue(session.getNode("/permissions/repository-permissions/jcr:all_default/jcr:write_default/jcr:modifyProperties_default/jcr:modifyProperties_default_" + s), true));
+                perms.add(session.getValueFactory().createValue("editModeAccess"));
+                perms.add(session.getValueFactory().createValue("sitemapSelector"));
+                perms.add(session.getValueFactory().createValue("jcr:versionManagement_default"));
+                perms.add(session.getValueFactory().createValue("jcr:modifyProperties_default_" + s));
                 for (NodeIterator iterator = session.getNode("/permissions/workflow-tasks").getNodes("start-*-review"); iterator.hasNext(); ) {
-                    perms.add(session.getValueFactory().createValue(iterator.nextNode(), true));
+                    perms.add(session.getValueFactory().createValue(iterator.nextNode().getName()));
                 }
-                Value[] values = perms.toArray(new Value[]{});
+                Value[] values = perms.toArray(new Value[perms.size()]);
 
-                translator.setProperty("j:permissions", values);
+                translator.setProperty("j:permissionNames", values);
                 translator.setProperty("j:roleGroup", "edit-role");
                 translator.setProperty("j:privilegedAccess", true);
             }

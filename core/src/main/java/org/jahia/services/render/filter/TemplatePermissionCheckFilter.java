@@ -135,19 +135,28 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         if (!"studiomode".equals(renderContext.getEditModeConfigName())) {
             JahiaUser aliasedUser = JCRSessionFactory.getInstance().getCurrentAliasedUser();
 
-            if (node.hasProperty("j:requiredPermissions")) {
+            if (node.hasProperty("j:requiredPermissionNames") || node.hasProperty("j:requiredPermissions")) {
                 chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
 
-                final Value[] values = node.getProperty("j:requiredPermissions").getValues();
-                final List<String> perms = JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
-                    public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        List<String> permissionNames = new ArrayList<String>();
-                        for (Value value : values) {
-                            permissionNames.add(session.getNodeByUUID(value.getString()).getName());
+                final List<String> perms = new ArrayList<String>();
+                if (node.hasProperty("j:requiredPermissions") && !node.hasProperty("j:requiredPermissionNames")) {
+                    final Value[] values = node.getProperty("j:requiredPermissions").getValues();
+                    perms.addAll(JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                        public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            List<String> permissionNames = new ArrayList<String>();
+                            for (Value value : values) {
+                                permissionNames.add(session.getNodeByUUID(value.getString()).getName());
+                            }
+                            return permissionNames;
                         }
-                        return permissionNames;
+                    }));
+                } else {
+                    final Value[] values = node.getProperty("j:requiredPermissionNames").getValues();
+                    for (Value value : values) {
+                        perms.add(value.getString());
                     }
-                });
+                }
+
                 JCRNodeWrapper contextNode = renderContext.getAjaxResource() != null ? renderContext.getAjaxResource().getNode() : renderContext.getMainResource().getNode();
                 try {
                     if (node.hasProperty("j:contextNodePath")) {

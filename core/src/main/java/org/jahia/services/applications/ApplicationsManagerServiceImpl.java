@@ -536,14 +536,14 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             Node n = session.getNode(jahiaRolePath);
             session.checkout(n);
 
-            Value newValue = session.getValueFactory().createValue(permission, true);
+            Value newValue = session.getValueFactory().createValue(permission.getName());
 
-            if (n.hasProperty("j:permissions")) {
-                List<Value> values = new ArrayList<Value>(Arrays.asList(n.getProperty("j:permissions").getValues()));
+            if (n.hasProperty("j:permissionNames")) {
+                List<Value> values = new ArrayList<Value>(Arrays.asList(n.getProperty("j:permissionNames").getValues()));
                 values.add(newValue);
-                n.setProperty("j:permissions", values.toArray(new Value[values.size()]));
+                n.setProperty("j:permissionNames", values.toArray(new Value[values.size()]));
             } else {
-                n.setProperty("j:permissions", new Value[] {newValue});
+                n.setProperty("j:permissionNames", new Value[] {newValue});
             }
             session.save();
         } catch (PathNotFoundException e) {

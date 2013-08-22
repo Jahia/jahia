@@ -644,6 +644,19 @@ public final class JCRContentUtils implements ServletContextAware {
         return name;
     }
 
+    public static String getJCRName(String qualifiedName, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        if (qualifiedName.startsWith("{")) {
+            final String uri = StringUtils.substringBetween(qualifiedName, "{", "}");
+            if (uri.isEmpty()) {
+                qualifiedName = StringUtils.substringAfter(qualifiedName, "}");
+            } else {
+                qualifiedName = namespaceRegistry.getPrefix(uri) + ":" + StringUtils.substringAfter(qualifiedName, "}");
+            }
+        }
+
+        return qualifiedName;
+    }
+
     public static String getIconWithContext(ExtendedNodeType type) throws RepositoryException {
         String icon = getIcon(type, null);
         if (icon == null) {

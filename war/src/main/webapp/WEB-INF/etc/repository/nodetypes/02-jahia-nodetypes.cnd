@@ -135,6 +135,7 @@
  - jcr:description (string,textarea) i18n itemtype = content
  - j:nodeTypes (string,choicelist[nodetypes=nt:base]) multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
+ - j:permissionNames (string) protected hidden multiple
  - j:dependencies (weakreference) protected hidden multiple < jnt:role
  - j:privilegedAccess (boolean)
  - j:hidden (boolean) protected hidden
@@ -148,6 +149,7 @@
 [jnt:externalPermissions]
  - j:path (string)
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
+ - j:permissionNames (string) protected hidden multiple
 
 [jnt:permission] > nt:base, jmix:rbTitle, jmix:observable, jmix:nolive
  - j:isAbstract (boolean)
@@ -410,7 +412,8 @@
  - j:requireLoggedUser (boolean)
  - j:requirePrivilegedUser (boolean)
  - j:requiredMode (string, choicelist[renderModes]) nofulltext
- - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) nofulltext multiple
+ - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) hidden nofulltext multiple
+ - j:requiredPermissionNames (string, choicelist[permissions]) nofulltext multiple
  - j:contextNodePath (string)
  - j:invertCondition (boolean)
 

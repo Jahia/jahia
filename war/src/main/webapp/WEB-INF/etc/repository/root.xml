@@ -220,37 +220,24 @@
 
     <roles jcr:primaryType="jnt:roles">
         <reader jcr:primaryType="jnt:role" j:roleGroup="live-role"
-                 j:permissions="/permissions/repository-permissions/jcr:all_live/jcr:read_live"/>
+                 j:permissionNames="jcr:read_live"/>
 
         <jahiapp-user jcr:primaryType="jnt:role" j:roleGroup="live-role" />
 
         <owner jcr:primaryType="jnt:role" j:roleGroup="live-role"
-               j:permissions="/permissions/repository-permissions/jcr:all_default
-               /permissions/repository-permissions/jcr:all_live
-               /permissions/actions
-               /permissions/editMode/engineTabs"/>
+               j:permissionNames="jcr:all_default jcr:all_live actions engineTabs"/>
 
         <privileged jcr:primaryType="jnt:role" j:roleGroup="edit-role"
-                    j:permissions="/permissions/repository-permissions/jcr:all_default/jcr:read_default
-                    /permissions/repository-permissions/jcr:all_default/jcr:readAccessControl_default
-                    /permissions/repository-permissions/jcr:all_live/jcr:readAccessControl_live
-                    /permissions/editMode/editSelector/sitemapSelector
-                    /permissions/editMode/useComponent"
+                    j:permissionNames="jcr:read_default jcr:readAccessControl_default jcr:readAccessControl_live sitemapSelector useComponent"
                     />
 
         <contributor j:hidden="false"
-                     j:permissions="/permissions/repository-permissions/jcr:all_default
-                     /permissions/workflow-tasks/1-step-publication-start
-                     /permissions/workflow-tasks/1-step-unpublication-start
-                     /permissions/workflow-tasks/2-step-publication-finish-correction
-                     /permissions/workflow-tasks/2-step-publication-start"
+                     j:permissionNames="jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
                      j:privilegedAccess="true"
                      j:roleGroup="edit-role"
                      jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissions="/permissions/contributeMode
-                                /permissions/managers/editorialContentManager
-                                /permissions/managers/fileManager"
+                                j:permissionNames="contributeMode editorialContentManager fileManager"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Can edit content using contribute mode"
                               jcr:language="en"
@@ -258,34 +245,15 @@
                               jcr:title="Contributor"/>
         </contributor>
         <editor j:hidden="false"
-                j:permissions="/modules/default/permissions/actions/default/move
-                /permissions/repository-permissions/jcr:all_default
-                /permissions/workflow-tasks/1-step-publication-start
-                /permissions/workflow-tasks/1-step-unpublication-start
-                /permissions/workflow-tasks/2-step-publication-finish-correction
-                /permissions/workflow-tasks/2-step-publication-start"
+                j:permissionNames="move jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
                 j:privilegedAccess="true"
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissions="/permissions/editMode/editModeAccess
-                                /permissions/editMode/editModeActions
-                                /permissions/editMode/editSelector
-                                /permissions/editMode/engineTabs/viewCategoriesTab
-                                /permissions/editMode/engineTabs/viewContentTab
-                                /permissions/editMode/engineTabs/viewContributeModeTab
-                                /permissions/editMode/engineTabs/viewLayoutTab
-                                /permissions/editMode/engineTabs/viewMetadataTab
-                                /permissions/editMode/engineTabs/viewOptionsTab
-                                /permissions/editMode/engineTabs/viewSeoTab
-                                /permissions/editMode/engineTabs/viewTagsTab
-                                /permissions/editMode/engineTabs/viewVisibilityTab
-                                /permissions/managers
-                                /permissions/wysiwyg-editor-toolbar/view-full-wysiwyg-editor"
+                                j:permissionNames="editModeAccess editModeActions editSelector viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewTagsTab viewVisibilityTab managers view-full-wysiwyg-editor"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <editor-in-chief j:hidden="false"
-                             j:permissions="/modules/wiki/permissions/actions/wiki
-                             /permissions/repository-permissions/publish /permissions/workflow-tasks"
+                             j:permissionNames="wiki publish workflow-tasks"
                              j:privilegedAccess="true"
                              j:roleGroup="edit-role"
                              jcr:primaryType="jnt:role">
@@ -294,7 +262,7 @@
                                   jcr:primaryType="jnt:translation"
                                   jcr:title="Editor in chief"/>
                 <currentSite-access j:path="currentSite"
-                                    j:permissions="/permissions/editMode"
+                                    j:permissionNames="editMode"
                                     jcr:primaryType="jnt:externalPermissions"/>
             </editor-in-chief>
             <j:translation_en jcr:description="Can edit content using edit mode"
@@ -304,29 +272,12 @@
         </editor>
 
         <reviewer j:hidden="false"
-                  j:permissions="/modules/default/permissions/actions/default/startWorkflow
-                  /permissions/repository-permissions/jcr:all_default/jcr:read_default
-                  /permissions/repository-permissions/publish
-                  /permissions/workflow-tasks/1-step-publication-choose-remote-publication
-                  /permissions/workflow-tasks/1-step-publication-review
-                  /permissions/workflow-tasks/1-step-unpublication-choose-remote-publication
-                  /permissions/workflow-tasks/1-step-unpublication-unpublish
-                  /permissions/workflow-tasks/2-step-publication-choose-remote-publication
-                  /permissions/workflow-tasks/2-step-publication-final-review
-                  /permissions/workflow-tasks/2-step-publication-first-review"
+                  j:permissionNames="startWorkflow jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"
                   j:privilegedAccess="true"
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissions="/permissions/contributeMode
-                                /permissions/editMode/editModeAccess
-                                /permissions/editMode/editSelector/sitemapSelector
-                                /permissions/editMode/engineTabs/viewCategoriesTab
-                                /permissions/editMode/engineTabs/viewContentTab
-                                /permissions/editMode/engineTabs/viewLayoutTab
-                                /permissions/editMode/engineTabs/viewMetadataTab
-                                /permissions/editMode/engineTabs/viewSeoTab
-                                /permissions/editMode/engineTabs/viewTagsTab"
+                                j:permissionNames="contributeMode editModeAccess sitemapSelector viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewSeoTab viewTagsTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Grant access to view the content and validate changes done by editors before publication"
                               jcr:language="en"
@@ -336,13 +287,12 @@
 
         <web-designer j:hidden="false"
                       j:nodeTypes="rep:root"
-                      j:permissions="/permissions/admin/adminTemplates"
+                      j:permissionNames="adminTemplates"
                       j:privilegedAccess="true"
                       j:roleGroup="server-role"
                       jcr:primaryType="jnt:role">
             <modules-access j:path="/modules"
-                            j:permissions="/permissions/repository-permissions/jcr:all_default
-                            /permissions/studioMode"
+                            j:permissionNames="jcr:all_default studioMode"
                             jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Gives full access to the studio"
                               jcr:language="en"
@@ -351,20 +301,7 @@
         </web-designer>
         <site-administrator j:hidden="false"
                            
-                            j:permissions="/permissions/contributeMode
-                            /permissions/editMode
-                            /permissions/managers/categoryManager
-                            /permissions/managers/editorialContentManager
-                            /permissions/managers/fileManager
-                            /permissions/managers/portletManager
-                            /permissions/managers/remotePublicationManager
-                            /permissions/managers/repositoryExplorer
-                            /permissions/managers/siteManager
-                            /permissions/managers/tagManager
-                            /permissions/repository-permissions/jcr:all_default
-                            /permissions/site-admin
-                            /permissions/templates
-                            /permissions/wysiwyg-editor-toolbar"
+                            j:permissionNames="contributeMode editMode categoryManager editorialContentManager fileManager portletManager remotePublicationManager repositoryExplorer siteManager tagManager jcr:all_default site-admin templates wysiwyg-editor-toolbar"
                             j:privilegedAccess="true"
                             j:roleGroup="site-role"
                             jcr:primaryType="jnt:role">
@@ -375,7 +312,7 @@
         </site-administrator>
         <server-administrator j:hidden="false"
                               j:nodeTypes="rep:root"
-                              j:permissions="/permissions/repository-permissions/jcr:all_default /permissions/admin"
+                              j:permissionNames="jcr:all_default admin"
                               j:privilegedAccess="true"
                               j:roleGroup="server-role"
                               jcr:primaryType="jnt:role">

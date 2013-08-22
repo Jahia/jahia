@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
  * Utility class for managing roles and permissions for JCR nodes.
  * 
  * @author Sergiy Shyrkov
+ * @deprecated
  */
 public final class RBACUtils {
 

@@ -200,7 +200,7 @@
                         <aboutJahia j:applyOn="jnt:globalSettings"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
-                           j:requiredPermissions="#/permissions/admin/adminAbout"
+                           j:requiredPermissionNames="adminAbout"
                            j:titleKey="serverSettings.aboutJahia"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">
@@ -212,7 +212,7 @@
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:icon="/modules/serverSettings/templates/files/serveradmin/web_x0020_projects/webprojects.png"
-                                   j:requiredPermissions="#/permissions/admin/adminVirtualSites"
+                                   j:requiredPermissionNames="adminVirtualSites"
                                    j:titleKey="serverSettings.manageWebProjects"
                                    jcr:mixinTypes="jmix:rbTitle"
                                    jcr:primaryType="jnt:contentTemplate">
@@ -229,7 +229,7 @@
                                       j:defaultTemplate="false"
                                       j:hiddenTemplate="false"
                                       j:icon="/modules/serverSettings/templates/files/serveradmin/configurations/mail_x0020_server/mail_preferences.png"
-                                      j:requiredPermissions="#/permissions/admin/adminEmailSettings"
+                                      j:requiredPermissionNames="adminEmailSettings"
                                       j:titleKey="serverSettings.mailServerSettings"
                                       jcr:mixinTypes="jmix:rbTitle"
                                       jcr:primaryType="jnt:contentTemplate">
@@ -241,7 +241,7 @@
                               j:defaultTemplate="false"
                               j:hiddenTemplate="false"
                               j:icon="/modules/serverSettings/templates/files/serveradmin/configurations/db_x0020_settings/db_settings.png"
-                              j:requiredPermissions="#/permissions/admin/adminDBSettings"
+                              j:requiredPermissionNames="adminDBSettings"
                               j:titleKey="serverSettings.dbSettings"
                               jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
@@ -259,7 +259,7 @@
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
                                  j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/modules/modules.png"
-                                 j:requiredPermissions="#/permissions/admin/adminTemplates"
+                                 j:requiredPermissionNames="adminTemplates"
                                  j:titleKey="serverSettings.manageModules"
                                  jcr:mixinTypes="jmix:rbTitle"
                                  jcr:primaryType="jnt:contentTemplate">
@@ -284,7 +284,7 @@
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
                                   j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/portlets/portlets.png"
-                                  j:requiredPermissions="#/permissions/admin/adminPortlets"
+                                  j:requiredPermissionNames="adminPortlets"
                                   j:titleKey="serverSettings.managePortlets"
                                   jcr:mixinTypes="jmix:rbTitle"
                                   jcr:primaryType="jnt:contentTemplate">
@@ -314,7 +314,7 @@
                                          j:defaultTemplate="false"
                                          j:hiddenTemplate="false"
                                          j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_users/manage_users.png"
-                                         j:requiredPermissions="#/permissions/admin/adminServerRoles"
+                                         j:requiredPermissionNames="adminServerRoles"
                                          j:titleKey="serverSettings.manageServerRoles"
                                          jcr:mixinTypes="jmix:rbTitle"
                                          jcr:primaryType="jnt:contentTemplate">
@@ -326,7 +326,7 @@
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
                                j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_users/manage_users.png"
-                               j:requiredPermissions="#/permissions/admin/adminUsers"
+                               j:requiredPermissionNames="adminUsers"
                                j:titleKey="serverSettings.manageUsers"
                                jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
@@ -338,7 +338,7 @@
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/admin_x0020_properties/superadmin_properties.png"
-                                   j:requiredPermissions="#/permissions/admin/adminRootUser"
+                                   j:requiredPermissionNames="adminRootUser"
                                    j:titleKey="serverSettings.adminProperties"
                                    jcr:mixinTypes="jmix:rbTitle"
                                    jcr:primaryType="jnt:contentTemplate">
@@ -350,7 +350,7 @@
                                   j:defaultTemplate="false"
                                   j:hiddenTemplate="false"
                                   j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/password_x0020_policy/password_policy.png"
-                                  j:requiredPermissions="#/permissions/admin/adminPasswordPolicy"
+                                  j:requiredPermissionNames="adminPasswordPolicy"
                                   j:titleKey="serverSettings.password.policies"
                                   jcr:mixinTypes="jmix:rbTitle"
                                   jcr:primaryType="jnt:contentTemplate">
@@ -368,7 +368,7 @@
                                j:defaultTemplate="false"
                                j:hiddenTemplate="false"
                                j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/system_x0020_info/system_info.png"
-                               j:requiredPermissions="#/permissions/admin/adminSystemInfos"
+                               j:requiredPermissionNames="adminSystemInfos"
                                j:titleKey="serverSettings.systemInfos"
                                jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
@@ -380,7 +380,7 @@
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
                                    j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/cache_x0020_management/cacheManagement.png"
-                                   j:requiredPermissions="#/permissions/admin/adminCache"
+                                   j:requiredPermissionNames="adminCache"
                                    j:titleKey="serverSettings.cacheManagement"
                                    jcr:mixinTypes="jmix:rbTitle"
                                    jcr:primaryType="jnt:contentTemplate">
@@ -392,7 +392,7 @@
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
                                 j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/memory/memory.png"
-                                j:requiredPermissions="#/permissions/admin/adminManageMemory"
+                                j:requiredPermissionNames="adminManageMemory"
                                 j:titleKey="serverSettings.manageMemory"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
@@ -404,7 +404,7 @@
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
                                  j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/report_x0020_issue/report_issue.png"
-                                 j:requiredPermissions="#/permissions/admin/adminIssueTracking"
+                                 j:requiredPermissionNames="adminIssueTracking"
                                  j:titleKey="serverSettings.reportAnIssue"
                                  jcr:mixinTypes="jmix:rbTitle"
                                  jcr:primaryType="jnt:contentTemplate">

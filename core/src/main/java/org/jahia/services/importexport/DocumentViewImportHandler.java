@@ -128,6 +128,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private Map<String, String> placeHoldersMap = new HashMap<String, String>();
 
+    private boolean replaceMultipleValues = false;
     private boolean importUserGeneratedContent = false;
     private int ugcLevel = 0;
 
@@ -635,12 +636,38 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 } else {
                     if (propDef.isMultiple()) {
-                        String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
-                        Value[] v = new Value[s.length];
-                        for (int j = 0; j < s.length; j++) {
-                            v[j] = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]));
+                        if (replaceMultipleValues) {
+                            String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
+                            Value[] v = new Value[s.length];
+                            for (int j = 0; j < s.length; j++) {
+                                v[j] = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType());
+                            }
+                            child.getRealNode().setProperty(attrName, v);
+                        } else {
+                            String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
+                            List<Value> oldvalues = new ArrayList<Value>();
+
+                            if (child.getRealNode().hasProperty(attrName)) {
+                                Value[] oldValues = child.getRealNode().getProperty(attrName).getValues();
+                                for (Value oldValue : oldValues) {
+                                    oldvalues.add(oldValue);
+                                }
+                            }
+
+                            List<Value> values = new ArrayList<Value>(oldvalues);
+
+                            for (int j=0; j < s.length; j++) {
+                                final Value value = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType());
+                                if (!oldvalues.contains(value)) {
+                                    values.add(value);
+                                }
+                            }
+                            try {
+                                child.getRealNode().setProperty(attrName, values.toArray(new Value[values.size()]));
+                            } catch (RepositoryException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
                         }
-                        child.getRealNode().setProperty(attrName, v);
                     } else {
                         child.getRealNode().setProperty(attrName, attrValue);
                     }
@@ -822,6 +849,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public void setImportUserGeneratedContent(boolean importUserGeneratedContent) {
         this.importUserGeneratedContent = importUserGeneratedContent;
+    }
+
+    public boolean isReplaceMultipleValues() {
+        return replaceMultipleValues;
+    }
+
+    public void setReplaceMultipleValues(boolean replaceMultipleValues) {
+        this.replaceMultipleValues = replaceMultipleValues;
     }
 
     public boolean isEnforceUuid() {

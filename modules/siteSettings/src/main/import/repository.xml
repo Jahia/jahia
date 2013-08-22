@@ -119,7 +119,7 @@
                                 j:hiddenTemplate="true"
                                 j:icon="/modules/siteSettings/templates/files/signpost.png"
                                 j:priority="100"
-                               j:requiredPermissions="#/permissions/site-admin/siteAdminLanguages"
+                               j:requiredPermissionNames="siteAdminLanguages"
                                 j:titleKey="siteSettings.label.manageLanguages"
                                 jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
@@ -132,7 +132,7 @@
                                j:hiddenTemplate="true"
                               j:icon="/modules/siteSettings/templates/files/text_rich_colored.png"
                               j:priority="100"
-                              j:requiredPermissions="#/permissions/site-admin/siteAdminWcagCompliance"
+                              j:requiredPermissionNames="siteAdminWcagCompliance"
                               j:titleKey="siteSettings.label.wcagCompliance"
                                jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
@@ -145,7 +145,7 @@
                               j:hiddenTemplate="true"
                              j:icon="/modules/siteSettings/templates/files/text_rich_colored.png"
                              j:priority="100"
-                             j:requiredPermissions="#/permissions/site-admin/siteAdminHtmlSettings"
+                             j:requiredPermissionNames="siteAdminHtmlSettings"
                              j:titleKey="siteSettings.label.htmlFiltering"
                               jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
@@ -158,7 +158,7 @@
                                  j:hiddenTemplate="true"
                                  j:icon="/modules/siteSettings/templates/files/urlmapping.png"
                                  j:priority="100"
-                                j:requiredPermissions="#/permissions/site-admin/siteAdminUrlmapping"
+                                j:requiredPermissionNames="siteAdminUrlmapping"
                                  j:titleKey="siteSettings.label.vanityURLSettings"
                                  jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
@@ -194,7 +194,7 @@
                               j:hiddenTemplate="true"
                              j:icon="/modules/siteSettings/templates/files/briefcase_document.png"
                              j:priority="100"
-                             j:requiredPermissions="#/permissions/site-admin/siteAdminTemplates"
+                             j:requiredPermissionNames="siteAdminTemplates"
                              j:titleKey="siteSettings.label.manageModules"
                               jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
@@ -207,7 +207,7 @@
                              j:hiddenTemplate="true"
                              j:icon="/modules/siteSettings/templates/files/users_into.png"
                              j:priority="100"
-                             j:requiredPermissions="#/permissions/site-admin/siteAdminGroups"
+                             j:requiredPermissionNames="siteAdminGroups"
                              j:titleKey="label.manageGroups"
                              jcr:mixinTypes="jmix:rbTitle"
                              jcr:primaryType="jnt:contentTemplate">
@@ -220,7 +220,7 @@
                           j:hiddenTemplate="true"
                           j:icon="/modules/siteSettings/templates/files/users_into.png"
                           j:priority="100"
-                          j:requiredPermissions="#/permissions/site-admin/siteAdminSiteRoles"
+                          j:requiredPermissionNames="siteAdminSiteRoles"
                           j:titleKey="siteSettings.manageSiteRoles"
                           jcr:mixinTypes="jmix:rbTitle"
                           jcr:primaryType="jnt:contentTemplate">

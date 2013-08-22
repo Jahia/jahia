@@ -130,7 +130,7 @@ public class SettingsTabItem extends SidePanelTabItem {
         fields.add(GWTJahiaNode.CHILDREN_INFO);
         fields.add(GWTJahiaNode.ICON);
         fields.add(GWTJahiaNode.LOCKS_INFO);
-        fields.add("j:requiredPermissions");
+        fields.add("j:requiredPermissionNames");
 
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
@@ -187,11 +187,11 @@ public class SettingsTabItem extends SidePanelTabItem {
                                 merge(node.getChildren(), (GWTJahiaNode)child);
                             }
 
-                            List<String> requiredPermissions = node.get("j:requiredPermissions");
+                            List<String> requiredPermissions = node.get("j:requiredPermissionNames");
                             boolean access = true;
                             if (requiredPermissions != null) {
                                 for (String p : requiredPermissions) {
-                                    if (!PermissionsUtils.isPermitted(p.substring(p.lastIndexOf('/') + 1), mainNode)) {
+                                    if (!PermissionsUtils.isPermitted(p, mainNode)) {
                                         access = false;
                                         break;
                                     }

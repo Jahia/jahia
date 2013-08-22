@@ -363,6 +363,9 @@
     <bean id="menuInitializer"
           class="org.jahia.services.content.nodetypes.initializers.MenusChoiceListInitializerImpl">
     </bean>
+    <bean id="permissionsInitializer"
+          class="org.jahia.services.content.nodetypes.initializers.PermissionsChoiceListInitializer">
+    </bean>
     <bean id="scriptInitializer"
           class="org.jahia.services.content.nodetypes.initializers.ScriptChoiceListInitializerImpl">
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
@@ -431,6 +434,7 @@
                 <entry key="channels" value-ref="channelInitializer"/>
                 <entry key="propertyValues" value-ref="propertyValuesChoiceListInitializer"/>
                 <entry key="namespace" value-ref="namespaceChoiceListInitializer"/>
+                <entry key="permissions" value-ref="permissionsInitializer"/>
             </map>
         </property>
     </bean>

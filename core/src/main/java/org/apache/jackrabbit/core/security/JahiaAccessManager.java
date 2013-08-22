@@ -710,17 +710,41 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         Session s = roleNode.getSession();
-        if (roleNode.hasProperty("j:permissions")) {
+        if (roleNode.hasProperty("j:permissionNames")) {
+            Value[] perms = roleNode.getProperty("j:permissionNames").getValues();
+            for (Value value : perms) {
+                try {
+                    try {
+                        Privilege privilege = privilegeRegistry.getPrivilege(value.getString(), null);
+                        privileges.add(privilege);
+                    } catch (AccessControlException e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Permission not available : " + value.getString(), e);
+                        }
+                    }
+                } catch (RepositoryException e) {
+
+                } catch (IllegalStateException e) {
+
+                }
+            }
+        } else if (roleNode.hasProperty("j:permissions")) {
             Value[] perms = roleNode.getProperty("j:permissions").getValues();
             for (Value value : perms) {
-                Node p = s.getNodeByIdentifier(value.getString());
                 try {
-                    Privilege privilege = privilegeRegistry.getPrivilege(p);
-                    privileges.add(privilege);
-                } catch (AccessControlException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Permission not available : " + p, e);
+                    Node p = s.getNodeByIdentifier(value.getString());
+                    try {
+                        Privilege privilege = privilegeRegistry.getPrivilege(p);
+                        privileges.add(privilege);
+                    } catch (AccessControlException e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Permission not available : " + p, e);
+                        }
                     }
+                } catch (RepositoryException e) {
+
+                } catch (IllegalStateException e) {
+
                 }
             }
         }

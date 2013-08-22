@@ -18,7 +18,7 @@
                                     j:defaultTemplate="false"
                                     j:hiddenTemplate="true"
                                          j:priority="100"
-                                         j:requiredPermissions="#/permissions/admin/adminMicrosoftTranslation"
+                                         j:requiredPermissionNames="adminMicrosoftTranslation"
                                          j:titleKey="siteSettings.label.translation"
                                     jcr:mixinTypes="jmix:rbTitle"
                                     jcr:primaryType="jnt:contentTemplate">

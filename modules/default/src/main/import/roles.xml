@@ -4,14 +4,14 @@
        xmlns:j="http://www.jahia.org/jahia/1.0"
        xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
     <editor jcr:primaryType="jnt:role"
-            j:permissions="/permissions/actions/default/move"/>
+            j:permissionNames="move"/>
     <reviewer jcr:primaryType="jnt:role"
-               j:permissions="/permissions/actions/default/publish /permissions/actions/default/startWorkflow"/>
+               j:permissionNames="publish startWorkflow"/>
     <reader jcr:primaryType="jnt:role"
-             j:permissions="/permissions/actions/default/executeTask /permissions/actions/default/commentTask /permissions/actions/comments/addComment"/>
+             j:permissionNames="executeTask commentTask addComment"/>
     <editor jcr:primaryType="jnt:role">
         <editor-in-chief jcr:primaryType="jnt:role"
-                     j:permissions="/permissions/actions/comments"
+                     j:permissionNames="comments"
                      j:privilegedAccess="true"
             />
     </editor>

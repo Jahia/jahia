@@ -205,55 +205,55 @@
             <item name="Tasks" href="jahia-modules/tasks/tasks.html"/>
             <item name="Visibility" href="jahia-modules/visibility/visibility.html"/>
             <item name="Optional Modules" collapse="true"
-                  href="jahia-modules/jahia-default-modules/optional-modules.html">
-                <item name="Article" href="jahia-modules/jahia-default-modules/article/article.html"/>
-                <item name="Bookmarks" href="jahia-modules/jahia-default-modules/bookmarks/bookmarks.html"/>
+                  href="jahia-modules/index.html">
+                <item name="Article" href="jahia-modules/article/article.html"/>
+                <item name="Bookmarks" href="jahia-modules/bookmarks/bookmarks.html"/>
                 <item name="Document Converter"
-                      href="jahia-modules/jahia-default-modules/docConverter/docConverter.html" collapse="true">
+                      href="jahia-modules/docConverter/docConverter.html" collapse="true">
                     <item name="Configuration"
-                          href="jahia-modules/jahia-default-modules/docConverter/configuration.html">
+                          href="jahia-modules/docConverter/configuration.html">
                         <item name="Local"
-                              href="jahia-modules/jahia-default-modules/docConverter/configuration.html#Local"/>
+                              href="jahia-modules/docConverter/configuration.html#Local"/>
                         <item name="Remote"
-                              href="jahia-modules/jahia-default-modules/docConverter/configuration.html#Remote"/>
+                              href="jahia-modules/docConverter/configuration.html#Remote"/>
                     </item>
-                    <item name="Usage" href="jahia-modules/jahia-default-modules/docConverter/docConverter-usage.html"/>
+                    <item name="Usage" href="jahia-modules/docConverter/docConverter-usage.html"/>
                 </item>
-                <item name="Event" href="jahia-modules/jahia-default-modules/event/event.html"/>
-                <item name="FAQ" href="jahia-modules/jahia-default-modules/faq/faq.html"/>
-                <item name="Form Builder" href="jahia-modules/jahia-default-modules/formbuilder/formbuilder.html"/>
+                <item name="Event" href="jahia-modules/event/event.html"/>
+                <item name="FAQ" href="jahia-modules/faq/faq.html"/>
+                <item name="Form Builder" href="jahia-modules/formbuilder/formbuilder.html"/>
                 <item name="Forum" href="jahia-modules/forum/forum.html"/>
-                <item name="Google Analytics" href="jahia-modules/jahia-default-modules/googleAnalytics/googleAnalytics.html"/>
+                <item name="Google Analytics" href="jahia-modules/googleAnalytics/googleAnalytics.html"/>
                 <item name="LDAP" href="jahia-modules/ldap/ldap.html"/>
-                <item name="Location" href="jahia-modules/jahia-default-modules/location/location.html" collapse="true">
-                    <item name="Components" href="jahia-modules/jahia-default-modules/location/components.html"/>
-                    <item name="Usage in templates" href="jahia-modules/jahia-default-modules/location/using.html"/>
+                <item name="Location" href="jahia-modules/location/location.html" collapse="true">
+                    <item name="Components" href="jahia-modules/location/components.html"/>
+                    <item name="Usage in templates" href="jahia-modules/location/using.html"/>
                 </item>
                 <item name="Newsletter" href="jahia-modules/newsletter/newsletter.html" collapse="true">
                     <item name="Prerequisites" href="jahia-modules/newsletter/newsletter.html#Prerequisites"/>
                     <item name="Deployment" href="jahia-modules/newsletter/newsletter.html#Deployment"/>
                     <item name="Usage" href="jahia-modules/newsletter/newsletter.html#Usage"/>
                 </item>
-                <item name="Person" href="jahia-modules/jahia-default-modules/person/person.html"/>
-                <item name="Poll" href="jahia-modules/jahia-default-modules/poll/poll.html"/>
-                <item name="Press" href="jahia-modules/jahia-default-modules/press/press.html"/>
-                <item name="Rating" href="jahia-modules/jahia-default-modules/rating/rating.html" collapse="true">
-                    <item name="Usage" href="jahia-modules/jahia-default-modules/rating/rating-usage.html"/>
-                    <item name="JSON JQuery Template" href="jahia-modules/jahia-default-modules/rating/json_jquery.html"/>
-                    <item name="Recommender" href="jahia-modules/jahia-default-modules/rating/recommender.html"/>
+                <item name="Person" href="jahia-modules/person/person.html"/>
+                <item name="Poll" href="jahia-modules/poll/poll.html"/>
+                <item name="Press" href="jahia-modules/press/press.html"/>
+                <item name="Rating" href="jahia-modules/rating/rating.html" collapse="true">
+                    <item name="Usage" href="jahia-modules/rating/rating-usage.html"/>
+                    <item name="JSON JQuery Template" href="jahia-modules/rating/json_jquery.html"/>
+                    <item name="Recommender" href="jahia-modules/rating/recommender.html"/>
                 </item>
 
-                <item name="Sitemap" href="jahia-modules/jahia-default-modules/sitemap/sitemap.html"/>
-                <item name="Top Stories" href="jahia-modules/jahia-default-modules/topstories/topstories.html" collapse="true">
-                    <item name="Usage" href="jahia-modules/jahia-default-modules/topstories/topstories-usage.html" collapse="false">
-                        <item name="Top Stories Rendering" href="jahia-modules/jahia-default-modules/topstories/topstories-usage.html#Top"/>
-                        <item name="Flag Content" href="jahia-modules/jahia-default-modules/topstories/topstories-usage.html#Flag"/>
-                        <item name="Add/Remove Mixin with rules" href="jahia-modules/jahia-default-modules/topstories/topstories-usage.html#How"/>
+                <item name="Sitemap" href="jahia-modules/sitemap/sitemap.html"/>
+                <item name="Top Stories" href="jahia-modules/topstories/topstories.html" collapse="true">
+                    <item name="Usage" href="jahia-modules/topstories/topstories-usage.html" collapse="false">
+                        <item name="Top Stories Rendering" href="jahia-modules/topstories/topstories-usage.html#Top"/>
+                        <item name="Flag Content" href="jahia-modules/topstories/topstories-usage.html#Flag"/>
+                        <item name="Add/Remove Mixin with rules" href="jahia-modules/topstories/topstories-usage.html#How"/>
                     </item>
                 </item>
-                <item name="Translate Workflow" href="jahia-modules/jahia-default-modules/translateworkflow/translateworkflow.html"/>
-                <item name="Twitter" href="jahia-modules/jahia-default-modules/twitter/twitter.html"/>
-                <item name="User Registration" href="jahia-modules/jahia-default-modules/userregistration/userregistration.html"/>
+                <item name="Translate Workflow" href="jahia-modules/translateworkflow/translateworkflow.html"/>
+                <item name="Twitter" href="jahia-modules/twitter/twitter.html"/>
+                <item name="User Registration" href="jahia-modules/userregistration/userregistration.html"/>
                 <item name="Wiki" href="jahia-modules/wiki/wiki.html" collapse="true">
                     <item name="Mark It Up" href="jahia-modules/wiki/markitup.html"/>
                 </item>

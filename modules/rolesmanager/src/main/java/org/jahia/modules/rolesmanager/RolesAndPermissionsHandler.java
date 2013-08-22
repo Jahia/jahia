@@ -3,10 +3,12 @@ package org.jahia.modules.rolesmanager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,9 @@ public class RolesAndPermissionsHandler implements Serializable {
 
     @Autowired
     private transient RoleTypeConfiguration roleTypes;
+
+    @Autowired
+    private transient JahiaTemplateManagerService templateManagerService;
 
     private RoleBean roleBean = new RoleBean();
 
@@ -175,8 +180,8 @@ public class RolesAndPermissionsHandler implements Serializable {
         final ArrayList<String> setPermIds = new ArrayList<String>();
         permIdsMap.put("current", setPermIds);
 
-        if (role.hasProperty("j:permissions")) {
-            Value[] values = role.getProperty("j:permissions").getValues();
+        if (role.hasProperty("j:permissionNames")) {
+            Value[] values = role.getProperty("j:permissionNames").getValues();
             for (Value value : values) {
                 String valueString = value.getString();
                 if (!setPermIds.contains(valueString)) {
@@ -193,7 +198,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 try {
                     String path = next.getProperty("j:path").getString();
                     permIdsMap.put(path, new ArrayList<String>());
-                    Value[] values = next.getProperty("j:permissions").getValues();
+                    Value[] values = next.getProperty("j:permissionNames").getValues();
                     for (Value value : values) {
                         List<String> ids = permIdsMap.get(path);
                         String valueString = value.getString();
@@ -341,7 +346,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                     bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
                     bean.setPath(entry.getKey());
                     bean.setDepth(splitPath.length - 1);
-                    bean.setMappedUuid(new ArrayList<String>());
+                    bean.setMappedNames(new ArrayList<String>());
 
                     p.put(entry.getKey(), bean);
 
@@ -371,7 +376,7 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (mappedPermissions.containsKey(permissionPath)) {
                 PermissionBean bean = mappedPermissions.get(permissionPath);
 
-                bean.getMappedUuid().add(permissionNode.getIdentifier());
+                bean.getMappedNames().add(permissionNode.getName());
 
                 Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(bean.getPath().split("/")[2]));
                 setPermissionFlags(permissionNode, p, bean, permIdsMap.get(scope), inheritedPermIdsMap.get(scope), p.get(bean.getParentPath()));
@@ -380,7 +385,7 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     private void setPermissionFlags(JCRNodeWrapper permissionNode, Map<String, PermissionBean> permissions, PermissionBean bean, List<String> permIds, List<String> inheritedPermIds, PermissionBean parentBean) throws RepositoryException {
-        if ((permIds != null && permIds.contains(permissionNode.getIdentifier()))
+        if ((permIds != null && permIds.contains(permissionNode.getName()))
                 || (parentBean != null && parentBean.isSet())) {
             bean.setSet(true);
             while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
@@ -389,7 +394,7 @@ public class RolesAndPermissionsHandler implements Serializable {
             }
         }
         parentBean = permissions.get(bean.getParentPath());
-        if ((inheritedPermIds != null && inheritedPermIds.contains(permissionNode.getIdentifier()))
+        if ((inheritedPermIds != null && inheritedPermIds.contains(permissionNode.getName()))
                 || (parentBean != null && parentBean.isSuperSet())) {
             bean.setSuperSet(true);
             while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
@@ -405,6 +410,15 @@ public class RolesAndPermissionsHandler implements Serializable {
             path = "/permissions/" + StringUtils.substringAfter(path, "/permissions/");
         }
         return path;
+    }
+
+    private String getPermissionModule(JCRNodeWrapper permissionNode) {
+        String path = permissionNode.getPath();
+        if (path.startsWith("/modules/")) {
+            String s = StringUtils.substringAfter(path, "/modules/");
+            return StringUtils.substringBefore(s,"/");
+        }
+        return null;
     }
 
     private int getPermissionDepth(JCRNodeWrapper permissionNode) throws RepositoryException {
@@ -424,6 +438,8 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     private void setPermissionBeanProperties(JCRNodeWrapper permissionNode, PermissionBean bean) throws RepositoryException {
+        final String module = getPermissionModule(permissionNode);
+
         bean.setUuid(permissionNode.getIdentifier());
 
         bean.setParentPath(getPermissionPath(permissionNode.getParent()));
@@ -434,7 +450,12 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
         String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]", " ").toLowerCase());
         final String rbName = localName.replaceAll("-", "_");
-        bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+        if (module != null) {
+            bean.setTitle(Messages.get(templateManagerService.getTemplatePackageByFileName(module), "label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+        } else {
+            bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+        }
+        bean.setModule(module);
         bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
         bean.setPath(getPermissionPath(permissionNode));
         bean.setDepth(getPermissionDepth(permissionNode));
@@ -511,12 +532,12 @@ public class RolesAndPermissionsHandler implements Serializable {
                 for (PermissionBean bean : map.values()) {
                     PermissionBean parentBean = map.get(bean.getParentPath());
                     if (bean.isSet() && (parentBean == null || !parentBean.isSet())) {
-                        if (bean.getMappedUuid() != null) {
-                            for (String s : bean.getMappedUuid()) {
-                                permissionValues.add(currentUserSession.getValueFactory().createValue(s, PropertyType.WEAKREFERENCE));
+                        if (bean.getMappedNames() != null) {
+                            for (String s : bean.getMappedNames()) {
+                                permissionValues.add(currentUserSession.getValueFactory().createValue(s, PropertyType.STRING));
                             }
                         } else {
-                            permissionValues.add(currentUserSession.getValueFactory().createValue(bean.getUuid(), PropertyType.WEAKREFERENCE));
+                            permissionValues.add(currentUserSession.getValueFactory().createValue(bean.getName(), PropertyType.STRING));
                         }
                     }
                 }
@@ -528,7 +549,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         for (Map.Entry<String, List<Value>> s : permissions.entrySet()) {
             String key = s.getKey();
             if (key.equals("current")) {
-                role.setProperty("j:permissions", permissions.get("current").toArray(new Value[permissions.get("current").size()]));
+                role.setProperty("j:permissionNames", permissions.get("current").toArray(new Value[permissions.get("current").size()]));
             } else {
                 if (key.equals("/")) {
                     key = "root-access";
@@ -539,9 +560,9 @@ public class RolesAndPermissionsHandler implements Serializable {
                     if (!role.hasNode(key)) {
                         JCRNodeWrapper extPermissions = role.addNode(key, "jnt:externalPermissions");
                         extPermissions.setProperty("j:path", s.getKey());
-                        extPermissions.setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                        extPermissions.setProperty("j:permissionNames", s.getValue().toArray(new Value[s.getValue().size()]));
                     } else {
-                        role.getNode(key).setProperty("j:permissions", s.getValue().toArray(new Value[s.getValue().size()]));
+                        role.getNode(key).setProperty("j:permissionNames", s.getValue().toArray(new Value[s.getValue().size()]));
                     }
                     externalPermissionNodes.add(key);
                 }
@@ -579,6 +600,10 @@ public class RolesAndPermissionsHandler implements Serializable {
             int depth = 2;
             if (((JCRNodeWrapper) next.getAncestor(1)).isNodeType("jnt:modules")) {
                 depth = 5;
+                JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(next.getAncestor(2).getName());
+                if (pack == null || !pack.getVersion().toString().equals(next.getAncestor(3).getName())) {
+                    continue;
+                }
             }
             if (next.getDepth() >= depth) {
                 allPermissions.add(next);

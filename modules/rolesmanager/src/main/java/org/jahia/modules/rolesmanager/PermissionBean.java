@@ -9,9 +9,10 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     private String name;
     private String title;
     private String description;
+    private String module;
     private String path;
     private String targetPath;
-    private List<String> mappedUuid;
+    private List<String> mappedNames;
     private boolean partialSet;
     private boolean set;
     private boolean superSet;
@@ -58,6 +59,14 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
         this.description = description;
     }
 
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
+
     public String getPath() {
         return path;
     }
@@ -74,12 +83,12 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
         this.targetPath = targetPath;
     }
 
-    public List<String> getMappedUuid() {
-        return mappedUuid;
+    public List<String> getMappedNames() {
+        return mappedNames;
     }
 
-    public void setMappedUuid(List<String> mappedUuid) {
-        this.mappedUuid = mappedUuid;
+    public void setMappedNames(List<String> mappedNames) {
+        this.mappedNames = mappedNames;
     }
 
     public boolean isPartialSet() {

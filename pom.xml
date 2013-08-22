@@ -45,15 +45,9 @@
         <junit.version>4.8.1</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
 
-<<<<<<< .working
         <driver.derby.version>10.10.1.1</driver.derby.version>
         <driver.mysql.version>5.1.26</driver.mysql.version>
         <driver.postgresql.version>9.2-1003-jdbc4</driver.postgresql.version>
-=======
-        <driver.derby.version>10.9.1.0</driver.derby.version>
-        <driver.mysql.version>5.1.26</driver.mysql.version>
-        <driver.postgresql.version>9.1-901.jdbc3</driver.postgresql.version>
->>>>>>> .merge-right.r47089
 
         <!-- Meta information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>

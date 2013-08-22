@@ -270,3 +270,13 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     }
 });
 
+JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
+    public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
+        if (jcrsession.nodeExists("/permissions")) {
+            jcrsession.getNode("/permissions").remove();
+        }
+        if (jcrsession.nodeExists("/roles")) {
+            jcrsession.getNode("/roles").remove();
+        }
+    }
+});

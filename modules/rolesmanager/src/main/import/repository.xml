@@ -31,7 +31,7 @@
                                              j:defaultTemplate="false"
                                              j:hiddenTemplate="false"
                                              j:icon="/modules/rolesmanager/templates/files/permissions.png"
-                                             j:requiredPermissions="#/permissions/admin/adminRoles"
+                                             j:requiredPermissionNames="adminRoles"
                                              j:titleKey="rolesmanager.rolesAndPermissions"
                                              jcr:mixinTypes="jmix:rbTitle"
                                              jcr:primaryType="jnt:contentTemplate">

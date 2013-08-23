@@ -682,33 +682,54 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (privilegesInRole.containsKey(role)) {
             return privilegesInRole.get(role);
         } else {
-            Set<Privilege> list = new HashSet<Privilege>();
-            try {
-                NodeIterator nodes = getDefaultWorkspaceSecuritySession().getWorkspace().getQueryManager().createQuery(
-                        "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + StringUtils.substringBefore(role,"/") + "' and isdescendantnode(r,['/roles'])",
-                        Query.JCR_SQL2).execute().getNodes();
-                if (nodes.hasNext()) {
-                    Node roleNode = nodes.nextNode();
-                    if (role.contains("/")) {
-                        roleNode = roleNode.getNode(StringUtils.substringAfter(role,"/"));
-                    }
-                    list = getPrivileges(roleNode);
-                    privilegesInRole.put(role, list);
-                }
-            } catch (PathNotFoundException e) {
+            Set<Privilege> list;
+            String externalPermission = null;
+
+            String roleName = role;
+            if (roleName.contains("/")) {
+                externalPermission = StringUtils.substringAfter(role, "/");
+                roleName = StringUtils.substringBefore(role, "/");
             }
+
+            Node roleNode = findRoleNode(roleName);
+            if (roleNode != null) {
+                list = getPrivileges(roleNode, externalPermission);
+            } else {
+                list = Collections.EMPTY_SET;
+            }
+
+            privilegesInRole.put(role, list);
             return list;
         }
     }
 
-    private Set<Privilege> getPrivileges(Node roleNode) throws RepositoryException {
+    private Node findRoleNode(String role) throws RepositoryException {
+        try {
+            NodeIterator nodes = getDefaultWorkspaceSecuritySession().getWorkspace().getQueryManager().createQuery(
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
+                    Query.JCR_SQL2).execute().getNodes();
+            if (nodes.hasNext()) {
+                return nodes.nextNode();
+            }
+        } catch (PathNotFoundException e) {
+        }
+        return null;
+    }
+
+    private Set<Privilege> getPrivileges(Node roleNode, String externalPermission) throws RepositoryException {
         Set<Privilege> privileges = new HashSet<Privilege>();
 
         Node roleParent = roleNode.getParent();
         if (roleParent.isNodeType(Constants.JAHIANT_ROLE)) {
-            privileges = getPrivileges(roleParent);
+            privileges = getPrivileges(roleParent, externalPermission);
         }
-
+        if (externalPermission != null) {
+            if (roleNode.hasNode(externalPermission)) {
+                roleNode = roleNode.getNode(externalPermission);
+            } else {
+                return privileges;
+            }
+        }
         Session s = roleNode.getSession();
         if (roleNode.hasProperty("j:permissionNames")) {
             Value[] perms = roleNode.getProperty("j:permissionNames").getValues();
@@ -837,17 +858,19 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Set<String> grantedRoles = getRoles(absPath);
 
         for (String role : grantedRoles) {
-            Node node = null;
-            NodeIterator nodes = getDefaultWorkspaceSecuritySession().getWorkspace().getQueryManager().createQuery(
-                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
-                    Query.JCR_SQL2).execute().getNodes();
-            if (nodes.hasNext()) {
-                node = nodes.nextNode();
+            String externalPermission = null;
+
+            if (role.contains("/")) {
+                externalPermission = StringUtils.substringAfter(role, "/");
+                role = StringUtils.substringBefore(role, "/");
+            }
+
+            Node node = findRoleNode(role);
+            if (node != null) {
+                results.addAll(getPrivileges(node, externalPermission));
             } else {
                 logger.warn("Role " + role + " is missing despite still being in use in path " + absPath + " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
-                continue;
             }
-            results.addAll(getPrivileges(node));
         }
 
         return results.toArray(new Privilege[results.size()]);

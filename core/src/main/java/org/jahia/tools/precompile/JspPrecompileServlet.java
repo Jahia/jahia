@@ -40,9 +40,11 @@
 
 package org.jahia.tools.precompile;
 
+import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.utils.StringResponseWrapper;
 import org.osgi.framework.Bundle;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -97,6 +99,11 @@ public class JspPrecompileServlet extends HttpServlet {
         } else if ("modules".equals(compileType)) {
             // precompile all JSPs and generate report
             precompileJsps(searchForBundleJsps(), aRequest, aResponse);
+        } else if ("module".equals(compileType)) {
+            // precompile JSPs of a module
+            precompileJsps(
+                    searchForBundleJsps(FrameworkService.getBundleContext().getBundle(
+                            Long.parseLong(aRequest.getParameter("id")))), aRequest, aResponse);
         } else if ("non-modules".equals(compileType)) {
             // precompile all JSPs not in modules and generate report
             precompileJsps(searchForJsps(""), aRequest, aResponse);
@@ -106,20 +113,28 @@ public class JspPrecompileServlet extends HttpServlet {
             List<String> foundJsps = searchForAllJsps();
 
             aResponse.setContentType("text/html;charset=ISO-8859-1");
+            
+            out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+            out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+            out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+            out.println("<head>");
+            out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+            out.println("<meta http-equiv=\"expires\" content=\"0\" />");
+            out.print("<link rel=\"stylesheet\" href=\"");
+            out.print(aResponse.encodeURL(aRequest.getContextPath() + "/tools/tools.css"));
+            out.println("\" type=\"text/css\" />");
+            out.println("<title>JSP compilation</title>");
+            out.println("</head>");
+            out.println("<body>");
 
-            out.print("<html>\r\n" + "<head>"
-                    + "<META http-equiv=\"expires\" content=\"0\">"
-                    + "<title>JSPs in WebApp</title>" + "</head>\r\n"
-
-                    + "<body>\r\n" + "<b>");
-            out.print(new Date().toString());
-            out.print("</b><br/>\r\n"
-
-            + "#JSPs in WebApp: <strong>");
+            out.println("<h1>JSP compilation</h1>");
+            out.print("<p>Found <strong>");
             out.print(foundJsps.size());
-            out.print("</strong><br>\r\n"
-
-            + "<a target=\"_blank\" href=\"");
+            out.println("</strong> JSPs</p>");
+            
+            out.println("<h2>Pre-compile:</h2>");
+            out.println("<ul>");
+            out.print("<li><a target=\"_blank\" href=\"");
 
             long now = System.currentTimeMillis();
 
@@ -128,29 +143,58 @@ public class JspPrecompileServlet extends HttpServlet {
                     + "=all&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
 
             out.print(url);
-            out.print("\">precompile all</a><br/>\r\n");
-            out.print("<a target=\"_blank\" href=\"");
-
-            url = aResponse.encodeURL(aRequest.getContextPath()
-                    + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
-                    + "=modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
-
-            out.print(url);
-            out.print("\">precompile modules</a><br/>\r\n");
-
-            out.print("<a target=\"_blank\" href=\"");
+            out.println("\">all</a></li>");
+            
+            out.print("<li><a target=\"_blank\" href=\"");
 
             url = aResponse.encodeURL(aRequest.getContextPath()
                     + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
                     + "=non-modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
 
             out.print(url);
-            out.print("\">precompile non-modules</a><br/>\r\n");
+            out.println("\">non-modules</a></li>");
             
+            out.print("<li><a target=\"_blank\" href=\"");
+
+            url = aResponse.encodeURL(aRequest.getContextPath()
+                    + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
+                    + "=modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
+
+            out.print(url);
+            out.print("\">all modules</a></li>");
+            
+            out.println("</ul>");
+            out.println("<h2>Modules:</h2>");
+            
+            out.println("<ul>");
+            Map<String, Long> moduleBundles = new TreeMap<String, Long>();
+            for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+                if (BundleUtils.isJahiaModuleBundle(bundle)) {
+                    Enumeration<?> en = bundle.findEntries("/", "*.jsp", true);
+                    if (en != null && en.hasMoreElements()) {
+                        moduleBundles.put(bundle.getSymbolicName(), bundle.getBundleId());
+                    }
+                }
+            }
+            for (Map.Entry<String, Long> entry : moduleBundles.entrySet()) {
+                out.print("<li><a target=\"_blank\" href=\"");
+
+                url = aResponse.encodeURL(aRequest.getContextPath() + aRequest.getServletPath() + "?"
+                        + COMPILE_TYPE_PARAM + "=module&id=" + entry.getValue() + "&timestamp=" + now + "&"
+                        + MAGIC_TOMCAT_PARAM);
+
+                out.print(url);
+                out.print("\">" + entry.getKey() + "</a></li>");
+            }
+
+            out.println("</ul><br/>");
+
+            out.println("<h2>All JSPs:</h2>");
             listFiles(out, aRequest.getContextPath(),
                     aRequest.getServletPath(), foundJsps, aResponse, now);
 
-            out.print("</body>\r\n" + "</html>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -260,7 +304,7 @@ public class JspPrecompileServlet extends HttpServlet {
             out.print("No problems found!\r\n");
         else {
             out.print("Precompile failed for following <strong>" + buggyJsps.size()
-                    + "</strong> JSPs:\r\n");
+                    + "</strong> JSPs:<br/>\r\n");
             listFiles(out, aRequest.getContextPath(),
                     aRequest.getServletPath(), buggyJsps, aResponse, System
                             .currentTimeMillis());
@@ -283,7 +327,6 @@ public class JspPrecompileServlet extends HttpServlet {
             String aServletPath, List<String> aFoundJsps,
             HttpServletResponse aResponse, long now) {
         for (String jspPath : aFoundJsps) {
-            anOut.print("<br/>");
             anOut.print("<a target=\"_blank\" href=\"");
             String url = null;
 
@@ -296,7 +339,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             anOut.print("\">");
             anOut.print(jspPath);
-            anOut.println("</a>");
+            anOut.println("</a><br/>");
         }
     }
 }

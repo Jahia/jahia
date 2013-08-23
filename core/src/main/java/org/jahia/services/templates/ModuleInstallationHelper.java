@@ -591,7 +591,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                     newNode = true;
                 }
 
-                if (!child.isNodeType("jnt:templatesFolder") && !child.isNodeType("jnt:componentFolder")) {
+                if (!child.isNodeType("jnt:templatesFolder") && !child.isNodeType("jnt:componentFolder")&& !child.isNodeType("jnt:permission")) {
                     templatesSynchro(child, node, session, references, newNode, true);
                 }
             }

@@ -56,8 +56,9 @@ public class PrivilegeImpl implements Privilege {
     private Set<Privilege> declaredAggregates;
     private Set<Privilege> aggregates;
     private transient int hash;
+    private String nodePath;
 
-    PrivilegeImpl(String prefixedName, String expandedName, boolean anAbstract, Set<Privilege> declaredAggregates) {
+    PrivilegeImpl(String prefixedName, String expandedName, boolean anAbstract, Set<Privilege> declaredAggregates, String nodePath) {
         this.prefixedName = prefixedName;
         this.expandedName = expandedName;
         isAbstract = anAbstract;
@@ -68,6 +69,7 @@ public class PrivilegeImpl implements Privilege {
                 aggregates.add(privilege);
             }
         }
+        this.nodePath = nodePath;
     }
 
     void addPrivileges(Set<Privilege> p) {
@@ -104,6 +106,10 @@ public class PrivilegeImpl implements Privilege {
 
     public Privilege[] getAggregatePrivileges() {
         return aggregates.toArray(new Privilege[aggregates.size()]);
+    }
+
+    public String getNodePath() {
+        return nodePath;
     }
 
     @Override

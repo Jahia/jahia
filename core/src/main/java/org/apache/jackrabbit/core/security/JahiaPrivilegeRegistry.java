@@ -132,7 +132,7 @@ public final class JahiaPrivilegeRegistry {
             boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
             PrivilegeImpl priv =(PrivilegeImpl) map.get(expandedName);
             if (priv == null) {
-                priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges);
+                priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges, node.getPath());
             } else {
                 priv.addPrivileges(subPrivileges);
             }

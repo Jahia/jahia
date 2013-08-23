@@ -433,6 +433,20 @@ public class TemplatePackageRegistry {
 //        computeResourceBundleHierarchy(templatePackage);
 //        }
 
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    if (session.itemExists("/modules/" + templatePackage.getRootFolderWithVersion()+"/permissions")) {
+                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + templatePackage.getRootFolderWithVersion());
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Cannot get permissions in module",e);
+        }
+
         Resource[] rootResources = templatePackage.getResources("");
         for (Resource rootResource : rootResources) {
             if (templatePackage.getResources(rootResource.getFilename()).length > 0 && rootResource.getFilename().contains("_")) {

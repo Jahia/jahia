@@ -58,6 +58,12 @@
                               jcr:title="Editor"/>
         </editor>
 
+        <translator j:hidden="true"
+                    j:permissionNames="editModeAccess sitemapSelector jcr:versionManagement_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                    j:privilegedAccess="true"
+                    j:roleGroup="edit-role"
+                    jcr:primaryType="jnt:role"/>
+
         <reviewer j:hidden="false"
                   j:permissionNames="jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"
                   j:privilegedAccess="true"

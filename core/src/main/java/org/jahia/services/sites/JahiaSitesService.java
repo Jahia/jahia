@@ -665,7 +665,10 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     }
 
     private void updateTranslatorRoles(JCRSessionWrapper session, JahiaSite site) throws RepositoryException {
-        Node n = session.getNode("/roles");
+        if (!session.itemExists("/roles/translator")) {
+            return;
+        }
+        Node n = session.getNode("/roles/translator");
         Set<String> languages = new HashSet<String>();
 
         NodeIterator ni = n.getNodes(TRANSLATOR_NODES_PATTERN);
@@ -678,13 +681,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                 session.checkout(n);
                 Node translator = n.addNode("translator-" + s, "jnt:role");
                 List<Value> perms = new LinkedList<Value>();
-                perms.add(session.getValueFactory().createValue("editModeAccess"));
-                perms.add(session.getValueFactory().createValue("sitemapSelector"));
-                perms.add(session.getValueFactory().createValue("jcr:versionManagement_default"));
                 perms.add(session.getValueFactory().createValue("jcr:modifyProperties_default_" + s));
-                for (NodeIterator iterator = session.getNode("/permissions/workflow-tasks").getNodes("start-*-review"); iterator.hasNext(); ) {
-                    perms.add(session.getValueFactory().createValue(iterator.nextNode().getName()));
-                }
                 Value[] values = perms.toArray(new Value[perms.size()]);
 
                 translator.setProperty("j:permissionNames", values);

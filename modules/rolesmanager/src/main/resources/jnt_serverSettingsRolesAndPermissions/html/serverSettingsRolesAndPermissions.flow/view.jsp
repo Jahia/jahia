@@ -24,20 +24,34 @@
             return uuids;
         }
 
-        function addSubRole() {
+        var addRoleLabel = '<fmt:message key="rolesmanager.rolesAndPermissions.role.add" />';
+        var addSubRoleLabel = '<fmt:message key="rolesmanager.rolesAndPermissions.subRole.add" />';
+        function checkRole() {
             var uuids = getUuids();
+            if (uuids.length == 1) {
+                $('#addRoleButtonLabel').text(addSubRoleLabel);
+                $('#roleTypeCombo').val($("#"+uuids[0]).attr("roleType"));
+                $('#roleTypeCombo').prop("disabled", true);
+                $('#uuid').val(uuids[0]);
+            } else {
+                $('#addRoleButtonLabel').text(addRoleLabel);
+                $('#roleTypeCombo').prop("disabled", false);
+                $('#uuid').val('');
+            }
             if (uuids.length == 0) {
-                alert('<fmt:message key="rolesmanager.rolesAndPermissions.subRole.selectParent" />');
-                return false;
+                 if (!$('#deleteRolesButton').hasClass("disabled")) {
+                     $('#deleteRolesButton').addClass("disabled");
+                 }
+            } else {
+                if ($('#deleteRolesButton').hasClass("disabled")) {
+                    $('#deleteRolesButton').removeClass("disabled");
+                }
             }
-            if (uuids.length > 1) {
-                alert('<fmt:message key="rolesmanager.rolesAndPermissions.subRole.selectOnlyOneParent" />');
-                return false;
-            }
-            $('#roleType').val($("#"+uuids[0]).attr("roleType"));
-            $('#uuid').val(uuids[0]);
-            $('#eventId').val('addRole');
-            $('#roleForm').submit();
+        }
+
+        function setRoleType() {
+            $('#roleType').val($('#roleTypeCombo').val());
+            return true;
         }
 
         function deleteRoles() {
@@ -60,26 +74,23 @@
 <div class="box-1">
     <fieldset>
         <h2>Roles and permissions</h2>
-        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="roleForm">
-        <select id="roleType" name="roleType">
+        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="roleForm" onsubmit="setRoleType()">
+        <select id="roleTypeCombo">
             <c:forEach items="${handler.roleTypes.values}" var="roleType">
                 <option value="${roleType.name}">
                 <fmt:message key="rolesmanager.rolesAndPermissions.roleType.${fn:replace(roleType.name,'-','_')}"/>
                 </option>
             </c:forEach>
         </select>
+        <input type="hidden" id="roleType" name="roleType"/>
         <input type="text" id="addRoleField" name="newRole"/>
         <input type="hidden" id="uuid" name="uuid"/>
         <input type="hidden" id="eventId" name="_eventId" value="addRole" />
-        <button class="btn btn-primary" type="submit" onclick="${'#parentRoleId'}.val('')">
+        <button class="btn btn-primary" type="submit">
             <i class="icon-plus  icon-white"></i>
-            <fmt:message key="rolesmanager.rolesAndPermissions.role.add" />
+            <span id="addRoleButtonLabel"><fmt:message key="rolesmanager.rolesAndPermissions.role.add" /></span>
         </button>
-        <button class="btn btn-primary" type="button" onclick="addSubRole()">
-            <i class="icon-plus  icon-white"></i>
-            <fmt:message key="rolesmanager.rolesAndPermissions.subRole.add" />
-        </button>
-            <button class="btn btn-danger" type="button" onclick="deleteRoles()">
+            <button id="deleteRolesButton" class="btn btn-danger disabled" type="button" onclick="deleteRoles()">
                 <i class="icon-remove  icon-white"></i>
                 <fmt:message key="rolesmanager.rolesAndPermissions.role.delete" />
             </button>
@@ -114,7 +125,7 @@
             <tbody>
             <c:forEach items="${entry.value}" var="role" varStatus="loopStatus2">
                 <tr>
-                    <td><input id="${role.uuid}" name="selectedRoles" class="roleCheckbox" type="checkbox" value="${role.uuid}" roleType="${entry.key}" /></td>
+                    <td><input id="${role.uuid}" name="selectedRoles" class="roleCheckbox" type="checkbox" value="${role.uuid}" roleType="${entry.key}" onchange="checkRole()"/></td>
                     <td>
                         <c:forEach var="i" begin="3" end="${role.depth}" step="1" varStatus="loopStatus3">
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

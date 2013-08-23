@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.GWTStaticAssetEntry;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Render;
@@ -223,10 +224,16 @@ public class TemplateHelper {
                     js.put(customConfig, Collections.<String, String>emptyMap());
                 }
             }
-            Map<String, List<String>> m = new HashMap<String, List<String>>();
+            Map<String, List<GWTStaticAssetEntry>> m = new HashMap<String, List<GWTStaticAssetEntry>>();
             if (map != null) {
                   for (Map.Entry<String, Map<String,Map<String,String>>> entry : map.entrySet()) {
-                    m.put(entry.getKey(), new ArrayList<String>(entry.getValue().keySet()));
+                    List<GWTStaticAssetEntry> fileEntries = new ArrayList<GWTStaticAssetEntry>();
+                    for (Map.Entry<String,Map<String,String>> filetypeEntries : entry.getValue().entrySet()) {
+                        String filePath = filetypeEntries.getKey();
+                        Map<String,String> fileOptions = filetypeEntries.getValue();
+                        fileEntries.add(new GWTStaticAssetEntry(filePath, fileOptions));
+                    }
+                    m.put(entry.getKey(), fileEntries);
                 }
             }
             result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());

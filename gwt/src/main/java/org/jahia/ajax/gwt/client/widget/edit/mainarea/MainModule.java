@@ -52,7 +52,12 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+<<<<<<< .working
 import com.google.gwt.dom.client.*;
+=======
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+>>>>>>> .merge-right.r47097
 import com.google.gwt.http.client.URL;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.*;
@@ -64,6 +69,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTStaticAssetEntry;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -393,31 +399,174 @@ public class MainModule extends Module {
         getInstance().mask(text,"x-mask-loading");
     }
 
+<<<<<<< .working
     private String getUrl(String path, String template) {
         return getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html";
+=======
+    private Map<String, Integer> maxValues = new HashMap<String, Integer>();
+
+    private void switchStaticAssets(Map<String, List<GWTStaticAssetEntry>> assets) {
+        switchStaticAssets(assets, "css", "link", "href");
+        switchStaticAssets(assets, "javascript", "script", "src");
+>>>>>>> .merge-right.r47097
     }
 
+<<<<<<< .working
     public String getBaseUrl() {
         String baseUrl = JahiaGWTParameters.getBaseUrl();
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/"+JahiaGWTParameters.getWorkspace()+"/"));
         baseUrl += "frame/" + JahiaGWTParameters.getWorkspace();
         baseUrl += "/" + (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
         return baseUrl;
+=======
+    private void switchStaticAssets(Map<String, List<GWTStaticAssetEntry>> assets, String fileType, String tagName, String tagAttribute) {
+        List oldValues = new ArrayList();
+        getAssets(tagName, tagAttribute, oldValues);
+        Element head = (Element) getHead();
+        List<GWTStaticAssetEntry> newValues = assets.get(fileType);
+
+        Integer maxValue = oldValues.size() + 1;
+
+        if (!maxValues.containsKey(fileType)) {
+            maxValues.put(fileType, maxValue);
+        } else {
+            maxValue = maxValues.get(fileType);
+        }
+
+        int j = 0;
+
+        Element oldElement = null;
+        Element lastElement = null;
+        String oldValue = null;
+        int lastDOMIDCounterSeen = 0;
+        String assetPrefix = getAssetPrefix(fileType);
+
+        for (; newValues != null && (!newValues.isEmpty() || j < oldValues.size()); j++) {
+            // first we remove all elements that are no longer in the list
+            while (j < oldValues.size()) {
+                oldElement = (Element) oldValues.get(j);
+                oldValue = DOM.getElementAttribute(oldElement, tagAttribute);
+                if (!newValues.contains(oldValue)) {
+                    // Remove current element as it is not supposed to stay
+                    head.removeChild(oldElement);
+                    j++;
+                } else {
+                    lastElement = oldElement;
+                    String lastDOMIDSeen = DOM.getElementAttribute(oldElement, "id");
+                    if (lastDOMIDSeen.startsWith(assetPrefix)) {
+                        lastDOMIDCounterSeen = Integer.parseInt(lastDOMIDSeen.substring(assetPrefix.length()));
+                    }
+                    break;
+                }
+            }
+            // we found an element that is still present in the new asset list, or we got to the end of the
+            // old asset list
+            if (j < oldValues.size()) {
+                if (!newValues.isEmpty()) {
+                    GWTStaticAssetEntry newValue = newValues.remove(0);
+                    if (newValue.getKey().equals(oldValue)) {
+                        // Elements are equal, don't change
+                    } else {
+                        Element newElem = createAsset(fileType, (lastDOMIDCounterSeen++), newValue);
+                        if (newElem != null) {
+                            head.insertBefore(newElem, oldElement);
+                        }
+                        // Stay on current element for next comparison
+                        j--;
+                    }
+                } else {
+                    head.removeChild(oldElement);
+                }
+            } else {
+                if (newValues.size() > 0) {
+                    Element newElem = createAsset(fileType, (lastDOMIDCounterSeen++), newValues.remove(0));
+                    if (newElem != null) {
+                        if (lastElement != null) {
+                            head.insertAfter(newElem, lastElement);
+                            lastElement = newElem;
+                        } else {
+                            head.appendChild(newElem);
+                        }
+                    }
+                }
+            }
+        }
+        maxValues.put(fileType, maxValue);
+>>>>>>> .merge-right.r47097
     }
 
+<<<<<<< .working
     @Override
     public Element getInnerElement() {
         if (frame != null) {
             IFrameElement iframe = IFrameElement.as(frame.getElement());
             com.google.gwt.dom.client.Element body = iframe.getContentDocument().getElementsByTagName("body").getItem(0);
             return (Element) body;
+=======
+    private Element createAsset(String filetype, int idCounter, GWTStaticAssetEntry newValue) {
+        Element newElem = null;
+        if (filetype.equals("javascript")) {
+            newElem = DOM.createElement("script");
+            String newID = getNextAvailableID("staticAssetJavascript", idCounter);
+            newElem.setAttribute("id", newID);
+            newElem.setAttribute("type", "text/javascript");
+            newElem.setAttribute("src", newValue.getKey());
+            for (Map.Entry<String,String> optionEntry : newValue.getOptions().entrySet()) {
+                newElem.setAttribute(optionEntry.getKey(), optionEntry.getValue());
+            }
+        } else if (filetype.equals("css")) { //if filename is an external CSS file
+            // if it is a condition CSS link, we don't render it.
+            if (newValue.getOptions().containsKey("condition") &&
+                !"".equals(newValue.getOptions().get("condition"))) {
+                return null;
+            }
+            newElem = DOM.createElement("link");
+            String newID = getNextAvailableID("staticAssetCSS", idCounter);
+            newElem.setAttribute("id", newID);
+            newElem.setAttribute("rel", "stylesheet");
+            newElem.setAttribute("href", newValue.getKey());
+            for (Map.Entry<String,String> optionEntry : newValue.getOptions().entrySet()) {
+                newElem.setAttribute(optionEntry.getKey(), optionEntry.getValue());
+            }
+            newElem.setAttribute("type", "text/css");
+>>>>>>> .merge-right.r47097
         }
         return super.getInnerElement();    
     }
 
+<<<<<<< .working
     public static native void setDocumentTitle(String title) /*-{
         $doc.title = title;
     }-*/;
+=======
+    private String getNextAvailableID(String prefix, int initialIdCounter) {
+        int idCounter = initialIdCounter;
+        String newID = prefix + idCounter;
+        while (DOM.getElementById(newID) != null) {
+            idCounter++;
+            newID = prefix + idCounter;
+        }
+        return newID;
+    }
+
+    private String getAssetPrefix(String filetype) {
+        if (filetype.equals("javascript")) {
+            return "staticAssetJavascript";
+        } else if (filetype.equals("css")) {
+            return "staticAssetCSS";
+        }
+        return "staticAsset" + filetype;
+    }
+
+    private native int getAssets(String tagname, String attrname, List results) /*-{
+        var links = $doc.getElementsByTagName(tagname);
+        if (links != null) {
+            for (var i = 0; i < links.length; i++) {
+                if (links[i] && links[i].getAttribute("id") != null && links[i].getAttribute("id").indexOf("staticAsset") == 0) {
+                    results.@java.util.List::add(Ljava/lang/Object;)(links[i])
+                }
+            }
+>>>>>>> .merge-right.r47097
 
     private void refreshImages(Element element) {
         NodeList<com.google.gwt.dom.client.Element> elementsByTagName = element

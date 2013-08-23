@@ -80,6 +80,12 @@
             <evaluate expression="handler.revertRole()" />
         </transition>
 
+        <transition on="expandMappedPermissions" to="viewRole">
+            <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
+            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden)" />
+            <evaluate expression="handler.expandMapped(requestParameters.permission)" />
+        </transition>
+
     </view-state>
 
     <view-state id="viewRoleDetails">

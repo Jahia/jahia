@@ -42,8 +42,6 @@ public class RolesAndPermissionsHandler implements Serializable {
     private String currentGroup;
     private List<String> uuids;
 
-    private boolean usePermissionMapping = true;
-
     private transient List<JCRNodeWrapper> allPermissions;
 
     public RolesAndPermissionsHandler() {
@@ -328,42 +326,47 @@ public class RolesAndPermissionsHandler implements Serializable {
             }
         }
 
-        if (usePermissionMapping) {
-            for (Map.Entry<String, List<String>> entry : roleTypes.getPermissionsMapping().entrySet()) {
-                String[] splitPath = entry.getKey().split("/");
-                String permissionGroup = splitPath[2];
-                if (allGroups.containsKey(permissionGroup)) {
-                    Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(permissionGroup));
-                    PermissionBean bean = new PermissionBean();
-                    bean.setUuid(null);
-                    bean.setParentPath(StringUtils.substringBeforeLast(entry.getKey(), "/"));
-                    bean.setName(StringUtils.substringAfterLast(entry.getKey(), "/"));
-                    String localName = StringUtils.substringAfterLast(entry.getKey(), "/");
-                    if (localName.contains(":")) {
-                        localName = StringUtils.substringAfter(localName, ":");
-                    }
-                    String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]", " ").toLowerCase());
-                    final String rbName = localName.replaceAll("-", "_");
-                    bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
-                    bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
-                    bean.setPath(entry.getKey());
-                    bean.setDepth(splitPath.length - 1);
-                    bean.setMappedNames(new ArrayList<String>());
+        // Create mapped permissions
+        for (Map.Entry<String, List<String>> entry : roleTypes.getPermissionsMapping().entrySet()) {
+            String[] splitPath = entry.getKey().split("/");
+            String permissionGroup = splitPath[2];
+            if (allGroups.containsKey(permissionGroup)) {
+                Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(permissionGroup));
+                PermissionBean bean = new PermissionBean();
+                bean.setUuid(null);
+                bean.setParentPath(StringUtils.substringBeforeLast(entry.getKey(), "/"));
+                bean.setName(StringUtils.substringAfterLast(entry.getKey(), "/"));
+                String localName = StringUtils.substringAfterLast(entry.getKey(), "/");
+                if (localName.contains(":")) {
+                    localName = StringUtils.substringAfter(localName, ":");
+                }
+                String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]", " ").toLowerCase());
+                final String rbName = localName.replaceAll("-", "_");
+                bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+                bean.setDescription(Messages.getInternal("label.permission." + rbName + ".description", LocaleContextHolder.getLocale(), ""));
+                bean.setPath(entry.getKey());
+                bean.setDepth(splitPath.length - 1);
+                bean.setMappedPermissions(new TreeMap<String, PermissionBean>());
+                if (p.containsKey(bean.getParentPath())) {
+                    p.get(bean.getParentPath()).setHasChildren(true);
+                }
 
-                    p.put(entry.getKey(), bean);
+                p.put(entry.getKey(), bean);
 
-                    for (String s : entry.getValue()) {
-                        mappedPermissions.put(s, bean);
-                    }
+                for (String s : entry.getValue()) {
+                    createMappedPermission(s, bean, mappedPermissions);
                 }
             }
         }
+
+        // Create standard permissions
         for (JCRNodeWrapper permissionNode : allPermissions) {
             JCRNodeWrapper permissionGroup = getPermissionGroupNode(permissionNode);
             final String permissionPath = getPermissionPath(permissionNode);
 
             if (!mappedPermissions.containsKey(permissionPath) && mappedPermissions.containsKey(getPermissionPath(permissionNode.getParent()))) {
-                mappedPermissions.put(permissionPath, mappedPermissions.get(getPermissionPath(permissionNode.getParent())));
+                final PermissionBean bean = mappedPermissions.get(getPermissionPath(permissionNode.getParent()));
+                createMappedPermission(permissionPath, bean, mappedPermissions);
             }
 
             if (allGroups.containsKey(permissionGroup.getName()) && !mappedPermissions.containsKey(permissionPath)) {
@@ -371,6 +374,9 @@ public class RolesAndPermissionsHandler implements Serializable {
                 if (!p.containsKey(permissionPath) || permissionNode.getPath().startsWith("/permissions")) {
                     PermissionBean bean = new PermissionBean();
                     setPermissionBeanProperties(permissionNode, bean);
+                    if (p.containsKey(bean.getParentPath())) {
+                        p.get(bean.getParentPath()).setHasChildren(true);
+                    }
                     p.put(permissionPath, bean);
                     setPermissionFlags(permissionNode, p, bean, permIdsMap.get(scope), inheritedPermIdsMap.get(scope), p.get(bean.getParentPath()));
                 }
@@ -378,18 +384,58 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (mappedPermissions.containsKey(permissionPath)) {
                 PermissionBean bean = mappedPermissions.get(permissionPath);
 
-                bean.getMappedNames().add(permissionNode.getName());
-
                 Map<String, PermissionBean> p = permissions.get(scope).get(allGroups.get(bean.getPath().split("/")[2]));
                 setPermissionFlags(permissionNode, p, bean, permIdsMap.get(scope), inheritedPermIdsMap.get(scope), p.get(bean.getParentPath()));
             }
         }
+
+        // Auto expand permissions where mapped permissions are partially set
+        for (Map<String, Map<String, PermissionBean>> map : roleBean.getPermissions().values()) {
+            for (Map<String, PermissionBean> map2 : map.values()) {
+                final Collection<PermissionBean> values = new ArrayList<PermissionBean>(map2.values());
+                for (PermissionBean bean : values) {
+                    if (bean.getMappedPermissions() != null) {
+                        Boolean lastValue = null;
+                        for (PermissionBean value : bean.getMappedPermissions().values()) {
+                            if (lastValue == null) {
+                                lastValue = value.isSuperSet() || value.isSet();
+                            }
+                            if (!lastValue.equals(value.isSuperSet() || value.isSet())) {
+                                bean.setMappedPermissionsExpanded(true);
+                                bean.setSet(false);
+                                bean.setSuperSet(false);
+                                bean.setPartialSet(true);
+                                break;
+                            }
+                        }
+                        if (bean.isMappedPermissionsExpanded()) {
+                            for (PermissionBean mapped : bean.getMappedPermissions().values()) {
+                                map2.put(mapped.getPath(), mapped);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void createMappedPermission(String permissionPath, PermissionBean parent, Map<String, PermissionBean> mappedPermissions) throws RepositoryException {
+        PermissionBean mapped = new PermissionBean();
+        setPermissionBeanProperties(getSession().getNode(permissionPath), mapped);
+        mapped.setPath(parent.getPath() + "/" + mapped.getName());
+        mapped.setParentPath(parent.getPath());
+        mapped.setDepth(parent.getDepth() + 1);
+        parent.getMappedPermissions().put(permissionPath, mapped);
+        mappedPermissions.put(permissionPath, parent);
     }
 
     private void setPermissionFlags(JCRNodeWrapper permissionNode, Map<String, PermissionBean> permissions, PermissionBean bean, List<String> permIds, List<String> inheritedPermIds, PermissionBean parentBean) throws RepositoryException {
         if ((permIds != null && permIds.contains(permissionNode.getName()))
                 || (parentBean != null && parentBean.isSet())) {
             bean.setSet(true);
+            if (bean.getMappedPermissions() != null && bean.getMappedPermissions().containsKey(permissionNode.getPath())) {
+                bean.getMappedPermissions().get(permissionNode.getPath()).setSet(true);
+            }
             while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
                 parentBean.setPartialSet(true);
                 parentBean = permissions.get(parentBean.getParentPath());
@@ -399,6 +445,9 @@ public class RolesAndPermissionsHandler implements Serializable {
         if ((inheritedPermIds != null && inheritedPermIds.contains(permissionNode.getName()))
                 || (parentBean != null && parentBean.isSuperSet())) {
             bean.setSuperSet(true);
+            if (bean.getMappedPermissions() != null && bean.getMappedPermissions().containsKey(permissionNode.getPath())) {
+                bean.getMappedPermissions().get(permissionNode.getPath()).setSuperSet(true);
+            }
             while (parentBean != null && !parentBean.isSet() && !parentBean.isSuperSet()) {
                 parentBean.setPartialSet(true);
                 parentBean = permissions.get(parentBean.getParentPath());
@@ -418,7 +467,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         String path = permissionNode.getPath();
         if (path.startsWith("/modules/")) {
             String s = StringUtils.substringAfter(path, "/modules/");
-            return StringUtils.substringBefore(s,"/");
+            return StringUtils.substringBefore(s, "/");
         }
         return null;
     }
@@ -488,6 +537,11 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (permissionBean.isSet() != perms.contains(permissionBean.getPath())) {
                 roleBean.setDirty(true);
                 permissionBean.setSet(perms.contains(permissionBean.getPath()));
+                if (!permissionBean.isMappedPermissionsExpanded() && permissionBean.getMappedPermissions() != null) {
+                    for (PermissionBean mapped : permissionBean.getMappedPermissions().values()) {
+                        mapped.setSet(perms.contains(permissionBean.getPath()));
+                    }
+                }
             }
 
         }
@@ -497,6 +551,11 @@ public class RolesAndPermissionsHandler implements Serializable {
             if (permissionBean.isPartialSet() != perms.contains(permissionBean.getPath())) {
                 roleBean.setDirty(true);
                 permissionBean.setPartialSet(perms.contains(permissionBean.getPath()));
+                if (!permissionBean.isMappedPermissionsExpanded() && permissionBean.getMappedPermissions() != null) {
+                    for (PermissionBean mapped : permissionBean.getMappedPermissions().values()) {
+                        mapped.setPartialSet(perms.contains(permissionBean.getPath()));
+                    }
+                }
             }
         }
     }
@@ -534,9 +593,11 @@ public class RolesAndPermissionsHandler implements Serializable {
                 for (PermissionBean bean : map.values()) {
                     PermissionBean parentBean = map.get(bean.getParentPath());
                     if (bean.isSet() && (parentBean == null || !parentBean.isSet())) {
-                        if (bean.getMappedNames() != null) {
-                            for (String s : bean.getMappedNames()) {
-                                permissionValues.add(currentUserSession.getValueFactory().createValue(s, PropertyType.STRING));
+                        if (bean.getMappedPermissions() != null) {
+                            for (PermissionBean mapped : bean.getMappedPermissions().values()) {
+                                if (mapped.isSet()) {
+                                    permissionValues.add(currentUserSession.getValueFactory().createValue(mapped.getName(), PropertyType.STRING));
+                                }
                             }
                         } else {
                             permissionValues.add(currentUserSession.getValueFactory().createValue(bean.getName(), PropertyType.STRING));
@@ -634,6 +695,25 @@ public class RolesAndPermissionsHandler implements Serializable {
             roleBean.setDescription(description);
         }
         roleBean.setHidden(hidden != null && hidden);
+    }
+
+    public void expandMapped(String path) {
+        Map<String, PermissionBean> permissionBeans = roleBean.getPermissions().get(currentContext).get(currentGroup);
+        final PermissionBean permissionBean = permissionBeans.get(path);
+        if (permissionBean != null && !permissionBean.isPartialSet()) {
+            if (!permissionBean.isMappedPermissionsExpanded()) {
+                permissionBean.setMappedPermissionsExpanded(true);
+                for (PermissionBean mapped : permissionBean.getMappedPermissions().values()) {
+                    permissionBeans.put(mapped.getPath(), mapped);
+                }
+            } else {
+                permissionBean.setMappedPermissionsExpanded(false);
+                for (PermissionBean mapped : permissionBean.getMappedPermissions().values()) {
+                    permissionBeans.remove(mapped.getPath());
+                }
+            }
+
+        }
     }
 
     private String getMessage(String key) {

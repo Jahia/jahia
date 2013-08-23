@@ -108,11 +108,4 @@ public class RoleBean implements Serializable {
         this.permissions = permissions;
     }
 
-//    public Map<String, List<PermissionBean>> getExternalPermissions() {
-//        return externalPermissions;
-//    }
-//
-//    public void setExternalPermissions(Map<String, List<PermissionBean>> externalPermissions) {
-//        this.externalPermissions = externalPermissions;
-//    }
 }

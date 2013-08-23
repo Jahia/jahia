@@ -104,13 +104,6 @@
             }
         }
 
-        $("a.switchTab").click(function () {
-            var tab = $(this).attr('tab');
-            alert(tab);
-            $("#switchTabForm").submit();
-            return false;
-        });
-
         $('#addContextField').keypress(function(e) {
             // Enter pressed?
             if(e.which == 10 || e.which == 13) {
@@ -210,6 +203,7 @@
     </div>
 
     <input type="hidden" id="eventField" name="eventField" value="on"/>
+    <input type="hidden" id="permissionField" name="permission" />
     <select id="contextSelector" name="context" onchange="$('#eventField').attr('name','_eventId_switchContext');$('#form').submit()">
         <c:forEach items="${handler.roleBean.permissions}" var="permissionGroup">
             <option ${flowRequestContext.currentState.id eq 'viewRole' and handler.currentContext eq permissionGroup.key ? 'selected':''} value="${permissionGroup.key}">
@@ -283,6 +277,14 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </c:forEach>
                             ${permission.depth == 2 ? '<h3>' : '' }${permission.title} ${permission.depth == 2 ? '</h3>' : '' }
+
+                        <c:if test="${not empty permission.mappedPermissions and not permission.partialSet and not permission.hasChildren}">
+                            <a href="#" onclick="$('#permissionField').val('${permission.path}');$('#eventField').attr('name','_eventId_expandMappedPermissions');$('#form').submit()">
+                                <c:if test="${permission.mappedPermissionsExpanded}">-</c:if>
+                                <c:if test="${not permission.mappedPermissionsExpanded}">+</c:if>
+                            </a>
+                        </c:if>
+
                     </td>
                     <td>
                             ${permission.description}

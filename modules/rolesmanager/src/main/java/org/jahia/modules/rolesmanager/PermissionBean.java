@@ -1,7 +1,7 @@
 package org.jahia.modules.rolesmanager;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 public class PermissionBean implements Serializable, Comparable<PermissionBean> {
     private String uuid;
@@ -12,10 +12,12 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
     private String module;
     private String path;
     private String targetPath;
-    private List<String> mappedNames;
+    private Map<String, PermissionBean> mappedPermissions;
+    private boolean mappedPermissionsExpanded;
     private boolean partialSet;
     private boolean set;
     private boolean superSet;
+    private boolean hasChildren;
     private int depth;
     private String scope;
 
@@ -83,12 +85,20 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
         this.targetPath = targetPath;
     }
 
-    public List<String> getMappedNames() {
-        return mappedNames;
+    public Map<String, PermissionBean> getMappedPermissions() {
+        return mappedPermissions;
     }
 
-    public void setMappedNames(List<String> mappedNames) {
-        this.mappedNames = mappedNames;
+    public void setMappedPermissions(Map<String, PermissionBean> mappedPermissions) {
+        this.mappedPermissions = mappedPermissions;
+    }
+
+    public boolean isMappedPermissionsExpanded() {
+        return mappedPermissionsExpanded;
+    }
+
+    public void setMappedPermissionsExpanded(boolean mappedPermissionsExpanded) {
+        this.mappedPermissionsExpanded = mappedPermissionsExpanded;
     }
 
     public boolean isPartialSet() {
@@ -109,6 +119,14 @@ public class PermissionBean implements Serializable, Comparable<PermissionBean> 
 
     public boolean isSuperSet() {
         return superSet;
+    }
+
+    public boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
     }
 
     public void setSuperSet(boolean superSet) {

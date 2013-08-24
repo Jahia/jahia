@@ -190,7 +190,9 @@
 						ref="org.jahia.services.seo.jcr.VanityUrlService" />
                     <property name="urlResolverFactory" ref="urlResolverFactory" />
 				</bean>
-                <bean class="org.jahia.services.render.filter.SiteParameterAdder" />
+                <bean class="org.jahia.services.render.filter.SiteParameterAdder">
+                    <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService" />
+                </bean>
 
 			</list>
 		</property>

@@ -41,13 +41,12 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +105,7 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
                                 } else {
                                     // multiple vanity URLs exist for the same URL, we need to understand if we need to
                                     // generate a site parameter or not.
-                                    if (JahiaSitesBaseService.getInstance().getDefaultSite().getSiteKey().equals(resolvedVanityUrl.getSite())) {
+                                    if (JahiaSitesService.getInstance().getDefaultSite().getSiteKey().equals(resolvedVanityUrl.getSite())) {
                                         return value;
                                     }
                                 }

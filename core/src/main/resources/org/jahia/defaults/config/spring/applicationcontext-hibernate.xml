@@ -52,10 +52,4 @@
         </property>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory">
-            <ref local="sessionFactory"/>
-        </property>
-        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}"/>
-    </bean>
 </beans>

@@ -17,6 +17,5 @@ jahia.jackrabbit.schema = mysql
 jahia.database.schemascriptdir = sql/schema/mysql
 jahia.database.transactions = false
 jahia.database.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDialect
-jahia.nested_transaction_allowed = true
 
 jahia.jboss.datasource.typeMapping = mySQL

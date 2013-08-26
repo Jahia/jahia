@@ -86,6 +86,9 @@
             <evaluate expression="handler.expandMapped(requestParameters.permission)" />
         </transition>
 
+        <transition on="addRole" to="viewRole">
+            <evaluate expression="handler.addRole(requestParameters.newRole, requestParameters.uuid, requestParameters.roleType, messageContext)" />
+        </transition>
     </view-state>
 
     <view-state id="viewRoleDetails">

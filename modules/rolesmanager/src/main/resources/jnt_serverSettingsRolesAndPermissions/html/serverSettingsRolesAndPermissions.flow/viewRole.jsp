@@ -127,6 +127,7 @@
 <form id="form" action="${flowExecutionUrl}" method="post">
     <div class="box-1">
     <fieldset>
+        <h2>${handler.roleBean.name}</h2>
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span4">
@@ -159,6 +160,18 @@
             <i class="icon-ok icon-white"></i>
             &nbsp;<fmt:message key="label.cancel"/>
         </button>
+
+    <div class="box-1">
+        <fieldset>
+            <input type="hidden"name="roleType" value="${handler.roleBean.roleType.name}" />
+            <input type="text" name="newRole"/>
+            <input type="hidden" name="uuid" value="${handler.roleBean.uuid}" />
+            <button class="btn btn-primary" type="submit" name="_eventId_addRole">
+                <i class="icon-plus  icon-white"></i>
+                <fmt:message key="rolesmanager.rolesAndPermissions.subRole.add" />
+            </button>
+        </fieldset>
+    </div>
 
     <p>
 

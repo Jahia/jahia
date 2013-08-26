@@ -40,20 +40,31 @@
 
 package org.jahia.bundles.url.jahiawar.internal;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.osgi.parsers.Parsers;
 import org.jahia.utils.osgi.parsers.ParsingContext;
+import org.jahia.utils.osgi.parsers.TldXmlFileParser;
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.input.sax.XMLReaders;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.ops4j.io.StreamUtils;
 import org.ops4j.lang.NullArgumentException;
 import org.ops4j.net.URLUtils;
 import org.ops4j.pax.swissbox.bnd.BndUtils;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -113,6 +124,9 @@ public class Connection extends URLConnection {
 
     public InputStream getInputStream()
             throws IOException {
+        logger.info("Started tranforming WAR module {}", parser.getWrappedJarURL());
+        long timer = System.currentTimeMillis();
+        
         connect();
 
         final JarInputStream jarInputStream = new JarInputStream(URLUtils.prepareInputStream(
@@ -279,6 +293,18 @@ public class Connection extends URLConnection {
             }
         }
 
+        if (parsingContext.getUnresolvedTaglibUris().size() > 0) {
+            logger.info("Started resolving tag libraries for {}: {}", parser.getWrappedJarURL(), parsingContext.getUnresolvedTaglibUris());
+            long timer2 = System.currentTimeMillis();
+            
+            Set<String> uris = new HashSet<String>();
+            for (Set<String> u : parsingContext.getUnresolvedTaglibUris().values()) {
+                uris.addAll(u);
+            }
+            resolveTaglibs(depends, parsingContext, uris);
+            
+            logger.info("Taglib resolution took {} ms", System.currentTimeMillis() - timer2);
+        }
         parsingContext.postProcess();
         if (parsingContext.getUnresolvedTaglibUris().size() > 0 ) {
             for (Map.Entry<String,Set<String>> unresolvedUrisForJsp : parsingContext.getUnresolvedTaglibUris().entrySet()) {
@@ -429,9 +455,80 @@ public class Connection extends URLConnection {
         byteArrayInputStream = null;
 
         ByteArrayInputStream resultInputStream = new ByteArrayInputStream(bndByteArrayOutputStream.toByteArray());
+        
+        logger.info("Transformation took {} ms", System.currentTimeMillis() - timer);
+        
         return resultInputStream;
     }
 
+    private void resolveTaglibs(String depends, ParsingContext parsingContext, Set<String> unresolvedTaglibUris) {
+        try {
+            List<Resource> allTlds = new LinkedList<Resource>();
+            // first detect available TLDs in Web application class loader
+            Resource[] tldResources = SpringContextSingleton.getInstance().getResources("classpath*:/META-INF/*.tld",
+                    false);
+            if (tldResources != null) {
+                allTlds.addAll(Arrays.asList(tldResources));
+            }
+
+            // check dependencies
+            if (StringUtils.isNotEmpty(depends)) {
+                // we still have unresolved taglibs -> check dependencies
+                JahiaTemplateManagerService templateService = ServicesRegistry.getInstance()
+                        .getJahiaTemplateManagerService();
+                for (String dependency : StringUtils.split(depends, ", ")) {
+                    JahiaTemplatesPackage pkg = templateService.getTemplatePackageByFileName(dependency);
+                    if (pkg == null) {
+                        pkg = templateService.getTemplatePackage(dependency);
+                    }
+                    Bundle b = pkg != null ? pkg.getBundle() : null;
+                    if (b != null) {
+                        Enumeration<URL> tldEntries = b.findEntries("/META-INF", "*.tld", false);
+                        if (tldEntries != null) {
+                            while (tldEntries.hasMoreElements()) {
+                                URL url = (URL) tldEntries.nextElement();
+                                allTlds.add(new UrlResource(url));
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (Resource tld : allTlds) {
+                Document doc = readDocument(tld);
+                String taglibUri = TldXmlFileParser.getTaglibUri(doc.getRootElement());
+                if (StringUtils.isEmpty(taglibUri) || !unresolvedTaglibUris.contains(taglibUri)) {
+                    // skip
+                    continue;
+                }
+                logger.info("Analysing taglib {} from URI {}", taglibUri, tld);
+                TldXmlFileParser parser = new TldXmlFileParser();
+                parser.setLogger(logger);
+                parser.parse(tld.getFilename(), doc.getRootElement(), parsingContext, true);
+                if (parsingContext.getUnresolvedTaglibUris().size() == 0) {
+                    // we have resolved everything -> stop
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private Document readDocument(Resource tld) throws JDOMException, IOException {
+        SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
+        saxBuilder.setFeature("http://xml.org/sax/features/validation", false);
+        saxBuilder.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        saxBuilder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        InputStream inputStream = tld.getInputStream();
+        try {
+            return saxBuilder.build(inputStream);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
+    
     private InputStream parseFile(InputStream fileInputStream, String fileName, ParsingContext parsingContext) throws IOException {
         // let's run all the parsers now.
         ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();

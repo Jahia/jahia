@@ -608,7 +608,7 @@ public class Activator implements BundleActivator {
                 bundleHttpServiceTrackers.remove(bundle).close();
             }
             ServiceTracker bundleServiceTracker = new BundleHttpResourcesTracker(bundle);
-            bundleServiceTracker.open();
+            bundleServiceTracker.open(true);
             bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
         } else {
             logger.debug("No HTTP resources found for bundle {}", displayName);

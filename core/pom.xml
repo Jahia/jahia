@@ -984,6 +984,10 @@
                 </exclusion>
                 <exclusion>
                     <groupId>juel</groupId>
+                    <artifactId>juel-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>juel</groupId>
                     <artifactId>juel-impl</artifactId>
                 </exclusion>
                 <exclusion>

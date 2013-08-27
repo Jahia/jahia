@@ -77,8 +77,10 @@
         $('#cbSelectedAllMembers').click(function() {
             var state=this.checked;
             $.each($(':checkbox[name="selectedMembers"]'), function() {
-                this.checked=state;
-                $(this).change()
+                if (this.checked != state) {
+                    this.checked = state;
+                    $(this).change()
+                }
             });
         });
 

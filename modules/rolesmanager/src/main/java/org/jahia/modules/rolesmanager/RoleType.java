@@ -7,7 +7,8 @@ import java.util.Set;
 
 public class RoleType implements Serializable {
     private String name;
-    private String nodeType;
+    private List<String> defaultNodeTypes;
+    private List<String> availableNodeTypes;
     private boolean isPrivileged;
 
     private Set<String> scopes;
@@ -27,20 +28,28 @@ public class RoleType implements Serializable {
         this.name = name;
     }
 
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
-
     public boolean isPrivileged() {
         return isPrivileged;
     }
 
     public void setPrivileged(boolean privileged) {
         isPrivileged = privileged;
+    }
+
+    public List<String> getDefaultNodeTypes() {
+        return defaultNodeTypes;
+    }
+
+    public void setDefaultNodeTypes(List<String> defaultNodeTypes) {
+        this.defaultNodeTypes = defaultNodeTypes;
+    }
+
+    public List<String> getAvailableNodeTypes() {
+        return availableNodeTypes;
+    }
+
+    public void setAvailableNodeTypes(List<String> availableNodeTypes) {
+        this.availableNodeTypes = availableNodeTypes;
     }
 
     public Set<String> getScopes() {

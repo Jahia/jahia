@@ -141,6 +141,19 @@
                     <label for="description"><fmt:message key="label.description"/></label>
                     <textarea id="description" name="description"  onchange="$('.submitButton').addClass('btn-danger')">${handler.roleBean.description}</textarea>
                 </div>
+
+
+                <c:if test="${not empty handler.roleBean.roleType.availableNodeTypes}">
+                <div class="span4">
+                    <label for="nodeTypes"><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes"/></label>
+                    <select multiple="true" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger')">
+                        <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
+                            <option value="${nodeType.name}" ${nodeType.set ? 'selected="true"' : ''}>${nodeType.displayName}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                </c:if>
+
             </div>
         </div>
     </fieldset>

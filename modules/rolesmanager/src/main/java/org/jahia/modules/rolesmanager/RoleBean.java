@@ -1,6 +1,8 @@
 package org.jahia.modules.rolesmanager;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class RoleBean implements Serializable {
@@ -18,6 +20,8 @@ public class RoleBean implements Serializable {
     private boolean hidden = false;
 
     private RoleType roleType;
+
+    private Collection<NodeType> nodeTypes;
 
     private int depth;
 
@@ -82,6 +86,14 @@ public class RoleBean implements Serializable {
 
     public void setRoleType(RoleType scope) {
         this.roleType = scope;
+    }
+
+    public Collection<NodeType> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(Collection<NodeType> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     public int getDepth() {

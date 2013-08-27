@@ -8,6 +8,8 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -159,6 +161,33 @@ public class RolesAndPermissionsHandler implements Serializable {
             for (String tab : tabs) {
                 addPermissionsForScope(roleBean, tab, permIdsMap, inheritedPermIdsMap);
             }
+
+            if (roleType.getAvailableNodeTypes() != null) {
+                List<String> nodeTypesOnRole = new ArrayList<String>();
+                if (role.hasProperty("j:nodeTypes")) {
+                    for (Value value : role.getProperty("j:nodeTypes").getValues()) {
+                        nodeTypesOnRole.add(value.getString());
+                    }
+                }
+
+
+                SortedSet<NodeType> nodeTypes = new TreeSet<NodeType>();
+                for (String s : roleType.getAvailableNodeTypes()) {
+                    boolean includeSubtypes = false;
+                    if (s.endsWith("/*")) {
+                        s = StringUtils.substringBeforeLast(s,"/*");
+                        includeSubtypes = true;
+                    }
+                    ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(s);
+                    nodeTypes.add(new NodeType(t.getName(),t.getLabel(LocaleContextHolder.getLocale()),nodeTypesOnRole.contains(t.getName())));
+                    if (includeSubtypes) {
+                        for (ExtendedNodeType sub : t.getSubtypesAsList()) {
+                            nodeTypes.add(new NodeType(sub.getName(),sub.getLabel(LocaleContextHolder.getLocale()),nodeTypesOnRole.contains(sub.getName())));
+                        }
+                    }
+                }
+                roleBean.setNodeTypes(nodeTypes);
+            }
         }
 
         return roleBean;
@@ -251,8 +280,12 @@ public class RolesAndPermissionsHandler implements Serializable {
         RoleType roleType = roleTypes.get(roleTypeString);
         role.setProperty("j:roleGroup", roleType.getName());
         role.setProperty("j:privilegedAccess", roleType.isPrivileged());
-        if (roleType.getNodeType() != null) {
-            role.setProperty("j:nodeTypes", new Value[]{currentUserSession.getValueFactory().createValue(roleType.getNodeType())});
+        if (roleType.getDefaultNodeTypes() != null) {
+            List<Value> values = new ArrayList<Value>();
+            for (String nodeType : roleType.getDefaultNodeTypes()) {
+                values.add(currentUserSession.getValueFactory().createValue(nodeType));
+            }
+            role.setProperty("j:nodeTypes", values.toArray(new Value[values.size()]));
         }
         role.setProperty("j:roleGroup", roleType.getName());
 
@@ -292,7 +325,9 @@ public class RolesAndPermissionsHandler implements Serializable {
         final Map<String, List<String>> permissionsGroupsForRoleType = roleBean.getRoleType().getPermissionsGroups();
 
         if (scope.equals("current")) {
-            type = roleBean.getRoleType().getNodeType();
+            if (roleBean.getRoleType().getDefaultNodeTypes() != null && roleBean.getRoleType().getDefaultNodeTypes().size() == 1) {
+                type = roleBean.getRoleType().getDefaultNodeTypes().get(0);
+            }
         } else {
             if (scope.equals("currentSite")) {
                 type = "jnt:virtualsite";
@@ -641,6 +676,15 @@ public class RolesAndPermissionsHandler implements Serializable {
         role.setProperty("jcr:title", roleBean.getTitle());
         role.setProperty("jcr:description", roleBean.getDescription());
         role.setProperty("j:hidden", roleBean.isHidden());
+        if (roleBean.getNodeTypes() != null) {
+            List<Value> values = new ArrayList<Value>();
+            for (NodeType nodeType : roleBean.getNodeTypes()) {
+                if (nodeType.isSet()) {
+                    values.add(currentUserSession.getValueFactory().createValue(nodeType.getName()));
+                }
+            }
+            role.setProperty("j:nodeTypes", values.toArray(new Value[values.size()]));
+        }
         roleBean.setDirty(false);
         currentUserSession.save();
     }
@@ -685,7 +729,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         return allPermissions;
     }
 
-    public void storeDetails(String title, String description, Boolean hidden) {
+    public void storeDetails(String title, String description, Boolean hidden, String[] nodeTypes) {
         if (!title.equals(roleBean.getTitle())) {
             roleBean.setDirty(true);
             roleBean.setTitle(title);
@@ -695,6 +739,19 @@ public class RolesAndPermissionsHandler implements Serializable {
             roleBean.setDescription(description);
         }
         roleBean.setHidden(hidden != null && hidden);
+
+        if (roleBean.getNodeTypes() != null) {
+            if (nodeTypes != null) {
+                List<String> values = Arrays.asList(nodeTypes);
+                for (NodeType nodeType : roleBean.getNodeTypes()) {
+                    nodeType.setSet(values.contains(nodeType.getName()));
+                }
+            } else {
+                for (NodeType nodeType : roleBean.getNodeTypes()) {
+                    nodeType.setSet(false);
+                }
+            }
+        }
     }
 
     public void expandMapped(String path) {

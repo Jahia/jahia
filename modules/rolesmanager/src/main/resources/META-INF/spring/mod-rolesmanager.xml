@@ -10,6 +10,13 @@
             <bean class="org.jahia.modules.rolesmanager.RoleType">
                 <property name="name" value="live-role" />
                 <property name="privileged" value="false"/>
+                <property name="availableNodeTypes" >
+                    <list>
+                        <value>jnt:content/*</value>
+                        <value>jnt:virtualsite</value>
+                        <value>rep:root</value>
+                    </list>
+                </property>
                 <property name="scopes">
                     <set>
                         <value>current</value>
@@ -30,6 +37,13 @@
             <bean class="org.jahia.modules.rolesmanager.RoleType">
                 <property name="name" value="edit-role" />
                 <property name="privileged" value="true"/>
+                <property name="availableNodeTypes" >
+                    <list>
+                        <value>jnt:content/*</value>
+                        <value>jnt:virtualsite</value>
+                        <value>rep:root</value>
+                    </list>
+                </property>
                 <property name="scopes">
                     <set>
                         <value>current</value>
@@ -50,7 +64,11 @@
             <bean class="org.jahia.modules.rolesmanager.RoleType">
                 <property name="name" value="site-role" />
                 <property name="privileged" value="true"/>
-                <property name="nodeType" value="jnt:virtualsite"/>
+                <property name="defaultNodeTypes" >
+                    <list>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
                 <property name="scopes">
                     <set>
                         <value>current</value>
@@ -73,7 +91,11 @@
             <bean class="org.jahia.modules.rolesmanager.RoleType">
                 <property name="name" value="server-role" />
                 <property name="privileged" value="true"/>
-                <property name="nodeType" value="rep:root"/>
+                <property name="defaultNodeTypes" >
+                    <list>
+                        <value>rep:root</value>
+                    </list>
+                </property>
                 <property name="scopes">
                     <set>
                         <value>current</value>

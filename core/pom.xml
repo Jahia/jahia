@@ -182,14 +182,15 @@
 
         <!--javax dependencies-->
         <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -206,7 +207,6 @@
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
         </dependency>
-        <!-- Downloaded from http://java.sun.com/javaee/javaserverfaces/ -->
 
         <dependency>
             <groupId>javax.portlet</groupId>
@@ -735,6 +735,10 @@
                     <groupId>javax.xml.stream</groupId>
                     <artifactId>stax-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1033,12 +1037,6 @@
                     <groupId>junit</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-j2ee</artifactId>
-            <version>4.2.3.GA</version>
         </dependency>
 
         <dependency>

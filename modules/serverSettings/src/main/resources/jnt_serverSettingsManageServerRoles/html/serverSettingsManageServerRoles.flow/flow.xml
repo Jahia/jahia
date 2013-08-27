@@ -5,15 +5,17 @@
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
-    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ServerRolesHandler"/>
+    <var name="flowHandler" class="org.jahia.services.roles.RolesHandler"/>
 
     <on-start>
         <set name="flowScope.serverSettingsProperties" value="serverSettingsProperties" type="java.util.Map" />
+        <evaluate expression="flowHandler.setRoleGroup('server-role')" />
+        <evaluate expression="flowHandler.setNodePath('/')" />
     </on-start>
 
     <view-state id="view">
         <on-render>
-            <evaluate expression="flowHandler.serverRoles" result="requestScope.serverRoles"/>
+            <evaluate expression="flowHandler.roles" result="requestScope.roles"/>
             <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.memberSearchCriteria"/>
         </on-render>
 
@@ -34,6 +36,7 @@
             <evaluate expression="flowHandler.searchNewMembers(memberSearchCriteria)" result="requestScope.principals"/>
             <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
             <evaluate expression="flowHandler.roleMembers" result="requestScope.members"/>
+            <evaluate expression="flowHandler.role" result="requestScope.role"/>
         </on-render>
 
         <transition on="rolesList" to="view"/>

@@ -31,7 +31,7 @@
     <input id="role" type="hidden" name="role" />
     <input id="principal" type="hidden" name="principal" />
 
-    <c:forEach items="${serverRoles}" var="entry" >
+    <c:forEach items="${roles}" var="entry" >
 
         <div class="box-1">
             <fieldset>

@@ -74,8 +74,10 @@
         $('#cbSelectedAllMembers').click(function() {
             var state=this.checked;
             $.each($(':checkbox[name="selectedMembers"]'), function() {
-                this.checked=state;
-                $(this).change()
+                if (this.checked != state) {
+                    this.checked = state;
+                    $(this).change()
+                }
             });
         });
 
@@ -91,6 +93,7 @@
 <div>
     <form action="${flowExecutionUrl}" method="post" style="display: inline;">
         <div>
+            <h2>${role}</h2>
             <button class="btn" type="submit" name="_eventId_rolesList">
                 <i class="icon-arrow-left"></i>
                 &nbsp;<fmt:message key="siteSettings.label.backToRoles"/>

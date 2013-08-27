@@ -756,10 +756,10 @@ public class ContentManagerHelper {
                     dependencies.put(nodeName, d);
                 }
             }
-            acl.setAvailablePermissions(availablePermissions);
-            acl.setPermissionLabels(labels);
-            acl.setPermissionTooltips(tooltips);
-            acl.setPermissionsDependencies(dependencies);
+            acl.setAvailableRoles(availablePermissions);
+            acl.setRolesLabels(labels);
+            acl.setRolesTooltips(tooltips);
+            acl.setRoleDependencies(dependencies);
 
             List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
             Map<String, GWTJahiaNodeACE> map = new HashMap<String, GWTJahiaNodeACE>();
@@ -817,8 +817,8 @@ public class ContentManagerHelper {
                         !CollectionUtils.intersection(allAvailablePermissions, perms.keySet()).isEmpty()) {
                     aces.add(ace);
                     ace.setInheritedFrom(inheritedFrom);
-                    ace.setInheritedPermissions(inheritedPerms);
-                    ace.setPermissions(perms);
+                    ace.setInheritedRoles(inheritedPerms);
+                    ace.setRoles(perms);
                     ace.setInherited(perms.isEmpty());
                 }
             }
@@ -857,7 +857,7 @@ public class ContentManagerHelper {
                                 ace.setPrincipalDisplayName(userName);
                             }
                         }
-                        ace.setPermissions(new HashMap<String, Boolean>());
+                        ace.setRoles(new HashMap<String, Boolean>());
                     }
                     Map<String, Boolean> inheritedPerms = new HashMap<String, Boolean>();
 
@@ -876,7 +876,7 @@ public class ContentManagerHelper {
                     }
 
                     ace.setInheritedFrom(inheritedFrom);
-                    ace.setInheritedPermissions(inheritedPerms);
+                    ace.setInheritedRoles(inheritedPerms);
                 }
             }
             acl.setAce(aces);
@@ -907,22 +907,27 @@ public class ContentManagerHelper {
         try {
             Map<String, GWTJahiaNodeACE> oldPrincipals = new HashMap<String, GWTJahiaNodeACE>();
             for (GWTJahiaNodeACE ace : oldAcl.getAce()) {
-                if (!ace.getPermissions().isEmpty()) {
+                if (!ace.getRoles().isEmpty()) {
                     oldPrincipals.put(ace.getPrincipalType() + ":" + ace.getPrincipal(), ace);
                 }
             }
             for (GWTJahiaNodeACE ace : acl.getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-                if (!ace.getPermissions().isEmpty()) {
+                if (!ace.getRoles().isEmpty()) {
                     Map<String, String> perms = new HashMap<String, String>();
                     GWTJahiaNodeACE oldAce = oldPrincipals.remove(user);
                     if (!ace.equals(oldAce)) {
-                        for (Map.Entry<String, Boolean> entry : ace.getPermissions().entrySet()) {
-                            if (entry.getValue().equals(Boolean.TRUE) && (!Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                        for (Map.Entry<String, Boolean> entry : ace.getRoles().entrySet()) {
+                            if (entry.getValue().equals(Boolean.TRUE) && (!Boolean.TRUE.equals(ace.getInheritedRoles().get(entry.getKey())) || acl.isBreakAllInheritance())) {
                                 perms.put(entry.getKey(), "GRANT");
-                            } else if (entry.getValue().equals(Boolean.FALSE) && (Boolean.TRUE.equals(ace.getInheritedPermissions().get(entry.getKey())) || acl.isBreakAllInheritance())) {
+                            } else if (entry.getValue().equals(Boolean.FALSE) && (Boolean.TRUE.equals(ace.getInheritedRoles().get(entry.getKey())) || acl.isBreakAllInheritance())) {
                                 perms.put(entry.getKey(), "DENY");
                             } else {
+                                perms.put(entry.getKey(), "REMOVE");
+                            }
+                        }
+                        for (Map.Entry<String, Boolean> entry : ace.getInheritedRoles().entrySet()) {
+                            if (!entry.getValue() && !perms.containsKey(entry.getKey())) {
                                 perms.put(entry.getKey(), "REMOVE");
                             }
                         }

@@ -58,8 +58,8 @@ public class GWTJahiaNodeACE implements Serializable {
     private String principalKey;
     private boolean isInherited;
     private String inheritedFrom;
-    private Map<String, Boolean> permissions;
-    private Map<String, Boolean> inheritedPermissions;
+    private Map<String, Boolean> roles;
+    private Map<String, Boolean> inheritedRoles;
     private boolean hidden = false;
     private String principalDisplayName;
 
@@ -107,20 +107,20 @@ public class GWTJahiaNodeACE implements Serializable {
         this.inheritedFrom = inheritedFrom;
     }
 
-    public Map<String, Boolean> getPermissions() {
-        return permissions;
+    public Map<String, Boolean> getRoles() {
+        return roles;
     }
 
-    public void setPermissions(Map<String, Boolean> permissions) {
-        this.permissions = permissions;
+    public void setRoles(Map<String, Boolean> roles) {
+        this.roles = roles;
     }
 
-    public Map<String, Boolean> getInheritedPermissions() {
-        return inheritedPermissions;
+    public Map<String, Boolean> getInheritedRoles() {
+        return inheritedRoles;
     }
 
-    public void setInheritedPermissions(Map<String, Boolean> inheritedPermissions) {
-        this.inheritedPermissions = inheritedPermissions;
+    public void setInheritedRoles(Map<String, Boolean> inheritedRoles) {
+        this.inheritedRoles = inheritedRoles;
     }
 
     public boolean isHidden() {
@@ -149,16 +149,16 @@ public class GWTJahiaNodeACE implements Serializable {
         clone.setInheritedFrom(inheritedFrom);
 
         Map<String, Boolean> permsClone = new HashMap<String, Boolean>();
-        for (String s : permissions.keySet()) {
-            permsClone.put(s, permissions.get(s));
+        for (String s : roles.keySet()) {
+            permsClone.put(s, roles.get(s));
         }
-        clone.setPermissions(permsClone);
+        clone.setRoles(permsClone);
 
         permsClone = new HashMap<String, Boolean>();
-        for (String s : inheritedPermissions.keySet()) {
-            permsClone.put(s, inheritedPermissions.get(s));
+        for (String s : inheritedRoles.keySet()) {
+            permsClone.put(s, inheritedRoles.get(s));
         }
-        clone.setInheritedPermissions(permsClone);
+        clone.setInheritedRoles(permsClone);
 
         clone.setHidden(hidden);
         return clone;
@@ -176,9 +176,9 @@ public class GWTJahiaNodeACE implements Serializable {
         if (principalType != that.principalType) return false;
         if (inheritedFrom != null ? !inheritedFrom.equals(that.inheritedFrom) : that.inheritedFrom != null)
             return false;
-        if (inheritedPermissions != null ? !inheritedPermissions.equals(that.inheritedPermissions) : that.inheritedPermissions != null)
+        if (inheritedRoles != null ? !inheritedRoles.equals(that.inheritedRoles) : that.inheritedRoles != null)
             return false;
-        if (permissions != null ? !permissions.equals(that.permissions) : that.permissions != null) return false;
+        if (roles != null ? !roles.equals(that.roles) : that.roles != null) return false;
         if (principal != null ? !principal.equals(that.principal) : that.principal != null) return false;
         if (principalKey != null ? !principalKey.equals(that.principalKey) : that.principalKey != null) return false;
 
@@ -192,8 +192,8 @@ public class GWTJahiaNodeACE implements Serializable {
         result = 31 * result + (principalKey != null ? principalKey.hashCode() : 0);
         result = 31 * result + (isInherited ? 1 : 0);
         result = 31 * result + (inheritedFrom != null ? inheritedFrom.hashCode() : 0);
-        result = 31 * result + (permissions != null ? permissions.hashCode() : 0);
-        result = 31 * result + (inheritedPermissions != null ? inheritedPermissions.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        result = 31 * result + (inheritedRoles != null ? inheritedRoles.hashCode() : 0);
         result = 31 * result + (hidden ? 1 : 0);
         return result;
     }

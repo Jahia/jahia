@@ -96,8 +96,6 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import javax.jcr.security.AccessControlException;
-import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
@@ -1817,20 +1815,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             final Set<String> allReadUsers = new HashSet<String>();  // All users having read rights
             for (GWTJahiaNodeACE ace : nodeAcl.getAce()) {
-                if ((ace.getPermissions().containsKey("jcr:read_live") &&
-                        !Boolean.FALSE.equals(ace.getPermissions().get("jcr:read_live"))) ||
-                        (ace.getInheritedPermissions().containsKey("jcr:read_live") &&
-                                !Boolean.FALSE.equals(ace.getInheritedPermissions().get("jcr:read_live")))) {
+                if ((ace.getRoles().containsKey("jcr:read_live") &&
+                        !Boolean.FALSE.equals(ace.getRoles().get("jcr:read_live"))) ||
+                        (ace.getInheritedRoles().containsKey("jcr:read_live") &&
+                                !Boolean.FALSE.equals(ace.getInheritedRoles().get("jcr:read_live")))) {
                     allReadUsers.add(ace.getPrincipalType() + ":" + ace.getPrincipal());
                 }
             }
 
             final Set<String> allDeniedUsers = new HashSet<String>();  // All users having read rights
             for (GWTJahiaNodeACE ace : referenceAcl.getAce()) {
-                if ((ace.getPermissions().containsKey("jcr:read_live") &&
-                        !Boolean.TRUE.equals(ace.getPermissions().get("jcr:read_live"))) ||
-                        (ace.getInheritedPermissions().containsKey("jcr:read_live") &&
-                                !Boolean.TRUE.equals(ace.getInheritedPermissions().get("jcr:read_live")))) {
+                if ((ace.getRoles().containsKey("jcr:read_live") &&
+                        !Boolean.TRUE.equals(ace.getRoles().get("jcr:read_live"))) ||
+                        (ace.getInheritedRoles().containsKey("jcr:read_live") &&
+                                !Boolean.TRUE.equals(ace.getInheritedRoles().get("jcr:read_live")))) {
                     allDeniedUsers.add(ace.getPrincipalType() + ":" + ace.getPrincipal());
                 }
             }

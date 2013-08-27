@@ -226,7 +226,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         NodeIterator aces = acl.getNodes();
                         while (aces.hasNext()) {
                             Node ace = aces.nextNode();
-                            if (ace.isNodeType("jnt:ace")) {
+                            if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
                                 String principal = ace.getProperty("j:principal").getString();
                                 String type = ace.getProperty("j:aceType").getString();
                                 if (!ace.hasProperty(Constants.J_ROLES)) {
@@ -498,11 +498,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         Node aced = null;
         while (ni.hasNext()) {
             Node ace = ni.nextNode();
-            if (ace.getProperty("j:principal").getString().equals(principalKey)) {
-                if (ace.getProperty("j:aceType").getString().equals("GRANT")) {
-                    aceg = ace;
-                } else {
-                    aced = ace;
+            if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
+                if (ace.getProperty("j:principal").getString().equals(principalKey)) {
+                    if (ace.getProperty("j:aceType").getString().equals("GRANT")) {
+                        aceg = ace;
+                    } else {
+                        aced = ace;
+                    }
                 }
             }
         }
@@ -566,8 +568,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         NodeIterator ni = acl.getNodes();
         while (ni.hasNext()) {
             Node ace = ni.nextNode();
-            if (ace.getProperty("j:principal").getString().equals(principalKey)) {
-                ace.remove();
+            if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
+                if (ace.getProperty("j:principal").getString().equals(principalKey)) {
+                    ace.remove();
+                }
             }
         }
         return true;
@@ -578,9 +582,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean revokeAllRoles() throws RepositoryException {
         if (objectNode.hasNode("j:acl")) {
-            objectNode.getNode("j:acl").remove();
-            if(objectNode.isNodeType("jmix:accessControlled"))
-                objectNode.removeMixin("jmix:accessControlled");
+            Node acl = objectNode.getNode("j:acl");
+            NodeIterator ni = acl.getNodes();
+            while (ni.hasNext()) {
+                Node ace = ni.nextNode();
+                if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
+                    ace.remove();
+                }
+            }
+            if (!acl.hasNodes()) {
+                acl.remove();
+                if(objectNode.isNodeType("jmix:accessControlled")) {
+                    objectNode.removeMixin("jmix:accessControlled");
+                }
+            }
             return true;
         }
         return false;

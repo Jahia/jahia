@@ -51,10 +51,10 @@ import java.util.Map;
  */
 public class GWTJahiaNodeACL implements Serializable {
     private List<GWTJahiaNodeACE> ace;
-    private Map<String,List<String>> availablePermissions;
-    private Map<String,String> permissionLabels;
-    private Map<String,String> permissionTooltips;
-    private Map<String,List<String>> permissionsDependencies;
+    private Map<String,List<String>> availableRoles;
+    private Map<String,String> rolesLabels;
+    private Map<String,String> rolesTooltips;
+    private Map<String,List<String>> roleDependencies;
     private boolean breakAllInheritance = false;
     public GWTJahiaNodeACL() {
     }
@@ -71,32 +71,32 @@ public class GWTJahiaNodeACL implements Serializable {
         this.ace = ace;
     }
 
-    public Map<String,List<String>> getAvailablePermissions() {
-        return availablePermissions;
+    public Map<String,List<String>> getAvailableRoles() {
+        return availableRoles;
     }
 
-    public void setAvailablePermissions(Map<String,List<String>> availablePermissions) {
-        this.availablePermissions = availablePermissions;
+    public void setAvailableRoles(Map<String, List<String>> availableRoles) {
+        this.availableRoles = availableRoles;
     }
 
-    public Map<String, String> getPermissionLabels() {
-        return permissionLabels;
+    public Map<String, String> getRolesLabels() {
+        return rolesLabels;
     }
 
-    public void setPermissionLabels(Map<String, String> permissionLabels) {
-        this.permissionLabels = permissionLabels;
+    public void setRolesLabels(Map<String, String> rolesLabels) {
+        this.rolesLabels = rolesLabels;
     }
 
-    public void setPermissionTooltips(Map<String, String> permissionTooltips) {
-        this.permissionTooltips = permissionTooltips;
+    public void setRolesTooltips(Map<String, String> rolesTooltips) {
+        this.rolesTooltips = rolesTooltips;
     }
 
-    public Map<String,List<String>> getPermissionsDependencies() {
-        return permissionsDependencies;
+    public Map<String,List<String>> getRoleDependencies() {
+        return roleDependencies;
     }
 
-    public void setPermissionsDependencies(Map<String, List<String>> permissionsDependencies) {
-        this.permissionsDependencies = permissionsDependencies;
+    public void setRoleDependencies(Map<String, List<String>> roleDependencies) {
+        this.roleDependencies = roleDependencies;
     }
 
     public boolean isInheritanceBroken() {
@@ -123,10 +123,10 @@ public class GWTJahiaNodeACL implements Serializable {
     public GWTJahiaNodeACL cloneObject() {
         GWTJahiaNodeACL clone = new GWTJahiaNodeACL();
         List<GWTJahiaNodeACE> aceClone = new ArrayList<GWTJahiaNodeACE>();
-        clone.setAvailablePermissions(getAvailablePermissions());
-        clone.setPermissionLabels(getPermissionLabels());
-        clone.setPermissionTooltips(getPermissionTooltips());
-        clone.setPermissionsDependencies(getPermissionsDependencies());
+        clone.setAvailableRoles(getAvailableRoles());
+        clone.setRolesLabels(getRolesLabels());
+        clone.setRolesTooltips(getRolesTooltips());
+        clone.setRoleDependencies(getRoleDependencies());
         for (GWTJahiaNodeACE nodeACE : ace) {
             aceClone.add(nodeACE.cloneObject());
         }
@@ -135,8 +135,8 @@ public class GWTJahiaNodeACL implements Serializable {
         return clone;
     }
 
-    public Map<String, String> getPermissionTooltips() {
-        return permissionTooltips;
+    public Map<String, String> getRolesTooltips() {
+        return rolesTooltips;
     }
 
     @Override
@@ -148,7 +148,7 @@ public class GWTJahiaNodeACL implements Serializable {
 
         if (breakAllInheritance != that.breakAllInheritance) return false;
         if (ace != null ? !ace.equals(that.ace) : that.ace != null) return false;
-        if (availablePermissions != null ? !availablePermissions.equals(that.availablePermissions) : that.availablePermissions != null)
+        if (availableRoles != null ? !availableRoles.equals(that.availableRoles) : that.availableRoles != null)
             return false;
 
         return true;
@@ -157,7 +157,7 @@ public class GWTJahiaNodeACL implements Serializable {
     @Override
     public int hashCode() {
         int result = ace != null ? ace.hashCode() : 0;
-        result = 31 * result + (availablePermissions != null ? availablePermissions.hashCode() : 0);
+        result = 31 * result + (availableRoles != null ? availableRoles.hashCode() : 0);
         result = 31 * result + (breakAllInheritance ? 1 : 0);
         return result;
     }

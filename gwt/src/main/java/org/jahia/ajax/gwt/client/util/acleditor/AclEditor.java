@@ -40,23 +40,21 @@
 
 package org.jahia.ajax.gwt.client.util.acleditor;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -65,7 +63,6 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
-import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 
 import java.util.*;
 
@@ -76,26 +73,26 @@ import java.util.*;
  */
 public class AclEditor {
     private GWTJahiaNodeACL acl;
-    private Map<String, GWTJahiaNodeACE> aceMap;
-    private GWTJahiaNodeACL originalAcl;
     private final String context;
-    private List<String> items;
-    private RestoreButton restoreButton;
-    private Grid<ModelData> grid;
-    private ListStore<ModelData> store;
+    private Button restoreButton;
     private boolean canBreakInheritance = false;
     private Button breakinheritanceItem;
     private boolean readOnly = false;
     private List<String> displayedRoles;
-    private boolean displayInheritanceColumn = true;
     private String addUsersLabel = getResource("newUsers.label");
     private String addGroupsLabel = getResource("newGroups.label");
     private List<AclEditor> rolesEditors;
 
-    public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups) {
-        this.originalAcl = acl;
+    private Boolean breakAllInheritance;
+    private Map<String, List<PrincipalModelData>> initialValues;
+    private Map<String, ListStore<PrincipalModelData>> stores;
+    private StoreFilter<PrincipalModelData> inheritanceBreakFilter;
+
+    public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups, List<AclEditor> rolesEditors) {
+        this.acl = acl;
         this.context = aclContext;
-        final Map<String, List<String>> map = acl.getAvailablePermissions();
+        this.rolesEditors = rolesEditors != null ? rolesEditors : new ArrayList<AclEditor>();
+        final Map<String, List<String>> map = acl.getAvailableRoles();
         if ((roleGroups == null || roleGroups.isEmpty()) && (roles == null || roles.isEmpty())) {
             displayedRoles = new ArrayList<String>();
             if (map != null && !map.isEmpty()) {
@@ -119,9 +116,151 @@ public class AclEditor {
                 }
             }
         }
+        initialValues = new HashMap<String, List<PrincipalModelData>>();
+        stores = new HashMap<String, ListStore<PrincipalModelData>>();
 
-        restoreButton = new RestoreButton();
-        reinitAcl();
+        for (String displayedRole : displayedRoles) {
+            final List<PrincipalModelData> values = new ArrayList<PrincipalModelData>();
+            initialValues.put(displayedRole, values);
+            for (GWTJahiaNodeACE gwtJahiaNodeACE : acl.getAce()) {
+                final boolean set = gwtJahiaNodeACE.getRoles().containsKey(displayedRole);
+                final boolean inherited = gwtJahiaNodeACE.getInheritedRoles().containsKey(displayedRole) && gwtJahiaNodeACE.getInheritedRoles().get(displayedRole);
+                if (set || inherited) {
+                    PrincipalModelData entry = new PrincipalModelData(gwtJahiaNodeACE.getPrincipalKey(), gwtJahiaNodeACE.getPrincipalType(), gwtJahiaNodeACE.getPrincipal(), gwtJahiaNodeACE.getPrincipalDisplayName(), !set);
+                    if (inherited) {
+                        entry.setInheritedFrom(gwtJahiaNodeACE.getInheritedFrom());
+                    } else {
+                        entry.setInheritedFrom("");
+                    }
+                    if (set && !gwtJahiaNodeACE.getRoles().get(displayedRole)) {
+                        entry.setRemoved(true);
+                    }
+                    values.add(entry);
+                }
+            }
+            final ListStore<PrincipalModelData> store = new ListStore<PrincipalModelData>();
+            store.add(values);
+            stores.put(displayedRole, store);
+        }
+
+
+        breakinheritanceItem = new Button();
+        breakinheritanceItem.setEnabled(!readOnly);
+        breakinheritanceItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                final boolean newValue = !breakAllInheritance;
+                for (AclEditor roleEditor : AclEditor.this.rolesEditors) {
+                    roleEditor.setBreakAllInheritance(newValue);
+                    roleEditor.setDirty();
+
+                }
+
+            }
+        });
+
+        restoreButton = new Button(getResource("label.restore"));
+        restoreButton.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
+        restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                for (AclEditor rolesEditor : AclEditor.this.rolesEditors) {
+                    rolesEditor.setBreakAllInheritance(AclEditor.this.acl.isBreakAllInheritance());
+                }
+                setBreakInheritanceLabel();
+                for (Map.Entry<String, List<PrincipalModelData>> entry : initialValues.entrySet()) {
+                    stores.get(entry.getKey()).removeAll();
+                    stores.get(entry.getKey()).add(entry.getValue());
+                }
+                restoreButton.setEnabled(false);
+            }
+        });
+        restoreButton.setEnabled(false);
+
+        inheritanceBreakFilter = new StoreFilter<PrincipalModelData>() {
+            @Override
+            public boolean select(Store<PrincipalModelData> store, PrincipalModelData parent, PrincipalModelData item, String property) {
+                return !item.getInherited() && !item.getRemoved();
+            }
+        };
+
+        boolean breakAllInheritance = acl.isBreakAllInheritance();
+        if (!rolesEditors.isEmpty() && rolesEditors.iterator().next().getBreakAllInheritance() != breakAllInheritance) {
+            breakAllInheritance = rolesEditors.iterator().next().getBreakAllInheritance();
+            setDirty();
+        }
+        setBreakAllInheritance(breakAllInheritance);
+
+        rolesEditors.add(this);
+    }
+
+    public Boolean getBreakAllInheritance() {
+        return breakAllInheritance;
+    }
+
+    public void setBreakAllInheritance(Boolean breakAllInheritance) {
+        if (this.breakAllInheritance == breakAllInheritance) {
+            return;
+        }
+        this.breakAllInheritance = breakAllInheritance;
+        setBreakInheritanceLabel();
+
+        if (breakAllInheritance) {
+            for (ListStore<PrincipalModelData> listStore : stores.values()) {
+                listStore.addFilter(inheritanceBreakFilter);
+                listStore.applyFilters(null);
+            }
+        } else {
+            for (ListStore<PrincipalModelData> listStore : stores.values()) {
+                listStore.removeFilter(inheritanceBreakFilter);
+                List<PrincipalModelData> l = new ArrayList<PrincipalModelData>();
+                boolean duplicate = false;
+                for (PrincipalModelData data : listStore.getModels()) {
+                    if (!l.contains(data)) {
+                        l.add(data);
+                    } else {
+                        duplicate = true;
+                        PrincipalModelData otherData = l.get(l.indexOf(data));
+                        if (data.getInherited()) {
+                            l.remove(otherData);
+                            l.add(data);
+                        }
+                    }
+                }
+                if (duplicate) {
+                    listStore.removeAll();
+                    listStore.add(l);
+                }
+            }
+        }
+    }
+
+    public List<GWTJahiaNodeACE> getEntries() {
+        Map<String, GWTJahiaNodeACE> r = new HashMap<String, GWTJahiaNodeACE>();
+        for (GWTJahiaNodeACE ace : acl.getAce()) {
+            final GWTJahiaNodeACE value = ace.cloneObject();
+            value.getRoles().clear();
+            value.getInheritedRoles().keySet().retainAll(displayedRoles);
+            r.put(ace.getPrincipalType() + ace.getPrincipal(), value);
+        }
+
+        for (Map.Entry<String, ListStore<PrincipalModelData>> entry : stores.entrySet()) {
+            for (PrincipalModelData data : entry.getValue().getModels()) {
+                String key = data.getType() + data.getName();
+                if (!r.containsKey(key)) {
+                    GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
+                    ace.setPrincipal(data.getName());
+                    ace.setPrincipalType(data.getType());
+                    ace.setPrincipalKey(data.getKey());
+                    ace.setPrincipalDisplayName(data.getDisplayName());
+                    ace.setRoles(new HashMap<String, Boolean>());
+                    ace.setInheritedRoles(new HashMap<String, Boolean>());
+                    r.put(key, ace);
+                }
+                if (!data.getInherited() || data.getRemoved()) {
+                    r.get(key).getRoles().put(entry.getKey(), !data.getRemoved());
+                }
+            }
+        }
+        return new ArrayList<GWTJahiaNodeACE>(r.values());
     }
 
     public void setCanBreakInheritance(boolean canBreakInheritance) {
@@ -155,458 +294,155 @@ public class AclEditor {
     }
 
     public void addNewAclPanel(final LayoutContainer c) {
-        c.add(renderNewAclPanel());
+        final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+
+        FormPanel f = new FormPanel();
+        f.setScrollMode(Style.Scroll.AUTO);
+
+        for (final String displayedRole : displayedRoles) {
+            FieldSet fs = new FieldSet();
+            fs.setHeading(acl.getRolesLabels().get(displayedRole));
+
+            List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+            final ColumnConfig principalType = new ColumnConfig("type", 30);
+            principalType.setRenderer(new GridCellRenderer() {
+                @Override
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                    Character type = model.get(property);
+                    Image html;
+                    if (type.equals('u')) {
+                        html = StandardIconsProvider.STANDARD_ICONS.user().createImage();
+                    } else {
+                        html = StandardIconsProvider.STANDARD_ICONS.group().createImage();
+                    }
+                    return html;
+                }
+            });
+            configs.add(principalType);
+
+            final ColumnConfig displayName = new ColumnConfig("displayName", 100);
+            displayName.setRenderer(new GridCellRenderer<PrincipalModelData>() {
+                @Override
+                public Object render(PrincipalModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                    if (model.getRemoved()) {
+                        return "<span class=\"markedForDeletion\">" + model.get(property) + "</span>" ;
+                    } else {
+                        return model.get(property);
+                    }
+                }
+            });
+            configs.add(displayName);
+
+
+            final ColumnConfig removedColumnConfig = new ColumnConfig("removed", 50);
+            removedColumnConfig.setRenderer(new GridCellRenderer<PrincipalModelData>() {
+                @Override
+                public Object render(final PrincipalModelData model, String property, ColumnData config, int rowIndex, int colIndex, final ListStore store, final Grid grid) {
+                    Button button = new Button();
+                    button.setBorders(false);
+                    button.setEnabled(!readOnly);
+                    if (!model.getRemoved()) {
+                        button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
+                        button.setToolTip(getResource("label.remove"));
+                        if (model.getInherited() && !breakAllInheritance) {
+                            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent event) {
+//                                    model.setInherited(false);
+                                    model.setRemoved(true);
+                                    grid.getView().refresh(false);
+                                }
+                            });
+                        } else {
+                            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent event) {
+                                    store.remove(model);
+                                }
+                            });
+                        }
+                        return button;
+                    } else {
+                        button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
+                        button.setToolTip(getResource("label.restore"));
+                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            public void componentSelected(ButtonEvent event) {
+//                                    model.setInherited(true);
+                                model.setRemoved(false);
+                                grid.getView().refresh(false);
+                            }
+                        });
+                        return button;
+                    }
+                }
+            });
+            configs.add(removedColumnConfig);
+
+            final ColumnConfig inheritedColumnConfig = new ColumnConfig("inheritedFrom", 300);
+            inheritedColumnConfig.setRenderer(new GridCellRenderer<PrincipalModelData>() {
+                @Override
+                public Object render(final PrincipalModelData model, String property, ColumnData config, int rowIndex, int colIndex, final ListStore store, final Grid grid) {
+                    if (!breakAllInheritance) {
+                        return model.getInheritedFrom();
+                    } else {
+                        return "";
+                    }
+                }
+            });
+            configs.add(inheritedColumnConfig);
+
+            final ListStore<PrincipalModelData> listStore = stores.get(displayedRole);
+            Grid<PrincipalModelData> g = new Grid<PrincipalModelData>(listStore, new ColumnModel(configs));
+            g.setAutoExpandMax(1500);
+            g.setAutoExpandColumn("displayName");
+            fs.add(g);
+
+            final UserGroupAdder userGroupAdder = new UserGroupAdder(listStore);
+
+            ToolBar toolBar = new ToolBar();
+            Button addUsersToolItem = new Button(getAddUsersLabel());
+            addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.user());
+            addUsersToolItem.setEnabled(!readOnly);
+            addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, context);
+                }
+            });
+            toolBar.add(addUsersToolItem);
+
+            addUsersToolItem = new Button(getAddGroupsLabel());
+            addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.group());
+            addUsersToolItem.setEnabled(!readOnly);
+            addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, context);
+                }
+            });
+            toolBar.add(addUsersToolItem);
+
+            fs.add(toolBar);
+            f.add(fs);
+        }
+
+        ToolBar toolBar = new ToolBar();
+
+        toolBar.add(breakinheritanceItem);
+        toolBar.add(new FillToolItem());
+        toolBar.add(restoreButton);
+        f.setTopComponent(toolBar);
+
+        c.add(f);
         c.layout();
     }
 
-    public ContentPanel renderNewAclPanel() {
-        final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-
-        if (!rolesEditors.isEmpty()) {
-            if (rolesEditors.get(0).getBreakinheritanceItem().getText().equals(getResource("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"))) {
-                acl.setBreakAllInheritance(true);
-            } else {
-                acl.setBreakAllInheritance(false);
-            }
-        }
-        rolesEditors.add(this);
-
-        // im. representing the principal
-        ColumnConfig col = new ColumnConfig("icon", 30);
-        col.setSortable(false);
-        col.setFixed(true);
-        col.setRenderer(new GridCellRenderer<ModelData>() {
-            public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
-                                 ListStore<ModelData> listStore, final Grid<ModelData> grid) {
-                GWTJahiaNodeACE ace = model.get("ace");
-                Image html;
-                if (ace.getPrincipalType() == 'u') {
-                    html = StandardIconsProvider.STANDARD_ICONS.user().createImage();
-                } else {
-                    html = StandardIconsProvider.STANDARD_ICONS.group().createImage();
-                }
-                return html;
-            }
-        });
-        columns.add(col);
-
-        // name of the princial
-        col = new ColumnConfig("principal", Messages.get("label.user", "User") + " / " + Messages.get("label.group", "Group"), 200);
-        columns.add(col);
-        // column break inheritance
-        if (displayInheritanceColumn) {
-            col = new ColumnConfig("inheritance", Messages.get("label.inherited"), 300);
-            col.setAlignment(Style.HorizontalAlignment.LEFT);
-            col.setRenderer(new GridCellRenderer<ModelData>() {
-                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-                                     ListStore<ModelData> modelDataListStore, Grid<ModelData> modelDataGrid) {
-                    final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) model.get("ace");
-                    LayoutContainer widget = new LayoutContainer();
-                    if (!readOnly && !ace.isHidden()) {
-                        if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
-                            if (!ace.getPermissions().isEmpty()) {
-                                widget.add(buildLocalRestoreInheritanceButton(model, ace));
-                            } else {
-                                widget.add(buildInheritanceLabel(ace));
-                            }
-                        } else {
-                            widget.add(buildRemoveButton(model, ace));
-                        }
-                    }
-                    return widget;
-                }
-            });
-            columns.add(col);
-        }
-        // add a column per available permission
-        for (String s : displayedRoles) {
-            final String columnName;
-            if (acl.getPermissionLabels() != null) {
-                columnName = acl.getPermissionLabels().get(s);
-            } else {
-                columnName = s;
-            }
-            col = new ColumnConfig(s, columnName, 80);
-
-            if (acl.getPermissionTooltips() != null) {
-                String tooltip = acl.getPermissionTooltips().get(s);
-                if (tooltip != null && tooltip.length() > 0) {
-                    col.setToolTip(tooltip);
-                }
-            }
-            col.setAlignment(Style.HorizontalAlignment.CENTER);
-            col.setSortable(false);
-            col.setRenderer(new GridCellRenderer<ModelData>() {
-                public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
-                                     ListStore<ModelData> listStore, final Grid<ModelData> grid) {
-                    final GWTJahiaNodeACE ace = model.get("ace");
-                    Boolean permValue = ace.getPermissions().get(perm);
-                    Boolean inPermValue = Boolean.TRUE.equals(ace.getInheritedPermissions().get(perm)) && !acl.isBreakAllInheritance();
-                    CheckBox chb = new CheckBox();
-                    chb.setTitle(columnName);
-                    chb.setValue(Boolean.TRUE.equals(permValue) || (permValue == null && Boolean.TRUE.equals(inPermValue)));
-                    chb.setEnabled(!readOnly && !ace.isHidden());
-                    chb.addClickHandler(new ClickHandler() {
-                        public void onClick(ClickEvent sender) {
-                            setDirty();
-                            boolean checked = ((CheckBox) sender.getSource()).getValue() != null ? ((CheckBox) sender.getSource()).getValue() : false;
-                            ace.getPermissions().put(perm, checked ? Boolean.TRUE : Boolean.FALSE);
-                            if (checked) {
-                                grid.getView().getRow(rowIndex);
-                                List<String> toCheck = acl.getPermissionsDependencies().get(perm);
-                                if (toCheck != null) {
-                                    for (String s1 : toCheck) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex, displayedRoles.indexOf(s1) + 2);
-                                        if (checkBox != null && !checkBox.getValue()) {
-                                            checkBox.setValue(true, true);
-                                        }
-                                    }
-                                }
-                            } else {
-                                Set<String> toCheck = acl.getPermissionsDependencies().keySet();
-                                for (String s1 : toCheck) {
-                                    if (acl.getPermissionsDependencies().get(s1).contains(perm)) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex, displayedRoles.indexOf(s1) + 2);
-                                        if (checkBox != null && checkBox.getValue()) {
-                                            checkBox.setValue(false, true);
-                                        }
-                                    }
-                                }
-                            }
-                            // update inheritance column
-                            if (!ace.getInheritedPermissions().isEmpty()) {
-                                if (ace.getPermissions().equals(ace.getInheritedPermissions()) && !acl.isBreakAllInheritance()) {
-                                    if (displayInheritanceColumn) {
-                                        LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, 2);
-                                        ctn.removeAll();
-                                        ctn.add(buildInheritanceLabel(ace));
-                                        ctn.layout();
-                                    }
-                                    ace.setInherited(true);
-                                } else {
-                                    if (ace.isInherited()) {
-                                        if (displayInheritanceColumn) {
-                                            LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, 2);
-                                            ctn.removeAll();
-                                            ctn.add(buildLocalRestoreInheritanceButton(model, ace));
-                                            ctn.layout();
-                                        }
-                                        ace.setInherited(false);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    return chb;
-                }
-            });
-
-            columns.add(col);
-        }
-
-
-        // create the table
-        store = new ListStore<ModelData>();
-        ColumnModel cm = new ColumnModel(columns);
-        grid = new Grid<ModelData>(store, cm);
-        final BufferView bufferView = new BufferView();
-        bufferView.setRowHeight(28);
-        grid.setAutoExpandColumn("inheritance");
-        grid.setAutoExpandMax(300);
-        grid.setView(bufferView);
-//        aclTable.setBulkRender(false);
-        store.sort("name", Style.SortDir.ASC);
-        items = new ArrayList<String>();
-        aceMap = new HashMap<String, GWTJahiaNodeACE>();
-        List<GWTJahiaNodeACE> l = acl.getAce();
-
-        // populate table
-        for (GWTJahiaNodeACE ace : l) {
-            addTableItem(store, ace, displayedRoles);
-            aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
-        }
-
-        restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                reinitAcl();
-//                aclTable.removeAll();
-                store.removeAll();
-                items.clear();
-                aceMap.clear();
-                List<GWTJahiaNodeACE> l = acl.getAce();
-                for (GWTJahiaNodeACE ace : l) {
-                    addTableItem(store, ace, displayedRoles);
-                    aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
-                }
-                setBreakInheritanceLabel();
-
-                if (event.getState() == null || !event.getState().containsKey("restore")) {
-                    event.setState(new HashMap<String, Object>());
-                    event.getState().put("restore", Boolean.TRUE);
-                    for (AclEditor roleEditor : rolesEditors) {
-                        roleEditor.getRestoreButton().fireEvent(Events.Select, event);
-                    }
-                }
-            }
-        });
-
-        ContentPanel panel = new ContentPanel();
-        panel.setLayout(new FitLayout());
-        panel.setCollapsible(false);
-        panel.setFrame(false);
-        panel.setAnimCollapse(false);
-        panel.setBorders(false);
-        panel.setBodyBorder(false);
-        panel.setHeaderVisible(false);
-        panel.add(grid);
-
-        final UserGroupAdder userGroupAdder = new UserGroupAdder() {
-            public void addUsers(List<GWTJahiaUser> users) {
-                for (GWTJahiaUser user : users) {
-                    GWTJahiaNodeACE ace = aceMap.get('u' + user.getUserKey());
-                    if (ace == null) {
-                        ace = new GWTJahiaNodeACE();
-                        ace.setPrincipalType('u');
-                        ace.setPrincipal(user.getName());
-                        ace.setPrincipalDisplayName(user.getDisplay());
-                        ace.setPrincipalKey(user.getUserKey());
-                        ace.setPermissions(new HashMap<String, Boolean>());
-                        ace.setInheritedPermissions(new HashMap<String, Boolean>());
-                        ace.setInherited(false);
-                        acl.getAce().add(ace);
-                        aceMap.put('u' + user.getUserKey(), ace);
-                    } else {
-                        if (acl.isBreakAllInheritance()) {
-                            ace.setInherited(false);
-                        }
-                    }
-                    boolean first = true;
-                    for (String s : displayedRoles) {
-                        ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
-                        first = false;
-                    }
-                    setDirty();
-                    addTableItem(store, ace, displayedRoles);
-                }
-            }
-
-            public void addGroups(List<GWTJahiaGroup> groups) {
-                for (GWTJahiaGroup group : groups) {
-                    GWTJahiaNodeACE ace = aceMap.get('g' + group.getGroupKey());
-                    if (ace == null) {
-                        ace = new GWTJahiaNodeACE();
-                        ace.setPrincipalType('g');
-                        ace.setPrincipal(group.getName());
-                        ace.setPrincipalDisplayName(group.getDisplay());
-                        ace.setPrincipalKey(group.getGroupKey());
-                        ace.setPermissions(new HashMap<String, Boolean>());
-                        ace.setInheritedPermissions(new HashMap<String, Boolean>());
-                        ace.setInherited(false);
-                        acl.getAce().add(ace);
-                        aceMap.put('g' + group.getGroupKey(), ace);
-                    } else {
-                        if (acl.isBreakAllInheritance()) {
-                            ace.setInherited(false);
-                        }
-                    }
-                    boolean first = true;
-                    for (String s : displayedRoles) {
-                        ace.getPermissions().put(s, first ? Boolean.TRUE : Boolean.FALSE);
-                        first = false;
-                    }
-                    setDirty();
-                    addTableItem(store, ace, displayedRoles);
-                }
-            }
-
-        };
-
-        ToolBar toolBar = new ToolBar();
-        Button addUsersToolItem = new Button(getAddUsersLabel());
-        addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.user());
-        addUsersToolItem.setEnabled(!readOnly);
-        addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, context);
-            }
-        });
-        toolBar.add(addUsersToolItem);
-
-        addUsersToolItem = new Button(getAddGroupsLabel());
-        addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.group());
-        addUsersToolItem.setEnabled(!readOnly);
-        addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, context);
-            }
-        });
-        toolBar.add(addUsersToolItem);
-
-        breakinheritanceItem = new Button();
-
-        setBreakInheritanceLabel();
-
-        breakinheritanceItem.setEnabled(!readOnly);
-        breakinheritanceItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                boolean newvalue = !acl.isBreakAllInheritance();
-                if (event.getState() == null || !event.getState().containsKey("newValue")) {
-                    event.setState(new HashMap<String, Object>());
-                    event.getState().put("newValue", newvalue);
-                    for (AclEditor roleEditor : rolesEditors) {
-                        if (breakinheritanceItem != roleEditor.getBreakinheritanceItem()) {
-                            roleEditor.getBreakinheritanceItem().fireEvent(Events.Select, event);
-                        }
-                    }
-                } else {
-                    newvalue = (Boolean) event.getState().get("newValue");
-                }
-                acl.setBreakAllInheritance(newvalue);
-                setDirty();
-                setBreakInheritanceLabel();
-                store.removeAll();
-                items.clear();
-                List<GWTJahiaNodeACE> list = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
-                for (GWTJahiaNodeACE ace : list) {
-                    if (!acl.isBreakAllInheritance()) {
-                        if (ace.getPermissions().equals(ace.getInheritedPermissions())) {
-                            ace.setInherited(true);
-                        }
-                    }
-                    addTableItem(store, ace, displayedRoles);
-                }
-            }
-        });
-        toolBar.add(breakinheritanceItem);
-//        }
-        toolBar.add(new FillToolItem());
-        toolBar.add(restoreButton);
-        panel.setTopComponent(toolBar);
-
-        return panel;
-    }
-
-    /**
-     * Build local remove button
-     *
-     * @param item
-     * @param ace
-     * @return
-     */
-    private Button buildRemoveButton(final ModelData item, final GWTJahiaNodeACE ace) {
-        Button button = new Button();
-        button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
-        button.setBorders(false);
-        button.setToolTip(getResource("label.remove"));
-        button.setEnabled(!readOnly && !ace.isHidden());
-        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                setDirty();
-                String o = ace.getPrincipalType() + ace.getPrincipalKey();
-                items.remove(o);
-                store.remove(item);
-
-                ace.getPermissions().clear();
-                ace.setInherited(true);
-//                for (String role : displayedRoles) {
-//                    ace.getPermissions().put(role, false);
-//                }
-
-//                if (ace.getInheritedPermissions().isEmpty()) {
-//                    aceMap.remove(ace.getPrincipalType() + ace.getPrincipalKey());
-//                    acl.getAce().remove(ace);
-//                } else {
-//                    ace.getPermissions().clear();
-//                    ace.setInherited(true);
-//                }
-            }
-        });
-        return button;
-    }
-
-    /**
-     * Create inheritance label
-     *
-     * @param ace
-     * @return
-     */
-    private Text buildInheritanceLabel(GWTJahiaNodeACE ace) {
-        String label;
-        if (ace.getInheritedFrom() != null) {
-            label = getResource("label.inheritedFrom") + " : " + ace.getInheritedFrom();
-        } else {
-            label = getResource("label.inherited");
-        }
-
-        Text text = new Text(label);
-        return text;
-    }
-
-    /**
-     * Create local restore button
-     *
-     * @param item
-     * @param ace
-     * @return
-     */
-    private Button buildLocalRestoreInheritanceButton(final ModelData item, final GWTJahiaNodeACE ace) {
-        Button button = new Button();
-        button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
-        button.setToolTip(getResource("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
-        button.setEnabled(!readOnly && !ace.isHidden());
-        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                setDirty();
-                Log.debug("restore" + ace.getPermissions());
-                ace.getPermissions().clear();
-//                ace.getPermissions().putAll(ace.getInheritedPermissions());
-                int row = store.indexOf(item);
-                for (int i = 3; i < displayedRoles.size() + 3; i++) {
-                    CheckBox chb = (CheckBox) grid.getView().getWidget(row, i);
-                    String perm = grid.getColumnModel().getColumn(i).getId();
-                    Boolean v = ace.getInheritedPermissions().get(perm);
-                    chb.setValue(Boolean.TRUE.equals(v));
-                }
-                ace.setInherited(true);
-                LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row, 2);
-                ctn.removeAll();
-                ctn.add(buildInheritanceLabel(ace));
-                ctn.layout();
-            }
-        });
-        return button;
-    }
 
     /**
      * Set break inheritance label
      */
     private void setBreakInheritanceLabel() {
-        if (acl.isBreakAllInheritance()) {
+        if (breakAllInheritance) {
             breakinheritanceItem.setText(getResource("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"));
         } else {
             breakinheritanceItem.setText(getResource("org.jahia.engines.rights.ManageRights.breakAllInheritance.label"));
-        }
-    }
-
-    /**
-     * init acl
-     */
-    private void reinitAcl() {
-        restoreButton.setEnabled(false);
-        acl = originalAcl.cloneObject();
-
-        // Clean ACL from roles that are not displayed here
-        List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
-        for (GWTJahiaNodeACE ace : aces) {
-            ace.getPermissions().keySet().retainAll(displayedRoles);
-            ace.getInheritedPermissions().keySet().retainAll(displayedRoles);
-            if (ace.getPermissions().isEmpty()) {
-                if (ace.getInheritedPermissions().isEmpty()) {
-                    acl.getAce().remove(ace);
-                } else {
-                    ace.setInherited(true);
-                }
-            }
         }
     }
 
@@ -615,41 +451,10 @@ public class AclEditor {
      */
     public void setDirty() {
         restoreButton.setEnabled(true);
-
-        for (AclEditor roleEditor : rolesEditors) {
-            roleEditor.getRestoreButton().setEnabled(true);
-        }
     }
 
     public List<String> getDisplayedRoles() {
         return displayedRoles;
-    }
-
-    /**
-     * Add ace to acl table
-     *
-     * @param store
-     * @param ace
-     * @param available
-     */
-    private void addTableItem(ListStore<ModelData> store, GWTJahiaNodeACE ace, List<String> available) {
-        if (ace.getPermissions().isEmpty() && !ace.getInheritedPermissions().isEmpty() && acl.isBreakAllInheritance()) {
-            return;
-        }
-        if (ace.getPermissions().isEmpty() && ace.getInheritedPermissions().isEmpty()) {
-            return;
-        }
-        BaseModelData value = new BaseModelData();//Object[3 + available.size()];
-        value.set("principal", ace.getPrincipalDisplayName());
-
-        String o = ace.getPrincipalType() + ace.getPrincipalKey();
-        if (!items.contains(o)) {
-            items.add(o);
-            value.set("ace", ace);
-
-            store.add(value);
-            store.sort("principal", Style.SortDir.ASC);
-        }
     }
 
     /**
@@ -658,26 +463,9 @@ public class AclEditor {
      * @return
      */
     public GWTJahiaNodeACL getAcl() {
+        GWTJahiaNodeACL acl =  new GWTJahiaNodeACL(getEntries());
+        acl.setBreakAllInheritance(breakAllInheritance);
         return acl;
-    }
-
-    /**
-     * return true if ACL permissions are empty
-     *
-     * @return
-     */
-    public boolean isEmpty() {
-        return getAcl() == null || getAcl().getAvailablePermissions() == null || getAcl().getAvailablePermissions().isEmpty();
-    }
-
-    /**
-     * Restore the properties retrieved by the last server call.
-     */
-    private class RestoreButton extends Button {
-        public RestoreButton() {
-            super(getResource("label.restore"));
-            setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
-        }
     }
 
     /**
@@ -690,15 +478,121 @@ public class AclEditor {
         return Messages.get(key);
     }
 
-    public Button getBreakinheritanceItem() {
-        return breakinheritanceItem;
+    class PrincipalModelData extends BaseModelData {
+
+        public PrincipalModelData(String key, Character type, String name, String displayName, Boolean inherited) {
+            setKey(key);
+            setType(type);
+            setName(name);
+            setDisplayName(displayName);
+            setInherited(inherited);
+            setRemoved(false);
+        }
+
+        public String getName() {
+            return get("name");
+        }
+
+        public void setName(String name) {
+            set("name", name);
+        }
+
+        public String getDisplayName() {
+            return get("displayName");
+        }
+
+        public void setDisplayName(String displayName) {
+            set("displayName", displayName);
+        }
+
+        public Character getType() {
+            return get("type");
+        }
+
+        public void setType(Character type) {
+            set("type", type);
+        }
+
+        public String getKey() {
+            return get("key");
+        }
+
+        public void setKey(String key) {
+            set("key", key);
+        }
+
+        public Boolean getInherited() {
+            return get("inherited");
+        }
+
+        public void setInherited(Boolean inherited) {
+            set("inherited", inherited);
+        }
+
+        public String getInheritedFrom() {
+            return get("inheritedFrom");
+        }
+
+        public void setInheritedFrom(String inheritedFrom) {
+            set("inheritedFrom", inheritedFrom);
+        }
+
+        public Boolean getRemoved() {
+            return get("removed");
+        }
+
+        public void setRemoved(Boolean removed) {
+            set("removed", removed);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PrincipalModelData that = (PrincipalModelData) o;
+
+            if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
+            if (getType() != null ? !getType().equals(that.getType()) : that.getType() != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = getKey() != null ? getKey().hashCode() : 0;
+            result = 31 * result + (getType() != null ? getType().hashCode() : 0);
+            return result;
+        }
     }
 
-    public RestoreButton getRestoreButton() {
-        return restoreButton;
-    }
+    private class UserGroupAdder implements org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder {
+        private final ListStore<PrincipalModelData> store;
 
-    public void setRolesEditors(List<AclEditor> rolesEditors) {
-        this.rolesEditors = rolesEditors;
+        public UserGroupAdder(ListStore<PrincipalModelData> store) {
+            this.store = store;
+        }
+
+        public void addUsers(List<GWTJahiaUser> users) {
+            for (GWTJahiaUser user : users) {
+                PrincipalModelData entry = new PrincipalModelData(user.getKey(), 'u', user.getName(), user.getDisplay(), false);
+
+                if (!store.contains(entry)) {
+                    store.add(entry);
+                }
+            }
+            setDirty();
+        }
+
+        public void addGroups(List<GWTJahiaGroup> groups) {
+            for (GWTJahiaGroup group : groups) {
+                PrincipalModelData entry = new PrincipalModelData(group.getKey(), 'g', group.getName(), group.getDisplay(), false);
+                if (!store.contains(entry)) {
+                    store.add(entry);
+                }
+            }
+            setDirty();
+        }
+
     }
 }

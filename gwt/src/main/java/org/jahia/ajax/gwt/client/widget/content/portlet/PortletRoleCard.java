@@ -78,7 +78,7 @@ public class PortletRoleCard extends PortletWizardCard {
         super.createUI();        
         final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl().cloneObject();
         acl.setBreakAllInheritance(true);
-        List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.PORTLET_ROLES);
+        List<String> permissions = acl.getAvailableRoles().get(JCRClientUtils.PORTLET_ROLES);
         if (permissions != null && permissions.size() > 0) {
             JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new BaseAsyncCallback<GWTJahiaNodeACE>() {
                 public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
@@ -105,7 +105,7 @@ public class PortletRoleCard extends PortletWizardCard {
     }
 
     private void initAclEditor(GWTJahiaNodeACL acl) {
-        aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext(), null, Collections.singleton(JCRClientUtils.PORTLET_ROLES));
+        aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext(), null, Collections.singleton(JCRClientUtils.PORTLET_ROLES), null);
         aclEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.adduser.label", "Add rode-user permission"));
         aclEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.addgroup.label", "Add rode-group permission"));
     }

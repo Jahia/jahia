@@ -83,8 +83,8 @@ public class ACLHelper {
                 permissionsMap.put(perm, false);
             }
         }
-        ace.setPermissions(permissionsMap);
-        ace.setInheritedPermissions(new HashMap<String,Boolean>());
+        ace.setRoles(permissionsMap);
+        ace.setInheritedRoles(new HashMap<String, Boolean>());
         ace.setInherited(false);
         return ace;
     }

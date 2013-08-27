@@ -87,9 +87,8 @@ public class RolesTabItem extends EditEngineTabItem {
                 node = engine.getTargetNode();
             }
 
-            rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roles, roleGroups);
+            rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roles, roleGroups, rolesEditors);
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
-            rolesEditor.setRolesEditors(rolesEditors);
 
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                 rolesEditor.setReadOnly(true);
@@ -145,13 +144,12 @@ public class RolesTabItem extends EditEngineTabItem {
             aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
         }
 
-        if (acl.getAvailablePermissions() == null)  {
-            acl.setAvailablePermissions(new HashMap<String, List<String>>());
+        if (acl.getAvailableRoles() == null)  {
+            acl.setAvailableRoles(new HashMap<String, List<String>>());
         }
 
         GWTJahiaNodeACL modifiedAcl  = rolesEditor.getAcl();
         acl.setBreakAllInheritance(modifiedAcl.isBreakAllInheritance());
-        acl.getAvailablePermissions().putAll(modifiedAcl.getAvailablePermissions());
 
         for (GWTJahiaNodeACE modifiedAce : modifiedAcl.getAce()) {
             if (!aceMap.containsKey(modifiedAce.getPrincipalType() + modifiedAce.getPrincipalKey())) {
@@ -159,10 +157,10 @@ public class RolesTabItem extends EditEngineTabItem {
                 acl.getAce().add(modifiedAce);
             } else {
                 GWTJahiaNodeACE mergedAce = aceMap.get(modifiedAce.getPrincipalType() + modifiedAce.getPrincipalKey());
-                mergedAce.getPermissions().keySet().removeAll(rolesEditor.getDisplayedRoles());
-                mergedAce.getPermissions().putAll(modifiedAce.getPermissions());
-                mergedAce.getInheritedPermissions().keySet().removeAll(rolesEditor.getDisplayedRoles());
-                mergedAce.getInheritedPermissions().putAll(modifiedAce.getInheritedPermissions());
+                mergedAce.getRoles().keySet().removeAll(rolesEditor.getDisplayedRoles());
+                mergedAce.getRoles().putAll(modifiedAce.getRoles());
+                mergedAce.getInheritedRoles().keySet().removeAll(rolesEditor.getDisplayedRoles());
+                mergedAce.getInheritedRoles().putAll(modifiedAce.getInheritedRoles());
             }
         }
     }

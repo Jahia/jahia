@@ -453,7 +453,8 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                         refreshing = true;
                         Runnable refresh = new Runnable() {
                             public void run() {
-                                while (!SpringContextSingleton.getInstance().isInitialized()) {
+                                while (!SpringContextSingleton.getInstance().isInitialized()
+                                        || JCRSessionFactory.getInstance().getAllMountPoints().isEmpty()) {
                                     // wait until services are started
                                     try {
                                         Thread.sleep(5000);

@@ -286,7 +286,7 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setIndexingConfiguration(getIndexingConfig());
         indexer.setIndexFormatVersion(indexFormatVersion);
         indexer.setMaxExtractLength(getMaxExtractLength());
-        indexer.setSupportSpellchecking(getSpellChecker() != null);
+        indexer.setSupportSpellchecking(getSpellCheckerClass() != null);
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;

@@ -38,6 +38,12 @@
         <param-name>supported_jdk_versions</param-name>
         <param-value>1.6 &lt;= x &lt; 1.8</param-value>
     </context-param>
+    
+    <context-param>
+        <description>Spring Expression Language Support</description>
+        <param-name>springJspExpressionSupport</param-name>
+        <param-value>false</param-value>
+    </context-param>
 
     <filter>
     	<description>

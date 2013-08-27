@@ -61,11 +61,13 @@
 			com.google.inject;resolution:=optional,
 			org.apache.bsf.util;resolution:=optional,
             com.google.protobuf;resolution:=optional,
+            com.jayway.jsonpath;resolution:=optional,
             com.sun.tools.apt;resolution:=optional,
             com.sun.tools.javac;resolution:=optional,
             com.sun.tools.javah;resolution:=optional,
             com.sun.tools.javah.oldjavah;resolution:=optional,
             gnu.gcj;resolution:=optional,
+            joptsimple;resolution:=optional,
             kaffe.util;resolution:=optional,
             net.sf.cglib.proxy;resolution:=optional,
             net.sf.cglib.reflect;resolution:=optional,
@@ -88,7 +90,11 @@
             org.apache.struts.config.impl;resolution:=optional,
             org.apache.struts.util;resolution:=optional,
             org.apache.struts.validator;resolution:=optional,
+            org.aspectj.bridge;resolution:=optional,
+            org.aspectj.weaver;resolution:=optional,
+            org.aspectj.weaver.bcel;resolution:=optional,
             org.aspectj.weaver.loadtime;resolution:=optional,
+            org.aspectj.weaver.patterns;resolution:=optional,
             org.easymock;resolution:=optional,
             org.glassfish.grizzly.asyncqueue;resolution:=optional,
             org.glassfish.grizzly.attributes;resolution:=optional,
@@ -105,6 +111,7 @@
             org.jmock.core;resolution:=optional,
             org.kosmix.kosmosfs.access;resolution:=optional,
             org.mortbay.http;resolution:=optional,
+            org.springframework.asm.tree;resolution:=optional,
             org.springframework.web.portlet.multipart;resolution:=optional,
             org.testng;resolution:=optional,
             org.testng.annotations;resolution:=optional,
@@ -540,7 +547,7 @@
                         </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
-                        <Embed-Dependency>*;scope=compile;type=!pom;inline=false</Embed-Dependency>
+                        <Embed-Dependency>*;scope=compile;type=!pom;inline=false;artifactId=!spring-core</Embed-Dependency>
                         <Export-Package>!org.jahia.services.*,org.jahia.test.*,junit.*,org.junit.*</Export-Package>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>

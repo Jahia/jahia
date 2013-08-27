@@ -62,7 +62,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * An image service implementation that uses the external ImageMagick command line tool to
@@ -77,7 +76,7 @@ public class ImageMagickImageService extends AbstractImageService {
     private String imageMagickPath;
 
     protected ImageMagickImageService() {
-
+        super();
     }
 
     public void init() {

@@ -10,6 +10,10 @@ import org.drools.persistence.TransactionManager;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -25,6 +29,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
+import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -58,6 +63,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 
+import javax.jcr.RepositoryException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.io.BufferedReader;
@@ -365,11 +371,22 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
      * @param processKey
      * @return
      */
-    private String getEncodedProcessKey(String processKey) {
+    public static String getEncodedProcessKey(String processKey) {
         if (Character.isDigit(processKey.charAt(0))) {
             processKey = ISO9075.encode(processKey);
         }
         return processKey;
+    }
+
+    /**
+     * This method is used to decode an ISO9075-encoded process key, since these need to be encoded when used
+     * in XML files or even in some attribute values that enforce XML id formats.
+     *
+     * @param processKey
+     * @return
+     */
+    public static String getDecodedProcessKey(String processKey) {
+        return ISO9075.decode(processKey);
     }
 
     @Override
@@ -426,8 +443,25 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale) {
-        final List<WorkflowTask> availableTasks = new LinkedList<WorkflowTask>();
-        List<TaskSummary> taskSummaryList = taskService.getTasksOwned(user.getUserKey(), locale.toString());
+        List<WorkflowTask> availableTasks = new ArrayList<WorkflowTask>();
+        List<TaskSummary> tasksOwned = taskService.getTasksOwned(user.getUserKey(), locale.toString());
+        if (tasksOwned != null && tasksOwned.size() > 0) {
+            availableTasks.addAll(convertToWorkflowTasks(locale, tasksOwned));
+        }
+        // how do we retrieve group tasks ?
+        List<TaskSummary> potentialOwnerTasks = taskService.getTasksAssignedAsPotentialOwner(user.getUserKey(), locale.toString());
+        if (potentialOwnerTasks != null && potentialOwnerTasks.size() > 0) {
+            availableTasks.addAll(convertToWorkflowTasks(locale, potentialOwnerTasks));
+        }
+        List<TaskSummary> businessAdministratorTasks = taskService.getTasksAssignedAsBusinessAdministrator(user.getUserKey(), locale.toString());
+        if (businessAdministratorTasks != null && businessAdministratorTasks.size() > 0) {
+            availableTasks.addAll(convertToWorkflowTasks(locale, businessAdministratorTasks));
+        }
+        return availableTasks;
+    }
+
+    private List<WorkflowTask> convertToWorkflowTasks(Locale locale, List<TaskSummary> taskSummaryList) {
+        List<WorkflowTask> availableTasks = new LinkedList<WorkflowTask>();
         for (TaskSummary taskSummary : taskSummaryList) {
             try {
                 Task task = taskService.getTaskById(taskSummary.getId());
@@ -437,7 +471,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 logger.debug("Cannot get task " + taskSummary.getName() + " for user", e);
             }
         }
-        // how do we retrieve group tasks ?
         return availableTasks;
     }
 
@@ -472,17 +505,166 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return workflows;
     }
 
+    private ThreadLocal loop = new ThreadLocal();
+
     @Override
-    public void assignTask(String taskId, JahiaUser user) {
-        taskService.claim(Long.parseLong(taskId), user.getUserKey());
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void assignTask(String taskId, final JahiaUser user) {
+        if (loop.get() != null) {
+            return;
+        }
+        try {
+            loop.set(Boolean.TRUE);
+            Task task = taskService.getTaskById(Long.parseLong(taskId));
+            Map<String, Object> taskInputParameters = getTaskInputParameters(task);
+            Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
+            if (user == null) {
+                taskService.release(task.getId(), null);
+            } else {
+                if (user.getUserKey().equals(task.getTaskData().getActualOwner().toString())) {
+                    return;
+                }
+
+                if (!checkParticipation(task, user)) {
+                    logger.error("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is not candidate");
+                    return;
+                }
+
+                taskService.claim(Long.parseLong(taskId), user.getUserKey());
+            }
+            if (user != null) {
+                taskOutputParameters.put("currentUser", user.getUserKey());
+                ((TaskServiceEntryPointImpl) taskService).addContent(Long.parseLong(taskId), taskOutputParameters);
+            }
+
+            final String uuid = (String) taskOutputParameters.get("task-" + taskId);
+            if (uuid != null) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                            if (user != null) {
+                                if (!nodeByUUID.hasProperty("assigneeUserKey") ||
+                                        !nodeByUUID.getProperty("assigneeUserKey").getString().equals(user.getName())) {
+                                    nodeByUUID.setProperty("assigneeUserKey", user.getName());
+                                    session.save();
+                                }
+                            } else {
+                                if (nodeByUUID.hasProperty("assigneeUserKey")) {
+                                    nodeByUUID.getProperty("assigneeUserKey").remove();
+                                    session.save();
+                                }
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+        } finally {
+            loop.set(null);
+        }
+    }
+
+    private Map<String, Object> getTaskOutputParameters(Task task, Map<String, Object> taskInputParameters) {
+        Map<String, Object> taskOutputParameters = null;
+        if (taskInputParameters != null) {
+            Content taskOutputContent = taskService.getContentById(task.getTaskData().getOutputContentId());
+            if (taskOutputContent == null) {
+                taskOutputParameters = new LinkedHashMap<String, Object>(taskInputParameters);
+            } else {
+                Object outputContentData = ContentMarshallerHelper.unmarshall(taskOutputContent.getContent(), getKieSession().getEnvironment());
+                if (outputContentData instanceof Map) {
+                    taskOutputParameters = (Map<String, Object>) outputContentData;
+                }
+            }
+        }
+        return taskOutputParameters;
+    }
+
+    private Map<String, Object> getTaskInputParameters(Task task) {
+        Content taskInputContent = taskService.getContentById(task.getTaskData().getDocumentContentId());
+        Object inputContentData = ContentMarshallerHelper.unmarshall(taskInputContent.getContent(), getKieSession().getEnvironment());
+        Map<String, Object> taskInputParameters = null;
+        if (inputContentData instanceof Map) {
+            taskInputParameters = (Map<String, Object>) inputContentData;
+        }
+        return taskInputParameters;
+    }
+
+    private boolean checkParticipation(Task task, JahiaUser user) {
+        PeopleAssignments peopleAssignments = task.getPeopleAssignments();
+        List<OrganizationalEntity> potentialOwners = peopleAssignments.getPotentialOwners();
+        if (potentialOwners == null || potentialOwners.isEmpty()) {
+            return true;
+        }
+        for (OrganizationalEntity potentialOwner : potentialOwners) {
+            if (potentialOwner instanceof User) {
+                if (user.getUserKey().equals(potentialOwner.toString())) {
+                    return true;
+                }
+            } else if (potentialOwner instanceof Group) {
+                if (groupManager.getUserMembership(user).contains(potentialOwner.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
-    public void completeTask(String taskId, JahiaUser jahiaUser, String outcome, Map<String, Object> args) {
-        //To change body of implemented methods use File | Settings | File Templates.
-        args.put("outcome", outcome);
-        taskService.complete(Long.parseLong(taskId), jahiaUser.getUserKey(), args);
+    public void completeTask(String taskId, JahiaUser jahiaUser, final String outcome, Map<String, Object> args) {
+
+        if (loop.get() != null) {
+            return;
+        }
+        try {
+            loop.set(Boolean.TRUE);
+            Task task = taskService.getTaskById(Long.parseLong(taskId));
+            Map<String, Object> taskInputParameters = getTaskInputParameters(task);
+            Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
+            final String uuid = (String) taskOutputParameters.get("task-" + taskId);
+            if (uuid != null) {
+                String workspace = (String) taskInputParameters.get("workspace");
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            if (!session.getNodeByUUID(uuid).hasProperty("state") ||
+                                    !session.getNodeByUUID(uuid).getProperty("state").getString().equals("finished")) {
+                                session.getNodeByUUID(uuid).setProperty("finalOutcome", outcome);
+                                session.getNodeByUUID(uuid).setProperty("state", "finished");
+                                session.save();
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            observationManager.notifyTaskEnded(getKey(), taskId);
+
+            ClassLoader l = null;
+
+            try {
+                String module = workflowService.getModuleForWorkflow(task.getTaskData().getProcessId());
+                if (module != null) {
+                    l = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getChainedClassLoader());
+                }
+                args.put("outcome", outcome);
+                taskService.complete(Long.parseLong(taskId), jahiaUser.getUserKey(), args);
+            } finally {
+                if (l != null) {
+                    Thread.currentThread().setContextClassLoader(l);
+                }
+            }
+
+        } finally {
+            loop.set(null);
+        }
+
     }
 
     @Override

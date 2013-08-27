@@ -363,6 +363,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     return false;
                 }
             } else {
+                logger.error("Cannot check permission " + perm, e);
                 return false;
             }
         } catch (RepositoryException re) {

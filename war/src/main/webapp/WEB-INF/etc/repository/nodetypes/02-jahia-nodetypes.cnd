@@ -553,27 +553,29 @@
 
 [jmix:droppableContent] > mix:referenceable mixin
 
+[jmix:accessControllableContent] > mix:referenceable mixin
+
 [jmix:studioOnly] > mix:referenceable mixin
 
-[jmix:listContent] > jmix:droppableContent mixin
+[jmix:listContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:basicContent] > jmix:droppableContent mixin
+[jmix:basicContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:structuredContent] > jmix:droppableContent mixin
+[jmix:structuredContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:socialComponent] > jmix:droppableContent mixin
+[jmix:socialComponent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:multimediaContent] > jmix:droppableContent mixin
+[jmix:multimediaContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:layoutComponentContent] > jmix:droppableContent mixin
+[jmix:layoutComponentContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:siteComponent] > jmix:droppableContent mixin
+[jmix:siteComponent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:queryContent] > jmix:droppableContent mixin
+[jmix:queryContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:formContent] > jmix:droppableContent mixin
+[jmix:formContent] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-[jmix:userProfileComponents] > jmix:droppableContent mixin
+[jmix:userProfileComponents] > jmix:droppableContent, jmix:accessControllableContent mixin
 
 // To exclude a notetype from the components tree
 

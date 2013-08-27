@@ -96,6 +96,8 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.security.AccessControlException;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
@@ -2275,27 +2277,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         Map<String, JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
         try {
             if (getSite().getPath().startsWith("/sites")) {
-                Query q = s.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c ", Query.JCR_SQL2);
-                QueryResult qr = q.execute();
-                NodeIterator ni = qr.getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
-                    if (names.contains(node.getName())) {
-                        nodesForTypes.put(node.getName(), node);
-                    }
-                }
-
                 for (GWTJahiaNodeType type : types) {
-                    if (!type.isMixin() && !type.isAbstract()) {
-                        JCRNodeWrapper n = nodesForTypes.get(type.getName());
-                        if (n != null) {
-                            type.set("canUseComponentForCreate",n.hasPermission("useComponentForCreate"));
-                            type.set("canUseComponentForEdit",n.hasPermission("useComponentForEdit"));
-                        } else {
-                            type.set("canUseComponentForCreate",false);
-                            type.set("canUseComponentForEdit",false);
-                        }
-                    }
+                    boolean perm = contentDefinition.checkPermissionForType(type.getName(), getSite());
+                    type.set("canUseComponentForCreate",perm);
+                    type.set("canUseComponentForEdit",perm);
                 }
             }
         } catch (RepositoryException e) {

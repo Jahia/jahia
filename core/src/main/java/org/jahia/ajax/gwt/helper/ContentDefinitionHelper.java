@@ -65,8 +65,6 @@ import com.google.common.collect.Lists;
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -823,15 +821,6 @@ public class ContentDefinitionHelper {
                                                         final Locale uiLocale, final JCRSessionWrapper session)
             throws GWTJahiaServiceException {
         try {
-            Map <String,JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
-            Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:component] as c ", Query.JCR_SQL2);
-            QueryResult qr = q.execute();
-            NodeIterator ni = qr.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper node  = (JCRNodeWrapper) ni.next();
-                nodesForTypes.put(node.getName(), node);
-            }
-
             List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
 
             if (site.isNodeType("jnt:module")) {
@@ -860,14 +849,14 @@ public class ContentDefinitionHelper {
                 if  (pkg != null) {
                     for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getRootFolder()); nti.hasNext(); ) {
                         ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
-                        if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, nodesForTypes.get(extendedNodeType.getName()))) {
+                        if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {
                             types.add(extendedNodeType);
                         }
                     }
                     if (pkg.getRootFolder().equals("default")) {
                         for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
                             ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
-                            if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, nodesForTypes.get(extendedNodeType.getName()))) {
+                            if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {
                                 types.add(extendedNodeType);
                             }
                         }
@@ -934,18 +923,18 @@ public class ContentDefinitionHelper {
         return null;
     }
 
-    private boolean isValidNodeType(ExtendedNodeType ent, List<String> nodeTypes, List<String> excludedNodeTypes, boolean includeSubTypes, JCRNodeWrapper nodeWrapper) {
-        if (ent == null || nodeWrapper == null) {
+    private boolean isValidNodeType(ExtendedNodeType ent, List<String> nodeTypes, List<String> excludedNodeTypes, boolean includeSubTypes, JCRNodeWrapper node) throws RepositoryException {
+        if (ent == null) {
             return false;
         }
 
         if (includeSubTypes) {
-            if (isNodeType(nodeTypes, ent.getName()) && nodeWrapper.hasPermission("useComponentForCreate")) {
+            if (isNodeType(nodeTypes, ent.getName()) && checkPermissionForType(ent.getName(), node)) {
                 return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());
             }
         } else {
             for (String nodeType : nodeTypes) {
-                if (ent.getName().equals(nodeType) && nodeWrapper.hasPermission("useComponentForCreate")) {
+                if (ent.getName().equals(nodeType) && checkPermissionForType(ent.getName(), node)) {
                     return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());
                 }
             }
@@ -953,6 +942,24 @@ public class ContentDefinitionHelper {
         return false;
     }
 
+    public boolean checkPermissionForType(String typename, JCRNodeWrapper node) throws RepositoryException {
+        ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(typename);
+        NodeTypeRegistry.getInstance().getNodeType("jmix:accessControllableContent").getDeclaredSubtypes();
+
+        List<ExtendedNodeType> superTypes = Arrays.asList(type.getSupertypes());
+        NodeTypeIterator it = NodeTypeRegistry.getInstance().getNodeType("jmix:accessControllableContent").getDeclaredSubtypes();
+
+        boolean allowed = true;
+        while (it.hasNext()) {
+            ExtendedNodeType next = (ExtendedNodeType) it.next();
+            if (superTypes.contains(next)) {
+                if (allowed = node.hasPermission("component-" + next.getName().replace(":","_"))) {
+                    return true;
+                }
+            }
+        }
+        return allowed;
+    }
 
     private boolean isNodeType(List<String> nodeTypes, String name) {
         if (nodeTypes != null) {

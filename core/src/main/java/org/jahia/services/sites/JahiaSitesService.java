@@ -46,6 +46,7 @@
 package org.jahia.services.sites;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
@@ -562,8 +563,11 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         }
 
         if (siteNode.getName().equals(SYSTEM_SITE_KEY)) {
-            updateWorkspacePermissions(session, "default", site);
-            updateWorkspacePermissions(session, "live", site);
+            boolean update = updateWorkspacePermissions(session, "default", site);
+            update |= updateWorkspacePermissions(session, "live", site);
+            if (update) {
+                JahiaPrivilegeRegistry.init(session);
+            }
             updateTranslatorRoles(session, site);
         }
     }
@@ -648,7 +652,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     public void invalidateCache(JahiaSite site) throws JahiaException {
     }
 
-    private void updateWorkspacePermissions(JCRSessionWrapper session, String ws, JahiaSite site) throws RepositoryException {
+    private boolean updateWorkspacePermissions(JCRSessionWrapper session, String ws, JahiaSite site) throws RepositoryException {
         Node n = session.getNode("/permissions/repository-permissions/jcr:all_" + ws + "/jcr:write_" + ws + "/jcr:modifyProperties_" + ws);
         Set<String> languages = new HashSet<String>();
 
@@ -657,11 +661,14 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
             Node next = (Node) ni.next();
             languages.add(StringUtils.substringAfter(next.getName(), "jcr:modifyProperties_" + ws + "_"));
         }
+        boolean updated = false;
         for (String s : site.getLanguages()) {
             if (!languages.contains(s)) {
-                Node permission = n.addNode("jcr:modifyProperties_" + ws + "_" + s, "jnt:permission");
+                n.addNode("jcr:modifyProperties_" + ws + "_" + s, "jnt:permission");
+                updated = true;
             }
         }
+        return updated;
     }
 
     private void updateTranslatorRoles(JCRSessionWrapper session, JahiaSite site) throws RepositoryException {

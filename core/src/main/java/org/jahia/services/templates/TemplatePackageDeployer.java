@@ -335,6 +335,17 @@ public class TemplatePackageDeployer {
         if (!m.hasNode("templates")) {
             m.addNode("templates", "jnt:templatesFolder");
         }
+        if (!m.hasNode("permissions")) {
+            m.addNode("permissions", "jnt:permission");
+        }
+        JCRNodeWrapper perms = m.getNode("permissions");
+        if (!perms.hasNode("components")) {
+            perms.addNode("components", "jnt:permission");
+        }
+        if (!perms.hasNode("templates")) {
+            perms.addNode("templates", "jnt:permission");
+        }
+
         JCRNodeWrapper tpls = m.getNode("templates");
         if (!tpls.hasProperty("j:rootTemplatePath") && JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
             tpls.setProperty("j:rootTemplatePath", "/base");

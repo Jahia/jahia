@@ -174,7 +174,7 @@ public class ModuleHelper {
         }
     }
 
-    private String updateRepositoryUrlFromForge(File pomFile, String forgeUrl, String username, String password) throws IOException{
+    private String updateRepositoryUrlFromForge(File pomFile, String forgeUrl, String username, String password) throws XmlPullParserException, IOException {
         String forgeFileUrl = forgeUrl + ".json";
         logger.info("Trying to retrieve Jahia repository information from resource at {}", forgeFileUrl);
         long timer = System.currentTimeMillis();
@@ -200,8 +200,8 @@ public class ModuleHelper {
                         info);
 
                 PomUtils.updateDistributionManagement(pomFile, obj.getString("forgeSettingsId"), obj.getString("forgeSettingsUrl"));
-            } catch (Exception e) {
-                logger.error("Cannot get info from forge",e);
+            } catch (JSONException e) {
+                throw new IOException("Cannot get info from forge",e);
             }
         } else {
             throw new IOException("Cannot connect to forge server");

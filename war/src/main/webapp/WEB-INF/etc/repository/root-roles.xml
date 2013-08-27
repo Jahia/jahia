@@ -24,7 +24,7 @@
                      j:roleGroup="edit-role"
                      jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="contributeMode editorialContentManager fileManager"
+                                j:permissionNames="contributeMode components editorialContentManager fileManager templates"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Can edit content using contribute mode"
                               jcr:language="en"
@@ -37,7 +37,7 @@
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="editModeAccess editModeActions editSelector viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewTagsTab viewVisibilityTab managers view-full-wysiwyg-editor"
+                                j:permissionNames="components editModeAccess editModeActions editSelector managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewTagsTab viewVisibilityTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <editor-in-chief j:hidden="false"
                              j:permissionNames="publish workflow-tasks"
@@ -59,10 +59,14 @@
         </editor>
 
         <translator j:hidden="true"
-                    j:permissionNames="editModeAccess sitemapSelector jcr:versionManagement_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                    j:permissionNames="jcr:versionManagement_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
                     j:privilegedAccess="true"
                     j:roleGroup="edit-role"
-                    jcr:primaryType="jnt:role"/>
+                    jcr:primaryType="jnt:role">
+            <currentSite-access j:path="currentSite"
+                                j:permissionNames="components editModeAccess sitemapSelector view-full-wysiwyg-editor"
+                                jcr:primaryType="jnt:externalPermissions"/>
+        </translator>
 
         <reviewer j:hidden="false"
                   j:permissionNames="jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"

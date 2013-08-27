@@ -1158,7 +1158,6 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-stream</artifactId>
             <version>${camel.version}</version>
-            <classifier>jahia</classifier>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>

@@ -38,7 +38,7 @@
         <jbpm.version>4.4</jbpm.version>
         <hibernate.version>3.3.2.GA</hibernate.version>
         <apache.tika.version>1.3</apache.tika.version>
-        <camel.version>2.4.0</camel.version>
+        <camel.version>2.11.1</camel.version>
         <gwt.version>2.4.0</gwt.version>
         <atmosphere.version>1.0.6</atmosphere.version>
         <ant.version>1.8.2</ant.version>

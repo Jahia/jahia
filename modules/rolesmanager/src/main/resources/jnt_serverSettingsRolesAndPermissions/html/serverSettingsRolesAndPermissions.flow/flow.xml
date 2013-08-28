@@ -28,7 +28,7 @@
 
     <view-state id="deleteRoles">
         <on-render>
-            <evaluate expression="handler.selectedRoles" result="requestScope.roles"/>
+            <evaluate expression="handler.rolesToDelete" result="requestScope.roles"/>
         </on-render>
 
         <transition on="deleteRolesConfirmed" to="view">

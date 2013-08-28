@@ -52,18 +52,12 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
+import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
 import org.jahia.utils.Patterns;
 import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
-import org.kie.api.runtime.Environment;
-import org.kie.api.task.TaskService;
-import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
 
 import javax.enterprise.event.Observes;
@@ -81,46 +75,9 @@ import java.util.*;
  * @since JAHIA 6.5
  *        Created : 4 févr. 2010
  */
-public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Task> implements TaskLifeCycleEventListener {
+public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventListener {
 
     private static final long serialVersionUID = 4434614988996316632L;
-
-    private static JBPM6WorkflowProvider provider;
-    private static TaskService taskService;
-    private static Environment environment;
-    private static WorkflowObservationManager observationManager;
-
-    static void setProvider(JBPM6WorkflowProvider provider) {
-        JBPMTaskLifeCycleEventListener.provider = provider;
-    }
-
-    public static void setTaskService(TaskService taskService) {
-        JBPMTaskLifeCycleEventListener.taskService = taskService;
-    }
-
-    static void setObservationManager(WorkflowObservationManager observationManager) {
-        JBPMTaskLifeCycleEventListener.observationManager = observationManager;
-    }
-
-    public static void setEnvironment(Environment environment) {
-        JBPMTaskLifeCycleEventListener.environment = environment;
-    }
-
-    public static JBPM6WorkflowProvider getProvider() {
-        return provider;
-    }
-
-    public static TaskService getTaskService() {
-        return taskService;
-    }
-
-    public static Environment getEnvironment() {
-        return environment;
-    }
-
-    public static WorkflowObservationManager getObservationManager() {
-        return observationManager;
-    }
 
     @Override
     public void afterTaskActivatedEvent(Task ti) {
@@ -164,7 +121,7 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
         String nodeId = (String) taskInputParameters.get("nodeId");
         ;
         Locale locale = (Locale) taskInputParameters.get("locale");
-        WorkflowDefinition def = provider.getWorkflowDefinitionById(task.getTaskData().getProcessId(), locale);
+        WorkflowDefinition def = workflowProvider.getWorkflowDefinitionById(task.getTaskData().getProcessId(), locale);
         JCRNodeWrapper node = null;
         try {
             node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
@@ -180,31 +137,6 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
         }
     }
 
-    private Map<String, Object> getTaskInputParameters(Task task) {
-        Content taskContent = taskService.getContentById(task.getTaskData().getDocumentContentId());
-        Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), environment);
-        Map<String, Object> taskInputParameters = null;
-        if (contentData instanceof Map) {
-            taskInputParameters = (Map<String, Object>) contentData;
-        }
-        return taskInputParameters;
-    }
-
-    private Map<String, Object> getTaskOutputParameters(Task task, Map<String, Object> taskInputParameters) {
-        Map<String, Object> taskOutputParameters = null;
-        if (taskInputParameters != null) {
-            Content taskOutputContent = taskService.getContentById(task.getTaskData().getOutputContentId());
-            if (taskOutputContent == null) {
-                taskOutputParameters = new LinkedHashMap<String, Object>(taskInputParameters);
-            } else {
-                Object outputContentData = ContentMarshallerHelper.unmarshall(taskOutputContent.getContent(), environment);
-                if (outputContentData instanceof Map) {
-                    taskOutputParameters = (Map<String, Object>) outputContentData;
-                }
-            }
-        }
-        return taskOutputParameters;
-    }
 
     @Override
     public void afterTaskExitedEvent(Task ti) {
@@ -265,7 +197,7 @@ public class JBPMTaskLifeCycleEventListener extends JbpmServicesEventListener<Ta
                         }
                     }
                     jcrTask.setProperty("candidates", candidatesArray.toArray(new Value[candidatesArray.size()]));
-                    Set<String> outcomes = getProvider().getTaskOutcomes(task);
+                    Set<String> outcomes = workflowProvider.getTaskOutcomes(task);
                     List<Value> outcomesArray = new ArrayList<Value>();
                     for (String outcome : outcomes) {
                         outcomesArray.add(valueFactory.createValue(outcome));

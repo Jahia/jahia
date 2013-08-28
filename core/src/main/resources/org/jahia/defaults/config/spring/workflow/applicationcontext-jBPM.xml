@@ -112,4 +112,12 @@
         <property name="name" value="Send mail"/>
     </bean>
 
+    <bean abstract="true" id="abstractTaskLifeCycleEventListener" class="org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener">
+        <property name="workflowProvider" ref="jBPMProvider"/>
+    </bean>
+
+    <bean id="jbpmTaskLifeCycleEventListener" parent="abstractTaskLifeCycleEventListener" class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener">
+        <property name="name" value="jahiaTaskLifeCycleEventListener"/>
+    </bean>
+
 </beans>

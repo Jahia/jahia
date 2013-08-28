@@ -19,6 +19,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
@@ -103,6 +104,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private EntityManagerFactory emf;
     private EntityManager em;
     private Map<String, WorkItemHandler> workItemHandlers = new TreeMap<String, WorkItemHandler>();
+    private Map<String, AbstractTaskLifeCycleEventListener> taskAssignmentListeners = new TreeMap<String, AbstractTaskLifeCycleEventListener>();
     private Pipeline peopleAssignmentPipeline;
 
     public static JBPM6WorkflowProvider getInstance() {
@@ -136,7 +138,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public void setWorkflowObservationManager(WorkflowObservationManager observationManager) {
         this.observationManager = observationManager;
         listener.setObservationManager(observationManager);
-        JBPMTaskLifeCycleEventListener.setObservationManager(observationManager);
     }
 
     public void setGroupManager(JahiaGroupManagerService groupManager) {
@@ -177,6 +178,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public WorkItemHandler unregisterWorkItemHandler(String name) {
         return workItemHandlers.remove(name);
+    }
+
+    public void registerTaskLifeCycleEventListener(String name, AbstractTaskLifeCycleEventListener taskAssignmentListener) {
+        taskAssignmentListeners.put(name, taskAssignmentListener);
+    }
+
+    public AbstractTaskLifeCycleEventListener unregisterTaskLifeCycleEventListener(String name) {
+        return taskAssignmentListeners.remove(name);
     }
 
     public void start() {
@@ -298,11 +307,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             kieSession.getWorkItemManager().registerWorkItemHandler(workItemHandlerEntry.getKey(), workItemHandlerEntry.getValue());
         }
 
-        JBPMTaskLifeCycleEventListener.setProvider(this);
-        JBPMTaskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
-        JBPMTaskLifeCycleEventListener.setTaskService(taskService);
-        if (taskService instanceof EventService) {
-            ((EventService) taskService).registerTaskLifecycleEventListener(new JBPMTaskLifeCycleEventListener());
+        for (Map.Entry<String, AbstractTaskLifeCycleEventListener> taskAssignmentListenerEntry : taskAssignmentListeners.entrySet()) {
+            AbstractTaskLifeCycleEventListener taskAssignmentListener = taskAssignmentListenerEntry.getValue();
+            taskAssignmentListener.setEnvironment(kieSession.getEnvironment());
+            taskAssignmentListener.setObservationManager(observationManager);
+            taskAssignmentListener.setTaskService(taskService);
+            if (taskService instanceof EventService) {
+                ((EventService) taskService).registerTaskLifecycleEventListener(taskAssignmentListener);
+            }
         }
 
         Map<String, Object> pipelineEnvironment = new HashMap<String, Object>();

@@ -787,9 +787,23 @@ public class RolesAndPermissionsHandler implements Serializable {
     public void storeDetails(String[] languageCodes, String[] languageNames, String[] titles, String[] descriptions, Boolean hidden, String[] nodeTypes) {
         Map<String, I18nRoleProperties> i18nProperties = roleBean.getI18nProperties();
         for (int i = 0; i < languageCodes.length; i++) {
-            String l = i < languageCodes.length ? languageCodes[i] : "";
-            String title = i < titles.length ? titles[i] : "";
-            String description = i < descriptions.length ? descriptions[i] : "";
+            String l = languageCodes[i];
+            String title;
+            if (languageCodes.length == 1) {
+                title = StringUtils.join(titles, ", ");
+            } else if (i < titles.length) {
+                title = titles[i];
+            } else {
+                title = "";
+            }
+            String description;
+            if (languageCodes.length == 1) {
+                description = StringUtils.join(descriptions, ", ");
+            } else if (i < descriptions.length) {
+                description = descriptions[i];
+            } else {
+                description = "";
+            }
             if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
                 i18nProperties.put(l, null);
                 continue;

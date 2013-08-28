@@ -58,6 +58,12 @@
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
         <property name="peopleAssignmentPipeline" ref="peopleAssignmentPipeline"/>
+        <property name="jahiaUserGroupCallback">
+            <bean class="org.jahia.services.workflow.jbpm.JahiaUserGroupCallback">
+                <property name="userService" ref="JahiaUserManagerService"/>
+                <property name="groupService" ref="JahiaGroupManagerService"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- Work item handler instances -->

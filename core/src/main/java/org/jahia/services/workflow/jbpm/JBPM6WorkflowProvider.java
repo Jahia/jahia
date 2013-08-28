@@ -4,6 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.drools.container.spring.beans.persistence.DroolsSpringJpaManager;
 import org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.TransactionManager;
@@ -29,9 +32,12 @@ import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.process.audit.command.AbstractHistoryLogCommand;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -40,6 +46,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
+import org.kie.api.command.Command;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -55,6 +62,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.*;
+import org.kie.internal.command.Context;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.EventService;
@@ -106,6 +114,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private Map<String, WorkItemHandler> workItemHandlers = new TreeMap<String, WorkItemHandler>();
     private Map<String, AbstractTaskLifeCycleEventListener> taskAssignmentListeners = new TreeMap<String, AbstractTaskLifeCycleEventListener>();
     private Pipeline peopleAssignmentPipeline;
+    private JahiaUserGroupCallback jahiaUserGroupCallback;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -150,6 +159,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public void setPeopleAssignmentPipeline(Pipeline peopleAssignmentPipeline) {
         this.peopleAssignmentPipeline = peopleAssignmentPipeline;
+    }
+
+    public void setJahiaUserGroupCallback(JahiaUserGroupCallback jahiaUserGroupCallback) {
+        this.jahiaUserGroupCallback = jahiaUserGroupCallback;
     }
 
     public KieRepository getKieRepository() {
@@ -221,6 +234,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, em);
         env.set("IS_JTA_TRANSACTION", false);
         env.set("IS_SHARED_ENTITY_MANAGER", true);
+
         env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);
         PersistenceContextManager persistenceContextManager = new DroolsSpringJpaManager(env);
         env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager);
@@ -233,6 +247,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 .knowledgeBase(kieContainer.getKieBase())
                 .classLoader(kieContainer.getClassLoader())
                 .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
+                .userGroupCallback(jahiaUserGroupCallback)
                 .get();
         // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
@@ -407,12 +422,15 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public Workflow getWorkflow(String processId, Locale locale) {
-        ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
-        String processDefinitionId = processInstance.getProcessId();
-        KieBase kieBase = getKieSession().getKieBase();
-
-        return convertToWorkflow(processInstance, locale);
+    public Workflow getWorkflow(final String processId, final  Locale locale) {
+        return executeCommand(new GenericCommand<Workflow>() {
+            @Override
+            public Workflow execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ProcessInstance processInstance = ksession.getProcessInstance(Long.parseLong(processId));
+                return convertToWorkflow(processInstance, locale);
+            }
+        });
     }
 
     @Override
@@ -666,6 +684,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getChainedClassLoader());
                 }
                 args.put("outcome", outcome);
+                taskService.start(Long.parseLong(taskId), jahiaUser.getUserKey());
                 taskService.complete(Long.parseLong(taskId), jahiaUser.getUserKey(), args);
             } finally {
                 if (l != null) {
@@ -708,44 +727,75 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds, Locale locale) {
-        List<HistoryWorkflow> historyWorkflows = new ArrayList<HistoryWorkflow>();
-        for (String processId : processIds) {
-            ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
-            List<VariableInstanceLog> nodeIdVariableInstanceLogs = JPAProcessInstanceDbLog.findVariableInstances(Long.parseLong(processId), "JCRNodeId");
-            String nodeId = null;
-            for (VariableInstanceLog nodeIdVariableInstanceLog : nodeIdVariableInstanceLogs) {
-                nodeId = nodeIdVariableInstanceLog.getValue();
+    public List<HistoryWorkflow> getHistoryWorkflows(final List<String> processIds, final Locale locale) {
+        return executeCommand(new AbstractHistoryLogCommand<List<HistoryWorkflow>>() {
+            @Override
+            public List<HistoryWorkflow> execute(Context context) {
+                setLogEnvironment(context);
+                List<HistoryWorkflow> historyWorkflows = new ArrayList<HistoryWorkflow>();
+                for (String processId : processIds) {
+                    ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
+                    List<VariableInstanceLog> nodeIdVariableInstanceLogs = JPAProcessInstanceDbLog.findVariableInstances(Long.parseLong(processId), "nodeId");
+                    String nodeId = null;
+                    for (VariableInstanceLog nodeIdVariableInstanceLog : nodeIdVariableInstanceLogs) {
+                        nodeId = nodeIdVariableInstanceLog.getValue();
+                    }
+                    historyWorkflows.add(new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
+                            getWorkflowDefinitionById(processInstanceLog.getProcessId(), locale),
+                            processInstanceLog.getProcessName(),
+                            key,
+                            processInstanceLog.getIdentity(),
+                            processInstanceLog.getStart(),
+                            processInstanceLog.getEnd(),
+                            processInstanceLog.getOutcome(),
+                            nodeId
+                    ));
+                }
+                return historyWorkflows;
             }
-            historyWorkflows.add(new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
-                    getWorkflowDefinitionById(processInstanceLog.getProcessId(), locale),
-                    processInstanceLog.getProcessName(),
-                    key,
-                    processInstanceLog.getIdentity(),
-                    processInstanceLog.getStart(),
-                    processInstanceLog.getEnd(),
-                    processInstanceLog.getOutcome(),
-                    nodeId
-            ));
-        }
-        return historyWorkflows;
+        });
     }
 
     @Override
-    public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale locale) {
+    public List<HistoryWorkflowTask> getHistoryWorkflowTasks(final String processId, final Locale locale) {
         final List<HistoryWorkflowTask> workflowTaskHistory = new LinkedList<HistoryWorkflowTask>();
-        ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
-        List<NodeInstanceLog> nodeInstanceLogs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceLog.getProcessInstanceId());
-        for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
-            workflowTaskHistory.add(new HistoryWorkflowTask(nodeInstanceLog.getWorkItemId().toString(),
-                    nodeInstanceLog.getProcessId(),
-                    nodeInstanceLog.getNodeName(),
+
+        List<Long> tasksIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
+        for (Long taskId : tasksIds) {
+            Task t = taskService.getTaskById(taskId);
+            System.out.println(t.getTaskData().getStatus());
+            workflowTaskHistory.add(new HistoryWorkflowTask(Long.toString(taskId),
+                    t.getTaskData().getProcessId(),
+                    "name",
                     key,
-                    "user", // @todo properly implement this
-                    nodeInstanceLog.getDate(),
-                    nodeInstanceLog.getDate(),
-                    "outcome")); // @todo properly implement this.
+                    null, // @todo properly implement this
+                    t.getTaskData().getActivationTime(),
+                    null,
+                    null)); // @todo properly implement this.
         }
+
+        workflowTaskHistory.addAll(executeCommand(new AbstractHistoryLogCommand<List<HistoryWorkflowTask>>() {
+            @Override
+            public List<HistoryWorkflowTask> execute(Context context) {
+                setLogEnvironment(context);
+                final List<HistoryWorkflowTask> workflowTaskHistory = new LinkedList<HistoryWorkflowTask>();
+                ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
+                List<NodeInstanceLog> nodeInstanceLogs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceLog.getProcessInstanceId());
+                for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
+                    if (nodeInstanceLog.getWorkItemId() != null) {
+                        workflowTaskHistory.add(new HistoryWorkflowTask(nodeInstanceLog.getWorkItemId().toString(),
+                                nodeInstanceLog.getProcessId(),
+                                nodeInstanceLog.getNodeName(),
+                                key,
+                                "user", // @todo properly implement this
+                                nodeInstanceLog.getDate(),
+                                nodeInstanceLog.getDate(),
+                                "outcome")); // @todo properly implement this.
+                    }
+                }
+                return workflowTaskHistory;
+            }
+        }));
         return workflowTaskHistory;
     }
 
@@ -768,7 +818,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             final Set<String> tasks = new LinkedHashSet<String>();
             tasks.add(WorkflowService.START_ROLE);
             for (Node node : nodes) {
-                tasks.add(node.getName());
+                if (node instanceof HumanTaskNode) {
+                    tasks.add(node.getName());
+                }
             }
             wf.setTasks(tasks);
         }
@@ -815,10 +867,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         workflowTask.setDueDate(task.getTaskData().getExpirationTime());
         workflowTask.setDescription(getI18NText(task.getDescriptions(), locale));
         workflowTask.setCreateTime(task.getTaskData().getCreatedOn());
-        workflowTask.setProcessId(task.getTaskData().getProcessId());
+        workflowTask.setProcessId(Long.toString(task.getTaskData().getProcessInstanceId()));
         if (task.getTaskData().getActualOwner() != null) {
             workflowTask.setAssignee(
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().toString()));
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().getId()));
         }
         workflowTask.setId(Long.toString(task.getId()));
         Set<String> connectionIds = getTaskOutcomes(task);
@@ -863,25 +915,31 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return workflowTask;
     }
 
-    public Set<String> getTaskOutcomes(Task task) {
-        Set<String> connectionIds = new TreeSet<String>();
-        long workItemId = task.getTaskData().getWorkItemId();
-        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) getKieSession().getProcessInstance(task.getTaskData().getProcessInstanceId());
-        NodeInstance taskNodeInstance = null;
-        for (NodeInstance nodeInstance : workflowProcessInstance.getNodeInstances()) {
-            if (nodeInstance instanceof WorkItemNodeInstance) {
-                WorkItemNodeInstance workItemNodeInstance = (WorkItemNodeInstance) nodeInstance;
-                if (workItemNodeInstance.getWorkItem().getId() == workItemId) {
-                    taskNodeInstance = nodeInstance;
-                    break;
+    public Set<String> getTaskOutcomes(final Task task) {
+        final long workItemId = task.getTaskData().getWorkItemId();
+        return executeCommand(new GenericCommand<Set<String>>() {
+            @Override
+            public Set<String> execute(Context context) {
+                Set<String> connectionIds = new TreeSet<String>();
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(task.getTaskData().getProcessInstanceId());
+                NodeInstance taskNodeInstance = null;
+                for (NodeInstance nodeInstance : workflowProcessInstance.getNodeInstances()) {
+                    if (nodeInstance instanceof WorkItemNodeInstance) {
+                        WorkItemNodeInstance workItemNodeInstance = (WorkItemNodeInstance) nodeInstance;
+                        if (workItemNodeInstance.getWorkItemId() == workItemId) {
+                            taskNodeInstance = nodeInstance;
+                            break;
+                        }
+                    }
                 }
+                if (taskNodeInstance == null) {
+                    return connectionIds;
+                }
+                getOutgoingConnectionNames(connectionIds, taskNodeInstance.getNode());
+                return connectionIds;
             }
-        }
-        if (taskNodeInstance == null) {
-            return connectionIds;
-        }
-        getOutgoingConnectionNames(connectionIds, taskNodeInstance.getNode());
-        return connectionIds;
+        });
     }
 
     private void getOutgoingConnectionNames(Set<String> connectionIds, Node node) {
@@ -889,7 +947,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
             for (Connection connection : outgoingConnectionEntry.getValue()) {
                 if (connection.getTo() instanceof Split) {
-                    getOutgoingConnectionNames(connectionIds, connection.getTo());
+                    for (Constraint constraint : ((Split) connection.getTo()).getConstraints().values()) {
+                        connectionIds.add(constraint.getName());
+                    }
                 } else {
                     String uniqueId = (String) connection.getMetaData().get("UniqueId");
                     connectionIds.add(uniqueId);
@@ -974,4 +1034,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return "";
     }
 
+
+    private <T> T executeCommand(Command<T> t) {
+        CommandBasedStatefulKnowledgeSession s = (CommandBasedStatefulKnowledgeSession)getKieSession();
+        return s.execute(t);
+    }
 }

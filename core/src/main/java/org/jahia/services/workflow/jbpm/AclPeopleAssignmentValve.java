@@ -16,6 +16,7 @@ import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalTask;
 
@@ -45,7 +46,7 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
             node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
             String name = JBPM6WorkflowProvider.getI18NText(task.getNames(), locale);
 
-            PeopleAssignmentsImpl peopleAssignments = new PeopleAssignmentsImpl();
+            PeopleAssignments peopleAssignments = task.getPeopleAssignments();
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
             final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name, Long.toString(task.getTaskData().getProcessInstanceId()));
             for (JahiaPrincipal principal : principals) {
@@ -57,10 +58,8 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
             }
             List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
             administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
-            peopleAssignments.setBusinessAdministrators(administrators);
-            peopleAssignments.setPotentialOwners(potentialOwners);
-            ((InternalTask) task).setPeopleAssignments(peopleAssignments);
-
+            peopleAssignments.getBusinessAdministrators().addAll(administrators);
+            peopleAssignments.getPotentialOwners().addAll(potentialOwners);
         } catch (RepositoryException e) {
             throw new RuntimeException("Error while setting up task assignees and creating a JCR task", e);
         }

@@ -113,6 +113,20 @@
 
         });
     });
+
+    function addI18nRow() {
+        var languageCode = $("#newLanguage").val();
+        if (languageCode != null) {
+            var $selectedOption = $("#newLanguage option[value='" + languageCode + "']");
+            var languageName = $selectedOption.text();
+            $('#roleI18nPropsTable > tbody:last').append("<tr><td>" + languageName +
+                    "<input type=\"hidden\" name=\"languageCode\" value=\"" + languageCode + "\" />" +
+                    "<input type=\"hidden\" name=\"languageName\" value=\"" + languageName + "\" />" +
+                    "</td><td><input type=\"text\" name=\"title\" onchange=\"$('.submitButton').addClass('btn-danger')\" /></td>" +
+                    "<td><textarea name=\"description\" onchange=\"$('.submitButton').addClass('btn-danger')\" /></td></tr>");
+            $selectedOption.remove();
+        }
+    }
 </script>
 
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
@@ -125,38 +139,62 @@
 
 
 <form id="form" action="${flowExecutionUrl}" method="post">
-    <div class="box-1">
     <fieldset>
         <h2>${handler.roleBean.name}</h2>
+        <table class="table table-bordered table-striped table-hover" id="roleI18nPropsTable">
+            <thead>
+            <tr>
+                <th width="10%"><fmt:message key="label.language"/></th>
+                <th width="20%"><fmt:message key="label.title"/></th>
+                <th width="70%"><fmt:message key="label.description"/></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <c:forEach items="${handler.roleBean.i18nProperties}" var="entry" varStatus="loopStatus">
+            <c:if test="${not empty entry.value}">
+            <tr>
+                <td>
+                    ${entry.value.language}<input type="hidden" name="languageCode" value="${entry.key}" /><input type="hidden" name="languageName" value="${entry.value.language}" />
+                </td>
+                <td>
+                    <input type="text" name="title" value="${entry.value.title}" onchange="$('.submitButton').addClass('btn-danger')" />
+                </td>
+                <td>
+                    <textarea name="description" onchange="$('.submitButton').addClass('btn-danger')">${entry.value.description}</textarea>
+                </td>
+            </tr>
+            </c:if>
+            </c:forEach>
+            </tbody>
+        </table>
+
+        <select id="newLanguage">
+            <c:forEach items="${handler.availableLanguages}" var="entry">
+                <option value="${entry.key}">${entry.value}</option>
+            </c:forEach>
+        </select>
+        <button class="btn" onclick="addI18nRow(); return false;"><i class="icon-plus"></i></button>
+    </fieldset>
+    <div class="box-1">
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span4">
-                    <label for="title"><fmt:message key="label.title"/></label>
-                    <input type="text" name="title" id="title" value="${handler.roleBean.title}" onchange="$('.submitButton').addClass('btn-danger')"/>
+                <div class="span1">
                     <label for="hidden"><fmt:message key="rolesmanager.rolesAndPermissions.hidden"/></label>
                     <input name="hidden" id="hidden" type="checkbox" ${handler.roleBean.hidden?'checked="true"':''} onchange="$('.submitButton').addClass('btn-danger')" />
-
                 </div>
-                <div class="span4">
-                    <label for="description"><fmt:message key="label.description"/></label>
-                    <textarea id="description" name="description"  onchange="$('.submitButton').addClass('btn-danger')">${handler.roleBean.description}</textarea>
-                </div>
-
-
                 <c:if test="${not empty handler.roleBean.roleType.availableNodeTypes}">
-                <div class="span4">
-                    <label for="nodeTypes"><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes"/></label>
-                    <select multiple="true" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger')">
-                        <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
-                            <option value="${nodeType.name}" ${nodeType.set ? 'selected="true"' : ''}>${nodeType.displayName}</option>
-                        </c:forEach>
-                    </select>
-                </div>
+                    <div class="span4">
+                        <label for="nodeTypes"><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes"/></label>
+                        <select multiple="true" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger')">
+                            <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
+                                <option value="${nodeType.name}" ${nodeType.set ? 'selected="true"' : ''}>${nodeType.displayName}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
                 </c:if>
-
             </div>
         </div>
-    </fieldset>
     </div>
 
     <input id="selectedPermissions" type="hidden" name="selectedPermissions"/>

@@ -43,31 +43,31 @@
 
         <transition on="saveRole" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
+            <evaluate expression="handler.storeDetails(requestParameters.languageCode,requestParameters.languageName,requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
             <evaluate expression="handler.save()"/>
         </transition>
 
         <transition on="switchContext" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
+            <evaluate expression="handler.storeDetails(requestParameters.languageCode,requestParameters.languageName,requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
             <evaluate expression="handler.setCurrentContext(requestParameters.context)" />
         </transition>
 
         <transition on="switchGroup" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
+            <evaluate expression="handler.storeDetails(requestParameters.languageCode,requestParameters.languageName,requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
             <evaluate expression="handler.setCurrentGroup(requestParameters.context,requestParameters.groupTab)" />
         </transition>
 
         <transition on="addContext" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
+            <evaluate expression="handler.storeDetails(requestParameters.languageCode,requestParameters.languageName,requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
             <evaluate expression="handler.addContext(requestParameters.newContext)" />
         </transition>
 
         <transition on="removeContext" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
+            <evaluate expression="handler.storeDetails(requestParameters.languageCode,requestParameters.languageName,requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
             <evaluate expression="handler.removeContext(requestParameters.context)" />
         </transition>
 
@@ -77,7 +77,7 @@
 
         <transition on="expandMappedPermissions" to="viewRole">
             <evaluate expression="handler.storeValues(requestParameters.selectedPermissions,requestParameters.partialSelectedPermissions)" />
-            <evaluate expression="handler.storeDetails(requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
+            <evaluate expression="handler.storeDetails(requestParameters.languageCode,requestParameters.languageName,requestParameters.title,requestParameters.description,requestParameters.hidden,requestParameters.nodeTypes)" />
             <evaluate expression="handler.expandMapped(requestParameters.permission)" />
         </transition>
 

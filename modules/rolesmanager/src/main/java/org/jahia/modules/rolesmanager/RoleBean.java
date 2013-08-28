@@ -1,5 +1,7 @@
 package org.jahia.modules.rolesmanager;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -13,9 +15,7 @@ public class RoleBean implements Serializable {
 
     private String path;
 
-    private String title = "";
-
-    private String description = "";
+    private Map<String, I18nRoleProperties> i18nProperties;
 
     private boolean hidden = false;
 
@@ -56,20 +56,30 @@ public class RoleBean implements Serializable {
         this.path = path;
     }
 
-    public String getTitle() {
-        return title;
+    public Map<String, I18nRoleProperties> getI18nProperties() {
+        return i18nProperties;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setI18nProperties(Map<String, I18nRoleProperties> i18nProperties) {
+        this.i18nProperties = i18nProperties;
+    }
+
+    public String getTitle() {
+        String language = LocaleContextHolder.getLocale().getLanguage();
+        if (i18nProperties.containsKey(language) && i18nProperties.get(language) != null) {
+            return i18nProperties.get(language).getTitle();
+        } else {
+            return "";
+        }
     }
 
     public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+        String language = LocaleContextHolder.getLocale().getLanguage();
+        if (i18nProperties.containsKey(language) && i18nProperties.get(language) != null) {
+            return i18nProperties.get(language).getDescription();
+        } else {
+            return "";
+        }
     }
 
     public boolean isHidden() {

@@ -64,7 +64,11 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     private JCRSessionWrapper getSession() throws RepositoryException {
-        return JCRSessionFactory.getInstance().getCurrentUserSession("default", LocaleContextHolder.getLocale());
+        return getSession(LocaleContextHolder.getLocale());
+    }
+
+    private JCRSessionWrapper getSession(Locale locale) throws RepositoryException {
+        return JCRSessionFactory.getInstance().getCurrentUserSession("default", locale);
     }
 
     public Map<String, List<RoleBean>> getRoles() throws RepositoryException {
@@ -140,12 +144,27 @@ public class RolesAndPermissionsHandler implements Serializable {
         roleBean.setName(role.getName());
         roleBean.setPath(role.getPath());
         roleBean.setDepth(role.getDepth());
-        if (role.hasProperty("jcr:title")) {
-            roleBean.setTitle(role.getProperty("jcr:title").getString());
+
+        JCRNodeWrapper n;
+        Map<String, I18nRoleProperties> i18nRoleProperties = new TreeMap<String, I18nRoleProperties>();
+        for (Locale l : role.getExistingLocales()) {
+            n = getSession(l).getNodeByIdentifier(uuid);
+            if (!n.hasProperty(Constants.JCR_TITLE) && !n.hasProperty(Constants.JCR_DESCRIPTION)) {
+                i18nRoleProperties.put(l.getLanguage(), null);
+                continue;
+            }
+            I18nRoleProperties properties = new I18nRoleProperties();
+            properties.setLanguage(l.getDisplayName(LocaleContextHolder.getLocale()));
+            if (n.hasProperty(Constants.JCR_TITLE)) {
+                properties.setTitle(n.getProperty(Constants.JCR_TITLE).getString());
+            }
+            if (n.hasProperty(Constants.JCR_DESCRIPTION)) {
+                properties.setDescription(n.getProperty(Constants.JCR_DESCRIPTION).getString());
+            }
+            i18nRoleProperties.put(l.getLanguage(), properties);
         }
-        if (role.hasProperty("jcr:description")) {
-            roleBean.setDescription(role.getProperty("jcr:description").getString());
-        }
+        roleBean.setI18nProperties(i18nRoleProperties);
+
         if (role.hasProperty("j:hidden")) {
             roleBean.setHidden(role.getProperty("j:hidden").getBoolean());
         }
@@ -682,8 +701,35 @@ public class RolesAndPermissionsHandler implements Serializable {
                 next.remove();
             }
         }
-        role.setProperty("jcr:title", roleBean.getTitle());
-        role.setProperty("jcr:description", roleBean.getDescription());
+
+        JCRNodeWrapper n;
+        Map<String, I18nRoleProperties> i18nRoleProperties = roleBean.getI18nProperties();
+        for (String l : i18nRoleProperties.keySet()) {
+            n = getSession(new Locale(l)).getNodeByIdentifier(roleBean.getUuid());
+            I18nRoleProperties properties = i18nRoleProperties.get(l);
+            if (properties == null) {
+                if (n.hasProperty(Constants.JCR_TITLE)) {
+                    n.getProperty(Constants.JCR_TITLE).remove();
+                }
+                if (n.hasProperty(Constants.JCR_DESCRIPTION)) {
+                    n.getProperty(Constants.JCR_DESCRIPTION).remove();
+                }
+            } else {
+                String title = properties.getTitle();
+                if (StringUtils.isNotBlank(title)) {
+                    n.setProperty(Constants.JCR_TITLE, title);
+                } else if (n.hasProperty(Constants.JCR_TITLE)) {
+                    n.getProperty(Constants.JCR_TITLE).remove();
+                }
+                String description = properties.getDescription();
+                if (StringUtils.isNotBlank(description)) {
+                    n.setProperty(Constants.JCR_DESCRIPTION, description);
+                } else if (n.hasProperty(Constants.JCR_DESCRIPTION)) {
+                    n.getProperty(Constants.JCR_DESCRIPTION).remove();
+                }
+            }
+        }
+
         role.setProperty("j:hidden", roleBean.isHidden());
         if (roleBean.getNodeTypes() != null) {
             List<Value> values = new ArrayList<Value>();
@@ -738,15 +784,34 @@ public class RolesAndPermissionsHandler implements Serializable {
         return allPermissions;
     }
 
-    public void storeDetails(String title, String description, Boolean hidden, String[] nodeTypes) {
-        if (!title.equals(roleBean.getTitle())) {
-            roleBean.setDirty(true);
-            roleBean.setTitle(title);
+    public void storeDetails(String[] languageCodes, String[] languageNames, String[] titles, String[] descriptions, Boolean hidden, String[] nodeTypes) {
+        Map<String, I18nRoleProperties> i18nProperties = roleBean.getI18nProperties();
+        for (int i = 0; i < languageCodes.length; i++) {
+            String l = i < languageCodes.length ? languageCodes[i] : "";
+            String title = i < titles.length ? titles[i] : "";
+            String description = i < descriptions.length ? descriptions[i] : "";
+            if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
+                i18nProperties.put(l, null);
+                continue;
+            }
+            I18nRoleProperties properties;
+            if (!i18nProperties.containsKey(l) || i18nProperties.get(l) == null) {
+                properties = new I18nRoleProperties();
+                properties.setLanguage(languageNames[i]);
+                i18nProperties.put(l, properties);
+            } else {
+                properties = i18nProperties.get(l);
+            }
+            if (!title.equals(properties.getTitle())) {
+                roleBean.setDirty(true);
+                properties.setTitle(title);
+            }
+            if (!description.equals(properties.getDescription())) {
+                roleBean.setDirty(true);
+                properties.setDescription(description);
+            }
         }
-        if (!description.equals(roleBean.getDescription())) {
-            roleBean.setDirty(true);
-            roleBean.setDescription(description);
-        }
+
         roleBean.setHidden(hidden != null && hidden);
 
         if (roleBean.getNodeTypes() != null) {
@@ -786,4 +851,20 @@ public class RolesAndPermissionsHandler implements Serializable {
         return Messages.get("resources.JahiaRolesManager", key, LocaleContextHolder.getLocale());
     }
 
+    public Map<String, String> getAvailableLanguages() throws RepositoryException {
+        Set<String> languages = new TreeSet<String>(getSession().getNodeByIdentifier(roleBean.getUuid()).getResolveSite().getLanguages());
+        Map<String, I18nRoleProperties> i18nProperties = roleBean.getI18nProperties();
+        for (String l : i18nProperties.keySet()) {
+            if (i18nProperties.get(l) != null) {
+                languages.remove(l);
+            }
+        }
+
+        TreeMap<String, String> availableLanguages = new TreeMap<String, String>();
+        for (String l : languages) {
+            Locale locale = new Locale(l);
+            availableLanguages.put(l, locale.getDisplayName(LocaleContextHolder.getLocale()));
+        }
+        return availableLanguages;
+    }
 }

@@ -785,44 +785,46 @@ public class RolesAndPermissionsHandler implements Serializable {
     }
 
     public void storeDetails(String[] languageCodes, String[] languageNames, String[] titles, String[] descriptions, Boolean hidden, String[] nodeTypes) {
-        Map<String, I18nRoleProperties> i18nProperties = roleBean.getI18nProperties();
-        for (int i = 0; i < languageCodes.length; i++) {
-            String l = languageCodes[i];
-            String title;
-            if (languageCodes.length == 1) {
-                title = StringUtils.join(titles, ", ");
-            } else if (i < titles.length) {
-                title = titles[i];
-            } else {
-                title = "";
-            }
-            String description;
-            if (languageCodes.length == 1) {
-                description = StringUtils.join(descriptions, ", ");
-            } else if (i < descriptions.length) {
-                description = descriptions[i];
-            } else {
-                description = "";
-            }
-            if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
-                i18nProperties.put(l, null);
-                continue;
-            }
-            I18nRoleProperties properties;
-            if (!i18nProperties.containsKey(l) || i18nProperties.get(l) == null) {
-                properties = new I18nRoleProperties();
-                properties.setLanguage(languageNames[i]);
-                i18nProperties.put(l, properties);
-            } else {
-                properties = i18nProperties.get(l);
-            }
-            if (!title.equals(properties.getTitle())) {
-                roleBean.setDirty(true);
-                properties.setTitle(title);
-            }
-            if (!description.equals(properties.getDescription())) {
-                roleBean.setDirty(true);
-                properties.setDescription(description);
+        if (languageCodes != null) {
+            Map<String, I18nRoleProperties> i18nProperties = roleBean.getI18nProperties();
+            for (int i = 0; i < languageCodes.length; i++) {
+                String l = languageCodes[i];
+                String title;
+                if (titles != null && languageCodes.length == 1) {
+                    title = StringUtils.join(titles, ", ");
+                } else if (titles != null && i < titles.length) {
+                    title = titles[i];
+                } else {
+                    title = "";
+                }
+                String description;
+                if (descriptions != null && languageCodes.length == 1) {
+                    description = StringUtils.join(descriptions, ", ");
+                } else if (descriptions != null && i < descriptions.length) {
+                    description = descriptions[i];
+                } else {
+                    description = "";
+                }
+                if (StringUtils.isBlank(title) && StringUtils.isBlank(description)) {
+                    i18nProperties.put(l, null);
+                    continue;
+                }
+                I18nRoleProperties properties;
+                if (!i18nProperties.containsKey(l) || i18nProperties.get(l) == null) {
+                    properties = new I18nRoleProperties();
+                    properties.setLanguage(languageNames[i]);
+                    i18nProperties.put(l, properties);
+                } else {
+                    properties = i18nProperties.get(l);
+                }
+                if (!title.equals(properties.getTitle())) {
+                    roleBean.setDirty(true);
+                    properties.setTitle(title);
+                }
+                if (!description.equals(properties.getDescription())) {
+                    roleBean.setDirty(true);
+                    properties.setDescription(description);
+                }
             }
         }
 

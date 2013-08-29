@@ -50,6 +50,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -440,7 +441,7 @@ public class JBPMMailProducer {
         Locale locale = (Locale) vars.get("locale");
         final Bindings bindings = new MyBindings(workItem);
         ResourceBundle resourceBundle = ResourceBundles.get(
-                "org.jahia.services.workflow." + vars.get("processName"), locale);
+                "org.jahia.services.workflow." + WorkflowService.getInstance().getWorkflow("jBPM",""+workItem.getProcessInstanceId(), locale).getName(), locale);
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)

@@ -683,7 +683,7 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof WorklowTypeRegistration) {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
-                workflowService.unregisterWorkflowType(registration.getType(), registration.getDefinition());
+                workflowService.unregisterWorkflowType(registration);
             }
 
             if (bean instanceof VisibilityConditionRule) {
@@ -832,7 +832,7 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof WorklowTypeRegistration) {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
-                workflowService.registerWorkflowType(registration.getType(), registration.getDefinition(), registration.getModule(), registration.getPermissions());
+                workflowService.registerWorkflowType(registration);
             }
 
             if (bean instanceof VisibilityConditionRule) {

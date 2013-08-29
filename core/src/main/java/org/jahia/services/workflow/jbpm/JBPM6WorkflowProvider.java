@@ -47,9 +47,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.command.Command;
-import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.definition.process.*;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
@@ -87,6 +85,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         InitializingBean,
         WorkflowObservationManagerAware {
 
+    public static final List<Status> OPEN_STATUS_LIST = Arrays.asList(Status.Created, Status.InProgress, Status.Ready, Status.Reserved);
     private transient static Logger logger = LoggerFactory.getLogger(JBPM6WorkflowProvider.class);
     private transient static JBPM6WorkflowProvider instance = new JBPM6WorkflowProvider();
 
@@ -347,48 +346,76 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public List<WorkflowDefinition> getAvailableWorkflows(Locale locale) {
-        KieBase kieBase = getKieSession().getKieBase();
-        Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
-        List<WorkflowDefinition> workflowDefinitions = new ArrayList<WorkflowDefinition>();
-        for (org.kie.api.definition.process.Process process : processes) {
-            workflowDefinitions.add(convertToWorkflowDefinition(process, locale));
-        }
-        return workflowDefinitions;
-    }
-
-    @Override
-    public WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale) {
-        KieBase kieBase = getKieSession().getKieBase();
-        Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
-        for (org.kie.api.definition.process.Process process : processes) {
-            if (process.getName().equals(key)) {
-                return convertToWorkflowDefinition(process, locale);
+    public List<WorkflowDefinition> getAvailableWorkflows(final Locale locale) {
+        return executeCommand(new GenericCommand<List<WorkflowDefinition>>() {
+            @Override
+            public List<WorkflowDefinition> execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                KieBase kieBase = ksession.getKieBase();
+                Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
+                List<WorkflowDefinition> workflowDefinitions = new ArrayList<WorkflowDefinition>();
+                for (org.kie.api.definition.process.Process process : processes) {
+                    workflowDefinitions.add(convertToWorkflowDefinition(process, locale, ksession));
+                }
+                return workflowDefinitions;
             }
-        }
-        return null;
-    }
-
-    public WorkflowDefinition getWorkflowDefinitionById(String id, Locale locale) {
-        KieBase kieBase = getKieSession().getKieBase();
-        org.kie.api.definition.process.Process process = kieBase.getProcess(id);
-        return convertToWorkflowDefinition(process, locale);
+        });
     }
 
     @Override
-    public List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale) {
-        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
-        List<Workflow> activeWorkflows = new ArrayList<Workflow>();
-        for (ProcessInstance processInstance : processInstances) {
-            activeWorkflows.add(convertToWorkflow(processInstance, locale));
-        }
-        return activeWorkflows;
+    public WorkflowDefinition getWorkflowDefinitionByKey(final String key, final Locale locale) {
+        return executeCommand(new GenericCommand<WorkflowDefinition>() {
+            @Override
+            public WorkflowDefinition execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                KieBase kieBase = ksession.getKieBase();
+                Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
+                for (org.kie.api.definition.process.Process process : processes) {
+                    if (process.getName().equals(key)) {
+                        return convertToWorkflowDefinition(process, locale, ksession);
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public List<Workflow> getActiveWorkflowsInformations(final List<String> processIds, final Locale locale) {
+        return executeCommand(new GenericCommand<List<Workflow>>() {
+            @Override
+            public List<Workflow> execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
+                List<Workflow> activeWorkflows = new ArrayList<Workflow>();
+                for (ProcessInstance processInstance : processInstances) {
+                    activeWorkflows.add(convertToWorkflow(processInstance, locale, ksession));
+                }
+                return activeWorkflows;
+            }
+        });
     }
 
     @Override
     public String startProcess(String processKey, Map<String, Object> args) {
         ProcessInstance processInstance = getKieSession().startProcess(getEncodedProcessKey(processKey), args);
         return Long.toString(processInstance.getId());
+    }
+
+    public WorkflowDefinition getWorkflowDefinitionById(final String id, final Locale locale) {
+        return executeCommand(new GenericCommand<WorkflowDefinition>() {
+            @Override
+            public WorkflowDefinition execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                return getWorkflowDefinitionById(id, locale, ksession);
+            }
+        });
+    }
+
+    private WorkflowDefinition getWorkflowDefinitionById(String id, Locale locale, KieSession ksession) {
+        KieBase kieBase = getKieSession().getKieBase();
+        org.kie.api.definition.process.Process process = kieBase.getProcess(id);
+        return convertToWorkflowDefinition(process, locale, ksession);
     }
 
     /**
@@ -428,74 +455,88 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             public Workflow execute(Context context) {
                 KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
                 ProcessInstance processInstance = ksession.getProcessInstance(Long.parseLong(processId));
-                return convertToWorkflow(processInstance, locale);
+                return convertToWorkflow(processInstance, locale, ksession);
             }
         });
     }
 
     @Override
-    public Set<WorkflowAction> getAvailableActions(String processId, Locale locale) {
-        ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
-        Set<String> connectionIds = new TreeSet<String>();
-        if (processInstance instanceof WorkflowProcessInstance) {
-            WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
-            Collection<NodeInstance> activeNodeInstances = workflowProcessInstance.getNodeInstances();
-            for (NodeInstance nodeInstance : activeNodeInstances) {
-                Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
-                for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
-                    for (Connection connection : outgoingConnectionEntry.getValue()) {
-                        String uniqueId = (String) connection.getMetaData().get("UniqueId");
-                        connectionIds.add(uniqueId);
+    public Set<WorkflowAction> getAvailableActions(final String processId, final Locale locale) {
+        return executeCommand(new GenericCommand<Set<WorkflowAction>>() {
+            @Override
+            public Set<WorkflowAction> execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
+                Set<String> connectionIds = new TreeSet<String>();
+                if (processInstance instanceof WorkflowProcessInstance) {
+                    WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+                    Collection<NodeInstance> activeNodeInstances = workflowProcessInstance.getNodeInstances();
+                    for (NodeInstance nodeInstance : activeNodeInstances) {
+                        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
+                        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
+                            for (Connection connection : outgoingConnectionEntry.getValue()) {
+                                String uniqueId = (String) connection.getMetaData().get("UniqueId");
+                                connectionIds.add(uniqueId);
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        Set<WorkflowAction> workflowActions = new HashSet<WorkflowAction>();
-        List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
-        for (Long taskId : taskIds) {
-            Task task = taskService.getTaskById(taskId);
-            String taskName = getI18NText(task.getNames(), locale);
-            if (connectionIds.contains(taskName)) {
-                WorkflowAction workflowAction = convertToWorkflowTask(task, locale);
-                workflowActions.add(workflowAction);
-                connectionIds.remove(taskName);
-            }
-        }
-        for (String connectionId : connectionIds) {
-            WorkflowAction workflowAction = new WorkflowAction(connectionId, key);
-            i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName());
-            workflowActions.add(workflowAction);
-        }
+                Set<WorkflowAction> workflowActions = new HashSet<WorkflowAction>();
+                List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
+                for (Long taskId : taskIds) {
+                    Task task = taskService.getTaskById(taskId);
+                    String taskName = getI18NText(task.getNames(), locale);
+                    if (connectionIds.contains(taskName)) {
+                        WorkflowAction workflowAction = convertToWorkflowTask(task, locale, ksession);
+                        workflowActions.add(workflowAction);
+                        connectionIds.remove(taskName);
+                    }
+                }
+                for (String connectionId : connectionIds) {
+                    WorkflowAction workflowAction = new WorkflowAction(connectionId, key);
+                    i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName());
+                    workflowActions.add(workflowAction);
+                }
 
-        return workflowActions;
+                return workflowActions;
+
+            }
+        });
     }
 
     @Override
-    public List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale) {
-        List<WorkflowTask> availableTasks = new ArrayList<WorkflowTask>();
-        List<TaskSummary> tasksOwned = taskService.getTasksOwned(user.getUserKey(), locale.toString());
-        if (tasksOwned != null && tasksOwned.size() > 0) {
-            availableTasks.addAll(convertToWorkflowTasks(locale, tasksOwned));
-        }
-        // how do we retrieve group tasks ?
-        List<TaskSummary> potentialOwnerTasks = taskService.getTasksAssignedAsPotentialOwner(user.getUserKey(), locale.toString());
-        if (potentialOwnerTasks != null && potentialOwnerTasks.size() > 0) {
-            availableTasks.addAll(convertToWorkflowTasks(locale, potentialOwnerTasks));
-        }
-        List<TaskSummary> businessAdministratorTasks = taskService.getTasksAssignedAsBusinessAdministrator(user.getUserKey(), locale.toString());
-        if (businessAdministratorTasks != null && businessAdministratorTasks.size() > 0) {
-            availableTasks.addAll(convertToWorkflowTasks(locale, businessAdministratorTasks));
-        }
-        return availableTasks;
+    public List<WorkflowTask> getTasksForUser(final JahiaUser user, final Locale locale) {
+        return executeCommand(new GenericCommand<List<WorkflowTask>>() {
+            @Override
+            public List<WorkflowTask> execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                List<WorkflowTask> availableTasks = new ArrayList<WorkflowTask>();
+                List<TaskSummary> tasksOwned = taskService.getTasksOwnedByStatus(user.getUserKey(), OPEN_STATUS_LIST, locale.toString());
+                if (tasksOwned != null && tasksOwned.size() > 0) {
+                    availableTasks.addAll(convertToWorkflowTasks(locale, tasksOwned, ksession));
+                }
+                // how do we retrieve group tasks ?
+                List<TaskSummary> potentialOwnerTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus(user.getUserKey(), OPEN_STATUS_LIST, locale.toString());
+                if (potentialOwnerTasks != null && potentialOwnerTasks.size() > 0) {
+                    availableTasks.addAll(convertToWorkflowTasks(locale, potentialOwnerTasks, ksession ));
+                }
+                List<TaskSummary> businessAdministratorTasks = taskService.getTasksAssignedAsBusinessAdministrator(user.getUserKey(), locale.toString());
+                if (businessAdministratorTasks != null && businessAdministratorTasks.size() > 0) {
+                    availableTasks.addAll(convertToWorkflowTasks(locale, businessAdministratorTasks, ksession));
+                }
+                return availableTasks;
+
+            }
+        });
     }
 
-    private List<WorkflowTask> convertToWorkflowTasks(Locale locale, List<TaskSummary> taskSummaryList) {
+    private List<WorkflowTask> convertToWorkflowTasks(Locale locale, List<TaskSummary> taskSummaryList, KieSession ksession) {
         List<WorkflowTask> availableTasks = new LinkedList<WorkflowTask>();
         for (TaskSummary taskSummary : taskSummaryList) {
             try {
                 Task task = taskService.getTaskById(taskSummary.getId());
-                WorkflowTask workflowTask = convertToWorkflowTask(task, locale);
+                WorkflowTask workflowTask = convertToWorkflowTask(task, locale, ksession);
                 availableTasks.add(workflowTask);
             } catch (Exception e) {
                 logger.debug("Cannot get task " + taskSummary.getName() + " for user", e);
@@ -505,34 +546,49 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public List<Workflow> getWorkflowsForDefinition(String definition, Locale locale) {
-        final List<Workflow> workflows = new LinkedList<Workflow>();
-        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
-        for (ProcessInstance processInstance : processInstances) {
-            if (processInstance instanceof WorkflowProcessInstance) {
-                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
-                if (workflowProcessInstance.getProcessName().equals(definition)) {
-                    workflows.add(convertToWorkflow(workflowProcessInstance, locale));
+    public List<Workflow> getWorkflowsForDefinition(final String definition, final Locale locale) {
+        return executeCommand(new GenericCommand<List<Workflow>>() {
+            @Override
+            public List<Workflow> execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                final List<Workflow> workflows = new LinkedList<Workflow>();
+                Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
+                for (ProcessInstance processInstance : processInstances) {
+                    if (processInstance instanceof WorkflowProcessInstance) {
+                        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+                        if (workflowProcessInstance.getProcessName().equals(definition)) {
+                            workflows.add(convertToWorkflow(workflowProcessInstance, locale, ksession));
+                        }
+                    }
                 }
+                return workflows;
+
+
             }
-        }
-        return workflows;
+        });
     }
 
     @Override
-    public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
-        final List<Workflow> workflows = new LinkedList<Workflow>();
-        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
-        for (ProcessInstance processInstance : processInstances) {
-            if (processInstance instanceof WorkflowProcessInstance) {
-                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
-                String userKey = (String) workflowProcessInstance.getVariable("user");
-                if (user.getUserKey().equals(userKey)) {
-                    workflows.add(convertToWorkflow(processInstance, locale));
+    public List<Workflow> getWorkflowsForUser(final JahiaUser user, final  Locale locale) {
+        return executeCommand(new GenericCommand<List<Workflow>>() {
+            @Override
+            public List<Workflow> execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                final List<Workflow> workflows = new LinkedList<Workflow>();
+                Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
+                for (ProcessInstance processInstance : processInstances) {
+                    if (processInstance instanceof WorkflowProcessInstance) {
+                        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+                        String userKey = (String) workflowProcessInstance.getVariable("user");
+                        if (user.getUserKey().equals(userKey)) {
+                            workflows.add(convertToWorkflow(processInstance, locale, ksession));
+                        }
+                    }
                 }
+                return workflows;
+
             }
-        }
-        return workflows;
+        });
     }
 
     private ThreadLocal loop = new ThreadLocal();
@@ -709,9 +765,15 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public WorkflowTask getWorkflowTask(String taskId, Locale locale) {
-        Task task = taskService.getTaskById(Long.parseLong(taskId));
-        return convertToWorkflowTask(task, locale);
+    public WorkflowTask getWorkflowTask(final String taskId, final Locale locale) {
+        return executeCommand(new GenericCommand<WorkflowTask>() {
+            @Override
+            public WorkflowTask execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                Task task = taskService.getTaskById(Long.parseLong(taskId));
+                return convertToWorkflowTask(task, locale, ksession);
+            }
+        });
     }
 
     @Override
@@ -732,6 +794,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             @Override
             public List<HistoryWorkflow> execute(Context context) {
                 setLogEnvironment(context);
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
                 List<HistoryWorkflow> historyWorkflows = new ArrayList<HistoryWorkflow>();
                 for (String processId : processIds) {
                     ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
@@ -740,8 +803,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     for (VariableInstanceLog nodeIdVariableInstanceLog : nodeIdVariableInstanceLogs) {
                         nodeId = nodeIdVariableInstanceLog.getValue();
                     }
-                    historyWorkflows.add(new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
-                            getWorkflowDefinitionById(processInstanceLog.getProcessId(), locale),
+                    final HistoryWorkflow historyWorkflow = new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
+                            getWorkflowDefinitionById(processInstanceLog.getProcessId(), locale, ksession),
                             processInstanceLog.getProcessName(),
                             key,
                             processInstanceLog.getIdentity(),
@@ -749,7 +812,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                             processInstanceLog.getEnd(),
                             processInstanceLog.getOutcome(),
                             nodeId
-                    ));
+                    );
+                    historyWorkflow.setDisplayName(historyWorkflow.getWorkflowDefinition().getDisplayName());
+                    historyWorkflows.add(historyWorkflow);
                 }
                 return historyWorkflows;
             }
@@ -758,27 +823,33 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<HistoryWorkflowTask> getHistoryWorkflowTasks(final String processId, final Locale locale) {
-        final List<HistoryWorkflowTask> workflowTaskHistory = new LinkedList<HistoryWorkflowTask>();
-
-        List<Long> tasksIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
-        for (Long taskId : tasksIds) {
-            Task t = taskService.getTaskById(taskId);
-            System.out.println(t.getTaskData().getStatus());
-            workflowTaskHistory.add(new HistoryWorkflowTask(Long.toString(taskId),
-                    t.getTaskData().getProcessId(),
-                    "name",
-                    key,
-                    null, // @todo properly implement this
-                    t.getTaskData().getActivationTime(),
-                    null,
-                    null)); // @todo properly implement this.
-        }
-
-        workflowTaskHistory.addAll(executeCommand(new AbstractHistoryLogCommand<List<HistoryWorkflowTask>>() {
+        return executeCommand(new AbstractHistoryLogCommand<List<HistoryWorkflowTask>>() {
             @Override
             public List<HistoryWorkflowTask> execute(Context context) {
-                setLogEnvironment(context);
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+
                 final List<HistoryWorkflowTask> workflowTaskHistory = new LinkedList<HistoryWorkflowTask>();
+
+                List<TaskSummary> tasksIds = taskService.getTasksByStatusByProcessInstanceId(Long.parseLong(processId), OPEN_STATUS_LIST, locale != null ? locale.getLanguage() : null);
+                for (TaskSummary taskSummary : tasksIds) {
+                    final HistoryWorkflowTask workflowTask = new HistoryWorkflowTask(Long.toString(taskSummary.getId()),
+                            Long.toString(taskSummary.getProcessInstanceId()),
+                            taskSummary.getName(),
+                            key,
+                            null,
+                            taskSummary.getActivationTime(),
+                            null,
+                            null);
+                    workflowTaskHistory.add(workflowTask);
+                    if (locale != null) {
+                        final WorkflowDefinition definition = getWorkflowDefinitionById(taskSummary.getProcessId(), locale, ksession);
+                        ResourceBundle resourceBundle = getResourceBundle(locale, definition.getKey());
+                        String rbActionName = i18nName(workflowTask.getName(), resourceBundle);
+                        workflowTask.setDisplayName(rbActionName);
+                    }
+                }
+
+                setLogEnvironment(context);
                 ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
                 List<NodeInstanceLog> nodeInstanceLogs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceLog.getProcessInstanceId());
                 for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
@@ -795,8 +866,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 }
                 return workflowTaskHistory;
             }
-        }));
-        return workflowTaskHistory;
+        });
     }
 
     @Override
@@ -804,26 +874,24 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private WorkflowDefinition convertToWorkflowDefinition(org.kie.api.definition.process.Process process, Locale locale) {
+    private WorkflowDefinition convertToWorkflowDefinition(org.kie.api.definition.process.Process process, Locale locale, KieSession ksession) {
         WorkflowDefinition wf = new WorkflowDefinition(process.getName(), process.getName(), this.key);
-        String startFormName = null;
         WorkflowProcess workflowProcess = (WorkflowProcess) process;
-        if (workflowProcess.getNodes().length > 0) {
-            startFormName = (String) workflowProcess.getNodes()[0].getMetaData().get("FormName");
-        }
-        wf.setFormResourceName(startFormName);
-        if (process instanceof WorkflowProcess) {
-            Node[] nodes = workflowProcess.getNodes();
 
-            final Set<String> tasks = new LinkedHashSet<String>();
-            tasks.add(WorkflowService.START_ROLE);
-            for (Node node : nodes) {
-                if (node instanceof HumanTaskNode) {
-                    tasks.add(node.getName());
-                }
+        String startFormName = workflowService.getFormForAction(wf, "start");
+        wf.setFormResourceName(startFormName);
+
+        Node[] nodes = workflowProcess.getNodes();
+
+        final Set<String> tasks = new LinkedHashSet<String>();
+        tasks.add(WorkflowService.START_ROLE);
+        for (Node node : nodes) {
+            if (node instanceof HumanTaskNode) {
+                tasks.add(node.getName());
             }
-            wf.setTasks(tasks);
         }
+        wf.setTasks(tasks);
+
         if (locale != null) {
             try {
                 ResourceBundle resourceBundle = getResourceBundle(locale, wf.getKey());
@@ -836,10 +904,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return wf;
     }
 
-    private Workflow convertToWorkflow(ProcessInstance instance, Locale locale) {
+    private Workflow convertToWorkflow(ProcessInstance instance, Locale locale, KieSession ksession) {
         WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) instance;
         final Workflow workflow = new Workflow(instance.getProcessName(), Long.toString(instance.getId()), key);
-        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale);
+        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale, ksession);
         workflow.setWorkflowDefinition(definition);
         workflow.setAvailableActions(getAvailableActions(Long.toString(instance.getId()), locale));
         /*
@@ -862,8 +930,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return workflow;
     }
 
-    private WorkflowTask convertToWorkflowTask(Task task, Locale locale) {
-        WorkflowTask workflowTask = new WorkflowTask(task.getTaskData().getProcessId(), key);
+    private WorkflowTask convertToWorkflowTask(Task task, Locale locale, KieSession ksession) {
+        final NodeInstance taskNodeInstance = getTaskNodeInstance(task, ksession);
+
+        WorkflowTask workflowTask = new WorkflowTask(taskNodeInstance.getNode().getName(), key);
         workflowTask.setDueDate(task.getTaskData().getExpirationTime());
         workflowTask.setDescription(getI18NText(task.getDescriptions(), locale));
         workflowTask.setCreateTime(task.getTaskData().getCreatedOn());
@@ -873,7 +943,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().getId()));
         }
         workflowTask.setId(Long.toString(task.getId()));
-        Set<String> connectionIds = getTaskOutcomes(task);
+        Set<String> connectionIds = getTaskOutcomes(taskNodeInstance.getNode());
         workflowTask.setOutcome(connectionIds);
         PeopleAssignments peopleAssignements = task.getPeopleAssignments();
         List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
@@ -901,45 +971,42 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), getKieSession().getEnvironment());
         if (contentData instanceof Map) {
             Map<String, Object> taskParameters = (Map<String, Object>) contentData;
-            workflowTask.setFormResourceName((String) taskParameters.get("FormName"));
             workflowTask.setVariables(taskParameters);
         }
 
         // Get Tasks variables
         final ProcessInstance instance = getKieSession().getProcessInstance(task.getTaskData().getProcessInstanceId());
         if (instance != null) {
-            final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale);
+            final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale, ksession);
             workflowTask.setWorkflowDefinition(definition);
             i18nOfWorkflowAction(locale, workflowTask, definition.getKey());
+            workflowTask.setFormResourceName(workflowService.getFormForAction(definition, workflowTask.getName()));
         }
         return workflowTask;
     }
 
-    public Set<String> getTaskOutcomes(final Task task) {
+    private NodeInstance getTaskNodeInstance(final Task task, final KieSession ksession) {
+        WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(task.getTaskData().getProcessInstanceId());
         final long workItemId = task.getTaskData().getWorkItemId();
-        return executeCommand(new GenericCommand<Set<String>>() {
-            @Override
-            public Set<String> execute(Context context) {
-                Set<String> connectionIds = new TreeSet<String>();
-                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(task.getTaskData().getProcessInstanceId());
-                NodeInstance taskNodeInstance = null;
-                for (NodeInstance nodeInstance : workflowProcessInstance.getNodeInstances()) {
-                    if (nodeInstance instanceof WorkItemNodeInstance) {
-                        WorkItemNodeInstance workItemNodeInstance = (WorkItemNodeInstance) nodeInstance;
-                        if (workItemNodeInstance.getWorkItemId() == workItemId) {
-                            taskNodeInstance = nodeInstance;
-                            break;
-                        }
-                    }
+        NodeInstance taskNodeInstance = null;
+        for (NodeInstance nodeInstance : workflowProcessInstance.getNodeInstances()) {
+            if (nodeInstance instanceof WorkItemNodeInstance) {
+                WorkItemNodeInstance workItemNodeInstance = (WorkItemNodeInstance) nodeInstance;
+                if (workItemNodeInstance.getWorkItemId() == workItemId) {
+                    taskNodeInstance = nodeInstance;
+                    break;
                 }
-                if (taskNodeInstance == null) {
-                    return connectionIds;
-                }
-                getOutgoingConnectionNames(connectionIds, taskNodeInstance.getNode());
-                return connectionIds;
             }
-        });
+        }
+        return taskNodeInstance;
+    }
+
+    private Set<String> getTaskOutcomes(final Node node) {
+        Set<String> connectionIds = new TreeSet<String>();
+        if (node != null) {
+            getOutgoingConnectionNames(connectionIds, node);
+        }
+        return connectionIds;
     }
 
     private void getOutgoingConnectionNames(Set<String> connectionIds, Node node) {
@@ -974,20 +1041,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {
-        String rbActionName = workflowAction.getName();
         ResourceBundle resourceBundle = null;
         if (displayLocale != null) {
             resourceBundle = getResourceBundle(displayLocale, definitionKey);
+            String rbActionName = i18nName(workflowAction.getName(), resourceBundle);
+            workflowAction.setDisplayName(rbActionName);
         }
-        if (resourceBundle != null) {
-            String key = Patterns.SPACE.matcher(workflowAction.getName()).replaceAll(".").trim().toLowerCase();
-            try {
-                rbActionName = resourceBundle.getString(key);
-            } catch (MissingResourceException e) {
-                logger.warn("Missing ressource : " + key + " in " + resourceBundle);
-            }
-        }
-        workflowAction.setDisplayName(rbActionName);
         if (workflowAction instanceof WorkflowTask) {
             WorkflowTask workflowTask = (WorkflowTask) workflowAction;
             Set<String> outcomes = workflowTask.getOutcomes();
@@ -1018,6 +1077,18 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             workflowTask.setDisplayOutcomes(displayOutcomes);
             workflowTask.setOutcomeIcons(outcomeIcons);
         }
+    }
+
+    private String i18nName(String actionName, ResourceBundle resourceBundle) {
+        if (resourceBundle != null) {
+            String key = Patterns.SPACE.matcher(actionName).replaceAll(".").trim().toLowerCase();
+            try {
+                actionName = resourceBundle.getString(key);
+            } catch (MissingResourceException e) {
+                logger.warn("Missing ressource : " + key + " in " + resourceBundle);
+            }
+        }
+        return actionName;
     }
 
     public static String getI18NText(List<I18NText> i18NTexts, Locale locale) {

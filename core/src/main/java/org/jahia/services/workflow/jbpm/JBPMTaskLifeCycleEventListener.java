@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
@@ -53,6 +54,7 @@ import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
 import org.jahia.utils.Patterns;
@@ -197,7 +199,8 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                         }
                     }
                     jcrTask.setProperty("candidates", candidatesArray.toArray(new Value[candidatesArray.size()]));
-                    Set<String> outcomes = workflowProvider.getTaskOutcomes(task);
+                    WorkflowTask wfTask = workflowProvider.getWorkflowTask(Long.toString(task.getId()), null);
+                    Set<String> outcomes = wfTask.getOutcomes();
                     List<Value> outcomesArray = new ArrayList<Value>();
                     for (String outcome : outcomes) {
                         outcomesArray.add(valueFactory.createValue(outcome));

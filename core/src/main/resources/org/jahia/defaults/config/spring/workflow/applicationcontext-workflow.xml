@@ -17,6 +17,17 @@
                         </map>
                     </property>
                 </bean>
+
+                <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
+                    <property name="type" value="publish"/>
+                    <property name="definition" value="2-step-publication"/>
+                    <property name="forms">
+                        <map>
+                            <entry key="start" value="jnt:simpleWorkflow"/>
+                            <entry key="First review" value="jnt:simpleWorkflow"/>
+                        </map>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="jcrTemplate" ref="jcrTemplate"/>

@@ -739,11 +739,8 @@ public class ContentManagerHelper {
                     String nodeName = nodeWrapper.getName();
                     allAvailablePermissions.add(nodeName);
                     availablePermissions.get(entry.getKey()).add(nodeName);
-                    if (nodeWrapper.hasProperty("jcr:title")) {
-                        labels.put(nodeName, nodeWrapper.getProperty("jcr:title").getString());
-                    } else {
-                        labels.put(nodeName, nodeName);
-                    }
+                    String label = nodeWrapper.getDisplayableName();
+                    labels.put(nodeName, StringUtils.isEmpty(label)?nodeName:label);
                     if (nodeWrapper.hasProperty("jcr:description")) {
                         tooltips.put(nodeName, nodeWrapper.getProperty("jcr:description").getString());
                     }

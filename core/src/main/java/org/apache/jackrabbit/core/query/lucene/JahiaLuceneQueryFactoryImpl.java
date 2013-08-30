@@ -170,22 +170,30 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         resultCount++;
                     } else {                        
                         try {
+<<<<<<< .working
                             String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
+=======
+>>>>>>> .merge-right.r47149
                             boolean canRead = true;
-
-                            for (String acl : acls) {
-                                Boolean aclChecked = checkedAcls.get(acl);
-                                if (aclChecked == null) {
-                                    try {
-                                        canRead = session.getAccessManager().canRead(null, new NodeId(acl));
-                                        checkedAcls.put(acl, canRead);
-                                    } catch (RepositoryException e) {
+                            if (isAclUuidInIndex()) {
+                                String[] acls = infos.getAclUuid() != null ? Patterns.SPACE
+                                        .split(infos.getAclUuid())
+                                        : new String[0];
+                                for (String acl : acls) {
+                                    Boolean aclChecked = checkedAcls.get(acl);
+                                    if (aclChecked == null) {
+                                        try {
+                                            canRead = session.getAccessManager()
+                                                    .canRead(null, new NodeId(acl));
+                                            checkedAcls.put(acl, canRead);
+                                        } catch (RepositoryException e) {
+                                        }
+                                    } else {
+                                        canRead = aclChecked;
                                     }
-                                } else {
-                                    canRead = aclChecked;
-                                }
-                                if (canRead) {
-                                    break;
+                                    if (canRead) {
+                                        break;
+                                    }
                                 }
                             }
                             if (canRead
@@ -202,7 +210,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                         Row row = null;
 
-                                        if ("1".equals(infos.getCheckVisibility())) {
+                                        if ("1".equals(infos.getCheckVisibility()) || !isAclUuidInIndex()) {
                                             NodeImpl objectNode = session
                                                     .getNodeById(node.getNodeId());
                                             if (objectNode
@@ -236,6 +244,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             continue;
                                         }
 
+<<<<<<< .working
                                         if (externalSort) {
                                             rowList.add(row);
                                         } else {
@@ -245,6 +254,20 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 rows.put(node.getNodeId()
                                                         .toString(), row);
                                                 addedNodes++;
+=======
+                                        rows.add(row);
+                                    }
+                                    if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
+                                        //Added by Jahia
+                                        //can be added to bitset when ACL checked and not in live mode or no visibility rule to check
+                                        if (isAclUuidInIndex() && (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
+                                                !"1".equals(infos.getCheckVisibility()))) { 
+                                           bitset.set(infos.getDocNumber()); 
+                                        } else { //try to load nodeWrapper to check the visibility rules
+                                            NodeImpl objectNode = session.getNodeById(node.getNodeId());
+                                            if (objectNode.isNodeType("jnt:translation")) {
+                                                objectNode = (NodeImpl) objectNode.getParent();
+>>>>>>> .merge-right.r47149
                                             }
                                             currentNode++;
                                             // end the loop when going over the limit
@@ -347,6 +370,20 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Util.closeOrRelease(reader);
         }
     }
+    
+    /**
+     * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     * This can have a negative effect on performance, when setting rights on a node,
+     * which has a large subtree using the same rights, as all these nodes will need
+     * to be reindexed. On the other side the advantage is that the queries are faster,
+     * as the user rights are resolved faster.
+     * 
+     * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     */    
+    public boolean isAclUuidInIndex() {
+        return index instanceof JahiaSearchIndex
+                && ((JahiaSearchIndex) index).isAddAclUuidInIndex();
+    }
 
     /**
      * Get a String array of indexed fields for running quick checks 
@@ -383,10 +420,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             info.setMainNodeUuid(sn.getNodeId().toString());
         }
         if (!onlyMainNodeUuid) {
-            Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
-            if (aclUuidField != null) {
-                info.setAclUuid(aclUuidField.stringValue());
-            }
+            if (isAclUuidInIndex()) {
+                Field aclUuidField = doc.getField(JahiaNodeIndexer.ACL_UUID);
+                if (aclUuidField != null) {
+                    info.setAclUuid(aclUuidField.stringValue());
+                }
+            }    
             Field checkVisibilityField = doc
                     .getField(JahiaNodeIndexer.CHECK_VISIBILITY);
             if (checkVisibilityField != null) {

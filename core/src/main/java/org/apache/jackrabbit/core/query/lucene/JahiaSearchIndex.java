@@ -77,9 +77,16 @@ public class JahiaSearchIndex extends SearchIndex {
     private int maxClauseCount = 1024;
 
     private Boolean versionIndex;
+<<<<<<< .working
 
     private int batchSize = 100;    
 
+=======
+    private int batchSize = 100; 
+    
+    private boolean addAclUuidInIndex = true;
+    
+>>>>>>> .merge-right.r47149
     public int getMaxClauseCount() {
         return maxClauseCount;
     }
@@ -181,7 +188,7 @@ public class JahiaSearchIndex extends SearchIndex {
                 }
                 // if acl node is added for the first time we need to add our ACL_UUID field 
                 // to parent's and all affected subnodes' index documents 
-                if (JNT_ACL.equals(node.getNodeTypeName())) {
+                if (isAddAclUuidInIndex() && JNT_ACL.equals(node.getNodeTypeName())) {
                     try {
                         NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
                                 .getParentId());
@@ -287,6 +294,7 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setIndexFormatVersion(indexFormatVersion);
         indexer.setMaxExtractLength(getMaxExtractLength());
         indexer.setSupportSpellchecking(getSpellCheckerClass() != null);
+        indexer.setAddAclUuidInIndex(addAclUuidInIndex);        
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
@@ -430,5 +438,22 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         return versionIndex;
+    }
+    
+    /**
+     * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     * This can have a negative effect on performance, when setting rights on a node,
+     * which has a large subtree using the same rights, as all these nodes will need
+     * to be reindexed. On the other side the advantage is that the queries are faster,
+     * as the user rights are resolved faster.
+     * 
+     * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     */    
+    public boolean isAddAclUuidInIndex() {
+        return addAclUuidInIndex;
+    }
+
+    public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
+        this.addAclUuidInIndex = addAclUuidInIndex;
     }
 }

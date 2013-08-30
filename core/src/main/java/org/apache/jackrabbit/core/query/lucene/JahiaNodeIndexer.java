@@ -143,6 +143,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
     private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
     private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
+    private boolean addAclUuidInIndex = true;    
+    
     /**
      * Creates a new node indexer.
      * 
@@ -751,7 +753,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 logger.error(e.getMessage(), e);
             }
         }
-        if (isIndexed(J_ACL)) {
+        if (isAddAclUuidInIndex() && isIndexed(J_ACL)) {
             addAclUuid(doc);
         }
         if (isIndexed(J_VISIBILITY) && node.hasChildNodeEntry(J_VISIBILITY)) {
@@ -809,4 +811,21 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                 Field.TermVector.NO));
     }
+    
+    /**
+     * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     * This can have a negative effect on performance, when setting rights on a node,
+     * which has a large subtree using the same rights, as all these nodes will need
+     * to be reindexed. On the other side the advantage is that the queries are faster,
+     * as the user rights are resolved faster.
+     * 
+     * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     */    
+    public boolean isAddAclUuidInIndex() {
+        return addAclUuidInIndex;
+    }    
+    
+    public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
+        this.addAclUuidInIndex = addAclUuidInIndex;
+    }    
 }

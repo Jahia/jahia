@@ -42,7 +42,6 @@ package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -255,7 +254,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         return new LinkedList<WorkflowDefinition>(workflows);
     }
 
-    public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition,
+    public List<JahiaPrincipal> getAssignedRole(final WorkflowDefinition definition,
                                                 final String activityName, final String processId) throws RepositoryException {
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -267,8 +266,9 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                     return principals;
                 }
 
+                Workflow w = getWorkflow(definition.getProvider(), processId, null);
+                JCRNodeWrapper node = session.getNodeByIdentifier((String)w.getVariables().get("nodeId"));
                 if (permName.indexOf("$") > -1) {
-                    Workflow w = getWorkflow(definition.getProvider(), processId, null);
                     if (w != null) {
                         for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
                             if (entry.getValue() instanceof List) {
@@ -831,9 +831,9 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         return workflowTypeByDefinition.get(def.getKey()).getType();
     }
 
-    public String getFormForAction(WorkflowDefinition def, String action) {
-        if (workflowTypeByDefinition.get(def.getKey()).getForms() != null) {
-            return workflowTypeByDefinition.get(def.getKey()).getForms().get(action);
+    public String getFormForAction(String definitionKey, String action) {
+        if (workflowTypeByDefinition.get(definitionKey).getForms() != null) {
+            return workflowTypeByDefinition.get(definitionKey).getForms().get(action);
         }
         return null;
     }

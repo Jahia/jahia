@@ -40,7 +40,6 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
@@ -52,14 +51,14 @@ import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.WorkflowTask;
-import org.jahia.services.workflow.WorkflowVariable;
+import org.jahia.services.workflow.*;
 import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
 import org.jahia.utils.Patterns;
 import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 
 import javax.enterprise.event.Observes;
@@ -120,16 +119,15 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
     public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
         Map<String, Object> taskInputParameters = getTaskInputParameters(task);
         Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
-        String nodeId = (String) taskInputParameters.get("nodeId");
-        ;
-        Locale locale = (Locale) taskInputParameters.get("locale");
-        WorkflowDefinition def = workflowProvider.getWorkflowDefinitionById(task.getTaskData().getProcessId(), locale);
-        JCRNodeWrapper node = null;
         try {
-            node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
-            String name = JBPM6WorkflowProvider.getI18NText(task.getNames(), locale);
-
-            final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, name, Long.toString(task.getTaskData().getProcessInstanceId()));
+            final List<JahiaPrincipal> principals = new ArrayList<JahiaPrincipal>();
+            for (OrganizationalEntity entity : task.getPeopleAssignments().getPotentialOwners()) {
+                if (entity instanceof UserImpl) {
+                    principals.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(entity.getId()));
+                } else if (entity instanceof GroupImpl) {
+                    principals.add(ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(entity.getId()));
+                }
+            }
             createTask(task, taskInputParameters, taskOutputParameters, principals);
             ((SynchronizedTaskService) taskService).addContent(task.getId(), taskOutputParameters);
 
@@ -149,12 +147,20 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                               final Map<String, Object> taskInputParameters,
                               final Map<String, Object> taskOutputParameters,
                               final List<JahiaPrincipal> candidates) throws RepositoryException {
-        final String username = (String) taskInputParameters.get("user");
+        final Workflow workflow = workflowProvider.getWorkflow(Long.toString(task.getTaskData().getProcessInstanceId()), null);
+
+        String username = (String) taskInputParameters.get("user");
+        if (username == null) {
+            username = workflow.getStartUser();
+        }
         final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(username);
 
         if (user != null) {
-            final Locale locale = (Locale) taskInputParameters.get("locale");
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), (String) taskInputParameters.get("workspace"), null, new JCRCallback<Object>() {
+            String workspace = (String) taskInputParameters.get("workspace");
+            if (workspace == null) {
+                workspace = (String) workflow.getVariables().get("workspace");
+            }
+            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), workspace, null, new JCRCallback<Object>() {
                 @SuppressWarnings("unchecked")
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
@@ -171,15 +177,19 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     } else {
                         tasks = n.getNode("workflowTasks");
                     }
-                    JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, JBPM6WorkflowProvider.getI18NText(task.getNames(), locale)), "jnt:workflowTask");
+                    final String taskName = task.getNames().get(0).getText();
+                    JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, taskName), "jnt:workflowTask");
                     String definitionKey = JBPM6WorkflowProvider.getDecodedProcessKey(task.getTaskData().getProcessId());
-                    jcrTask.setProperty("taskName", JBPM6WorkflowProvider.getI18NText(task.getNames(), locale));
+                    jcrTask.setProperty("taskName", taskName);
                     String bundle = WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll("");
                     jcrTask.setProperty("taskBundle", bundle);
                     jcrTask.setProperty("taskId", task.getId());
                     jcrTask.setProperty("provider", "jBPM");
 
                     String uuid = (String) taskInputParameters.get("nodeId");
+                    if (uuid == null) {
+                        uuid = (String) workflow.getVariables().get("nodeId");
+                    }
                     if (uuid != null) {
                         jcrTask.setProperty("targetNode", uuid);
                     }
@@ -209,7 +219,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     jcrTask.setProperty("state", "active");
                     jcrTask.setProperty("type", "workflow");
                     jcrTask.setProperty("jcr:title", "##resourceBundle(" +
-                            Patterns.SPACE.matcher(JBPM6WorkflowProvider.getI18NText(task.getNames(), locale)).replaceAll(".").trim().toLowerCase() +
+                            Patterns.SPACE.matcher(taskName).replaceAll(".").trim().toLowerCase() +
                             "," +
                             bundle +
                             ")## : " +
@@ -218,8 +228,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     if (taskInputParameters.get("jcr:title") instanceof List && ((List<WorkflowVariable>) taskInputParameters.get("jcr:title")).size() > 0) {
                         jcrTask.setProperty("description", ((List<WorkflowVariable>) taskInputParameters.get("jcr:title")).get(0).getValue());
                     }
-
-                    String form = (String) taskInputParameters.get("formName");
+                    String form = WorkflowService.getInstance().getFormForAction(definitionKey, taskName);
                     if (form != null && NodeTypeRegistry.getInstance().hasNodeType(form)) {
                         JCRNodeWrapper data = jcrTask.addNode("taskData", form);
                         ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(form);

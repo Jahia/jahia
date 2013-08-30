@@ -26,11 +26,9 @@ import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.process.audit.*;
 import org.jbpm.process.audit.command.AbstractHistoryLogCommand;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -487,7 +485,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
                 for (Long taskId : taskIds) {
                     Task task = taskService.getTaskById(taskId);
-                    String taskName = getI18NText(task.getNames(), locale);
+                    String taskName = task.getNames().get(0).getText();
                     if (connectionIds.contains(taskName)) {
                         WorkflowAction workflowAction = convertToWorkflowTask(task, locale, ksession);
                         workflowActions.add(workflowAction);
@@ -796,8 +794,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
                 List<HistoryWorkflow> historyWorkflows = new ArrayList<HistoryWorkflow>();
                 for (String processId : processIds) {
-                    ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
-                    List<VariableInstanceLog> nodeIdVariableInstanceLogs = JPAProcessInstanceDbLog.findVariableInstances(Long.parseLong(processId), "nodeId");
+                    ProcessInstanceLog processInstanceLog = auditLogService.findProcessInstance(Long.parseLong(processId));
+                    List<VariableInstanceLog> nodeIdVariableInstanceLogs = auditLogService.findVariableInstances(Long.parseLong(processId), "nodeId");
                     String nodeId = null;
                     for (VariableInstanceLog nodeIdVariableInstanceLog : nodeIdVariableInstanceLogs) {
                         nodeId = nodeIdVariableInstanceLog.getValue();
@@ -849,8 +847,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 }
 
                 setLogEnvironment(context);
-                ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(Long.parseLong(processId));
-                List<NodeInstanceLog> nodeInstanceLogs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceLog.getProcessInstanceId());
+                ProcessInstanceLog processInstanceLog = auditLogService.findProcessInstance(Long.parseLong(processId));
+                List<NodeInstanceLog> nodeInstanceLogs = auditLogService.findNodeInstances(processInstanceLog.getProcessInstanceId());
                 for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
                     if (nodeInstanceLog.getWorkItemId() != null) {
                         workflowTaskHistory.add(new HistoryWorkflowTask(nodeInstanceLog.getWorkItemId().toString(),
@@ -877,7 +875,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         WorkflowDefinition wf = new WorkflowDefinition(process.getName(), process.getName(), this.key);
         WorkflowProcess workflowProcess = (WorkflowProcess) process;
 
-        String startFormName = workflowService.getFormForAction(wf, "start");
+        String startFormName = workflowService.getFormForAction(wf.getKey(), "start");
         wf.setFormResourceName(startFormName);
 
         Node[] nodes = workflowProcess.getNodes();
@@ -916,10 +914,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             workflow.setDuedate(job.getDueDate());
         }
         */
-        ProcessInstanceLog processInstanceLog = JPAProcessInstanceDbLog.findProcessInstance(instance.getId());
+        ProcessInstanceLog processInstanceLog =  (ProcessInstanceLog) ((ProcessInstanceImpl)instance).getMetaData().get("ProcessInstanceLog");
+        if (processInstanceLog == null) {
+            AuditLogService auditLogService = new JPAAuditLogService(kieSession.getEnvironment());
+            processInstanceLog = auditLogService.findProcessInstance(instance.getId());
+        }
         workflow.setStartTime(processInstanceLog.getStart());
 
-        Object user = workflowProcessInstance.getVariable("User");
+        Object user = workflowProcessInstance.getVariable("user");
         if (user != null) {
             workflow.setStartUser(user.toString());
         }
@@ -934,7 +936,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
         WorkflowTask workflowTask = new WorkflowTask(taskNodeInstance.getNode().getName(), key);
         workflowTask.setDueDate(task.getTaskData().getExpirationTime());
-        workflowTask.setDescription(getI18NText(task.getDescriptions(), locale));
+//        workflowTask.setDescription(getI18NText(task.getDescriptions(), locale));
         workflowTask.setCreateTime(task.getTaskData().getCreatedOn());
         workflowTask.setProcessId(Long.toString(task.getTaskData().getProcessInstanceId()));
         if (task.getTaskData().getActualOwner() != null) {
@@ -979,7 +981,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale, ksession);
             workflowTask.setWorkflowDefinition(definition);
             i18nOfWorkflowAction(locale, workflowTask, definition.getKey());
-            workflowTask.setFormResourceName(workflowService.getFormForAction(definition, workflowTask.getName()));
+            workflowTask.setFormResourceName(workflowService.getFormForAction(definition.getKey(), workflowTask.getName()));
+            // ((TaskImpl)task).getFormName()
         }
         return workflowTask;
     }
@@ -991,7 +994,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         for (NodeInstance nodeInstance : workflowProcessInstance.getNodeInstances()) {
             if (nodeInstance instanceof WorkItemNodeInstance) {
                 WorkItemNodeInstance workItemNodeInstance = (WorkItemNodeInstance) nodeInstance;
-                if (workItemNodeInstance.getWorkItemId() == workItemId) {
+                if (workItemNodeInstance.getWorkItem().getId() == workItemId) {
                     taskNodeInstance = nodeInstance;
                     break;
                 }

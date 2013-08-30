@@ -70,6 +70,13 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
             names.add(new I18NTextImpl("en", taskName));
             task.setNames(names);
         }
+//        // this should be replaced by FormName filled by designer
+//        // TaskName shouldn't be trimmed if we are planning to use that for the task lists
+//        String formName = (String) workItem.getParameter("TaskName");
+//        if(formName != null){
+//            task.setFormName(formName);
+//        }
+
         String comment = (String) workItem.getParameter("Comment");
         if (comment == null) {
             comment = "";

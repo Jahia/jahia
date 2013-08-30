@@ -63,8 +63,6 @@ import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.search.facets.JahiaQueryParser;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -170,15 +168,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         resultCount++;
                     } else {                        
                         try {
-<<<<<<< .working
-                            String[] acls = infos.getAclUuid() != null ? Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
-=======
->>>>>>> .merge-right.r47149
                             boolean canRead = true;
                             if (isAclUuidInIndex()) {
-                                String[] acls = infos.getAclUuid() != null ? Patterns.SPACE
-                                        .split(infos.getAclUuid())
-                                        : new String[0];
+                                String[] acls = infos.getAclUuid() != null ? 
+                                        Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                                 for (String acl : acls) {
                                     Boolean aclChecked = checkedAcls.get(acl);
                                     if (aclChecked == null) {
@@ -202,11 +195,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             || infos.getPublished() == null || "true"
                                                 .equals(infos.getPublished()))) {
                                 if (filter == Predicate.TRUE) { // <-- Added by jahia
-
-                                    if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
-                                        bitset.set(infos.getDocNumber()); // <-- Added by jahia
-                                    }
-
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                         Row row = null;
 
@@ -244,7 +232,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             continue;
                                         }
 
-<<<<<<< .working
                                         if (externalSort) {
                                             rowList.add(row);
                                         } else {
@@ -254,8 +241,13 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                                 rows.put(node.getNodeId()
                                                         .toString(), row);
                                                 addedNodes++;
-=======
-                                        rows.add(row);
+                                            }
+                                            currentNode++;
+                                            // end the loop when going over the limit
+                                            if (addedNodes == limit) {
+                                                break;
+                                            }
+                                        }
                                     }
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                                         //Added by Jahia
@@ -267,15 +259,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             NodeImpl objectNode = session.getNodeById(node.getNodeId());
                                             if (objectNode.isNodeType("jnt:translation")) {
                                                 objectNode = (NodeImpl) objectNode.getParent();
->>>>>>> .merge-right.r47149
                                             }
-                                            currentNode++;
-                                            // end the loop when going over the limit
-                                            if (addedNodes == limit) {
-                                                break;
-                                            }
+                                            bitset.set(infos.getDocNumber());
                                         }
-                                    }
+                                      //!Added by Jahia
+                                    }                                    
                                 } else {
                                     NodeImpl objectNode = session.getNodeById(node
                                             .getNodeId());

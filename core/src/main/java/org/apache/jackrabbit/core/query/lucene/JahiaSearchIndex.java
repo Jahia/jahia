@@ -77,16 +77,11 @@ public class JahiaSearchIndex extends SearchIndex {
     private int maxClauseCount = 1024;
 
     private Boolean versionIndex;
-<<<<<<< .working
 
     private int batchSize = 100;    
-
-=======
-    private int batchSize = 100; 
     
     private boolean addAclUuidInIndex = true;
     
->>>>>>> .merge-right.r47149
     public int getMaxClauseCount() {
         return maxClauseCount;
     }

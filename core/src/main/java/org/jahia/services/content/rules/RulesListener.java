@@ -57,11 +57,10 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.core.rule.Package;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.settings.SettingsBean;
-import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -100,6 +99,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private List<String> filesAccepted;
     private Map<String,String> modulePackageNameMap;
+
+    private CompositeClassLoader ruleBaseClassLoader;
 
     public RulesListener() {
         instances.add(this);
@@ -160,7 +161,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private void initRules() throws Exception {
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        ruleBaseClassLoader = new CompositeClassLoader();
+        ruleBaseClassLoader.setCachingEnabled(true);
+        ruleBaseClassLoader.addClassLoader(this.getClass().getClassLoader());
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
         ruleBase = RuleBaseFactory.newRuleBase(conf);
 
         dslFiles.add(
@@ -244,19 +248,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         drl.append(line);
                     }
                 }
+                
+                ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
+                if (packageClassLoader != null) {
+                    ruleBaseClassLoader.addClassLoaderToEnd(packageClassLoader);
+                }
 
-//                Properties properties = new Properties();
-//                properties.setProperty("drools.dialect.java.compiler", "JANINO");
-//                PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties, aPackage != null ? aPackage.getChainedClassLoader() : getClass().getClassLoader());
-//                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-//                javaConf.setCompiler(JavaDialectConfiguration.JANINO);
-                PackageBuilderConfiguration cfg = aPackage != null ? new PackageBuilderConfiguration(
-                        aPackage.getChainedClassLoader()) : new PackageBuilderConfiguration();
+                PackageBuilderConfiguration cfg = packageClassLoader != null ? new PackageBuilderConfiguration(
+                        packageClassLoader) : new PackageBuilderConfiguration();
 
-//                if (aPackage != null) {
-//                    cfg.setClassLoader(aPackage.getChainedClassLoader());
-//                }
-//
                 PackageBuilder builder = new PackageBuilder(cfg);
 
                 Reader drlReader = new StringReader(drl.toString());
@@ -296,8 +296,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     logger.error("---------------------------------------------------------------------------------");
                 }
             }
-        } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage(), e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -705,12 +703,22 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void removeRules(String moduleName) {
-        if(modulePackageNameMap.containsKey(moduleName) && ruleBase.getPackage(modulePackageNameMap.get(moduleName))!=null) {
+        if (modulePackageNameMap.containsKey(moduleName)
+                && ruleBase.getPackage(modulePackageNameMap.get(moduleName)) != null) {
             ruleBase.removePackage(modulePackageNameMap.get(moduleName));
         }
     }
 
+    public void removeRules(JahiaTemplatesPackage module) {
+        removeRules(module.getName());
+        ClassLoader cl = module.getClassLoader();
+        if (cl != null) {
+            ruleBaseClassLoader.removeClassLoader(cl);
+        }
+    }
+    
     public boolean removeRulesDescriptor(Resource resource) {
         return dslFiles.remove(resource);
     }
+
 }

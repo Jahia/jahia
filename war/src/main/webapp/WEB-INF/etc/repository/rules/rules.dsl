@@ -1,4 +1,4 @@
-[condition][]A file content has been modified=property : ChangedPropertyFact ( name == "jcr:data", contentnode : node, node : node.getParent(), $node : node.getParent() )
+[condition][]A file content has been modified=property : ChangedPropertyFact ( name == "jcr:data", contentnode : node, $node : node.getParent() ) and AddedNodeFact ( name == "jcr:content" ) from contentnode and node : AddedNodeFact () from contentnode.parent
 [condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}", $node : this)
 [condition][]A new node is created=node : AddedNodeFact ($node : this)
 [condition][]A node is deleted=node : DeletedNodeFact ($node : this)
@@ -24,7 +24,7 @@
 [condition][]The type {name} has been assigned to a node=m : ChangedPropertyFact ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node, $node : node )
 [condition][]The {node} has a child=child : AddedNodeFact ( ) from node.childNodes
 [condition][]The {node} has a property {property}=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
-[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName} , node : this.node, $node : this.node)
+[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName} , $node : this.node) and node : AddedNodeFact() from job.node
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it has no type {type}=types not contains "{type}"

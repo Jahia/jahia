@@ -114,6 +114,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private Map<String, AbstractTaskLifeCycleEventListener> taskAssignmentListeners = new TreeMap<String, AbstractTaskLifeCycleEventListener>();
     private Pipeline peopleAssignmentPipeline;
     private JahiaUserGroupCallback jahiaUserGroupCallback;
+    private Map<ReleaseId, KieModule> kieModules = new HashMap<ReleaseId, KieModule>();
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -1112,5 +1113,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     public void addKieModule(KieModule kieModule) {
         getKieRepository().addKieModule(kieModule);
         // @todo add refresh of session, runtime manager
+
+        kieModules.put(kieModule.getReleaseId(), kieModule);
+        List<KieModule> kieModuleList = new ArrayList<KieModule>();
+        kieBuilder.setDependencies(kieModuleList.toArray(new KieModule[kieModuleList.size()]));
+        kieBuilder.buildAll();
     }
 }

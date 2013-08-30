@@ -44,16 +44,12 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.osgi.compiler.OsgiKieModule;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.templates.JahiaModuleAware;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -64,6 +60,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -106,11 +103,10 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void deployDeclaredProcesses() throws IOException {
-        if (processes != null && processes.length > 0 && module.getBundle().getEntry("META-INF/kmodule.xml") != null) {
+        URL kmoduleURL = module.getBundle().getEntry("META-INF/kmodule.xml");
+        if (processes != null && processes.length > 0 && kmoduleURL != null) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
-            ReleaseId moduleReleaseId = new ReleaseIdImpl("org.jahia.modules", module.getName(), module.getVersion().toString());
-            OsgiKieModule osgiKieModule = OsgiKieModule.create(module.getBundle().getEntry("META-INF/kmodule.xml"));
-            KieModule kieModule = osgiKieModule;
+            KieModule kieModule = JahiaOsgiKieModule.create(kmoduleURL, module.getBundle());
             for (Resource process : processes) {
                 long lastModified = process.lastModified();
 
@@ -156,9 +152,14 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                         logger.info("Found new workflow process " + fileName + ". Deploying...");
                     }
                     if (kieModule == null) {
-                        kieModule = new ZipKieModule(moduleReleaseId, KieServices.Factory.get().newKieModuleModel(), new File(module.getFilePath()));
+                        /*
+                        kieModule = new ZipKieModule(new ReleaseIdImpl("org.jahia.modules", module.getName(),
+                                module.getVersion().toString()), KieServices.Factory.get().newKieModuleModel(), new File(module.getFilePath()));
+                        */
                     }
-                    jbpm6WorkflowProvider.getKieRepository().addKieModule(kieModule);
+                    if (kieModule != null) {
+                        jbpm6WorkflowProvider.addKieModule(kieModule);
+                    }
                     logger.info("... done");
                 } else {
                     logger.info("Found workflow process " + fileName + ". It is up-to-date.");

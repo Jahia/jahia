@@ -38,7 +38,8 @@
     If you are unsure which license is appropriate for your use,
     please contact the sales department at sales@jahia.com.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -49,7 +50,7 @@
     <artifactId>jahia-modules</artifactId>
     <name>Jahia Modules</name>
     <packaging>pom</packaging>
-    
+
     <properties>
         <jahia.modules.bundle.removeheaders>
             Include-Resource,
@@ -58,7 +59,7 @@
             Embed-Transitive
         </jahia.modules.bundle.removeheaders>
     </properties>
-    
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -108,11 +109,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments />
+                                    <arguments/>
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -269,7 +270,7 @@
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Category>jahia-module</Bundle-Category>
-        
+
                         <Implementation-Title>${project.name}</Implementation-Title>
                         <Implementation-Version>${project.version}</Implementation-Version>
                         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
@@ -277,22 +278,24 @@
                         <Specification-Title>${project.name}</Specification-Title>
                         <Specification-Version>${project.version}</Specification-Version>
                         <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-        
+
                         <!-- Jahia manifest attributes -->
                         <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Module-Type>module</Jahia-Module-Type>
                         <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
-                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
+                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}
+                        </Jahia-Source-Control-DeveloperConnection>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
-        
+
                         <Export-Package></Export-Package>
                         <Import-Package>*,${jahia.plugin.projectPackageImport}</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
                         <Embed-Dependency>*; scope=compile; type=!pom;
-                            inline=true</Embed-Dependency>
+                            inline=true
+                        </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>
                             Include-Resource,
@@ -301,9 +304,6 @@
                             Embed-Transitive
                         </_removeheaders>
                     </instructions>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
                 </configuration>
             </plugin>
         </plugins>

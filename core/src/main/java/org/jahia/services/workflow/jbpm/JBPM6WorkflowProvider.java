@@ -41,9 +41,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.*;
 import org.kie.api.command.Command;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
@@ -224,7 +222,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
 
         kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-
+        KieContainer classPathKieContainer = kieServices.getKieClasspathContainer();
+        Results classPathVerifyResults = classPathKieContainer.verify();
         kieBuilder.buildAll();
 
         kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
@@ -250,7 +249,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
                 .userGroupCallback(jahiaUserGroupCallback)
                 .get();
-        // runtimeManager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
         runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
         taskService = runtimeEngine.getTaskService();
@@ -1109,5 +1107,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private <T> T executeCommand(Command<T> t) {
         CommandBasedStatefulKnowledgeSession s = (CommandBasedStatefulKnowledgeSession) getKieSession();
         return s.execute(t);
+    }
+
+    public void addKieModule(KieModule kieModule) {
+        getKieRepository().addKieModule(kieModule);
+        // @todo add refresh of session, runtime manager
     }
 }

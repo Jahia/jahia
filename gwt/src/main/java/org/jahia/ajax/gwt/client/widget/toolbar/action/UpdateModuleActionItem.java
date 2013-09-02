@@ -66,11 +66,11 @@ public class UpdateModuleActionItem extends BaseActionItem {
 
         if (siteNode.get("j:sourcesFolder") != null) {
             if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
-                linker.loading("Updating module...");
+                linker.loading(Messages.get("label.sourceControl.update.module", "Updating module..."));
                 JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         linker.loaded();
-                        Info.display(Messages.get("label.information", "Information"), "Module updated");
+                        Info.display(Messages.get("label.information", "Information"),Messages.get("label.sourceControl.module.updated", "Module updated") );
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("event","update");
                         linker.refresh(data);
@@ -89,7 +89,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                 dialog.addCallback(new Listener<WindowEvent>() {
                     @Override
                     public void handleEvent(WindowEvent be) {
-                        linker.loading("Sending sources...");
+                        linker.loading(Messages.get("label.sourceControl.sending.sources","Sending sources..."));
                         JahiaContentManagementService.App.getInstance().sendToSourceControl(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), new BaseAsyncCallback<GWTJahiaNode>() {
                             @Override
                             public void onSuccess(GWTJahiaNode result) {
@@ -124,7 +124,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
             dialog.addCallback(new Listener<WindowEvent>() {
                 @Override
                 public void handleEvent(WindowEvent be) {
-                    linker.loading("Getting sources...");
+                    linker.loading(Messages.get("label.sourceControl.getting.sources", "Getting sources..."));
 
                     JahiaContentManagementService.App.getInstance().checkoutModule(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
@@ -138,7 +138,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                             }
                             SiteSwitcherActionItem.refreshAllSitesList(linker);
                             ((EditLinker) linker).handleNewMainSelection();
-                            Info.display(Messages.get("label.information", "Information"), "Sources downloaded");
+                            Info.display(Messages.get("label.information", "Information"), Messages.get("label.sourceControl.source.downloaded", "Sources downloaded"));
                         }
 
                         public void onApplicationFailure(Throwable caught) {

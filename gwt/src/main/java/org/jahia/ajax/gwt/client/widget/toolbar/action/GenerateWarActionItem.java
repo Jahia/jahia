@@ -55,7 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
  */
 public class GenerateWarActionItem extends BaseActionItem {
     @Override public void onComponentSelection() {
-        linker.loading("Generating war...");
+        linker.loading(Messages.get("label.generate.war","Generating war..."));
 
         JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
@@ -75,7 +75,7 @@ public class GenerateWarActionItem extends BaseActionItem {
 
             public void onApplicationFailure(Throwable caught) {
                 linker.loaded();
-                Info.display("War creation failed",caught.getMessage());
+                Info.display(Messages.get("label.generate.war.failed","War creation failed"),caught.getMessage());
             }
         });
     }

@@ -67,8 +67,8 @@ public class Forge implements Serializable {
                             .error()
                             .source("testUrl")
                             .defaultText(
-                                    Messages.get("resources.JahiaServerSettings",
-                                            "serverSettings.manageForges.error.cannotVerify", LocaleContextHolder.getLocale()))
+                                    Messages.getWithArgs("resources.JahiaServerSettings",
+                                            "serverSettings.manageForges.error.cannotVerify", LocaleContextHolder.getLocale(),i))
                             .build());
                 }
             } catch (Exception e) {
@@ -76,9 +76,10 @@ public class Forge implements Serializable {
                         .error()
                         .source("testUrl")
                         .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.manageForges.error.cannotVerify", LocaleContextHolder.getLocale()))
+                                Messages.getWithArgs("resources.JahiaServerSettings",
+                                        "serverSettings.manageForges.error.httpError", LocaleContextHolder.getLocale(), e.getMessage()))
                         .build());
+                e.printStackTrace();
             }
         }
     }

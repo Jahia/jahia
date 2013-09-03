@@ -62,7 +62,6 @@ import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.jahia.api.Constants;
-import org.jahia.services.search.analyzer.StandardAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -77,10 +76,6 @@ import org.w3c.dom.NodeList;
  */
 public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;   
-    
-    private static final String SPELLCHECK_EXPRESSION = FieldNames.FULLTEXT + "-";
-    
-    private final Analyzer standardAnalyzer = new StandardAnalyzer();
     
     private static final Name TRANSLATION_TYPE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "translation");
     
@@ -153,10 +148,15 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * prefixed with <code>FieldNames.FULLTEXT_PREFIX</code>))
      * @return the <code>analyzer</code> to use for indexing this property
      */
-    public Analyzer getPropertyAnalyzer(String fieldName) {
+  /*  public Analyzer getPropertyAnalyzer(String fieldName) {
         Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
                 : (StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION) ? standardAnalyzer
                 : super.getPropertyAnalyzer(fieldName));
+        return analyzer;
+    }*/
+    public Analyzer getPropertyAnalyzer(String fieldName) {
+        Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
+                : super.getPropertyAnalyzer(StringUtils.startsWith(fieldName, FieldNames.FULLTEXT) ? "0:FULL:SPELLCHECK" : fieldName);
         return analyzer;
     }
     

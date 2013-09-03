@@ -187,5 +187,8 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>date</property>
             <property>changefreq</property>
         </analyzer>
+        <analyzer class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+            <property>SPELLCHECK</property>
+        </analyzer>        
     </analyzers>            
 </configuration>

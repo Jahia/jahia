@@ -312,7 +312,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             // tokenize the statement (field name doesn't matter actually...)
             List<String> words = new ArrayList<String>();
             List<Token> tokens = new ArrayList<Token>();
-            tokenize(statement, words, tokens);
+            tokenize(statement, words, tokens, site, language);
 
             String[] suggestions = check(words.toArray(new String[words.size()]), site, language);
             if (suggestions != null) {
@@ -362,8 +362,15 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
          * @throws IOException
          *             if an error occurs while parsing the statement.
          */
-        private void tokenize(String statement, List<String> words, List<Token> tokens) throws IOException {
-            TokenStream ts = handler.getTextAnalyzer().tokenStream(FieldNames.FULLTEXT, new StringReader(statement));
+        private void tokenize(String statement, List<String> words, List<Token> tokens, String site, String language) throws IOException {
+        	StringBuilder fullTextName = new StringBuilder(FieldNames.FULLTEXT);
+            if (site != null) {
+                fullTextName.append("-").append(site);
+            }
+            if (language != null) {
+                fullTextName.append("-").append(language);
+            }
+            TokenStream ts = handler.getIndexingConfig().getPropertyAnalyzer("0:FULL:SPELLCHECK").tokenStream(fullTextName.toString(), new StringReader(statement));
             try {
                 OffsetAttribute offsetAttribute = ts.getAttribute(OffsetAttribute.class);
                 TermAttribute termAttribute = ts.getAttribute(TermAttribute.class);

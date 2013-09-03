@@ -14,7 +14,7 @@
         <owner jcr:primaryType="jnt:role" j:roleGroup="live-role"
                j:permissionNames="jcr:all_default jcr:all_live actions engineTabs"/>
 
-        <privileged jcr:primaryType="jnt:role" j:roleGroup="edit-role"
+        <privileged jcr:primaryType="jnt:role" j:roleGroup="edit-role" j:hidden="true"
                     j:permissionNames="jcr:read_default jcr:readAccessControl_default jcr:readAccessControl_live sitemapSelector useComponent"
                 />
 

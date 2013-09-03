@@ -139,7 +139,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                         return Collections.emptyList();
                     }
                 });
-            } catch (RepositoryException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }

@@ -65,6 +65,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
 import java.util.*;
 
 /**
@@ -309,19 +310,25 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                     }
                 }
                 try {
-                    Set<String> s = new HashSet<String>();
+                    Set<String> roles = new HashSet<String>();
+                    Set<String> extPerms = new HashSet<String>();
 
                     try {
                         String path = "/permissions" + permName;
                         while (path.length() >= "/permissions".length()) {
                             JCRNodeWrapper permissionNode = session.getNode(path);
-                            for (PropertyIterator iterator = permissionNode
-                                    .getWeakReferences("j:permissions"); iterator.hasNext(); ) {
-                                Property prop = iterator.nextProperty();
-                                Node roleNode = prop.getParent();
-                                s.add(roleNode.getName());
+                            NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '"+permissionNode.getName()+"'", Query.JCR_SQL2).execute().getNodes();
+                            while (ni.hasNext()) {
+                                JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
+                                roles.add(roleNode.getName());
                             }
                             path = StringUtils.substringBeforeLast(path, "/");
+
+                            ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '"+permissionNode.getName()+"'", Query.JCR_SQL2).execute().getNodes();
+                            while (ni.hasNext()) {
+                                JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
+                                extPerms.add(roleNode.getParent().getName()+"/"+roleNode.getName());
+                            }
                         }
                     } catch (PathNotFoundException e) {
                         logger.warn("Unable to find the node for the permission " + permName);
@@ -338,24 +345,22 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
                     for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
                         for (String[] strings : entry.getValue()) {
-                            if (strings[1].equals("GRANT")) {
-                                if (s.contains(strings[2])) {
-                                    String principal = entry.getKey();
-                                    final String principalName = principal.substring(2);
-                                    if (principal.charAt(0) == 'u') {
-                                        JahiaUser jahiaUser = userService.lookupUser(principalName);
-                                        principals.add(jahiaUser);
-                                    } else if (principal.charAt(0) == 'g') {
-                                        if (site == null) {
-                                            site = node.getResolveSite();
-                                        }
-                                        JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
-                                                principalName);
-                                        if (group == null) {
-                                            group = groupService.lookupGroup(null, principalName);
-                                        }
-                                        principals.add(group);
+                            if (strings[1].equals("GRANT") && roles.contains(strings[2]) || strings[1].equals("EXTERNAL") && extPerms.contains(strings[2])) {
+                                String principal = entry.getKey();
+                                final String principalName = principal.substring(2);
+                                if (principal.charAt(0) == 'u') {
+                                    JahiaUser jahiaUser = userService.lookupUser(principalName);
+                                    principals.add(jahiaUser);
+                                } else if (principal.charAt(0) == 'g') {
+                                    if (site == null) {
+                                        site = node.getResolveSite();
                                     }
+                                    JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
+                                            principalName);
+                                    if (group == null) {
+                                        group = groupService.lookupGroup(null, principalName);
+                                    }
+                                    principals.add(group);
                                 }
                             }
                         }

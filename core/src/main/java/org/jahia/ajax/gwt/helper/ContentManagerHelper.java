@@ -800,14 +800,16 @@ public class ContentManagerHelper {
                 for (String[] strings : st) {
                     String pathFrom = strings[0];
                     String aclType = strings[1];
-                    String role = strings[2];
-                    if (!newAcl && path.equals(pathFrom)) {
-                        perms.put(role, aclType.equals("GRANT"));
-                    } else if (!inheritedPerms.containsKey(role)) {
-                        if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
-                            inheritedFrom = pathFrom;
+                    if (aclType.equals("GRANT") || aclType.equals("DENY")) {
+                        String role = strings[2];
+                        if (!newAcl && path.equals(pathFrom)) {
+                            perms.put(role, aclType.equals("GRANT"));
+                        } else if (!inheritedPerms.containsKey(role)) {
+                            if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
+                                inheritedFrom = pathFrom;
+                            }
+                            inheritedPerms.put(role, aclType.equals("GRANT"));
                         }
-                        inheritedPerms.put(role, aclType.equals("GRANT"));
                     }
                 }
                 if (!CollectionUtils.intersection(allAvailablePermissions, inheritedPerms.keySet()).isEmpty() ||
@@ -863,12 +865,14 @@ public class ContentManagerHelper {
                     for (String[] strings : st) {
                         String pathFrom = strings[0];
                         String aclType = strings[1];
-                        String role = strings[2];
-                        if (!inheritedPerms.containsKey(role)) {
-                            if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
-                                inheritedFrom = pathFrom;
+                        if (aclType.equals("GRANT") || aclType.equals("DENY")) {
+                            String role = strings[2];
+                            if (!inheritedPerms.containsKey(role)) {
+                                if (inheritedFrom == null || inheritedFrom.length() < pathFrom.length()) {
+                                    inheritedFrom = pathFrom;
+                                }
+                                inheritedPerms.put(role, aclType.equals("GRANT"));
                             }
-                            inheritedPerms.put(role, aclType.equals("GRANT"));
                         }
                     }
 

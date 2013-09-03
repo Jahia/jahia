@@ -226,7 +226,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         NodeIterator aces = acl.getNodes();
                         while (aces.hasNext()) {
                             Node ace = aces.nextNode();
-                            if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
+                            if (ace.isNodeType("jnt:ace")) {
                                 String principal = ace.getProperty("j:principal").getString();
                                 String type = ace.getProperty("j:aceType").getString();
                                 if (!ace.hasProperty(Constants.J_ROLES)) {
@@ -237,9 +237,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 if (!results.containsKey(principal)) {
                                     results.put(principal, new ArrayList<String[]>());
                                 }
-
-                                for (Value role : roles) {
-                                    results.get(principal).add(new String[]{n.getPath(), type, role.getString()});
+                                if (!ace.isNodeType("jnt:externalAce")) {
+                                    for (Value role : roles) {
+                                        results.get(principal).add(new String[]{n.getPath(), type, role.getString()});
+                                    }
+                                } else {
+                                    for (Value role : roles) {
+                                        results.get(principal).add(new String[]{n.getPath(), "EXTERNAL", role.getString() + "/"+ace.getProperty("j:externalPermissionsName").getString()});
+                                    }
                                 }
                             }
                         }
@@ -487,7 +492,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 gr.add(entry.getKey());
             } else if ("DENY".equals(entry.getValue())) {
                 den.add(entry.getKey());
-            } else {
+            } else if ("REMOVE".equals(entry.getValue())) {
                 rem.add(entry.getKey());
             }
         }

@@ -98,7 +98,7 @@ public class RolesHandler implements Serializable {
             for (String[] strings : entry.getValue()) {
                 String role = strings[2];
 
-                if (m.containsKey(role)) {
+                if (strings[1].equals("GRANT") && m.containsKey(role)) {
                     m.get(role).add(p);
                 }
             }

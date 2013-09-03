@@ -259,6 +259,23 @@ public class AclEditor {
                     r.get(key).getRoles().put(entry.getKey(), !data.getRemoved());
                 }
             }
+            List<PrincipalModelData> l = initialValues.get(entry.getKey());
+            if (l != null) {
+                for (PrincipalModelData data : l) {
+                    String key = data.getType() + data.getName();
+                    if (!r.containsKey(key)) {
+                        GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
+                        ace.setPrincipal(data.getName());
+                        ace.setPrincipalType(data.getType());
+                        ace.setPrincipalKey(data.getKey());
+                        ace.setPrincipalDisplayName(data.getDisplayName());
+                        ace.setRoles(new HashMap<String, Boolean>());
+                        ace.setInheritedRoles(new HashMap<String, Boolean>());
+                        r.put(key, ace);
+                    }
+                    r.get(key).getRoles().put(entry.getKey(), false);
+                }
+            }
         }
         return new ArrayList<GWTJahiaNodeACE>(r.values());
     }

@@ -62,6 +62,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NativeFSLockFactory;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Token;
 import org.jahia.api.Constants;
@@ -370,7 +371,11 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             if (language != null) {
                 fullTextName.append("-").append(language);
             }
-            TokenStream ts = handler.getIndexingConfig().getPropertyAnalyzer("0:FULL:SPELLCHECK").tokenStream(fullTextName.toString(), new StringReader(statement));
+            Analyzer analyzer = handler.getIndexingConfig().getPropertyAnalyzer("0:FULL:SPELLCHECK");
+            if(analyzer == null) {
+            	analyzer = handler.getTextAnalyzer();
+            }
+            TokenStream ts = analyzer.tokenStream(fullTextName.toString(), new StringReader(statement));
             try {
                 OffsetAttribute offsetAttribute = ts.getAttribute(OffsetAttribute.class);
                 TermAttribute termAttribute = ts.getAttribute(TermAttribute.class);

@@ -93,6 +93,10 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return name.getLocalName();
     }
 
+    public Name getNameObject() {
+        return name;
+    }
+
     public String getPrefix() {
         return name.getPrefix();
     }    

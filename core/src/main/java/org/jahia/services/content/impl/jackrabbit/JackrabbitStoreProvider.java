@@ -56,6 +56,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.PropertyIteratorImpl;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
@@ -161,6 +162,21 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                     namespaceRegistry.getURI(nodeType.getNameObject().getPrefix());
                 } catch (NamespaceException e) {
                     namespaceRegistry.registerNamespace(nodeType.getNameObject().getPrefix(), uri);
+                }
+                ExtendedPropertyDefinition[] propertyDefinitions = nodeType.getDeclaredPropertyDefinitions();
+                for (ExtendedPropertyDefinition propertyDefinition : propertyDefinitions) {
+                    if (!"*".equals(propertyDefinition.getLocalName()) && propertyDefinition.getPrefix()!=null) {
+                        uri = propertyDefinition.getNameObject().getUri();
+                        if (!Name.NS_NT_URI.equals(uri) && !Name.NS_MIX_URI.equals(uri) && !Name.NS_REP_URI.equals(
+                                uri)) {
+                            try {
+                                namespaceRegistry.getURI(propertyDefinition.getPrefix());
+                            } catch (NamespaceException e) {
+                                namespaceRegistry.registerNamespace(propertyDefinition.getNameObject().getPrefix(),
+                                        uri);
+                            }
+                        }
+                    }
                 }
                 nts.add(nodeType.getNodeTypeDefinition());
             }

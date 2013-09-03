@@ -148,12 +148,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * prefixed with <code>FieldNames.FULLTEXT_PREFIX</code>))
      * @return the <code>analyzer</code> to use for indexing this property
      */
-  /*  public Analyzer getPropertyAnalyzer(String fieldName) {
-        Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
-                : (StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION) ? standardAnalyzer
-                : super.getPropertyAnalyzer(fieldName));
-        return analyzer;
-    }*/
     public Analyzer getPropertyAnalyzer(String fieldName) {
         Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
                 : super.getPropertyAnalyzer(StringUtils.startsWith(fieldName, FieldNames.FULLTEXT) ? "0:FULL:SPELLCHECK" : fieldName);

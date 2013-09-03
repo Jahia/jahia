@@ -19,6 +19,10 @@ public class MailTemplateRegistry {
         return mailTemplates.put(name, mailTemplate);
     }
 
+    public MailTemplate removeTemplate(String name) {
+        return mailTemplates.remove(name);
+    }
+
     public MailTemplate getTemplate(String name) {
         return mailTemplates.get(name);
     }

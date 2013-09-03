@@ -13,7 +13,7 @@
     <bpmn2:itemDefinition id="ItemDefinition_4088" itemKind="Physical"
                           structureRef="org.jahia.services.workflow.WorkflowDefinition"/>
     <bpmn2:itemDefinition id="ItemDefinition_5437" itemKind="Physical" structureRef="Integer"/>
-    <bpmn2:process id="_x0031_-step-publication" drools:version="1" drools:packageName="org.jahia.services.workflow"
+    <bpmn2:process id="_x0031_-step-publication" drools:version="1" drools:packageName="org.jahia.modules.defaultmodule"
                    drools:adHoc="false" name="1-step-publication" isExecutable="true">
         <bpmn2:extensionElements>
             <drools:global identifier="nodeId" type="String"/>

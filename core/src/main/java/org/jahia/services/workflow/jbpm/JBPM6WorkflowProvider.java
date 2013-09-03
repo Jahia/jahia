@@ -203,99 +203,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
         kieServices = KieServices.Factory.get();
         kieRepository = kieServices.getRepository();
-
-        List<org.kie.api.io.Resource> fileSystemResources = new ArrayList<org.kie.api.io.Resource>();
-
-        for (Resource process : processes) {
-            try {
-                fileSystemResources.add(kieServices.getResources().newUrlResource(process.getURL()));
-            } catch (IOException e) {
-                logger.error("Error while trying to add process resource " + process, e);
-            }
-        }
-
         kieFileSystem = kieServices.newKieFileSystem();
 
-        for (org.kie.api.io.Resource kieResource : fileSystemResources) {
-            kieFileSystem.write(kieResource);
-        }
-
-        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-        KieContainer classPathKieContainer = kieServices.getKieClasspathContainer();
-        Results classPathVerifyResults = classPathKieContainer.verify();
-        kieBuilder.buildAll();
-
-        kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
-
-        TransactionManager transactionManager = new KieSpringTransactionManager(platformTransactionManager);
-        Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, em);
-        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, em);
-        env.set("IS_JTA_TRANSACTION", false);
-        env.set("IS_SHARED_ENTITY_MANAGER", true);
-
-        env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);
-        PersistenceContextManager persistenceContextManager = new KieSpringJpaManager(env);
-        env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager);
-        RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
-                .entityManagerFactory(emf)
-                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
-                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
-                        // .userGroupCallback(userGroupCallback)
-                        // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
-                .knowledgeBase(kieContainer.getKieBase())
-                .classLoader(kieContainer.getClassLoader())
-                .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
-                .userGroupCallback(jahiaUserGroupCallback)
-                .get();
-        runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
-        runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
-        taskService = runtimeEngine.getTaskService();
-
-        if (mailTemplates != null && mailTemplates.length > 0) {
-            logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
-
-            List keys = Arrays.asList("from", "to", "cc", "bcc",
-                    "from-users", "to-users", "cc-users", "bcc-users",
-                    "from-groups", "to-groups", "cc-groups", "bcc-groups",
-                    "subject", "text", "html", "language");
-
-            for (Resource mailTemplateResource : mailTemplates) {
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
-                    MailTemplate mailTemplate = new MailTemplate();
-                    mailTemplate.setLanguage("velocity");
-                    mailTemplate.setFrom(new AddressTemplate());
-                    mailTemplate.setTo(new AddressTemplate());
-                    mailTemplate.setCc(new AddressTemplate());
-                    mailTemplate.setBcc(new AddressTemplate());
-
-                    int currentField = -1;
-                    String currentLine;
-                    StringBuilder buf = new StringBuilder();
-                    while ((currentLine = reader.readLine()) != null) {
-                        if (currentLine.contains(":")) {
-                            String prefix = StringUtils.substringBefore(currentLine, ":");
-                            if (keys.contains(prefix.toLowerCase())) {
-                                JBPMModuleProcessLoader.setMailTemplateField(mailTemplate, currentField, buf);
-                                buf = new StringBuilder();
-                                currentField = keys.indexOf(prefix.toLowerCase());
-                                currentLine = StringUtils.substringAfter(currentLine, ":").trim();
-                            }
-                        } else {
-                            buf.append('\n');
-                        }
-                        buf.append(currentLine);
-                    }
-                    JBPMModuleProcessLoader.setMailTemplateField(mailTemplate, currentField, buf);
-                    mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."), mailTemplate);
-                } catch (IOException e) {
-                    logger.error("Error reading mail template " + mailTemplateResource, e);
-                }
-
-            }
-        }
+        recompilePackages();
 
         workflowService.addProvider(this);
     }
@@ -1113,13 +1023,62 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return s.execute(t);
     }
 
-    public void addKieModule(KieModule kieModule) {
-        getKieRepository().addKieModule(kieModule);
-        // @todo add refresh of session, runtime manager
-
-        kieModules.put(kieModule.getReleaseId(), kieModule);
-        List<KieModule> kieModuleList = new ArrayList<KieModule>();
-        kieBuilder.setDependencies(kieModuleList.toArray(new KieModule[kieModuleList.size()]));
-        kieBuilder.buildAll();
+    public void addResource(Resource kieResource) throws IOException {
+        kieFileSystem.write(kieServices.getResources().newUrlResource(kieResource.getURL()));
     }
+
+    public void removeResource(Resource kieResource) throws IOException {
+        kieFileSystem.delete(kieResource.getURL().getPath());
+    }
+
+    public void recompilePackages() {
+        kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+        KieContainer classPathKieContainer = kieServices.getKieClasspathContainer();
+        Results classPathVerifyResults = classPathKieContainer.verify();
+        kieBuilder.buildAll();
+
+        kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+
+        TransactionManager transactionManager = new KieSpringTransactionManager(platformTransactionManager);
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, em);
+        env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, em);
+        env.set("IS_JTA_TRANSACTION", false);
+        env.set("IS_SHARED_ENTITY_MANAGER", true);
+
+        env.set(EnvironmentName.TRANSACTION_MANAGER, transactionManager);
+        PersistenceContextManager persistenceContextManager = new KieSpringJpaManager(env);
+        env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager);
+        RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
+                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
+                        // .userGroupCallback(userGroupCallback)
+                        // .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
+                .knowledgeBase(kieContainer.getKieBase())
+                .classLoader(kieContainer.getClassLoader())
+                .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
+                .userGroupCallback(jahiaUserGroupCallback)
+                .get();
+        if (runtimeManager != null) {
+            runtimeManager.disposeRuntimeEngine(runtimeEngine);
+            runtimeManager.close();
+        }
+
+        runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
+        runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
+        taskService = runtimeEngine.getTaskService();
+        kieSession = null;
+    }
+
+
+//    public void addKieModule(KieModule kieModule) {
+//        getKieRepository().addKieModule(kieModule);
+//        // @todo add refresh of session, runtime manager
+//
+//        kieModules.put(kieModule.getReleaseId(), kieModule);
+//        List<KieModule> kieModuleList = new ArrayList<KieModule>();
+//        kieBuilder.setDependencies(kieModuleList.toArray(new KieModule[kieModuleList.size()]));
+//        kieBuilder.buildAll();
+//    }
 }

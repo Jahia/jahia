@@ -56,12 +56,12 @@
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="processes">
             <list>
-                <value>osgibundle:org/jahia/modules/custom/workflow/*.jpdl.xml</value>
+                <value>osgibundle:org/jahia/modules/**/*.bpmn2</value>
             </list>
         </property>
         <property name="mailTemplates">
             <list>
-                <value>osgibundle:org/jahia/modules/custom/workflow/*.mail</value>
+                <value>osgibundle:org/jahia/modules/**/*.mail</value>
             </list>
         </property>
     </bean>

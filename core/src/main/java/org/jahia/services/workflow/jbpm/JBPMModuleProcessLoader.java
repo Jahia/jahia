@@ -45,6 +45,7 @@ import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.templates.JahiaModuleAware;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
@@ -103,69 +104,24 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void deployDeclaredProcesses() throws IOException {
-        URL kmoduleURL = module.getBundle().getEntry("META-INF/kmodule.xml");
-        if (processes != null && processes.length > 0 && kmoduleURL != null) {
+//        URL kmoduleURL = module.getBundle().getEntry("META-INF/kmodule.xml");
+        if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
-            KieModule kieModule = JahiaOsgiKieModule.create(kmoduleURL, module.getBundle());
-            for (Resource process : processes) {
-                long lastModified = process.lastModified();
 
-                boolean needUpdate = true;
-                boolean found = false;
+            for (Resource process : processes) {
                 String fileName = process.getFilename();
-                if (kieModule instanceof ZipKieModule) {
-                    ZipKieModule zipKieModule = (ZipKieModule) kieModule;
-                    if (zipKieModule.getFile().lastModified() >= lastModified) {
-                        needUpdate = false;
-                    }
-                } else if (kieModule instanceof FileKieModule) {
-                    FileKieModule fileKieModule = (FileKieModule) kieModule;
-                    Collection<String> kieModuleFileNames = fileKieModule.getFileNames();
-                    for (String kieModuleFileName : kieModuleFileNames) {
-                        if (kieModuleFileName.equals(fileName)) {
-                            File kieModuleFile = new File(fileKieModule.getFile(), kieModuleFileName);
-                            if (kieModuleFile.lastModified() >= lastModified) {
-                                needUpdate = false;
-                                break;
-                            }
-                        }
-                    }
-                } else if (kieModule instanceof MemoryKieModule) {
-                    MemoryKieModule memoryKieModule = (MemoryKieModule) kieModule;
-                    Collection<String> kieModuleFileNames = memoryKieModule.getFileNames();
-                    for (String kieModuleFileName : kieModuleFileNames) {
-                        if (kieModuleFileName.equals(fileName)) {
-                            org.drools.compiler.compiler.io.File kieModuleFile = memoryKieModule.getMemoryFileSystem().getFile(kieModuleFileName);
-                            /* @todo memory KieModule are not supported because there is no way to test the last modification date. Maybe we could use some kind of CRC instead ?
-                            if (kieModuleFile.lastModified() >= lastModified) {
-                                needUpdate = false;
-                                break;
-                            }
-                            */
-                        }
-                    }
-                }
-                if (needUpdate) {
-                    if (found) {
-                        logger.info("Found workflow process " + fileName + ". Updating...");
-                    } else {
-                        logger.info("Found new workflow process " + fileName + ". Deploying...");
-                    }
-                    if (kieModule == null) {
-                        /*
-                        kieModule = new ZipKieModule(new ReleaseIdImpl("org.jahia.modules", module.getName(),
-                                module.getVersion().toString()), KieServices.Factory.get().newKieModuleModel(), new File(module.getFilePath()));
-                        */
-                    }
-                    if (kieModule != null) {
-                        jbpm6WorkflowProvider.addKieModule(kieModule);
-                    }
-                    logger.info("... done");
-                } else {
-                    logger.info("Found workflow process " + fileName + ". It is up-to-date.");
-                }
+                logger.info("Found workflow process " + fileName + ". Updating...");
+
+                jbpm6WorkflowProvider.addResource(process);
+                logger.info("... done");
             }
             logger.info("...workflow processes deployed.");
+            jbpm6WorkflowProvider.recompilePackages();
+            try {
+                jbpm6WorkflowProvider.getWorkflowService().initAfterAllServicesAreStarted();
+            } catch (JahiaInitializationException e) {
+                logger.error("Initialization error", e);
+            }
         }
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
@@ -262,6 +218,26 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void undeployDeclaredProcesses() throws IOException {
+        if (processes != null && processes.length > 0) {
+            logger.info("Found {} workflow processes to be undeployed.", processes.length);
+
+            for (Resource process : processes) {
+                String fileName = process.getFilename();
+                logger.info("Undeploy workflow process " + fileName + ". Updating...");
+
+                jbpm6WorkflowProvider.removeResource(process);
+                logger.info("... done");
+            }
+            logger.info("...workflow processes undeployed.");
+            jbpm6WorkflowProvider.recompilePackages();
+        }
+        if (mailTemplates != null && mailTemplates.length > 0) {
+            logger.info("Found {} workflow mail templates to be undeployed.", mailTemplates.length);
+
+            for (Resource mailTemplateResource : mailTemplates) {
+                mailTemplateRegistry.removeTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."));
+            }
+        }
 
     }
 

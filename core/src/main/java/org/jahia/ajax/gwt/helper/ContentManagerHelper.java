@@ -916,7 +916,7 @@ public class ContentManagerHelper {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                 if (!ace.getRoles().isEmpty()) {
                     Map<String, String> perms = new HashMap<String, String>();
-                    GWTJahiaNodeACE oldAce = oldPrincipals.remove(user);
+                    GWTJahiaNodeACE oldAce = oldPrincipals.get(user);
                     if (!ace.equals(oldAce)) {
                         for (Map.Entry<String, Boolean> entry : ace.getRoles().entrySet()) {
                             if (entry.getValue().equals(Boolean.TRUE) && (!Boolean.TRUE.equals(ace.getInheritedRoles().get(entry.getKey())) || acl.isBreakAllInheritance())) {
@@ -935,9 +935,6 @@ public class ContentManagerHelper {
                         node.changeRoles(user, perms);
                     }
                 }
-            }
-            for (String oldPrincipal : oldPrincipals.keySet()) {
-                node.revokeRolesForPrincipal(oldPrincipal);
             }
             node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             currentUserSession.save();

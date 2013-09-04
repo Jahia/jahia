@@ -55,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -82,11 +83,13 @@ public class AclEditor {
     private String addUsersLabel = getResource("newUsers.label");
     private String addGroupsLabel = getResource("newGroups.label");
     private List<AclEditor> rolesEditors;
+    private List<Grid> grids;
 
     private Boolean breakAllInheritance;
     private Map<String, List<PrincipalModelData>> initialValues;
     private Map<String, ListStore<PrincipalModelData>> stores;
     private StoreFilter<PrincipalModelData> inheritanceBreakFilter;
+    private FormPanel formPanel;
 
     public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups, List<AclEditor> rolesEditors) {
         this.acl = acl;
@@ -139,7 +142,10 @@ public class AclEditor {
                 }
             }
             final ListStore<PrincipalModelData> store = new ListStore<PrincipalModelData>();
-            store.add(values);
+            for (PrincipalModelData value : values) {
+                store.add(value.getClone());
+            }
+
             stores.put(displayedRole, store);
         }
 
@@ -152,7 +158,9 @@ public class AclEditor {
                 for (AclEditor roleEditor : AclEditor.this.rolesEditors) {
                     roleEditor.setBreakAllInheritance(newValue);
                     roleEditor.setDirty();
-
+                    for (Grid grid : grids) {
+                        resizeGrid(grid);
+                    }
                 }
 
             }
@@ -168,7 +176,12 @@ public class AclEditor {
                 setBreakInheritanceLabel();
                 for (Map.Entry<String, List<PrincipalModelData>> entry : initialValues.entrySet()) {
                     stores.get(entry.getKey()).removeAll();
-                    stores.get(entry.getKey()).add(entry.getValue());
+                    for (PrincipalModelData data : entry.getValue()) {
+                        stores.get(entry.getKey()).add(data.getClone());
+                    }
+                }
+                for (Grid grid : grids) {
+                    resizeGrid(grid);
                 }
                 restoreButton.setEnabled(false);
             }
@@ -222,6 +235,10 @@ public class AclEditor {
                         if (data.getInherited()) {
                             l.remove(otherData);
                             l.add(data);
+                        } else if (data.getInheritedFrom() != null && data.getRemoved()) {
+                            data.setRemoved(false);
+                            l.remove(otherData);
+                            l.add(data);
                         }
                     }
                 }
@@ -237,7 +254,12 @@ public class AclEditor {
         Map<String, GWTJahiaNodeACE> r = new HashMap<String, GWTJahiaNodeACE>();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
             final GWTJahiaNodeACE value = ace.cloneObject();
-            value.getRoles().clear();
+            value.getRoles().keySet().retainAll(displayedRoles);
+            for (String role : displayedRoles) {
+                if (value.getRoles().containsKey(role)) {
+                    value.getRoles().put(role,false);
+                }
+            }
             value.getInheritedRoles().keySet().retainAll(displayedRoles);
             r.put(ace.getPrincipalType() + ace.getPrincipal(), value);
         }
@@ -257,23 +279,6 @@ public class AclEditor {
                 }
                 if (!data.getInherited() || data.getRemoved()) {
                     r.get(key).getRoles().put(entry.getKey(), !data.getRemoved());
-                }
-            }
-            List<PrincipalModelData> l = initialValues.get(entry.getKey());
-            if (l != null) {
-                for (PrincipalModelData data : l) {
-                    String key = data.getType() + data.getName();
-                    if (!r.containsKey(key)) {
-                        GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
-                        ace.setPrincipal(data.getName());
-                        ace.setPrincipalType(data.getType());
-                        ace.setPrincipalKey(data.getKey());
-                        ace.setPrincipalDisplayName(data.getDisplayName());
-                        ace.setRoles(new HashMap<String, Boolean>());
-                        ace.setInheritedRoles(new HashMap<String, Boolean>());
-                        r.put(key, ace);
-                    }
-                    r.get(key).getRoles().put(entry.getKey(), false);
                 }
             }
         }
@@ -313,8 +318,10 @@ public class AclEditor {
     public void addNewAclPanel(final LayoutContainer c) {
         final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        FormPanel f = new FormPanel();
-        f.setScrollMode(Style.Scroll.AUTO);
+        formPanel = new FormPanel();
+        formPanel.setScrollMode(Style.Scroll.AUTO);
+
+        grids = new ArrayList<Grid>();
 
         for (final String displayedRole : displayedRoles) {
             FieldSet fs = new FieldSet();
@@ -362,18 +369,21 @@ public class AclEditor {
                     if (!model.getRemoved()) {
                         button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
                         button.setToolTip(getResource("label.remove"));
-                        if (model.getInherited() && !breakAllInheritance) {
+                        if (model.getInheritedFrom() != null && !model.getInheritedFrom().equals("") && !breakAllInheritance) {
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent event) {
 //                                    model.setInherited(false);
                                     model.setRemoved(true);
                                     grid.getView().refresh(false);
+                                    setDirty();
                                 }
                             });
                         } else {
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent event) {
                                     store.remove(model);
+                                    resizeGrid(grid);
+                                    setDirty();
                                 }
                             });
                         }
@@ -386,6 +396,7 @@ public class AclEditor {
 //                                    model.setInherited(true);
                                 model.setRemoved(false);
                                 grid.getView().refresh(false);
+                                setDirty();
                             }
                         });
                         return button;
@@ -409,11 +420,14 @@ public class AclEditor {
 
             final ListStore<PrincipalModelData> listStore = stores.get(displayedRole);
             Grid<PrincipalModelData> g = new Grid<PrincipalModelData>(listStore, new ColumnModel(configs));
+            g.getView().setAdjustForHScroll(false);
+            g.setHideHeaders(true);
             g.setAutoExpandMax(1500);
             g.setAutoExpandColumn("displayName");
+            grids.add(g);
             fs.add(g);
 
-            final UserGroupAdder userGroupAdder = new UserGroupAdder(listStore);
+            final UserGroupAdder userGroupAdder = new UserGroupAdder(listStore,g);
 
             ToolBar toolBar = new ToolBar();
             Button addUsersToolItem = new Button(getAddUsersLabel());
@@ -437,7 +451,7 @@ public class AclEditor {
             toolBar.add(addUsersToolItem);
 
             fs.add(toolBar);
-            f.add(fs);
+            formPanel.add(fs);
         }
 
         ToolBar toolBar = new ToolBar();
@@ -445,10 +459,19 @@ public class AclEditor {
         toolBar.add(breakinheritanceItem);
         toolBar.add(new FillToolItem());
         toolBar.add(restoreButton);
-        f.setTopComponent(toolBar);
+        formPanel.setTopComponent(toolBar);
 
-        c.add(f);
+        c.add(formPanel);
         c.layout();
+
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                for (Grid grid : grids) {
+                    resizeGrid(grid);
+                }
+            }
+        });
     }
 
 
@@ -497,12 +520,21 @@ public class AclEditor {
 
     class PrincipalModelData extends BaseModelData {
 
+        private PrincipalModelData(Map<String, Object> properties) {
+            super(properties);
+        }
+
         public PrincipalModelData(String key, Character type, String name, String displayName, Boolean inherited) {
             setKey(key);
             setType(type);
             setName(name);
             setDisplayName(displayName);
+            setInherited(inherited);
             setRemoved(false);
+        }
+
+        public PrincipalModelData getClone() {
+            return new PrincipalModelData(getProperties());
         }
 
         public String getName() {
@@ -538,8 +570,11 @@ public class AclEditor {
         }
 
         public Boolean getInherited() {
-            String inheritedFrom = getInheritedFrom();
-            return inheritedFrom != null && !"".equals(inheritedFrom);
+            return get("inherited");
+        }
+
+        public void setInherited(Boolean inherited) {
+            set("inherited", inherited);
         }
 
         public String getInheritedFrom() {
@@ -579,11 +614,22 @@ public class AclEditor {
         }
     }
 
+    private void resizeGrid(Grid grid) {
+        int h = 0;
+        for (int i = 0; i < grid.getStore().getModels().size(); i++) {
+            h += grid.getView().getRow(i).getOffsetHeight();
+        }
+        grid.setHeight(h);
+    }
+
     private class UserGroupAdder implements org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder {
         private final ListStore<PrincipalModelData> store;
+        private final Grid<PrincipalModelData> grid;
 
-        public UserGroupAdder(ListStore<PrincipalModelData> store) {
+
+        public UserGroupAdder(ListStore<PrincipalModelData> store, Grid<PrincipalModelData> grid) {
             this.store = store;
+            this.grid = grid;
         }
 
         public void addUsers(List<GWTJahiaUser> users) {
@@ -594,6 +640,7 @@ public class AclEditor {
                     store.add(entry);
                 }
             }
+            resizeGrid(grid);
             setDirty();
         }
 
@@ -604,6 +651,7 @@ public class AclEditor {
                     store.add(entry);
                 }
             }
+            resizeGrid(grid);
             setDirty();
         }
 

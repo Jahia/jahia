@@ -502,7 +502,6 @@ public class AclEditor {
             setType(type);
             setName(name);
             setDisplayName(displayName);
-            setInherited(inherited);
             setRemoved(false);
         }
 
@@ -539,11 +538,8 @@ public class AclEditor {
         }
 
         public Boolean getInherited() {
-            return get("inherited");
-        }
-
-        public void setInherited(Boolean inherited) {
-            set("inherited", inherited);
+            String inheritedFrom = getInheritedFrom();
+            return inheritedFrom != null && !"".equals(inheritedFrom);
         }
 
         public String getInheritedFrom() {

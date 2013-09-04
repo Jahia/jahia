@@ -40,7 +40,7 @@
                         <c:forEach items="${allModules}" var="module">
                             <c:if test="${module.moduleType ne 'templatesSet' && module.moduleType ne 'system'}">
                                             <div class="moduleListItem" >
-                                                <label style="padding: 5px;" for="${module.rootFolder}">
+                                                <label style="padding: 5px;" for="${module.rootFolder}" title="${module.description}">
                                                     <input type="checkbox" name="modules" id="${module.rootFolder}" value="${module.rootFolder}" ${functions:contains(siteBean.modules,module.rootFolder) ? 'checked="true"' : ''} /> ${module.name} (${module.rootFolder})
                                                 </label>
                                             </div>

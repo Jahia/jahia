@@ -245,3 +245,17 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallba
         jcrsession.save();
     }
 });
+
+JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, new JCRCallback<Object>() {
+    public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
+        NodeIterator ni = jcrsession.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite]", Query.JCR_SQL2).execute().getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = ni.next();
+            if (next.hasNode("files/contributed")) {
+                JCRNodeWrapper contributed = next.getNode("files/contributed");
+                contributed.revokeAllRoles();
+            }
+        }
+        jcrsession.save()
+    }
+});

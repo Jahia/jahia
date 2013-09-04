@@ -44,11 +44,6 @@
         <GRANT_g_site-administrators j:aceType="GRANT" j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" jcr:primaryType="jnt:ace" jcr:uuid="17a1e0b6-dbbc-427c-94cb-4e977a323aa6" />
       </j:acl>
       <files j:originWS="default" j:published="true" jcr:primaryType="jnt:folder" jcr:uuid="8ca7307b-1193-4aae-81ad-a52cc6c1f87d">
-        <contributed j:originWS="default" j:published="true" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:folder" jcr:uuid="ec489860-69a8-4911-a894-5feda06eff67">
-          <j:acl jcr:primaryType="jnt:acl" jcr:uuid="f37d77fd-bfbd-48e3-8327-3beaa9062b66">
-            <GRANT_g_site-privileged j:aceType="GRANT" j:principal="g:privileged" j:protected="false" j:roles="contributor" jcr:primaryType="jnt:ace" jcr:uuid="bd5dd4dd-4f0e-46c3-acc0-150f7ee013c0" />
-          </j:acl>
-        </contributed>
       </files>
       <portlets j:originWS="default" j:published="true" jcr:primaryType="jnt:portletFolder" jcr:uuid="00e60e86-769a-42da-bb0e-99113c5704f3" />
       <home j:isHomePage="true" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/home" jcr:primaryType="jnt:page" jcr:uuid="28845de7-13a6-4a82-bf96-f0837cb279a2">

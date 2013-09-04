@@ -5,12 +5,6 @@
       xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
     <files jcr:primaryType="jnt:folder">
-        <contributed jcr:primaryType="jnt:folder">
-            <j:acl jcr:primaryType="jnt:acl">
-                <GRANT_g_site-privileged j:protected="false" j:principal="g:privileged" j:roles="contributor"
-                                    j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-            </j:acl>
-        </contributed>
     </files>
 
     <portlets jcr:primaryType="jnt:portletFolder"/>

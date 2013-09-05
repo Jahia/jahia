@@ -63,7 +63,6 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.cli.MavenCli;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -98,6 +97,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
+import org.jahia.utils.ProcessHelper;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,6 +159,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
+    private String mavenExecutable;
+
     private String mavenArchetypeCatalog;
 
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
@@ -174,8 +176,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private HttpClientService httpClientService;
 
     private ApplicationEventPublisher applicationEventPublisher;
-
-    private MavenCli cli = new MavenCli(new ClassWorld("plexus.core", getClass().getClassLoader()));
 
     private SourceControlFactory sourceControlFactory;
 
@@ -433,10 +433,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION,
                 "-DinteractiveMode=false"};
 
-        int ret = cli.doMain(archetypeParams, sources.getPath(),
-                System.out, System.err);
+        StringBuilder out = new StringBuilder();
+        int ret = ProcessHelper.execute(mavenExecutable, StringUtils.join(archetypeParams," "), null, sources, out,out);
+
         if (ret > 0) {
             logger.error("Maven archetype call returned " + ret);
+            logger.error("Maven out : " + out);
             return null;
         }
 
@@ -546,9 +548,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
 
             String[] installParams = {"clean", "install"};
-            int r = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+
+            StringBuilder out = new StringBuilder();
+            int r = ProcessHelper.execute(mavenExecutable, "clean install", null , sources, out,out);
+
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);
+                logger.error("Maven out : " + out);
                 throw new IOException("Compilation error, status " + r);
             }
             File file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".war");
@@ -838,10 +844,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (settings != null) {
                 deployParams = (String[]) ArrayUtils.addAll(deployParams, new String[] { "--settings", settings.getPath()});
             }
-            int ret = cli.doMain(deployParams, generatedWar.getParent(),
-                    System.out, System.err);
+            StringBuilder out = new StringBuilder();
+            int ret = ProcessHelper.execute(mavenExecutable, StringUtils.join(deployParams," "), null, generatedWar.getParentFile(), out,out);
+
             if (ret > 0) {
                 logger.error("Maven archetype call returned " + ret);
+                logger.error("Maven out : " + out);
                 throw new IOException("Maven invocation failed");
             }
         } finally {
@@ -925,11 +933,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             String[] installParams = new String[] { "release:prepare", "release:stage", "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag,
                     "-DreleaseVersion=" + releaseVersion, "-DdevelopmentVersion=" + nextVersion,
                     "-DignoreSnapshots=true", "-DstagingRepository=tmp::default::"+tmpRepo.toURI().toString(), "--batch-mode" };
-            ret = cli.doMain(installParams, sources.getPath(), System.out, System.err);
+            StringBuilder out = new StringBuilder();
+            ret = ProcessHelper.execute(mavenExecutable, StringUtils.join(installParams," "), null, sources, out,out);
+
             FileUtils.deleteDirectory(tmpRepo);
 
             if (ret > 0) {
-                cli.doMain(new String[] { "release:rollback" }, sources.getPath(), System.out, System.err);
+                logger.error("Maven release call returnedError release, maven out : " + out);
+                logger.error("Error when releasing, maven out : " + out);
+                ProcessHelper.execute(mavenExecutable, "release:rollback", null, sources, out,out);
+                logger.error("Rollback release : " + out);
                 throw new IOException("Maven invocation failed");
             }
 
@@ -1713,6 +1726,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setModuleStates(Map<Bundle, ModuleState> moduleStates) {
         this.moduleStates = moduleStates;
+    }
+
+    public void setMavenExecutable(String mavenExecutable) {
+        this.mavenExecutable = mavenExecutable;
     }
 
     public void setMavenArchetypeCatalog(String mavenArchetypeCatalog) {

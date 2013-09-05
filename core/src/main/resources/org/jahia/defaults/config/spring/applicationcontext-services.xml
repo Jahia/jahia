@@ -143,6 +143,7 @@
         <property name="sourceControlFactory" ref="SourceControlFactory"/>
         <property name="httpClientService" ref="HttpClientService"/>
         <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml}"/>
+        <property name="mavenExecutable" value="${mvnPath:mvn}"/>
     </bean>
     
     <bean id="ModuleInstallationHelper" class="org.jahia.services.templates.ModuleInstallationHelper">

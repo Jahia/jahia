@@ -46,6 +46,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;
@@ -99,6 +100,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
     private Set<String> noValidityCheckTypes = new HashSet<String>();
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
+    private Map<String, Class> validators = new HashMap<String, Class>();
+    private Map<String, Constructor<?>> validatorCreators = new HashMap<String, Constructor<?>>();
     
     private Map<String,List<DefaultEventListener>> listeners;
 
@@ -281,7 +284,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     decoratorCreators.put(decorator.getKey(), Class.forName(decorator.getValue())
                             .getConstructor(JCRNodeWrapper.class));
                 } catch (Exception e) {
-                    logger.error("Unable to instanciate decorator: " + decorator.getValue(), e);
+                    logger.error("Unable to instantiate decorator: " + decorator.getValue(), e);
                 }
             }
         }
@@ -295,7 +298,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         try {
             decoratorCreators.put(nodeType, decoratorClass.getConstructor(JCRNodeWrapper.class));
         } catch (Exception e) {
-            logger.error("Unable to instanciate decorator: " + decoratorClass, e);
+            logger.error("Unable to instantiate decorator: " + decoratorClass, e);
         }
     }
 
@@ -364,5 +367,29 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     public void setNoLanguageValidityCheckTypes(
             Set<String> noLanguageValidityCheckTypes) {
         this.noLanguageValidityCheckTypes = noLanguageValidityCheckTypes;
+    }
+
+    public void addValidator(String nodeType, Class validatorClass) {
+        if (validators == null) {
+            validators = new HashMap<String, Class>();
+        }
+        validators.put(nodeType, validatorClass);
+        try {
+            validatorCreators.put(nodeType, validatorClass.getConstructor(JCRNodeWrapper.class));
+        } catch (Exception e) {
+            logger.error("Unable to instantiate decorator: " + validatorClass, e);
+        }
+    }
+
+    public void removeValidator(String nodeType) {
+        if (validators == null) {
+            validators = new HashMap<String, Class>();
+        }
+        validators.remove(nodeType);
+        validatorCreators.remove(nodeType);
+    }
+
+    public Map<String, Constructor<?>> getValidators() {
+        return validatorCreators;
     }
 }

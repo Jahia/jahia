@@ -47,6 +47,7 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.DocumentViewExporter;
@@ -84,6 +85,8 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessControlException;
 import java.util.*;
@@ -519,40 +522,64 @@ public class JCRSessionWrapper implements Session {
                 logger.debug("A new node can no longer be accessed to run validation checks", e);
             }
 
-            if (node instanceof JCRNodeDecorator) {
-                Set<ConstraintViolation<JCRNodeWrapper>> constraintViolations = sessionFactory.getValidatorFactoryBean().validate(node);
-                for (ConstraintViolation<JCRNodeWrapper> constraintViolation : constraintViolations) {
-                    if (ccve == null) {
-                        ccve = new CompositeConstraintViolationException();
-                    }
-                    String propertyName;
+            // refactoring
+            Map<String, Constructor<?>> validators = sessionFactory.getDefaultProvider().getValidators();
+            Set<ConstraintViolation<JCRNodeValidator>> constraintViolations = new LinkedHashSet<ConstraintViolation<JCRNodeValidator>>();
+            for (Map.Entry<String, Constructor<?>> validatorEntry : validators.entrySet()) {
+                if (node.isNodeType(validatorEntry.getKey())) {
                     try {
-                        Method propertyNameGetter = constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getMethod("propertyName");
-                        propertyName = (String) propertyNameGetter.invoke(constraintViolation.getConstraintDescriptor().getAnnotation());
-                    } catch (Exception e) {
-                        propertyName = constraintViolation.getPropertyPath().toString();
+                        JCRNodeValidator validatorDecoratedNode = (JCRNodeValidator) validatorEntry.getValue().newInstance(node);
+                        Set<ConstraintViolation<JCRNodeValidator>> validate = sessionFactory.getValidatorFactoryBean().validate(
+                                validatorDecoratedNode);
+                        constraintViolations.addAll(validate);
+                    } catch (InstantiationException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (IllegalAccessException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (InvocationTargetException e) {
+                        logger.error(e.getMessage(), e);
                     }
-                    Locale errorLocale = null;
-                    if (StringUtils.isNotBlank(propertyName)) {
-                        try {
-                            ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(propertyName);
-                            if (propertyDefinition == null) {
-                                propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_", ":"));
-                            }
-                            if (propertyDefinition != null) {
-                                if (propertyDefinition.isInternationalized()) {
-                                    errorLocale = getLocale();
-                                }
-                                ccve.addException(new PropertyConstraintViolationException(node, constraintViolation.getMessage(), errorLocale, propertyDefinition));
-                            } else {
-                                ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(), errorLocale));
-                            }
-                        } catch (RepositoryException e) {
-                            ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(), errorLocale));
+                }
+            }
+            for (ConstraintViolation<JCRNodeValidator> constraintViolation : constraintViolations) {
+                if (ccve == null) {
+                    ccve = new CompositeConstraintViolationException();
+                }
+                String propertyName;
+                try {
+                    Method propertyNameGetter = constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getMethod(
+                            "propertyName");
+                    propertyName = (String) propertyNameGetter.invoke(
+                            constraintViolation.getConstraintDescriptor().getAnnotation());
+                } catch (Exception e) {
+                    propertyName = constraintViolation.getPropertyPath().toString();
+                }
+                Locale errorLocale = null;
+                if (StringUtils.isNotBlank(propertyName)) {
+                    try {
+                        ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(
+                                propertyName);
+                        if (propertyDefinition == null) {
+                            propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_",
+                                    ":"));
                         }
-                    } else {
-                        ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(), errorLocale));
+                        if (propertyDefinition != null) {
+                            if (propertyDefinition.isInternationalized()) {
+                                errorLocale = getLocale();
+                            }
+                            ccve.addException(new PropertyConstraintViolationException(node,
+                                    constraintViolation.getMessage(), errorLocale, propertyDefinition));
+                        } else {
+                            ccve.addException(new NodeConstraintViolationException(node,
+                                    constraintViolation.getMessage(), errorLocale));
+                        }
+                    } catch (RepositoryException e) {
+                        ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(),
+                                errorLocale));
                     }
+                } else {
+                    ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(),
+                            errorLocale));
                 }
             }
         }

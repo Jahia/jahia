@@ -50,6 +50,8 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecoratorDefinition;
+import org.jahia.services.content.decorator.validation.JCRNodeValidator;
+import org.jahia.services.content.decorator.validation.JCRNodeValidatorDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
@@ -81,6 +83,7 @@ import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Workspace;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import java.io.File;
@@ -732,6 +735,17 @@ public class TemplatePackageRegistry {
                 }
             }
 
+            if (bean instanceof JCRNodeValidatorDefinition) {
+                JCRNodeValidatorDefinition jcrNodeValidatorDefinition = (JCRNodeValidatorDefinition) bean;
+                @SuppressWarnings("rawtypes")
+                Map<String, Class> validators = jcrNodeValidatorDefinition.getValidators();
+                if (validators != null) {
+                    for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> validatorEntry : validators.entrySet()) {
+                        jcrStoreService.removeValidator(validatorEntry.getKey());
+                    }
+                }
+            }
+
             if (bean instanceof HandlerMapping) {
                 templatePackageRegistry.springHandlerMappings.remove((HandlerMapping) bean);
             }
@@ -876,7 +890,34 @@ public class TemplatePackageRegistry {
                 Map<String, Class> decorators = jcrNodeDecoratorDefinition.getDecorators();
                 if (decorators != null) {
                     for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> decorator : decorators.entrySet()) {
-                        jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
+                        try {
+                            if(!NodeTypeRegistry.getInstance().getNodeType(decorator.getKey()).isMixin()) {
+                                jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
+                            } else {
+                                logger.error("It is impossible to decorate a mixin, only primary node type can be decorated");
+                            }
+                        } catch (NoSuchNodeTypeException e) {
+                            logger.error("Cannot register decorator for nodetype "+decorator.getKey()+ " has it does not exist in the registry.", e);
+                        }
+                    }
+                }
+            }
+
+            if (bean instanceof JCRNodeValidatorDefinition) {
+                JCRNodeValidatorDefinition jcrNodeValidatorDefinition = (JCRNodeValidatorDefinition) bean;
+                @SuppressWarnings("rawtypes")
+                Map<String, Class> validators = jcrNodeValidatorDefinition.getValidators();
+                if (validators != null) {
+                    for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> validatorEntry : validators.entrySet()) {
+                        Class validatorEntryValue = validatorEntry.getValue();
+                        try {
+                            if(validatorEntryValue.getConstructor(JCRNodeWrapper.class)!=null && JCRNodeValidator.class.isAssignableFrom(validatorEntryValue)) {
+                                jcrStoreService.addValidator(validatorEntry.getKey(), validatorEntryValue);
+                            }
+                        } catch (NoSuchMethodException e) {
+                            logger.error("Validator must have a constructor taking only a JCRNodeWrapper has a parameter. " +
+                                         "Please add "+validatorEntryValue.getSimpleName()+"(JCRNodeWrapper node) has a constructor", e);
+                        }
                     }
                 }
             }

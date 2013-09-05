@@ -384,10 +384,10 @@
 
     </bean>
 
-    <bean class="org.jahia.services.content.decorator.JCRNodeDecoratorDefinition">
-        <property name="decorators">
+    <bean class="org.jahia.services.content.decorator.validation.JCRNodeValidatorDefinition">
+        <property name="validators">
             <map>
-                <entry key="test:validatedNode" value="org.jahia.test.services.validation.TestValidatedNodeDecorator"/>
+                <entry key="test:validatedNode" value="org.jahia.test.services.validation.TestValidatedNodeValidator"/>
             </map>
         </property>
     </bean>

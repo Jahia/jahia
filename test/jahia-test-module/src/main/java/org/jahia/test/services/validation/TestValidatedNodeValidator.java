@@ -43,7 +43,7 @@ package org.jahia.test.services.validation;
 import org.hibernate.validator.constraints.Email;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
@@ -56,38 +56,39 @@ import java.util.Calendar;
 @FieldMatch.List({
         @FieldMatch(first = "test_email", second = "test_confirmEmail", propertyName = "test:confirmEmail")
 })
-public class TestValidatedNodeDecorator extends JCRNodeDecorator {
+public class TestValidatedNodeValidator implements JCRNodeValidator {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TestValidatedNodeDecorator.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TestValidatedNodeValidator.class);
+    private JCRNodeWrapper node;
 
-    public TestValidatedNodeDecorator(JCRNodeWrapper node) {
-        super(node);
+    public TestValidatedNodeValidator(JCRNodeWrapper node) {
+        this.node = node;
     }
 
     @NotNull
     public String getTest_notNull() {
-        return getPropertyAsString("test:notNull");
+        return node.getPropertyAsString("test:notNull");
     }
 
     @Size(min = 6, max = 20)
     public String getTest_sizeBetween6And20() {
-        return getPropertyAsString("test:sizeBetween6And20");
+        return node.getPropertyAsString("test:sizeBetween6And20");
     }
 
     @Email
     public String getTest_email() {
-        return getPropertyAsString("test:email");
+        return node.getPropertyAsString("test:email");
     }
 
     @Email
     public String getTest_confirmEmail() {
-        return getPropertyAsString("test:confirmEmail");
+        return node.getPropertyAsString("test:confirmEmail");
     }
 
     @Future
     public Calendar getTest_futureDate() {
         try {
-            JCRPropertyWrapper property = getProperty("test:futureDate");
+            JCRPropertyWrapper property = node.getProperty("test:futureDate");
             if (property != null) {
                 return property.getDate();
             }
@@ -100,7 +101,7 @@ public class TestValidatedNodeDecorator extends JCRNodeDecorator {
     @Min(3)
     public Long getTest_greaterThan2() {
         try {
-            JCRPropertyWrapper property = getProperty("test:greaterThan2");
+            JCRPropertyWrapper property = node.getProperty("test:greaterThan2");
             if (property != null) {
                 return Long.valueOf(property.getLong());
             }

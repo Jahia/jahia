@@ -52,9 +52,9 @@
         <ul class="listvisibility">
     <c:forTokens
             items="j:firstName,j:lastName,j:gender,j:title,j:birthDate,j:organization,j:function,j:about,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,preferredLanguage"
-            delims="," var="key">
+            delims="," var="key" varStatus="loopStatus">
         <c:if test="${currentNode.properties[key].boolean}">
-            <li><input onchange="$('#updateVisibility').ajaxSubmit();" type="checkbox" name="j:publicProperties" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} /> <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></li>
+            <li><input onchange="$('#updateVisibility').ajaxSubmit();" type="checkbox" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />&nbsp;<label for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></label></li>
         </c:if>
     </c:forTokens>
         <input type="hidden" name="jcrMethodToCall" value="put" />

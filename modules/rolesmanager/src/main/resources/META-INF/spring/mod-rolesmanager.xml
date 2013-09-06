@@ -13,6 +13,7 @@
                 <property name="availableNodeTypes" >
                     <list>
                         <value>jnt:content/*</value>
+                        <value>jnt:page</value>
                         <value>jnt:virtualsite</value>
                         <value>rep:root</value>
                     </list>
@@ -40,6 +41,7 @@
                 <property name="availableNodeTypes" >
                     <list>
                         <value>jnt:content/*</value>
+                        <value>jnt:page</value>
                         <value>jnt:virtualsite</value>
                         <value>rep:root</value>
                     </list>

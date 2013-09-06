@@ -41,7 +41,7 @@
     <tbody>
     <c:forEach items="${requestScope.modules}" var="module">
         <tr>
-            <td> ${module.title}</td>
+            <td><c:if test="${not empty module.icon}"><img width="100" height="100" src="${module.icon}"/></c:if>${module.title}</td>
             <td> ${module.name}</td>
             <td> ${module.version}</td>
             <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>

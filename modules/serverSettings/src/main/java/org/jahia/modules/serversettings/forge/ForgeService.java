@@ -170,15 +170,16 @@ public class ForgeService {
                 for (int i = 0; i < moduleList.length(); i++) {
                     boolean add = true;
 
+                    final JSONObject moduleObject = moduleList.getJSONObject(i);
                     for (Module m : modules) {
                         // todo add also groupId
-                        if (StringUtils.equals(m.getName(), moduleList.getJSONObject(i).getString("name"))) {
+                        if (StringUtils.equals(m.getName(), moduleObject.getString("name"))) {
                             add = false;
                             break;
                         }
                     }
                     if (add) {
-                        final JSONArray moduleVersions = moduleList.getJSONObject(i).getJSONArray("versions");
+                        final JSONArray moduleVersions = moduleObject.getJSONArray("versions");
 
                         SortedMap<Version, JSONObject> sortedVersions = new TreeMap<Version, JSONObject>();
 
@@ -195,11 +196,12 @@ public class ForgeService {
                         if (!sortedVersions.isEmpty()) {
                             Module module = new Module();
                             JSONObject versionObject = sortedVersions.get(sortedVersions.lastKey());
-                            module.setRemoteUrl(moduleList.getJSONObject(i).getString("remoteUrl"));
-                            module.setRemotePath(moduleList.getJSONObject(i).getString("path"));
+                            module.setRemoteUrl(moduleObject.getString("remoteUrl"));
+                            module.setRemotePath(moduleObject.getString("path"));
+                            module.setIcon(moduleObject.getString("icon"));
                             module.setVersion(versionObject.getString("version"));
-                            module.setTitle(moduleList.getJSONObject(i).getString("title"));
-                            module.setName(moduleList.getJSONObject(i).getString("name"));
+                            module.setTitle(moduleObject.getString("title"));
+                            module.setName(moduleObject.getString("name"));
                             module.setDownloadUrl(versionObject.getString("downloadUrl"));
                             module.setForgeId(forge.getId());
                             modules.add(module);

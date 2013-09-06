@@ -16,6 +16,7 @@ public class Module implements Serializable, Comparable<Module> {
     private String title;
     private String groupId;
     private String forgeId;
+    private String icon;
 
     public String getName() {
         return name;
@@ -79,6 +80,14 @@ public class Module implements Serializable, Comparable<Module> {
 
     public void setForgeId(String forgeId) {
         this.forgeId = forgeId;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     @Override

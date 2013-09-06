@@ -1,6 +1,7 @@
 <fmt:message key="serverSettings.manageModules.module.state.active" var="i18nModuleActive"/>
 <fmt:message key="serverSettings.manageModules.module.state.inactive" var="i18nModuleInactive"/>
 <fmt:message key="serverSettings.manageModules.details" var="i18nModuleDetails" />
+<fmt:message key="serverSettings.manageModules.forge" var="i18nModuleForge" />
 <fmt:message key="serverSettings.manageModules.startModule" var="i18nModuleStart"/>
 <fmt:message key="serverSettings.manageModules.stopModule" var="i18nModuleStop"/>
 <fmt:message key="serverSettings.manageModules.undeployModule" var="i18nModuleUndeploy"/>

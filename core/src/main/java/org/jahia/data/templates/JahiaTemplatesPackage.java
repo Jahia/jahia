@@ -159,6 +159,8 @@ public class JahiaTemplatesPackage {
     private boolean serviceInitialized;
     private boolean sourcesDownloadable;
 
+    private String forgeUrl;
+
     public JahiaTemplatesPackage(Bundle bundle) {
         this.bundle = bundle;
     }
@@ -614,5 +616,13 @@ public class JahiaTemplatesPackage {
 
     public boolean isSourcesDownloadable() {
         return sourcesDownloadable;
+    }
+
+    public String getForgeUrl() {
+        return forgeUrl;
+    }
+
+    public void setForgeUrl(String forgeUrl) {
+        this.forgeUrl = forgeUrl;
     }
 }

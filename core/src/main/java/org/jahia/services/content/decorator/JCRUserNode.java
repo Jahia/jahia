@@ -159,13 +159,18 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
         if (user == null || user instanceof JCRUser) {
             boolean b = super.hasProperty(s);
-            return b&canGetProperty(s);
+            return b && canGetProperty(s);
         } else {
-            String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
-            if(property==null && user instanceof JahiaExternalUser) {
+            boolean isExternal = user instanceof JahiaExternalUser;
+            String property = isExternal ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
+            if(property==null && isExternal) {
                 property = ((JahiaExternalUser) user).getUserProperties().getProperty(s);
             }
-            return null != property&canGetProperty(s);
+            if (property == null) {
+                // actually read the property on the corresponding JCR node
+                return super.hasProperty(s) && canGetProperty(s);
+            }
+            return null != property && canGetProperty(s);
         }
     }
 
@@ -268,19 +273,18 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     private boolean canGetProperty(String s) throws RepositoryException {
-        if (!hasPermission("jcr:write") && !publicProperties.contains(s)) {
-            if (!super.hasProperty("j:publicProperties")) {
-                return false;
-            }
-            Property p = super.getProperty("j:publicProperties");
-            Value[] values = p.getValues();
-            for (Value value : values) {
-                if (s.equals(value.getString())) {
-                    return true;
-                }
-            }
-        } else {
+        if (publicProperties.contains(s) || hasPermission("jcr:write")) {
             return true;
+        }
+        if (!super.hasProperty("j:publicProperties")) {
+            return false;
+        }
+        Property p = super.getProperty("j:publicProperties");
+        Value[] values = p.getValues();
+        for (Value value : values) {
+            if (s.equals(value.getString())) {
+                return true;
+            }
         }
         return false;
     }

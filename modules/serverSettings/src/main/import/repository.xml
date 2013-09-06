@@ -264,20 +264,7 @@
                                  jcr:mixinTypes="jmix:rbTitle"
                                  jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
-                                    <tabular-list jcr:primaryType="jnt:tabularList">
-                                        <installed-modules jcr:primaryType="jnt:contentList">
-                                            <j:translation_en jcr:language="en"
-                                                jcr:primaryType="jnt:translation"
-                                                jcr:title="Installed modules"/>
-                                            <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
-                                        </installed-modules>
-                                        <available-modules jcr:primaryType="jnt:contentList">
-                                            <j:translation_en jcr:language="en"
-                                                jcr:primaryType="jnt:translation"
-                                                jcr:title="Available modules"/>
-                                            <serversettingsmanageforgesmodule jcr:primaryType="jnt:serverSettingsManageForgesModules"/>
-                                        </available-modules>
-                                    </tabular-list>
+                                    <manage-modules jcr:primaryType="jnt:serverSettingsManageModules"/>
                                 </pagecontent>
                             </manageModules>
                             <managePortlets j:applyOn="jnt:globalSettings"

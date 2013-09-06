@@ -53,6 +53,8 @@
         </transition>
 
         <transition on="viewDetails" to="detailedView"/>
+
+        <transition on="viewAvailableModules" to="forgeView"/>
     </view-state>
 
     <view-state id="viewDownloadForm" model="flowScope">
@@ -146,4 +148,18 @@
         </transition>
         <transition to="detailedView"/>
     </action-state>
+
+    <view-state id="forgeView" model="module">
+        <on-render>
+            <evaluate expression="flowHandler.forgeModules" result="requestScope.modules"/>
+            <evaluate expression="flowHandler.allModuleVersions" result="requestScope.allModuleVersions"/>
+        </on-render>
+
+        <transition on="installForgeModule" to="forgeView">
+            <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>
+        </transition>
+
+        <transition on="viewInstalledModules" to="view"/>
+    </view-state>
+
 </flow>

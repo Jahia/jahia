@@ -16,10 +16,18 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="module" type="org.jahia.modules.serversettings.forge.Module"--%>
-
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <fmt:message key="serverSettings.manageModules.details" var="i18nModuleDetails" />
 
-<h3><fmt:message key="serverSettings.manageForgesModules.availableModules"/></h3>
+<form id="viewInstalledModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST">
+    <input type="hidden" name="_eventId" value="viewInstalledModules"/>
+</form>
+<ul class="nav nav-tabs">
+    <li><a href="#" onclick="$('#viewInstalledModulesForm').submit()"><fmt:message key="serverSettings.manageModules.installedModules"/></a></li>
+    <li class="active">
+        <a href="#"><fmt:message key="serverSettings.manageModules.availableModules"/></a>
+    </li>
+</ul>
 
 <table class="table table-bordered table-striped table-hover">
     <thead>
@@ -27,13 +35,13 @@
         <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
         <th></th>
         <th>
-            <fmt:message key="serverSettings.manageForgesModules.version"/>
+            <fmt:message key="serverSettings.manageModules.version"/>
         </th>
         <th>
-            <fmt:message key="serverSettings.manageForgesModules.detail"/>
+            <fmt:message key="serverSettings.manageModules.details"/>
         </th>
         <th>
-            <fmt:message key="serverSettings.manageForgesModules.download"/>
+            <fmt:message key="serverSettings.manageModules.download"/>
         </th>
     </tr>
     </thead>
@@ -62,12 +70,12 @@
                 <%--Other versions installed--%>
             <%--</c:when>--%>
             <c:otherwise>
-                <form style="margin: 0;" action="${flowExecutionUrl}&displayTab=available-modules" method="POST">
+                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                     <input type="hidden" name="forgeId" value="${module.forgeId}"/>
                     <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
-                    <button class="btn btn-block button-download" type="submit" name="_eventId_installModule" onclick="">
+                    <button class="btn btn-block button-download" type="submit" name="_eventId_installForgeModule">
                         <i class="icon-download"></i>
-                        &nbsp;<fmt:message key="serverSettings.manageForgesModules.download"/>
+                        &nbsp;<fmt:message key="serverSettings.manageModules.download"/>
                     </button>
                 </form>
             </c:otherwise>

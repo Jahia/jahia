@@ -50,12 +50,12 @@
             </c:forEach>
             <c:if test="${not empty availableUpdates[entry.key]}">
                 <br/>Update available to version ${availableUpdates[entry.key].version}!
-                <form style="margin: 0;" action="${flowExecutionUrl}&displayTab=installed-modules" method="POST">
+                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                     <input type="hidden" name="forgeId" value="${availableUpdates[entry.key].forgeId}"/>
                     <input type="hidden" name="moduleUrl" value="${availableUpdates[entry.key].downloadUrl}"/>
                     <button class="btn btn-block button-download" type="submit" name="_eventId_installModule" onclick="">
                         <i class="icon-download"></i>
-                        &nbsp;<fmt:message key="serverSettings.manageForgesModules.download"/>
+                        &nbsp;<fmt:message key="serverSettings.manageModules.download"/>
                     </button>
                 </form>
 

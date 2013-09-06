@@ -41,6 +41,16 @@
 <c:set value="${renderContext.editModeConfigName eq 'studiomode' or renderContext.editModeConfigName eq 'studiovisualmode'}"
        var="isStudio"/>
 
+<form id="viewAvailableModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST">
+    <input type="hidden" name="_eventId" value="viewAvailableModules"/>
+</form>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#"><fmt:message key="serverSettings.manageModules.installedModules"/></a>
+    </li>
+    <li><a href="#" onclick="$('#viewAvailableModulesForm').submit()"><fmt:message key="serverSettings.manageModules.availableModules"/></a></li>
+</ul>
+
 <c:if test="${not isStudio}">
     <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post">
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">

@@ -84,6 +84,7 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="decorators">
             <map>
+                <!--AVOID putting mixin in this sets, only primary node type are allowed for decorators-->
                 <entry key="jnt:virtualsite" value="org.jahia.services.content.decorator.JCRSiteNode"/>
                 <entry key="nt:file" value="org.jahia.services.content.decorator.JCRFileNode"/>
                 <entry key="nt:folder" value="org.jahia.services.content.decorator.JCRFileNode"/>
@@ -94,7 +95,12 @@
                 <entry key="nt:version" value="org.jahia.services.content.decorator.JCRVersion"/>
                 <entry key="nt:versionHistory" value="org.jahia.services.content.decorator.JCRVersionHistory"/>
                 <entry key="nt:frozenNode" value="org.jahia.services.content.decorator.JCRFrozenNode"/>
-                <entry key="jmix:nodeReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jnt:fileReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jnt:imageReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jnt:contentReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jnt:contentFolderReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jnt:nodeLink" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jnt:portletReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:simplePreference"
                        value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                 <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>

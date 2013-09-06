@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableSet;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
@@ -277,6 +278,9 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public void setDecorators(Map<String, String> decorators) {
+        if(!this.decorators.isEmpty()) {
+            throw new RuntimeException("setDecorators should not be called after initialization of system, use addDecorator instead");
+        }
         if (decorators != null) {
             for (Map.Entry<String, String> decorator : decorators.entrySet()) {
                 try {
@@ -291,14 +295,22 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public void addDecorator(String nodeType, Class decoratorClass) {
-        if (decorators == null) {
-            decorators = new HashMap<String, Class>();
-        }
-        decorators.put(nodeType, decoratorClass);
         try {
-            decoratorCreators.put(nodeType, decoratorClass.getConstructor(JCRNodeWrapper.class));
-        } catch (Exception e) {
-            logger.error("Unable to instantiate decorator: " + decoratorClass, e);
+            if (!NodeTypeRegistry.getInstance().getNodeType(nodeType).isMixin()) {
+                if (decorators == null) {
+                    decorators = new HashMap<String, Class>();
+                }
+                decorators.put(nodeType, decoratorClass);
+                try {
+                    decoratorCreators.put(nodeType, decoratorClass.getConstructor(JCRNodeWrapper.class));
+                } catch (Exception e) {
+                    logger.error("Unable to instantiate decorator: " + decoratorClass, e);
+                }
+            } else {
+                logger.error("It is impossible to decorate a mixin ("+nodeType+"), only primary node type can be decorated");
+            }
+        } catch (NoSuchNodeTypeException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

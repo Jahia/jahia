@@ -53,7 +53,9 @@ public class TemplateDefaultViewCacheKeyPartGenerator implements CacheKeyPartGen
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        return (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
+        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE))
+            return (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
+        return null;
     }
 
     @Override

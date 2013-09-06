@@ -62,7 +62,7 @@ public class TemplateCacheKeyPartGenerator implements CacheKeyPartGenerator {
             template = resource.getResolvedTemplate();
         }
         String defaultView = (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
-        if (defaultView != null && "default".equals(template)) {
+        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE) && defaultView != null && "default".equals(template)) {
             template = defaultView;
         }
         return template;

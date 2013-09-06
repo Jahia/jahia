@@ -48,6 +48,7 @@ import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRNodeDecoratorDefinition;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
@@ -64,6 +65,8 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
+import org.jahia.services.render.filter.cache.CacheKeyPartGenerator;
+import org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator;
 import org.jahia.services.render.webflow.BundleFlowRegistry;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -746,6 +749,14 @@ public class TemplatePackageRegistry {
                 }
             }
 
+            if (bean instanceof CacheKeyPartGenerator) {
+                final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
+                List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
+                l.remove(bean);
+                cacheKeyGenerator.setPartGenerators(l);
+                CacheHelper.flushOutputCaches();
+            }
+
             if (bean instanceof HandlerMapping) {
                 templatePackageRegistry.springHandlerMappings.remove((HandlerMapping) bean);
             }
@@ -920,6 +931,14 @@ public class TemplatePackageRegistry {
                         }
                     }
                 }
+            }
+
+            if (bean instanceof CacheKeyPartGenerator) {
+                final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
+                List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
+                l.add((CacheKeyPartGenerator)bean);
+                cacheKeyGenerator.setPartGenerators(l);
+                CacheHelper.flushOutputCaches();
             }
 
             if (bean instanceof HandlerMapping) {

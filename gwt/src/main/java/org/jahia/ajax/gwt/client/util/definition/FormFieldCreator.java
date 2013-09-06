@@ -114,7 +114,7 @@ public class FormFieldCreator {
             String emptyText = "";
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
-                    if (((GWTJahiaPropertyDefinition) definition).isMultiple()) {
+                    if (!definition.isProtected() && ((GWTJahiaPropertyDefinition) definition).isMultiple()) {
                         field = new MultipleTextField<String>();
                     } else {
                         switch (propDefinition.getRequiredType()) {
@@ -529,7 +529,7 @@ public class FormFieldCreator {
                                 v.add(value.getNode());
                             }
                             field.setValue(v);
-                        } else if (propDefinition.isMultiple()) {
+                        } else if (!propDefinition.isProtected() && propDefinition.isMultiple()) {
                             List<String> v = new ArrayList<String>();
                             for (GWTJahiaNodePropertyValue value : values) {
                                 v.add(value.getString());

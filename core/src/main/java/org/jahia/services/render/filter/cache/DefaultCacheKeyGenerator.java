@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Default implementation of the module output cache key generator.
@@ -87,7 +88,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     public Map<String, String> parse(String key) {
-        String[] values = key.split("@@");
+        String[] values = getSplit(key);
         Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
         for (int i = 0; i < values.length; i++) {
             String value = values[i];
@@ -97,7 +98,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     public String replaceField(String key, String fieldName, String newValue) {
-        String[] args = key.split("@@");
+        String[] args = getSplit(key);
         args[fields.indexOf(fieldName)] = newValue;
         return StringUtils.join(args, "@@");
     }
@@ -107,7 +108,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     public String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
-        String[] args = key.split("@@");
+        String[] args = getSplit(key);
         String[] newArgs = new String[args.length];
         for (int i = 0; i < args.length; i++) {
             String value = args[i];
@@ -125,6 +126,20 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 //            }
 //        }
         return s;
+    }
+
+    private String[] getSplit(String key) {
+        String[] res = new String[fields.size()];
+        int index = 0;
+        int start = 0;
+        int end;
+        while ((end = key.indexOf("@@",start)) > -1) {
+            res[ index ++ ] = key.substring(start,end);
+            start = end + 2;
+        }
+        res[ index ++ ] = key.substring(start);
+        while (index < res.length) res[ index ++ ] = "";
+        return res;
     }
 
 }

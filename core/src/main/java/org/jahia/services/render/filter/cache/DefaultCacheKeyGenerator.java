@@ -67,6 +67,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         this.partGenerators = partGenerators;
         this.fields = new ArrayList<String>();
         for (CacheKeyPartGenerator generator : partGenerators) {
+            if (fields.contains(generator.getKey())) {
+                throw new RuntimeException("Cannot register key part generator with existing key " + generator.getKey() + " , " + generator);
+            }
             fields.add(generator.getKey());
         }
     }

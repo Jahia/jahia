@@ -48,7 +48,7 @@ import java.util.Properties;
 public class TemplateDefaultViewCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String getKey() {
-        return "template";
+        return "templatedefaultview";
     }
 
     @Override

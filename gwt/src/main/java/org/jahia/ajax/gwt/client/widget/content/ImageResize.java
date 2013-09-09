@@ -153,7 +153,6 @@ public class ImageResize extends Window {
         keepRatio.setFieldLabel(Messages.get("ratio.label"));
         form.add(keepRatio, new FormData(20, 0));
 
-<<<<<<< .working
         newname.setName("newname");
         newname.setWidth(350);
         int extIndex = n.getName().lastIndexOf(".") ;
@@ -174,27 +173,6 @@ public class ImageResize extends Window {
         
         form.add(newname);
 
-=======
-        newname.setName("newname");
-        newname.setWidth(350);
-        int extIndex = n.getName().lastIndexOf(".") ;
-        if (extIndex > 0) {
-            String dotExt = n.getName().substring(extIndex) ;
-            newname.setValue(n.getName().replaceAll(dotExt+"+$", "-resize" + w + "x" + h + dotExt));
-        } else {
-            newname.setValue(n.getName() + "-resize" + w + "x" + h);
-        }
-        newname.setFieldLabel(Messages.get("label.rename"));
-        
-        newname.addListener(Events.Change, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-                autoName = false;
-            }
-        });
-        
-        form.add(newname);
-
->>>>>>> .merge-right.r47197
         hf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 if (keepRatio.getValue()) wf.setValue(w * hf.getValue().intValue() / h);
@@ -256,15 +234,10 @@ public class ImageResize extends Window {
              }
 
              public void onSuccess(Object result) {
-<<<<<<< .working
                  hide();
                  Map<String, Object> data = new HashMap<String, Object>();
                  data.put(Linker.REFRESH_MAIN, true);
                  linker.refresh(data);
-=======
-                 hide();
-                 linker.refresh(Linker.REFRESH_MAIN);
->>>>>>> .merge-right.r47197
              }
          });
     }

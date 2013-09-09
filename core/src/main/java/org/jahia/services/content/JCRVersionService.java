@@ -55,6 +55,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
+
 import java.text.ParseException;
 import java.util.*;
 
@@ -83,7 +84,9 @@ public class JCRVersionService extends JahiaService {
         }
         return instance;
     }
-
+    
+    private Set<String> mixinsToRemoveOnDestination = new HashSet<String>(
+            Arrays.asList(new String[] { "jmix:referencesInField" }));
 
     @Override
     public void start() throws JahiaInitializationException {
@@ -286,7 +289,16 @@ public class JCRVersionService extends JahiaService {
             throws RepositoryException {
         session.checkout(destinationNode);
 
-        NodeType[] mixin = frozenNode.getMixinNodeTypes();
+        NodeType[] mixin = destinationNode.getMixinNodeTypes();
+        for (NodeType aMixin : mixin) {
+            String mixinName = aMixin.getName();
+            if (mixinsToRemoveOnDestination.contains(mixinName)) {
+                logger.info("Removing mixin " + mixinName + " on node " + destinationNode.getPath());
+                destinationNode.removeMixin(mixinName);
+            }
+        }
+        
+        mixin = frozenNode.getMixinNodeTypes();
         for (NodeType aMixin : mixin) {
             if(!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
                 logger.info("Adding mixin "+aMixin.getName()+" on node "+destinationNode.getPath());
@@ -387,11 +399,16 @@ public class JCRVersionService extends JahiaService {
         }
 
         for (JCRNodeWrapper oldChild : destinationNodes.values()) {
-            if (!names.contains(oldChild.getName())) {
-                if ((!oldChild.isNodeType("jmix:publication") || allSubTree) && !oldChild.isNodeType("jnt:translation")) {
-                    logger.info("Removing node "+oldChild.getName()+" on node "+destinationNode.getPath());
-                    oldChild.remove();
+            try {
+                if (!names.contains(oldChild.getName())) {
+                    if ((!oldChild.isNodeType("jmix:publication") || allSubTree) && !oldChild.isNodeType("jnt:translation")) {
+                        logger.info("Removing node "+oldChild.getName()+" on node "+destinationNode.getPath());
+                        oldChild.remove();
+                    }
                 }
+            } catch (InvalidItemStateException e) {
+                // ignore
+                throw e;
             }
         }
 
@@ -473,5 +490,9 @@ public class JCRVersionService extends JahiaService {
                 return null;
             }
         });
+    }
+
+    public void setMixinsToRemoveOnDestination(Set<String> mixinsToRemoveOnDestination) {
+        this.mixinsToRemoveOnDestination = mixinsToRemoveOnDestination;
     }
 }

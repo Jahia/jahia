@@ -42,6 +42,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.ValueHelper;
+import org.jahia.api.Constants;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
@@ -50,6 +51,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -460,7 +462,17 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public String getLocale() throws RepositoryException {
         if (def.isInternationalized()) {
-            return StringUtils.substringAfter(property.getParent().getName(), "j:translation_");
+            Node parent = property.getParent();
+            String parentName = parent.getName();
+            if ("jcr:frozenNode".equals(parentName)) {
+                // we have a property of a version node -> get the locale as property
+                try {
+                    return parent.getProperty(Constants.JCR_LANGUAGE).getString();
+                } catch (PathNotFoundException e) {
+                    return null;
+                }
+            }
+            return StringUtils.substringAfter(parentName, "j:translation_");
         }
         return null;
     }

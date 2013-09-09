@@ -399,16 +399,11 @@ public class JCRVersionService extends JahiaService {
         }
 
         for (JCRNodeWrapper oldChild : destinationNodes.values()) {
-            try {
-                if (!names.contains(oldChild.getName())) {
-                    if ((!oldChild.isNodeType("jmix:publication") || allSubTree) && !oldChild.isNodeType("jnt:translation")) {
-                        logger.info("Removing node "+oldChild.getName()+" on node "+destinationNode.getPath());
-                        oldChild.remove();
-                    }
+            if (!names.contains(oldChild.getName())) {
+                if ((!oldChild.isNodeType("jmix:publication") || allSubTree) && !oldChild.isNodeType("jnt:translation")) {
+                    logger.info("Removing node "+oldChild.getName()+" on node "+destinationNode.getPath());
+                    oldChild.remove();
                 }
-            } catch (InvalidItemStateException e) {
-                // ignore
-                throw e;
             }
         }
 

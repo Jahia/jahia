@@ -90,7 +90,11 @@ public class ImageRotate extends Window {
         int extIndex = n.getName().lastIndexOf(".") ;
         if (extIndex > 0) {
             String dotExt = n.getName().substring(extIndex) ;
+<<<<<<< .working
             newname.setValue(n.getName().replaceAll(dotExt, "-rotate" + dotExt));
+=======
+            newname.setValue(n.getName().replaceAll(dotExt+"+$", "-rotate" + dotExt));
+>>>>>>> .merge-right.r47197
         } else {
             newname.setValue(n.getName() + "-rotate");
         }

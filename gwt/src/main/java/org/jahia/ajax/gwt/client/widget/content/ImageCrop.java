@@ -126,6 +126,7 @@ public class ImageCrop extends Window {
         } else {
             newname.setValue(n.getName() + "-crop");
         }
+<<<<<<< .working
 
         newname.addListener(Events.Change, new Listener<ComponentEvent>() {
             @Override
@@ -148,6 +149,29 @@ public class ImageCrop extends Window {
         width.setPropertyEditorType(Integer.class);
         height = new NumberField();
         height.setPropertyEditorType(Integer.class);
+=======
+
+        newname.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                autoName = false;
+            }
+        });
+
+        lcName.add(newname, formData);
+
+        LayoutContainer lcWidth = new LayoutContainer();
+        lcWidth.setStyleAttribute("paddingRight", "10px");
+        FormLayout formLayout = new FormLayout(LabelAlign.RIGHT);
+        formLayout.setLabelWidth(40);
+        lcWidth.setLayout(formLayout);
+        form.add(lcName, new ColumnData(.6));
+
+
+        width = new NumberField();
+        width.setPropertyEditorType(Integer.class);
+        height = new NumberField();
+        height.setPropertyEditorType(Integer.class);
+>>>>>>> .merge-right.r47197
         
         String imageWidthStr = n.get("j:width");
         String imageHeightStr = n.get("j:height");
@@ -257,6 +281,7 @@ public class ImageCrop extends Window {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 
+<<<<<<< .working
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             @Override
             public void handleEvent(ComponentEvent be) {
@@ -271,6 +296,21 @@ public class ImageCrop extends Window {
         width.addListener(Events.Change, listener);
         height.addListener(Events.Change, listener);
 
+=======
+        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                if (width.getValue() != null && height.getValue() != null) {
+                    setDimensions(width.getValue().intValue(), height.getValue().intValue());
+                    if (predefinedSizesBox != null) {
+                        predefinedSizesBox.clearSelections();
+                    }
+                }
+            }
+        };
+        width.addListener(Events.Change, listener);
+        height.addListener(Events.Change, listener);
+
+>>>>>>> .merge-right.r47197
         add(form);
 
         setModal(true);

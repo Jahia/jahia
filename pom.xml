@@ -87,7 +87,6 @@
         <gogo.shell.version>0.10.0</gogo.shell.version>
         <gogo.command.version>0.12.0</gogo.command.version>
         <equinox.ver>3.2.2</equinox.ver>
-        <spring.maven.artifact.version>3.0.3.RELEASE</spring.maven.artifact.version>
         <slf4j.version>1.6.6</slf4j.version>
         <osgi.version>4.3.1</osgi.version>
         <pax.logging.version>1.7.0</pax.logging.version>

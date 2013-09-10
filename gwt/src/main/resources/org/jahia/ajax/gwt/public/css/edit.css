@@ -731,7 +731,7 @@ button.button-disable:hover, div.button-disable:hover {
 }
 
 .notPublished {
-    opacity: 0.5;
+    color: grey;
 }
 
 .accessForbidden {

@@ -49,7 +49,6 @@
 package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.bin.Jahia;
 import org.jahia.osgi.BundleResource;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -115,10 +114,6 @@ public class JahiaTemplatesPackage {
     private String description;
 
     private List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>();
-
-    private List<JahiaTemplatesPackage> dependantModules = new ArrayList<JahiaTemplatesPackage>();
-
-    // set the module-type property from the manifest
 
     private String moduleType;
 
@@ -528,7 +523,6 @@ public class JahiaTemplatesPackage {
     }
 
     public Resource[] getResources(String relativePath) {
-        @SuppressWarnings("unchecked")
         Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
         List<Resource> resources = new ArrayList<Resource>();
         if (resourceEnum == null) {

@@ -327,20 +327,32 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
             if (targetSiteKey.contains("/")) {
                 targetSiteKey = StringUtils.substringBefore(targetSiteKey,"/");
             } else if (targetSiteKey.contains(".")) {
+                // remove templateType from the url
                 targetSiteKey = StringUtils.substringBeforeLast(targetSiteKey,".");
             }
         }
 
         try {
-            JahiaSite targetSite = siteService.getSiteByKey(targetSiteKey);
-            if (targetSite != null) {
-                request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, targetSite.getDefaultLanguage());
+            String language = resolveSiteLanguage(targetSiteKey);
+            if (language == null) {
+                // remove template from the url
+                language = resolveSiteLanguage(StringUtils.substringBeforeLast(targetSiteKey, "."));
             }
+            logger.debug("Language resolved : " + language);
+            request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, language);
         } catch (JahiaException e) {
             logger.error("Cannot get site for key " + targetSiteKey, e);
         }
 
         return true;
+    }
+
+    private String resolveSiteLanguage(String targetSiteKey) throws JahiaException {
+        JahiaSite targetSite = siteService.getSiteByKey(targetSiteKey);
+        if (targetSite != null) {
+            return targetSite.getDefaultLanguage();
+        }
+        return null;
     }
 
     private void resetState(HttpServletRequest request) {

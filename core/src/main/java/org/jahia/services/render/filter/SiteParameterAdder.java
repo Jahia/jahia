@@ -73,7 +73,7 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
 
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         URLGenerator urlGenerator = context.getURLGenerator();
-        if (value != null && value.startsWith(urlGenerator.getContext() + urlGenerator.getBase())) {
+        if (value != null && value.startsWith(urlGenerator.getContext() + urlGenerator.getBase() + "/")) {
                 if (!value.startsWith(urlGenerator.getContext() + urlGenerator.getBase() + "/sites/") && !value.contains(SITE_URL_PARAMETER_NAME + "=")) {
                     String servletPath = context.getRequest().getContextPath().length() > 0 ? context
                                                                 .getRequest().getContextPath() + context.getServletPath() : context
@@ -100,6 +100,7 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
                                 }
                             }
                             if (resolvedVanityUrl != null) {
+<<<<<<< .working
                                 if (vanityUrls.size() == 1) {
                                     return value;
                                 } else {
@@ -109,6 +110,9 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
                                         return value;
                                     }
                                 }
+=======
+                               return value;
+>>>>>>> .merge-right.r47219
                             }
                         } catch (RepositoryException e) {
                             logger.error("Error trying to resolve vanity URL " + value, e);

@@ -198,7 +198,9 @@ public class ForgeService {
                             JSONObject versionObject = sortedVersions.get(sortedVersions.lastKey());
                             module.setRemoteUrl(moduleObject.getString("remoteUrl"));
                             module.setRemotePath(moduleObject.getString("path"));
-                            module.setIcon(moduleObject.getString("icon"));
+                            if (moduleObject.has("icon")) {
+                                module.setIcon(moduleObject.getString("icon"));
+                            }
                             module.setVersion(versionObject.getString("version"));
                             module.setTitle(moduleObject.getString("title"));
                             module.setName(moduleObject.getString("name"));

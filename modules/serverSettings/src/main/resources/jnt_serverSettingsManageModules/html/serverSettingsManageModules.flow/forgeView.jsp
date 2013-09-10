@@ -29,6 +29,16 @@
     </li>
 </ul>
 
+<div id="moduleDetailsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="moduleDetailsModalLabel" aria-hidden="true" style="width:960px; margin-left:-480px;">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="moduleDetailsModalLabel"><fmt:message key="serverSettings.manageModules.details"/></h3>
+    </div>
+    <div class="modal-body" style="padding:0; height:480px; max-height:480px">
+        <iframe id="modalframe" frameborder="0" style="width:100%; height:99%"></iframe>
+    </div>
+</div>
+
 <table class="table table-bordered table-striped table-hover">
     <thead>
     <tr>
@@ -54,11 +64,10 @@
             <td> ${module.version}</td>
             <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>
             <td>
-                <button class="btn btn-info" type="button" onclick='window.location.assign("${remoteUrl}")'>
+                <a data-toggle="modal" role="button" class="btn btn-info" type="button" data-target="#moduleDetailsModal" onclick="$('#modalframe').attr('src', '${remoteUrl}')">
                     <i class="icon-zoom-in icon-white"></i>
                     &nbsp;${i18nModuleDetails}
-                </button>
-
+                </a>
             <td>
 
             <c:choose>

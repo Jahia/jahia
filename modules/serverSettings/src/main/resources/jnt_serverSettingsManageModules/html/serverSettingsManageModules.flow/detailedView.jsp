@@ -67,6 +67,11 @@
     <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span><fmt:message key="serverSettings.manageModules.module.disable.purgeContent.message"/></p>
 </div>
 
+<form id="viewInstalledModulesForm" action="${flowExecutionUrl}" method="POST">
+    <input type="hidden" name="_eventId" value="viewInstalledModules"/>
+    <button class="btn" name="_eventId_viewInstalledModules"><i class=" icon-chevron-left"></i>&nbsp;<fmt:message key="backToPreviousPage"/></button>
+</form>
+
 <div id="detailActiveVersion">
     <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
     <p>

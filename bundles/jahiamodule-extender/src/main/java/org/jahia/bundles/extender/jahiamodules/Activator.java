@@ -595,6 +595,7 @@ public class Activator implements BundleActivator {
         if (jahiaTemplatesPackage.getContext() != null) {
             jahiaTemplatesPackage.setContext(null);
         }
+        jahiaTemplatesPackage.setClassLoader(null);
     }
 
     private void registerHttpResources(final Bundle bundle) {

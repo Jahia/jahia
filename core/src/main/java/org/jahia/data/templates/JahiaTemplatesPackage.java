@@ -51,6 +51,7 @@ package org.jahia.data.templates;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.osgi.BundleResource;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
@@ -536,6 +537,9 @@ public class JahiaTemplatesPackage {
     }
 
     public ClassLoader getClassLoader() {
+        if (classLoader == null && bundle != null) {
+            classLoader = BundleUtils.createBundleClassLoader(bundle);
+        }
         return classLoader;
     }
 

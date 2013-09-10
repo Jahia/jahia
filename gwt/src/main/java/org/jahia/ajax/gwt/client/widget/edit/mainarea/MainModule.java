@@ -158,6 +158,7 @@ public class MainModule extends Module {
             }
         };
         scrollContainer.addStyleName("gwt-body-edit");
+<<<<<<< .working
         scrollContainer.setStyleAttribute("position", "relative");
         scrollContainer.addListener(Events.OnClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
@@ -167,6 +168,9 @@ public class MainModule extends Module {
             }
         });
         scrollContainer.add(frame);
+=======
+        scrollContainer.setStyleAttribute("position", "relative");
+>>>>>>> .merge-right.r47210
 
         center = new LayoutContainer(new FitLayout());
         center.setScrollMode(Style.Scroll.NONE);
@@ -192,8 +196,13 @@ public class MainModule extends Module {
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
 
+<<<<<<< .working
         ((ToolbarHeader) head).removeAllTools();
         if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
+=======
+
+        if (head != null) {
+>>>>>>> .merge-right.r47210
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
                         ((ToolbarHeader) head).addItem(linker, item);
                     }
@@ -301,7 +310,7 @@ public class MainModule extends Module {
             AbsoluteData deviceOuterData = new AbsoluteData(0, 0);
             deviceOuterData.setMargins(new Margins(0, 0, 0, 0));
             if (activeChannel.getVariantDecoratorImage(activeChannelVariantIndex) != null) {
-                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath()+activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
+                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath() + activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
             }
 
             int[] usableResolution = getUsableDeviceResolution(activeChannel, activeChannelVariantIndex);
@@ -389,12 +398,177 @@ public class MainModule extends Module {
         center.layout(true);
     }
 
+<<<<<<< .working
     public static void waitingMask(String text) {
         getInstance().mask(text,"x-mask-loading");
+=======
+    private void switchStaticAssets(Map<String, List<GWTStaticAssetEntry>> assets, String fileType, String tagName, String tagAttribute) {
+        List<GWTStaticAssetEntry> oldValues = new ArrayList<GWTStaticAssetEntry>();
+//        getAssets(tagName, tagAttribute, oldValues);
+        Element head = (Element) getHead();
+        getAssets(tagName, tagAttribute, head, oldValues);
+        List<GWTStaticAssetEntry> newValues = assets.get(fileType);
+
+        Integer maxValue = oldValues.size() + 1;
+
+        if (!maxValues.containsKey(fileType)) {
+            maxValues.put(fileType, maxValue);
+        } else {
+            maxValue = maxValues.get(fileType);
+        }
+
+        int j = 0;
+
+        Node oldElement = null;
+        Node lastElement = null;
+        String oldValue = null;
+        int lastDOMIDCounterSeen = 0;
+        String assetPrefix = getAssetPrefix(fileType);
+
+        for (; newValues != null && (!newValues.isEmpty() || j < oldValues.size()); j++) {
+            // first we remove all elements that are no longer in the list
+            while (j < oldValues.size()) {
+                final GWTStaticAssetEntry entry = oldValues.get(j);
+                oldElement = entry.getElement();
+                oldValue = entry.getKey();
+                if (!newValues.contains(entry)) {
+                    // Remove current element as it is not supposed to stay
+                    head.removeChild(oldElement);
+                    j++;
+                } else {
+                    lastElement = oldElement;
+                    String lastDOMIDSeen = entry.getId();
+                    if (lastDOMIDSeen.startsWith(assetPrefix)) {
+                        lastDOMIDCounterSeen = Integer.parseInt(lastDOMIDSeen.substring(assetPrefix.length()));
+                    }
+                    break;
+                }
+            }
+            // we found an element that is still present in the new asset list, or we got to the end of the
+            // old asset list
+            if (j < oldValues.size()) {
+                if (!newValues.isEmpty()) {
+                    GWTStaticAssetEntry newValue = newValues.remove(0);
+                    if (newValue.getKey().equals(oldValue)) {
+                        // Elements are equal, don't change
+                    } else {
+                        Element newElem = createAsset(fileType, (lastDOMIDCounterSeen++), newValue);
+                        if (newElem != null) {
+                            head.insertBefore(newElem, oldElement);
+                        }
+                        // Stay on current element for next comparison
+                        j--;
+                    }
+                } else {
+                    head.removeChild(oldElement);
+                }
+            } else {
+                if (newValues.size() > 0) {
+                    Element newElem = createAsset(fileType, (lastDOMIDCounterSeen++), newValues.remove(0));
+
+                    if (newElem != null) {
+                        if (lastElement != null) {
+                            head.insertAfter(newElem, lastElement);
+                            lastElement = newElem;
+                        } else {
+                            head.appendChild(newElem);
+                        }
+                    }
+                }
+            }
+        }
+        maxValues.put(fileType, maxValue);
+>>>>>>> .merge-right.r47210
     }
 
+<<<<<<< .working
     private String getUrl(String path, String template) {
         return getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html";
+=======
+    private void getAssets(String tagName, String attrname, Element head, List<GWTStaticAssetEntry> oldValues) {
+        NodeList<Node> nl = head.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node currentNode = nl.getItem(i);
+            if (currentNode.getNodeType() == 8 /* comment node */) {
+                String commentText = currentNode.getNodeValue();
+                if (commentText.startsWith("[if") &&
+                        commentText.endsWith("<![endif]")) {
+                    // we found an IE conditional comment, let's add process it and add it to our link list
+                    String condition = commentText.substring(3, commentText.indexOf("]>")).trim();
+                    int commentedHtmlStart = commentText.indexOf("]>") + 2;
+                    int commentedHtmlEnd = commentText.indexOf("<![endif]");
+                    String commentedHtml = commentText.substring(commentedHtmlStart, commentedHtmlEnd);
+                    Element divElement = DOM.createDiv();
+                    divElement.setInnerHTML(commentedHtml);
+                    NodeList<com.google.gwt.dom.client.Element> commentedLinkTags = divElement.getElementsByTagName(tagName);
+                    for (int j = 0; j < commentedLinkTags.getLength(); j++) {
+                        com.google.gwt.dom.client.Element commentedElement = commentedLinkTags.getItem(j);
+                        final Element currentElement = commentedElement.<Element>cast();
+                        String commentedElementID = DOM.getElementAttribute(currentElement, "id");
+                        if (commentedElementID != null && commentedElementID.startsWith("staticAsset")) {
+                            GWTStaticAssetEntry e = new GWTStaticAssetEntry();
+                            e.setNode(currentNode);
+                            e.setKey(DOM.getElementAttribute(currentElement, attrname));
+                            e.setId(DOM.getElementAttribute(currentElement, "id"));
+                            e.setOptions(new HashMap<String, String>());
+                            e.getOptions().put("condition", condition);
+                            oldValues.add(e);
+                        }
+                    }
+                }
+            } else if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element currentElement = (Element) currentNode;
+                if (currentElement.getNodeName().equalsIgnoreCase(tagName)) {
+                    if (DOM.getElementAttribute(currentElement, "id") != null &&
+                            DOM.getElementAttribute(currentElement, "id").startsWith("staticAsset")) {
+                        GWTStaticAssetEntry e = new GWTStaticAssetEntry();
+                        e.setNode(currentElement);
+                        e.setKey(DOM.getElementAttribute(currentElement, attrname));
+                        e.setId(DOM.getElementAttribute(currentElement, "id"));
+                        oldValues.add(e);
+                    }
+                }
+            }
+        }
+    }
+
+    private Element createAsset(String filetype, int idCounter, GWTStaticAssetEntry newValue) {
+        Element newElem = null;
+        if (filetype.equals("javascript")) {
+            newElem = DOM.createElement("script");
+            String newID = getNextAvailableID("staticAssetJavascript", idCounter);
+            newElem.setAttribute("id", newID);
+            newElem.setAttribute("type", "text/javascript");
+            newElem.setAttribute("src", newValue.getKey());
+            for (Map.Entry<String, String> optionEntry : newValue.getOptions().entrySet()) {
+                newElem.setAttribute(optionEntry.getKey(), optionEntry.getValue());
+            }
+        } else if (filetype.equals("css")) { //if filename is an external CSS file
+            String newID = getNextAvailableID("staticAssetCSS", idCounter);
+            if (newValue.getOptions().containsKey("condition") &&
+                    !"".equals(newValue.getOptions().get("condition"))) {
+                String comment = "[" + newValue.getOptions().remove("condition") + "]> " +
+                        "<link type=\"text/css\" href=\"" + newValue.getKey() + "\" rel=\"stylesheet\" id=\"" + newID + "\"";
+                for (Map.Entry<String, String> optionEntry : newValue.getOptions().entrySet()) {
+                    comment += " " + optionEntry.getKey() + "=\"" + optionEntry.getValue() + "\"";
+                }
+                comment += "> <![endif]";
+
+                newElem = (Element) createComment(comment);
+            } else {
+                newElem = DOM.createElement("link");
+                newElem.setAttribute("id", newID);
+                newElem.setAttribute("rel", "stylesheet");
+                newElem.setAttribute("href", newValue.getKey());
+                for (Map.Entry<String, String> optionEntry : newValue.getOptions().entrySet()) {
+                    newElem.setAttribute(optionEntry.getKey(), optionEntry.getValue());
+                }
+                newElem.setAttribute("type", "text/css");
+            }
+        }
+
+        return newElem;
+>>>>>>> .merge-right.r47210
     }
 
     public String getBaseUrl() {
@@ -425,6 +599,7 @@ public class MainModule extends Module {
         if (elementsByTagName == null) {
             return;
         }
+<<<<<<< .working
         String base = JahiaGWTParameters.getContextPath() + "/files/default/";
         String suffix = "tst=" + System.currentTimeMillis();
         for (int i = 0; i < elementsByTagName.getLength(); i++) {
@@ -432,6 +607,31 @@ public class MainModule extends Module {
             String url = el.getAttribute("src");
             if (url != null && url.startsWith(base)) {
                 el.setAttribute("src", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+=======
+
+    }-*/;
+
+    private native Object getHead() /*-{
+        return $doc.getElementsByTagName("head")[0];
+    }-*/;
+
+    private native Object createComment(String data) /*-{
+        return $doc.createComment(data);
+    }-*/;
+
+    public static native void evalScripts(Element element) /*-{
+        var scripts = element.getElementsByTagName("script");
+
+        for (i = 0; i < scripts.length; i++) {
+            // if src, eval it, otherwise eval the body
+            if (!scripts[i].hasAttribute("src")) {
+                var src = scripts[i].getAttribute("src");
+                var script = $doc.createElement('script');
+                script.setAttribute("src", src);
+                $doc.getElementsByTagName('body')[0].appendChild(script);
+            } else {
+                $wnd.eval(scripts[i].innerHTML);
+>>>>>>> .merge-right.r47210
             }
         }
     }
@@ -624,7 +824,7 @@ public class MainModule extends Module {
         }
 
         editLinker.handleNewMainNodeLoaded();
-        ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
+        ((ToolbarHeader) head).handleNewMainNodeLoaded(node);
     }
 
     public GWTEditConfiguration getConfig() {

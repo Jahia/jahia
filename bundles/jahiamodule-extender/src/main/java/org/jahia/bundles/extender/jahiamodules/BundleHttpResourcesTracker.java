@@ -52,6 +52,7 @@ import org.apache.felix.framework.util.MapToDictionary;
 import org.apache.jasper.servlet.JspServlet;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.web.jsp.JasperClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -146,6 +147,9 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         Map<String, String> jspConfig = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
         Map<String, String> cfg = new HashMap<String, String>(jspConfig.size() + 2);
         cfg.putAll(jspConfig);
+        if (StringUtils.equals(cfg.get("development"), "auto")) {
+            cfg.put("development", SettingsBean.getInstance().isDevelopmentMode() ? "true" : "false");
+        }
         File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
                 bundle.getSymbolicName()+"-"+bundle.getBundleId());
         if (!scratchDirFile.exists()) {

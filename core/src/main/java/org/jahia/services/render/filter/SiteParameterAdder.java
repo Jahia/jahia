@@ -100,19 +100,7 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
                                 }
                             }
                             if (resolvedVanityUrl != null) {
-<<<<<<< .working
-                                if (vanityUrls.size() == 1) {
-                                    return value;
-                                } else {
-                                    // multiple vanity URLs exist for the same URL, we need to understand if we need to
-                                    // generate a site parameter or not.
-                                    if (JahiaSitesService.getInstance().getDefaultSite().getSiteKey().equals(resolvedVanityUrl.getSite())) {
-                                        return value;
-                                    }
-                                }
-=======
                                return value;
->>>>>>> .merge-right.r47219
                             }
                         } catch (RepositoryException e) {
                             logger.error("Error trying to resolve vanity URL " + value, e);

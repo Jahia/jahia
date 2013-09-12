@@ -48,7 +48,12 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
+<<<<<<< .working
 import org.jahia.utils.i18n.Messages;
+=======
+import org.jahia.services.image.JahiaImageService.ResizeType;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+>>>>>>> .merge-right.r47226
 import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;
@@ -121,7 +126,7 @@ public class ImageHelper {
                 fileExtension = null;
             }
             File f = File.createTempFile("image", fileExtension);
-            imageService.resizeImage(image, f, width, height);
+            imageService.resizeImage(image, f, width, height, ResizeType.SCALE_TO_FILL);
 
             InputStream fis = new BufferedInputStream(new FileInputStream(f));
             try {

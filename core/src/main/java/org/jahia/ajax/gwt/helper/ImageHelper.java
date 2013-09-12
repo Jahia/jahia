@@ -48,12 +48,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
-<<<<<<< .working
-import org.jahia.utils.i18n.Messages;
-=======
 import org.jahia.services.image.JahiaImageService.ResizeType;
-import org.jahia.utils.i18n.JahiaResourceBundle;
->>>>>>> .merge-right.r47226
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
 import java.io.BufferedInputStream;

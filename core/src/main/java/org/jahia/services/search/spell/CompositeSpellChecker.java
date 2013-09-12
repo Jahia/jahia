@@ -425,12 +425,13 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             if (language != null) {
                 fullTextName.append("-").append(language);
             }
+            String fullTextNameStr = fullTextName.toString();
             try {
                 for (int retries = 0; retries < 100; retries++) {
                     try {
                         String[] suggestion = new String[words.length];
                         for (int i = 0; i < words.length; i++) {
-                            String[] similar = spellChecker.suggestSimilar(words[i], 5, reader, fullTextName.toString(),
+                            String[] similar = spellChecker.suggestSimilar(words[i], 5, reader, fullTextNameStr,
                                     true, site, language);
                             if (similar.length > 0) {
                                 suggestion[i] = similar[0];

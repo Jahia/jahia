@@ -144,7 +144,12 @@ public class TestServlet extends BaseTestController {
                         logger.error("Error executing test", e);
                     }
                 }
-                // myTestNG.setOutputDirectory(outputDirectory);
+
+                String testOutputDirectory = httpServletRequest.getParameter("testOutputDirectory");
+                if (!StringUtils.isEmpty(testOutputDirectory)) {
+                    myTestNG.setOutputDirectory(testOutputDirectory);
+                    logger.info("Output directory set to " + testOutputDirectory);
+                }
                 myTestNG.setConfigFailurePolicy("continue");
                 myTestNG.setPreserveOrder(true);
                 myTestNG.run();

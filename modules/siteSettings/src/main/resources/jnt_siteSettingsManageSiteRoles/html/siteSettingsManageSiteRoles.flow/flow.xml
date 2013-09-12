@@ -10,6 +10,7 @@
     <on-start>
         <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
         <evaluate expression="flowHandler.setRoleGroup('site-role')" />
+        <evaluate expression="flowHandler.setRoles(externalContext.requestMap.currentNode)" />
         <evaluate expression="flowHandler.setNodePath(externalContext.requestMap.renderContext.site.path)" />
     </on-start>
 
@@ -23,7 +24,7 @@
             <evaluate expression="flowHandler.setRole(requestParameters.role)" />
         </transition>
 
-        <transition on="revokeRole" to="view">
+        <transition on="revokeRole" to="theEnd">
             <evaluate expression="flowHandler.setRole(requestParameters.role)" />
             <evaluate expression="flowHandler.revokeRole(requestParameters.principal, messageContext)" />
         </transition>
@@ -39,7 +40,7 @@
             <evaluate expression="flowHandler.role" result="requestScope.role"/>
         </on-render>
 
-        <transition on="rolesList" to="view"/>
+        <transition on="rolesList" to="theEnd"/>
         <transition on="search" to="editRoleMembers"/>
         <transition on="users" to="editRoleMembers" validate="false">
             <evaluate expression="'users'" result="flowHandler.searchType"/>
@@ -47,11 +48,12 @@
         <transition on="groups" to="editRoleMembers" validate="false">
             <evaluate expression="'groups'" result="flowHandler.searchType"/>
         </transition>
-        <transition on="save" to="view" validate="false">
+        <transition on="save" to="theEnd" validate="false">
             <evaluate expression="flowHandler.revokeRole(requestParameters.removedMembers, messageContext)" />
             <evaluate expression="flowHandler.grantRole(requestParameters.addedMembers, messageContext)"/>
         </transition>
 
     </view-state>
 
+    <end-state id="theEnd"/>
 </flow>

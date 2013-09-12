@@ -16,6 +16,7 @@ import org.springframework.webflow.execution.RequestContext;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import java.io.Serializable;
@@ -39,6 +40,8 @@ public class RolesHandler implements Serializable {
     private String role;
 
     private String nodePath;
+
+    private List<String> roles;
 
     public String getRoleGroup() {
         return roleGroup;
@@ -65,15 +68,21 @@ public class RolesHandler implements Serializable {
     }
 
     public Map<String,List<Principal>> getRoles() throws Exception {
-        Map<String,List<Principal>> m = new HashMap<String,List<Principal>>();
+        Map<String,List<Principal>> m = new LinkedHashMap<String, List<Principal>>();
 
         final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
-        QueryManager qm = s.getWorkspace().getQueryManager();
-        Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
-        NodeIterator ni = q.execute().getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            m.put(next.getName(), new ArrayList<Principal>());
+        if (roles == null) {
+            QueryManager qm = s.getWorkspace().getQueryManager();
+            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
+            NodeIterator ni = q.execute().getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                m.put(next.getName(), new ArrayList<Principal>());
+            }
+        } else {
+            for (String r : roles) {
+                m.put(r, new ArrayList<Principal>());
+            }
         }
 
         JCRNodeWrapper node = s.getNode(nodePath);
@@ -105,6 +114,17 @@ public class RolesHandler implements Serializable {
         }
 
         return m;
+    }
+
+    public void setRoles(JCRNodeWrapper node) throws RepositoryException {
+        if (node.hasProperty("roles")) {
+            roles = new ArrayList<String>();
+            for (Value value : node.getProperty("roles").getValues()) {
+                roles.add(value.getString());
+            }
+        } else {
+            roles = null;
+        }
     }
 
     public List<Principal> getRoleMembers() throws Exception{

@@ -199,7 +199,7 @@
     <bean id="ContentHistoryService" class="org.jahia.services.history.ContentHistoryService"
           init-method="start" factory-method="getInstance">
         <property name="sessionFactoryBean" ref="sessionFactory"/>
-        <property name="from" value="seda:logMsgs?multipleConsumers=true"/>
+        <property name="from" value="seda:logMsgs?size=1000000&amp;concurrentConsumers=5&amp;multipleConsumers=true"/>
         <property name="ignoreProperties">
             <set>
                 <value>jcr:created</value>

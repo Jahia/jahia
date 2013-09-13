@@ -83,8 +83,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
+import javax.jcr.version.VersionException;
+
 import java.io.*;
 import java.util.*;
 
@@ -95,6 +99,10 @@ import static org.jahia.api.Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT;
  */
 public class ContentManagerHelper {
 
+    private static final List<String> COPIED_NODE_FIELDS = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PERMISSIONS);
+
+    private static final List<String> NEW_NODE_FIELDS = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
+    
     private static Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
 
     private JahiaSitesService sitesService;
@@ -161,34 +169,13 @@ public class ContentManagerHelper {
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
                                    List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation)
             throws GWTJahiaServiceException {
-        JCRNodeWrapper parentNode;
-        final JCRSessionWrapper jcrSessionWrapper;
         try {
-            jcrSessionWrapper = currentUserSession;
-            if (parentNodesType != null && !checkExistence(parentPath, currentUserSession, uiLocale)) {
-                List<String> pathElements = Arrays.asList(parentPath.split("/"));
-                String previousPath = "/";
-                String currentPath = "";
-                for (String pathElement : pathElements.subList(1, pathElements.size())) {
-                    currentPath += "/" + pathElement;
-                    if (!checkExistence(currentPath, currentUserSession, uiLocale)) {
-                        if (parentNodesType.containsKey(currentPath)) {
-                            jcrSessionWrapper.getNode(previousPath).addNode(pathElement, parentNodesType.get(currentPath));
-                        } else {
-                            throw new GWTJahiaServiceException(
-                                    new StringBuilder(currentPath).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).toString());
-                        }
-                    }
-                    previousPath = currentPath;
-                }
-            }
-            parentNode = jcrSessionWrapper.getNode(parentPath);
+            JCRNodeWrapper parentNode = ensureParent(parentPath, currentUserSession, uiLocale, parentNodesType);
 
             String nodeName;
 
             if (name == null) {
-                nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(":") + 1)
-                );
+                nodeName = findAvailableName(parentNode, nodeType.substring(nodeType.lastIndexOf(':') + 1));
             } else {
                 nodeName = JCRContentUtils.escapeLocalNodeName(name);
 
@@ -199,13 +186,44 @@ public class ContentManagerHelper {
             }
 
             JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
-            List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
-            return navigation.getGWTJahiaNode(jcrSessionWrapper.getNode(childNode.getPath()), fields);
+            return navigation.getGWTJahiaNode(currentUserSession.getNode(childNode.getPath()), NEW_NODE_FIELDS);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(
                     new StringBuilder(parentPath).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
         }
+    }
+
+    private JCRNodeWrapper ensureParent(String parentPath, JCRSessionWrapper currentUserSession, Locale uiLocale,
+            Map<String, String> parentNodesType) throws RepositoryException, GWTJahiaServiceException,
+            ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException,
+            ConstraintViolationException {
+        JCRNodeWrapper parentNode;
+        try {
+            parentNode = currentUserSession.getNode(parentPath);
+        } catch (PathNotFoundException e) {
+            if (parentNodesType != null) {
+                // we can create the intermediate parents
+                String[] pathElements = StringUtils.split(parentPath, '/');
+                JCRNodeWrapper current = currentUserSession.getRootNode();
+                for (String pathElement : pathElements) {
+                    try {
+                        current = current.getNode(pathElement);
+                    } catch (PathNotFoundException pnfe) {
+                        String currentPath = current.getPath() + "/" + pathElement;
+                        if (!parentNodesType.containsKey(currentPath)) {
+                            throw new GWTJahiaServiceException(new StringBuilder(currentPath).append(
+                                    Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).toString());
+                        }
+                        current = current.addNode(pathElement, parentNodesType.get(currentPath));
+                    }
+                }
+                parentNode = current;
+            } else {
+                throw e;
+            }
+        }
+        return parentNode;
     }
 
     public String generateNameFromTitle(List<GWTJahiaNodeProperty> props) {
@@ -249,17 +267,12 @@ public class ContentManagerHelper {
     }
 
     public boolean checkExistence(String path, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
-        boolean exists = false;
         try {
-            currentUserSession.getNode(JCRContentUtils.escapeNodePath(path));
-            exists = true;
-        } catch (PathNotFoundException e) {
-            exists = false;
+            return currentUserSession.nodeExists(JCRContentUtils.escapeNodePath(path));
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error", uiLocale, e.toString()));
         }
-        return exists;
     }
 
     public void move(String sourcePath, String targetPath, JCRSessionWrapper currentUserSession)
@@ -453,7 +466,7 @@ public class ContentManagerHelper {
             }
 
             for (String uuid : uuids) {
-                res.add(navigation.getGWTJahiaNode(currentUserSession.getNodeByUUID(uuid), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PERMISSIONS)));
+                res.add(navigation.getGWTJahiaNode(currentUserSession.getNodeByUUID(uuid), COPIED_NODE_FIELDS));
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);

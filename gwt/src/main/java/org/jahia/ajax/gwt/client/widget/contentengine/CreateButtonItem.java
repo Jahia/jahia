@@ -166,6 +166,7 @@ public class CreateButtonItem extends SaveButtonItem {
                     engine.layout(true);
                     engine.unmask();
                     engine.setButtonsEnabled(true);
+                    engine.setChildCount(engine.getChildCount() + 1);
                 }
             }
         };

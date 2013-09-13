@@ -53,7 +53,16 @@ public class CreateAndNewButtonItem extends CreateButtonItem {
 
     @Override
     public Button create(final AbstractContentEngine engine) {
-        final Button button = new Button(Messages.get("properties.saveAndNew.label", "Save and new"));
+        final Button button = new Button(Messages.get("properties.saveAndNew.label", "Save and new")) {
+            @Override
+            public void setEnabled(boolean enabled) {
+                int listLimit = ((CreateContentEngine)engine).getListLimit();
+                int childCount = ((CreateContentEngine)engine).getChildCount();
+                enabled &= (listLimit == -1 || childCount + 1 < listLimit);
+
+                super.setEnabled(enabled);
+            }
+        };
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {

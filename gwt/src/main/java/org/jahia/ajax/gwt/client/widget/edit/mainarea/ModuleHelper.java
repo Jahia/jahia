@@ -304,13 +304,6 @@ public class ModuleHelper {
         return modules;
     }
 
-<<<<<<< .working
-    public static Map<String, List<Module>> getModulesByPath() {
-        return modulesByPath;
-    }
-
-    public static void tranformLinks(Element htmlElement) {
-=======
     public static Map<String, List<Module>> getModulesByPath() {
         return modulesByPath;
     }
@@ -319,8 +312,7 @@ public class ModuleHelper {
         return modulesById;
     }
 
-    public static void tranformLinks(final HTML html) {
->>>>>>> .merge-right.r47261
+    public static void tranformLinks(Element htmlElement) {
         long start = System.currentTimeMillis();
         String baseUrl = JahiaGWTParameters.getBaseUrl();
         List<Element> el = getAllLinks(htmlElement);

@@ -91,7 +91,7 @@ public class EngineValidation {
                 if (pe != null) {
                     for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
                         Field<?> field = adapterField.getField();
-                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded()) {
+                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && adapterField.getParent() != null && ((FieldSet)adapterField.getParent()).isExpanded()) {
                             if (validateResult.allValid || tab.equals(tabs.getSelectedItem())
                                     && !tab.equals(validateResult.firstErrorTab)) {
                                 validateResult.firstErrorTab = tab;

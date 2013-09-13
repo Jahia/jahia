@@ -44,20 +44,22 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.ServletContext;
 
 /**
  * Service to provide Stubs for source edition in studio mode
  */
 public class StubService {
 
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(StubService.class);
+    private static transient Logger logger = LoggerFactory.getLogger(StubService.class);
 
     /**
      * @param fileType type of the file
@@ -71,22 +73,24 @@ public class StubService {
         Map<String,String> stub = new LinkedHashMap<String, String>();
         InputStream is = null;
         try {
-            Set<String> resources = JahiaContextLoaderListener.getServletContext().getResourcePaths("/WEB-INF/etc/snippets/"+fileType+"/"+snippetType+"/");
+            ServletContext servletContext = JahiaContextLoaderListener.getServletContext();
+            @SuppressWarnings("unchecked")
+            Set<String> resources = servletContext.getResourcePaths("/WEB-INF/etc/snippets/"+fileType+"/"+snippetType+"/");
             if (resources != null) {
                 for (String resource : resources) {
                     String r = StringUtils.substringAfterLast(resource,"/");
                     String v = StringUtils.substringBeforeLast(StringUtils.substring(r,StringUtils.indexOf(r,".") + 1),".");
                     String view = nodeTypeView.get(v) != null ? "/" + nodeTypeView.get(v) : "";
-                    is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(resource);
-                    stub.put(r + view, StringUtils.join(IOUtils.readLines(is), "\n"));
+                    is = servletContext.getResourceAsStream(resource);
+                    try {
+                        stub.put(r + view, StringUtils.join(IOUtils.readLines(is), "\n"));
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                    }
                 }
             }
         } catch (IOException e) {
             logger.error("Failed to read code snippets from " + fileType + "/" + snippetType, e);
-        } finally {
-            if (is != null) {
-                IOUtils.closeQuietly(is);
-            }
         }
         return stub;
     }

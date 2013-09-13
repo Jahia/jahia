@@ -255,7 +255,7 @@
             </c:if>
             <span <c:if test="${user:isPropertyEditable(user,'j:birthDate')}"> jcr:id="j:birthDate" class="inline-editable dateEdit${currentNode.identifier}"
                  id="JahiaGxt_userDateEdit_birthDate" <c:if test="${empty fields['j:birthDate']}">init:data="<%= getPublicPropertiesData(pageContext, "j:birthDate")%>"</c:if>
-                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${birthDate.string}" jcr:valuems="${not empty birthDate.date ? birthDate.date.timeInMillis : ''}"</c:if>>${displayBirthDate}</span>
+                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${birthDate.string}" </c:if>>${displayBirthDate}</span>
         </li>
     </c:if>
 

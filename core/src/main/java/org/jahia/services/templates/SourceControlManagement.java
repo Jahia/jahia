@@ -42,8 +42,6 @@ package org.jahia.services.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class SourceControlManagement {
-
-    private static Logger logger = LoggerFactory.getLogger(SourceControlManagement.class);
 
     protected File rootFolder;
 

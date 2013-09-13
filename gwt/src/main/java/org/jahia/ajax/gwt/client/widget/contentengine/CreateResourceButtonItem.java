@@ -144,10 +144,10 @@ public class CreateResourceButtonItem extends SaveButtonItem {
             item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
         List<GWTJahiaNodeProperty> changedProperties = engine.getChangedProperties();
-        Map<String, GWTJahiaNodeProperty> engineProperties = new HashMap<String, GWTJahiaNodeProperty>(engine.getProperties());
         List<GWTJahiaNodeProperty> properties = null;
-        if (engineProperties.size() > 0) {
+        if (engine.getProperties().size() > 0) {
             // Edit
+            Map<String, GWTJahiaNodeProperty> engineProperties = new HashMap<String, GWTJahiaNodeProperty>(engine.getProperties());
             for (GWTJahiaNodeProperty changed : changedProperties) {
                 GWTJahiaNodeProperty prop = engineProperties.get(changed.getName());
                 if (prop != null) {

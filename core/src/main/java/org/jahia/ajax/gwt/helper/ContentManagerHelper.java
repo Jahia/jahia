@@ -242,8 +242,6 @@ public class ContentManagerHelper {
         return nodeName;
     }
 
-// -------------------------- OTHER METHODS --------------------------
-
     public GWTJahiaNode createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;

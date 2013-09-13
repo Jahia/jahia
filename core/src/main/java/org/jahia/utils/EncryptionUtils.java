@@ -162,9 +162,9 @@ public final class EncryptionUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println("\nJahia 6.6 Password Encryption Tool");
+        System.out.println("\nJahia 6.7 Password Encryption Tool");
         System.out
-                .println("Copyright 2002-2012 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n");
+                .println("Copyright 2002-2013 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n");
         String password = null;
         if (args.length > 0) {
             password = args[0];

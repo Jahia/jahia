@@ -40,7 +40,6 @@
 
 package org.jahia.taglibs.uicomponents.i18n;
 
-import org.jahia.taglibs.utility.Utils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;

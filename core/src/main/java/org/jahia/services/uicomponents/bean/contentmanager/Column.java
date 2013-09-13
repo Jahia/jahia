@@ -52,6 +52,7 @@ import java.io.Serializable;
  * 
  */
 public class Column implements Serializable {
+    private static final long serialVersionUID = 2923904943046448547L;
     private String key;
     private String title;
     private String titleKey;

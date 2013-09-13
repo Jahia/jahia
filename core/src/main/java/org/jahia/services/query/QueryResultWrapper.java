@@ -40,27 +40,9 @@
 
 package org.jahia.services.query;
 
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
-import org.apache.jackrabbit.JcrConstants;
-import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
-import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
-import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
-import org.apache.jackrabbit.core.query.FacetedQueryResult;
-import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
-import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
-import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
-import org.jahia.utils.LanguageCodeConverters;
-
-import javax.jcr.*;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

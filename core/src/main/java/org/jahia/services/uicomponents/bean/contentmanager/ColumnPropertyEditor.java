@@ -44,7 +44,6 @@ package org.jahia.services.uicomponents.bean.contentmanager;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.Patterns;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorSupport;
 
 /**

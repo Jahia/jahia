@@ -49,6 +49,7 @@ import javax.servlet.jsp.JspException;
  * Add a wrapper to the current rendering
  */
 public class AddWrapperTag extends TagSupport {
+    private static final long serialVersionUID = 2863442094813676739L;
     private String name;
 
     public String getName() {

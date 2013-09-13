@@ -50,6 +50,7 @@ import java.util.Date;
  */
 public class HistoryWorkflowAction extends HistoryWorkflowBase {
 
+    private static final long serialVersionUID = -5436760811079036399L;
     private String actionId;
 
     /**

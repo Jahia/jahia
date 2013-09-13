@@ -59,6 +59,8 @@ import javax.servlet.jsp.PageContext;
  * Time: 14:25
  */
 public class JCRNodeIconTag extends AbstractJCRTag {
+    private static final long serialVersionUID = 8898161399087791837L;
+
     private transient static Logger logger = LoggerFactory.getLogger(JCRNodeTypeTag.class);
 
     private JCRNodeWrapper node;

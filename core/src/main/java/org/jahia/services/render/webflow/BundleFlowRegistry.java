@@ -40,16 +40,11 @@
 
 package org.jahia.services.render.webflow;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.webflow.core.collection.MutableAttributeMap;
 import org.springframework.webflow.definition.FlowDefinition;
-import org.springframework.webflow.definition.StateDefinition;
 import org.springframework.webflow.definition.registry.FlowDefinitionConstructionException;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistryImpl;
 import org.springframework.webflow.definition.registry.NoSuchFlowDefinitionException;
-import org.springframework.webflow.engine.Flow;
-
 import java.util.*;
 
 /**

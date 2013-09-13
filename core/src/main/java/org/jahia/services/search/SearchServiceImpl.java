@@ -40,7 +40,6 @@
 
 package org.jahia.services.search;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;

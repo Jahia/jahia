@@ -49,6 +49,8 @@ import java.util.Date;
  */
 public class HistoryWorkflow extends HistoryWorkflowBase {
 
+    private static final long serialVersionUID = 3272275138569315268L;
+
     private String endActivityName;
 
     private WorkflowDefinition workflowDefinition;

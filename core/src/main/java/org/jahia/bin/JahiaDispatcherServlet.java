@@ -54,6 +54,8 @@ import java.util.List;
  */
 public class JahiaDispatcherServlet extends DispatcherServlet {
 
+    private static final long serialVersionUID = -4741097601486350141L;
+
     @Override
     protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
         HandlerExecutionChain h =  super.getHandler(request);

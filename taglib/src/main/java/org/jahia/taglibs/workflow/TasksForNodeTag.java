@@ -63,6 +63,7 @@ import java.util.Locale;
  * 
  */
 public class TasksForNodeTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = -8866901816731959175L;
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(TasksForNodeTag.class);
     private JCRNodeWrapper node;
     private String var;

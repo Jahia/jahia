@@ -54,6 +54,7 @@ import java.util.List;
  * 
  */
 public class Engine implements Serializable, BeanNameAware {
+    private static final long serialVersionUID = -9149012851638443411L;
     private String name;
     private String nodeType;
     private Visibility visibility;

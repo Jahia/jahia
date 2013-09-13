@@ -40,7 +40,6 @@
 
 package org.jahia.services.render.webflow;
 
-import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.webflow.context.ExternalContext;
 import org.springframework.webflow.execution.RequestContext;
 import org.springframework.webflow.mvc.view.AbstractMvcView;

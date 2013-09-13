@@ -53,6 +53,7 @@ import java.util.List;
  * 
  */
 public class Repository implements Serializable {
+    private static final long serialVersionUID = -3982496608918247314L;
     private String key;
     private String title;
     private String titleKey;

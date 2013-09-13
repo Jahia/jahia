@@ -57,10 +57,12 @@ import java.io.Serializable;
 
 public class InsertionSortedMap<K,V> extends AbstractMap<K,V> implements Serializable {
 
+    private static final long serialVersionUID = -5482653693975365706L;
     private List<Map.Entry<K, V>> internalList = new ArrayList<Map.Entry<K, V>>();
 
     private class Entry<K,V> implements Map.Entry<K,V>, Serializable {
 
+        private static final long serialVersionUID = -9072586755304139107L;
         private K key;
         private V value;
 

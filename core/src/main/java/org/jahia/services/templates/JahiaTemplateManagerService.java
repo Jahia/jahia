@@ -65,7 +65,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
-import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;

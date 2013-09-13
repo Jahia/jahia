@@ -40,7 +40,6 @@
 
 package org.apache.jackrabbit.core.security;
 
-import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;

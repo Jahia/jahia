@@ -55,6 +55,8 @@ import java.util.Locale;
  */
 public class Selected implements Serializable {
     
+    private static final long serialVersionUID = -2576554457868607085L;
+
     private static final transient Logger logger = LoggerFactory
             .getLogger(Selected.class);
     

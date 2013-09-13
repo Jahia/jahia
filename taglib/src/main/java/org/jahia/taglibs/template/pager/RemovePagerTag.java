@@ -41,7 +41,6 @@
 package org.jahia.taglibs.template.pager;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +53,8 @@ import java.util.Map;
  * 
  */
 public class RemovePagerTag extends TagSupport {
+    private static final long serialVersionUID = 1936952653989178313L;
+
     private String prefix;
 
     private int pageSize;

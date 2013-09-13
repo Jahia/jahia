@@ -43,8 +43,6 @@ package org.jahia.bin;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -53,8 +51,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Patterns;
 import org.json.JSONObject;
-import org.springframework.context.i18n.LocaleContextHolder;
-
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;

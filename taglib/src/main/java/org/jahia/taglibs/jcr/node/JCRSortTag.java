@@ -63,6 +63,8 @@ import java.util.*;
  */
 public class JCRSortTag extends AbstractJCRTag {
 
+    private static final long serialVersionUID = 8801219769991582550L;
+
     private Collection<JCRNodeWrapper> list;
 
     private String var;

@@ -61,7 +61,6 @@ when we flush this entry we will flush the whole cache
 
     <bean id="aclCacheKeyPartGenerator" class="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator">
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
-        <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="template" ref="jcrTemplate"/>
     </bean>

@@ -44,7 +44,6 @@ import org.codehaus.plexus.util.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
 public class PathCacheKeyPartGenerator implements CacheKeyPartGenerator {

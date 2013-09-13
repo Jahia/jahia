@@ -57,6 +57,7 @@ import javax.jcr.RepositoryException;
  */
 public class JCRNodeVersionTag extends TagSupport {
 
+    private static final long serialVersionUID = -7198867928256587130L;
     private JCRNodeWrapper node;
     private String versionName;
     private String var;

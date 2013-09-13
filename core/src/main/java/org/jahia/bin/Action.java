@@ -44,7 +44,6 @@ import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.cfg.Settings;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.*;
@@ -54,7 +53,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONObject;

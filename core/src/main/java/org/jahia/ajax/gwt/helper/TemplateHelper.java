@@ -40,13 +40,11 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.GWTStaticAssetEntry;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Render;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;

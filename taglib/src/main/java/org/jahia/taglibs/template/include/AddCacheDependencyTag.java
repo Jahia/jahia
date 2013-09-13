@@ -41,7 +41,6 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 
@@ -50,14 +49,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
  *        Created : 15 juil. 2010
  */
 public class AddCacheDependencyTag extends TagSupport {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddCacheDependencyTag.class);
+    private static final long serialVersionUID = 573385038732883661L;
     protected JCRNodeWrapper node;
     protected String stringDependency;
     protected String flushOnPathMatchingRegexp;

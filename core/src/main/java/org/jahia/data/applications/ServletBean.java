@@ -56,6 +56,7 @@ import org.jahia.registries.ServicesRegistry;
  */
 public class ServletBean implements Serializable, EntryPointDefinition {
 
+    private static final long serialVersionUID = 4475851762961069090L;
     public final static int SERVLET_TYPE = 1;
     public final static int JSP_TYPE = 2;
     public final static String SERVLET = "SERVLET";

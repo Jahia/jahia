@@ -58,6 +58,8 @@ import java.io.IOException;
  */
 public class ListTag extends ModuleTag implements ParamParent {
 
+    private static final long serialVersionUID = -3608856316200861402L;
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ListTag.class);
 
     private String listType = "jnt:contentList";

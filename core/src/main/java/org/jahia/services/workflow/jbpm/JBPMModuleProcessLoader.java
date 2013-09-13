@@ -43,9 +43,6 @@ package org.jahia.services.workflow.jbpm;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.templates.JahiaModuleAware;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.WorklowTypeRegistration;
-import org.jahia.utils.FileUtils;
 import org.jbpm.api.Deployment;
 import org.jbpm.api.NewDeployment;
 import org.jbpm.api.ProcessEngine;
@@ -53,13 +50,8 @@ import org.jbpm.api.RepositoryService;
 import org.jbpm.pvm.internal.email.impl.AddressTemplate;
 import org.jbpm.pvm.internal.email.impl.MailTemplate;
 import org.jbpm.pvm.internal.email.impl.MailTemplateRegistry;
-import org.jbpm.pvm.internal.repository.DeploymentImpl;
-import org.jbpm.pvm.internal.repository.DeploymentProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -68,9 +60,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Loader that initializes workflow processes defined in modules

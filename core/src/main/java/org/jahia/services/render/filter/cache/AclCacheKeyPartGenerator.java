@@ -57,7 +57,6 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -93,8 +92,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JahiaGroupManagerService groupManagerService;
-    private JahiaUserManagerService userManagerService;
-    //    private Map<String, Set<JahiaGroup>> aclGroups = new LinkedHashMap<String, Set<JahiaGroup>>();
     private Cache permissionCache;
 
 
@@ -102,10 +99,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
-    }
-
-    public void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
     }
 
     public void setCacheProvider(EhCacheProvider cacheProvider) {
@@ -235,7 +228,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return keyPart;
     }
 
-    @SuppressWarnings("unchecked")
     public String getAclKeyPartForNode(RenderContext renderContext, String nodePath,
                                        JahiaUser principal, Set<String> aclPathChecked)
             throws RepositoryException {

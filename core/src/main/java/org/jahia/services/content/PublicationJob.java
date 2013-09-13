@@ -49,7 +49,6 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 

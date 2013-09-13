@@ -58,6 +58,7 @@ import java.util.Date;
  *        Created : 12 févr. 2010
  */
 public class DateDiffTag extends AbstractDateTag {
+    private static final long serialVersionUID = -1376268533803433468L;
     private Date startDate;
     private Date endDate;
     private String format;

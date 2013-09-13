@@ -43,7 +43,6 @@ package org.jahia.taglibs.template.include;
 import com.google.common.collect.Ordering;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.AbstractFilter;

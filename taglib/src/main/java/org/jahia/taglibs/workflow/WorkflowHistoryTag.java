@@ -55,6 +55,8 @@ import java.util.Locale;
  * Get past tasks of a running workflow
  */
 public class WorkflowHistoryTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = -4218981385406211476L;
+
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowHistoryTag.class);
 
     private String var;

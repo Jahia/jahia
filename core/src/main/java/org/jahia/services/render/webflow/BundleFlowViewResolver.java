@@ -40,7 +40,6 @@
 
 package org.jahia.services.render.webflow;
 
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;

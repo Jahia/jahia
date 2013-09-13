@@ -52,6 +52,7 @@ public class JCRXPathTag extends JCRSQLTag {
 
     private static final long serialVersionUID = -9035192708344616816L;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected String getQueryLanguage() {
         return Query.XPATH;

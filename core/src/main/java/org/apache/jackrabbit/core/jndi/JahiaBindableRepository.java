@@ -57,6 +57,8 @@ import java.util.regex.Matcher;
  * 
  */
 public class JahiaBindableRepository extends BindableRepository {
+    private static final long serialVersionUID = -6081646750488342618L;
+
     public JahiaBindableRepository(Reference reference) throws RepositoryException {
         super(reference);
     }

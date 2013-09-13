@@ -43,7 +43,6 @@ package org.jahia.services.importexport;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
-import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -40,13 +40,11 @@
 
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
-import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;

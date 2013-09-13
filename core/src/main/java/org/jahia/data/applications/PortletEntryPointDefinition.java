@@ -66,6 +66,8 @@ import org.jahia.registries.ServicesRegistry;
  */
 public class PortletEntryPointDefinition implements Serializable, EntryPointDefinition {
 
+    private static final long serialVersionUID = 687873504629004699L;
+
     /**
      * logging
      */

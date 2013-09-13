@@ -51,6 +51,7 @@ import java.util.Map;
 
 public class AddLabelActivity implements ExternalActivityBehaviour {
 
+    private static final long serialVersionUID = -5835486819779973870L;
     private String label;
 
     public void setLabel(String label) {

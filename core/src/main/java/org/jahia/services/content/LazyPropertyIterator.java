@@ -40,7 +40,6 @@
 
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;

@@ -49,6 +49,8 @@ package org.jahia.services.render;
 public class TemplateNotFoundException extends RenderException {
 
 
+    private static final long serialVersionUID = -8875947313407856404L;
+
     /**
      * Constructs a new exception with the specified cause and a detail
      * message of <tt>(cause==null ? null : cause.toString())</tt> (which

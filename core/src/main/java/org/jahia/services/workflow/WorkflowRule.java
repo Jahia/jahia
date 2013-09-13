@@ -40,8 +40,6 @@
 
 package org.jahia.services.workflow;
 
-import java.util.List;
-
 /**
  * 
  * User: toto

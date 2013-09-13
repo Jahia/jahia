@@ -41,7 +41,6 @@
  package org.jahia.services.usermanager;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.jcr.JCRGroup;
 
@@ -57,6 +56,7 @@ import java.security.Principal;
  * 
  */
 public class UsersGroup extends JCRGroup {
+    private static final long serialVersionUID = 8220270074777283565L;
     private static org.slf4j.Logger logger =
             org.slf4j.LoggerFactory.getLogger(UsersGroup.class);
 

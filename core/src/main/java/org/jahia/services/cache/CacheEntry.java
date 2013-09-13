@@ -58,6 +58,8 @@ import java.io.Serializable;
  */
 public class CacheEntry<V> implements Serializable {
 
+    private static final long serialVersionUID = -319255477144589731L;
+
     /** the normal operation mode constant. */
     public static final String MODE_NORMAL = "normal";
 

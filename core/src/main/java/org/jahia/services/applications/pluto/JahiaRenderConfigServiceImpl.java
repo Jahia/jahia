@@ -44,7 +44,6 @@ import org.apache.pluto.driver.PortalDriverServlet;
 import org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl;
 import org.apache.pluto.driver.services.impl.resource.ResourceConfig;
 import org.apache.pluto.driver.services.portal.PageConfig;
-import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
 

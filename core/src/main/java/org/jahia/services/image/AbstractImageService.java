@@ -109,7 +109,6 @@ public abstract class AbstractImageService implements JahiaImageService {
                 resultSourceStartPosX = 0, resultSourceStartPosY = 0;
         double xScaleRatio = ((double) targetWidth) / ((double) sourceWidth);
         double yScaleRatio = ((double) targetHeight) / ((double) sourceHeight);
-        double sourceAspectRadio = ((double) sourceWidth) / ((double) sourceHeight);
         if (ResizeType.SCALE_TO_FILL.equals(resizeType)) {
             // nothing to do in this case, the defaults are fine
         } else if (ResizeType.ADJUST_SIZE.equals(resizeType)) {

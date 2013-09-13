@@ -46,11 +46,6 @@ import java.util.regex.Pattern;
 
 import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,8 +55,6 @@ import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.HistoryTrackerBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.lucene.queryParser.QueryParser;
-import org.jahia.api.Constants;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.URLResolver;
 import org.json.JSONArray;

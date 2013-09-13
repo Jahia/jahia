@@ -63,6 +63,8 @@ import java.io.IOException;
  * Time: 10:46:15 AM
  */
 public class PortletRenderTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = -7527784423504794081L;
+
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PortletRenderTag.class);
 
     private Node portletNode;

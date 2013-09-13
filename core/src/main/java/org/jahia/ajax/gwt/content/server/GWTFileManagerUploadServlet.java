@@ -85,7 +85,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
 
     private static Logger logger = LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
 
-    @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);

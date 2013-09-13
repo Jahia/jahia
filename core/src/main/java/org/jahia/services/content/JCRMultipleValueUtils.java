@@ -2,8 +2,6 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.util.XMLChar;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

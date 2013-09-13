@@ -49,7 +49,6 @@ import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 import org.quartz.JobDataMap;

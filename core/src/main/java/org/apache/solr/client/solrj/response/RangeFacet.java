@@ -20,9 +20,6 @@ package org.apache.solr.client.solrj.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.solr.client.solrj.util.ClientUtils;
-
 /**
  * Represents a range facet result
  */

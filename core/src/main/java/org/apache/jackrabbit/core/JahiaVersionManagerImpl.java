@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import java.util.Calendar;
 import java.util.List;

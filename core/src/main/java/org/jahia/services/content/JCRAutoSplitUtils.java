@@ -45,7 +45,6 @@ import static org.jahia.services.content.JCRContentUtils.findAvailableNodeName;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;

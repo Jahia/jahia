@@ -41,23 +41,11 @@
 package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.services.content.*;
-import org.jahia.services.workflow.HistoryWorkflowTask;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-
 import javax.jcr.RepositoryException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**

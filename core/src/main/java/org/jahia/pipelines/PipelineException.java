@@ -64,6 +64,7 @@ package org.jahia.pipelines;
 
 public class PipelineException extends Exception {
 
+    private static final long serialVersionUID = 1622340572747791446L;
     public PipelineException () {
         super();
     }

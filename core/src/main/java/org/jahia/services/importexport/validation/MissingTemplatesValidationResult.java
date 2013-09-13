@@ -56,6 +56,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class MissingTemplatesValidationResult implements ValidationResult, Serializable {
 
+    private static final long serialVersionUID = -6930213514434249772L;
+
     private Map<String, Set<String>> missing = new TreeMap<String, Set<String>>();
 
     private String targetTemplateSet;

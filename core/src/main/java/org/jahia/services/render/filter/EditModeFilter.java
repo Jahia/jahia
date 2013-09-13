@@ -47,7 +47,6 @@ import net.htmlparser.jericho.StartTag;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
 
 import java.util.List;

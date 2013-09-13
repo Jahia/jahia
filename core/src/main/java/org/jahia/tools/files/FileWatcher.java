@@ -74,6 +74,8 @@ import java.util.Observable;
  */
 public class FileWatcher extends Observable implements Serializable {
 
+    private static final long serialVersionUID = -5173318550711639571L;
+
     private static org.slf4j.Logger logger =
             org.slf4j.LoggerFactory.getLogger(FileWatcher.class);
 

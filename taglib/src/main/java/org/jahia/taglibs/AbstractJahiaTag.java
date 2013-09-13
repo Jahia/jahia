@@ -51,7 +51,6 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.servlet.http.HttpServletRequest;

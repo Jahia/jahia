@@ -60,6 +60,8 @@ import org.apache.commons.collections.map.LazyMap;
  */
 public class ValidationResults implements Serializable {
 
+    private static final long serialVersionUID = -7969446907569423334L;
+
     private List<ValidationResult> results = new LinkedList<ValidationResult>();
 
     private Map<String, ValidationResult> resultsByClassName;

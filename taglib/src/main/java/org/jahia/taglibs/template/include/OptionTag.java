@@ -66,6 +66,7 @@ import java.util.Map;
  *        Created : 27 oct. 2009
  */
 public class OptionTag extends BodyTagSupport implements ParamParent {
+    private static final long serialVersionUID = -4688234914421053917L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(OptionTag.class);
     private String nodetype;
     private JCRNodeWrapper node;

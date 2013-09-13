@@ -45,8 +45,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -173,8 +171,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         boolean debugEnabled = logger.isDebugEnabled();
-        @SuppressWarnings("unchecked")
-
         // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
                 // (resource and context) and the cache properties. The generated key will contains temporary placeholders
                 // that will be replaced to have the final key.

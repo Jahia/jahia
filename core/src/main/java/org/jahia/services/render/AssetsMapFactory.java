@@ -44,7 +44,6 @@ import org.apache.commons.collections.Factory;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -54,6 +53,8 @@ import java.util.Map;
  */
 
 public class AssetsMapFactory implements Factory, Serializable {
+    private static final long serialVersionUID = -38269439379229037L;
+
     public Object create() {
         return new LinkedHashMap<String,Map<String,String>>();
     }

@@ -42,14 +42,11 @@ package org.jahia.services.content.decorator;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
-import org.springframework.beans.BeanUtils;
-
 import javax.jcr.*;
 import javax.jcr.version.VersionException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.Map;
-import java.beans.PropertyDescriptor;
 import java.io.InputStream;
 
 /**

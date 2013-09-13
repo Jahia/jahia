@@ -41,8 +41,6 @@
 package org.jahia.services.applications.pluto;
 
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.applications.EntryPointInstance;
 
 import javax.servlet.http.HttpServletRequestWrapper;

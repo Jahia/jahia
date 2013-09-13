@@ -65,6 +65,8 @@ import org.apache.jackrabbit.webdav.WebdavResponse;
  */
 public class JahiaJCRWebdavServerServlet extends JCRWebdavServerServlet {
 
+    private static final long serialVersionUID = -2235958694965528476L;
+
     /**
      * the repository session provider
      */

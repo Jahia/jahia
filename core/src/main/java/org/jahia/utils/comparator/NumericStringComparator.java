@@ -43,7 +43,6 @@ package org.jahia.utils.comparator;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.VersionInfo;
 import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.bin.Jahia;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryBean;
 

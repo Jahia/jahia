@@ -40,16 +40,8 @@
 
 package org.jahia.services.render.filter.cache;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterOutputStream;
 
 /**
  * Class of utility method for compressing/decompressing cache key.

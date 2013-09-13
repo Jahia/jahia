@@ -40,7 +40,6 @@
 
 package org.jahia.services.workflow;
 
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.utils.LanguageCodeConverters;

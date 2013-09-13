@@ -59,6 +59,7 @@ import java.io.IOException;
  */
 public class JahiaWebdavServlet extends SimpleWebdavServlet {
 
+    private static final long serialVersionUID = 43821067248762234L;
     private static transient Logger logger = LoggerFactory.getLogger(JahiaWebdavServlet.class);
     /**
      * the repository session provider

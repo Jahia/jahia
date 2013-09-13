@@ -51,7 +51,8 @@ import java.io.Serializable;
  */
 public class JahiaGroupWrapper implements Serializable {
 
-	// the internal group, only defined when creating object
+	private static final long serialVersionUID = -4620124904841162955L;
+    // the internal group, only defined when creating object
 	private JahiaGroup group;
 	
 	/**

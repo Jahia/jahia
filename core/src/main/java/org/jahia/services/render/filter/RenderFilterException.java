@@ -50,6 +50,8 @@ import org.jahia.services.render.RenderException;
  */
 public class RenderFilterException extends RenderException {
 
+    private static final long serialVersionUID = -8238917583830204655L;
+
     /**
      * Initializes an instance of this class.
      * 

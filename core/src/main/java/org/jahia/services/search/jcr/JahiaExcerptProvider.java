@@ -51,13 +51,9 @@ import org.apache.jackrabbit.core.state.PropertyState;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.lucene.search.Query;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.util.Iterator;

@@ -46,4 +46,6 @@ package org.jahia.services.preferences.exception;
  * Time: 11:56:46
  */
 public class JahiaPreferenceProviderException extends JahiaPreferencesException {
+
+    private static final long serialVersionUID = 622582282597103238L;
 }

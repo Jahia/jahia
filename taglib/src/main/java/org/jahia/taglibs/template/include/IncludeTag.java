@@ -55,6 +55,8 @@ import javax.servlet.jsp.PageContext;
  */
 public class IncludeTag extends ModuleTag {
 
+    private static final long serialVersionUID = 8852332646068134563L;
+
     @Override
     public int doStartTag() throws JspException {
         setNode((JCRNodeWrapper) pageContext.getAttribute("currentNode", PageContext.REQUEST_SCOPE));

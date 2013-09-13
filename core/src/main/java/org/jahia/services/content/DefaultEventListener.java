@@ -46,7 +46,6 @@ import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.jahia.services.content.JCRObservationManager.EventWrapper;
 
 import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import java.util.HashSet;
 import java.util.Set;

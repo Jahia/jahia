@@ -24,6 +24,9 @@ import java.security.Principal;
 import java.util.*;
 
 public class RolesHandler implements Serializable {
+    private static final long serialVersionUID = 2485636561921483297L;
+
+
     private static final Logger logger = LoggerFactory.getLogger(RolesHandler.class);
 
 

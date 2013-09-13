@@ -55,6 +55,8 @@ import java.io.Serializable;
  */
 public class VanityUrl implements Serializable {
 
+    private static final long serialVersionUID = 5736971828491108878L;
+
     private String url;
 
     private String language;

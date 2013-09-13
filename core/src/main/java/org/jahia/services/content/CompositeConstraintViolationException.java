@@ -43,11 +43,10 @@ package org.jahia.services.content;
 
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CompositeConstraintViolationException extends ConstraintViolationException {
+    private static final long serialVersionUID = 2406482282092956625L;
     private List<ConstraintViolationException> errors = new ArrayList<ConstraintViolationException>();
 
     public CompositeConstraintViolationException() {

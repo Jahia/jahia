@@ -41,7 +41,6 @@
 package org.jahia.services.render.webflow;
 
 import org.jahia.services.render.View;
-import org.jahia.services.render.scripting.RequestDispatcherScript;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptFactory;
 

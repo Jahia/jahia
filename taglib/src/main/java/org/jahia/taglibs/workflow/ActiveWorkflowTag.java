@@ -40,7 +40,6 @@
 
 package org.jahia.taglibs.workflow;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.*;
@@ -59,8 +58,8 @@ import java.util.Locale;
  * 
  */
 public class ActiveWorkflowTag extends AbstractJahiaTag {
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(ActiveWorkflowTag.class);
 
+    private static final long serialVersionUID = 6941779551977616106L;
     private JCRNodeWrapper node;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;

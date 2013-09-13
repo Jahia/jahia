@@ -53,6 +53,7 @@ import java.io.Serializable;
  * 
  */
 public class Item  implements Serializable, BeanNameAware {
+    private static final long serialVersionUID = -2253720737015329049L;
     private String name;
     private String key;
     private Visibility visibility;

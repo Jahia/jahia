@@ -41,7 +41,6 @@
  package org.jahia.services.importexport;
 
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;

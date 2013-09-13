@@ -49,6 +49,7 @@ import java.util.Properties;
  * Validator that gets the list of all sites and sites properties from the xml import file
  */
 public class SitesValidatorResult implements ValidationResult, Serializable {
+    private static final long serialVersionUID = -6775149135043628858L;
     private Map<String, Properties> sitesProperties;
 
     public SitesValidatorResult(Map<String, Properties> sitesProperties) {

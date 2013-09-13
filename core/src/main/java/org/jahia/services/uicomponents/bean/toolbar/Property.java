@@ -54,6 +54,8 @@ import java.util.Locale;
  */
 public class Property implements Serializable {
     
+    private static final long serialVersionUID = 2368961966271023030L;
+
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(Property.class);
     
     private String name;

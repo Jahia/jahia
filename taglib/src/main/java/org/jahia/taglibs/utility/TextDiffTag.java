@@ -59,6 +59,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
  */
 public class TextDiffTag extends TagSupport {
 
+    private static final long serialVersionUID = 5137407997753630923L;
     private String oldText;
     private String newText;
     private String var;

@@ -50,6 +50,8 @@ import java.util.Date;
  */
 public class HistoryWorkflowTask extends HistoryWorkflowAction {
 
+    private static final long serialVersionUID = -4247768879172892309L;
+
     private String outcome;
 
     private String displayOutcome;

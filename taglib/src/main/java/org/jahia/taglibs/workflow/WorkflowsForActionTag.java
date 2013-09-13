@@ -56,6 +56,8 @@ import java.util.Locale;
  * Gets all possible definitions for an action
  */
 public class WorkflowsForActionTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = -4980779718425894270L;
+
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowsForActionTag.class);
 
     private String var;

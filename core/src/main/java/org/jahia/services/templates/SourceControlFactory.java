@@ -44,7 +44,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.jahia.utils.ProcessHelper;
 import org.jahia.utils.StringOutputStream;
 
 import java.io.File;

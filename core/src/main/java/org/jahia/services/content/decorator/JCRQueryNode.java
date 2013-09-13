@@ -41,17 +41,7 @@
 package org.jahia.services.content.decorator;
 
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.NodeIteratorImpl;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * 

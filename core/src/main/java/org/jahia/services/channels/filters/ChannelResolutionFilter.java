@@ -48,7 +48,6 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.slf4j.Logger;
 
-import javax.jcr.AccessDeniedException;
 import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 import java.util.List;

@@ -51,7 +51,6 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.webflow.engine.builder.BinderConfiguration;
 import org.springframework.webflow.execution.RequestContext;
-import org.springframework.webflow.mvc.servlet.ServletMvcView;
 import org.springframework.webflow.mvc.view.AbstractMvcView;
 import org.springframework.webflow.mvc.view.AbstractMvcViewFactory;
 import org.springframework.webflow.mvc.view.FlowViewResolver;

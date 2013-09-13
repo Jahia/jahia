@@ -50,6 +50,8 @@ import java.util.Date;
  */
 public class Task implements Serializable {
 
+    private static final long serialVersionUID = 2865115744967740455L;
+
     public enum Priority {
         HIGH, LOW, MEDIUM, VERY_HIGH, VERY_LOW;
     }

@@ -65,6 +65,7 @@ import java.util.List;
  * 
  */
 public class JCRFilterTag extends AbstractJCRTag {
+    private static final long serialVersionUID = 7977579361895318499L;
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFilterTag.class);
     private Collection<JCRNodeWrapper> list;
 

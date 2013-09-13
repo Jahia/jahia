@@ -45,6 +45,8 @@ package org.jahia.services.content.nodetypes;
  */
 public class ParseException extends Exception {
 
+    private static final long serialVersionUID = -2210995894762804559L;
+
     /**
      * the line number where the error occurred
      */

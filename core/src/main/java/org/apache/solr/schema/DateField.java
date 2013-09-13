@@ -330,6 +330,8 @@ public class DateField extends FieldType {
   
   private static class ISO8601CanonicalDateFormat extends SimpleDateFormat {
     
+    private static final long serialVersionUID = -4764282758222859888L;
+
     protected NumberFormat millisParser
       = NumberFormat.getIntegerInstance(CANONICAL_LOCALE);
 
@@ -417,6 +419,7 @@ public class DateField extends FieldType {
 }
 
 class DateFieldSource extends FieldCacheSource {
+    private static final long serialVersionUID = -9008658166881650393L;
     // NOTE: this is bad for serialization... but we currently need the fieldType for toInternal()
     FieldType ft;
 

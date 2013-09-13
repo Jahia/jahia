@@ -44,7 +44,6 @@ import java.util.Locale;
 
 import org.jahia.services.JahiaService;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Abstract class for the new Jahia search service. 

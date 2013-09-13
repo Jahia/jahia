@@ -47,7 +47,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -56,7 +55,6 @@ import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;

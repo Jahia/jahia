@@ -46,6 +46,8 @@ package org.jahia.services.preferences.exception;
  * Time: 11:52:12
  */
 public class JahiaPreferenceNotDefinedAttributeException extends JahiaPreferencesException {
+    private static final long serialVersionUID = 1067359340050959806L;
+
     public JahiaPreferenceNotDefinedAttributeException() {
 
     }

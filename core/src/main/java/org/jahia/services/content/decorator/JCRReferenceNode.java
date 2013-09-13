@@ -41,7 +41,6 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapperImpl;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;

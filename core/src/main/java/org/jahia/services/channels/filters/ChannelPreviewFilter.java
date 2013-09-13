@@ -48,7 +48,6 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 
-import javax.servlet.http.Cookie;
 import java.util.Map;
 
 /**

@@ -46,7 +46,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
-import java.util.List;
 import java.util.Map;
 
 /**

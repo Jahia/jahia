@@ -43,14 +43,11 @@ package org.jahia.services.render.filter;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
-import org.apache.noggit.JSONParser;
-import org.apache.noggit.JSONUtil;
 import org.apache.noggit.ObjectBuilder;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * User: toto

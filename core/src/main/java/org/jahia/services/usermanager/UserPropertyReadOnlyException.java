@@ -44,6 +44,7 @@
 
 public class UserPropertyReadOnlyException extends Exception {
 
+    private static final long serialVersionUID = 2392737766738844726L;
     public UserPropertyReadOnlyException(UserProperty property, String message) {
         super(message);
         this.property = property;

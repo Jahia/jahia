@@ -42,7 +42,6 @@ package org.jahia.services.importexport.validation;
 
 import org.jahia.api.Constants;
 import org.jahia.data.applications.ApplicationBean;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;

@@ -51,6 +51,7 @@ import java.util.Set;
  */
 public class MissingPortletsValidationResult implements ValidationResult, Serializable {
 
+    private static final long serialVersionUID = 8211056390506321009L;
     private Set<String> missingPortlets = new HashSet<String>();
 
     public MissingPortletsValidationResult(Set<String> missingPortlets) {

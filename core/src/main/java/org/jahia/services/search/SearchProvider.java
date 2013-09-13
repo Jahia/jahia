@@ -43,7 +43,6 @@ package org.jahia.services.search;
 import java.util.Locale;
 
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Interface for different provider implementations used by the SearchService.

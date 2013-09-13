@@ -56,6 +56,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * Time: 17:17
  */
 public class WorkflowTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = -4278120836286712295L;
     private String provider;
     private String id;
     private String var;

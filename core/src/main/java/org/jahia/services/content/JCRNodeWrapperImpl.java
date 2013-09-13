@@ -54,7 +54,6 @@ import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
-import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;

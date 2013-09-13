@@ -47,7 +47,6 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 /**

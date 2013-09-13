@@ -44,7 +44,6 @@ import org.jahia.services.content.RangeIteratorImpl;
 
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.Node;
 import java.util.Iterator;
 
 /**

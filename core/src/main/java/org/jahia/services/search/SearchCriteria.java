@@ -57,7 +57,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.lucene.analysis.ISOLatin1AccentFilter;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.utils.DateUtils;
 

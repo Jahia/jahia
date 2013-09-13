@@ -40,13 +40,9 @@
 
 package org.apache.jackrabbit.core.state;
 
-import static org.apache.jackrabbit.core.TransactionContext.getCurrentThreadId;
-import static org.apache.jackrabbit.core.TransactionContext.isSameThreadId;
-
 import org.apache.jackrabbit.core.id.ItemId;
 
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**

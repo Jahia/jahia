@@ -55,6 +55,8 @@ import java.security.Principal;
  */
 public class GuestGroup extends JCRGroup {
 
+    private static final long serialVersionUID = -7050824816792955816L;
+
     public GuestGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
         super(nodeWrapper, siteID);
     }

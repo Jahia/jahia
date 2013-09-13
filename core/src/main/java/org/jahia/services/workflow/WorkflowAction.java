@@ -48,6 +48,7 @@ package org.jahia.services.workflow;
  *        Created : 2 févr. 2010
  */
 public class WorkflowAction extends WorkflowBase {
+    private static final long serialVersionUID = 2562347586079420722L;
     private WorkflowDefinition workflowDefinition;
 
     public WorkflowAction(String name, String provider) {

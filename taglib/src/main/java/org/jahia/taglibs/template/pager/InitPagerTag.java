@@ -54,6 +54,8 @@ import java.util.Map;
  * 
  */
 public class InitPagerTag extends TagSupport {
+    private static final long serialVersionUID = 3487375821225747403L;
+
     private String prefix;
 
     private int pageSize;

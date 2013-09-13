@@ -53,6 +53,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class MissingNodetypesValidationResult implements ValidationResult, Serializable {
 
+    private static final long serialVersionUID = -5817064601349300396L;
+
     private Map<String, Set<String>> missingMixins = new TreeMap<String, Set<String>>();
 
     private Map<String, Set<String>> missingNodetypes = new TreeMap<String, Set<String>>();

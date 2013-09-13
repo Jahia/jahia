@@ -41,7 +41,6 @@
 package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.PublicationInfo;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 

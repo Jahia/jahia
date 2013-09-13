@@ -40,7 +40,6 @@
 package org.jahia.osgi;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;

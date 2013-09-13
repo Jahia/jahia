@@ -45,6 +45,8 @@ package org.jahia.services.translation;
  */
 public class TranslationException extends Exception {
 
+    private static final long serialVersionUID = -6021707634583754091L;
+
     public TranslationException() {
         super();
     }

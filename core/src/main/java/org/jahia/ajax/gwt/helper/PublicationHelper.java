@@ -72,7 +72,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**

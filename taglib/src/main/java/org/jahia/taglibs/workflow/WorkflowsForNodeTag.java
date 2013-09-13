@@ -63,6 +63,8 @@ import java.util.Locale;
  * 
  */
 public class WorkflowsForNodeTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 3090262422260075789L;
+
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowsForNodeTag.class);
 
     private JCRNodeWrapper node;

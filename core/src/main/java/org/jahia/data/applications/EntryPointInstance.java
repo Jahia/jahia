@@ -67,6 +67,7 @@ import java.util.Locale;
  */
 
 public class EntryPointInstance implements Serializable {
+    private static final long serialVersionUID = -8981953365965812339L;
     private transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(EntryPointInstance.class);
     private String ID;
     private String defName;

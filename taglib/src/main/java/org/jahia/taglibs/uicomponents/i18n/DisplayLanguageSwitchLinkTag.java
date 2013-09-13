@@ -41,7 +41,6 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.jahia.taglibs.utility.Utils;
 import org.slf4j.Logger;
 import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;

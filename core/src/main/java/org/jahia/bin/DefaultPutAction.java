@@ -40,20 +40,17 @@
 
 package org.jahia.bin;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.CompositeConstraintViolationException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.jcr.PropertyType;

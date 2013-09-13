@@ -43,7 +43,6 @@ package org.jahia.bin.errors;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

@@ -106,7 +106,6 @@ import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.StaticOperandImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.UpperCaseImpl;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
-import org.jahia.services.content.JCRSessionFactory;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;

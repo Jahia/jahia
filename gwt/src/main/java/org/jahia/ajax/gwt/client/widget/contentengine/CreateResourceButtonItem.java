@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -59,7 +60,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import java.util.*;
 
 /**
- *create button for resources (css or javascript)
+ * Create button for resources (css or javascript).
  */
 public class CreateResourceButtonItem extends SaveButtonItem {
 
@@ -138,22 +139,22 @@ public class CreateResourceButtonItem extends SaveButtonItem {
         final Set<String> addedTypes = new HashSet<String>();
         final Set<String> removedTypes = new HashSet<String>();
 
-        List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-        properties.addAll(engine.getProperties().values());
         for (TabItem tab : engine.getTabs().getItems()) {
             EditEngineTabItem item = tab.getData("item");
             item.doSave(null, engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, removedTypes, null, engine.getAcl());
         }
         List<GWTJahiaNodeProperty> changedProperties = engine.getChangedProperties();
-        if (properties.size() > 0) {
+        Map<String, GWTJahiaNodeProperty> engineProperties = new HashMap<String, GWTJahiaNodeProperty>(engine.getProperties());
+        List<GWTJahiaNodeProperty> properties = null;
+        if (engineProperties.size() > 0) {
             // Edit
-            for (int i=0; i < properties.size(); i++ ) {
-                for (int j=0; j < changedProperties.size(); j++) {
-                    if (properties.get(i).getName().equals(changedProperties.get(j).getName())) {
-                        properties.get(i).setValues(changedProperties.get(j).getValues());
-                    }
+            for (GWTJahiaNodeProperty changed : changedProperties) {
+                GWTJahiaNodeProperty prop = engineProperties.get(changed.getName());
+                if (prop != null) {
+                    prop.setValues(changed.getValues());
                 }
             }
+            properties = new ArrayList<GWTJahiaNodeProperty>(engineProperties.values());
         } else {
             // Create
             properties = changedProperties;

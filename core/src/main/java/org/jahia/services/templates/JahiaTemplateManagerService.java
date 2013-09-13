@@ -41,11 +41,14 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
+
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.httpclient.HttpClient;
@@ -64,7 +67,6 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
-import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -81,6 +83,7 @@ import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
@@ -115,6 +118,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -143,6 +147,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
 
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
+    
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
     private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
         public boolean equals(Object o, Object o1) {
@@ -546,10 +552,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 throw new IOException("No version found in pom.xml file " + pom);
             }
 
-            String[] installParams = {"clean", "install"};
-
             StringBuilder out = new StringBuilder();
-            int r = ProcessHelper.execute(mavenExecutable, "clean install", null , sources, out,out);
+            int r = 0;
+            try {
+                r = ProcessHelper.execute(mavenExecutable, "clean install", null , sources, out,out);
+            } catch (JahiaRuntimeException e) {
+                logger.error(e.getCause().getMessage(), e.getCause());
+                throw e;
+            }
 
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);
@@ -763,7 +773,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         final String url = releaseInfo.getForgeUrl();
         PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
         postMethod.getParams().setSoTimeout(0);
-        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
+        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encodeBase64((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
         postMethod.addRequestHeader("accept", "application/json");
         postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
         HttpClient client = httpClientService.getHttpClient();
@@ -1728,6 +1738,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void setMavenExecutable(String mavenExecutable) {
+        if (IS_WINDOWS && !mavenExecutable.endsWith(".bat")) {
+            mavenExecutable = mavenExecutable + ".bat";
+        }
         this.mavenExecutable = mavenExecutable;
     }
 

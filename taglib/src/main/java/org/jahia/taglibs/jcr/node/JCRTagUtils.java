@@ -466,15 +466,14 @@ public class JCRTagUtils {
         try {
             JCRSessionWrapper session = parentNode.getSession();
             Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                    "select * from [jnt:acl] as u where isdescendantnode(u,'" + parentNode.getPath() + "')",
+                    "select * from ["+ nodeType + "] as u where isdescendantnode(u,'" + parentNode.getPath() + "')",
                     Query.JCR_SQL2);
             QueryResult groupQueryResult = groupQuery.execute();
             final NodeIterator nodeIterator = groupQueryResult.getNodes();
             while (nodeIterator.hasNext()) {
                 JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
-                JCRNodeWrapper contentNode = node.getParent();
-                if (contentNode.isNodeType(nodeType) && hasPermission(contentNode, permission)) {
-                    results.add(contentNode);
+                if (hasPermission(node, permission)) {
+                    results.add(node);
                 }
             }
         } catch (RepositoryException e) {
@@ -483,6 +482,26 @@ public class JCRTagUtils {
         return results;
     }
 
+    public static JCRNodeWrapper getFirstAllowedNodeForPermission(String permission, JCRNodeWrapper parentNode,
+                                                                  String nodeType) {
+        try {
+            JCRSessionWrapper session = parentNode.getSession();
+            Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
+                    "select * from ["+ nodeType + "] as u where isdescendantnode(u,'" + parentNode.getPath() + "')",
+                    Query.JCR_SQL2);
+            QueryResult groupQueryResult = groupQuery.execute();
+            final NodeIterator nodeIterator = groupQueryResult.getNodes();
+            while (nodeIterator.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
+                if (hasPermission(node, permission)) {
+                    return node;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
     
     /**
      * Returns a string with comma-separated keywords, found on the current node (or the parent one, if inheritance is considered), or an

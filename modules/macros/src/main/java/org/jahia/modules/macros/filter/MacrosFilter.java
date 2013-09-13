@@ -53,7 +53,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
@@ -102,6 +101,9 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
         while (matcher.find()) {
             evaluated = true;
             String macroName = matcher.group(1);
+            if (StringUtils.isEmpty(macroName)) {
+                continue;
+            }
             String[] macro = getMacro(macroName, renderContext);
             if (macro != null) {
                 try {

@@ -71,7 +71,7 @@ public class RolesHandler implements Serializable {
     }
 
     public Map<String,List<Principal>> getRoles() throws Exception {
-        Map<String,List<Principal>> m = new LinkedHashMap<String, List<Principal>>();
+        Map<String,List<Principal>> m = new TreeMap<String, List<Principal>>();
 
         final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
         if (roles == null) {

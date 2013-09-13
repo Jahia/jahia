@@ -17,8 +17,9 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <div>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -108,7 +109,7 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-primary" type="submit" name="_eventId_add" onclick="workInProgress(); return true;">
+                            <button class="btn btn-primary" type="submit" name="_eventId_add" onclick="workInProgress('${i18nWaiting}'); return true;">
                                 <i class="icon-plus icon-white"></i>
                                 &nbsp;<fmt:message key='label.add'/>
                             </button>

@@ -17,8 +17,9 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <c:set var="readOnlyProperties" value="${userProperties.readOnlyProperties}"/>
 <div>
     <h2><fmt:message key="label.edit"/>&nbsp;${userProperties.displayName}</h2>
@@ -123,7 +124,7 @@
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span12">
-                            <button class="btn btn-primary" type="submit" name="_eventId_update" onclick="workInProgress(); return true;">
+                            <button class="btn btn-primary" type="submit" name="_eventId_update" onclick="workInProgress('${i18nWaiting}'); return true;">
                                 <i class="icon-ok icon-white"></i>
                                 &nbsp;<fmt:message key='label.update'/>
                             </button>

@@ -21,8 +21,9 @@
 
 <c:set var="memberDisplayLimit" value="${functions:default(fn:escapeXml(param.displayLimit), siteSettingsProperties.memberDisplayLimit)}"/>
 
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
 <fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
 <fmt:message var="i18nContinue" key="label.confirmContinue"/>
@@ -53,7 +54,7 @@ function removeGroupMember(confirmMsg, member) {
 		$.each($(':checkbox[name=selectedMembers]'), function() {
 			this.checked=$(this).val() == member;
 		});
-		workInProgress();
+		workInProgress('${i18nWaiting}');
 		return true;
 	} else {
 		return false;
@@ -66,7 +67,7 @@ function removeMultipleGroupMembers() {
 		return false;
 	}
 	if (confirm('${functions:escapeJavaScript(i18nRemoveMultipleConfirm)}' + ' ' + '${functions:escapeJavaScript(i18nContinue)}')) {
-		workInProgress();
+		workInProgress('${i18nWaiting}');
 		return true;
 	}
 	return false;
@@ -160,7 +161,7 @@ $(document).ready(function() {
                 <tbody id="newMembersTableBody">
                 </tbody>
             </table>
-            <button class="btn btn-primary" type="submit" name="_eventId_addMembers" onclick="workInProgress(); return true;">
+            <button class="btn btn-primary" type="submit" name="_eventId_addMembers" onclick="workInProgress('${i18nWaiting}'); return true;">
                <i class="icon-ok"></i>
                &nbsp;<fmt:message key="label.saveChanges"/>
             </button>

@@ -21,9 +21,10 @@
 
 <c:set var="groupDisplayLimit" value="${siteSettingsProperties.groupDisplayLimit}"/>
 
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
 <template:addResources>
 <script type="text/javascript">
@@ -172,7 +173,7 @@ function submitGroupForm(act, group) {
                                     <i class="icon-share"></i>
                                 </a>
                                 <c:if test="${!providers[grp.providerName].readOnly && !functions:contains(systemGroups, grp.groupKey)}">
-                                    <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="if (confirm('${i18nRemoveConfirm}')) { workInProgress(); submitGroupForm('removeGroup', '${grp.groupKey}');} return false;">
+                                    <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="if (confirm('${i18nRemoveConfirm}')) { workInProgress('${i18nWaiting}'); submitGroupForm('removeGroup', '${grp.groupKey}');} return false;">
                                         <i class="icon-remove icon-white"></i>
                                     </a>
                                 </c:if>

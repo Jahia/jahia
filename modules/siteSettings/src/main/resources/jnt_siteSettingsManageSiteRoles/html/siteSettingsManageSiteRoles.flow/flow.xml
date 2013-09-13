@@ -11,7 +11,7 @@
         <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
         <evaluate expression="flowHandler.setRoleGroup('site-role')" />
         <evaluate expression="flowHandler.setRoles(externalContext.requestMap.currentNode)" />
-        <evaluate expression="flowHandler.setNodePath(externalContext.requestMap.renderContext.site.path)" />
+        <evaluate expression="flowHandler.setNodePath(externalContext.requestMap.renderContext.mainResource.node.path)" />
     </on-start>
 
     <view-state id="view">

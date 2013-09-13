@@ -46,6 +46,9 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
+/**
+ * GWT widget that represents a cancel buttton in the content engines.
+ */
 public class CancelButtonItem implements ButtonItem {
 
     public Button create(final AbstractContentEngine engine) {

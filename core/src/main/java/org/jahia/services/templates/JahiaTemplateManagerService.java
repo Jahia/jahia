@@ -47,8 +47,6 @@ import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.httpclient.HttpClient;
@@ -67,6 +65,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -773,7 +772,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         final String url = releaseInfo.getForgeUrl();
         PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
         postMethod.getParams().setSoTimeout(0);
-        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encodeBase64((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
+        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
         postMethod.addRequestHeader("accept", "application/json");
         postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
         HttpClient client = httpClientService.getHttpClient();

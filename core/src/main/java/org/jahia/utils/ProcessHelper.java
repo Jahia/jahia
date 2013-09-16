@@ -133,6 +133,35 @@ public final class ProcessHelper {
     public static int execute(String command, String arguments,
             Map<String, Object> parameterSubstitutionMap, File workingDir, StringBuilder resultOut,
             StringBuilder resultErr) throws JahiaRuntimeException {
+        return execute(command, arguments, parameterSubstitutionMap, workingDir, resultOut, resultErr, true);
+    }
+
+    /**
+     * Executes the external process using the provided command, arguments (optional), parameter substitution map to expand variables in the
+     * command or arguments in form of <code>${variable}<code> (optional) and a working directory (optional).
+     * Buffers for process output and error stream can be provided.
+     * 
+     * @param command
+     *            the command to be executed
+     * @param arguments
+     *            optional arguments for the command
+     * @param parameterSubstitutionMap
+     *            optional values for variables to be expanded
+     * @param workingDir
+     *            optional working directory for the process to be started from
+     * @param resultOut
+     *            the buffer to write the process execution output into (optional)
+     * @param resultErr
+     *            the buffer to write the process execution error into (optional)
+     * @return the execution status
+     * @return redirectOutputs if set to <code>true</code> the output of the execution will be also redirected to standard system out and
+     *         the error to error out
+     * @throws JahiaRuntimeException
+     *             in case the process execution failed
+     */
+    public static int execute(String command, String arguments,
+            Map<String, Object> parameterSubstitutionMap, File workingDir, StringBuilder resultOut,
+            StringBuilder resultErr, boolean redirectOutputs) throws JahiaRuntimeException {
 
         long timer = System.currentTimeMillis();
 
@@ -152,8 +181,8 @@ public final class ProcessHelper {
 
         int exitValue = 0;
 
-        StringOutputStream out = new StringOutputStream();
-        StringOutputStream err = new StringOutputStream();
+        StringOutputStream out = new StringOutputStream(redirectOutputs ? System.out : null);
+        StringOutputStream err = new StringOutputStream(redirectOutputs ? System.err : null);
         try {
             DefaultExecutor executor = new DefaultExecutor();
             executor.setStreamHandler(new PumpStreamHandler(out, err));
@@ -187,5 +216,4 @@ public final class ProcessHelper {
 
         return exitValue;
     }
-
 }

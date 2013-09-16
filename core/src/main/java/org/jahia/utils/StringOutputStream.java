@@ -53,6 +53,26 @@ public class StringOutputStream extends OutputStream {
 
     private StringWriter stringWriter = new StringWriter(256);
 
+    private OutputStream wrapped;
+
+    /**
+     * Initializes an instance of this class.
+     */
+    public StringOutputStream() {
+        this(null);
+    }
+
+    /**
+     * Initializes an instance of this class with the supplied wrapped {@link OutputStream}.
+     * 
+     * @param wrapped
+     *            a stream to write the output into
+     */
+    public StringOutputStream(OutputStream wrapped) {
+        super();
+        this.wrapped = wrapped;
+    }
+
     public int getLength() {
         return getStringBuffer().length();
     }
@@ -65,9 +85,12 @@ public class StringOutputStream extends OutputStream {
     public String toString() {
         return stringWriter.toString();
     }
-    
+
     @Override
     public void write(int b) throws IOException {
         this.stringWriter.write(b);
+        if (wrapped != null) {
+            wrapped.write(b);
+        }
     }
 }

@@ -12,7 +12,14 @@
         <!--<webflow:flow-location-pattern value="/**/*.flow/**/flow.xml" />-->
     </webflow:flow-registry>
 
-    <webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry" />
+    <!--<webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry" />-->
+
+    <webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry"  >
+        <webflow:flow-execution-repository conversation-manager="jahiaConversationManager" />
+    </webflow:flow-executor>
+
+    <bean id="jahiaConversationManager" class="org.springframework.webflow.conversation.impl.JahiaConversationManager"/>
+
 
     <bean id="jahiaFlowUrlHandler" class="org.jahia.services.render.webflow.JahiaFlowUrlHandler"/>
 

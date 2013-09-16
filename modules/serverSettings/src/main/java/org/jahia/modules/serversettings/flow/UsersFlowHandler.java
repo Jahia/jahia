@@ -41,6 +41,8 @@
 package org.jahia.modules.serversettings.flow;
 
 import au.com.bytecode.opencsv.CSVReader;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.modules.serversettings.users.management.CsvFile;
@@ -159,9 +161,10 @@ public class UsersFlowHandler implements Serializable {
         logger.info("Bulk adding users");
         long timer = 0;
         boolean hasErrors = false;
+        CSVReader csvReader = null;
         try {
             timer = System.currentTimeMillis();
-            CSVReader csvReader = new CSVReader(new InputStreamReader(csvFile.getCsvFile().getInputStream(), "UTF-8"),
+            csvReader = new CSVReader(new InputStreamReader(csvFile.getCsvFile().getInputStream(), "UTF-8"),
                     csvFile.getCsvSeparator().charAt(0));
             // the first line contains the column names;
             String[] headerElements = csvReader.readNext();
@@ -210,6 +213,8 @@ public class UsersFlowHandler implements Serializable {
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(csvReader);
         }
 
 

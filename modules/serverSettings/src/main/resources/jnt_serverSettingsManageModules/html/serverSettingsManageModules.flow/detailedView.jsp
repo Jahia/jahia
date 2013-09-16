@@ -19,13 +19,15 @@
 <%--@elvariable id="otherVersions" type="java.util.Map<org.jahia.services.templates.ModuleVersion,org.jahia.data.templates.JahiaTemplatesPackage>"--%>
 <%--@elvariable id="bundleInfo" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
-<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,admin-bootstrap.js,jquery.blockUI.js"/>
+<template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,admin-bootstrap.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+
 <template:addResources>
 <script type="text/javascript">
-    $(document).ready(function() { $('.button-download').click(workInProgress) });
+    $(document).ready(function() { $('.button-download').click(function() { workInProgress('${i18nWaiting}') }) });
 </script>
 </template:addResources>
 

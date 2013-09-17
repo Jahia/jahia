@@ -81,7 +81,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                 final String[] filePath = nodePath.split("/");
 
                 final Window popup = new Window();
-                popup.setHeading(Messages.get("label.saveAs", "Save as ..."));
+                popup.setHeading(Messages.get("label.saveAs", "Save as..."));
                 popup.setHeight(120);
                 popup.setWidth(350);
                 popup.setModal(true);

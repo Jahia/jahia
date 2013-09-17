@@ -17,6 +17,14 @@
         <property name="dataSource" ref="jbpmDataSource"/>
         <property name="persistenceUnitName" value="org.jahia.services.workflow.jbpm"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.dialect" value="${hibernate.dialect}" />
+                <entry key="hibernate.hbm2ddl.auto" value="update" />
+                <entry key="hibernate.show_sql" value="false" />
+                <entry key="hibernate.id.new_generator_mappings" value="false" />
+            </map>
+        </property>
     </bean>
 
     <bean id="jbpmEm"

@@ -204,6 +204,12 @@
  - aClass (string) indexed=no
  - divClass (string) indexed=no
 
+[jnt:siteLink] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
+ - targetTemplate (string) indexed=no
+ - targetPageName (string) indexed=no
+ - aClass (string) indexed=no
+ - divClass (string) indexed=no
+
 [jnt:fileUpload] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - target (weakreference)
 
@@ -214,9 +220,14 @@
 [jnt:workflowMonitor] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly
  - workflowType (string,choicelist[workflowTypes])
 
-[jnt:modeDispatcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
+[jnt:modeDispatcher] > jnt:content, jmix:layoutComponentContent, jmix:studioOnly
  orderable
  - mode (string,choicelist[renderModes])
+ + * (jmix:droppableContent) = jmix:droppableContent version
+
+[jnt:workspaceSwitch] > jnt:content, jmix:layoutComponentContent, jmix:studioOnly
+ orderable
+ - workspace (string,choicelist) < default,live
  + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:createWebProject] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly

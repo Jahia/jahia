@@ -103,6 +103,10 @@ public class Resource {
         return node;
     }
 
+    public void setNode(JCRNodeWrapper node) {
+        this.node = node;
+    }
+
     public String getTemplateType() {
         return templateType;
     }

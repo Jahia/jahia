@@ -126,4 +126,11 @@
         <property name="name" value="getWorkflowTasks"/>
     </bean>
 
+    <bean id="WorkspaceSwitchFilter" class="org.jahia.modules.defaultmodule.WorkspaceSwitchFilter">
+        <property name="priority" value="17" />
+        <property name="description" value="Switch to another workspace"/>
+        <property name="applyOnNodeTypes" value="jnt:workspaceSwitch" />
+        <property name="applyOnConfigurations" value="module" />
+    </bean>
+
 </beans>

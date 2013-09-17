@@ -728,10 +728,6 @@ extends = jnt:content
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:layoutContentList] > jnt:content, jmix:layoutComponentContent, mix:title, jmix:list, jmix:renderableList
- orderable
- + * (jmix:layoutComponentContent) = jmix:layoutComponentContent version
-
 [jmix:orderedList] mixin
  itemtype = listOrdering
  extends = jnt:contentList, jnt:area

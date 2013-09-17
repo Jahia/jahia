@@ -51,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.util.WebUtils;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
 import javax.jcr.RepositoryException;
@@ -174,11 +175,18 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                     }
 
                     @Override
+                    public Object getAttribute(String name) {
+                        if (WebUtils.FORWARD_QUERY_STRING_ATTRIBUTE.equals(name)) {
+                            return qs;
+                        }
+                        return super.getAttribute(name);    //To change body of overridden methods use File | Settings | File Templates.
+                    }
+
+                    @Override
                     public String getQueryString() {
                         return qs;
                     }
                 };
-
                 rd = requestWrapper.getRequestDispatcher("/flow/"+flowPath + "?" + qs);
                 responseWrapper = new StringResponseWrapper(response);
                 rd.include(requestWrapper, responseWrapper);

@@ -112,7 +112,7 @@ public class NewViewActionItem extends BaseActionItem  {
                             linker.loaded();
                             final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
                             popup.setHeading(Messages.get("label.addView", "Add view"));
-                            popup.setHeight(200);
+                            popup.setHeight(400);
                             popup.setWidth(350);
                             popup.setModal(true);
                             popup.setLayout(new FillLayout());

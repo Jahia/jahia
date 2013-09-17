@@ -258,6 +258,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                 w.add(stubsCombo);
                                 tab.add(w, new BorderLayoutData(Style.LayoutRegion.CENTER));
                                 tab.layout();
+                            } else {
+                                initEditor(tab);
                             }
                         } else {
                             initEditor(tab);

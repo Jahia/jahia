@@ -108,7 +108,7 @@ Workflow Integration
 
 +--------------------
      <task name="request" form="jnt:translationRequest">
-         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener"/>
          ...
 
      </task>
@@ -206,7 +206,7 @@ A publication workflow with one validation step has been started on ${date.forma
   The template can be used in a JPDL mail activity using the following syntax :
 
 +--------------------------------
-    <mail class="org.jahia.services.workflow.jbpm.JBPMMailProducer" name="sendStartMail">
+    <mail class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer" name="sendStartMail">
         <property name="templateKey">
             <string value="start-publication-template"/>
         </property>

@@ -57,25 +57,25 @@ package org.jahia.pipelines;
 
 import org.jahia.pipelines.valves.Valve;
 
+import java.util.Map;
+
 /**
- *
  * @author <a href="mailto:david@bluesunrise.com">David Sean Taylor</a>
  * @version $Id$
  */
 public interface Pipeline {
 
-    void initialize ()
-        throws PipelineException;
+    void initialize()
+            throws PipelineException;
 
     /**
      * <p>Add a new Valve to the end of the pipeline.</p>
      *
      * @param valve Valve to be added.
-     *
-     * @exception IllegalStateException If the pipeline has not been
-     * initialized.
+     * @throws IllegalStateException If the pipeline has not been
+     *                               initialized.
      */
-    void addValve (Valve valve);
+    void addValve(Valve valve);
 
     /**
      * <p>Return the set of all Valves in the pipeline.  If there are no
@@ -83,25 +83,24 @@ public interface Pipeline {
      *
      * @return An array of valves.
      */
-    Valve[] getValves ();
+    Valve[] getValves();
 
     /**
      * <p>Cause the specified request and response to be processed by
      * the sequence of Valves associated with this pipeline, until one
      * of these Valves decides to end the processing.</p>
-     *
+     * <p/>
      * <p>The implementation must ensure that multiple simultaneous
      * requests (on different threads) can be processed through the
      * same Pipeline without interfering with each other's control
      * flow.</p>
      *
      * @param context The run-time information, including the servlet
-     * request and response we are processing.
-     *
-     * @exception PipelineException an input/output error occurred.
+     *                request and response we are processing.
+     * @throws PipelineException an input/output error occurred.
      */
-    void invoke (Object context)
-        throws PipelineException;
+    void invoke(Object context)
+            throws PipelineException;
 
     /**
      * <p>Remove the specified Valve from the pipeline, if it is found;
@@ -109,12 +108,14 @@ public interface Pipeline {
      *
      * @param valve Valve to be removed.
      */
-    void removeValve (Valve valve);
+    void removeValve(Valve valve);
 
     // BEGIN [added by Pascal Aubry for CAS authentication]
+
     /**
      * <p>Tell if (at least) one of the valves of the pipeline is an instance
      * of a given class or interface.</p>
+     *
      * @param c the class or interface
      * @return
      */
@@ -123,10 +124,20 @@ public interface Pipeline {
     /**
      * <p>Return the first valve of the pipeline that is an instance
      * of a given class or interface.</p>
+     *
      * @param c the class or interface
      * @return a Valve instance, or null if no valve matches.
      */
     public Valve getFirstValveOfClass(Class<Valve> c);
     // END [added by Pascal Aubry for CAS authentication]
+
+    /**
+     * Used by users of the pipeline to provide an environment in which the valves
+     * will execute. This can be useful for example to provide service references, or
+     * other shared data among all the valves.
+     *
+     * @param environment
+     */
+    public void setEnvironment(Map<String, Object> environment);
 
 }

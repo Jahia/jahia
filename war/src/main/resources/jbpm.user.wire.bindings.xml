@@ -1,9 +1,0 @@
-<wire-bindings>
-
-  <!-- ########################### -->
-  <!-- ### Descriptor bindings ### -->
-  <!-- ########################### -->
-
-  <!-- interceptors -->
-  <binding class="org.jahia.services.workflow.jbpm.JBPMEventGeneratorInterceptorBinding" />
-</wire-bindings>

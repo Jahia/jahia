@@ -1,22 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean class="org.jahia.services.workflow.jbpm.JBPMSpringHelper" id="springHelper">
-        <property name="jbpmCfg" value="jbpm.cfg.xml"/>
-        <property name="sessionFactoryName" value="sessionFactory"/>
+    <bean id="mailTemplateRegistry" class="org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry">
+
     </bean>
-    <bean id="processEngine" factory-bean="springHelper" factory-method="createProcessEngine" />
 
-    <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPMProvider" factory-method="getInstance" init-method="start">
+    <bean id="jbpmDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/jahia"/>
+    </bean>
+
+
+    <bean id="jbpmEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="jbpmDataSource"/>
+        <property name="persistenceUnitName" value="org.jahia.services.workflow.jbpm"/>
+        <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+    </bean>
+
+    <bean id="jbpmEm"
+          class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="jbpmEmf"/>
+    </bean>
+
+    <bean id="jbpmTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="jbpmEmf"/>
+    </bean>
+
+    <bean id="peopleAssignmentPipeline" class="org.jahia.pipelines.impl.GenericPipeline" init-method="initialize">
+        <property name="name" value="peopleAssignmentPipeline"/>
+        <property name="valves">
+            <list>
+                <bean id="aclPeopleAssignmentValve" class="org.jahia.services.workflow.jbpm.AclPeopleAssignmentValve"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="jBPMProvider" class="org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider"
+          factory-method="getInstance" init-method="start" destroy-method="stop">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
-        <property name="processEngine" ref="processEngine"/>
+        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
+        <property name="platformTransactionManager" ref="jbpmTxManager"/>
+        <property name="emf" ref="jbpmEmf"/>
+        <property name="em" ref="jbpmEm"/>
         <property name="processes">
             <list>
-                <value>classpath*:org/jahia/modules/workflow/*.jpdl.xml</value>
+                <value>classpath*:org/jahia/modules/workflow/*.bpmn2</value>
             </list>
         </property>
         <property name="mailTemplates">
@@ -26,6 +57,73 @@
         </property>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
-        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="peopleAssignmentPipeline" ref="peopleAssignmentPipeline"/>
+        <property name="jahiaUserGroupCallback">
+            <bean class="org.jahia.services.workflow.jbpm.JahiaUserGroupCallback">
+                <property name="userService" ref="JahiaUserManagerService"/>
+                <property name="groupService" ref="JahiaGroupManagerService"/>
+            </bean>
+        </property>
     </bean>
+
+    <!-- Work item handler instances -->
+    <bean abstract="true" id="abstractWH" class="org.jahia.services.workflow.jbpm.custom.AbstractWorkItemHandler">
+        <property name="workflowProvider" ref="jBPMProvider"/>
+    </bean>
+
+    <bean id="addLabelWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.AddLabelWorkItemHandler">
+        <property name="name" value="Add Label"/>
+    </bean>
+
+    <bean id="customLockWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.CustomLockWorkItemHandler">
+        <property name="name" value="Custom lock node"/>
+    </bean>
+    <bean id="customUnlockWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.CustomUnlockWorkItemHandler">
+        <property name="name" value="Custom unlock node"/>
+    </bean>
+    <bean id="lockWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.LockWorkItemHandler">
+        <property name="name" value="Lock node"/>
+    </bean>
+    <bean id="unlockWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.UnlockWorkItemHandler">
+        <property name="name" value="Unlock node"/>
+    </bean>
+    <bean id="publishWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.PublishWorkItemHandler">
+        <property name="name" value="Publish node"/>
+    </bean>
+    <bean id="unpublishWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.UnpublishWorkItemHandler">
+        <property name="name" value="Unpublish node"/>
+    </bean>
+    <bean id="setPropertyWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.SetPropertyWorkItemHandler">
+        <property name="name" value="Set node property"/>
+    </bean>
+
+    <bean id="taskIdentityService" class="org.jahia.services.workflow.jbpm.JBPMTaskIdentityService"/>
+
+    <bean id="mailProducer" class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer">
+        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
+        <property name="taskIdentityService" ref="taskIdentityService"/>
+    </bean>
+
+    <bean id="mailSession" class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailSession">
+        <property name="mailService" ref="MailService"/>
+    </bean>
+
+    <bean id="jBPMMailWH" parent="abstractWH"
+          class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailWorkItemHandler">
+        <property name="mailProducer" ref="mailProducer"/>
+        <property name="mailSession" ref="mailSession"/>
+        <property name="name" value="Send mail"/>
+    </bean>
+
+    <bean abstract="true" id="abstractTaskLifeCycleEventListener" class="org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener">
+        <property name="workflowProvider" ref="jBPMProvider"/>
+    </bean>
+
+    <bean id="jbpmTaskLifeCycleEventListener" parent="abstractTaskLifeCycleEventListener" class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener">
+        <property name="name" value="jahiaTaskLifeCycleEventListener"/>
+    </bean>
+
 </beans>

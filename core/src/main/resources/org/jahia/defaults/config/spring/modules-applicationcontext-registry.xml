@@ -22,9 +22,9 @@
     </bean>
 
     <bean id="modulePlaceholderConfig"
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="properties">
-            <ref bean="jahiaProperties" />
+            <ref bean="jahiaProperties"/>
         </property>
     </bean>
 
@@ -41,7 +41,8 @@
         </property>
     </bean>
 
-    <bean name="editmodeEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+    <bean name="editmodeEditorConfigurerModules"
+          class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">
             <map>
                 <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -55,15 +56,16 @@
     </bean>
 
     <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
-        <property name="processEngine" ref="processEngine"/>
+        <property name="jbpm6WorkflowProvider" ref="jBPMProvider"/>
+        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="processes">
             <list>
-                <value>osgibundle:org/jahia/modules/custom/workflow/*.jpdl.xml</value>
+                <value>osgibundle:org/jahia/modules/**/*.bpmn2</value>
             </list>
         </property>
         <property name="mailTemplates">
             <list>
-                <value>osgibundle:org/jahia/modules/custom/workflow/*.mail</value>
+                <value>osgibundle:org/jahia/modules/**/*.mail</value>
             </list>
         </property>
     </bean>
@@ -73,23 +75,28 @@
 
     <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator"/>
 
-    <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true" conversion-service="JahiaFlowConversionService" view-factory-creator="JahiaViewFactoryCreator"/>
+    <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true"
+                                   conversion-service="JahiaFlowConversionService"
+                                   view-factory-creator="JahiaViewFactoryCreator"/>
 
-    <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/" flow-builder-services="jahiaFlowBuilderServices">
-        <webflow:flow-location-pattern value="**/*.flow/**/flow.xml" />
+    <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/"
+                           flow-builder-services="jahiaFlowBuilderServices">
+        <webflow:flow-location-pattern value="**/*.flow/**/flow.xml"/>
     </webflow:flow-registry>
 
-    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" depends-on="settingsBean" lazy-init="true">
+    <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+          depends-on="settingsBean" lazy-init="true">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="org.jahia.modules"/>
         <property name="hibernateProperties">
             <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
                 <property name="properties">
                     <map>
-                        <entry key="hibernate.dialect"  value="${hibernate.dialect}"/>
+                        <entry key="hibernate.dialect" value="${hibernate.dialect}"/>
                         <entry key="hibernate.hbm2ddl.auto" value="none"/>
                         <entry key="hibernate.show_sql" value="false"/>
-                        <entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SharingEhcacheProvider"/>
+                        <entry key="hibernate.cache.region.factory_class"
+                               value="org.hibernate.cache.ehcache.SharingEhcacheRegionFactory"/>
                         <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                         <entry key="hibernate.cache.use_query_cache" value="false"/>
                         <entry key="hibernate.jdbc.batch_size" value="16"/>
@@ -98,19 +105,12 @@
                         <entry key="hibernate.query.substitutions" value="true 1, false 0"/>
                         <entry key="hibernate.generate_statistics" value="false"/>
                         <entry key="hibernate.cache.use_structured_entries" value="false"/>
-                        <entry key="org.jahia.hibernate.ehcache.existingCacheManagerName" value="org.jahia.hibernate.ehcachemanager"/>
+                        <entry key="org.jahia.hibernate.ehcache.existingCacheManagerName"
+                               value="org.jahia.hibernate.ehcachemanager"/>
                     </map>
                 </property>
             </bean>
         </property>
-        <property name="eventListeners">
-            <map>
-                <entry key="merge">
-                    <bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
-                </entry>
-            </map>
-        </property>
-        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
     </bean>
 
 </beans>

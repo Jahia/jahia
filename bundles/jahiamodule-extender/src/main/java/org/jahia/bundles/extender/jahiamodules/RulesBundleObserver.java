@@ -114,7 +114,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
     public void removingEntries(Bundle bundle, List<URL> urls) {
         JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
         for (RulesListener listener : RulesListener.getInstances()) {
-            listener.removeRules(module.getName());
+            listener.removeRules(module);
             for (URL url : urls) {
                 if(url.toString().endsWith(".dsl")) {
                     if(listener.removeRulesDescriptor(new BundleResource(url, bundle))){

@@ -42,7 +42,6 @@ package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -85,9 +84,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
     private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
 
     private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
-    private Map<String, List<String>> workflowTypes;
-    private Map<String, Map<String, String>> workflowPermissions = new HashMap<String, Map<String, String>>();
-    private Map<String, String> workflowTypeByDefinition;
+    private Map<String, WorklowTypeRegistration> workflowTypeByDefinition;
     private Map<String, String> modulesForWorkflowDefinition = new HashMap<String, String>();
     private JCRTemplate jcrTemplate;
     private WorkflowObservationManager observationManager = new WorkflowObservationManager(this);
@@ -99,55 +96,28 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         return instance;
     }
 
-    public void setWorkflowTypes(Map<String, List<String>> workflowTypes) {
-        this.workflowTypes = workflowTypes;
-        this.workflowTypeByDefinition = new HashMap<String, String>();
-        for (Map.Entry<String, List<String>> entry : workflowTypes.entrySet()) {
-            for (String s : entry.getValue()) {
-                workflowTypeByDefinition.put(s, entry.getKey());
+    public void setWorkflowTypes(List<WorklowTypeRegistration> workflowTypes) {
+        workflowTypeByDefinition = new HashMap<String, WorklowTypeRegistration>();
+        for (WorklowTypeRegistration workflowType : workflowTypes) {
+            workflowTypeByDefinition.put(workflowType.getDefinition(), workflowType);
+        }
+    }
+
+    public void registerWorkflowType(WorklowTypeRegistration type) {
+        if (type != null && !workflowTypeByDefinition.containsKey(type.getDefinition())) {
+            workflowTypeByDefinition.put(type.getDefinition(), type);
+            if (type.getModule() != null) {
+                modulesForWorkflowDefinition.put(type.getDefinition(), type.getModule().getRootFolder());
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle("org.jahia.modules.custom.workflow." + type.getDefinition(), type.getModule());
             }
         }
     }
 
-    public void setWorkflowPermissions(Map<String, Map<String, String>> workflowPermissions) {
-        this.workflowPermissions = workflowPermissions;
-    }
-
-    public void registerWorkflowType(String type, String definition, JahiaTemplatesPackage module, Map<String, String> perms) {
-        if (type != null) {
-            List<String> list = workflowTypes.get(type);
-            if (list == null) {
-                list = new ArrayList<String>();
-                workflowTypes.put(type, list);
-            }
-            if (!list.contains(definition)) {
-                list.add(definition);
-            }
-
-            workflowTypeByDefinition.put(definition, type);
+    public void unregisterWorkflowType(WorklowTypeRegistration type) {
+        if (workflowTypeByDefinition.get(type.getDefinition()) == type) {
+            workflowTypeByDefinition.remove(type.getDefinition());
+            modulesForWorkflowDefinition.remove(type.getDefinition());
         }
-
-        if (module != null) {
-            modulesForWorkflowDefinition.put(definition, module.getRootFolder());
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle("org.jahia.modules.custom.workflow."+definition, module);
-        }
-
-        if (perms != null) {
-            this.workflowPermissions.put(definition, perms);
-        }
-    }
-
-    public void unregisterWorkflowType(String type, String definition) {
-        List<String> list = workflowTypes.get(type);
-        if (list == null) {
-            return;
-        }
-        if (list.contains(definition)) {
-            list.remove(definition);
-        }
-        workflowTypeByDefinition.remove(definition);
-        modulesForWorkflowDefinition.remove(definition);
-        this.workflowPermissions.remove(definition);
     }
 
     public Map<String, WorkflowProvider> getProviders() {
@@ -164,16 +134,20 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    public void removeProvider(final WorkflowProvider provider) {
+        providers.remove(provider.getKey());
+    }
+
     private void initializePermission(final WorkflowProvider provider) {
         try {
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<WorkflowDefinition> definitions = provider.getAvailableWorkflows(null);
                     for (WorkflowDefinition definition : definitions) {
-                        Map<String, String> map = workflowPermissions.get(definition.getKey());
+                        Map<String, String> map = workflowTypeByDefinition.get(definition.getKey()).getPermissions();
                         if (map == null) {
                             map = new HashMap<String, String>();
-                            workflowPermissions.put(definition.getKey(), map);
+                            workflowTypeByDefinition.get(definition.getKey()).setPermissions(map);
                         }
                         Set<String> tasks = definition.getTasks();
                         for (String task : tasks) {
@@ -212,12 +186,11 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
     }
 
     public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, Locale locale) throws RepositoryException {
-        List<String> l = workflowTypes.get(type);
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
             List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows(locale);
             for (WorkflowDefinition def : defs) {
-                if (l.contains(def.getKey())) {
+                if (workflowTypeByDefinition.get(def.getKey()).getType().equals(type)) {
                     workflowsByProvider.add(def);
                 }
             }
@@ -237,7 +210,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         List<WorkflowDefinition> l = getPossibleWorkflows(node, checkPermission, null, locale);
         Map<String, WorkflowDefinition> res = new HashMap<String, WorkflowDefinition>();
         for (WorkflowDefinition workflowDefinition : l) {
-            res.put(workflowTypeByDefinition.get(workflowDefinition.getKey()), workflowDefinition);
+            res.put(workflowTypeByDefinition.get(workflowDefinition.getKey()).getType(), workflowDefinition);
         }
         return res;
     }
@@ -275,25 +248,28 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         for (WorkflowRule ruledef : rules) {
             WorkflowDefinition definition =
                     lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), locale);
-            workflows.add(definition);
+            if (definition != null) {
+                workflows.add(definition);
+            }
         }
         return new LinkedList<WorkflowDefinition>(workflows);
     }
 
-    public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition,
+    public List<JahiaPrincipal> getAssignedRole(final WorkflowDefinition definition,
                                                 final String activityName, final String processId) throws RepositoryException {
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
                 List<JahiaPrincipal> principals = Collections.emptyList();
-                Map<String, String> perms = workflowPermissions.get(definition.getKey());
+                Map<String, String> perms = workflowTypeByDefinition.get(definition.getKey()).getPermissions();
                 String permName = perms != null ? perms.get(activityName) : null;
                 if (permName == null) {
                     return principals;
                 }
 
+                Workflow w = getWorkflow(definition.getProvider(), processId, null);
+                JCRNodeWrapper node = session.getNodeByIdentifier((String)w.getVariables().get("nodeId"));
                 if (permName.indexOf("$") > -1) {
-                    Workflow w = getWorkflow(definition.getProvider(), processId, null);
                     if (w != null) {
                         for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
                             if (entry.getValue() instanceof List) {
@@ -467,31 +443,6 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
     /**
      * This method will call the underlying provider to signal the identified process.
      *
-     * @param processId      the process we want to advance
-     * @param provider       The provider executing the process
-     * @param transitionName
-     * @param args           List of args for the process
-     */
-    public void signalProcess(String processId, String transitionName, String provider, Map<String, Object> args) {
-        lookupProvider(provider).signalProcess(processId, transitionName, args);
-    }
-
-    /**
-     * This method will call the underlying provider to signal the identified process.
-     *
-     * @param processId      the process we want to advance
-     * @param provider       The provider executing the process
-     * @param transitionName
-     * @param args           List of args for the process
-     */
-    public void signalProcess(String processId, String transitionName, String signalName, String provider,
-                              Map<String, Object> args) {
-        lookupProvider(provider).signalProcess(processId, transitionName, signalName, args);
-    }
-
-    /**
-     * This method will call the underlying provider to signal the identified process.
-     *
      * @param processId the process we want to advance
      * @param provider  The provider executing the process
      */
@@ -601,9 +552,10 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public List<Workflow> getWorkflowsForType(String type, Locale locale) {
         List<Workflow> list = new ArrayList<Workflow>();
-        List<String> keys = workflowTypes.get(type);
-        for (String key : keys) {
-            list.addAll(getWorkflowsForDefinition(key, locale));
+        for (WorklowTypeRegistration registration : workflowTypeByDefinition.values()) {
+            if (registration.getType().equals(type)) {
+                list.addAll(getWorkflowsForDefinition(registration.getDefinition(), locale));
+            }
         }
         return list;
     }
@@ -624,8 +576,8 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         lookupProvider(provider).assignTask(taskId, user);
     }
 
-    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
-        lookupProvider(provider).completeTask(taskId, outcome, args);
+    public void completeTask(String taskId, JahiaUser user, String provider, String outcome, Map<String, Object> args) {
+        lookupProvider(provider).completeTask(taskId, user, outcome, args);
     }
 
     public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws RepositoryException, SchedulerException {
@@ -642,15 +594,11 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
     public void assignAndCompleteTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
         assignTask(taskId, provider, user);
-        completeTask(taskId, provider, outcome, args);
+        completeTask(taskId, user, provider, outcome, args);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {
         lookupProvider(provider).addParticipatingGroup(taskId, group, role);
-    }
-
-    public void deleteTask(String taskId, String provider, String reason) {
-        lookupProvider(provider).deleteTask(taskId, reason);
     }
 
     public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow) throws RepositoryException {
@@ -808,8 +756,9 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         JCRSiteNode site = objectNode.getResolveSite();
 
         for (WorkflowRule rule : rules) {
-            if (type == null || workflowTypeByDefinition.get(rule.getWorkflowDefinitionKey()).equals(type)) {
-                Map<String, String> perms = workflowPermissions.get(rule.getWorkflowDefinitionKey());
+            final WorklowTypeRegistration worklowTypeRegistration = workflowTypeByDefinition.get(rule.getWorkflowDefinitionKey());
+            if (type == null || worklowTypeRegistration.getType().equals(type)) {
+                Map<String, String> perms = worklowTypeRegistration.getPermissions();
                 if (perms != null && checkPermission) {
                     String permName = perms.get("start");
                     if (permName != null) {
@@ -849,7 +798,11 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
                         final String wfName = rule.getProperty("j:workflow").getString();
                         String name = StringUtils.substringAfter(wfName, ":");
                         String prov = StringUtils.substringBefore(wfName, ":");
-                        String wftype = workflowTypeByDefinition.get(name);
+                        final WorklowTypeRegistration type = workflowTypeByDefinition.get(name);
+                        if (type == null) {
+                            continue;
+                        }
+                        String wftype = type.getType();
                         if (foundTypes.contains(wftype)) {
                             continue;
                         }
@@ -880,15 +833,27 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
     }
 
     public String getWorkflowType(WorkflowDefinition def) {
-        return workflowTypeByDefinition.get(def.getKey());
+        return workflowTypeByDefinition.get(def.getKey()).getType();
     }
+
+    public String getFormForAction(String definitionKey, String action) {
+        if (workflowTypeByDefinition.get(definitionKey).getForms() != null) {
+            return workflowTypeByDefinition.get(definitionKey).getForms().get(action);
+        }
+        return null;
+    }
+
 
     public String getModuleForWorkflow(String key) {
         return modulesForWorkflowDefinition.get(key);
     }
 
     public Set<String> getTypesOfWorkflow() {
-        return workflowTypes.keySet();
+        Set<String> s = new HashSet<String>();
+        for (WorklowTypeRegistration registration : workflowTypeByDefinition.values()) {
+            s.add(registration.getType());
+        }
+        return s;
     }
 
     public void deleteProcess(String processId, String provider) {
@@ -908,7 +873,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
             throws BeansException {
         if (bean instanceof WorklowTypeRegistration) {
             WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
-            registerWorkflowType(registration.getType(), registration.getDefinition(), null, registration.getPermissions());
+            registerWorkflowType(registration);
             logger.info("Registering workflow type \"" + registration.getType()
                     + "\" with definition \"" + registration.getDefinition()
                     + "\" and permissions: " + registration.getPermissions());

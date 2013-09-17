@@ -6,18 +6,29 @@
 
     <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" init-method="start" factory-method="getInstance">
         <property name="workflowTypes">
-            <map>
-                <entry key="publish">
-                    <list>
-                        <value>1-step-publication</value>
-                    </list>
-                </entry>
-                <entry key="unpublish">
-                    <list>
-                        <value>1-step-unpublication</value>
-                    </list>
-                </entry>
-            </map>
+            <list>
+                <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
+                    <property name="type" value="publish"/>
+                    <property name="definition" value="1-step-publication"/>
+                    <property name="forms">
+                        <map>
+                            <entry key="start" value="jnt:simpleWorkflow"/>
+                            <entry key="Accept or Reject publishing" value="jnt:simpleWorkflow"/>
+                        </map>
+                    </property>
+                </bean>
+
+                <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
+                    <property name="type" value="publish"/>
+                    <property name="definition" value="2-step-publication"/>
+                    <property name="forms">
+                        <map>
+                            <entry key="start" value="jnt:simpleWorkflow"/>
+                            <entry key="First review" value="jnt:simpleWorkflow"/>
+                        </map>
+                    </property>
+                </bean>
+            </list>
         </property>
         <property name="jcrTemplate" ref="jcrTemplate"/>
     </bean>

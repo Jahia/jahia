@@ -25,11 +25,11 @@
                 <value>org.jahia.test.bin.RenderTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>
                 <value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>
-                <value>org.jahia.test.services.atmosphere.AtmosphereTest</value>                
+                <value>org.jahia.test.services.atmosphere.AtmosphereTest</value>
                 <value>org.jahia.test.services.categories.CategoryTest</value>
                 <value>org.jahia.test.services.content.AutoSplittingTest</value>
                 <value>org.jahia.test.services.content.ContentTest</value>
-                <value>org.jahia.test.services.content.CrawlingPageVisitorTest</value>                
+                <value>org.jahia.test.services.content.CrawlingPageVisitorTest</value>
                 <value>org.jahia.test.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.test.services.content.MultiLanguageTest</value>
                 <value>org.jahia.test.services.content.ReferencesTest</value>
@@ -38,16 +38,16 @@
                 <value>org.jahia.test.services.content.impl.vfs.VFSContentStoreProviderTest</value>
                 <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
-                <value>org.jahia.test.services.i18n.ResourceBundleTest</value>                
+                <value>org.jahia.test.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>
                 <value>org.jahia.test.services.logout.LogoutTest</value>
                 <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>
                 <value>org.jahia.test.services.publication.PublicationTest</value>
-                <value>org.jahia.test.services.providers.ModulesProviderTest</value>                
+                <value>org.jahia.test.services.providers.ModulesProviderTest</value>
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>
                 <value>org.jahia.test.services.query.IndexOptionsTest</value>
-                <value>org.jahia.test.services.query.NativeSortTest</value>                
+                <value>org.jahia.test.services.query.NativeSortTest</value>
                 <value>org.jahia.test.services.query.QueryModificationTest</value>
                 <value>org.jahia.test.services.query.QueryResultTest</value>
                 <value>org.jahia.test.services.render.JSessionIDTest</value>
@@ -55,17 +55,16 @@
                 <value>org.jahia.test.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.test.services.render.filter.URLFilterTest</value>
                 <value>org.jahia.test.services.render.filter.cache.CacheFilterTest</value>
-                <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>                
+                <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>
                 <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.test.services.tags.TaggingTest</value>
                 <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>
-                <value>org.jahia.test.services.templates.ModuleDeploymentTest</value>                
+                <value>org.jahia.test.services.templates.ModuleDeploymentTest</value>
                 <value>org.jahia.test.services.usermanager.JahiaGroupManagerServiceTest</value>
-                <value>org.jahia.test.services.validation.ValidationTest</value>                
+                <value>org.jahia.test.services.validation.ValidationTest</value>
                 <value>org.jahia.test.services.versioning.VersioningTest</value>
                 <value>org.jahia.test.services.visibility.VisibilityServiceTest</value>
-                <value>org.jahia.test.services.workflow.StateSequenceTest</value>
                 <value>org.jahia.test.services.workflow.WorkflowServiceTest</value>
             </list>
         </property>
@@ -73,35 +72,65 @@
         <property name="ignoredTests">
             <list>
                 <!-- UnsupportedRepositoryOperationException -->
-                <value>testGetDepth(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>                
+                <value>testGetDepth(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>
                 <value>testGetNodesNamePatternArray(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>
                 <value>testGetPropertiesNamePatternArray(org.apache.jackrabbit.test.api.NodeReadMethodsTest)</value>
-                <value>testCloneNodesReferenceableNodesOriginalUUID(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)</value>
-                <value>testCloneNodesRemoveExistingTrue(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)</value>
-                <value>testCloneNodesRemoveExistingFalse(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)</value>
-                <value>testCloneNodesReferenceableAndNonreferenceable(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)</value>
-                <value>testCloneNodesOrderingSupportedByParent(org.apache.jackrabbit.test.api.WorkspaceCloneSameNameSibsTest)</value>
-                <value>testCloneNodesNodeExistsAtDestPath(org.apache.jackrabbit.test.api.WorkspaceCloneSameNameSibsTest)</value>
+                <value>
+                    testCloneNodesReferenceableNodesOriginalUUID(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)
+                </value>
+                <value>
+                    testCloneNodesRemoveExistingTrue(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)
+                </value>
+                <value>
+                    testCloneNodesRemoveExistingFalse(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)
+                </value>
+                <value>
+                    testCloneNodesReferenceableAndNonreferenceable(org.apache.jackrabbit.test.api.WorkspaceCloneReferenceableTest)
+                </value>
+                <value>
+                    testCloneNodesOrderingSupportedByParent(org.apache.jackrabbit.test.api.WorkspaceCloneSameNameSibsTest)
+                </value>
+                <value>
+                    testCloneNodesNodeExistsAtDestPath(org.apache.jackrabbit.test.api.WorkspaceCloneSameNameSibsTest)
+                </value>
                 <value>testCloneNodes(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
                 <value>testCloneNodesTwice(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
                 <value>testCloneNodesInvalidWorkspace(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
                 <value>testCloneNodesAbsolutePath(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
-                <value>testCloneNodesConstraintViolationException(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
+                <value>testCloneNodesConstraintViolationException(org.apache.jackrabbit.test.api.WorkspaceCloneTest)
+                </value>
                 <value>testCloneNodesAccessDenied(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
                 <value>testCloneNodesPathNotExisting(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
                 <value>testCloneNodesLocked(org.apache.jackrabbit.test.api.WorkspaceCloneTest)</value>
-                <value>testCloneNodesVersionableAndCheckedIn(org.apache.jackrabbit.test.api.WorkspaceCloneVersionableTest)</value>
-                <value>testCopyNodesReferenceableNodesNewUUID(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesReferenceableTest)</value>
-                <value>testCopyNodesOrderingSupportedByParent(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesSameNameSibsTest)</value>
-                <value>testCopyNodesNodeExistsAtDestPath(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesSameNameSibsTest)</value>
+                <value>
+                    testCloneNodesVersionableAndCheckedIn(org.apache.jackrabbit.test.api.WorkspaceCloneVersionableTest)
+                </value>
+                <value>
+                    testCopyNodesReferenceableNodesNewUUID(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesReferenceableTest)
+                </value>
+                <value>
+                    testCopyNodesOrderingSupportedByParent(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesSameNameSibsTest)
+                </value>
+                <value>
+                    testCopyNodesNodeExistsAtDestPath(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesSameNameSibsTest)
+                </value>
                 <value>testCopyNodes(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
-                <value>testCopyNodesInvalidWorkspace(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
-                <value>testCopyNodesAbsolutePath(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
-                <value>testCopyNodesConstraintViolationException(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
-                <value>testCopyNodesAccessDenied(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
-                <value>testCopyNodesPathNotExisting(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
+                <value>
+                    testCopyNodesInvalidWorkspace(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)
+                </value>
+                <value>testCopyNodesAbsolutePath(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)
+                </value>
+                <value>
+                    testCopyNodesConstraintViolationException(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)
+                </value>
+                <value>testCopyNodesAccessDenied(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)
+                </value>
+                <value>testCopyNodesPathNotExisting(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)
+                </value>
                 <value>testCopyNodesLocked(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesTest)</value>
-                <value>testCopyNodesVersionableAndCheckedIn(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesVersionableTest)</value>
+                <value>
+                    testCopyNodesVersionableAndCheckedIn(org.apache.jackrabbit.test.api.WorkspaceCopyBetweenWorkspacesVersionableTest)
+                </value>
                 <value>testCheckPermission(org.apache.jackrabbit.test.api.CheckPermissionTest)</value>
                 <value>org.apache.jackrabbit.test.api.SerializationTest</value>
                 <value>testReadOnlyPermission(org.apache.jackrabbit.test.api.HasPermissionTest)</value>
@@ -110,8 +139,10 @@
                 <value>testGetLockManager(org.apache.jackrabbit.test.api.WorkspaceTest)</value>
                 <value>testGetLockOnChild(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)</value>
                 <value>testGetLockOnNewChild(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)</value>
-                <value>testRemoveMixLockableFromLockedNode(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)</value>
-                <value>testCheckoutNonVersionableNode(org.apache.jackrabbit.test.api.version.simple.CheckoutTest)</value>
+                <value>testRemoveMixLockableFromLockedNode(org.apache.jackrabbit.test.api.lock.SessionScopedLockTest)
+                </value>
+                <value>testCheckoutNonVersionableNode(org.apache.jackrabbit.test.api.version.simple.CheckoutTest)
+                </value>
                 <value>org.apache.jackrabbit.test.api.lock.LockManagerTest</value>
                 <value>testGetLockJcr2(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testHoldsLockJcr2(org.apache.jackrabbit.test.api.version.VersionTest)</value>
@@ -120,36 +151,67 @@
                 <value>testMerge(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testUnlockJcr2(org.apache.jackrabbit.test.api.version.VersionTest)</value>
                 <value>testCheckoutNonVersionableNode(org.apache.jackrabbit.test.api.version.CheckoutTest)</value>
-                <value>testWorkspaceRestoreWithPendingChanges(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
-                <value>testWorkspaceRestoreHasCorrespondingNode(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
-                <value>testWorkspaceRestoreWithRemoveExisting(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
-                <value>testWorkspaceRestoreWithUUIDConflict(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
-                <value>testWorkspaceRestoreOnCheckedInNode(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
-                <value>testWorkspaceRestoreOnCheckedOutNode(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
-                <value>testWorkspaceRestoreWithParent(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)</value>
+                <value>
+                    testWorkspaceRestoreWithPendingChanges(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
+                <value>
+                    testWorkspaceRestoreHasCorrespondingNode(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
+                <value>
+                    testWorkspaceRestoreWithRemoveExisting(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
+                <value>
+                    testWorkspaceRestoreWithUUIDConflict(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
+                <value>
+                    testWorkspaceRestoreOnCheckedInNode(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
+                <value>
+                    testWorkspaceRestoreOnCheckedOutNode(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
+                <value>testWorkspaceRestoreWithParent(org.apache.jackrabbit.test.api.version.WorkspaceRestoreTest)
+                </value>
                 <value>testMergeNodeCancelMerge(org.apache.jackrabbit.test.api.version.MergeCancelMergeTest)</value>
-                <value>testFailIfCorrespondingNodeIsSuccessor(org.apache.jackrabbit.test.api.version.MergeCheckedoutSubNodeTest)</value>
-                <value>testLeaveIfCorrespondingNodeIsPredeccessor(org.apache.jackrabbit.test.api.version.MergeCheckedoutSubNodeTest)</value>
+                <value>
+                    testFailIfCorrespondingNodeIsSuccessor(org.apache.jackrabbit.test.api.version.MergeCheckedoutSubNodeTest)
+                </value>
+                <value>
+                    testLeaveIfCorrespondingNodeIsPredeccessor(org.apache.jackrabbit.test.api.version.MergeCheckedoutSubNodeTest)
+                </value>
                 <value>testMergeNodeDoneMerge(org.apache.jackrabbit.test.api.version.MergeDoneMergeTest)</value>
                 <value>testNodeIterator(org.apache.jackrabbit.test.api.version.MergeNodeIteratorTest)</value>
                 <value>testMergeNodeWithUnsavedStates(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
                 <value>testMergeUnknownWorkspaceName(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
                 <value>testMergeNodeNonCorrespondingNode(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
                 <value>testMergeNodeVersionAmbiguous(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
-                <value>testMergeNodeBestEffortTrueCheckMergeFailedProperty(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
+                <value>
+                    testMergeNodeBestEffortTrueCheckMergeFailedProperty(org.apache.jackrabbit.test.api.version.MergeNodeTest)
+                </value>
                 <value>testMergeNodeBestEffortFalse(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
-                <value>testMergeNodeBestEffortFalseAmbiguousVersions(org.apache.jackrabbit.test.api.version.MergeNodeTest)</value>
-                <value>testMergeNodeNonVersionableSubNodeNonVersionableAncestor(org.apache.jackrabbit.test.api.version.MergeNonVersionableSubNodeTest)</value>
-                <value>testMergeNodeNonVersionableSubNodeUpdate(org.apache.jackrabbit.test.api.version.MergeNonVersionableSubNodeTest)</value>
-                <value>testMergeNodeNonVersionableSubNodeLeave(org.apache.jackrabbit.test.api.version.MergeNonVersionableSubNodeTest)</value>
-                <value>testMergeNodeFromOlderSourceWorkspace(org.apache.jackrabbit.test.api.version.MergeSubNodeTest)</value>
+                <value>
+                    testMergeNodeBestEffortFalseAmbiguousVersions(org.apache.jackrabbit.test.api.version.MergeNodeTest)
+                </value>
+                <value>
+                    testMergeNodeNonVersionableSubNodeNonVersionableAncestor(org.apache.jackrabbit.test.api.version.MergeNonVersionableSubNodeTest)
+                </value>
+                <value>
+                    testMergeNodeNonVersionableSubNodeUpdate(org.apache.jackrabbit.test.api.version.MergeNonVersionableSubNodeTest)
+                </value>
+                <value>
+                    testMergeNodeNonVersionableSubNodeLeave(org.apache.jackrabbit.test.api.version.MergeNonVersionableSubNodeTest)
+                </value>
+                <value>testMergeNodeFromOlderSourceWorkspace(org.apache.jackrabbit.test.api.version.MergeSubNodeTest)
+                </value>
                 <value>testImpersonate(org.apache.jackrabbit.test.api.ImpersonateTest)</value>
                 <value>testWorkspaceImportXml(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
-                <value>testWorkspaceGetImportContentHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
+                <value>testWorkspaceGetImportContentHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)
+                </value>
                 <value>testSessionGetImportContentHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
-                <value>testSameUUIDAtAncestorWorkspaceHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
+                <value>testSameUUIDAtAncestorWorkspaceHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)
+                </value>
                 <value>testSameUUIDAtAncestorWorkspace(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
-                <value>testSameUUIDAtAncestorSessionHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
+                <value>testSameUUIDAtAncestorSessionHandler(org.apache.jackrabbit.test.api.DocumentViewImportTest)
+                </value>
                 <!-- Failing due to Jackrabbit bugs or old and no longer compatible test (check jackrabbit-jcr-rmi/pom.xml for known issues)-->
                 <value>testUndefinedProperty(org.apache.jackrabbit.test.api.UndefinedPropertyTest)</value>
                 <value>testRequiredDescriptors(org.apache.jackrabbit.test.api.RepositoryDescriptorTest)</value>
@@ -169,7 +231,8 @@
                 <value>testBoolean(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
                 <value>testReference(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
                 <value>testWeakReference(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
-                <value>testIllegalArgumentException(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)</value>
+                <value>testIllegalArgumentException(org.apache.jackrabbit.test.api.query.qom.BindVariableValueTest)
+                </value>
                 <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.ChildNodeJoinConditionTest)</value>
                 <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.DescendantNodeJoinConditionTest)</value>
                 <value>testRightOuterJoin(org.apache.jackrabbit.test.api.query.qom.SameNodeJoinConditionTest)</value>
@@ -237,12 +300,24 @@
                 <value>testNoNullValue(org.apache.jackrabbit.test.api.PropertyReadMethodsTest)</value>
                 <value>testGetValue(org.apache.jackrabbit.test.api.PropertyReadMethodsTest)</value>
                 <value>testGetValueCopyStoredValues(org.apache.jackrabbit.test.api.PropertyReadMethodsTest)</value>
-                <value>testExportSysView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
-                <value>testExportSysView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
-                <value>testExportSysView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
-                <value>testExportSysView_stream_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
-                <value>testExportSysView_stream_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
-                <value>testExportSysView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)</value>
+                <value>
+                    testExportSysView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)
+                </value>
+                <value>
+                    testExportSysView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)
+                </value>
+                <value>
+                    testExportSysView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)
+                </value>
+                <value>
+                    testExportSysView_stream_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportSysViewTest)
+                </value>
+                <value>
+                    testExportSysView_stream_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportSysViewTest)
+                </value>
+                <value>
+                    testExportSysView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportSysViewTest)
+                </value>
                 <value>testIdentifierBasedPropertyValue(org.apache.jackrabbit.test.api.PathTest)</value>
                 <value>testNotNormalizedPathValue(org.apache.jackrabbit.test.api.PathTest)</value>
                 <value>testRegisterNamespace(org.apache.jackrabbit.test.api.NamespaceRegistryTest)</value>
@@ -252,12 +327,23 @@
                 <value>testValueAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testNodeAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
                 <value>testValuesAssumeTypeOfValue(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
-                <value>testSetSingleStringArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testSetSingleStringArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testSetMixedValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testSetSingleValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testSetMixedValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testSetSingleValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>
+                    testSetSingleStringArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
+                <value>
+                    testSetSingleStringArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
+                <value>
+                    testSetMixedValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testSetSingleValueArrayValueFormatExceptionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>testSetMixedValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testSetSingleValueArrayValueFormatException(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
                 <value>testGetPrimaryItemName(org.apache.jackrabbit.test.api.nodetype.NodeTypeTest)</value>
                 <value>testFile(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testLinkedFile(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
@@ -285,39 +371,66 @@
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyDoubleTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyLongTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
-                <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
+                <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)
+                </value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
                 <value>testConversionsMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
-                <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
+                <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)
+                </value>
                 <value>testConversionsMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
-                <value>testResidualAndLegalType(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithNodeTypeTest)</value>
-                <value>testResidualWithDefault(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithoutNodeTypeTest)</value>
+                <value>
+                    testResidualAndLegalType(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithNodeTypeTest)
+                </value>
+                <value>
+                    testResidualWithDefault(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithoutNodeTypeTest)
+                </value>
                 <value>testTextNodeTestWithPosition(org.apache.jackrabbit.test.api.query.TextNodeTest)</value>
                 <value>testGetSession(org.apache.jackrabbit.test.api.version.VersionHistoryTest)</value>
                 <value>testSameNameSiblings(org.apache.jackrabbit.test.api.AddNodeTest)</value>
                 <value>testValueFormatException(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>
                 <value>testValueType(org.apache.jackrabbit.test.api.ValueFactoryTest)</value>
                 <value>testItemExistsException(org.apache.jackrabbit.test.api.query.SaveTest)</value>
-                <value>testExportDocView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_handler_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>                
-                <value>testExportDocView_handler_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_stream_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testExportDocView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>                                
-                <value>testExportDocView_stream_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)</value>
-                <value>testStringConstraintViolationExceptionBecauseOfInvalidTypeParameter(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)</value>
+                <value>
+                    testExportDocView_handler_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_handler_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_handler_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_handler_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_stream_session_skipBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_stream_session_skipBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_stream_session_saveBinary_recurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testExportDocView_stream_session_saveBinary_noRecurse(org.apache.jackrabbit.test.api.ExportDocViewTest)
+                </value>
+                <value>
+                    testStringConstraintViolationExceptionBecauseOfInvalidTypeParameter(org.apache.jackrabbit.test.api.SetPropertyAssumeTypeTest)
+                </value>
                 <value>testRemoveItem2(org.apache.jackrabbit.test.api.SessionRemoveItemTest)</value>
                 <value>testNoSuchWorkspaceException(org.apache.jackrabbit.test.api.RepositoryLoginTest)</value>
                 <value>testNodeMoved(org.apache.jackrabbit.test.api.observation.GetIdentifierTest)</value>
                 <value>testGetSize(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)</value>
-                <value>testRemoveEventListener(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)</value>
+                <value>
+                    testRemoveEventListener(org.apache.jackrabbit.test.api.observation.GetRegisteredEventListenersTest)
+                </value>
                 <value>testAddLockToNode(org.apache.jackrabbit.test.api.observation.LockingTest)</value>
                 <value>testRemoveLockFromNode(org.apache.jackrabbit.test.api.observation.LockingTest)</value>
                 <value>testPath(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
                 <value>testNodeType(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
                 <value>testIsDeepFalseNodeAdded(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
-                <value>testIsDeepFalsePropertyAdded(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
+                <value>testIsDeepFalsePropertyAdded(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)
+                </value>
                 <value>testNoLocalTrue(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
                 <value>testUUID(org.apache.jackrabbit.test.api.observation.AddEventListenerTest)</value>
                 <value>testSessionImportXml(org.apache.jackrabbit.test.api.DocumentViewImportTest)</value>
@@ -325,8 +438,10 @@
                 <value>testAddRemoveLockToken(org.apache.jackrabbit.test.api.lock.LockTest)</value>
                 <value>testDerefMultiPropWithNodeStar(org.apache.jackrabbit.test.api.query.DerefQueryLevel1Test)</value>
                 <value>testDerefMultiPropWithNodeTest(org.apache.jackrabbit.test.api.query.DerefQueryLevel1Test)</value>
-                <value>testEntryPointDefinitions(org.jahia.test.services.applications.ApplicationsManagerServiceTest)</value>
-                <value>testEntryPointInstance(org.jahia.test.services.applications.ApplicationsManagerServiceTest)</value>
+                <value>testEntryPointDefinitions(org.jahia.test.services.applications.ApplicationsManagerServiceTest)
+                </value>
+                <value>testEntryPointInstance(org.jahia.test.services.applications.ApplicationsManagerServiceTest)
+                </value>
                 <value>testReferences(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testGetReferencesWithName(org.apache.jackrabbit.test.api.ReferencesTest)</value>
                 <value>testAlterReference(org.apache.jackrabbit.test.api.ReferencesTest)</value>
@@ -340,29 +455,53 @@
                 <value>testMultiValueParent(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testNullMultiValue(org.apache.jackrabbit.test.api.SetValueStringTest)</value>
                 <value>testNewStringArrayPropertySession(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testModifyStringArrayPropertySession(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
+                <value>testModifyStringArrayPropertySession(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
                 <value>testNewStringArrayPropertyParent(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
                 <value>testModifyStringArrayPropertyParent(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testNewStringArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testModifyStringArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testNewStringArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
-                <value>testModifyStringArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)</value>
+                <value>
+                    testNewStringArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
+                <value>
+                    testModifyStringArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
+                <value>
+                    testNewStringArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
+                <value>
+                    testModifyStringArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyStringTest)
+                </value>
                 <value>testNewValuePropertySession(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testModifyValuePropertySession(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testNewValuePropertyParent(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testModifyValuePropertyParent(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testNewValuePropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testModifyValuePropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testNewValuePropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testModifyValuePropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>
+                    testNewValuePropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testModifyValuePropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>testNewValuePropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testModifyValuePropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
                 <value>testNewValueArrayPropertySession(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testModifyValueArrayPropertySession(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testNewValueArrayPropertyParent(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
                 <value>testModifyValueArrayPropertyParent(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testNewValueArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testModifyValueArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testNewValueArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
-                <value>testModifyValueArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)</value>
+                <value>
+                    testNewValueArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testModifyValueArrayPropertySessionWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testNewValueArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
+                <value>
+                    testModifyValueArrayPropertyParentWithPropertyType(org.apache.jackrabbit.test.api.SetPropertyValueTest)
+                </value>
                 <value>testDateSession(org.apache.jackrabbit.test.api.SetValueDateTest)</value>
                 <value>testDateParent(org.apache.jackrabbit.test.api.SetValueDateTest)</value>
                 <value>testNewCalendarPropertySession(org.apache.jackrabbit.test.api.SetPropertyCalendarTest)</value>
@@ -379,7 +518,7 @@
                 <value>testPublishUnpublishPageWithContent(org.jahia.test.services.publication.PublicationTest)</value>
                 <value>testCreateMultipleTags(org.jahia.test.services.logging.ServiceLoggingTest)</value>                
                 <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>
-            </list>   
+            </list>
         </property>
 
     </bean>

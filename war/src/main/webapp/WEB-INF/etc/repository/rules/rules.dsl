@@ -1,46 +1,46 @@
-[condition][]A file content has been modified=property : ChangedPropertyFact ( name == "jcr:data", contentnode : node ) and AddedNodeFact ( name == "jcr:content" ) from contentnode and node : AddedNodeFact () from contentnode.parent
-[condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}")
-[condition][]A new node is created=node : AddedNodeFact ( )
-[condition][]A node is deleted=node : DeletedNodeFact ( )
-[condition][]A node is moved=node : MovedNodeFact ( )
-[condition][]A node is published=node : PublishedNodeFact ( )
-[condition][]A node is copied=node : CopiedNodeFact ( )
-[condition][]A node is a top copy=node : CopiedNodeFact ( top == true )
-[condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node )
-[condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
-[condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
-[condition][]A property {property} has been removed from a node=property : DeletedPropertyFact ( name == "{property}", propertyName : name, node : node )
-[condition][]A new page is created with template {template}=node : AddedNodeFact() ; property : ChangedPropertyFact ( name == "j:templateName", stringValue matches "{template}", node == node )
-[condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {name} : value )
-[condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {field} : value )
-[condition][]A metadata field has been extracted=metadata : ExtractedVariable ( node == node.path, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
-[condition][]A well known metadata field has been extracted=metadata : ExtractedVariable ( node == node.path, correspondingPropertyName != null, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
+[condition][]A file content has been modified=property : ChangedPropertyFact ( name == "jcr:data", contentnode : node, $node : node.getParent() ) and AddedNodeFact ( name == "jcr:content" ) from contentnode and node : AddedNodeFact () from contentnode.parent
+[condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}", $node : this)
+[condition][]A new node is created=node : AddedNodeFact ($node : this)
+[condition][]A node is deleted=node : DeletedNodeFact ($node : this)
+[condition][]A node is moved=node : MovedNodeFact ($node : this)
+[condition][]A node is published=node : PublishedNodeFact ($node : this)
+[condition][]A node is copied=node : CopiedNodeFact ($node : this)
+[condition][]A node is a top copy=node : CopiedNodeFact ( top == true, $node : this )
+[condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node , $node : node)
+[condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node , $node : node)
+[condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node , $node : node)
+[condition][]A property {property} has been removed from a node=property : DeletedPropertyFact ( name == "{property}", propertyName : name, node : node , $node : node)
+[condition][]A new page is created with template {template}=node : AddedNodeFact($node : this) ; property : ChangedPropertyFact ( name == "j:templateName", stringValue matches "{template}", node == node )
+[condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == $node.path, name == "{name}", {name} : value )
+[condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == $node.path, name == "{name}", {field} : value )
+[condition][]A metadata field has been extracted=metadata : ExtractedVariable ( node == $node.path, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
+[condition][]A well known metadata field has been extracted=metadata : ExtractedVariable ( node == $node.path, correspondingPropertyName != null, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
 [condition][]The current user belongs to a group=g : Group (groupName : name) from user.groups
 [condition][]The current user has a property named {userproperty}=userProperty : UserProperty( name == "{userproperty}", propertyValue : value ) from user.properties
 [condition][]The node has a parent=parent : AddedNodeFact () from node.parent
 [condition][]The property {property} has not been modified yet on the {node}=not ChangedPropertyFact ( name=="{property}" , node=={node} )
 [condition][]The property {property} has not the value "{value}" on the {node}=ChangedPropertyFact ( name == "{property}" , stringValue != "{value}" ) from {node}.properties
 [condition][]The property {property} is not defined for the {node}=not ( ChangedPropertyFact ( name == "{property}" ) from {node}.properties )
-[condition][]The type {name} has been assigned to a node=m : ChangedPropertyFact ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
+[condition][]The type {name} has been assigned to a node=m : ChangedPropertyFact ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node, $node : node )
 [condition][]The {node} has a child=child : AddedNodeFact ( ) from node.childNodes
 [condition][]The {node} has a property {property}=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
-[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName}) and node : AddedNodeFact() from job.node
+[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName} , $node : this.node) and node : AddedNodeFact() from job.node
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it has no type {type}=types not contains "{type}"
-[condition][]- it is in {path}=node.path matches "{path}/*"
+[condition][]- it is in {path}=$node.path matches "{path}/*"
 [condition][]- its name is not {name}=name != "{name}"
 [condition][]- its name is {name}=name == "{name}"
 [condition][]- its name matches "{namePattern}"=name matches "{namePattern}"
-[condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
-[condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
-[condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
-[condition][]- the mimetype group is "{typeGroups}" = eval(org.jahia.services.content.JCRContentUtils.isMimeTypeGroup(mimeType, "{typeGroups}"))
-[condition][]- the node has the type {type}=node.types contains "{type}"
+[condition][]- the mimetype is not {mimetype}=$node.getMimeType() != "{mimetype}"
+[condition][]- the mimetype is {mimetype}=$node.getMimeType() == "{mimetype}"
+[condition][]- the mimetype matches {mimetype}=$node.getMimeType() matches "{mimetype}"
+[condition][]- the mimetype group is "{typeGroups}" = eval(org.jahia.services.content.JCRContentUtils.isMimeTypeGroup($node.getMimeType(), "{typeGroups}"))
+[condition][]- the node has the type {type}=$node.types contains "{type}"
 [condition][]- the parent has the type {type}=parent.types contains "{type}"
 [condition][]- the value is not "{value}"=stringValue != "{value}"
 [condition][]- the value is {value}=stringValue == {value}
-[condition][]- in {workspaceName} workspace=node.workspace == "{workspaceName}"
+[condition][]- in {workspaceName} workspace=$node.workspace == "{workspaceName}"
 [condition][]- not in operation {operation}=operationType != "{operation}"
 [condition][]- in operation {operation}=operationType == "{operation}"
 [condition][]- installed modules contains {module}=installedModules contains "{module}"
@@ -83,7 +83,7 @@
 [consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", propertyValue, drools));
 [consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", {variable}, drools));
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
-[consequence][]Set corresponding property with the value of the extracted {metadata}=if (node != null) {node.addType(metadata.getCorrespondingNodeTypeName(), drools ); insert (new ChangedPropertyFact(node, metadata.getCorrespondingPropertyName(), metadata.getValue(), drools, false)); }
+[consequence][]Set corresponding property with the value of the extracted {metadata}=if (node != null) \{node.addType(metadata.getCorrespondingNodeTypeName(), drools ); insert (new ChangedPropertyFact(node, metadata.getCorrespondingPropertyName(), metadata.getValue(), drools, false)); \}
 [consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);
 [consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);

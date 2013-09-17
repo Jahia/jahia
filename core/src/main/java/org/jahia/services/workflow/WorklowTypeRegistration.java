@@ -55,6 +55,7 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
     private String type;
     private String definition;
     private Map<String, String> permissions;
+    private Map<String, String> forms;
     private JahiaTemplatesPackage module;
 
     public String getDefinition() {
@@ -79,6 +80,14 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
 
     public void setPermissions(Map<String, String> permissions) {
         this.permissions = permissions;
+    }
+
+    public Map<String, String> getForms() {
+        return forms;
+    }
+
+    public void setForms(Map<String, String> forms) {
+        this.forms = forms;
     }
 
     public JahiaTemplatesPackage getModule() {

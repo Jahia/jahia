@@ -61,6 +61,9 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Flexible implementation of a {@link org.jahia.pipelines.Pipeline}.
  *
@@ -70,7 +73,9 @@ import org.jahia.pipelines.valves.ValveContext;
  */
 public class GenericPipeline implements Pipeline, ValveContext {
 
-    /** Name of this pipeline. */
+    /**
+     * Name of this pipeline.
+     */
     protected String name;
 
     private Valve[] valves = new Valve[0];
@@ -81,16 +86,25 @@ public class GenericPipeline implements Pipeline, ValveContext {
      * containing the subscript into the <code>values</code> array, or
      * a subscript equal to <code>values.length</code> if the basic
      * Valve is currently being processed.
-     *
      */
     protected ThreadLocal<Integer> state = new ThreadLocal<Integer>();
 
-    public GenericPipeline () {
+    protected Map<String, Object> environment = new HashMap<String, Object>();
+
+    public GenericPipeline() {
 
     }
 
-    public void initialize ()
-        throws PipelineException {
+    public Map<String, Object> getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Map<String, Object> environment) {
+        this.environment = environment;
+    }
+
+    public void initialize()
+            throws PipelineException {
 
         // Initialize the valves
         for (int i = 0; i < valves.length; i++) {
@@ -104,7 +118,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
      *
      * @param name Name of this pipeline.
      */
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -113,11 +127,11 @@ public class GenericPipeline implements Pipeline, ValveContext {
      *
      * @return String Name of this pipeline.
      */
-    public String getName () {
+    public String getName() {
         return name;
     }
 
-    public Valve[] getValves () {
+    public Valve[] getValves() {
         synchronized (valves) {
             Valve[] results = new Valve[valves.length];
             System.arraycopy(valves, 0, results, 0, valves.length);
@@ -129,7 +143,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
         this.valves = valves;
     }
 
-    public void addValve (Valve valve) {
+    public void addValve(Valve valve) {
         // Add this Valve to the set associated with this Pipeline
         synchronized (valves) {
             Valve[] results = new Valve[valves.length + 1];
@@ -156,7 +170,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
         }
     }
 
-    public void removeValve (Valve valve) {
+    public void removeValve(Valve valve) {
         synchronized (valves) {
             // Locate this Valve in our list
             int index = -1;
@@ -183,8 +197,8 @@ public class GenericPipeline implements Pipeline, ValveContext {
         }
     }
 
-    public void invoke (Object context)
-        throws PipelineException {
+    public void invoke(Object context)
+            throws PipelineException {
         // Initialize the per-thread state for this thread
         state.set(new Integer(0));
 
@@ -192,8 +206,8 @@ public class GenericPipeline implements Pipeline, ValveContext {
         invokeNext(context);
     }
 
-    public void invokeNext (Object context)
-        throws PipelineException {
+    public void invokeNext(Object context)
+            throws PipelineException {
         // Identify the current subscript for the current request thread
         Integer current = (Integer) state.get();
         int valvePos = current.intValue();
@@ -208,11 +222,12 @@ public class GenericPipeline implements Pipeline, ValveContext {
     }
 
     // BEGIN [added by Pascal Aubry for CAS authentication]
+
     /**
-	 * @see org.jahia.pipelines.Pipeline#hasValveOfClass(java.lang.Class)
+     * @see org.jahia.pipelines.Pipeline#hasValveOfClass(java.lang.Class)
      */
     public boolean hasValveOfClass(Class<Valve> c) {
-    	return getFirstValveOfClass(c) != null;
+        return getFirstValveOfClass(c) != null;
     }
 
     /**

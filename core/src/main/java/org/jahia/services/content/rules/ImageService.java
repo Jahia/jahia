@@ -42,8 +42,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.drools.ObjectFilter;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -52,12 +51,12 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.image.Image;
 import org.jahia.services.image.JahiaImageService;
 import org.jahia.settings.SettingsBean;
+import org.kie.api.runtime.ObjectFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-
 import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -70,9 +69,9 @@ import java.util.Iterator;
  * Time: 5:25:31 PM
  */
 public class ImageService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
-    
+
     private JahiaImageService imageService;
 
     public void setImageService(JahiaImageService imageService) {
@@ -80,7 +79,7 @@ public class ImageService {
     }
 
     private static ImageService instance;
-    
+
     private static File contentTempFolder;
 
     public static ImageService getInstance() {
@@ -124,9 +123,10 @@ public class ImageService {
     }
 
     public void addThumbnail(AddedNodeFact imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
-        addThumbnail(imageNode, name, size,false, drools);
+        addThumbnail(imageNode, name, size, false, drools);
     }
-    public void addThumbnail(AddedNodeFact imageNode, String name, int size,boolean square, KnowledgeHelper drools) throws Exception {
+
+    public void addThumbnail(AddedNodeFact imageNode, String name, int size, boolean square, KnowledgeHelper drools) throws Exception {
         long timer = System.currentTimeMillis();
         if (imageNode.getNode().hasNode(name)) {
             JCRNodeWrapper node = imageNode.getNode().getNode(name);
@@ -134,7 +134,7 @@ public class ImageService {
             Calendar contentDate = imageNode.getNode().getNode("jcr:content").getProperty("jcr:lastModified").getDate();
             if (contentDate.after(thumbDate)) {
                 AddedNodeFact thumbNode = new AddedNodeFact(node);
-                File f = getThumbFile(imageNode, size,square, drools);
+                File f = getThumbFile(imageNode, size, square, drools);
                 if (f == null) {
                     return;
                 }
@@ -142,7 +142,7 @@ public class ImageService {
                 drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
         } else {
-            File f = getThumbFile(imageNode, size,square, drools);
+            File f = getThumbFile(imageNode, size, square, drools);
             if (f == null) {
                 return;
             }
@@ -156,8 +156,8 @@ public class ImageService {
             }
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("{}px thumbnail for node {} created in {} ms", new Object[] { size,
-                    imageNode.getNode().getPath(), System.currentTimeMillis() - timer });
+            logger.debug("{}px thumbnail for node {} created in {} ms", new Object[]{size,
+                    imageNode.getNode().getPath(), System.currentTimeMillis() - timer});
         }
     }
 
@@ -165,14 +165,14 @@ public class ImageService {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
-        addThumbnail(new AddedNodeFact(node),name, size,drools);
+        addThumbnail(new AddedNodeFact(node), name, size, drools);
     }
 
     public void addSquareThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
-        addThumbnail(new AddedNodeFact(node),name, size, true, drools);
+        addThumbnail(new AddedNodeFact(node), name, size, true, drools);
     }
 
     protected boolean isSmallerThan(JCRNodeWrapper node, int size) {
@@ -197,7 +197,7 @@ public class ImageService {
         return width > 0 && height > 0 && width <= size && height <= size;
     }
 
-    protected File getThumbFile(AddedNodeFact imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
+    protected File getThumbFile(AddedNodeFact imageNode, int size, boolean square, KnowledgeHelper drools) throws Exception {
         String fileExtension = FilenameUtils.getExtension(imageNode.getName());
 
         if (!square && isSmallerThan(imageNode.getNode(), size)) {
@@ -205,10 +205,10 @@ public class ImageService {
             final File f = File.createTempFile("thumb", StringUtils.isNotEmpty(fileExtension) ? "." + fileExtension : null, contentTempFolder);
             JCRContentUtils.downloadFileContent(imageNode.getNode(), f);
             f.deleteOnExit();
-            
+
             return f;
         }
-        
+
         Image iw = getImageWrapper(imageNode, drools);
         if (iw == null) {
             return null;
@@ -248,7 +248,7 @@ public class ImageService {
         }
         drools.insert(new ChangedPropertyFact(imageNode, propertyName, width, drools));
     }
-    
+
     public void disposeImageForNode(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
         Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
             public boolean accept(Object o) {
@@ -262,7 +262,7 @@ public class ImageService {
                 return false;
             }
         });
-        for (; it.hasNext();) {
+        for (; it.hasNext(); ) {
             Image img = (Image) it.next();
             drools.retract(img);
             img.dispose();

@@ -40,6 +40,13 @@
 
 package org.jahia.taglibs.query;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
+import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.query.QOMBuilder;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.Query;
@@ -51,17 +58,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
-import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.drools.util.StringUtils;
-import org.jahia.services.query.QOMBuilder;
-import org.jahia.taglibs.jcr.AbstractJCRTag;
-
 /**
  * This is the base tag for declaring Query object Model specified by the
  * JSR-283.
- * 
+ * <p/>
  * User: hollis Date: 6 nov. 2007 Time: 15:42:29
  */
 public class QueryDefinitionTag extends AbstractJCRTag {
@@ -104,9 +104,9 @@ public class QueryDefinitionTag extends AbstractJCRTag {
 
     /**
      * Returns current QOM builder instance.
-     * 
+     *
      * @return an instance of current {@link QOMBuilder}
-     * @throws JspTagException 
+     * @throws JspTagException
      */
     public QOMBuilder getQOMBuilder() throws JspTagException {
         if (qomBuilder == null) {

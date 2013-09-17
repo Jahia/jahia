@@ -40,17 +40,12 @@
 
 package org.jahia.modules.visibility.rules;
 
-import java.io.StringReader;
-import java.util.Calendar;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.rules.AddedNodeFact;
@@ -58,9 +53,13 @@ import org.jahia.services.visibility.VisibilityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import java.io.StringReader;
+import java.util.Calendar;
+
 /**
  * Service class for performing content visibility related actions in the right-hand side (consequences) of rules.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class VisibilityRuleService {
@@ -77,18 +76,14 @@ public class VisibilityRuleService {
     /**
      * Creates a visibility condition on the node, based on the legacy (Jahia 5.0.x and 6.0.x/6.1.x) rule settings, serialized in XML
      * format.
-     * 
-     * @param nodeFact
-     *            the node the visibility settings should be applied to
-     * @param ruleSettingsXml
-     *            the legacy time-based-publishing settings in XML format
-     * @param drools
-     *            the rule engine helper class
-     * @throws RepositoryException
-     *             in case of an error
+     *
+     * @param nodeFact        the node the visibility settings should be applied to
+     * @param ruleSettingsXml the legacy time-based-publishing settings in XML format
+     * @param drools          the rule engine helper class
+     * @throws RepositoryException in case of an error
      */
     public void importLegacyRuleSettings(final AddedNodeFact nodeFact,
-            final String ruleSettingsXml, KnowledgeHelper drools) throws RepositoryException {
+                                         final String ruleSettingsXml, KnowledgeHelper drools) throws RepositoryException {
         String path = nodeFact.getPath();
         if (StringUtils.isEmpty(ruleSettingsXml)) {
             logger.warn(
@@ -118,8 +113,8 @@ public class VisibilityRuleService {
             if (logger.isInfoEnabled()) {
                 logger.info("Adding visibility condition for node {} with"
                         + " start date '{}' and end date '{}'",
-                        new Object[] { path, dates[0] != null ? dates[0].getTime() : null,
-                                dates[1] != null ? dates[1].getTime() : null });
+                        new Object[]{path, dates[0] != null ? dates[0].getTime() : null,
+                                dates[1] != null ? dates[1].getTime() : null});
             }
             try {
                 JCRNodeWrapper node = nodeFact.getNode();
@@ -180,7 +175,7 @@ public class VisibilityRuleService {
                         }
 
                         if (start != null || end != null) {
-                            dates = new Calendar[] { start, end };
+                            dates = new Calendar[]{start, end};
                         }
                     } else if (el != null) {
                         logger.warn("Unknown visibility type {}. Skipping.", el.getText());
@@ -200,9 +195,8 @@ public class VisibilityRuleService {
 
     /**
      * Injects an instance of the {@link VisibilityService}.
-     * 
-     * @param visibilityService
-     *            an instance of the {@link VisibilityService}
+     *
+     * @param visibilityService an instance of the {@link VisibilityService}
      */
     public void setVisibilityService(VisibilityService visibilityService) {
         this.visibilityService = visibilityService;

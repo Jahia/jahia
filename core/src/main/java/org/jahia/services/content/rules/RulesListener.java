@@ -43,25 +43,25 @@ package org.jahia.services.content.rules;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.compiler.DroolsParserException;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatelessSession;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageBuilderErrors;
-import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatelessSession;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.core.rule.Package;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.settings.SettingsBean;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -69,6 +69,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
 import java.io.*;
 import java.util.*;
 
@@ -99,6 +100,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private List<String> filesAccepted;
     private Map<String,String> modulePackageNameMap;
+
+    private CompositeClassLoader ruleBaseClassLoader;
 
     public RulesListener() {
         instances.add(this);
@@ -159,9 +162,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     private void initRules() throws Exception {
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
-        //conf.setRemoveIdentities( true );
+        ruleBaseClassLoader = new CompositeClassLoader();
+        ruleBaseClassLoader.setCachingEnabled(true);
+        ruleBaseClassLoader.addClassLoader(this.getClass().getClassLoader());
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
         ruleBase = RuleBaseFactory.newRuleBase(conf);
 
         dslFiles.add(
@@ -188,12 +192,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return stringBuilder.toString();
     }
 
-    public void addRules(File dsrlFile) throws Exception {
+    public void addRules(File dsrlFile) {
         addRules(dsrlFile == null ? null : new FileSystemResource(dsrlFile), null);
     }
 
-    public void addRules(Resource dsrlFile, JahiaTemplatesPackage aPackage) throws Exception {
-        InputStreamReader drl = null;
+    public void addRules(Resource dsrlFile, JahiaTemplatesPackage aPackage) {
         long start = System.currentTimeMillis();
         try {
             File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules");
@@ -205,18 +208,21 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             if (!compiledRulesDir.exists()) {
                 compiledRulesDir.mkdirs();
             }
+            
+            ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
+            if (packageClassLoader != null) {
+                ruleBaseClassLoader.addClassLoaderToEnd(packageClassLoader);
+            }
+            
             // first let's test if the file exists in the same location, if it was pre-packaged as a compiled rule
             File pkgFile = new File(compiledRulesDir, StringUtils.substringAfterLast(dsrlFile.getURL().getPath(),"/") + ".pkg");
             if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
                 ObjectInputStream ois = null;
                 try {
-                    if (aPackage != null) {
-                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), aPackage.getChainedClassLoader());
-                    } else {
-                        ois = new DroolsObjectInputStream(new FileInputStream(pkgFile), null);
-                    }
-
-                    Package pkg = (Package) ois.readObject();
+                    ois = new DroolsObjectInputStream(new FileInputStream(pkgFile),
+                            packageClassLoader != null ? packageClassLoader : null);
+                    Package pkg = new Package();
+                    pkg.readExternal(ois);
                     if (ruleBase.getPackage(pkg.getName()) != null) {
                         ruleBase.removePackage(pkg.getName());
                     }
@@ -228,21 +234,36 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     IOUtils.closeQuietly(ois);
                 }
             } else {
-                drl = new InputStreamReader(new BufferedInputStream(dsrlFile.getInputStream()));
-
-                Properties properties = new Properties();
-                properties.setProperty("drools.dialect.java.compiler", "JANINO");
-                PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(getClass().getClassLoader(), properties);
-                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-                javaConf.setCompiler(JavaDialectConfiguration.JANINO);
-
-                if (aPackage != null) {
-                    cfg.setClassLoader(aPackage.getChainedClassLoader());
+                InputStream drlInputStream = dsrlFile.getInputStream();
+                List<String> lines = Collections.emptyList();
+                try {
+                    lines = IOUtils.readLines(drlInputStream);
+                } finally {
+                    IOUtils.closeQuietly(drlInputStream);
                 }
+                StringBuilder drl = new StringBuilder(1024);
+                for (String line : lines) {
+                    if (drl.length() > 0) {
+                        drl.append("\n");
+                    }
+                    if (line.length() > 0 && line.trim().charAt(0) == '#') {
+                        drl.append(StringUtils.replaceOnce(line, "#", "//"));
+                    } else {
+                        drl.append(line);
+                    }
+                }
+                
+                PackageBuilderConfiguration cfg = packageClassLoader != null ? new PackageBuilderConfiguration(
+                        packageClassLoader) : new PackageBuilderConfiguration();
 
                 PackageBuilder builder = new PackageBuilder(cfg);
 
-                builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
+                Reader drlReader = new StringReader(drl.toString());
+                try {
+                    builder.addPackageFromDrl(drlReader, new StringReader(getDslFiles()));
+                } finally {
+                    IOUtils.closeQuietly(drlReader);
+                }
 
                 PackageBuilderErrors errors = builder.getErrors();
 
@@ -252,8 +273,8 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     ObjectOutputStream oos = null; 
                     try {
                         pkgFile.getParentFile().mkdirs();
-                        oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
-                        oos.writeObject(pkg);
+                        oos = new DroolsObjectOutputStream(new FileOutputStream(pkgFile));
+                        pkg.writeExternal(oos);
                     } catch (IOException e) {
                         logger.error("Error writing rule package to file " + pkgFile, e);
                     } finally {
@@ -269,11 +290,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     }
                     logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
                 } else {
-                    throw new DroolsParserException("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
+                    logger.error("---------------------------------------------------------------------------------");
+                    logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
+                    logger.error("---------------------------------------------------------------------------------");
                 }
             }
-        } finally {
-            IOUtils.closeQuietly(drl);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -679,12 +702,22 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void removeRules(String moduleName) {
-        if(modulePackageNameMap.containsKey(moduleName) && ruleBase.getPackage(modulePackageNameMap.get(moduleName))!=null) {
+        if (modulePackageNameMap.containsKey(moduleName)
+                && ruleBase.getPackage(modulePackageNameMap.get(moduleName)) != null) {
             ruleBase.removePackage(modulePackageNameMap.get(moduleName));
         }
     }
 
+    public void removeRules(JahiaTemplatesPackage module) {
+        removeRules(module.getName());
+        ClassLoader cl = module.getClassLoader();
+        if (cl != null) {
+            ruleBaseClassLoader.removeClassLoader(cl);
+        }
+    }
+    
     public boolean removeRulesDescriptor(Resource resource) {
         return dslFiles.remove(resource);
     }
+
 }

@@ -40,16 +40,15 @@
 
 package org.jahia.services.content.rules;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a deleted node fact.
@@ -77,7 +76,7 @@ public class DeletedNodeFact implements NodeFact {
         types = new ArrayList<String>();
         recurseOnTypes(types, node.getPrimaryNodeType());
         recurseOnTypes(types, node.getMixinNodeTypes());
-        
+
         node.remove();
         drools.retract(nodeWrapper);
 
@@ -87,12 +86,12 @@ public class DeletedNodeFact implements NodeFact {
     public DeletedNodeFact(AddedNodeFact parent, String path) throws RepositoryException {
         this.parent = parent;
         this.path = path;
-        this.name = StringUtils.substringAfterLast(path,"/");
+        this.name = StringUtils.substringAfterLast(path, "/");
         workspace = parent.getNode().getSession().getWorkspace().getName();
     }
 
     public String toString() {
-        return "deleted "+path;
+        return "deleted " + path;
     }
 
     public String getPath() {
@@ -145,7 +144,7 @@ public class DeletedNodeFact implements NodeFact {
     public String getName() {
         return name;
     }
-    
+
     public List<String> getTypes() throws RepositoryException {
         return types;
     }
@@ -153,7 +152,7 @@ public class DeletedNodeFact implements NodeFact {
     private void recurseOnTypes(List<String> res, NodeType... nt) {
         for (NodeType nodeType : nt) {
             if (!res.contains(nodeType.getName())) res.add(nodeType.getName());
-            recurseOnTypes(res,nodeType.getSupertypes());
+            recurseOnTypes(res, nodeType.getSupertypes());
         }
     }
 }

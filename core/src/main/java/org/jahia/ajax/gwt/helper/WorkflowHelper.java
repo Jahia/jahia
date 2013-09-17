@@ -471,11 +471,15 @@ public class WorkflowHelper {
                     final WorkflowDefinition definition = service.getWorkflowDefinition(rule.getProviderKey(),
                             rule.getWorkflowDefinitionKey(),
                             locale);
-                    final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
-                    workflowDefinition.set("active", Boolean.TRUE);
-                    workflowDefinition.set("definitionPath", rule.getDefinitionPath());
-                    keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
-                    keyToMap.get(rev.get(definition.getKey())).add(workflowDefinition);
+                    if (definition != null) {
+                        final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
+                        workflowDefinition.set("active", Boolean.TRUE);
+                        workflowDefinition.set("definitionPath", rule.getDefinitionPath());
+                        keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
+                        keyToMap.get(rev.get(definition.getKey())).add(workflowDefinition);
+                    } else {
+                        logger.warn("Couldn't find definition for workflow " + rule.getWorkflowDefinitionKey());
+                    }
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -596,7 +600,7 @@ public class WorkflowHelper {
             JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser());
             final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
             Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
-            if(broadcaster != null) {
+            if (broadcaster != null) {
                 TaskEvent taskEvent = new TaskEvent();
                 Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
                 if (preferredLocale == null) {
@@ -634,7 +638,7 @@ public class WorkflowHelper {
                 }
                 for (Principal user : users) {
                     Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
-                    if(broadcaster != null) {
+                    if (broadcaster != null) {
                         TaskEvent taskEvent = new TaskEvent();
                         try {
                             JahiaUser jahiaUser = (JahiaUser) user;

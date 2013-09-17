@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context crossContext="true">
-    
+
     <Manager pathname=""/>
-    
-	<Resource name="jdbc/jahia" auth="Container"
-            factory="org.apache.commons.dbcp.BasicDataSourceFactory"
-            type="javax.sql.DataSource" username="@USERNAME@" password="@PASSWORD@"
-            driverClassName="@DRIVER@" url="@URL@" defaultAutoCommit="true" accessToUnderlyingConnectionAllowed="true"
-            maxActive="200" maxIdle="30" maxWait="10000" initialSize="5"
-            validationQuery="@VALIDATION_QUERY@" testWhileIdle="true" testOnBorrow="false" testOnReturn="false"
-            timeBetweenEvictionRunsMillis="300000" minEvictableIdleTimeMillis="1800000" numTestsPerEvictionRun="5"/>
+
+    <Resource name="jdbc/jahia" auth="Container"
+              factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+              type="javax.sql.DataSource" username="@USERNAME@" password="@PASSWORD@"
+              driverClassName="@DRIVER@" url="@URL@" defaultAutoCommit="true" accessToUnderlyingConnectionAllowed="true"
+              maxActive="200" maxIdle="30" maxWait="10000" initialSize="5"
+              validationQuery="@VALIDATION_QUERY@" testWhileIdle="true" testOnBorrow="false" testOnReturn="false"
+              timeBetweenEvictionRunsMillis="300000" minEvictableIdleTimeMillis="1800000" numTestsPerEvictionRun="5"/>
+
+    <Resource name="jdbc/jahiatx"
+              auth="Container"
+              type="javax.sql.DataSource"
+              factory="bitronix.tm.resource.ResourceObjectFactory"
+              uniqueName="jdbc/jahiatx"/>
 
     <Loader delegate="true"/>
 

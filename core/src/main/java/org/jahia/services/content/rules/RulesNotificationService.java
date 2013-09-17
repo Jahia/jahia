@@ -42,11 +42,8 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.bin.Jahia;
-import org.jahia.utils.Patterns;
-import org.jahia.utils.ScriptEngineUtils;
-import org.slf4j.Logger;
-import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -54,7 +51,10 @@ import org.jahia.services.mail.MailService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
+import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -67,10 +67,10 @@ import java.util.ResourceBundle;
 /**
  * Notification service that is used in the right-hand-side (consequences) of
  * the business rules.
- * 
+ *
  * @author rincevent
  * @since JAHIA 6.5
- * Created : 29 juin 2010
+ *        Created : 29 juin 2010
  */
 public class RulesNotificationService {
 
@@ -167,7 +167,7 @@ public class RulesNotificationService {
             return;
         }
         JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode!=null && userNode.getProperty("j:email") != null) {
+        if (userNode != null && userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
             sendMail(template, userNode, toMail, fromMail, null, null, getLocale(userNode), drools);
         }
@@ -179,7 +179,7 @@ public class RulesNotificationService {
             return;
         }
         JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode!=null && userNode.getProperty("j:email") != null) {
+        if (userNode != null && userNode.getProperty("j:email") != null) {
             String toMail = userNode.getProperty("j:email");
             sendMail(template, userNode, toMail, fromMail.getStringValue(), null, null, getLocale(userNode), drools);
         }
@@ -219,7 +219,7 @@ public class RulesNotificationService {
         final Bindings bindings = new SimpleBindings();
         bindings.put("currentUser", user);
         bindings.put("contextPath", Jahia.getContextPath());
-        final Object object = drools.getActivation().getTuple().getFactHandles()[0].getObject();
+        final Object object = drools.getMatch().getTuple().getHandle().getObject();
         JCRNodeWrapper node = null;
         if (object instanceof AbstractNodeFact) {
             node = ((AbstractNodeFact) object).getNode();
@@ -227,8 +227,8 @@ public class RulesNotificationService {
             final int siteURLPortOverride = SettingsBean.getInstance().getSiteURLPortOverride();
             bindings.put("servername",
                     "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + node.getResolveSite().getServerName() +
-                    ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
-                     ":" + siteURLPortOverride : ""));
+                            ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
+                                    ":" + siteURLPortOverride : ""));
         }
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
         if (scriptInputStream != null) {
@@ -242,12 +242,12 @@ public class RulesNotificationService {
                 bindings.put("bundle", resourceBundle);
                 subject = resourceBundle.getString("subject");
             } catch (MissingResourceException e) {
-                if(node!=null){
+                if (node != null) {
                     final Value[] values = node.getResolveSite().getProperty("j:installedModules").getValues();
                     for (Value value : values) {
                         try {
                             ResourceBundle resourceBundle = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(value.getString()).getName(), locale);
-                            subject = resourceBundle.getString(drools.getRule().getName().toLowerCase().replaceAll(" ",".")+".subject");
+                            subject = resourceBundle.getString(drools.getRule().getName().toLowerCase().replaceAll(" ", ".") + ".subject");
                             bindings.put("bundle", resourceBundle);
                         } catch (MissingResourceException ee) {
                             // Do nothing

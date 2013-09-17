@@ -41,15 +41,16 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.drools.compiler.kie.builder.impl.FileKieModule;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
+import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.templates.JahiaModuleAware;
-import org.jbpm.api.Deployment;
-import org.jbpm.api.NewDeployment;
-import org.jbpm.api.ProcessEngine;
-import org.jbpm.api.RepositoryService;
-import org.jbpm.pvm.internal.email.impl.AddressTemplate;
-import org.jbpm.pvm.internal.email.impl.MailTemplate;
-import org.jbpm.pvm.internal.email.impl.MailTemplateRegistry;
+import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
+import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
+import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
+import org.kie.api.builder.KieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -57,9 +58,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -69,18 +73,19 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     private transient static Logger logger = LoggerFactory.getLogger(JBPMModuleProcessLoader.class);
 
-    private ProcessEngine processEngine;
     private Resource[] processes;
     private Resource[] mailTemplates;
-    private RepositoryService repositoryService;
     private MailTemplateRegistry mailTemplateRegistry;
     private JahiaTemplatesPackage module;
-    public void setProcessEngine(ProcessEngine processEngine) {
-        this.processEngine = processEngine;
-        repositoryService = processEngine.getRepositoryService();
-        mailTemplateRegistry = processEngine.get(MailTemplateRegistry.class);
+    private JBPM6WorkflowProvider jbpm6WorkflowProvider;
+
+    public void setJbpm6WorkflowProvider(JBPM6WorkflowProvider jbpm6WorkflowProvider) {
+        this.jbpm6WorkflowProvider = jbpm6WorkflowProvider;
     }
 
+    public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
+        this.mailTemplateRegistry = mailTemplateRegistry;
+    }
 
     @Override
     public void setJahiaModule(JahiaTemplatesPackage module) {
@@ -99,53 +104,32 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void deployDeclaredProcesses() throws IOException {
+//        URL kmoduleURL = module.getBundle().getEntry("META-INF/kmodule.xml");
         if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be deployed.", processes.length);
-            List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
-            for (Resource process : processes) {
-                long lastModified = process.lastModified();
 
-                boolean needUpdate = true;
-                boolean found = false;
+            for (Resource process : processes) {
                 String fileName = process.getFilename();
-                for (Deployment deployment : deploymentList) {
-                    if (deployment.getName().equals(fileName)) {
-                        found = true;
-                        if (deployment.getTimestamp() >= lastModified) {
-                            needUpdate = false;
-                            break;
-                        }
-                    }
-                }
-                if (needUpdate) {
-                    if (found) {
-                        logger.info("Found workflow process " + fileName + ". Updating...");
-                    } else {
-                        logger.info("Found new workflow process " + fileName + ". Deploying...");
-                    }
-                    NewDeployment newDeployment = repositoryService.createDeployment();
-                    newDeployment.addResourceFromInputStream(process.getFilename(), process.getInputStream());
-                    newDeployment.setTimestamp(lastModified);
-                    newDeployment.setName(fileName);
-                    newDeployment.deploy();
-//
-//                    for (DeploymentProperty property : ((DeploymentImpl) newDeployment).getObjectProperties()) {
-//                        if (property.getKey().equals("pdkey")) {
-//                            WorkflowService.getInstance().registerWorkflowType(null, property.getStringValue(), module.getRootFolder(), null);
-//                        }
-//                    }
-//
-                    logger.info("... done");
-                } else {
-                    logger.info("Found workflow process " + fileName + ". It is up-to-date.");
-                }
+                logger.info("Found workflow process " + fileName + ". Updating...");
+
+                jbpm6WorkflowProvider.addResource(process);
+                logger.info("... done");
             }
             logger.info("...workflow processes deployed.");
+            jbpm6WorkflowProvider.recompilePackages();
+            try {
+                jbpm6WorkflowProvider.getWorkflowService().initAfterAllServicesAreStarted();
+            } catch (JahiaInitializationException e) {
+                logger.error("Initialization error", e);
+            }
         }
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
 
-            List keys = Arrays.asList("from", "to", "cc", "bcc", "from-users", "to-users", "cc-users", "bcc-users", "from-groups", "to-groups", "cc-groups", "bcc-groups", "subject", "text", "html", "language");
+            List keys = Arrays.asList("from", "to", "cc", "bcc",
+                    "from-users", "to-users", "cc-users", "bcc-users",
+                    "from-groups", "to-groups", "cc-groups", "bcc-groups",
+                    "subject", "text", "html", "language");
 
             for (Resource mailTemplateResource : mailTemplates) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
@@ -155,7 +139,6 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 mailTemplate.setTo(new AddressTemplate());
                 mailTemplate.setCc(new AddressTemplate());
                 mailTemplate.setBcc(new AddressTemplate());
-
 
                 int currentField = -1;
                 String currentLine;
@@ -181,7 +164,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     }
 
-    private void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {
+    public static void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {
         switch (currentField) {
             case 0:
                 t.getFrom().setAddresses(buf.toString());
@@ -235,6 +218,26 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void undeployDeclaredProcesses() throws IOException {
+        if (processes != null && processes.length > 0) {
+            logger.info("Found {} workflow processes to be undeployed.", processes.length);
+
+            for (Resource process : processes) {
+                String fileName = process.getFilename();
+                logger.info("Undeploy workflow process " + fileName + ". Updating...");
+
+                jbpm6WorkflowProvider.removeResource(process);
+                logger.info("... done");
+            }
+            logger.info("...workflow processes undeployed.");
+            jbpm6WorkflowProvider.recompilePackages();
+        }
+        if (mailTemplates != null && mailTemplates.length > 0) {
+            logger.info("Found {} workflow mail templates to be undeployed.", mailTemplates.length);
+
+            for (Resource mailTemplateResource : mailTemplates) {
+                mailTemplateRegistry.removeTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."));
+            }
+        }
 
     }
 

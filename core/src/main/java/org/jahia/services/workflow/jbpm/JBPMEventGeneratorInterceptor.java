@@ -40,8 +40,8 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.jbpm.api.cmd.Command;
-import org.jbpm.pvm.internal.svc.Interceptor;
+import org.drools.core.command.impl.AbstractInterceptor;
+import org.kie.api.command.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +50,13 @@ import java.util.List;
  * A class to generate back-end events for jBPM's internal commands so that we can do things such as invalidate
  * caches, etc...
  */
-public class JBPMEventGeneratorInterceptor extends Interceptor {
+public class JBPMEventGeneratorInterceptor extends AbstractInterceptor {
 
     public interface JBPMEventListener {
         public <T> boolean canProcess(Command<T> command);
+
         public <T> void beforeCommand(Command<T> command);
+
         public <T> void afterCommand(Command<T> command);
     }
 
@@ -84,7 +86,7 @@ public class JBPMEventGeneratorInterceptor extends Interceptor {
                 listener.beforeCommand(command);
             }
         }
-        T result = next.execute(command);
+        T result = getNext().execute(command);
         for (JBPMEventListener listener : listeners) {
             if (listener.canProcess(command)) {
                 listener.afterCommand(command);

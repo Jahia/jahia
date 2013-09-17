@@ -55,12 +55,12 @@ rule "A workflow task has been assigned"
 >       tasks.assignTask(node,assignee);
 end
 
-
+/*
 rule "A workflow task has been completed"
     when
         Not in operation import
 >		property : ChangedPropertyFact ( name == "state" , stringValue == "finished" , node : node, node.types contains "jnt:workflowTask" )
     then
->       tasks.completeTask(node);
+>       tasks.completeTask(node,assignee);
 end
-
+*/

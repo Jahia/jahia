@@ -40,33 +40,28 @@
 
 package org.jahia.services.content.rules;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.value.BinaryImpl;
+import org.apache.tika.io.IOUtils;
+import org.apache.tika.metadata.Metadata;
+import org.drools.core.WorkingMemory;
+import org.drools.core.spi.KnowledgeHelper;
+import org.jahia.api.Constants;
+import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRFileContent;
+import org.jahia.services.textextraction.TextExtractionService;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.value.BinaryImpl;
-import org.slf4j.Logger;
-import org.apache.tika.io.IOUtils;
-import org.apache.tika.metadata.Metadata;
-import org.drools.WorkingMemory;
-import org.drools.spi.KnowledgeHelper;
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.decorator.JCRFileContent;
-import org.jahia.services.textextraction.TextExtractionService;
-import org.jahia.settings.SettingsBean;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Jahia text extraction service that uses Apache Tika parsers to extract content from documents.
@@ -77,7 +72,7 @@ import org.jahia.settings.SettingsBean;
 public class ExtractionService {
 
     private static ExtractionService instance;
-    
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ExtractionService.class);
 
     public static ExtractionService getInstance() {
@@ -88,16 +83,15 @@ public class ExtractionService {
     }
 
     private JCRTemplate jcrTemplate;
-    
+
     private TextExtractionService textExtractionService;
-    
+
     private Map<String, String[]> mapping = new HashMap<String, String[]>();
 
     /**
      * Performs a check if the provided node can be handled by currently
      * configured parsers.
-     * 
-     * 
+     *
      * @param node the node to be checked
      * @return <code>true</code> if there is a parser that can handle provided
      *         node's content
@@ -121,7 +115,7 @@ public class ExtractionService {
         }
         Metadata metadata = new Metadata();
         metadata.set(Metadata.CONTENT_TYPE, mimeType);
-        
+
         // TODO check if it makes sense to also provide the stream
 
         return textExtractionService.canHandle(null, metadata);
@@ -129,23 +123,24 @@ public class ExtractionService {
 
     /**
      * Extract properties from document
-     * @param node file node in JCR
+     *
+     * @param node   file node in JCR
      * @param drools context of the rule engine
      * @throws Exception
      */
-    public void extractProperties(AddedNodeFact node, KnowledgeHelper drools) throws Exception{
+    public void extractProperties(AddedNodeFact node, KnowledgeHelper drools) throws Exception {
         if (!textExtractionService.isEnabled()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Text extraction service is disabled. Skip extracting properties for node " + node.getPath());
             }
             return;
         }
-        
+
         AddedNodeFact contentNode = node.getContent();
         if (contentNode == null) {
             return;
         }
-        
+
         String mimeType = null;
         try {
             mimeType = contentNode.getNode().getProperty(Constants.JCR_MIMETYPE).getString();
@@ -159,10 +154,10 @@ public class ExtractionService {
         if (mimeType != null) {
             metadata.set(Metadata.CONTENT_TYPE, mimeType);
         }
-        
+
         InputStream stream = null;
         try {
-            stream =  contentNode.getNode().getProperty(Constants.JCR_DATA).getBinary().getStream();
+            stream = contentNode.getNode().getProperty(Constants.JCR_DATA).getBinary().getStream();
             textExtractionService.extractMetadata(stream, metadata);
         } catch (Exception e) {
             if (logger.isDebugEnabled()) {
@@ -178,17 +173,17 @@ public class ExtractionService {
 
         if (metadata.size() > 0) {
             try {
-            WorkingMemory memory = drools.getWorkingMemory();
-            for (String key : metadata.names()) {
-                if (!Metadata.CONTENT_TYPE.equals(key)) {
-                    // TODO handle multivalue metadata properties
-                    String value = metadata.get(key); 
-                    if (value != null) {
-                        String[] mappedTo = mapping.get(key);
-                        memory.insert(new ExtractedVariable(node.getPath(), key, value, mappedTo != null ? mappedTo[0] : null, mappedTo != null ? mappedTo[1] : null));
+                WorkingMemory memory = drools.getWorkingMemory();
+                for (String key : metadata.names()) {
+                    if (!Metadata.CONTENT_TYPE.equals(key)) {
+                        // TODO handle multivalue metadata properties
+                        String value = metadata.get(key);
+                        if (value != null) {
+                            String[] mappedTo = mapping.get(key);
+                            memory.insert(new ExtractedVariable(node.getPath(), key, value, mappedTo != null ? mappedTo[0] : null, mappedTo != null ? mappedTo[1] : null));
+                        }
                     }
                 }
-            }
             } catch (Exception e) {
                 logger.warn("Error extracting metadata for node " + node.getPath(), e);
             }
@@ -196,13 +191,14 @@ public class ExtractionService {
     }
 
     /**
-     * Synchronously extract text from document and store it as a property of either the file 
+     * Synchronously extract text from document and store it as a property of either the file
      * node itself or the node referred to by the extractionNodePath parameter.
      * The node must have the following properties, which will be set:
      * j:extractedText, j:lastExtractionDate and for the case of extractionNodePath being passed
-     * also j:originalUuid is required. 
-     * @param provider the JCR store provider
-     * @param sourcePath the path to the file node
+     * also j:originalUuid is required.
+     *
+     * @param provider           the JCR store provider
+     * @param sourcePath         the path to the file node
      * @param extractionNodePath the optional path to the node receiving the extracted text
      * @throws IOException
      */
@@ -271,7 +267,7 @@ public class ExtractionService {
 
     /**
      * Returns <code>true</code> if the text extraction service is activated.
-     * 
+     *
      * @return <code>true</code> if the text extraction service is activated
      */
     public boolean isEnabled() {
@@ -281,7 +277,7 @@ public class ExtractionService {
     public void setJcrTemplate(JCRTemplate jcrTemplate) {
         this.jcrTemplate = jcrTemplate;
     }
-    
+
     /**
      * @param textExtractionService the textExtractionService to set
      */

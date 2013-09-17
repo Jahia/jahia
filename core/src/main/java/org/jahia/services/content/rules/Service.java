@@ -45,40 +45,40 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.importexport.DocumentViewImportHandler;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.sites.SitesSettings;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.drools.FactException;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.FactException;
+import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.*;
@@ -120,7 +120,7 @@ public class Service extends JahiaService {
 
     public void grantRoleToUser(AddedNodeFact node, String user, String role, KnowledgeHelper drools) {
         try {
-            node.getNode().grantRoles("u:"+user,Collections.singleton(role));
+            node.getNode().grantRoles("u:" + user, Collections.singleton(role));
             node.getNode().getSession().save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -129,7 +129,7 @@ public class Service extends JahiaService {
 
     public void grantRoleToGroup(AddedNodeFact node, String group, String role, KnowledgeHelper drools) {
         try {
-            node.getNode().grantRoles("g:"+group,Collections.singleton(role));
+            node.getNode().grantRoles("g:" + group, Collections.singleton(role));
             node.getNode().getSession().save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -269,12 +269,12 @@ public class Service extends JahiaService {
                     InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
                     OutputStream tos = new BufferedOutputStream(new FileOutputStream(tempFile));
                     try {
-                        IOUtils.copy(is, tos);    
+                        IOUtils.copy(is, tos);
                     } finally {
                         IOUtils.closeQuietly(is);
                         IOUtils.closeQuietly(tos);
                     }
-                    
+
                     imports.put(tempFile, name);
                     importList.add(tempFile);
                     break;
@@ -288,7 +288,7 @@ public class Service extends JahiaService {
             Map<String, File> importsInfosSorted = new TreeMap<String, File>();
             File users = null;
             File serverPermissions = null;
-            for (Iterator<File> iterator = importList.iterator(); iterator.hasNext();) {
+            for (Iterator<File> iterator = importList.iterator(); iterator.hasNext(); ) {
                 File i = iterator.next();
                 String fileName = imports.get(i);
                 Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
@@ -416,13 +416,13 @@ public class Service extends JahiaService {
                     Locale locale = infos.containsKey("defaultLanguage") ? LanguageCodeConverters
                             .languageCodeToLocale((String) infos.get("defaultLanguage")) : settingsBean
                             .getDefaultLocale();
-                        sitesService.addSite(user, (String) infos.get(
-                                "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                locale, tpl,
-                                "fileImport", file == null ? null : new FileSystemResource(file),
-                                (String) infos.get(
-                                        "importFileName"), true,
-                                false, (String) infos.get("originatingJahiaRelease"));
+                    sitesService.addSite(user, (String) infos.get(
+                            "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
+                            locale, tpl,
+                            "fileImport", file == null ? null : new FileSystemResource(file),
+                            (String) infos.get(
+                                    "importFileName"), true,
+                            false, (String) infos.get("originatingJahiaRelease"));
                 } catch (Exception e) {
                     logger.error("Cannot create site " + infos.get("sitetitle"), e);
                 }
@@ -490,8 +490,8 @@ public class Service extends JahiaService {
         // cancel the scheduled job if exists 
         schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
         try {
-        	final Property property = node.getNode().getProperty(propertyName);
-        	// schedule the job
+            final Property property = node.getNode().getProperty(propertyName);
+            // schedule the job
             schedulerService.getScheduler().scheduleJob(jobDetail, getTrigger(node, property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString(), jobDetail.getName(), jobDetail.getGroup()));
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
@@ -501,15 +501,15 @@ public class Service extends JahiaService {
     public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
             throws SchedulerException, RepositoryException {
         final Property property = node.getNode().hasProperty(propertyName) ? node.getNode().getProperty(propertyName) : null;
-	    try {
-	        doScheduleAction(node, actionToExecute, getTrigger(node, property != null ? (property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString()) : null, null, null), drools);
-	    } catch (ParseException e) {
-	        logger.error(e.getMessage(), e);
-	    }
+        try {
+            doScheduleAction(node, actionToExecute, getTrigger(node, property != null ? (property.getType() == PropertyType.DATE ? property.getDate().getTime() : property.getString()) : null, null, null), drools);
+        } catch (ParseException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public void scheduleAction(AddedNodeFact node, final String actionToExecute,
-            final String cronExpression, KnowledgeHelper drools) throws SchedulerException,
+                               final String cronExpression, KnowledgeHelper drools) throws SchedulerException,
             RepositoryException {
         try {
             doScheduleAction(node, actionToExecute, getTrigger(node, cronExpression, null, null),
@@ -520,7 +520,7 @@ public class Service extends JahiaService {
     }
 
     private void doScheduleAction(AddedNodeFact node, final String actionToExecute,
-            final Trigger trigger, KnowledgeHelper drools) throws SchedulerException,
+                                  final Trigger trigger, KnowledgeHelper drools) throws SchedulerException,
             RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final JobDetail jobDetail = BackgroundJob.createJahiaJob("Action job: " + actionToExecute
@@ -541,7 +541,7 @@ public class Service extends JahiaService {
     }
 
     public void cancelActionExecution(NodeFact node, final String actionToCancel,
-            KnowledgeHelper drools) throws RepositoryException, SchedulerException {
+                                      KnowledgeHelper drools) throws RepositoryException, SchedulerException {
         String jobGroup = ActionJob.getJobGroup(actionToCancel);
         String jobName = ActionJob.getJobName(actionToCancel, node.getIdentifier());
         if (schedulerService.getScheduler().deleteJob(jobName, jobGroup)) {
@@ -552,9 +552,9 @@ public class Service extends JahiaService {
 
     private Trigger getTrigger(AddedNodeFact node, Object schedule, String jobName, String group)
             throws ParseException, RepositoryException {
-    	if (schedule == null) {
-    		return null;
-    	}
+        if (schedule == null) {
+            return null;
+        }
 
         if (schedule instanceof Date) {
             return new SimpleTrigger(jobName + "TRIGGER", group, (Date) schedule);
@@ -609,7 +609,7 @@ public class Service extends JahiaService {
                     languages,
                     false, new ArrayList<String>());
         } catch (Exception e) {
-            logger.error("Cannot publish node : "+nodeWrapper.getPath(), e);
+            logger.error("Cannot publish node : " + nodeWrapper.getPath(), e);
         } finally {
             if (resetUser) {
                 JCRSessionFactory.getInstance().setCurrentUser(null);
@@ -622,7 +622,7 @@ public class Service extends JahiaService {
         try {
             WorkflowService.getInstance().startProcessAsJob(Arrays.asList(nodeWrapper.getIdentifier()), nodeWrapper.getSession(), processKey, provider, new HashMap<String, Object>(), null);
         } catch (SchedulerException e) {
-            logger.error("Cannot schedule job ",e);
+            logger.error("Cannot schedule job ", e);
         }
     }
 
@@ -650,15 +650,15 @@ public class Service extends JahiaService {
         logger.info("All caches flushed.");
     }
 
-	public void storeUserPasswordHistory(String username, KnowledgeHelper drools) {
-		JahiaUser user = userManagerService.lookupUser(username);
-		if (user != null) {
-			passwordPolicyService.storePasswordHistory(user);
-		} else {
-			logger.warn("Unlable to lookup user for name: " + username
-			        + ". Skip updating user password history.");
-		}
-	}
+    public void storeUserPasswordHistory(String username, KnowledgeHelper drools) {
+        JahiaUser user = userManagerService.lookupUser(username);
+        if (user != null) {
+            passwordPolicyService.storePasswordHistory(user);
+        } else {
+            logger.warn("Unlable to lookup user for name: " + username
+                    + ". Skip updating user password history.");
+        }
+    }
 
     public void deployModule(String moduleName, AddedNodeFact site, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
@@ -687,10 +687,10 @@ public class Service extends JahiaService {
         this.cacheService = cacheService;
     }
 
-	public void setUserManagerService(JahiaUserManagerService userMgrService) {
-    	this.userManagerService = userMgrService;
+    public void setUserManagerService(JahiaUserManagerService userMgrService) {
+        this.userManagerService = userMgrService;
     }
-    
+
     @Override
     public void start() throws JahiaInitializationException {
         // do nothing
@@ -701,8 +701,8 @@ public class Service extends JahiaService {
         // do nothing
     }
 
-	public void setPasswordPolicyService(JahiaPasswordPolicyService passwordPolicyService) {
-    	this.passwordPolicyService = passwordPolicyService;
+    public void setPasswordPolicyService(JahiaPasswordPolicyService passwordPolicyService) {
+        this.passwordPolicyService = passwordPolicyService;
     }
 
     public void createPermission(final String path, final String name, final KnowledgeHelper drools) throws RepositoryException {
@@ -742,7 +742,7 @@ public class Service extends JahiaService {
         }
         String principal = StringUtils.substringAfter(name, "_").replaceFirst("_", ":");
         if (principal.startsWith("jcr:read") || principal.startsWith("jcr:write")) {
-            principal = StringUtils.substringAfter(principal,"_").replaceFirst("_", ":");
+            principal = StringUtils.substringAfter(principal, "_").replaceFirst("_", ":");
         }
         final String fPrincipal = principal;
         if (site == null) {
@@ -761,8 +761,8 @@ public class Service extends JahiaService {
             boolean needPrivileged = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     QueryManager q = session.getWorkspace().getQueryManager();
-                    String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '"+fPrincipal+"' and isdescendantnode(ace, ['"+site.getPath()+"'])";
-                    QueryResultWrapper qr = (QueryResultWrapper)q.createQuery(sql, Query.JCR_SQL2).execute();
+                    String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and isdescendantnode(ace, ['" + site.getPath() + "'])";
+                    QueryResultWrapper qr = (QueryResultWrapper) q.createQuery(sql, Query.JCR_SQL2).execute();
 
                     boolean needPrivileged = false;
                     for (FacetField facetField : qr.getFacetFields()) {
@@ -789,7 +789,7 @@ public class Service extends JahiaService {
                     return needPrivileged;
                 }
             });
-            
+
             if (needPrivileged && !priv.isMember(p)) {
                 logger.info(principal + " need privileged access");
                 priv.addMember(p);
@@ -807,6 +807,7 @@ public class Service extends JahiaService {
 
     /**
      * Used to update the JahiaSite associated to the JCRSiteNode
+     *
      * @param node node of the site to update
      */
 
@@ -821,7 +822,7 @@ public class Service extends JahiaService {
     public void updateSystemSiteLanguages(AddedNodeFact node, KnowledgeHelper drools) {
         try {
             JCRSessionWrapper session = node.getNode().getSession();
-            if(!node.getName().equals(JahiaSitesService.SYSTEM_SITE_KEY) && sitesService.updateSystemSiteLanguages((JCRSiteNode) node.getNode(), session)) {
+            if (!node.getName().equals(JahiaSitesService.SYSTEM_SITE_KEY) && sitesService.updateSystemSiteLanguages((JCRSiteNode) node.getNode(), session)) {
                 JCRSiteNode siteByKey = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY, session);
                 sitesService.updateSystemSitePermissions(siteByKey, session);
                 drools.insert(new ChangedPropertyFact(new AddedNodeFact(siteByKey), siteByKey.getProperty(SitesSettings.LANGUAGES)));
@@ -833,10 +834,10 @@ public class Service extends JahiaService {
 
     public void executeActionNow(NodeFact node, final String actionToExecute, KnowledgeHelper drools)
             throws SchedulerException, RepositoryException {
-	    final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
-                    actionToExecute);
+        final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
+                actionToExecute);
         if (action != null) {
-            if(node instanceof AddedNodeFact) {
+            if (node instanceof AddedNodeFact) {
                 action.executeBackgroundAction(((AddedNodeFact) node).getNode());
             } else {
                 action.executeBackgroundAction(node.getParent().getNode());

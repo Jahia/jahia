@@ -64,16 +64,26 @@ public interface WorkflowProvider {
 
     List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale);
 
-    String startProcess(String processKey, Map<String,Object> args);
-
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
-
-    void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
+    /**
+     * Start a process instance previously registered
+     *
+     * @param processKey
+     * @param args
+     * @return the process instance identifier
+     */
+    String startProcess(String processKey, Map<String, Object> args);
 
     void abortProcess(String processId);
 
     Workflow getWorkflow(String processId, Locale locale);
 
+    /**
+     * Returns the next possible connections for a given process (usually only for User tasks).
+     *
+     * @param processId
+     * @param locale
+     * @return
+     */
     Set<WorkflowAction> getAvailableActions(String processId, Locale locale);
 
     List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale);
@@ -84,13 +94,17 @@ public interface WorkflowProvider {
 
     void assignTask(String taskId, JahiaUser user);
 
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
+    void completeTask(String taskId, JahiaUser jahiaUser, String outcome, Map<String, Object> args);
 
+    /**
+     * Add a group as a potential participator in the task. The role will determine
+     * what the members of the group may do.
+     *
+     * @param taskId
+     * @param group
+     * @param role
+     */
     void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
-    void deleteTask(String taskId, String reason);
-
-    List<String> getConfigurableRoles(String processKey);
 
     void addComment(String processId, String comment, String user);
 
@@ -104,7 +118,7 @@ public interface WorkflowProvider {
      * Returns a list of process instance history records for the specified
      * process IDs. This method also returns "active" (i.e. not completed)
      * workflow process instance.
-     * 
+     *
      * @param processIds list of process IDs to retrieve history records for
      * @param locale
      * @return a list of process instance history records for the specified
@@ -115,7 +129,7 @@ public interface WorkflowProvider {
     /**
      * Returns a list of history records for workflow tasks.
      * This method also returns not completed tasks.
-     * 
+     *
      * @param processId the process instance ID
      * @param locale
      * @return a list of history records for workflow tasks

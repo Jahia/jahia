@@ -57,6 +57,8 @@ package org.jahia.pipelines.valves;
 
 import org.jahia.pipelines.PipelineException;
 
+import java.util.Map;
+
 /**
  * @author <a href="mailto:david@bluesunrise.com">David Sean Taylor</a>
  * @version $Id$
@@ -69,15 +71,24 @@ public interface ValveContext {
      * objects plus this <code>ValveContext</code> instance.
      * Exceptions thrown by a subsequently executed Valve will be
      * passed on to our caller.</p>
-     *
+     * <p/>
      * <p>If there are no more Valves to be executed, execution of
      * this method will result in a no op.</p>
      *
      * @param context The run-time information, including the servlet
-     * request and response we are processing.
-     *
-     * @exception PipelineException Thrown by a subsequent Valve.
+     *                request and response we are processing.
+     * @throws PipelineException Thrown by a subsequent Valve.
      */
     public void invokeNext(Object context)
-        throws PipelineException;
+            throws PipelineException;
+
+    /**
+     * Retrieve the environment of the pipeline, this is usually useful inside
+     * valve implementation to retrieve the environment of the pipeline, and for
+     * example access service instance, etc...
+     *
+     * @return
+     */
+    public Map<String, Object> getEnvironment();
+
 }

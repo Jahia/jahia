@@ -1,0 +1,28 @@
+to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
+to-users: nextTaskAssignable
+subject: Publication refusée par ${currentUser.getUsername()}
+text: Bonjour,
+
+La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getUsername()}
+#foreach( $node in $nodes )
+#if( $velocityCount <= 10)
+    - ${node.getDisplayableName()}
+#end
+#end
+
+html: Bonjour,
+<br>
+<br>
+<div>
+La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getUsername()}
+</div>
+<div>
+    <ul>
+#foreach( $node in $nodes )
+    #if( $velocityCount <= 10)
+    <li>${node.getDisplayableName()} (${node.getPath()})</li>
+    #end
+#end
+    </ul>
+    <br>
+</div>

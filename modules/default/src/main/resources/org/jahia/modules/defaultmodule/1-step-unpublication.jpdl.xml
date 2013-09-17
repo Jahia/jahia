@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process key="1-step-unpublication" name="1 Step Unpublication Process" xmlns="http://jbpm.org/4.3/jpdl">
+    <start form="jnt:simpleWorkflow" g="11,90,80,40" name="start">
+        <transition to="unpublish"/>
+    </start>
+    <task form="jnt:simpleWorkflow" g="112,94,80,40" name="unpublish">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener"/>
+        <transition g="-43,-10" name="accept" to="unpublication"/>
+        <transition g="-35,-18" name="reject" to="end"/>
+    </task>
+    <custom class="org.jahia.services.workflow.jbpm.custom.UnpublishWorkItemHandler" g="184,10,101,40"
+            name="unpublication">
+        <transition to="end"/>
+    </custom>
+    <end g="327,89,80,40" name="end"/>
+</process>

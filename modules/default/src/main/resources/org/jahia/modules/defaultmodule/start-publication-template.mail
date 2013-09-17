@@ -1,0 +1,28 @@
+to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
+to-users: nextTaskAssignable
+subject: Publication workflow by ${currentUser.getUsername()}
+text: Hi,
+
+A publication workflow with one validation step has been started on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getUsername()}, on the following items :
+#foreach( $node in $nodes )
+#if( $velocityCount <= 10)
+    - ${node.getDisplayableName()}
+#end
+#end
+
+html: Hi,
+<br>
+<br>
+<div>
+A publication workflow with one validation step has been started on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getUsername()}, on the following items :
+</div>
+<div>
+    <ul>
+#foreach( $node in $nodes )
+    #if( $velocityCount <= 10)
+    <li>${node.getDisplayableName()} (${node.getPath()})</li>
+    #end
+#end
+    </ul>
+    <br>
+</div>

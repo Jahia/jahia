@@ -54,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
@@ -62,8 +63,8 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -164,10 +165,13 @@ public class ModulesTabItem extends BrowseTabItem {
     public boolean needRefresh(Map<String, Object> data) {
         if (data.containsKey("node")) {
             GWTJahiaNode node = (GWTJahiaNode) data.get("node");
-            if (node.getInheritedNodeTypes().contains("jnt:editableFile")
-                    || node.getNodeTypes().contains("jnt:definitionFile")
-                    || node.getInheritedNodeTypes().contains("jnt:nodeType")
-                    || node.getNodeTypes().contains("jnt:resourceBundleFile")) {
+            List<String> inheritedNodeTypes = node.getInheritedNodeTypes();
+            List<String> nodeTypes = node.getNodeTypes();
+            if (inheritedNodeTypes.contains("jnt:editableFile")
+                    || nodeTypes.contains("jnt:definitionFile")
+                    || inheritedNodeTypes.contains("jnt:nodeType")
+                    || nodeTypes.contains("jnt:resourceBundleFile")
+                    || nodeTypes.contains("jnt:folder")) {
                 return true;
             }
         }

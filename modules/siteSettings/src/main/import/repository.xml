@@ -225,7 +225,7 @@
                           jcr:mixinTypes="jmix:rbTitle"
                           jcr:primaryType="jnt:contentTemplate">
                 <pagecontent jcr:primaryType="jnt:contentList">
-                    <manage-site-roles jcr:primaryType="jnt:siteSettingsManageSiteRoles"/>
+                    <manage-site-roles jcr:primaryType="jnt:manageRoles" roleGroup="site-role"/>
                 </pagecontent>
             </manageSiteRoles>
         </siteSettingsBase>

@@ -251,3 +251,8 @@
 
 [jnt:siblingNavigation] > jnt:content, jmix:siteComponent
 - displayLinktoParent (boolean) indexed=no
+
+[jnt:manageRoles] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
+ - roles (name, choicelist[nodes='/roles;jnt:role;name']) multiple nofulltext
+ - roleGroup (string)
+ - contextNodePath (string)

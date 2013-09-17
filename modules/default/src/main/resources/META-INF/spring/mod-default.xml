@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <bean class="org.jahia.params.valves.AuthPipelineInitializer">
         <property name="authPipeline" ref="authPipeline"/>
@@ -133,4 +133,8 @@
         <property name="applyOnConfigurations" value="module" />
     </bean>
 
+    <util:map id="defaultModuleProperties">
+        <entry key="groupDisplayLimit" value="${jahia.settings.groupDisplayLimit:100}"/>
+        <entry key="memberDisplayLimit" value="${jahia.settings.memberDisplayLimit:100}"/>
+    </util:map>
 </beans>

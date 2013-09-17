@@ -21,8 +21,4 @@
         <property name="httpClientService" ref="HttpClientService"/>
     </bean>
 
-    <util:map id="serverSettingsProperties">
-        <entry key="groupDisplayLimit" value="${jahia.settings.groupDisplayLimit:100}"/>
-        <entry key="memberDisplayLimit" value="${jahia.settings.memberDisplayLimit:100}"/>
-    </util:map>
 </beans>

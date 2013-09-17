@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <h2>
-    <fmt:message key="serverSettings.manageServerRoles" />
+    ${currentNode.properties['jcr:title'].string}
 </h2>
 
 <script type="text/javascript">
@@ -16,7 +16,7 @@
     }
 
     function revokeRole(principal,role) {
-        if(confirm('<fmt:message key="serverSettings.manageServerRoles.revokeRole.confirm" />')) {
+        if(confirm('<fmt:message key="default.manageRoles.revokeRole.confirm" />')) {
             $('#role').val(role);
             $('#principal').val(principal);
             $('#event').attr('name','_eventId_revokeRole');

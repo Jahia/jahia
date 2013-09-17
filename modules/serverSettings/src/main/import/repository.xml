@@ -306,7 +306,7 @@
                                          jcr:mixinTypes="jmix:rbTitle"
                                          jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
-                                    <manage-server-roles jcr:primaryType="jnt:serverSettingsManageServerRoles"/>
+                                    <manage-server-roles jcr:primaryType="jnt:manageRoles" roleGroup="server-role" contextNodePath="/" />
                                 </pagecontent>
                             </manageServerRoles>
                             <manageUsers j:applyOn="jnt:globalSettings"

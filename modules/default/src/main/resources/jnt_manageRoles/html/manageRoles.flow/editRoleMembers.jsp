@@ -19,9 +19,8 @@
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="memberSearchCriteria" type="org.jahia.services.usermanager.SearchCriteria"--%>
 
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
-<template:addResources type="css"
-                       resources="admin-bootstrap.css,jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
+<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
@@ -29,7 +28,7 @@
 <c:set var="memberCount" value="${fn:length(members)}"/>
 <c:set var="membersFound" value="${memberCount > 0}"/>
 
-<c:set var="memberDisplayLimit" value="${serverSettingsProperties.memberDisplayLimit}"/>
+<c:set var="memberDisplayLimit" value="${properties.memberDisplayLimit}"/>
 
 <c:set var="isGroupEditable" value="${!providers[group.providerName].readOnly}"/>
 
@@ -97,7 +96,7 @@
             <h2>${role}</h2>
             <button class="btn" type="submit" name="_eventId_rolesList">
                 <i class="icon-arrow-left"></i>
-                &nbsp;<fmt:message key="serverSettings.label.backToRoles"/>
+                &nbsp;<fmt:message key="default.manageRoles.backToRoles"/>
             </button>
             <button class="btn ${displayUsers}" type="submit" name="_eventId_users">
                 <i class="icon-user"></i>
@@ -155,8 +154,6 @@
     </form>
 </div>
 
-</div>
-
 <form action="${flowExecutionUrl}" method="post" id="saveForm">
     <input id="addedMembers" type="hidden" name="addedMembers"/>
     <input id="removedMembers" type="hidden" name="removedMembers"/>
@@ -173,7 +170,7 @@
 
     <c:if test="${principalsCount > memberDisplayLimit}">
         <div class="alert alert-info">
-            <fmt:message key="serverSettings.${flowHandler.searchType}.found">
+            <fmt:message key="default.manageRoles.${flowHandler.searchType}.found">
                 <fmt:param value="${principalsCount}"/>
                 <fmt:param value="${memberDisplayLimit}"/>
             </fmt:message>

@@ -1,9 +1,10 @@
-package org.jahia.services.roles;
+package org.jahia.modules.defaultmodule;
 
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaGroupManagerProvider;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -35,6 +36,8 @@ public class RolesHandler implements Serializable {
 
     @Autowired
     private transient JahiaGroupManagerService groupManagerService;
+
+    private String workspace;
 
     private String roleGroup;
 
@@ -73,7 +76,7 @@ public class RolesHandler implements Serializable {
     public Map<String,List<Principal>> getRoles() throws Exception {
         Map<String,List<Principal>> m = new TreeMap<String, List<Principal>>();
 
-        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
+        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
         if (roles == null) {
             QueryManager qm = s.getWorkspace().getQueryManager();
             Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
@@ -107,11 +110,15 @@ public class RolesHandler implements Serializable {
             } else {
                 continue;
             }
-            for (String[] strings : entry.getValue()) {
+            final List<String[]> value = entry.getValue();
+            Collections.reverse(value);
+            for (String[] strings : value) {
                 String role = strings[2];
 
-                if (strings[1].equals("GRANT") && m.containsKey(role)) {
+                if (strings[1].equals("GRANT") && m.containsKey(role) && !m.get(role).contains(p)) {
                     m.get(role).add(p);
+                } else if (strings[1].equals("DENY") && m.containsKey(role)) {
+                    m.get(role).remove(p);
                 }
             }
         }
@@ -119,7 +126,7 @@ public class RolesHandler implements Serializable {
         return m;
     }
 
-    public void setRoles(JCRNodeWrapper node) throws RepositoryException {
+    public void setContext(JCRNodeWrapper node,  RenderContext context) throws RepositoryException {
         if (node.hasProperty("roles")) {
             roles = new ArrayList<String>();
             for (Value value : node.getProperty("roles").getValues()) {
@@ -128,6 +135,15 @@ public class RolesHandler implements Serializable {
         } else {
             roles = null;
         }
+        if (node.hasProperty("roleGroup")) {
+            roleGroup = node.getProperty("roleGroup").getString();
+        }
+        if (node.hasProperty("contextNodePath")) {
+            nodePath = node.getProperty("contextNodePath").getString();
+        } else {
+            nodePath = context.getMainResource().getNode().getPath();
+        }
+        workspace = node.getSession().getWorkspace().getName();
     }
 
     public List<Principal> getRoleMembers() throws Exception{
@@ -139,7 +155,7 @@ public class RolesHandler implements Serializable {
             return;
         }
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
         for (String principal : principals) {
             session.getNode(nodePath).grantRoles(principal, Collections.singleton(role));
         }
@@ -151,15 +167,18 @@ public class RolesHandler implements Serializable {
             return;
         }
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
 
         Map<String,String> roles = new HashMap<String, String>();
         for (String principal : principals) {
             List<String[]> entries = session.getNode(nodePath).getAclEntries().get(principal);
             for (String[] strings : entries) {
-                roles.put(strings[2], strings[1]);
+                if (!role.equals(strings[2])) {
+                    roles.put(strings[2], strings[1]);
+                } else if (!strings[0].equals(nodePath)) {
+                    roles.put(strings[2], "DENY");
+                }
             }
-            roles.remove(role);
             session.getNode(nodePath).revokeRolesForPrincipal(principal);
             session.getNode(nodePath).changeRoles(principal, roles);
         }
@@ -201,7 +220,7 @@ public class RolesHandler implements Serializable {
                     searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders());
         } else {
-            final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession();
+            final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
             searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), 0,
                     searchCriteria.getSearchString(), searchCriteria.getProperties(),
                     searchCriteria.getStoredOn(), searchCriteria.getProviders());

@@ -5,13 +5,11 @@
 		http://www.springframework.org/schema/webflow
 		http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
-    <var name="flowHandler" class="org.jahia.services.roles.RolesHandler"/>
+    <var name="flowHandler" class="org.jahia.modules.defaultmodule.RolesHandler"/>
 
     <on-start>
-        <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
-        <evaluate expression="flowHandler.setRoleGroup('site-role')" />
-        <evaluate expression="flowHandler.setRoles(externalContext.requestMap.currentNode)" />
-        <evaluate expression="flowHandler.setNodePath(externalContext.requestMap.renderContext.mainResource.node.path)" />
+        <set name="flowScope.properties" value="defaultModuleProperties" type="java.util.Map" />
+        <evaluate expression="flowHandler.setContext(externalContext.requestMap.currentNode, externalContext.requestMap.renderContext)" />
     </on-start>
 
     <view-state id="view">

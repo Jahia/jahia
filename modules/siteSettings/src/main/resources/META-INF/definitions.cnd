@@ -14,5 +14,3 @@
 
 [jnt:siteSettingsManageModules] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
 
-[jnt:siteSettingsManageSiteRoles] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
- - roles (name, choicelist[nodes='/roles;jnt:role;name']) multiple nofulltext

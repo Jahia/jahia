@@ -137,6 +137,8 @@ import static org.apache.commons.httpclient.HttpStatus.SC_OK;
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
 
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
+
     public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
     public static final String MODULE_TYPE_MODULE = "module";
@@ -147,8 +149,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
     
-    private static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
-
     private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
         public boolean equals(Object o, Object o1) {
             String s1 = (String) o;
@@ -1069,7 +1069,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             File pom = new File(sources, "pom.xml");
             Document document = reader.read(pom);
             Element e = document.getRootElement();
-            List elements = e.elements("build");
+            List<?> elements = e.elements("build");
             if (elements.isEmpty()) {
                 e = e.addElement("build");
             } else {

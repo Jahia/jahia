@@ -177,6 +177,9 @@ public final class ProcessHelper {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Execuiting command: {}", cmd.toString());
+        } else if (redirectOutputs) {
+            System.out.print("Execuiting command: ");
+            System.out.println(cmd.toString());
         }
 
         int exitValue = 0;

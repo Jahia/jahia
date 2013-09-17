@@ -40,25 +40,44 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
 public abstract class SourceControlManagement {
 
+    protected static List<String> readLines(String source) throws IOException {
+        StringReader input = null;
+        try {
+            input = new StringReader(source);
+            return IOUtils.readLines(input);
+        } finally {
+            IOUtils.closeQuietly(input);
+        }
+    }
+
     protected File rootFolder;
 
     protected Map<String, Status> statusMap;
+
+    protected String executable;
+
+    protected SourceControlManagement(String executable) {
+        super();
+        this.executable = executable;
+    }
 
     protected ExecutionResult executeCommand(String command, String arguments) throws IOException {
         try {
             StringBuilder resultOut = new StringBuilder();
             StringBuilder resultErr = new StringBuilder();
-            int res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr);
+            int res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr, false);
             return new ExecutionResult(res, resultOut.toString(), resultErr.toString());
         } catch (Exception e) {
             throw new IOException("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);

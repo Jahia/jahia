@@ -42,6 +42,7 @@ package org.jahia.services.templates;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -50,10 +51,15 @@ import java.util.*;
 
 public class SvnSourceControlManagement extends SourceControlManagement {
 
-    private String executable;
-
+    private static final Predicate URL_PREDICATE = new Predicate() {
+        @Override
+        public boolean evaluate(Object object) {
+            return object.toString().startsWith("URL:");
+        }
+    };
+    
     public SvnSourceControlManagement(String executable) {
-        this.executable = executable;
+        super(executable);
     }
 
     @Override
@@ -79,12 +85,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     public String getURI() throws IOException {
         ExecutionResult result = executeCommand(executable, "info");
-        String url = (String) CollectionUtils.find(Arrays.asList(result.out.split("\n")), new Predicate() {
-            @Override
-            public boolean evaluate(Object object) {
-                return object.toString().startsWith("URL:");
-            }
-        });
+        String url = (String) CollectionUtils.find(readLines(result.out), URL_PREDICATE);
         if (url != null) {
             url = StringUtils.substringAfter(url,"URL:").trim();
         }
@@ -205,7 +206,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                 if (statusMap == null) {
                     Map<String, Status> newMap = new HashMap<String, Status>();
                     ExecutionResult result = executeCommand(executable, "status");
-                    for (String line : result.out.split("\n")) {
+                    for (String line : readLines(result.out)) {
                         if (StringUtils.isBlank(line)) {
                             continue;
                         }
@@ -225,16 +226,16 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                             status = Status.UNTRACKED;
                         }
                         if (status != null) {
+                            path = FilenameUtils.separatorsToUnix(path);
                             newMap.put(path, status);
-                            String[] pathSegments = path.split("/");
-                            String subPath = "";
+                            String[] pathSegments = StringUtils.split(path, '/');
+                            StringBuilder subPath = new StringBuilder(64);
                             for (String segment : pathSegments) {
-                                newMap.put(subPath, Status.MODIFIED);
-                                if (subPath.isEmpty()) {
-                                    subPath = segment;
-                                } else {
-                                    subPath += "/" + segment;
+                                newMap.put(subPath.toString(), Status.MODIFIED);
+                                if (subPath.length() > 0) {
+                                    subPath.append("/");
                                 }
+                                subPath.append(segment);
                             }
                         }
                     }
@@ -244,4 +245,5 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         }
         return statusMap;
     }
+    
 }

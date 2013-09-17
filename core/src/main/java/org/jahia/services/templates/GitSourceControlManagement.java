@@ -51,10 +51,8 @@ import java.util.*;
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
-    private String executable;
-
     public GitSourceControlManagement(String executable) {
-        this.executable = executable;
+        super(executable);
     }
 
     protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
@@ -216,7 +214,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
     private Map<String, Status> getStatusMap(boolean folder) throws IOException {
         Map<String, Status> newMap = new HashMap<String, Status>();
         ExecutionResult result = executeCommand(executable, "status --porcelain");
-        for (String line : result.out.split("\n")) {
+        for (String line : readLines(result.out)) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }

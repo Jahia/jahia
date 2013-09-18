@@ -41,8 +41,11 @@ package org.jahia.bundles.blueprint.extender.config;
 
 import org.eclipse.gemini.blueprint.extender.OsgiBeanFactoryPostProcessor;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaModuleAwareProcessor;
+import org.jahia.services.templates.JahiaModulesBeanPostProcessor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
@@ -50,6 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+
+import java.util.Map;
 
 /**
  * Post processor that registers the {@link JahiaModuleAwareProcessor} for beans, that would like to be aware of the current module.
@@ -77,6 +82,15 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
         // register bean post-processor for JahiaModuleAware implementors
         beanFactory
                 .addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
+
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null) {
+                Map<String, JahiaModulesBeanPostProcessor> postProcessors = aPackage.getContext().getBeansOfType(JahiaModulesBeanPostProcessor.class);
+                for (JahiaModulesBeanPostProcessor pp : postProcessors.values()) {
+                    beanFactory.addBeanPostProcessor(pp);
+                }
+            }
+        }
 
         logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
                 System.currentTimeMillis() - timer);

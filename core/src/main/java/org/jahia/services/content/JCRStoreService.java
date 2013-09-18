@@ -46,6 +46,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;
 import org.jahia.services.usermanager.JahiaUser;
@@ -92,14 +94,14 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return instance;
     }
 
-    private Map<String, Class> decorators = new HashMap<String, Class>();
+    private Map<String, Class<? extends JCRNodeDecorator>> decorators = new HashMap<String, Class<? extends JCRNodeDecorator>>();
     private Map<String, Constructor<?>> decoratorCreators = new HashMap<String, Constructor<?>>();
     private InterceptorChain interceptorChain;
     private Map<String,ProviderFactory> providerFactories = new HashMap<String, ProviderFactory>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
     private Set<String> noValidityCheckTypes = new HashSet<String>();
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
-    private Map<String, Class> validators = new HashMap<String, Class>();
+    private Map<String, Class<? extends JCRNodeValidator>> validators = new HashMap<String, Class<? extends JCRNodeValidator>>();
     private Map<String, Constructor<?>> validatorCreators = new HashMap<String, Constructor<?>>();
     
     private Map<String,List<DefaultEventListener>> listeners;
@@ -173,7 +175,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
     }
 
-    public Map<String, Class> getDecorators() {
+    public Map<String, Class<? extends JCRNodeDecorator>> getDecorators() {
         return decorators;
     }
 
@@ -264,7 +266,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     /**
-     * Removes the specififed interceptor from the chain.
+     * Removes the specified interceptor from the chain.
      * 
      * @param interceptor
      *            the interceptor instance
@@ -275,6 +277,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void setDecorators(Map<String, String> decorators) {
         if(!this.decorators.isEmpty()) {
             throw new RuntimeException("setDecorators should not be called after initialization of system, use addDecorator instead");
@@ -282,7 +285,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         if (decorators != null) {
             for (Map.Entry<String, String> decorator : decorators.entrySet()) {
                 try {
-                    this.decorators.put(decorator.getKey(), Class.forName(decorator.getValue()));
+                    this.decorators.put(decorator.getKey(), (Class<? extends JCRNodeDecorator>) Class.forName(decorator.getValue()));
                     decoratorCreators.put(decorator.getKey(), Class.forName(decorator.getValue())
                             .getConstructor(JCRNodeWrapper.class));
                 } catch (Exception e) {
@@ -292,11 +295,11 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
-    public void addDecorator(String nodeType, Class decoratorClass) {
+    public void addDecorator(String nodeType, Class<? extends JCRNodeDecorator> decoratorClass) {
         try {
             if (!NodeTypeRegistry.getInstance().getNodeType(nodeType).isMixin()) {
                 if (decorators == null) {
-                    decorators = new HashMap<String, Class>();
+                    decorators = new HashMap<String, Class<? extends JCRNodeDecorator>>();
                 }
                 decorators.put(nodeType, decoratorClass);
                 try {
@@ -376,9 +379,9 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         this.noLanguageValidityCheckTypes = noLanguageValidityCheckTypes;
     }
 
-    public void addValidator(String nodeType, Class validatorClass) {
+    public void addValidator(String nodeType, Class<? extends JCRNodeValidator> validatorClass) {
         if (validators == null) {
-            validators = new HashMap<String, Class>();
+            validators = new HashMap<String, Class<? extends JCRNodeValidator>>();
         }
         validators.put(nodeType, validatorClass);
         try {
@@ -390,7 +393,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void removeValidator(String nodeType) {
         if (validators == null) {
-            validators = new HashMap<String, Class>();
+            validators = new HashMap<String, Class<? extends JCRNodeValidator>>();
         }
         validators.remove(nodeType);
         validatorCreators.remove(nodeType);

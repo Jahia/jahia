@@ -90,6 +90,7 @@ import javax.jcr.Workspace;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
+
 import java.io.File;
 import java.util.*;
 
@@ -410,7 +411,6 @@ public class TemplatePackageRegistry {
 
     public void unregisterPackageVersion(JahiaTemplatesPackage pack) {
         Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
-        JahiaTemplatesPackage jahiaTemplatesPackage = map.remove(pack.getVersion());
         if (map.isEmpty()) {
             packagesWithVersionByFilename.remove(pack.getRootFolder());
             packagesWithVersion.remove(pack.getName());
@@ -768,7 +768,8 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
                 try {
-                    FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
+                    @SuppressWarnings("unchecked")
+                    FlowDefinitionRegistry flowDefinitionRegistry = ((FactoryBean<FlowDefinitionRegistry>) bean).getObject();
                     ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).removeFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
                     logger.error("Cannot register webflow registry", e);
@@ -777,6 +778,7 @@ public class TemplatePackageRegistry {
 
         }
 
+        @SuppressWarnings("unchecked")
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof SharedService) {
                 ((ConfigurableApplicationContext) SpringContextSingleton.getInstance().getContext()).getBeanFactory().registerSingleton(beanName, bean);
@@ -921,10 +923,10 @@ public class TemplatePackageRegistry {
                 Map<String, Class> validators = jcrNodeValidatorDefinition.getValidators();
                 if (validators != null) {
                     for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> validatorEntry : validators.entrySet()) {
-                        Class validatorEntryValue = validatorEntry.getValue();
+                        Class<?> validatorEntryValue = validatorEntry.getValue();
                         try {
                             if(validatorEntryValue.getConstructor(JCRNodeWrapper.class)!=null && JCRNodeValidator.class.isAssignableFrom(validatorEntryValue)) {
-                                jcrStoreService.addValidator(validatorEntry.getKey(), validatorEntryValue);
+                                jcrStoreService.addValidator(validatorEntry.getKey(), (Class<? extends JCRNodeValidator>) validatorEntryValue);
                             }
                         } catch (NoSuchMethodException e) {
                             logger.error("Validator must have a constructor taking only a JCRNodeWrapper has a parameter. " +
@@ -957,7 +959,7 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
                 try {
-                    FlowDefinitionRegistry flowDefinitionRegistry = (FlowDefinitionRegistry) ((FactoryBean) bean).getObject();
+                    FlowDefinitionRegistry flowDefinitionRegistry = ((FactoryBean<FlowDefinitionRegistry>) bean).getObject();
                     ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
                     logger.error("Cannot register webflow registry", e);

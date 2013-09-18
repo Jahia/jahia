@@ -347,9 +347,6 @@ public class NavigationHelper {
                 } else {
                     path = StringUtils.replace(path,"$site", site.getPath());
                 }
-//                if (!path.endsWith("*")) {
-//                    displayName = site.getSiteKey();
-//                }
             }
             if (path.contains("$siteKey/")) {
                 path = path.replace("$siteKey", site.getSiteKey());
@@ -366,11 +363,6 @@ public class NavigationHelper {
             if (path.contains("$systemsite")) {
                 String systemSiteKey = JCRContentUtils.getSystemSitePath();
                 path = path.replace("$systemsite", systemSiteKey);
-//                try {
-//                    displayName = site.getSession().getNode(path).getDisplayableName();
-//                } catch (PathNotFoundException e) {
-//                    displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
-//                }
             }
             if (site != null && path.contains("$sites")) {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -391,20 +383,11 @@ public class NavigationHelper {
             }
             if (path.startsWith("/")) {
                 if (path.endsWith("/*")) {
-//                    NodeIterator ni =
-//                            currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")).getNodes();
                     try {
                         getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
                     } catch (PathNotFoundException e) {
                         // do nothing is the path is not found
                     }
-//                    while (ni.hasNext()) {
-//                        GWTJahiaNode node = getGWTJahiaNode((JCRNodeWrapper) ni.next(), fields);
-//                        if (displayName != "") {
-//                            node.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
-//                        }
-//                        userNodes.add(node);
-//                    }
                 } else {
                     GWTJahiaNode root = getNode(path, fields, currentUserSession, uiLocale);
                     if (root != null) {
@@ -753,7 +736,6 @@ public class NavigationHelper {
 
     /**
      * Get node url depending
-     *
      *
      * @param workspace
      * @param locale

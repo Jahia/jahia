@@ -1043,25 +1043,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 }
             }
 
-<<<<<<< .working
             if (scm != null) {
                 try {
                     scm.setModifiedFile(modifiedFiles);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
-=======
-    public void deployModuleToAllSites(String modulePath, boolean updateOnly, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
-        if (sites == null) {
-            sites = new ArrayList<JCRNodeWrapper>();
-            NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                if(!next.getPrimaryNodeTypeName().equals("jnt:virtualsite")) {
-                	continue;
-                }
-                sites.add(next);
->>>>>>> .merge-right.r47302
             }
         } catch (RepositoryException e1) {
             logger.error(e1.getMessage(), e1);
@@ -1073,7 +1060,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error(e13.getMessage(), e13);
         }
 
-<<<<<<< .working
         return modifiedFiles;
     }
 
@@ -1112,16 +1098,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     e = (Element) e.elements("archive").get(0);
                     e = (Element) e.elements("manifestEntries").get(0);
                     e = (Element) e.elements("depends").get(0);
-=======
-        JCRNodeWrapper tpl = sessionWrapper.getNode(modulePath);
-        for (JCRNodeWrapper site : sites) {
-            if(!site.getPrimaryNodeTypeName().equals("jnt:virtualsite")) {
-            	continue;
-            }
-            if (tpl.hasProperty("j:siteType") && MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:siteType").getString())) {
-                if (tpl.getName().equals(site.getResolveSite().getTemplateFolder())) {
-                    deployModule(modulePath, site.getPath(), sessionWrapper);
->>>>>>> .merge-right.r47302
                 }
             } else {
                 e = pluginArtifactId.getParent();

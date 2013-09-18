@@ -243,12 +243,18 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                if(!next.getPrimaryNodeTypeName().equals("jnt:virtualsite")) {
+                	continue;
+                }
                 sites.add(next);
             }
         }
 
         JCRNodeWrapper tpl = sessionWrapper.getNode("/modules/" + module.getRootFolderWithVersion());
         for (JCRNodeWrapper site : sites) {
+            if(!site.getPrimaryNodeTypeName().equals("jnt:virtualsite")) {
+            	continue;
+            }
             if (tpl.hasProperty("j:moduleType")
                     && JahiaTemplateManagerService.MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:moduleType")
                             .getString())) {

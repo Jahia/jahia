@@ -4,8 +4,6 @@
 <%@page import="org.jahia.services.render.RenderService"%>
 <%@page import="org.jahia.services.render.filter.AbstractFilter"%>
 <%@ page import="org.jahia.services.render.filter.RenderFilter" %>
-<%@ page import="org.jbpm.pvm.internal.env.SpringContext" %>
-<%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="java.util.Collections" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>

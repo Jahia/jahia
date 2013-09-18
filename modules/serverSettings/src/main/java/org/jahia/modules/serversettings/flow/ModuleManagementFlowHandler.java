@@ -446,8 +446,19 @@ public class ModuleManagementFlowHandler implements Serializable {
         forgeService.loadModules();
     }
 
-    public Set<Module> getForgeModules() {
-        return forgeService.getModules();
+    public List<Module> getForgeModules() {
+        List<Module> installedModule = new ArrayList<Module>();
+        List<Module> newModules = new ArrayList<Module>();
+        for (Module module : forgeService.getModules()) {
+            if (templateManagerService.getTemplatePackageRegistry().contains(module.getName())) {
+                installedModule.add(module);
+            } else {
+                newModules.add(module);
+            }
+        }
+
+        newModules.addAll(installedModule);
+        return newModules;
     }
 
 

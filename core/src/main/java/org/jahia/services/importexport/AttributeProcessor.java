@@ -40,10 +40,30 @@
 
 package org.jahia.services.importexport;
 
-import org.jahia.services.content.JCRNodeWrapper;
-
 import javax.jcr.RepositoryException;
 
+import org.jahia.services.content.JCRNodeWrapper;
+
+/**
+ * Instances implementing this interface are used during JCR import to process attributes of each element in the imported XML content, thus
+ * providing special handling for particular attributes.
+ */
 public interface AttributeProcessor {
-    public boolean process(JCRNodeWrapper node, String name, String value) throws RepositoryException;
+    /**
+     * Does a special processing of the specified attribute.
+     * 
+     * @param node
+     *            the current JCR node we are applying attribute value to
+     * @param name
+     *            the name of the attribute
+     * @param value
+     *            the attribute value
+     * @return <code>true</code> if the processing of the attribute is effectively done should be stopped, i.e. no further
+     *         {@link AttributeProcessor}s should be called for this attribute and no standard processing should be done for it;
+     *         <code>false</code> in case the attribute does not have special handling by this processor and its handling should be
+     *         continued further
+     * @throws RepositoryException
+     *             in case of any JCR or processing error
+     */
+    boolean process(JCRNodeWrapper node, String name, String value) throws RepositoryException;
 }

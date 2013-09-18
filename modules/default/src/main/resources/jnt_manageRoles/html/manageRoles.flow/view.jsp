@@ -35,8 +35,7 @@
 
         <div class="box-1">
             <fieldset>
-
-                <h3> ${entry.key}</h3>
+                <h3> ${entry.key.displayableName} </h3>
 
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
@@ -67,7 +66,7 @@
 
                             <td>
                                 <button style="margin-bottom:0;" class="btn btn-danger btn-small"
-                                        onclick="revokeRole('${principalKey}','${entry.key}')">
+                                        onclick="revokeRole('${principalKey}','${entry.key.name}')">
                                     <i class="icon-remove icon-white"></i>
                                 </button>
                             </td>
@@ -75,7 +74,7 @@
                     </c:forEach>
                     </tbody>
                 </table>
-                <button class="btn btn-primary" onclick="grantRole('${entry.key}')">
+                <button class="btn btn-primary" onclick="grantRole('${entry.key.name}')">
                     <i class="icon-plus icon-white"></i>
                     <fmt:message key="label.members"/>
                 </button>

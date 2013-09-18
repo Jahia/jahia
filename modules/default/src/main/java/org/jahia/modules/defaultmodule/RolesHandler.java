@@ -39,6 +39,10 @@ public class RolesHandler implements Serializable {
 
     private String workspace;
 
+    private Locale locale;
+
+    private Locale fallbackLocale;
+
     private String roleGroup;
 
     private String searchType = "users";
@@ -73,21 +77,35 @@ public class RolesHandler implements Serializable {
         this.nodePath = nodePath;
     }
 
-    public Map<String,List<Principal>> getRoles() throws Exception {
-        Map<String,List<Principal>> m = new TreeMap<String, List<Principal>>();
+    public Map<JCRNodeWrapper,List<Principal>> getRoles() throws Exception {
+        Map<String,JCRNodeWrapper> rolesFromName = new HashMap<String,JCRNodeWrapper>();
+        Map<JCRNodeWrapper,List<Principal>> m = new TreeMap<JCRNodeWrapper, List<Principal>>(new Comparator<JCRNodeWrapper>() {
+            @Override
+            public int compare(JCRNodeWrapper jcrNodeWrapper, JCRNodeWrapper jcrNodeWrapper2) {
+                return jcrNodeWrapper.getDisplayableName().compareTo(jcrNodeWrapper2.getDisplayableName());
+            }
+        });
 
-        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
         if (roles == null) {
             QueryManager qm = s.getWorkspace().getQueryManager();
             Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
             NodeIterator ni = q.execute().getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                m.put(next.getName(), new ArrayList<Principal>());
+                m.put(next, new ArrayList<Principal>());
+                rolesFromName.put(next.getName(),next);
             }
         } else {
+            QueryManager qm = s.getWorkspace().getQueryManager();
             for (String r : roles) {
-                m.put(r, new ArrayList<Principal>());
+                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'", Query.JCR_SQL2);
+                NodeIterator ni = q.execute().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+                    m.put(next, new ArrayList<Principal>());
+                    rolesFromName.put(next.getName(),next);
+                }
             }
         }
 
@@ -115,10 +133,10 @@ public class RolesHandler implements Serializable {
             for (String[] strings : value) {
                 String role = strings[2];
 
-                if (strings[1].equals("GRANT") && m.containsKey(role) && !m.get(role).contains(p)) {
-                    m.get(role).add(p);
-                } else if (strings[1].equals("DENY") && m.containsKey(role)) {
-                    m.get(role).remove(p);
+                if (strings[1].equals("GRANT") && rolesFromName.containsKey(role) && !m.get(rolesFromName.get(role)).contains(p)) {
+                    m.get(rolesFromName.get(role)).add(p);
+                } else if (strings[1].equals("DENY") && rolesFromName.containsKey(role)) {
+                    m.get(rolesFromName.get(role)).remove(p);
                 }
             }
         }
@@ -144,6 +162,8 @@ public class RolesHandler implements Serializable {
             nodePath = context.getMainResource().getNode().getPath();
         }
         workspace = node.getSession().getWorkspace().getName();
+        locale = node.getSession().getLocale();
+        fallbackLocale = node.getSession().getFallbackLocale();
     }
 
     public List<Principal> getRoleMembers() throws Exception{
@@ -155,7 +175,7 @@ public class RolesHandler implements Serializable {
             return;
         }
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
         for (String principal : principals) {
             session.getNode(nodePath).grantRoles(principal, Collections.singleton(role));
         }
@@ -167,7 +187,7 @@ public class RolesHandler implements Serializable {
             return;
         }
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
 
         Map<String,String> roles = new HashMap<String, String>();
         for (String principal : principals) {
@@ -220,7 +240,7 @@ public class RolesHandler implements Serializable {
                     searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders());
         } else {
-            final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+            final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
             searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), 0,
                     searchCriteria.getSearchString(), searchCriteria.getProperties(),
                     searchCriteria.getStoredOn(), searchCriteria.getProviders());

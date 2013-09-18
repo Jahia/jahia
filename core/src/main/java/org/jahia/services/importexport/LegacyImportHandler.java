@@ -42,6 +42,7 @@ package org.jahia.services.importexport;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
@@ -70,6 +71,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
@@ -94,7 +96,6 @@ public class LegacyImportHandler extends DefaultHandler {
     private final static int CTX_SKIP = 4;
     private final static int CTX_SHAREABLE = 5;
     private final static int CTX_DIRECTSUBNODES = 6;
-    // private final static int CTX_MERGED = 5;
 
     private final static int CTX_NAVLINK = 7;
 
@@ -111,7 +112,6 @@ public class LegacyImportHandler extends DefaultHandler {
     private int ctnId = 1;
 
     private Map<String, String> uuidMapping = new HashMap<String, String>();
-    private Map<String, String> pathMapping = new HashMap<String, String>();
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private JCRSessionWrapper session;
@@ -139,7 +139,6 @@ public class LegacyImportHandler extends DefaultHandler {
                                DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease, LegacyPidMappingTool legacyPidMappingTool) {
         this.session = session;
         this.uuidMapping = session.getUuidMapping();
-        this.pathMapping = session.getPathMapping();
         this.currentSiteNode = currentSiteNode;
 
         this.registry = registry;
@@ -190,7 +189,6 @@ public class LegacyImportHandler extends DefaultHandler {
             }
             level++;
             if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
-                // logger.info("create page" + attributes.getValue("jahia:title"));
                 createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), attributes.getValue("jahia:title"),
                         attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
                         uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"),
@@ -204,7 +202,6 @@ public class LegacyImportHandler extends DefaultHandler {
                     if (localName.endsWith("List") && getCurrentContentType() != null &&
                             getCurrentContentType().getChildNodeDefinitionsAsMap()
                                     .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
-                        // logger.info("create list " + localName);
                         // Must be a container list
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
@@ -229,7 +226,6 @@ public class LegacyImportHandler extends DefaultHandler {
                     if (localName.endsWith("List") && getCurrentContentType() != null &&
                             getCurrentContentType().getChildNodeDefinitionsAsMap()
                                     .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
-                        // logger.info("create list " + localName);
                         // Must be a container list
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
@@ -305,7 +301,6 @@ public class LegacyImportHandler extends DefaultHandler {
                     break;
 
                 case CTX_SHAREABLE:
-                    // logger.info("create shareable "+localName);
                     if ("#shareableSource".equals(mapping.getMappedNode(getCurrentContentType(), localName))) {
                         createShareableNode(attributes.getValue("jahia:value"));
                     } else {
@@ -313,7 +308,6 @@ public class LegacyImportHandler extends DefaultHandler {
                     }
                     break;
                 case CTX_SKIP:
-                    // logger.info("skipped " + localName);
                     currentCtx.peek().pushSkip();
                     break;
                 case CTX_NAVLINK:
@@ -508,6 +502,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         if (propertiesToSet != null) {
+            @SuppressWarnings("unchecked")
             final Iterator<String> properties = propertiesToSet.keys();
             while (properties.hasNext()) {
                 final String propName = properties.next();
@@ -556,8 +551,6 @@ public class LegacyImportHandler extends DefaultHandler {
         if (uuidMapping.containsKey(uuid)) {
             sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
-            // logger.info("link Field-node : " + localName);
-
             sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null, creationMetadata);
             if (!references.containsKey(reference)) {
                 references.put(reference, new ArrayList<String>());
@@ -592,12 +585,6 @@ public class LegacyImportHandler extends DefaultHandler {
             if (!parent.isCheckedOut()) {
                 session.checkout(parent);
             }
-//            if (template != null) {
-//                template.copy(parent, nodeName, true, true);
-//                node = parent.getNode(nodeName);
-//                node.setProperty("j:sourceTemplate", template);
-//            } else {
-
             Calendar created = !StringUtils.isEmpty(creationMetadata.get("jcr:created")) ? ISO8601
                             .parse(creationMetadata.get("jcr:created")) : null;
                     String createdBy = creationMetadata.get("jahia:createdBy");
@@ -612,13 +599,6 @@ public class LegacyImportHandler extends DefaultHandler {
 
             if (template != null) {
                 node.setProperty("j:templateName", template);
-//                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:area] as a where isdescendantnode(a,['" + template.getPath() + "'])", Query.JCR_SQL2);
-//                NodeIterator ni = q.execute().getNodes();
-//                while (ni.hasNext()) {
-//                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
-//                    JCRNodeWrapper list = node.addNode(nodeWrapper.getName(), "jnt:contentList", null, created, createdBy, lastModified, lastModifiedBy);
-//                    list.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
-//                }
             }
         }
         return node;
@@ -958,7 +938,6 @@ public class LegacyImportHandler extends DefaultHandler {
 
             // todo : add a link here ??
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
-            // logger.info("link Field-node : " + localName);
             String reference = attributes.getValue("jahia:reference");
             if (!isProperty && !node.hasNode(propertyName)) {
                 JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null, getMetadataForNodeCreation(attributes));
@@ -982,7 +961,6 @@ public class LegacyImportHandler extends DefaultHandler {
             }
             currentCtx.peek().pushSkip();
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-            // logger.info("external link Field-node : " + localName);
 
             String value = attributes.getValue("jahia:value");
             if (!node.hasNode(propertyName)) {
@@ -1037,18 +1015,15 @@ public class LegacyImportHandler extends DefaultHandler {
             return false;
         }
         if (propertyDefinition.isProtected()) {
-            // logger.info("protected : " + propertyName);
             return false;
         }
         Node n = parent;
         if (propertyDefinition.isInternationalized()) {
             n = parent.getOrCreateI18N(locale);
-//            propertyName = propertyName + "_" + locale.toString();
         }
         if (!n.isCheckedOut()) {
             session.checkout(n);
         }
-        //logger.debug("Setting " + propertyName + " of type " + propertyDefinition.getRequiredType());
 
         if (value != null && value.length() != 0 && !value.equals("<empty>")) {
             switch (propertyDefinition.getRequiredType()) {
@@ -1068,7 +1043,6 @@ public class LegacyImportHandler extends DefaultHandler {
                 case PropertyType.WEAKREFERENCE:
                     if (propertyDefinition.isMultiple()) {
                         String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
-                        List<Value> values = new ArrayList<Value>();
                         for (String s : strings) {
                             createReferenceValue(s, propertyDefinition.getSelector(), n, propertyName);
                         }
@@ -1089,8 +1063,6 @@ public class LegacyImportHandler extends DefaultHandler {
 
                                     String ref = buf.substring(from, to);
                                     if (ref.startsWith("###/webdav")) {
-//                                        buf.replace(from, to, "##doc-context##/{mode}/#");
-//                                        continue;
                                         ref = StringUtils.substringAfter(ref, "###/webdav");
                                         buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");
                                     } else if (ref.startsWith("###file:")) {
@@ -1108,15 +1080,6 @@ public class LegacyImportHandler extends DefaultHandler {
                                         ref = URLDecoder.decode(ref, "UTF-8");
                                     } catch (UnsupportedEncodingException e) {
                                     }
-//                                    if (ref.startsWith("/shared")) {
-//                                        ref = "/sites/" + currentSiteNode.getName() + "/files" + ref;
-//                                    } else if (ref.startsWith("/users/")) {
-//                                        Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(ref);
-//                                        if (m.matches()) {
-//                                            ref = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
-//                                            ref = ref + "/files" + ((m.group(2) != null) ? m.group(2) : "");
-//                                        }
-//                                    }
 
                                     if (!references.containsKey(ref)) {
                                         references.put(ref, new ArrayList<String>());

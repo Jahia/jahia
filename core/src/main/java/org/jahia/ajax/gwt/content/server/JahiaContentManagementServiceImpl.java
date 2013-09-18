@@ -1549,6 +1549,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             return moduleHelper.releaseModule(moduleName, null, retrieveCurrentSession(null));
         } catch (Exception e) {
+            logger.error("Error during generation of a package for module " + moduleName, e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

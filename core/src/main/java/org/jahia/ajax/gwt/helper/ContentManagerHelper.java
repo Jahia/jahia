@@ -1128,7 +1128,7 @@ public class ContentManagerHelper {
         SourceControlManagement sourceControl = templatePackage.getSourceControl();
         if (sourceControl != null) {
             String path = node.getPath();
-            path = path.substring(path.indexOf("/sources/") + 8);
+            path = path.substring(path.indexOf("/sources/") + "/sources".length());
             String sourcesFolderPath = templatePackage.getSourcesFolder().getAbsolutePath();
             File file = new File(sourcesFolderPath + "/src/main/resources" + path);
             if (!file.exists()) {

@@ -1145,6 +1145,18 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    /**
+     * Returns the wrapper node which corresponds to the version specified in the current session. If the corresponding version cannot be
+     * found for the node a {@link PathNotFoundException} is thrown.
+     * 
+     * @param objectNode
+     *            the source object to check version node for
+     * @param provider
+     *            the node provider
+     * @return the wrapper node which corresponds to the version specified in the current session
+     * @throws RepositoryException
+     *             in case of a repository operation error
+     */
     public JCRNodeWrapper getFrozenVersionAsRegular(Node objectNode, JCRStoreProvider provider) throws RepositoryException {
         return getFrozenVersionAsRegular(objectNode, provider, true);
     }
@@ -1152,14 +1164,14 @@ public class JCRSessionWrapper implements Session {
     /**
      * Returns the wrapper node which corresponds to the version specified in the current session. If the corresponding version cannot be
      * found for the node a <b>null</b> is returned in case <code>throwExeptionIfNotFound</code> is set to false. If version is not found
-     * and <code>throwExeptionIfNotFound</code> is set to true - thorws a {@link PathNotFoundException}.
+     * and <code>throwExeptionIfNotFound</code> is set to true - throws a {@link PathNotFoundException}.
      * 
      * @param objectNode
      *            the source object to check version node for
      * @param provider
      *            the node provider
      * @param throwExeptionIfNotFound
-     *            if <code>true</code> a {@link PathNotFoundException} is throws in case the corresponding version cannot be found
+     *            if <code>true</code> a {@link PathNotFoundException} is thrown in case the corresponding version cannot be found
      * @return the wrapper node which corresponds to the version specified in the current session
      * @throws RepositoryException
      *             in case of a repository operation error

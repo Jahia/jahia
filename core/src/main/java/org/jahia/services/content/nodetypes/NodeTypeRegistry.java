@@ -43,6 +43,7 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.services.templates.ModuleVersion;
@@ -56,6 +57,7 @@ import org.springframework.core.io.Resource;
 import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
+
 import java.io.*;
 import java.util.*;
 
@@ -183,7 +185,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (ext.equalsIgnoreCase(".cnd")) {
             Reader resourceReader = null;
             try {
-                resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
+                resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
                 r.parse();
                 if (r.hasEncounteredIssuesWithDefinitions()) {
@@ -195,7 +197,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         } else if (ext.equalsIgnoreCase(".grp")) {
             Reader resourceReader = null;
             try {
-                resourceReader = new InputStreamReader(resource.getInputStream(), "UTF-8");
+                resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
                 JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
                 r.parse();
             } finally {
@@ -233,7 +235,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         if (ext.equalsIgnoreCase(".cnd")) {
             Reader resourceReader = null;
             try {
-                resourceReader = new InputStreamReader(resource.getInputStream());
+                resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.getURL().getPath(), systemId, this);
                 r.setDoRegister(false);
                 r.parse();

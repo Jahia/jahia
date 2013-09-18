@@ -42,8 +42,11 @@ package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.collections.set.ListOrderedSet;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -98,6 +101,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -862,11 +866,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         try {
                             if (legacyImport) {
-                                JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, "UTF-8"), zipentry.getName(),
+                                JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, Charsets.UTF_8), zipentry.getName(),
                                         file.getURL().getPath(), reg);
                                 r.parse();
                             } else {
-                                JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, "UTF-8"), zipentry.getName(),
+                                JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, Charsets.UTF_8), zipentry.getName(),
                                         file.getURL().getPath(), reg);
                                 r.parse();
                             }

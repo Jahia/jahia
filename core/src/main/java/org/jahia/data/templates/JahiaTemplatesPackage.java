@@ -449,13 +449,21 @@ public class JahiaTemplatesPackage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         JahiaTemplatesPackage that = (JahiaTemplatesPackage) o;
 
-        if (m_RootFolder != null ? !m_RootFolder.equals(that.m_RootFolder) : that.m_RootFolder != null) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        if (m_RootFolder != null ? !m_RootFolder.equals(that.m_RootFolder) : that.m_RootFolder != null) {
+            return false;
+        }
+        if (version != null ? !version.equals(that.version) : that.version != null) {
+            return false;
+        }
 
         return true;
     }

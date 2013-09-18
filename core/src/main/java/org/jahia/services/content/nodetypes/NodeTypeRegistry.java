@@ -215,6 +215,19 @@ public class NodeTypeRegistry implements NodeTypeManager {
         addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId, version);
     }
 
+    /**
+     * Reads the specified CND file resource and parses it to obtain a list of node type definitions.
+     * 
+     * @param resource
+     *            a resource, representing a CND file
+     * @param systemId
+     *            the ID to use to specify the "origin" on the node types from this file
+     * @return a list of the node types parsed from the specified resource
+     * @throws ParseException
+     *             in case of a parsing error
+     * @throws IOException
+     *             in case of an I/O error when reading the specified resource
+     */
     public List<ExtendedNodeType> getDefinitionsFromFile(Resource resource, String systemId) throws ParseException, IOException {
         String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {

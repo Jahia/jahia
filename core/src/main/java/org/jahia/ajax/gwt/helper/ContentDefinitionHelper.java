@@ -824,8 +824,7 @@ public class ContentDefinitionHelper {
             List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>();
 
             if (site.isNodeType("jnt:module")) {
-                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(site.getTemplateFolder());
-                packages.add(aPackage);
+                packages.add(site.getTemplatePackage());
             } else {
                 for (String s : site.getInstalledModules()) {
                     JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s);

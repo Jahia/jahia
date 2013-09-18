@@ -61,12 +61,11 @@ import java.util.Map;
 
 /**
  * Jahia import/export service to manipulate different types of content.
- * User: toto
- * Date: 13 d�c. 2004
- * Time: 12:21:48
+ * 
+ * @author toto
  */
 public interface ImportExportService {
-    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     String JAHIA_URI="http://www.jahia.org/";
 
@@ -93,8 +92,24 @@ public interface ImportExportService {
 
     String SYSTEM_VIEW = "systemView";
 
-    // Export
-
+    /**
+     * Performs the full repository export into the provided output stream using the specified parameters.
+     * 
+     * @param out
+     *            the output stream to write exported content into
+     * @param params
+     *            the export options
+     * @throws JahiaException
+     *             in case of processing errors
+     * @throws RepositoryException
+     *             for JCR-related errors
+     * @throws SAXException
+     *             in case of a parsing exceptions
+     * @throws IOException
+     *             I/O communication errors
+     * @throws TransformerException
+     *             XSLT transformation errors
+     */
     void exportAll(OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, TransformerException;
 
     /**
@@ -203,11 +218,49 @@ public interface ImportExportService {
      */
     ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules);
 
+    /**
+     * Import the size from the specified file node.
+     * 
+     * @param nodeWrapper
+     *            the file node to read content of the imported site from
+     * @throws RepositoryException
+     *             in case of a JCR error
+     * @throws IOException
+     *             in case of an I/O exception
+     * @throws JahiaException
+     *             if a processing error happens
+     */
     void importSiteZip(JCRNodeWrapper nodeWrapper) throws RepositoryException, IOException, JahiaException;
 
-    void importSiteZip(Resource nodeWrapper) throws RepositoryException, IOException, JahiaException;
+    /**
+     * Import the size from the specified resource.
+     * 
+     * @param resource
+     *            the resource to read content of the imported site from
+     * @throws RepositoryException
+     *             in case of a JCR error
+     * @throws IOException
+     *             in case of an I/O exception
+     * @throws JahiaException
+     *             if a processing error happens
+     */
+    void importSiteZip(Resource resource) throws RepositoryException, IOException, JahiaException;
 
-    void importSiteZip(Resource nodeWrapper, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
+    /**
+     * Import the size from the specified resource using the provided JCR session.
+     * 
+     * @param resource
+     *            the resource to read content of the imported site from
+     * @param session
+     *            current JCR session to use for the import
+     * @throws RepositoryException
+     *             in case of a JCR error
+     * @throws IOException
+     *             in case of an I/O exception
+     * @throws JahiaException
+     *             if a processing error happens
+     */
+    void importSiteZip(Resource resource, JCRSessionWrapper session) throws RepositoryException, IOException, JahiaException;
 
     /**
      * Import a full site zip into a newly created site.
@@ -216,17 +269,55 @@ public interface ImportExportService {
      *
      * @param file Zip file
      * @param site The new site where to import
+     * @param infos site infos
      * @throws RepositoryException
      * @throws IOException
      */
     void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
 
+    /**
+     * Import a full site zip into a newly created site.
+     *
+     * zip file can contain all kind of legacy jahia import files or jcr import format.
+     *
+     * @param file Zip file
+     * @param site The new site where to import
+     * @param infos site infos
+     * @param legacyMappingFilePath path to the legacy mappings
+     * @param legacyDefinitionsFilePath path for the legacy definitions
+     * @throws RepositoryException
+     * @throws IOException
+     */
     void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException;
 
+    /**
+     * Performs the import of categories from the provided import stream into the specified root category.
+     * 
+     * @param rootCategory
+     *            the root category to use
+     * @param is
+     *            the input stream to read import content from
+     */
     void importCategories(Category rootCategory, InputStream is);
 
-    List<String[]> importUsers(File file) throws IOException ;
+    /**
+     * Performs a batch import of users from the provided file
+     * @param file a file to read user data from
+     * @return a list of tuples &lt;username, password, homePage&gt; for the imported users 
+     * @throws IOException in case of a reading/parsing error
+     */
+    List<String[]> importUsers(File file) throws IOException;
 
+    /**
+     * Performs a batch import of users from the provided file
+     * 
+     * @param file
+     *            a file to read user data from
+     * @param site
+     *            site to use for group resolution
+     * @return a list of tuples &lt;username, password, homePage&gt; for the imported users
+     * @throws IOException
+     *             in case of a reading/parsing error
+     */
     List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException ;
-
 }

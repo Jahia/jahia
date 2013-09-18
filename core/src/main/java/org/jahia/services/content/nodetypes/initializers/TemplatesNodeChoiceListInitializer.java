@@ -104,7 +104,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 templateType = param;
             }
 
-            List<String> installedModules = ((JCRSiteNode) site).getInstalledModules();
+            List<String> installedModules = new ArrayList<String>(((JCRSiteNode) site).getInstalledModules());
             for (int i = 0; i < installedModules.size(); i++) {
                 String installedModule = installedModules.get(i);
                 JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
@@ -115,7 +115,8 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                         }
                     }
                 } else {
-                    logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '" + site.getPath() + "'");
+                    logger.error("Couldn't find module directory for module '" + installedModule
+                            + "' - a dependency of the site '" + site.getPath() + "'");
                 }
             }
 

@@ -342,7 +342,7 @@ public class NavigationHelper {
             String displayName = "";
             if (site != null && path.contains("$site/") || path.endsWith("$site")) {
                 if (StringUtils.startsWith(site.getPath(),"/modules")) {
-                    String moduleName = StringUtils.split(site.getPath(),"/")[1];
+                    String moduleName = StringUtils.split(site.getPath(), '/')[1];
                     path = StringUtils.replace(path,"$site", site.getPath() + "/" + ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
                 } else {
                     path = StringUtils.replace(path,"$site", site.getPath());
@@ -354,8 +354,8 @@ public class NavigationHelper {
             if (path.contains("$siteKey/")) {
                 path = path.replace("$siteKey", site.getSiteKey());
             }
-            if (path.contains("$moduleversion/") || path.endsWith("$moduleversion")) {
-                String moduleName = path.split("/")[2];
+            if (path.contains("$moduleversion")) {
+                String moduleName = StringUtils.split(path, '/')[1];
                 if (ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName) != null) {
                     path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
                 }  else {
@@ -363,7 +363,7 @@ public class NavigationHelper {
                     continue;
                 }
             }
-            if (path.contains("$systemsite/") || path.endsWith("$systemsite")) {
+            if (path.contains("$systemsite")) {
                 String systemSiteKey = JCRContentUtils.getSystemSitePath();
                 path = path.replace("$systemsite", systemSiteKey);
 //                try {

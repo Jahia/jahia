@@ -45,6 +45,12 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
 
+/**
+ * Attribute processor that handles <code>j:templateNode</code> attributes to use just the referenced template (view) name instead of a
+ * path.
+ * 
+ * @author Thomas Draier
+ */
 public class TemplateNodeProcessor implements AttributeProcessor {
     public boolean process(JCRNodeWrapper node, String name, String value) throws RepositoryException {
         if (name.equals("j:templateNode")) {

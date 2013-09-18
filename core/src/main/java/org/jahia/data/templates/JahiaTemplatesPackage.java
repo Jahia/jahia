@@ -174,7 +174,7 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * Return the template name
+     * Return the template name.
      *
      * @return (String) the name of the template
      */
@@ -185,7 +185,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Set the name
+     * Set the name.
      *
      * @param name the name of the template
      */
@@ -196,7 +196,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Return the Root Folder
+     * Return the Root Folder.
      *
      * @return (String) the Root Folder of the templates
      */
@@ -210,7 +210,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Set the Root Folder
+     * Set the Root Folder.
      *
      * @param folder the Root Folder of the templates
      */
@@ -226,7 +226,7 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * Return the provider name
+     * Return the provider name.
      *
      * @return (String) the name of the Provider
      */
@@ -237,7 +237,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Set the Provider
+     * Set the Provider.
      *
      * @param provider the name of the Provider
      */
@@ -248,7 +248,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Return the thumbnail file name
+     * Return the thumbnail file name.
      *
      * @return (String) the thumbnail file name
      */
@@ -259,7 +259,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Set the thumbnail file name
+     * Set the thumbnail file name.
      *
      * @param val the file name
      */
@@ -269,7 +269,7 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * get the file path
+     * Get the file path.
      */
     public String getFilePath() {
         return this.m_FilePath;
@@ -277,7 +277,7 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * set the file path
+     * Set the file path.
      */
     public void setFilePath(String path) {
         this.m_FilePath = path;

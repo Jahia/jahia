@@ -701,7 +701,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     }
 
-    public void removeRules(String moduleName) {
+    private void removeRules(String moduleName) {
         if (modulePackageNameMap.containsKey(moduleName)
                 && ruleBase.getPackage(modulePackageNameMap.get(moduleName)) != null) {
             ruleBase.removePackage(modulePackageNameMap.get(moduleName));

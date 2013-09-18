@@ -473,7 +473,7 @@ public abstract class AbstractFilter implements RenderFilter {
         }
 
         public boolean matches(RenderContext renderContext, Resource resource) {
-            return renderContext.getSite() != null && templateSet.equals(renderContext.getSite().getTemplatePackageName());
+            return renderContext.getSite() != null && renderContext.getSite().getInstalledModules().contains(templateSet);
         }
 
         @Override

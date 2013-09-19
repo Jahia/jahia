@@ -127,7 +127,7 @@ public class DiffHelper {
             postProcess.endElement("", "diffreport", "diffreport");
             postProcess.endDocument();
 
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 

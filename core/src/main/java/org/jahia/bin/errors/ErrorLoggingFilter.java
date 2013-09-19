@@ -119,7 +119,7 @@ public class ErrorLoggingFilter implements Filter {
             if (!ErrorFileDumper.isShutdown()) {
                 ErrorFileDumper.dumpToFile(t, request);
             }
-        } catch (Throwable throwable) {
+        } catch (Exception throwable) {
             logger.warn("Error creating error file", throwable);
         }
 

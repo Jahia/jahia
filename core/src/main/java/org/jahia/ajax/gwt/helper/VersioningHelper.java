@@ -137,7 +137,7 @@ public class VersioningHelper implements InitializingBean {
                     node.versionFile();
                     currentUserSession.save();
                 }
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }

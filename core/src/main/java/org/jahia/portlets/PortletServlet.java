@@ -425,7 +425,7 @@ public class PortletServlet extends HttpServlet {
            try {
                portlet.destroy();
            }
-           catch (Throwable th) {
+           catch (Exception th) {
                // Don't care for Exception
                this.getServletContext().log("Error during portlet destroy.", th);
            }

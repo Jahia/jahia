@@ -328,7 +328,7 @@ public class PropertiesHelper {
                                                 objectNode.getNode(prop.getName()).remove();
                                             }
                                         }
-                                    } catch (Throwable e) {
+                                    } catch (Exception e) {
                                         logger.error(e.getMessage(), e);
                                     }
                                 }

@@ -87,8 +87,8 @@ public class RolesHandler implements Serializable {
         });
         String roleFilter = "";
 
-        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
-        QueryManager qm = s.getWorkspace().getQueryManager();
+        final JCRSessionWrapper defaultSession = JCRSessionFactory.getInstance().getCurrentUserSession(null, locale, fallbackLocale);
+        QueryManager qm = defaultSession.getWorkspace().getQueryManager();
         if (role != null) {
             Query q = qm.createQuery("select * from [jnt:role] where localname()='" + role + "'" + roleFilter, Query.JCR_SQL2);
             getRoles(q, rolesFromName, result);
@@ -102,6 +102,7 @@ public class RolesHandler implements Serializable {
             }
         }
 
+        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
         JCRNodeWrapper node = s.getNode(nodePath);
         Map<String, List<String[]>> acl = node.getAclEntries();
 

@@ -1,5 +1,6 @@
 package org.jahia.modules.defaultmodule;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -78,6 +79,10 @@ public class RolesHandler implements Serializable {
     }
 
     public Map<JCRNodeWrapper,List<Principal>> getRoles() throws Exception {
+        return getRoles(null);
+    }
+
+     public Map<JCRNodeWrapper,List<Principal>> getRoles(String roleName) throws Exception {
         Map<String,JCRNodeWrapper> rolesFromName = new HashMap<String,JCRNodeWrapper>();
         Map<JCRNodeWrapper,List<Principal>> m = new TreeMap<JCRNodeWrapper, List<Principal>>(new Comparator<JCRNodeWrapper>() {
             @Override
@@ -85,11 +90,15 @@ public class RolesHandler implements Serializable {
                 return jcrNodeWrapper.getDisplayableName().compareTo(jcrNodeWrapper2.getDisplayableName());
             }
         });
-
+         String roleFilter = "";
+         if (role !=null) {
+             roleFilter = " and [j:nodeName]='" + roleName + "'";
+         }
         final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
         if (roles == null) {
+
             QueryManager qm = s.getWorkspace().getQueryManager();
-            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
+            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'" + roleFilter, Query.JCR_SQL2);
             NodeIterator ni = q.execute().getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
@@ -99,7 +108,7 @@ public class RolesHandler implements Serializable {
         } else {
             QueryManager qm = s.getWorkspace().getQueryManager();
             for (String r : roles) {
-                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'", Query.JCR_SQL2);
+                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'" + roleFilter, Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
@@ -167,7 +176,8 @@ public class RolesHandler implements Serializable {
     }
 
     public List<Principal> getRoleMembers() throws Exception{
-        return getRoles().get(role);
+        Map<JCRNodeWrapper,List<Principal>> r = getRoles(role);
+        return r.size() > 0 ? r.entrySet().iterator().next().getValue():new ArrayList<Principal>();
     }
 
     public void grantRole(String[] principals, MessageContext messageContext) throws Exception {

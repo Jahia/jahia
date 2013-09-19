@@ -314,7 +314,7 @@ public class RenderService {
                     for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageByFileName(packageName).getDependencies()) {
                         installed.add(aPackage.getRootFolder());
                     }
-                    template = addContextualTemplates(resource, renderContext, templateName, template, parent, installed);
+                    template = addContextualTemplates(resource, renderContext, template, parent, installed);
                 }
             } else {
                 if (resource.getTemplate().equals("default") && node.hasProperty("j:templateName")) {
@@ -344,7 +344,7 @@ public class RenderService {
                         String defaultView = templateNode.getProperty("j:defaultView").getString();
                         request.setAttribute("org.jahia.template.defaultView", defaultView);
                     }
-                    template = addContextualTemplates(resource, renderContext, templateName, template, templateNode, installedModules);
+                    template = addContextualTemplates(resource, renderContext, template, templateNode, installedModules);
                 } else {
                     return null;
                 }
@@ -370,7 +370,7 @@ public class RenderService {
         return template;
     }
 
-    private Template addContextualTemplates(Resource resource, RenderContext renderContext, String templateName, Template template, JCRNodeWrapper parent, Set<String> modules) throws RepositoryException {
+    private Template addContextualTemplates(Resource resource, RenderContext renderContext, Template template, JCRNodeWrapper parent, Set<String> modules) throws RepositoryException {
         if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
 

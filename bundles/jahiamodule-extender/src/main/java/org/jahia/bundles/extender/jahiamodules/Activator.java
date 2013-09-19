@@ -176,6 +176,17 @@ public class Activator implements BundleActivator {
 
         registerShellCommands(context);
         templatesService.setModuleStates(moduleStates);
+
+        JCRModuleListener l = (JCRModuleListener) SpringContextSingleton.getBean("org.jahia.services.templates.JCRModuleListener");
+        l.setListener(new JCRModuleListener.Listener() {
+            @Override
+            public void onModuleImported(JahiaTemplatesPackage pack) {
+                if (pack.getState().getState() == ModuleState.State.WAITING_TO_BE_IMPORTED) {
+                    start(pack.getBundle());
+                }
+            }
+        });
+
         logger.info("== Jahia Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
 
     }
@@ -462,7 +473,7 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private synchronized void start(Bundle bundle) {
+    private synchronized void start(final Bundle bundle) {
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
             logger.error("--- Bundle "+bundle+" is starting but has not yet been parsed");
@@ -489,6 +500,21 @@ public class Activator implements BundleActivator {
                 return;
             }
         }
+
+        try {
+            boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return session.itemExists("/modules/" + jahiaTemplatesPackage.getRootFolder() + "/" + jahiaTemplatesPackage.getVersion());
+                }
+            });
+            if (!imported) {
+                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_IMPORTED, null);
+                return;
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while reading module jcr content" + jahiaTemplatesPackage, e);
+        }
+
 
         logger.info("--- Start Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();

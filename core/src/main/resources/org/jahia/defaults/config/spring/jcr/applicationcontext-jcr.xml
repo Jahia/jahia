@@ -286,6 +286,7 @@
                             <property name="availableDuringPublish" value="true"/>
                             <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
                         </bean>
+                        <ref bean="org.jahia.services.templates.JCRModuleListener"/>
                         <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <ref bean="urlResolverListener" />
                         <bean class="org.jahia.services.history.NodeVersionHistoryListener">
@@ -319,7 +320,11 @@
     <bean id="propertyInterceptorRegistrator" class="org.jahia.services.content.interceptor.PropertyInterceptorRegistrator" abstract="true">
         <property name="jcrStoreService" ref="JCRStoreService"/>
     </bean>
-    
+
+    <bean id="org.jahia.services.templates.JCRModuleListener" class="org.jahia.services.templates.JCRModuleListener">
+        <property name="packageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+    </bean>
+
     <bean id="jcrVersionService" class="org.jahia.services.content.JCRVersionService" factory-method="getInstance">
     </bean>
 

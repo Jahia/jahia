@@ -246,8 +246,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    public JCRNodeWrapper checkoutModule(File sources, String scmURI, String branchOrTag, String moduleName, String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+    public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleName, String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         String tempName = null;
+        File sources = moduleSources;
 
         if (sources == null) {
             tempName = UUID.randomUUID().toString();

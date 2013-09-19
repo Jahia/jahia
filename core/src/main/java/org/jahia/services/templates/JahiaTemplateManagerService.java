@@ -161,7 +161,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
-    private static Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
+    private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
     private String mavenExecutable;
 

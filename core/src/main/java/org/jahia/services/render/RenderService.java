@@ -218,7 +218,7 @@ public class RenderService {
                     return s;
                 }
             } catch (TemplateNotFoundException tnfe) {
-
+                // skip this resolver and continue with the next one
             }
         }
         throw new TemplateNotFoundException("Unable to find the template for resource " + resource);
@@ -236,7 +236,7 @@ public class RenderService {
                 }
             }
         } catch (RepositoryException e) {
-
+            // ignore and continue resolution
         }
         return false;
     }

@@ -43,21 +43,21 @@ package org.jahia.services.render;
 import java.io.Serializable;
 
 /**
- * This class is used to sort content templates by priority for template resolution
+ * This class is used to sort content templates by priority for template resolution.
+ * 
  * @see RenderService
  */
 public class OrderedContentTemplate implements Comparable<OrderedContentTemplate>, Serializable {
 
-
     private static final long serialVersionUID = 5335847511441188234L;
+    
     private int priority;
     private Template template;
 
-
     /**
-     * Class constructor
+     * Class constructor.
      * @param template
-     * @param priority  : resolution takes the higher the priority
+     * @param priority resolution takes the higher the priority
      */
     public OrderedContentTemplate(Template template, int priority) {
         this.priority = priority;

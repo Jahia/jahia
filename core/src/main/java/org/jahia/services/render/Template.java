@@ -40,36 +40,34 @@
 
 package org.jahia.services.render;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.Patterns;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
+
 /**
-* 
-* User: toto
-* Date: Oct 28, 2010
-* Time: 3:36:35 PM
-* 
-*/
+ * Template information including the name, the node path, the view name, an optional priority and a reference to the next template.
+ * 
+ * @author Thomas Draier
+ */
 public class Template implements Serializable {
 
     private static final long serialVersionUID = -1700784569502723022L;
-    
-    public String view;
-    public String node;
+
     public String name;
     public Template next;
+    public String node;
+    public int priority;
+    public String view;
 
-    public Template(String view, String node, Template next, String name) {
-        this.view = view;
-        this.node = node;
-        this.name = name;
-        this.next = next;
-    }
-
+    /**
+     * Initializes an instance of this class by deserializing the provided string.
+     * 
+     * @param serialized
+     *            the serialized form of the template
+     */
     public Template(String serialized) {
         String[] s = Patterns.SLASH.split(StringUtils.substringBefore(serialized, "|"));
         this.view = s[0].equals("null") ? null : s[0];
@@ -81,38 +79,67 @@ public class Template implements Serializable {
         }
     }
 
-    @Override
-    public String toString() {
-        return "template " + name +  " with view " + view + " for node " + node;
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param view
+     *            the view name
+     * @param node
+     *            the node path
+     * @param next
+     *            the next {@link Template} in the resolution chain
+     * @param name
+     *            the name
+     */
+    public Template(String view, String node, Template next, String name) {
+        this(view, node, next, name, 0);
     }
 
-    public String getView() {
-        if (view == null) {
-            return "default";
-        }
-        return view;
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param view
+     *            the view name
+     * @param node
+     *            the node path
+     * @param next
+     *            the next {@link Template} in the resolution chain
+     * @param name
+     *            the name
+     * @param priority
+     *            the resolution priority
+     */
+    public Template(String view, String node, Template next, String name, int priority) {
+        super();
+        this.view = view;
+        this.node = node;
+        this.name = name;
+        this.next = next;
+        this.priority = priority;
     }
 
-    public String getNode() {
-        return node;
-    }
-
+    /**
+     * Returns the name of the template.
+     * 
+     * @return the name of the template
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the next {@link Template} in the resolution chain.
+     * 
+     * @return the next {@link Template} in the resolution chain
+     */
     public Template getNext() {
         return next;
-    }
-
-    void setNext(Template next) {
-        this.next = next;
     }
 
     public List<Template> getNextTemplates() {
         List<Template> t;
         if (next == null) {
-             t = new ArrayList<Template>();
+            t = new ArrayList<Template>();
         } else {
             t = next.getNextTemplates();
         }
@@ -120,11 +147,70 @@ public class Template implements Serializable {
         return t;
     }
 
+    /**
+     * Returns the node path.
+     * 
+     * @return the node path
+     */
+    public String getNode() {
+        return node;
+    }
+
+    /**
+     * Returns the template ordering priority.
+     * 
+     * @return the template ordering priority
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * Returns the name of the view.
+     * 
+     * @return the name of the view
+     */
+    public String getView() {
+        return view != null ? view : "default";
+    }
+
+    /**
+     * Returns the serialized form of this template.
+     * 
+     * @return the serialized form of this template
+     */
     public String serialize() {
-        String r = view+"/"+node+"/"+name;
+        return serialize(new StringBuilder(64)).toString();
+    }
+
+    /**
+     * Appends the serialized form of this template to the specified buffer.
+     * 
+     * @param buffer
+     *            the buffer to append a serialized form of this template to
+     * @return the buffer with the serialized form of this template appended
+     */
+    protected StringBuilder serialize(StringBuilder buffer) {
+        buffer.append(view).append("/").append(node).append("/").append(name);
         if (next != null) {
-            r += "|" + next.serialize();
+            buffer.append("|");
+            next.serialize(buffer);
         }
-        return r;
+        return buffer;
+    }
+
+    /**
+     * Sets the next {@link Template} in the resolution chain.
+     * 
+     * @param next
+     *            the next {@link Template} in the resolution chain
+     */
+    void setNext(Template next) {
+        this.next = next;
+    }
+
+    @Override
+    public String toString() {
+        return "template " + name + " with view " + view + " for node " + node;
     }
 }

@@ -75,6 +75,7 @@ import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -85,9 +86,20 @@ import java.util.*;
  */
 public class RenderService {
 
+    private static class TemplatePriorityComparator implements Comparator<Template>, Serializable {
+        private static final long serialVersionUID = 3462731866743025112L;
+
+        @Override
+        public int compare(Template o1, Template o2) {
+            return o1.getPriority() - o2.getPriority();
+        }
+    };
+
+    private static final Comparator<Template> TEMPLATE_PRIORITY_COMPARATOR = new TemplatePriorityComparator();
+
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
 
-    private CacheImplementation<String, SortedSet<OrderedContentTemplate>> templatesCache;
+    private CacheImplementation<String, SortedSet<Template>> templatesCache;
 
     private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
 
@@ -97,7 +109,7 @@ public class RenderService {
 
     @SuppressWarnings("unchecked")
     public void setCacheProvider(CacheProvider cacheProvider) {
-        templatesCache = (CacheImplementation<String, SortedSet<OrderedContentTemplate>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
+        templatesCache = (CacheImplementation<String, SortedSet<Template>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
     }
 
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
@@ -326,10 +338,6 @@ public class RenderService {
                         template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                                 null, templateNode.getIdentifier(), template, templateNode.getName());
 
-//                        Template t = addTemplate(resource, renderContext, templateNode.getName(), installedModules);
-//                        t.setNext(template);
-//                        template = t;
-
                         templateNode = templateNode.getParent();
                     }
                     if(request != null && templateNode.isNodeType("jnt:templatesFolder") && templateNode.hasProperty("j:defaultView")) {
@@ -382,7 +390,7 @@ public class RenderService {
     }
 
     private Template addTemplate(Resource resource, RenderContext renderContext, String templateName, Set<String> installedModules, String type) throws RepositoryException {
-        SortedSet<OrderedContentTemplate> templates = new TreeSet<OrderedContentTemplate>();
+        SortedSet<Template> templates = new TreeSet<Template>(TEMPLATE_PRIORITY_COMPARATOR);
         for (String s : installedModules) {
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(s);
             if (pack != null) {
@@ -390,10 +398,10 @@ public class RenderService {
                 templates.addAll(addTemplates(resource, renderContext, templateName, templateNode, type));
             }
         }
-        return templates.isEmpty() ? null : templates.last().getTemplate();
+        return templates.isEmpty() ? null : templates.last();
     }
 
-    private SortedSet<OrderedContentTemplate> addTemplates(Resource resource, RenderContext renderContext, String templateName,
+    private SortedSet<Template> addTemplates(Resource resource, RenderContext renderContext, String templateName,
                                                            JCRNodeWrapper templateNode, String type) throws RepositoryException {
         String key = new StringBuffer(templateNode.getPath()).append(type).append(
                 templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
@@ -414,7 +422,7 @@ public class RenderService {
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
 
-        SortedSet<OrderedContentTemplate> templates = new TreeSet<OrderedContentTemplate>();
+        SortedSet<Template> templates = new TreeSet<Template>(TEMPLATE_PRIORITY_COMPARATOR);
         while (ni.hasNext()) {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
             addTemplate(resource, renderContext, contentTemplateNode, templates);
@@ -423,7 +431,7 @@ public class RenderService {
         return templates;
     }
 
-    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<OrderedContentTemplate> templates)
+    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<Template> templates)
             throws RepositoryException {
         boolean ok = true;
         if (templateNode.hasProperty("j:applyOn")) {
@@ -443,10 +451,9 @@ public class RenderService {
         if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
         if (ok) {
-            Template template = new Template(
-                    templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode.getIdentifier(), null, templateNode.getName());
-            templates.add(new OrderedContentTemplate(template, templateNode.hasProperty("j:priority") ? (int) templateNode.getProperty("j:priority").getLong() : 0));
+            templates.add(new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view")
+                    .getString() : null, templateNode.getIdentifier(), null, templateNode.getName(), templateNode
+                    .hasProperty("j:priority") ? (int) templateNode.getProperty("j:priority").getLong() : 0));
         }
     }
 

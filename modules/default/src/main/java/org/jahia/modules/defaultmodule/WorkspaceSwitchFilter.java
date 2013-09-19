@@ -8,6 +8,8 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 public class WorkspaceSwitchFilter extends AbstractFilter {
@@ -17,14 +19,18 @@ public class WorkspaceSwitchFilter extends AbstractFilter {
         String newWorkspace = resource.getNode().getProperty("workspace").getString();
         final HttpServletRequest request = renderContext.getRequest();
         if (!newWorkspace.equals(resource.getWorkspace())) {
-            chain.pushAttribute(request, "previousWorkspace", resource.getWorkspace());
-            renderContext.setWorkspace(newWorkspace);
             JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(newWorkspace, resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());
-            JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
-            resource.setNode(n);
-            renderContext.getMainResource().setNode(s.getNode(renderContext.getMainResource().getNode().getPath()));
-            request.setAttribute("workspace", newWorkspace);
-            request.setAttribute("currentNode", n);
+            try {
+                JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
+                chain.pushAttribute(request, "previousWorkspace", resource.getWorkspace());
+                renderContext.setWorkspace(newWorkspace);
+                resource.setNode(n);
+                renderContext.getMainResource().setNode(s.getNode(renderContext.getMainResource().getNode().getPath()));
+                request.setAttribute("workspace", newWorkspace);
+                request.setAttribute("currentNode", n);
+            } catch (PathNotFoundException e) {
+                return "";
+            }
         }
         return null;
     }

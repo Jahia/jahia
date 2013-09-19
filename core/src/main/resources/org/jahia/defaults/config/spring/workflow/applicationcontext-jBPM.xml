@@ -23,6 +23,7 @@
                 <entry key="hibernate.hbm2ddl.auto" value="update" />
                 <entry key="hibernate.show_sql" value="false" />
                 <entry key="hibernate.id.new_generator_mappings" value="false" />
+                <entry key="hibernate.ejb.naming_strategy" value="org.jahia.hibernate.JahiaNamingStrategy" />
             </map>
         </property>
     </bean>

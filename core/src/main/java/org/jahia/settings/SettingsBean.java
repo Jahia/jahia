@@ -249,6 +249,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     
     private boolean readOnlyMode;
 
+    private String hibernateNamingTablePrefix = "JBPM_";
+
+    private String hibernateNamingReservedWordPrefix = "R_";
+
+    private boolean hibernateNamingForceLowerCase = true;
+
     /**
      * Default constructor.
      *
@@ -422,6 +428,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             globalGroupMembershipCheckActivated = getBoolean("globalGroupMembershipCheckActivated", false);
             
             readOnlyMode = getBoolean("readOnlyMode", false);
+
+            hibernateNamingTablePrefix = getString("hibernateNamingTablePrefix", "jbpm_");
+
+            hibernateNamingReservedWordPrefix = getString("hibernateNamingReservedWordPrefix", "r_");
+
+            hibernateNamingForceLowerCase = getBoolean("hibernateNamingForceLowerCase", true);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1150,5 +1162,32 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public void setReadOnlyMode(boolean readOnlyMode) {
         this.readOnlyMode = readOnlyMode;
+    }
+
+    /**
+     * A prefix added to all the Hibernate tables configured to use our custom JahiaNamingStrategy implementation,
+     * mostly used for the jBPM integration
+     * @return
+     */
+    public String getHibernateNamingTablePrefix() {
+        return hibernateNamingTablePrefix;
+    }
+
+    /**
+     * A prefix for all Hibernate tables or columns that are actual SQL-92 reserved words, since it seems that
+     * Hibernate's globally quoted identifiers implementation is incomplete and cannot be relied upon.
+     * @return
+     */
+    public String getHibernateNamingReservedWordPrefix() {
+        return hibernateNamingReservedWordPrefix;
+    }
+
+    /**
+     * This setting controls the generation of the hibernate table and column names by forcing (or not) all names
+     * to use lowercase. The default value is true.
+     * @return
+     */
+    public boolean isHibernateNamingForceLowerCase() {
+        return hibernateNamingForceLowerCase;
     }
 }

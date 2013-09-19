@@ -85,19 +85,17 @@ public class RolesHandler implements Serializable {
                 return jcrNodeWrapper.getDisplayableName().compareTo(jcrNodeWrapper2.getDisplayableName());
             }
         });
-        String roleFilter = "";
-
         final JCRSessionWrapper defaultSession = JCRSessionFactory.getInstance().getCurrentUserSession(null, locale, fallbackLocale);
         QueryManager qm = defaultSession.getWorkspace().getQueryManager();
         if (role != null) {
-            Query q = qm.createQuery("select * from [jnt:role] where localname()='" + role + "'" + roleFilter, Query.JCR_SQL2);
+            Query q = qm.createQuery("select * from [jnt:role] where localname()='" + role + "'", Query.JCR_SQL2);
             getRoles(q, rolesFromName, result);
         } else if (roles == null) {
-            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'" + roleFilter, Query.JCR_SQL2);
+            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
             getRoles(q, rolesFromName, result);
         } else {
             for (String r : roles) {
-                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'" + roleFilter, Query.JCR_SQL2);
+                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'", Query.JCR_SQL2);
                 getRoles(q, rolesFromName, result);
             }
         }

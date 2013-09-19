@@ -1,10 +1,8 @@
 package org.jahia.hibernate;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.tika.io.IOUtils;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
-import org.jahia.settings.SettingsBean;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -75,11 +73,7 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
     }
 
     public static String processTableName(String tableName) {
-        if (StringUtils.isNotEmpty(SettingsBean.getInstance().getHibernateNamingTablePrefix())) {
-            return processNameCase(SettingsBean.getInstance().getHibernateNamingTablePrefix() + tableName);
-        } else {
-            return processNameCase(tableName);
-        }
+        return processNameCase("jbpm_" + tableName);
     }
 
     public static String processColumnName(String columnName) {
@@ -87,18 +81,14 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
     }
 
     public static String prefixSqlReservedWords(String name) {
-        if (isSqlReservedWord(name) && StringUtils.isNotEmpty(SettingsBean.getInstance().getHibernateNamingReservedWordPrefix())) {
-            return SettingsBean.getInstance().getHibernateNamingReservedWordPrefix() + name;
+        if (isSqlReservedWord(name)) {
+            return "r_" + name;
         } else {
             return name;
         }
     }
 
     public static String processNameCase(String name) {
-        if (SettingsBean.getInstance().isHibernateNamingForceLowerCase()) {
-            return name.toLowerCase();
-        } else {
-            return name;
-        }
+        return name.toLowerCase();
     }
 }

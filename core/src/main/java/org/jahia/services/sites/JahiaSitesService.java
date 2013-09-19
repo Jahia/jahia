@@ -403,16 +403,16 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                         //Auto deploy all modules that define this behavior on site creation
                         final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
                         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-                            if (availableTemplatePackage.getAutoDeployOnSite() != null) {
-                                if ("all".equals(availableTemplatePackage.getAutoDeployOnSite()) || siteKey.equals(availableTemplatePackage.getAutoDeployOnSite())) {
-                                    String source = "/modules/" + availableTemplatePackage.getRootFolder();
-                                    try {
-                                        logger.info("Deploying module {} to {}", source, target);
-                                        templateService.installModule(availableTemplatePackage, target, session);
-                                    } catch (RepositoryException re) {
-                                        logger.error("Unable to deploy module " + source + " to "
-                                                + target + ". Cause: " + re.getMessage(), re);
-                                    }
+                            String autoDeployOnSite = availableTemplatePackage.getAutoDeployOnSite();
+                            if (autoDeployOnSite != null
+                                    && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite))) {
+                                String source = "/modules/" + availableTemplatePackage.getRootFolder();
+                                try {
+                                    logger.info("Deploying module {} to {}", source, target);
+                                    templateService.installModule(availableTemplatePackage, target, session);
+                                } catch (RepositoryException re) {
+                                    logger.error("Unable to deploy module " + source + " to " + target + ". Cause: "
+                                            + re.getMessage(), re);
                                 }
                             }
                         }

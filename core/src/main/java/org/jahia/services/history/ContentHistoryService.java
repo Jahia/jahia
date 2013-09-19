@@ -253,6 +253,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 }
                 // Not found new object
                 if (!shouldSkipInsertion) {
+                    session.beginTransaction();
                     HistoryEntry historyEntry = new HistoryEntry();
                     historyEntry.setDate(date != null ? date.getTime() : null);
                     historyEntry.setPath(path);
@@ -281,6 +282,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     historyEntry.setMessage(historyMessage);
                     session.save(historyEntry);
                     session.flush();
+                    session.getTransaction().commit();
                     insertedCount++;
                     latestTimeProcessed = date.getTime();
                     lastUUIDProcessed = nodeIdentifier;
@@ -288,6 +290,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     lastActionProcessed = action;
                 }
             } catch (HibernateException e) {
+                session.getTransaction().rollback();
                 whatDidWeDo = "insertion failed";
                 logger.error(e.getMessage(), e);
             } finally {

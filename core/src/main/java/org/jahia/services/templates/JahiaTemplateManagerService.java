@@ -246,12 +246,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
-    /**
-     * **************************************************************************************************************
-     * Module creation / compilation
-     * ***************************************************************************************************************
-     */
-
     public JCRNodeWrapper checkoutModule(File sources, String scmURI, String branchOrTag, String moduleName, String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         String tempName = null;
 
@@ -473,43 +467,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         session.save();
 
         return node;
-    }
-
-    public void duplicateModule(String moduleName, String moduleType, final String sourceModule) {
-        /*final File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName + "/1.0-SNAPSHOT");
-        if (tmplRootFolder.exists()) {
-            return;
-        }
-        if (!tmplRootFolder.exists()) {
-            logger.info("Start duplicating template package '" + sourceModule + "' to moduleName + '" + moduleName + "'");
-
-            try {
-                final List<String> files = new ArrayList<String>();
-                final File source = new File(settingsBean.getJahiaTemplatesDiskPath(), sourceModule);
-                FileUtils.copyDirectory(source, tmplRootFolder, new FileFilter() {
-                    public boolean accept(File pathname) {
-                        if (pathname.toString().endsWith("." + sourceModule + ".jsp")) {
-                            files.add(pathname.getPath().replace(source.getPath(), tmplRootFolder.getPath()));
-                        }
-                        return true;
-                    }
-                });
-                for (String file : files) {
-                    FileUtils.moveFile(new File(file), new File(file.replace("." + sourceModule + ".jsp", "." + moduleName + ".jsp")));
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-
-            new File(tmplRootFolder, "META-INF").mkdirs();
-            new File(tmplRootFolder, "WEB-INF").mkdirs();
-            new File(tmplRootFolder, "resources").mkdirs();
-            new File(tmplRootFolder, "css").mkdirs();
-
-            createManifest(moduleName, moduleName, tmplRootFolder, moduleType, "1.0", templatePackageRegistry.lookupByFileName(sourceModule).getDepends());
-            templatePackageRegistry.register(templatePackageDeployer.getPackage(tmplRootFolder));
-            logger.info("Package '" + moduleName + "' successfully created");
-        }*/
     }
 
     public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {
@@ -1270,12 +1227,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
     }
-
-    /**
-     * **************************************************************************************************************
-     * Module installation on sites
-     * ***************************************************************************************************************
-     */
 
     /**
      * get List of installed modules for a site.

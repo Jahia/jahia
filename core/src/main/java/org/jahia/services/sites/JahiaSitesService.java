@@ -354,6 +354,7 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
                     JCRNodeWrapper f = JCRContentUtils.getPathFolder(sitesFolder, siteKey, options, "jnt:virtualsitesFolder");
                     try {
                         f.getNode(siteKey);
+                        throw new IOException("site already exists");
                     } catch (PathNotFoundException e) {
                         JCRNodeWrapper siteNode = f.addNode(siteKey, "jnt:virtualsite");
 

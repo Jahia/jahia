@@ -67,6 +67,7 @@ import org.springframework.core.io.Resource;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -284,29 +285,39 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
     public JahiaSite addSite(final JahiaUser currentUser, final String title, final String serverName, final String siteKey, final String descr,
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
                              final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final String legacyMappingFilePath, final String legacyDefinitionsFilePath) throws JahiaException, IOException {
+        
+        JahiaSite site = null;
+        final List<Exception> errors = new ArrayList<Exception>(1);
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
+            site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath, session);
                     } catch (IOException e) {
-                        throw new RepositoryException(e);
+                        errors.add(e);
                     } catch (JahiaException e) {
-                        throw new RepositoryException(e);
+                        errors.add(e);
                     }
+                    
+                    return null;
                 }
             });
         } catch (RepositoryException e) {
-            try {
-                throw e.getCause();
-            } catch (IOException ee) {
-                throw ee;
-            } catch (JahiaException ee) {
-                throw ee;
-            } catch (Throwable ee) {
+            throw new JahiaException("", "", 0, 0, e);
+        }
+        if (!errors.isEmpty()) {
+            Exception e = errors.get(0);
+            if (e instanceof JahiaException) {
+                throw (JahiaException) e;
+            } else if (e instanceof IOException) {
+                throw (IOException) e;
+            } else {
+                // ?
                 throw new JahiaException("", "", 0, 0, e);
             }
         }
+        
+        return site;
     }
 
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,

@@ -149,8 +149,6 @@
     <bean id="ModuleInstallationHelper" class="org.jahia.services.templates.ModuleInstallationHelper">
         <property name="siteService" ref="JahiaSitesService"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
-        <property name="sourceControlFactory" ref="SourceControlFactory"/>
-        <property name="xmlIndentation" value="4"/>
     </bean>
 
     <bean id="SourceControlFactory" class="org.jahia.services.templates.SourceControlFactory">

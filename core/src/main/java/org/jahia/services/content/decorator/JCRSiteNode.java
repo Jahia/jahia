@@ -53,12 +53,14 @@ import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.SitesSettings;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+
 import java.util.*;
 
 /**
@@ -366,6 +368,34 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get site property", e);
+        }
+        return modules;
+    }
+
+    /**
+     * Returns a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree).
+     * 
+     * @return a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree)
+     */
+    public Set<String> getInstalledModulesWithAllDependencies() {
+        Set<String> modules = new LinkedHashSet<String>(getInstalledModules());
+        List<String> keys = new ArrayList<String>(modules);
+        TemplatePackageRegistry reg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackageRegistry();
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            JahiaTemplatesPackage aPackage = reg.lookupByFileName(key);
+            if (aPackage != null) {
+                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                    if (!modules.contains(depend.getRootFolder())) {
+                        modules.add(depend.getRootFolder());
+                        keys.add(depend.getRootFolder());
+                    }
+                }
+            } else {
+                logger.warn("Couldn't find module '" + key
+                        + "' which is a deirect or transitive dependency of the site '" + getName() + "'");
+            }
         }
         return modules;
     }

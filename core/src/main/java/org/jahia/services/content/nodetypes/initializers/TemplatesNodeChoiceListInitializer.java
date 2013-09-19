@@ -104,21 +104,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 templateType = param;
             }
 
-            List<String> installedModules = new ArrayList<String>(((JCRSiteNode) site).getInstalledModules());
-            for (int i = 0; i < installedModules.size(); i++) {
-                String installedModule = installedModules.get(i);
-                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
-                if (aPackage != null) {
-                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                        if (!installedModules.contains(depend.getRootFolder())) {
-                            installedModules.add(depend.getRootFolder());
-                        }
-                    }
-                } else {
-                    logger.error("Couldn't find module directory for module '" + installedModule
-                            + "' - a dependency of the site '" + site.getPath() + "'");
-                }
-            }
+            Set<String> installedModules = ((JCRSiteNode) site).getInstalledModulesWithAllDependencies();
 
             // get default template
             JCRNodeWrapper defaultTemplate = null;

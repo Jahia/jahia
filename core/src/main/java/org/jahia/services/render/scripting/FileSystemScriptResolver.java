@@ -54,8 +54,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenci
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.ModuleVersion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -85,8 +83,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Deprecated
 public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
-
-    private static Logger logger = LoggerFactory.getLogger(FileSystemScriptResolver.class);
 
     Comparator<File> scriptExtensionComparator;
     
@@ -235,26 +231,13 @@ public class FileSystemScriptResolver implements ScriptResolver, ApplicationList
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,  List<String> templateTypes) {
         Map<String, View> views = new HashMap<String, View>();
 
-        List<String> installedModules = null;
+        Set<String> installedModules = null;
         if (site != null && site.getPath().startsWith("/sites/")) {
-            installedModules = site.getInstalledModules();
-            for (int i = 0; i < installedModules.size(); i++) {
-                String installedModule = installedModules.get(i);
-                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModule);
-                if (aPackage != null) {
-                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                        if (!installedModules.contains(depend.getRootFolder())) {
-                            installedModules.add(depend.getRootFolder());
-                        }
-                    }
-                } else {
-                    logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '"+site.getPath()+"'");
-                }
-            }
+            installedModules = site.getInstalledModulesWithAllDependencies();
         } else if (site != null && site.getPath().startsWith("/modules/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
             if (aPackage != null) {
-                installedModules = new ArrayList<String>();
+                installedModules = new LinkedHashSet<String>();
                 installedModules.add(aPackage.getRootFolder());
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
                     if (!installedModules.contains(depend.getRootFolder())) {

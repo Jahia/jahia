@@ -324,22 +324,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         Set<String> installedModules = null;
         String sitePath = site.getPath();
         if (sitePath.startsWith("/sites/")) {
-            installedModules = new LinkedHashSet<String>(site.getInstalledModules());
-            List<String> keys = new ArrayList<String>(installedModules);
-            for (int i = 0; i < keys.size(); i++) {
-                String key = keys.get(i);
-                JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(key);
-                if (aPackage != null) {
-                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                        if (!installedModules.contains(depend.getRootFolder())) {
-                            installedModules.add(depend.getRootFolder());
-                            keys.add(depend.getRootFolder());
-                        }
-                    }
-                } else {
-                    logger.warn("Couldn't find module '" + key + "' installed in site '" + sitePath + "'");
-                }
-            }
+            installedModules = site.getInstalledModulesWithAllDependencies();
         } else if (sitePath.startsWith("/modules/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
             if (aPackage != null) {

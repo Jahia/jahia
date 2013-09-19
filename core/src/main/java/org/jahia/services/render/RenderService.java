@@ -60,7 +60,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -73,6 +73,7 @@ import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
@@ -174,7 +175,7 @@ public class RenderService {
      */
     public String render(Resource resource, RenderContext context) throws RenderException {
         if (context.getResourcesStack().contains(resource)) {
-            String resourceMessage = JahiaResourceBundle.getJahiaInternalResource("label.render.loop", context.getUILocale());
+            String resourceMessage = Messages.getInternal("label.render.loop", context.getUILocale());
             String formattedMessage = MessageFormat.format(resourceMessage, resource.getPath());
             logger.warn("Loop detected while rendering resource {}. Please check your content structure and references.", resource.getPath());
             return formattedMessage;
@@ -296,7 +297,7 @@ public class RenderService {
                     if (parent.hasProperty("j:templateSetContext")) {
                         packageName = parent.getProperty("j:templateSetContext").getNode().getName();
                     }
-                    List<String> installed = new ArrayList<String>();
+                    Set<String> installed = new LinkedHashSet<String>();
                     installed.add(packageName);
                     for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageByFileName(packageName).getDependencies()) {
                         installed.add(aPackage.getRootFolder());
@@ -309,20 +310,7 @@ public class RenderService {
                     templateName = node.getProperty("j:templateName").getString();
                 }
 
-                List<String> installedModules = ((JCRSiteNode) site).getInstalledModules();
-                for (int i = 0; i < installedModules.size(); i++) {
-                    String installedModule = installedModules.get(i);
-                    JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(installedModule);
-                    if (aPackage != null) {
-                        for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                            if (!installedModules.contains(depend.getRootFolder())) {
-                                installedModules.add(depend.getRootFolder());
-                            }
-                        }
-                    } else {
-                        logger.error("Couldn't find module directory for module '" + installedModule + "' installed in site '" + site.getPath() + "'");
-                    }
-                }
+                Set<String> installedModules = new LinkedHashSet<String>(((JCRSiteNode) site).getInstalledModulesWithAllDependencies());
                 installedModules.add("templates-system");
 
                 String type = "jnt:contentTemplate";
@@ -374,7 +362,7 @@ public class RenderService {
         return template;
     }
 
-    private Template addContextualTemplates(Resource resource, RenderContext renderContext, String templateName, Template template, JCRNodeWrapper parent, List<String> modules) throws RepositoryException {
+    private Template addContextualTemplates(Resource resource, RenderContext renderContext, String templateName, Template template, JCRNodeWrapper parent, Set<String> modules) throws RepositoryException {
         if (parent.isNodeType("jnt:templatesFolder") && parent.hasProperty("j:rootTemplatePath")) {
             String rootTemplatePath = parent.getProperty("j:rootTemplatePath").getString();
 
@@ -393,7 +381,7 @@ public class RenderService {
         return template;
     }
 
-    private Template addTemplate(Resource resource, RenderContext renderContext, String templateName, List<String> installedModules, String type) throws RepositoryException {
+    private Template addTemplate(Resource resource, RenderContext renderContext, String templateName, Set<String> installedModules, String type) throws RepositoryException {
         SortedSet<OrderedContentTemplate> templates = new TreeSet<OrderedContentTemplate>();
         for (String s : installedModules) {
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(s);

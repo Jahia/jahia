@@ -526,22 +526,8 @@ public class ContentDefinitionHelper {
         ArrayList<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
         Set<String> foundTypes = new HashSet<String>();
 
-        List<String> installedModules = null;
-        if (site != null && site.getPath().startsWith("/sites/")) {
-            installedModules = site.getInstalledModules();
-            for (int i = 0; i < installedModules.size(); i++) {
-                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModules.get(i));
-                if (aPackage != null) {
-                    for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                        if (!installedModules.contains(depend.getRootFolder())) {
-                            installedModules.add(depend.getRootFolder());
-                        }
-                    }
-                } else {
-                    logger.error("Couldn't find module directory for module '" + installedModules.get(i) + "' installed in site '"+site.getPath()+"'");
-                }
-            }
-        }
+        Set<String> installedModules = site != null && site.getPath().startsWith("/sites/") ? site.getInstalledModulesWithAllDependencies()
+                : null;
 
         Map<ExtendedNodeType, Set<ExtendedNodeType>> m = NodeTypeRegistry.getInstance().getMixinExtensions();
 

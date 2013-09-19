@@ -40,14 +40,6 @@
 
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,10 +48,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -72,17 +60,8 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.xml.transform.TransformerException;
 
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRCallback;
@@ -93,22 +72,12 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.xml.sax.SAXException;
-
-import difflib.DiffUtils;
-import difflib.Patch;
-import difflib.PatchFailedException;
-import difflib.myers.Equalizer;
-import difflib.myers.MyersDiff;
 
 /**
  * Module installation helper.
@@ -119,23 +88,9 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
 
     private static Logger logger = LoggerFactory.getLogger(ModuleInstallationHelper.class);
 
-    private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
-        public boolean equals(Object o, Object o1) {
-            String s1 = (String) o;
-            String s2 = (String) o1;
-            return s1.trim().equals(s2.trim());
-        }
-    });
-
-    private static Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
-
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
-
     private JahiaSitesService siteService;
-
-    private SourceControlFactory sourceControlFactory;
 
     private TemplatePackageRegistry templatePackageRegistry;
 
@@ -196,29 +151,6 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         if (!sites.isEmpty()) {
             installModuleOnAllSites(module, session, sites);
         }
-    }
-
-    private List<String> convertToNativeEncoding(List<String> sourceContent, Charset charset)
-            throws UnsupportedEncodingException {
-        List<String> targetContent = new ArrayList<String>();
-        for (String s : sourceContent) {
-            Matcher m;
-            int start = 0;
-            while ((m = UNICODE_PATTERN.matcher(s)).find(start)) {
-                String replacement = new String(new byte[] { (byte) Integer.parseInt(m.group(1), 16),
-                        (byte) Integer.parseInt(m.group(2), 16) }, "UTF-16");
-                if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
-                    s = m.replaceFirst(replacement);
-                }
-                start = m.start() + 1;
-            }
-            targetContent.add(s);
-        }
-        return targetContent;
-    }
-
-    public SourceControlFactory getSourceControlFactory() {
-        return sourceControlFactory;
     }
 
     public void installModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session)
@@ -303,15 +235,6 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                 ModuleInstallationHelper.class.getName()));
     }
 
-    private boolean isBinary(List<String> text) {
-        for (String s : text) {
-            if (s.contains("\u0000")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property,
             String value) throws RepositoryException {
         if (!references.containsKey(value)) {
@@ -342,237 +265,16 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         }
     }
 
-    public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session)
-            throws RepositoryException {
-        List<File> modifiedFiles = new ArrayList<File>();
-
-        SourceControlManagement scm = null;
-        try {
-            scm = sourceControlFactory.getSourceControlManagement(sources);
-        } catch (Exception e) {
-            logger.error("Cannot get SCM", e);
-        }
-
-        // Handle import
-        File sourcesImportFolder = new File(sources, "src/main/import");
-
-        JahiaTemplatesPackage aPackage = templatePackageRegistry.lookupByFileName(moduleName);
-
-        try {
-            File f = File.createTempFile("import", null);
-
-            if (session.getLocale() != null) {
-                throw new RepositoryException("Cannot generated export with i18n session");
-            }
-
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath()
-                    + "/repository/export/templatesCleanup.xsl");
-            FileOutputStream out = new FileOutputStream(f);
-            ImportExportBaseService.getInstance().exportZip(
-                    session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(), out,
-                    params);
-            IOUtils.closeQuietly(out);
-            ZipInputStream zis = null;
-            try {
-                zis = new ZipInputStream(new FileInputStream(f));
-                ZipEntry zipentry;
-                while ((zipentry = zis.getNextEntry()) != null) {
-                    if (!zipentry.isDirectory()) {
-                        try {
-                            String name = zipentry.getName();
-                            name = name.replace(aPackage.getRootFolderWithVersion(), aPackage.getRootFolder());
-                            File sourceFile = new File(sourcesImportFolder, name);
-                            if (saveFile(zis, sourceFile)) {
-                                modifiedFiles.add(sourceFile);
-                            }
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("Cannot patch import file", e);
-            } finally {
-                if (zis != null) {
-                    IOUtils.closeQuietly(zis);
-                }
-            }
-
-            if (scm != null) {
-                try {
-                    scm.setModifiedFile(modifiedFiles);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-        } catch (RepositoryException e1) {
-            logger.error(e1.getMessage(), e1);
-        } catch (SAXException e11) {
-            logger.error(e11.getMessage(), e11);
-        } catch (IOException e12) {
-            logger.error(e12.getMessage(), e12);
-        } catch (TransformerException e13) {
-            logger.error(e13.getMessage(), e13);
-        }
-
-        return modifiedFiles;
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
-        Charset transCodeTarget = null;
-        if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {
-            transCodeTarget = Charsets.ISO_8859_1;
-        }
-
-        if (!target.exists()) {
-            target.getParentFile().mkdirs();
-            if (transCodeTarget != null) {
-                FileUtils.writeLines(target, transCodeTarget.name(),
-                        convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
-            } else {
-                FileOutputStream output = FileUtils.openOutputStream(target);
-                try {
-                    IOUtils.copy(source, output);
-                    output.close();
-                } finally {
-                    IOUtils.closeQuietly(output);
-                }
-            }
-            return true;
-        } else {
-            List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget
-                    : Charsets.UTF_8);
-            if (!isBinary(targetContent)) {
-                List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
-                if (transCodeTarget != null) {
-                    sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
-                }
-                Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
-                if (!patch.getDeltas().isEmpty()) {
-                    targetContent = (List<String>) patch.applyTo(targetContent);
-                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget.name() : "UTF-8",
-                            targetContent, "\n");
-                    return true;
-                }
-            } else {
-                byte[] sourceArray = IOUtils.toByteArray(source);
-                FileInputStream input = new FileInputStream(target);
-                FileOutputStream output = null;
-                try {
-                    byte[] targetArray = IOUtils.toByteArray(input);
-                    if (!Arrays.equals(sourceArray, targetArray)) {
-                        output = new FileOutputStream(target);
-                        IOUtils.write(sourceArray, output);
-                        return true;
-                    }
-                } finally {
-                    IOUtils.closeQuietly(input);
-                    IOUtils.closeQuietly(output);
-                }
-            }
-        }
-        return false;
-    }
-
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    private void setDependenciesInPom(File sources, List<String> dependencies) {
-        try {
-            SAXReader reader = new SAXReader();
-            File pom = new File(sources, "pom.xml");
-            Document document = reader.read(pom);
-            Element e = document.getRootElement();
-            List elements = e.elements("build");
-            if (elements.isEmpty()) {
-                e = e.addElement("build");
-            } else {
-                e = (Element) elements.get(0);
-            }
-            elements = e.elements("plugins");
-            if (elements.isEmpty()) {
-                e = e.addElement("plugins");
-            } else {
-                e = (Element) elements.get(0);
-            }
-            Element pluginArtifactId = (Element) e
-                    .selectSingleNode("*[name()='plugin']/*[name()='artifactId' and text()='maven-bundle-plugin']");
-            if (pluginArtifactId == null) {
-                pluginArtifactId = (Element) e
-                        .selectSingleNode("*[name()='plugin']/*[name()='artifactId' and text()='maven-war-plugin']");
-                if (pluginArtifactId == null) {
-                    e = e.addElement("plugin");
-                    e.addElement("groupId").setText("org.apache.felix");
-                    e.addElement("artifactId").setText("maven-bundle-plugin");
-                    e.addElement("extensions").setText("true");
-                    e = e.addElement("configuration");
-                    e = e.addElement("instructions");
-                    e = e.addElement("Jahia-Depends");
-                } else {
-                    e = pluginArtifactId.getParent();
-                    e = (Element) e.elements("configuration").get(0);
-                    e = (Element) e.elements("archive").get(0);
-                    e = (Element) e.elements("manifestEntries").get(0);
-                    e = (Element) e.elements("depends").get(0);
-                }
-            } else {
-                e = pluginArtifactId.getParent();
-                elements = e.elements("configuration");
-                if (elements.isEmpty()) {
-                    e = e.addElement("configuration");
-                } else {
-                    e = (Element) elements.get(0);
-                }
-                elements = e.elements("instructions");
-                if (elements.isEmpty()) {
-                    e = e.addElement("instructions");
-                } else {
-                    e = (Element) elements.get(0);
-                }
-                elements = e.elements("Jahia-Depends");
-                if (elements.isEmpty()) {
-                    e = e.addElement("Jahia-Depends");
-                } else {
-                    e = (Element) elements.get(0);
-                }
-            }
-            e.setText(StringUtils.join(dependencies, ","));
-            File modifiedPom = new File(sources, "pom-modified.xml");
-            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
-            try {
-                writer.write(document);
-            } finally {
-                writer.close();
-            }
-            FileInputStream source = new FileInputStream(modifiedPom);
-            try {
-                saveFile(source, pom);
-            } finally {
-                IOUtils.closeQuietly(source);
-                modifiedPom.delete();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
     }
 
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
     }
 
-    public void setSourceControlFactory(SourceControlFactory sourceControlFactory) {
-        this.sourceControlFactory = sourceControlFactory;
-    }
-
     public void setTemplatePackageRegistry(TemplatePackageRegistry registry) {
         templatePackageRegistry = registry;
-    }
-
-    public void setXmlIndentation(int i) {
-        prettyPrint.setIndentSize(i);
     }
 
     public void synchro(JCRNodeWrapper source, JCRNodeWrapper destinationNode, JCRSessionWrapper session,
@@ -615,11 +317,6 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             logger.debug("Synchronizing node : " + destinationNode.getPath() + ", update=" + doUpdate + "/children="
                     + doChildren);
         }
-
-        // Set for jnt:template nodes : declares if the template was originally created with that module, false otherwise
-        // boolean isCurrentModule = (!destinationNode.hasProperty("j:moduleTemplate") && moduleName == null) ||
-        // (destinationNode.hasProperty("j:moduleTemplate") &&
-        // destinationNode.getProperty("j:moduleTemplate").getString().equals(moduleName));
 
         session.checkout(destinationNode);
 
@@ -874,19 +571,6 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                 }
             });
         }
-    }
-
-    public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {
-        pack.getDepends().clear();
-        pack.getDepends().addAll(depends);
-        templatePackageRegistry.computeDependencies(pack);
-
-        if (pack.getSourcesFolder() != null) {
-            setDependenciesInPom(pack.getSourcesFolder(), depends);
-        }
-
-        applicationEventPublisher.publishEvent(new JahiaTemplateManagerService.ModuleDependenciesEvent(pack
-                .getRootFolder(), this));
     }
 
 }

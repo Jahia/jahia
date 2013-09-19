@@ -1,6 +1,5 @@
 package org.jahia.modules.defaultmodule;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -78,43 +77,28 @@ public class RolesHandler implements Serializable {
         this.nodePath = nodePath;
     }
 
-    public Map<JCRNodeWrapper,List<Principal>> getRoles() throws Exception {
-        return getRoles(null);
-    }
-
-     public Map<JCRNodeWrapper,List<Principal>> getRoles(String roleName) throws Exception {
-        Map<String,JCRNodeWrapper> rolesFromName = new HashMap<String,JCRNodeWrapper>();
-        Map<JCRNodeWrapper,List<Principal>> m = new TreeMap<JCRNodeWrapper, List<Principal>>(new Comparator<JCRNodeWrapper>() {
+    public Map<JCRNodeWrapper, List<Principal>> getRoles() throws Exception {
+        Map<String, JCRNodeWrapper> rolesFromName = new HashMap<String, JCRNodeWrapper>();
+        Map<JCRNodeWrapper, List<Principal>> result = new TreeMap<JCRNodeWrapper, List<Principal>>(new Comparator<JCRNodeWrapper>() {
             @Override
             public int compare(JCRNodeWrapper jcrNodeWrapper, JCRNodeWrapper jcrNodeWrapper2) {
                 return jcrNodeWrapper.getDisplayableName().compareTo(jcrNodeWrapper2.getDisplayableName());
             }
         });
-         String roleFilter = "";
-         if (role !=null) {
-             roleFilter = " and [j:nodeName]='" + roleName + "'";
-         }
-        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
-        if (roles == null) {
+        String roleFilter = "";
 
-            QueryManager qm = s.getWorkspace().getQueryManager();
+        final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
+        QueryManager qm = s.getWorkspace().getQueryManager();
+        if (role != null) {
+            Query q = qm.createQuery("select * from [jnt:role] where localname()='" + role + "'" + roleFilter, Query.JCR_SQL2);
+            getRoles(q, rolesFromName, result);
+        } else if (roles == null) {
             Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'" + roleFilter, Query.JCR_SQL2);
-            NodeIterator ni = q.execute().getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                m.put(next, new ArrayList<Principal>());
-                rolesFromName.put(next.getName(),next);
-            }
+            getRoles(q, rolesFromName, result);
         } else {
-            QueryManager qm = s.getWorkspace().getQueryManager();
             for (String r : roles) {
                 Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'" + roleFilter, Query.JCR_SQL2);
-                NodeIterator ni = q.execute().getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                    m.put(next, new ArrayList<Principal>());
-                    rolesFromName.put(next.getName(),next);
-                }
+                getRoles(q, rolesFromName, result);
             }
         }
 
@@ -142,18 +126,27 @@ public class RolesHandler implements Serializable {
             for (String[] strings : value) {
                 String role = strings[2];
 
-                if (strings[1].equals("GRANT") && rolesFromName.containsKey(role) && !m.get(rolesFromName.get(role)).contains(p)) {
-                    m.get(rolesFromName.get(role)).add(p);
+                if (strings[1].equals("GRANT") && rolesFromName.containsKey(role) && !result.get(rolesFromName.get(role)).contains(p)) {
+                    result.get(rolesFromName.get(role)).add(p);
                 } else if (strings[1].equals("DENY") && rolesFromName.containsKey(role)) {
-                    m.get(rolesFromName.get(role)).remove(p);
+                    result.get(rolesFromName.get(role)).remove(p);
                 }
             }
         }
 
-        return m;
+        return result;
     }
 
-    public void setContext(JCRNodeWrapper node,  RenderContext context) throws RepositoryException {
+    private void getRoles(Query q, Map<String, JCRNodeWrapper> rolesFromName, Map<JCRNodeWrapper, List<Principal>> m) throws RepositoryException {
+        NodeIterator ni = q.execute().getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            m.put(next, new ArrayList<Principal>());
+            rolesFromName.put(next.getName(), next);
+        }
+    }
+
+    public void setContext(JCRNodeWrapper node, RenderContext context) throws RepositoryException {
         if (node.hasProperty("roles")) {
             roles = new ArrayList<String>();
             for (Value value : node.getProperty("roles").getValues()) {
@@ -175,9 +168,9 @@ public class RolesHandler implements Serializable {
         fallbackLocale = node.getSession().getFallbackLocale();
     }
 
-    public List<Principal> getRoleMembers() throws Exception{
-        Map<JCRNodeWrapper,List<Principal>> r = getRoles(role);
-        return r.size() > 0 ? r.entrySet().iterator().next().getValue():new ArrayList<Principal>();
+    public List<Principal> getRoleMembers() throws Exception {
+        Map<JCRNodeWrapper, List<Principal>> r = getRoles();
+        return r.size() > 0 ? r.entrySet().iterator().next().getValue() : new ArrayList<Principal>();
     }
 
     public void grantRole(String[] principals, MessageContext messageContext) throws Exception {
@@ -199,7 +192,7 @@ public class RolesHandler implements Serializable {
 
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
 
-        Map<String,String> roles = new HashMap<String, String>();
+        Map<String, String> roles = new HashMap<String, String>();
         for (String principal : principals) {
             List<String[]> entries = session.getNode(nodePath).getAclEntries().get(principal);
             for (String[] strings : entries) {
@@ -237,8 +230,7 @@ public class RolesHandler implements Serializable {
     /**
      * Performs the group search with the specified search criteria and returns the list of matching groups.
      *
-     * @param searchCriteria
-     *            current search criteria
+     * @param searchCriteria current search criteria
      * @return the list of groups, matching the specified search criteria
      */
     public Set<Principal> searchNewMembers(SearchCriteria searchCriteria) throws RepositoryException {

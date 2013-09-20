@@ -40,14 +40,18 @@
 
 package org.jahia.ajax.gwt.client.widget.subscription;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Action item that launches newsletter subscription manager.
@@ -61,21 +65,25 @@ public class SubscriptionManagerActionItem extends BaseActionItem {
 
 	@Override public void handleNewLinkerSelection() {
         final GWTJahiaNode n = linker.getSelectionContext().getSingleSelection();
-        setEnabled(n != null && n.getNodeTypes().contains("jnt:newsletter") && hasPermission(n) &&
-                (n.getAggregatedPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED));
+        setEnabled(n != null && n.getNodeTypes().contains("jnt:newsletter") && hasPermission(n));
     }
 
     @Override public void onComponentSelection() {
-        GWT.runAsync(new RunAsyncCallback() {
-
-            public void onSuccess() {
-                EngineContainer container = EngineLoader.createContainer(linker);
-                new SubscriptionManager(linker.getSelectionContext().getSingleSelection().getUUID(), linker, container);
-                container.showEngine();
+        final String path = linker.getSelectionContext().getSingleSelection().getPath();
+        JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(path),
+                Arrays.asList(GWTJahiaNode.QUICK_PUBLICATION_INFO), new AsyncCallback<List<GWTJahiaNode>>() {
+            public void onSuccess(List<GWTJahiaNode> result) {
+                if (!result.isEmpty() && result.get(0).getQuickPublicationInfo() != null && result.get(0).getQuickPublicationInfo().getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
+                    EngineContainer container = EngineLoader.createContainer(linker);
+                    new SubscriptionManager(linker.getSelectionContext().getSingleSelection().getUUID(), linker, container);
+                    container.showEngine();
+                } else {
+                    Window.alert(Messages.get("message.content.notpublished"));
+                }
             }
 
             public void onFailure(Throwable reason) {
-                Window.alert("Error: "+reason);
+                Window.alert("Error: " + reason);
             }
         });
     }

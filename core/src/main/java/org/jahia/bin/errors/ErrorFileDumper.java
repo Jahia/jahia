@@ -173,7 +173,7 @@ public class ErrorFileDumper {
                 performDumpToFile(t, requestData);
                 tasksSubmitted.decrementAndGet();
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }

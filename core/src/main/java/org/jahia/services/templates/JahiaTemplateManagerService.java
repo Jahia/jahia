@@ -504,6 +504,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
 
+        if (session.getLocale() != null) {
+            logger.error("Cannot generated export with i18n session");
+            return modifiedFiles; 
+        }
+        
         SourceControlManagement scm = null;
         try {
             scm = scmHelper.getSourceControlFactory().getSourceControlManagement(sources);
@@ -517,44 +522,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         JahiaTemplatesPackage aPackage = getTemplatePackageByFileName(moduleName);
 
         try {
-            File f = File.createTempFile("import", null);
-
-            if (session.getLocale() != null) {
-                throw new RepositoryException("Cannot generated export with i18n session");
-            }
-
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
-            FileOutputStream out = new FileOutputStream(f);
-            ImportExportBaseService
-                    .getInstance().exportZip(session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(),
-                    out, params);
-            IOUtils.closeQuietly(out);
-            ZipInputStream zis = null;
-            try {
-                zis = new ZipInputStream(new FileInputStream(f));
-                ZipEntry zipentry;
-                while ((zipentry = zis.getNextEntry()) != null) {
-                    if (!zipentry.isDirectory()) {
-                        try {
-                            String name = zipentry.getName();
-                            name = name.replace(aPackage.getRootFolderWithVersion(), aPackage.getRootFolder());
-                            File sourceFile = new File(sourcesImportFolder, name);
-                            if (saveFile(zis, sourceFile)) {
-                                modifiedFiles.add(sourceFile);
-                            }
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("Cannot patch import file", e);
-            } finally {
-                if (zis != null) {
-                    IOUtils.closeQuietly(zis);
-                }
-            }
+            regenerateImportFileInternal(session, modifiedFiles, sourcesImportFolder, aPackage);
 
             if (scm != null) {
                 try {
@@ -574,6 +542,45 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         return modifiedFiles;
+    }
+
+    private void regenerateImportFileInternal(JCRSessionWrapper session, List<File> modifiedFiles, File sourcesImportFolder,
+            JahiaTemplatesPackage aPackage) throws FileNotFoundException, RepositoryException, SAXException,
+            IOException, TransformerException, PathNotFoundException {
+        File f = File.createTempFile("import", null);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
+        FileOutputStream out = new FileOutputStream(f);
+        ImportExportBaseService
+                .getInstance().exportZip(session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(),
+                out, params);
+        IOUtils.closeQuietly(out);
+        ZipInputStream zis = null;
+        try {
+            zis = new ZipInputStream(new FileInputStream(f));
+            ZipEntry zipentry;
+            while ((zipentry = zis.getNextEntry()) != null) {
+                if (!zipentry.isDirectory()) {
+                    try {
+                        String name = zipentry.getName();
+                        name = name.replace(aPackage.getRootFolderWithVersion(), aPackage.getRootFolder());
+                        File sourceFile = new File(sourcesImportFolder, name);
+                        if (saveFile(zis, sourceFile)) {
+                            modifiedFiles.add(sourceFile);
+                        }
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Cannot patch import file", e);
+        } finally {
+            if (zis != null) {
+                IOUtils.closeQuietly(zis);
+            }
+        }
     }
 
     private void setDependenciesInPom(File sources, List<String> dependencies) {

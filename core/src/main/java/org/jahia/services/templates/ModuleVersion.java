@@ -80,7 +80,7 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
                 return c;
             }
         }
-        int c = new Integer(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
+        int c = Integer.valueOf(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
         if (c != 0) {
             return c;
         }

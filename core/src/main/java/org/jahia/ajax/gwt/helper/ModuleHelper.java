@@ -209,30 +209,6 @@ public class ModuleHelper {
         return null;
     }
 
-    private String getJahiaForgeUrl(String repositoryUrl) {
-        String forgeFileUrl = repositoryUrl.endsWith("/") ? (repositoryUrl + "jahia-catalog.properties")
-                : (repositoryUrl + "/jahia-catalog.properties");
-        logger.info("Trying to retrieve Jahia Catalog information from resourec at {}", forgeFileUrl);
-        long timer = System.currentTimeMillis();
-
-        String catalogInfo = null;
-        try {
-            catalogInfo = httpClient.executeGet(forgeFileUrl);
-        } catch (IllegalArgumentException e) {
-            // Malformed URL
-            return null;
-        }
-
-        if (catalogInfo != null) {
-            catalogInfo = catalogInfo.trim();
-        }
-
-        logger.info("Retrieved Jahia Catalog information in {} ms. The URL to the catalog is: {}", System.currentTimeMillis() - timer,
-                catalogInfo);
-        
-        return catalogInfo;
-    }
-
     public GWTModuleReleaseInfo getModuleDistributionInfo(String moduleName, JCRSessionWrapper session)
             throws RepositoryException, IOException, XmlPullParserException {
         JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(moduleName);
@@ -256,11 +232,6 @@ public class ModuleHelper {
             info.setRepositoryId(distributionManagement.getRepository().getId());
             info.setRepositoryUrl(repositoryUrl);
 
-//            if (repositoryUrl != null) {
-//                String forgeUrl = getJahiaForgeUrl(repositoryUrl);
-//                info.setForgeUrl(forgeUrl);
-//                info.setForgeModulePageUrl(forgeUrl + "/contents/forge-modules-repository/" + moduleName + ".html");
-//            }
         }
         if (pom.getProperties().containsKey("jahia-forge")) {
             final String property = pom.getProperties().getProperty("jahia-forge");
@@ -287,7 +258,7 @@ public class ModuleHelper {
             gwtReleaseInfo.setArtifactUrl(releaseInfo.getArtifactUrl());
         } else {
             JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
-            f = templateManagerService.compileModule(previous.getSourcesFolder()).getFile();
+            f = templateManagerService.compileModule(previous.getSourcesFolder());
         }
         if (f == null) {
             return null;

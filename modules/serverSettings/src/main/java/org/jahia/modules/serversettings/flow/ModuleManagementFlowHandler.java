@@ -160,7 +160,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             symbolicName = manifest.getMainAttributes().getValue("root-folder");
         }
         String version = manifest.getMainAttributes().getValue("Implementation-Version");
-        Bundle bundle = templateManagerService.findBundle(symbolicName, version);
+        Bundle bundle = BundleUtils.getBundle(symbolicName, version);
 
         String location = file.toURI().toString();
         if (file.getName().toLowerCase().endsWith(".war")) {

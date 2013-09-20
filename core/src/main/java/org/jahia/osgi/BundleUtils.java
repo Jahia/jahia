@@ -100,6 +100,28 @@ public final class BundleUtils {
     }
 
     /**
+     * Find the bundle that is represented by the specified module and version.
+     * 
+     * @param moduleName
+     *            the module name
+     * @param version
+     *            the module version
+     * @return the bundle for the specified module and version or <code>null</code> if the corresponding bundle is not present
+     */
+    public static Bundle getBundle(String moduleName, String version) {
+        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+            String n = getModuleName(bundle);
+            if (StringUtils.equals(n, moduleName)) {
+                String v = getModuleVersion(bundle);
+                if (StringUtils.equals(v, version)) {
+                    return bundle;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the bundle display name containing module name (ID) and the version.
      * 
      * @param bundle
@@ -109,7 +131,7 @@ public final class BundleUtils {
     public static String getDisplayName(Bundle bundle) {
         return getModuleName(bundle) + " v" + getModuleVersion(bundle);
     }
-
+    
     /**
      * Returns the module instance that corresponds to the provided OSGi bundle. If the instance is not present yet, creates it and stores
      * internally.

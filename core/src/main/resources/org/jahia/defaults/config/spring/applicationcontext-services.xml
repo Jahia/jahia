@@ -140,10 +140,9 @@
         <property name="moduleInstallationHelper" ref="ModuleInstallationHelper"/>
         <property name="siteService" ref="JahiaSitesService"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
-        <property name="sourceControlFactory" ref="SourceControlFactory"/>
         <property name="httpClientService" ref="HttpClientService"/>
-        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml}"/>
-        <property name="mavenExecutable" value="${mvnPath:mvn}"/>
+        <property name="sourceControlHelper" ref="SourceControlHelper"/>
+        <property name="moduleBuildHelper" ref="ModuleBuildHelper"/>
     </bean>
     
     <bean id="ModuleInstallationHelper" class="org.jahia.services.templates.ModuleInstallationHelper">
@@ -159,8 +158,20 @@
             </map>
         </property>
     </bean>
+    
+    <bean id="SourceControlHelper" class="org.jahia.services.templates.SourceControlHelper">
+        <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        <property name="sourceControlFactory" ref="SourceControlFactory"/>
+    </bean>
 
-
+    <bean id="ModuleBuildHelper" class="org.jahia.services.templates.ModuleBuildHelper">
+        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml}"/>
+        <property name="mavenExecutable" value="${mvnPath:mvn}"/>
+        <property name="settingsBean" ref="settingsBean"/>
+        <property name="sourceControlHelper" ref="SourceControlHelper"/>
+        <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+    </bean>
+    
     <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry">
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
     </bean>

@@ -1128,9 +1128,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             PathNotFoundException, RepositoryException {
         boolean found = false;
         QueryManager queryManager = session.getWorkspace().getQueryManager();
-        if (queryManager == null) {
-            return true;
-        }
 
         StringBuilder query = new StringBuilder(256);
         query.append("select * from [jnt:template] as t inner join ["

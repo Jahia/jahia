@@ -727,14 +727,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private List<String> convertToNativeEncoding(List<String> sourceContent, Charset charset) throws UnsupportedEncodingException {
         List<String> targetContent = new ArrayList<String>();
         for (String s : sourceContent) {
-            Matcher m;
+            Matcher m = UNICODE_PATTERN.matcher(s);
             int start = 0;
-            while ((m = UNICODE_PATTERN.matcher(s)).find(start)) {
+            while (m.find(start)) {
                 String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, "UTF-16");
                 if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
                     s = m.replaceFirst(replacement);
                 }
                 start = m.start() + 1;
+                m = UNICODE_PATTERN.matcher(s);
             }
             targetContent.add(s);
         }

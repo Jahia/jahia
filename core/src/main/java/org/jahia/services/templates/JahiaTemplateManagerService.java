@@ -657,7 +657,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         if (!target.exists()) {
-            target.getParentFile().mkdirs();
+            if (!target.getParentFile().mkdirs()) {
+                throw new IOException("Unable to create path for: " + target.getParentFile());
+            }
             if (transCodeTarget != null) {
                 FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
             } else {

@@ -177,7 +177,9 @@ public class ModuleBuildHelper {
             JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
-            sources.mkdirs();
+            if (!sources.mkdirs()) {
+                throw new IOException("Unable to create path for: " + sources);
+            }
         }
 
         String finalFolderName = null;
@@ -188,7 +190,9 @@ public class ModuleBuildHelper {
             if (sources == null) {
                 sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             }
-            sources.mkdirs();
+            if (!sources.mkdirs()) {
+                throw new IOException("Unable to create path for: " + sources);
+            }
         }
 
         if (moduleType.equals("jahiapp")) {

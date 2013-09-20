@@ -79,7 +79,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -780,9 +779,6 @@ public class TemplatePackageRegistry {
 
         @SuppressWarnings("unchecked")
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-            if (bean instanceof SharedService) {
-                ((ConfigurableApplicationContext) SpringContextSingleton.getInstance().getContext()).getBeanFactory().registerSingleton(beanName, bean);
-            }
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(renderService);
             }

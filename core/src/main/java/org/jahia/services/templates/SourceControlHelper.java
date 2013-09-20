@@ -308,7 +308,7 @@ public class SourceControlHelper {
         });
         FileUtils.deleteQuietly(tempSources);
 
-        scm.setModifiedFile(modifiedFiles);
+        scm.add(modifiedFiles);
 
         pack.setSourceControl(scm);
         setSCMConfigInPom(sources, fullUri);

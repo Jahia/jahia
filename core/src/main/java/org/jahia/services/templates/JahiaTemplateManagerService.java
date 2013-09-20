@@ -527,7 +527,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
             if (scm != null) {
                 try {
-                    scm.setModifiedFile(modifiedFiles);
+                    scm.add(modifiedFiles);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }

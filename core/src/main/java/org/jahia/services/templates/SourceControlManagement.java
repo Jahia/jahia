@@ -40,17 +40,44 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.ProcessHelper;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.ProcessHelper;
+
+import com.google.common.collect.ImmutableList;
+
+/**
+ * Base service class for SCM related operations.
+ */
 public abstract class SourceControlManagement {
+
+    /**
+     * Represents the result of an external command execution.
+     */
+    protected static class ExecutionResult {
+        protected String err;
+        protected int exitValue;
+        protected String out;
+
+        protected ExecutionResult(int exitValue, String out, String err) {
+            this.exitValue = exitValue;
+            this.out = out;
+            this.err = err;
+        }
+    }
+
+    /**
+     * The source control status of a resource.
+     */
+    public enum Status {
+        ADDED, COPIED, DELETED, MODIFIED, RENAMED, UNMERGED, UNMODIFIED, UNTRACKED
+    }
 
     protected static List<String> readLines(String source) throws IOException {
         StringReader input = null;
@@ -62,16 +89,60 @@ public abstract class SourceControlManagement {
         }
     }
 
+    protected String executable;
+
     protected File rootFolder;
 
-    protected Map<String, Status> statusMap;
-
-    protected String executable;
+    private Map<String, Status> statusMap;
 
     protected SourceControlManagement(String executable) {
         super();
         this.executable = executable;
     }
+
+    /**
+     * Adds the specified file to be included into the next commit.
+     * 
+     * @param file
+     *            a file to be considered as modified
+     * @throws IOException
+     *             in case of an SCM related error
+     */
+    public final void add(File file) throws IOException {
+        add(ImmutableList.of(file));
+    }
+
+    /**
+     * Adds the specified files to be included into the next commit.
+     * 
+     * @param files
+     *            the list of files to be considered as modified
+     * @throws IOException
+     *             in case of an SCM related error
+     */
+    public abstract void add(List<File> files) throws IOException;
+
+    protected void checkExecutionResult(ExecutionResult result) throws IOException {
+        if (result.exitValue != 0 || result.out.contains("conflicts")) {
+            String message = result.err;
+            if (StringUtils.isBlank(message)) {
+                message = result.out;
+            }
+            throw new IOException(message);
+        }
+    }
+
+    /**
+     * Performs a commit into the SCM.
+     * 
+     * @param message
+     *            the commit message
+     * @throws IOException
+     *             in case of a commit process error
+     */
+    public abstract void commit(String message) throws IOException;
+
+    protected abstract Map<String, Status> createStatusMap() throws IOException;
 
     protected ExecutionResult executeCommand(String command, String arguments) throws IOException {
         try {
@@ -80,51 +151,29 @@ public abstract class SourceControlManagement {
             int res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr, false);
             return new ExecutionResult(res, resultOut.toString(), resultErr.toString());
         } catch (Exception e) {
-            throw new IOException("Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
+            throw new IOException(
+                    "Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
         }
     }
 
-    class ExecutionResult {
-        int exitValue;
-        String out;
-        String err;
-
-        ExecutionResult(int exitValue, String out, String err) {
-            this.exitValue = exitValue;
-            this.out = out;
-            this.err = err;
-        }
-    }
-
-    public enum Status {
-        UNMODIFIED, MODIFIED, ADDED, DELETED, RENAMED, COPIED, UNMERGED, UNTRACKED
-    }
-
-
+    /**
+     * Returns the root folder of the module.
+     * 
+     * @return the root folder of the module
+     */
     public File getRootFolder() {
         return rootFolder;
     }
 
-    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws IOException;
-
-    protected abstract void initWithWorkingDirectory(File workingDirectory) throws IOException;
-
-    protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException;
-
-    public abstract String getURI() throws IOException;
-
-    public abstract void setModifiedFile(List<File> files) throws IOException;
-
-    public abstract void setRemovedFile(File file) throws IOException;
-
-    public abstract void setMovedFile(File src, File dst) throws IOException;
-
-    public abstract void update() throws IOException;
-
-    public abstract void commit(String message) throws IOException;
-
-    public abstract void markConflictAsResolved(File file) throws IOException;
-
+    /**
+     * Returns the SCM status of the specified resource.
+     * 
+     * @param path
+     *            the resource to check the SCM status for
+     * @return the SCM status of the specified resource
+     * @throws IOException
+     *             in case of SCM errors
+     */
     public Status getStatus(String path) throws IOException {
         if (getStatusMap().containsKey(path)) {
             return getStatusMap().get(path);
@@ -145,19 +194,76 @@ public abstract class SourceControlManagement {
         return Status.UNMODIFIED;
     }
 
-    protected abstract Map<String, Status> getStatusMap() throws IOException;
+    protected final Map<String, Status> getStatusMap() throws IOException {
+        if (statusMap == null) {
+            synchronized (SourceControlManagement.class) {
+                if (statusMap == null) {
+                    statusMap = createStatusMap();
+                }
+            }
+        }
+        return statusMap;
+    }
 
+    /**
+     * Returns an SCM URI.
+     * 
+     * @return an SCM URI
+     * @throws IOException
+     *             in case of an SCM related error
+     */
+    public abstract String getURI() throws IOException;
+
+    protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException;
+
+    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws IOException;
+
+    protected abstract void initWithWorkingDirectory(File workingDirectory) throws IOException;
+
+    /**
+     * Invalidates the SCM status cache and forces for the next check the SCM interaction.
+     */
     public void invalidateStatusCache() {
         statusMap = null;
     }
 
-    protected void checkExecutionResult(ExecutionResult result) throws IOException {
-        if (result.exitValue != 0 || result.out.contains("conflicts")) {
-            String message = result.err;
-            if (StringUtils.isBlank(message)) {
-                message = result.out;
-            }
-            throw new IOException(message);
-        }
-    }
+    /**
+     * Mark SCM conflict as resolved for the specified resource.
+     * 
+     * @param file
+     *            the resource to make as resolved
+     * @throws IOException
+     *             in case of SCM errors
+     */
+    public abstract void markConflictAsResolved(File file) throws IOException;
+
+    /**
+     * Moves the specified resource to a new location.
+     * 
+     * @param src
+     *            the source
+     * @param dst
+     *            the destination
+     * @throws IOException
+     *             in case of SCM errors
+     */
+    public abstract void move(File src, File dst) throws IOException;
+
+    /**
+     * Deletes the specified item from the working copy or repository.
+     * 
+     * @param file
+     *            the resource to be removed
+     * @throws IOException
+     *             in case of SCM errors
+     */
+    public abstract void remove(File file) throws IOException;
+
+    /**
+     * Performs SCM update.
+     * 
+     * @throws IOException
+     *             in case of SCM errors
+     */
+    public abstract void update() throws IOException;
 }

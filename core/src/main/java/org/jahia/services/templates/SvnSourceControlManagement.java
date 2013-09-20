@@ -49,6 +49,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * SVN based source control management service.
+ */
 public class SvnSourceControlManagement extends SourceControlManagement {
 
     private static final Predicate URL_PREDICATE = new Predicate() {
@@ -58,42 +61,16 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         }
     };
     
+    /**
+     * Initializes an instance of this class.
+     * @param executable the SVN executable
+     */
     public SvnSourceControlManagement(String executable) {
         super(executable);
     }
 
     @Override
-    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
-        this.rootFolder = workingDirectory;
-    }
-
-    @Override
-    protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
-        this.rootFolder = workingDirectory;
-    }
-
-    @Override
-    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
-        this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, "checkout " + uri + " " + workingDirectory.getName());
-        if (r.exitValue > 0) {
-            throw new IOException(r.err);
-        }
-        this.rootFolder = workingDirectory;
-    }
-
-    @Override
-    public String getURI() throws IOException {
-        ExecutionResult result = executeCommand(executable, "info");
-        String url = (String) CollectionUtils.find(readLines(result.out), URL_PREDICATE);
-        if (url != null) {
-            url = StringUtils.substringAfter(url,"URL:").trim();
-        }
-        return "scm:svn:"+url;
-    }
-
-    @Override
-    public void setModifiedFile(List<File> files) throws IOException {
+    public void add(List<File> files) throws IOException {
         if (files.isEmpty()) {
             return;
         }
@@ -124,59 +101,79 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void setRemovedFile(File file) throws IOException {
-        if (file == null) {
-            return;
-        }
-
-        String rootPath = rootFolder.getPath();
-
-        List<String> args = new ArrayList<String>();
-        args.add("remove");
-        args.add("--force");
-        if (file.getPath().equals(rootPath)) {
-            args.add(".");
-        } else {
-            args.add(file.getPath().substring(rootPath.length() + 1));
-        }
-        executeCommand(executable, StringUtils.join(args, ' '));
-        invalidateStatusCache();
-    }
-
-    @Override
-    public void setMovedFile(File src, File dst) throws IOException {
-        if (src == null || dst == null) {
-            return;
-        }
-
-        String rootPath = rootFolder.getPath();
-
-        List<String> args = new ArrayList<String>();
-        args.add("move");
-        if (src.getPath().equals(rootPath)) {
-            args.add(".");
-        } else {
-            args.add(src.getPath().substring(rootPath.length() + 1));
-        }
-        if (dst.getPath().equals(rootPath)) {
-            args.add(".");
-        } else {
-            args.add(dst.getPath().substring(rootPath.length() + 1));
-        }
-        executeCommand(executable, StringUtils.join(args, ' '));
-        invalidateStatusCache();
-    }
-
-    @Override
-    public void update() throws IOException {
-        invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, "update --non-interactive"));
-    }
-
-    @Override
     public void commit(String message) throws IOException {
         invalidateStatusCache();
         checkExecutionResult(executeCommand(executable, "commit -m \"" + message + "\""));
+    }
+
+    @Override
+    protected Map<String, Status> createStatusMap() throws IOException {
+        Map<String, Status> newMap = new HashMap<String, Status>();
+        ExecutionResult result = executeCommand(executable, "status");
+        for (String line : readLines(result.out)) {
+            if (StringUtils.isBlank(line)) {
+                continue;
+            }
+            String path = line.substring(8);
+            String combinedStatus = line.substring(0, 7);
+            char firstColumn = combinedStatus.charAt(0);
+            Status status = null;
+            if (firstColumn == 'A') {
+                status = Status.ADDED;
+            } else if (firstColumn == 'C') {
+                status = Status.UNMERGED;
+            } else if (firstColumn == 'D' || firstColumn == '!') {
+                status = Status.DELETED;
+            } else if (firstColumn == 'M') {
+                status = Status.MODIFIED;
+            } else if (firstColumn == '?') {
+                status = Status.UNTRACKED;
+            }
+            if (status != null) {
+                path = FilenameUtils.separatorsToUnix(path);
+                newMap.put(path, status);
+                String[] pathSegments = StringUtils.split(path, '/');
+                StringBuilder subPath = new StringBuilder(64);
+                for (String segment : pathSegments) {
+                    newMap.put(subPath.toString(), Status.MODIFIED);
+                    if (subPath.length() > 0) {
+                        subPath.append("/");
+                    }
+                    subPath.append(segment);
+                }
+            }
+        }
+        return newMap;
+    }
+
+    @Override
+    public String getURI() throws IOException {
+        ExecutionResult result = executeCommand(executable, "info");
+        String url = (String) CollectionUtils.find(readLines(result.out), URL_PREDICATE);
+        if (url != null) {
+            url = StringUtils.substringAfter(url,"URL:").trim();
+        }
+        return "scm:svn:"+url;
+    }
+
+    @Override
+    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
+        this.rootFolder = workingDirectory.getParentFile();
+        ExecutionResult r = executeCommand(executable, "checkout " + uri + " " + workingDirectory.getName());
+        if (r.exitValue > 0) {
+            throw new IOException(r.err);
+        }
+        this.rootFolder = workingDirectory;
+    }
+
+    @Override
+    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
+        this.rootFolder = workingDirectory;
+    }
+
+    @Override
+    protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
+        this.rootFolder = workingDirectory;
     }
 
     @Override
@@ -200,50 +197,53 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    protected Map<String, Status> getStatusMap() throws IOException {
-        if (statusMap == null) {
-            synchronized (SvnSourceControlManagement.class) {
-                if (statusMap == null) {
-                    Map<String, Status> newMap = new HashMap<String, Status>();
-                    ExecutionResult result = executeCommand(executable, "status");
-                    for (String line : readLines(result.out)) {
-                        if (StringUtils.isBlank(line)) {
-                            continue;
-                        }
-                        String path = line.substring(8);
-                        String combinedStatus = line.substring(0, 7);
-                        char firstColumn = combinedStatus.charAt(0);
-                        Status status = null;
-                        if (firstColumn == 'A') {
-                            status = Status.ADDED;
-                        } else if (firstColumn == 'C') {
-                            status = Status.UNMERGED;
-                        } else if (firstColumn == 'D' || firstColumn == '!') {
-                            status = Status.DELETED;
-                        } else if (firstColumn == 'M') {
-                            status = Status.MODIFIED;
-                        } else if (firstColumn == '?') {
-                            status = Status.UNTRACKED;
-                        }
-                        if (status != null) {
-                            path = FilenameUtils.separatorsToUnix(path);
-                            newMap.put(path, status);
-                            String[] pathSegments = StringUtils.split(path, '/');
-                            StringBuilder subPath = new StringBuilder(64);
-                            for (String segment : pathSegments) {
-                                newMap.put(subPath.toString(), Status.MODIFIED);
-                                if (subPath.length() > 0) {
-                                    subPath.append("/");
-                                }
-                                subPath.append(segment);
-                            }
-                        }
-                    }
-                    statusMap = newMap;
-                }
-            }
+    public void move(File src, File dst) throws IOException {
+        if (src == null || dst == null) {
+            return;
         }
-        return statusMap;
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("move");
+        if (src.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(src.getPath().substring(rootPath.length() + 1));
+        }
+        if (dst.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(dst.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
+    }
+
+    @Override
+    public void remove(File file) throws IOException {
+        if (file == null) {
+            return;
+        }
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("remove");
+        args.add("--force");
+        if (file.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(file.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
+    }
+
+    @Override
+    public void update() throws IOException {
+        invalidateStatusCache();
+        checkExecutionResult(executeCommand(executable, "update --non-interactive"));
     }
     
 }

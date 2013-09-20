@@ -45,7 +45,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,8 +74,6 @@ import org.json.JSONObject;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 /**
  * Module life cycle related methods.
@@ -121,7 +118,7 @@ public class ModuleHelper {
             if (!file.exists()) {
                 file = new File(sourcesFolderPath + "/src/main/webapp" + path);
             }
-            sourceControl.setModifiedFile(Arrays.asList(file));
+            sourceControl.add(file);
         }
     }
 
@@ -360,7 +357,7 @@ public class ModuleHelper {
                 SourceControlManagement scm = templateManagerService.getSourceControlFactory()
                         .getSourceControlManagement(sources);
                 if (scm != null) {
-                    scm.setModifiedFile(Lists.newArrayList(pomFile));
+                    scm.add(pomFile);
                     scm.commit("Updated distribution server information");
                 }
             }
@@ -396,7 +393,7 @@ public class ModuleHelper {
                 SourceControlManagement scm = templateManagerService.getSourceControlFactory()
                         .getSourceControlManagement(sources);
                 if (scm != null) {
-                    scm.setModifiedFile(Lists.newArrayList(pomFile));
+                    scm.add(pomFile);
                     scm.commit("Updated distribution server information");
                 }
             }

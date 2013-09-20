@@ -47,58 +47,22 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * User: toto
+ * Git based source control management service.
+ * 
+ * @author Thomas Draier
  */
 public class GitSourceControlManagement extends SourceControlManagement {
 
+    /**
+     * Initializes an instance of this class.
+     * @param executable the git executable
+     */
     public GitSourceControlManagement(String executable) {
         super(executable);
     }
 
-    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
-        this.rootFolder = workingDirectory;
-        executeCommand(executable, "init");
-        executeCommand(executable, "add .");
-        executeCommand(executable, "commit -a -m \"First commit\"");
-        executeCommand(executable, "remote add origin " + url);
-        executeCommand(executable, "fetch");
-        executeCommand(executable, "merge origin/master");
-        executeCommand(executable, "push -u origin master");
-    }
-
-    protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
-        this.rootFolder = workingDirectory;
-    }
-
-    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
-        this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, "clone " + uri + " " + workingDirectory.getName());
-        if (r.exitValue > 0) {
-            throw new IOException(r.err);
-        }
-        this.rootFolder = workingDirectory;
-        if (!StringUtils.isEmpty(branchOrTag)) {
-            executeCommand(executable, "checkout " + branchOrTag);
-        }
-        this.rootFolder = workingDirectory;
-    }
-
     @Override
-    public String getURI() throws IOException {
-        ExecutionResult result = executeCommand(executable, "remote -v");
-        String url = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
-        if (!StringUtils.isEmpty(url)) {
-            return "scm:git:"+url;
-        }
-        return null;
-    }
-
-    @Override
-    public File getRootFolder() {
-        return rootFolder;
-    }
-
-    public void setModifiedFile(List<File> files) throws IOException {
+    public void add(List<File> files) throws IOException {
         if (files.isEmpty()) {
             return;
         }
@@ -118,74 +82,9 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void setRemovedFile(File file) throws IOException {
-        if (file == null) {
-            return;
-        }
-
-        String rootPath = rootFolder.getPath();
-
-        List<String> args = new ArrayList<String>();
-        args.add("rm");
-        args.add("-f");
-        if (file.getPath().equals(rootPath)) {
-            args.add(".");
-        } else {
-            args.add(file.getPath().substring(rootPath.length() + 1));
-        }
-        executeCommand(executable, StringUtils.join(args, ' '));
-        invalidateStatusCache();
-    }
-
-    @Override
-    public void setMovedFile(File src, File dst) throws IOException {
-        if (src == null || dst == null) {
-            return;
-        }
-
-        String rootPath = rootFolder.getPath();
-
-        List<String> args = new ArrayList<String>();
-        args.add("mv");
-        if (src.getPath().equals(rootPath)) {
-            args.add(".");
-        } else {
-            args.add(src.getPath().substring(rootPath.length() + 1));
-        }
-        if (dst.getPath().equals(rootPath)) {
-            args.add(".");
-        } else {
-            args.add(dst.getPath().substring(rootPath.length() + 1));
-        }
-        executeCommand(executable, StringUtils.join(args, ' '));
-        invalidateStatusCache();
-    }
-
-    public void update() throws IOException {
-        executeCommand(executable, "stash clear");
-
-        Map<String, Status> statusMap = getStatusMap(false);
-        boolean stashRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
-                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
-                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
-        if (stashRequired) {
-            executeCommand(executable, "stash");
-        }
-        ExecutionResult pullResult = executeCommand(executable, "pull --rebase");
-        ExecutionResult stashPopResult = null;
-        if (stashRequired) {
-            stashPopResult = executeCommand(executable, "stash pop");
-        }
-        invalidateStatusCache();
-        checkExecutionResult(pullResult);
-        if (stashPopResult != null) {
-            checkExecutionResult(stashPopResult);
-        }
-    }
-
     public void commit(String message) throws IOException {
         invalidateStatusCache();
-        Map<String, Status> statusMap = getStatusMap(false);
+        Map<String, Status> statusMap = createStatusMap(false);
         boolean commitRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
                 || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
                 || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
@@ -196,22 +95,11 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void markConflictAsResolved(File file) throws IOException {
-        setModifiedFile(Arrays.asList(file));
+    protected Map<String, Status> createStatusMap() throws IOException {
+        return createStatusMap(true);
     }
 
-    protected Map<String, Status> getStatusMap() throws IOException {
-        if (statusMap == null) {
-            synchronized (GitSourceControlManagement.class) {
-                if (statusMap == null) {
-                    statusMap = getStatusMap(true);
-                }
-            }
-        }
-        return statusMap;
-    }
-
-    private Map<String, Status> getStatusMap(boolean folder) throws IOException {
+    private Map<String, Status> createStatusMap(boolean folder) throws IOException {
         Map<String, Status> newMap = new HashMap<String, Status>();
         ExecutionResult result = executeCommand(executable, "status --porcelain");
         for (String line : readLines(result.out)) {
@@ -269,5 +157,120 @@ public class GitSourceControlManagement extends SourceControlManagement {
             }
         }
         return newMap;
+    }
+
+    @Override
+    public File getRootFolder() {
+        return rootFolder;
+    }
+
+    @Override
+    public String getURI() throws IOException {
+        ExecutionResult result = executeCommand(executable, "remote -v");
+        String url = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
+        if (!StringUtils.isEmpty(url)) {
+            return "scm:git:"+url;
+        }
+        return null;
+    }
+
+    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
+        this.rootFolder = workingDirectory.getParentFile();
+        ExecutionResult r = executeCommand(executable, "clone " + uri + " " + workingDirectory.getName());
+        if (r.exitValue > 0) {
+            throw new IOException(r.err);
+        }
+        this.rootFolder = workingDirectory;
+        if (!StringUtils.isEmpty(branchOrTag)) {
+            executeCommand(executable, "checkout " + branchOrTag);
+        }
+        this.rootFolder = workingDirectory;
+    }
+
+    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
+        this.rootFolder = workingDirectory;
+        executeCommand(executable, "init");
+        executeCommand(executable, "add .");
+        executeCommand(executable, "commit -a -m \"First commit\"");
+        executeCommand(executable, "remote add origin " + url);
+        executeCommand(executable, "fetch");
+        executeCommand(executable, "merge origin/master");
+        executeCommand(executable, "push -u origin master");
+    }
+
+    protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
+        this.rootFolder = workingDirectory;
+    }
+
+    @Override
+    public void markConflictAsResolved(File file) throws IOException {
+        add(file);
+    }
+
+    @Override
+    public void move(File src, File dst) throws IOException {
+        if (src == null || dst == null) {
+            return;
+        }
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("mv");
+        if (src.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(src.getPath().substring(rootPath.length() + 1));
+        }
+        if (dst.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(dst.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
+    }
+
+    @Override
+    public void remove(File file) throws IOException {
+        if (file == null) {
+            return;
+        }
+
+        String rootPath = rootFolder.getPath();
+
+        List<String> args = new ArrayList<String>();
+        args.add("rm");
+        args.add("-f");
+        if (file.getPath().equals(rootPath)) {
+            args.add(".");
+        } else {
+            args.add(file.getPath().substring(rootPath.length() + 1));
+        }
+        executeCommand(executable, StringUtils.join(args, ' '));
+        invalidateStatusCache();
+    }
+
+    @Override
+    public void update() throws IOException {
+        executeCommand(executable, "stash clear");
+
+        Map<String, Status> statusMap = createStatusMap(false);
+        boolean stashRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
+                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
+                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+        if (stashRequired) {
+            executeCommand(executable, "stash");
+        }
+        ExecutionResult pullResult = executeCommand(executable, "pull --rebase");
+        ExecutionResult stashPopResult = null;
+        if (stashRequired) {
+            stashPopResult = executeCommand(executable, "stash pop");
+        }
+        invalidateStatusCache();
+        checkExecutionResult(pullResult);
+        if (stashPopResult != null) {
+            checkExecutionResult(stashPopResult);
+        }
     }
 }

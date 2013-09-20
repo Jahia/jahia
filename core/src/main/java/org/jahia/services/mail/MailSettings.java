@@ -128,17 +128,6 @@ public class MailSettings implements Serializable {
     }
 
     /**
-     * Returns the host.
-     * 
-     * @return the host
-     * @deprecated use {@link #getUri()} instead
-     */
-    @Deprecated
-    public String getHost() {
-        return uri;
-    }
-
-    /**
      * Returns the notificationLevel.
      * 
      * @return the notificationLevel
@@ -210,18 +199,6 @@ public class MailSettings implements Serializable {
      */
     public void setFrom(String from) {
         this.from = from;
-    }
-
-    /**
-     * Sets the value of host.
-     * 
-     * @param host
-     *            the host to set
-     * @deprecated use {@link #setUri(String)} instead
-     */
-    @Deprecated
-    public void setHost(String host) {
-        setUri(host);
     }
 
     /**

@@ -173,11 +173,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String defaultLanguageCode;
 
     // this is the list of jahia.properties mail settings values...
-    private boolean mail_service_activated;
-    private String mail_server;
-    private String mail_administrator;
-    private String mail_from;
-    private String mail_paranoia;
     private int mail_maxRegroupingOfPreviousException = 500;
 
     private String characterEncoding;
@@ -373,9 +368,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             // mail notification settings...
             mail_maxRegroupingOfPreviousException = getInt("mail_maxRegroupingOfPreviousException", 500);
-
-            // paranoia settings...
-            mail_paranoia = StringUtils.defaultIfEmpty(getString("mail_paranoia", "Disabled"), "Disabled");
 
             isProcessingServer = getBoolean("processingServer", true);
 
@@ -800,23 +792,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
-    @Deprecated
-    public String getMail_administrator() {
-        return mail_administrator;
-    }
-    @Deprecated
-    public String getMail_from() {
-        return mail_from;
-    }
-    @Deprecated
-    public String getMail_paranoia() {
-        return mail_paranoia;
-    }
-    @Deprecated
-    public String getMail_server() {
-        return mail_server;
-    }
-
     public String getCharacterEncoding() {
         return characterEncoding;
     }
@@ -883,30 +858,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public void setConsiderPreferredLanguageAfterLogin(
             boolean considerPreferredLanguageAfterLogin) {
         this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
-    }
-
-	public boolean isMail_service_activated() {
-    	return mail_service_activated;
-    }
-
-	public void setMail_service_activated(boolean mailServiceActivated) {
-    	mail_service_activated = mailServiceActivated;
-    }
-
-	public void setMail_server(String mailServer) {
-    	mail_server = mailServer;
-    }
-
-	public void setMail_administrator(String mailAdministrator) {
-    	mail_administrator = mailAdministrator;
-    }
-
-	public void setMail_from(String mailFrom) {
-    	mail_from = mailFrom;
-    }
-
-	public void setMail_paranoia(String mailParanoia) {
-    	mail_paranoia = mailParanoia;
     }
 
     public boolean isPermanentMoveForVanityURL() {
@@ -1151,5 +1102,4 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public void setReadOnlyMode(boolean readOnlyMode) {
         this.readOnlyMode = readOnlyMode;
     }
-
 }

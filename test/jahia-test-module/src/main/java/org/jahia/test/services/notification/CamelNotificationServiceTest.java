@@ -41,10 +41,10 @@
 package org.jahia.test.services.notification;
 
 import junit.framework.TestCase;
+
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.CamelNotificationService;
-import org.jahia.settings.SettingsBean;
 import org.junit.After;
 import org.junit.Before;
 
@@ -84,8 +84,8 @@ public class CamelNotificationServiceTest  extends TestCase {
 
     public void testSimpleSendingOfMail() throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("To", SettingsBean.getInstance().getMail_administrator());
-        map.put("From", SettingsBean.getInstance().getMail_from());
+        map.put("To", mailService.getSettings().getTo());
+        map.put("From", mailService.getSettings().getFrom());
         map.put("Subject", "Camel rocks");
 
         String body = "Hello.\nYes it does.\n\nRegards.";
@@ -94,8 +94,7 @@ public class CamelNotificationServiceTest  extends TestCase {
     }
 
     public void testComplexSendingOfMail() throws Exception {
-        mailService.sendMessage(SettingsBean.getInstance().getMail_from(), SettingsBean.getInstance()
-                        .getMail_administrator(), null, null, "Camel Rocks", "Camel Complex Mail Test",
+        mailService.sendMessage(mailService.getSettings().getFrom(), mailService.getSettings().getTo(), null, null, "Camel Rocks", "Camel Complex Mail Test",
                         "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>");
     }
 }

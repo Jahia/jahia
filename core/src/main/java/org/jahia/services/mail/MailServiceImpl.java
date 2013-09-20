@@ -452,13 +452,6 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         } else {
             logger.info("Mail Service is disabled.");
         }
-        
-        // backward compatibility
-        settingsBean.setMail_server(settings.getUri());
-        settingsBean.setMail_administrator(settings.getTo());
-        settingsBean.setMail_from(settings.getFrom());
-        settingsBean.setMail_service_activated(settings.isServiceActivated());
-        settingsBean.setMail_paranoia(settings.getNotificationLevel());
     }
 
     public void store(final MailSettings cfg) {

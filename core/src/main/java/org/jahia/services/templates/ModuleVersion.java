@@ -44,15 +44,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * Represents version of a module.
+ */
 public class ModuleVersion implements Comparable<ModuleVersion> {
     
     private static final Pattern VERSION_PATTERN = Pattern.compile("[^0-9]+");
 
+    private boolean isSnapshot;
+
+    private List<Integer> orderedVersionNumbers = new ArrayList<Integer>();
+    
     private String versionString;
 
-    private boolean isSnapshot;
-    private List<Integer> orderedVersionNumbers = new ArrayList<Integer>();
-
+    /**
+     * Initializes an instance of this class.
+     * @param versionString the plain text representation of the module version
+     */
     public ModuleVersion(String versionString) {
         this.versionString = versionString;
         if (versionString.endsWith("SNAPSHOT")) {
@@ -64,12 +72,15 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
         }
     }
 
-    public boolean isSnapshot() {
-        return isSnapshot;
-    }
-
-    public List<Integer> getOrderedVersionNumbers() {
-        return orderedVersionNumbers;
+    @Override
+    public int compareTo(ModuleVersion o) {
+        for (int i = 0; i < Math.min(orderedVersionNumbers.size(), o.orderedVersionNumbers.size()); i++) {
+            int c = orderedVersionNumbers.get(i).compareTo(o.getOrderedVersionNumbers().get(i));
+            if (c != 0) return c;
+        }
+        int c = new Integer(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
+        if (c != 0) return c;
+        return versionString.compareTo(o.versionString);
     }
 
     @Override
@@ -85,19 +96,25 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
         return true;
     }
 
+    /**
+     * Returns a list of ordered version numbers.
+     * @return a list of ordered version numbers
+     */
+    public List<Integer> getOrderedVersionNumbers() {
+        return orderedVersionNumbers;
+    }
+
     @Override
     public int hashCode() {
         return versionString != null ? versionString.hashCode() : 0;
     }
 
-    public int compareTo(ModuleVersion o) {
-        for (int i = 0; i < Math.min(orderedVersionNumbers.size(), o.orderedVersionNumbers.size()); i++) {
-            int c = orderedVersionNumbers.get(i).compareTo(o.getOrderedVersionNumbers().get(i));
-            if (c != 0) return c;
-        }
-        int c = new Integer(orderedVersionNumbers.size()).compareTo(o.orderedVersionNumbers.size());
-        if (c != 0) return c;
-        return versionString.compareTo(o.versionString);
+    /**
+     * Checks if the current version is a SNAPSHOT or not.
+     * @return <code>true</code> if the current version is a SNAPSHOT; <code>false</code> otherwise
+     */
+    public boolean isSnapshot() {
+        return isSnapshot;
     }
 
     @Override

@@ -41,6 +41,7 @@ package org.jahia.modules.serversettings.flow;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
@@ -51,6 +52,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeIterator;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -168,9 +170,19 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
 
         if (bundle != null) {
-            bundle.update(new URL(location).openStream());
+            InputStream is = new URL(location).openStream();
+            try {
+                bundle.update(is);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         } else {
-            bundle = FrameworkService.getBundleContext().installBundle(location, new URL(location).openStream());
+            InputStream is = new URL(location).openStream();
+            try {
+                bundle = FrameworkService.getBundleContext().installBundle(location, is);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
         List<String> deps = BundleUtils.getModule(bundle).getDepends();
         List<String> missingDeps = new ArrayList<String>();

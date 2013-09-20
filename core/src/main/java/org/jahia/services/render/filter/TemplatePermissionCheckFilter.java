@@ -106,7 +106,6 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 requirePermissions = script.getView().getDefaultProperties().getProperty("requirePermissions");
             }
             if (requirePermissions != null) {
-                chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
                 if (requirePermissions.indexOf(' ') != -1) {
                     String[] perms = Patterns.SPACE.split(requirePermissions);
                     for (String perm : perms) {
@@ -136,7 +135,6 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             JahiaUser aliasedUser = JCRSessionFactory.getInstance().getCurrentAliasedUser();
 
             if (node.hasProperty("j:requiredPermissionNames") || node.hasProperty("j:requiredPermissions")) {
-                chain.pushAttribute(renderContext.getRequest(),"cache.dynamicRolesAcls",Boolean.TRUE);
 
                 final List<String> perms = new ArrayList<String>();
                 if (node.hasProperty("j:requiredPermissions") && !node.hasProperty("j:requiredPermissionNames")) {

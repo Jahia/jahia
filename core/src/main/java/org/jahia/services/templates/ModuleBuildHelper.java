@@ -188,7 +188,7 @@ public class ModuleBuildHelper {
         File sources = moduleSources; 
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
-            if (!sources.mkdirs()) {
+            if (!sources.exists() && !sources.mkdirs()) {
                 throw new IOException("Unable to create path for: " + sources);
             }
         }
@@ -201,7 +201,7 @@ public class ModuleBuildHelper {
             if (sources == null) {
                 sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             }
-            if (!sources.mkdirs()) {
+            if (!sources.exists() && !sources.mkdirs()) {
                 throw new IOException("Unable to create path for: " + sources);
             }
         }

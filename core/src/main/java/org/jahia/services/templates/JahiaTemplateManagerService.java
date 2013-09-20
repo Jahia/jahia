@@ -645,13 +645,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             e.setText(StringUtils.join(dependencies, ","));
             File modifiedPom = new File(sources, "pom-modified.xml");
-            XMLWriter writer = new XMLWriter(new FileWriter(modifiedPom), prettyPrint);
+            XMLWriter writer = new XMLWriter(new FileOutputStream(modifiedPom), prettyPrint);
             try {
                 writer.write(document);
             } finally {
                 writer.close();
             }
-            FileInputStream source = new FileInputStream(modifiedPom);
+            InputStream source = new BufferedInputStream(new FileInputStream(modifiedPom));
             try {
                 saveFile(source, pom);
             } finally {
@@ -671,7 +671,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         if (!target.exists()) {
-            if (!target.getParentFile().mkdirs()) {
+            if (!target.getParentFile().exists() && !target.getParentFile().mkdirs()) {
                 throw new IOException("Unable to create path for: " + target.getParentFile());
             }
             if (transCodeTarget != null) {

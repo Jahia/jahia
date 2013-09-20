@@ -200,7 +200,7 @@ public class SourceControlHelper {
             throw new IOException("Sources folder " + sources + " already exist");
         }
 
-        if (!sources.getParentFile().mkdirs()) {
+        if (!sources.getParentFile().exists() && !sources.getParentFile().mkdirs()) {
             throw new IOException("Unable to create sources folder at: " + sources);
         }
 

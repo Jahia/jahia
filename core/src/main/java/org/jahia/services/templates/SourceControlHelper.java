@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SourceControlHelper {
 
-    private class ModuleInfo {
+    private static class ModuleInfo {
         String name;
         File path;
         String version;

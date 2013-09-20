@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ModuleBuildHelper {
 
-    class CompiledModuleInfo {
+    static class CompiledModuleInfo {
         private final File file;
         private final String moduleName;
         private final String version;

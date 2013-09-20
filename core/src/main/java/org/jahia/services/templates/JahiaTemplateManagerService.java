@@ -805,17 +805,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         if (includeTransitiveDependencies) {
-            for (String m : installedModules) {
-                JahiaTemplatesPackage pkg = getTemplatePackageByFileName(m);
-                pkg = pkg != null ? pkg : getTemplatePackage(m);
-                if (pkg != null) {
-                    for (JahiaTemplatesPackage deps : pkg.getDependencies()) {
-                        if (!installedModules.contains(deps.getRootFolder())) {
-                            modules.add(deps.getRootFolder());
-                        }
-                    }
-                }
-            }
+            includeTransitiveModuleDependencies(installedModules, modules);
         }
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> all = templatePackageRegistry.getAllModuleVersions();
         List<JahiaTemplatesPackage> packages = new LinkedList<JahiaTemplatesPackage>();
@@ -831,6 +821,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         return packages.isEmpty() ? Collections.<JahiaTemplatesPackage>emptyList() : packages;
+    }
+
+    private void includeTransitiveModuleDependencies(List<String> installedModules, Set<String> modules) {
+        for (String m : installedModules) {
+            JahiaTemplatesPackage pkg = getTemplatePackageByFileName(m);
+            pkg = pkg != null ? pkg : getTemplatePackage(m);
+            if (pkg != null) {
+                for (JahiaTemplatesPackage deps : pkg.getDependencies()) {
+                    if (!installedModules.contains(deps.getRootFolder())) {
+                        modules.add(deps.getRootFolder());
+                    }
+                }
+            }
+        }
     }
 
     public void autoInstallModulesToSites(JahiaTemplatesPackage module, JCRSessionWrapper session)

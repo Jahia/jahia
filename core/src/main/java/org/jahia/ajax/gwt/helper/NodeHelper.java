@@ -516,7 +516,7 @@ class NodeHelper {
                 n.set("j:resolvedDependencies",dependencies);
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

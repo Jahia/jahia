@@ -61,6 +61,7 @@
         <jahia.modules.test.importPackage>
             ${jahia.modules.importPackage},
 			com.google.inject;resolution:=optional,
+			com.google.inject.internal;resolution:=optional,
 			org.apache.bsf.util;resolution:=optional,
             com.google.protobuf;resolution:=optional,
             com.jayway.jsonpath;resolution:=optional,

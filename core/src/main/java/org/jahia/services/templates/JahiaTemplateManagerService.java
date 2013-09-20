@@ -66,6 +66,7 @@ import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
@@ -654,12 +655,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             InputStream source = new BufferedInputStream(new FileInputStream(modifiedPom));
             try {
                 saveFile(source, pom);
+            } catch (PatchFailedException e1) {
+                logger.error(e1.getMessage(), e1);
             } finally {
                 IOUtils.closeQuietly(source);
                 modifiedPom.delete();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } catch (DocumentException e2) {
+            logger.error(e2.getMessage(), e2);
         }
     }
 

@@ -456,26 +456,12 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
     private boolean uninstallModule(String sitePath, JCRSessionWrapper session, JCRSiteNode siteNode,
             JahiaTemplatesPackage module) throws RepositoryException {
         logger.info("Uninstalling " + module.getName() + " on " + sitePath);
-        JCRNodeWrapper moduleNode = null;
         try {
-            moduleNode = session.getNode("/modules/" + module.getRootFolder());
-
-            String moduleName = moduleNode.getName();
-
-            if (moduleNode.isNodeType("jnt:module")) {
-                moduleNode = moduleNode.getNode(module.getVersion().toString());
-            }
-            /*
-             * synchro(moduleNode, siteNode, session, moduleName, references);
-             * 
-             * ReferencesHelper.resolveCrossReferences(session, references);
-             */
-
             JCRPropertyWrapper installedModules = siteNode.getProperty("j:installedModules");
             Value toBeRemoved = null;
             Value[] values = installedModules.getValues();
             for (Value value : values) {
-                if (value.getString().equals(moduleName)) {
+                if (value.getString().equals(module.getRootFolder())) {
                     toBeRemoved = value;
                     break;
                 }

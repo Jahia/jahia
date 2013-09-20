@@ -181,6 +181,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             logger.debug("Cache filter for key with placeholders : {}", key);
         }
 
+        // Check if a force generation parameter is passed.
+        if (Boolean.TRUE.equals(resource.getModuleParams().remove("cache.forceGeneration"))) {
+            return null;
+        }
+
         // First check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
         // ec parameter with the uuid of the current node.
         boolean cacheable = isCacheable(renderContext, resource, key, properties);
@@ -316,7 +321,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             servedFromCache = new HashSet<String>();
             renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
         }
-        servedFromCache.add(key);
+        servedFromCache.add(finalKey);
 
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
 
@@ -355,10 +360,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // Generates the cache key
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
 
+        String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+
         // If this content has been served from cache, no need to cache it again
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
-        if (servedFromCache != null && servedFromCache.contains(key)) {
+        if (servedFromCache != null && servedFromCache.contains(finalKey)) {
             return previousOut;
         }
 
@@ -366,8 +373,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean cacheable = isCacheable(renderContext, resource, key, properties);
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-
-        String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
         try {
             if (cacheable) {
@@ -812,6 +817,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             } catch (JSONException e) {
                 logger.error(e.getMessage(), e);
             }
+
+            // Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning
+            // a cache entry based on incomplete dependencies.
+            resource.getModuleParams().put("cache.forceGeneration", true);
 
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);

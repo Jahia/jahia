@@ -354,8 +354,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             throw new IOException("Module release failed.");
         }
 
-        FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(),
-                new FileInputStream(generatedWar));
+        FileInputStream is = new FileInputStream(generatedWar);
+        try {
+            FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), is);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
         JahiaTemplatesPackage pack = compileAndDeploy(module.getRootFolder(), sources, session);
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
         node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());

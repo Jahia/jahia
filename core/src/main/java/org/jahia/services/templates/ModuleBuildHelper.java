@@ -53,6 +53,7 @@ import java.util.jar.JarFile;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
@@ -121,13 +122,22 @@ public class ModuleBuildHelper {
         CompiledModuleInfo moduleInfo = compileModule(sources);
         Bundle bundle = BundleUtils.getBundle(moduleName, moduleInfo.getVersion());
         if (bundle != null) {
-            bundle.update(new FileInputStream(moduleInfo.getFile()));
+            FileInputStream is = new FileInputStream(moduleInfo.getFile());
+            try {
+                bundle.update(is);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                     moduleInfo.getVersion()));
         }
         // No existing module found, deploy new one
-        bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(),
-                new FileInputStream(moduleInfo.getFile()));
+        FileInputStream is = new FileInputStream(moduleInfo.getFile());
+        try {
+            bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), is);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
         bundle.start();
         return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                 moduleInfo.getVersion()));

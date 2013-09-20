@@ -1021,9 +1021,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         public Set<String> doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             QueryManager qm = session.getWorkspace().getQueryManager();
-                            if (qm == null) {
-                                return Collections.emptySet();
-                            }
                             Set<String> templateSets = new TreeSet<String>();
                             for (NodeIterator nodes = qm
                                     .createQuery(

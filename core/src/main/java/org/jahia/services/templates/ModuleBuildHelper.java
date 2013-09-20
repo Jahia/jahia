@@ -173,8 +173,9 @@ public class ModuleBuildHelper {
         }
     }
 
-    public JCRNodeWrapper createModule(String moduleName, String artifactId, String moduleType, File sources,
-            JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+    public JCRNodeWrapper createModule(final String moduleName, final String artifactId, final String moduleType, final File moduleSources,
+            final JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        File sources = moduleSources; 
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             if (!sources.mkdirs()) {
@@ -195,12 +196,8 @@ public class ModuleBuildHelper {
             }
         }
 
-        if (moduleType.equals("jahiapp")) {
-            moduleType = "app";
-        }
-
         String[] archetypeParams = { "archetype:generate", "-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local",
-                "-DarchetypeGroupId=org.jahia.archetypes", "-DarchetypeArtifactId=jahia-" + moduleType + "-archetype",
+                "-DarchetypeGroupId=org.jahia.archetypes", "-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype",
                 "-Dversion=1.0-SNAPSHOT", "-DmoduleName=" + moduleName, "-DartifactId=" + artifactId,
                 "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION, "-DinteractiveMode=false" };
 

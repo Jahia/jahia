@@ -1,6 +1,6 @@
 package org.jahia.hibernate;
 
-import org.apache.tika.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
 
@@ -9,20 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A custom naming strategy to prefix the table names, prefix any name that uses an SQL reserved word, and can
- * force names to use lowercase.
+ * A custom naming strategy to prefix the table names, prefix any name that uses an SQL reserved word, and can force names to use lowercase.
  */
 public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Serializable {
 
+    private static final long serialVersionUID = 2436201913019906777L;
+
     /**
-   	 * A convenient singleton instance
-   	 */
-   	public static final NamingStrategy INSTANCE = new JahiaNamingStrategy();
+     * A convenient singleton instance
+     */
+    public static final NamingStrategy INSTANCE = new JahiaNamingStrategy();
 
     private static String[] sqlReservedWords = new String[0];
 
     static {
-        InputStream sqlReservedWordsStream = JahiaNamingStrategy.class.getClassLoader().getResourceAsStream("org/jahia/hibernate/sqlReservedWords.txt");
+        InputStream sqlReservedWordsStream = JahiaNamingStrategy.class.getClassLoader().getResourceAsStream(
+                "org/jahia/hibernate/sqlReservedWords.txt");
         if (sqlReservedWordsStream != null) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(sqlReservedWordsStream));
             String newLine = null;
@@ -33,7 +35,7 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
                 }
                 sqlReservedWords = reservedWordList.toArray(new String[reservedWordList.size()]);
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             } finally {
                 IOUtils.closeQuietly(bufferedReader);
             }

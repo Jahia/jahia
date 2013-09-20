@@ -962,12 +962,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @return a set of all available template packages
      */
     public Set<JahiaTemplatesPackage> getModulesWithViewsForComponent(String componentName) {
-        componentName = componentName.replace(":", "_");
-        Set<JahiaTemplatesPackage> r = templatePackageRegistry.getModulesWithViewsPerComponents().get(componentName);
-        if (r == null) {
-            return Collections.emptySet();
-        }
-        return r;
+        Set<JahiaTemplatesPackage> r = templatePackageRegistry.getModulesWithViewsPerComponents().get(StringUtils.replaceChars(componentName, ':', '_'));
+        return r != null ? r : Collections.<JahiaTemplatesPackage>emptySet();
     }
 
     /**

@@ -93,7 +93,7 @@ public abstract class SourceControlManagement {
 
     protected File rootFolder;
 
-    private Map<String, Status> statusMap;
+    private volatile Map<String, Status> statusMap;
 
     protected SourceControlManagement(String executable) {
         super();

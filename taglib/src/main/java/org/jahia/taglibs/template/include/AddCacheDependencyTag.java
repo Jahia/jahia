@@ -93,6 +93,18 @@ public class AddCacheDependencyTag extends TagSupport {
     @Override
     public int doEndTag() throws JspException {
         Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
+        addDependency(resource);
+        resource = (Resource) pageContext.getRequest().getAttribute("optionResource");
+        if (resource != null) {
+            addDependency(resource);
+        }
+        node = null;
+        stringDependency = null;
+        flushOnPathMatchingRegexp = null;
+        return super.doEndTag();    
+    }
+
+    private void addDependency(Resource resource) {
         if (node != null) {
             resource.getDependencies().add(node.getCanonicalPath());
         } else if (stringDependency != null) {
@@ -100,7 +112,5 @@ public class AddCacheDependencyTag extends TagSupport {
         } else if(flushOnPathMatchingRegexp != null) {
             resource.getRegexpDependencies().add(flushOnPathMatchingRegexp);
         }
-        node = null;
-        return super.doEndTag();    
     }
 }

@@ -40,14 +40,14 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.jahia.services.render.*;
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -59,8 +59,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
- *
  * @author : rincevent
  * @since JAHIA 6.5
  *        Created : 27 oct. 2009
@@ -86,9 +84,9 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
             String charset = pageContext.getResponse().getCharacterEncoding();
             // Todo test if module is active
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
-                                                                                   PageContext.REQUEST_SCOPE);
+                    PageContext.REQUEST_SCOPE);
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
-                                                                           PageContext.REQUEST_SCOPE);
+                    PageContext.REQUEST_SCOPE);
             String[] nodetypes = Patterns.COMMA.split(nodetype);
             if (node.isNodeType(nodetypes[0])) {
                 ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetypes[0]);
@@ -109,19 +107,25 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 } catch (TemplateNotFoundException e) {
-                    if(nodetypes.length>1) {
+                    if (nodetypes.length > 1) {
                         mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetypes[1]);
                         wrappedResource.setResourceNodeType(mixinNodeType);
                         script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                     }
                 }
-                if(script!=null) {
-                Object attribute = pageContext.getRequest().getAttribute("currentNode");
-                pageContext.getRequest().setAttribute("currentNode",node);
-                pageContext.getRequest().setAttribute("currentResource",wrappedResource);
-                pageContext.getOut().write(script.execute(wrappedResource, renderContext));
-                pageContext.getRequest().setAttribute("currentNode",attribute);
-                pageContext.getRequest().setAttribute("currentResource",currentResource);
+                if (script != null) {
+                    Object currentNode = pageContext.getRequest().getAttribute("currentNode");
+                    Resource currentOption = (Resource) pageContext.getRequest().getAttribute("optionResource");
+                    pageContext.getRequest().setAttribute("optionResource", currentResource);
+                    pageContext.getRequest().setAttribute("currentNode", node);
+                    pageContext.getRequest().setAttribute("currentResource", wrappedResource);
+                    try {
+                        pageContext.getOut().write(script.execute(wrappedResource, renderContext));
+                    } finally {
+                        pageContext.getRequest().setAttribute("optionResource", currentOption);
+                        pageContext.getRequest().setAttribute("currentNode", currentNode);
+                        pageContext.getRequest().setAttribute("currentResource", currentResource);
+                    }
                 }
             }
         } catch (RepositoryException e) {

@@ -1227,6 +1227,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    /**
+     * Event indicates that a module was either installed to the specified site or uninstalled from it.
+     */
     public static class ModuleDeployedOnSiteEvent extends ApplicationEvent {
         private static final long serialVersionUID = -6693201714720533228L;
         private String targetSitePath;
@@ -1241,6 +1244,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    /**
+     * Is fired when the module dependencies are changed.
+     */
     public static class ModuleDependenciesEvent extends ApplicationEvent {
         private static final long serialVersionUID = -6693201714720533228L;
         private String moduleName;

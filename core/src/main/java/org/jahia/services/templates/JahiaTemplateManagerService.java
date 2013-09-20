@@ -552,10 +552,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
         FileOutputStream out = new FileOutputStream(f);
-        ImportExportBaseService
-                .getInstance().exportZip(session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(),
-                out, params);
-        IOUtils.closeQuietly(out);
+        try {
+            ImportExportBaseService.getInstance().exportZip(
+                    session.getNode("/modules/" + aPackage.getRootFolderWithVersion()), session.getRootNode(), out,
+                    params);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
         ZipInputStream zis = null;
         try {
             zis = new ZipInputStream(new FileInputStream(f));

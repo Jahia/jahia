@@ -51,6 +51,12 @@
         <driver.derby.version>10.10.1.1</driver.derby.version>
         <driver.mysql.version>5.1.26</driver.mysql.version>
         <driver.postgresql.version>9.2-1003-jdbc4</driver.postgresql.version>
+        
+        <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
+        <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
+        <hibernateDialect.mysql>org.hibernate.dialect.MySQL5InnoDBDialect</hibernateDialect.mysql>
+        <hibernateDialect.oracle>org.hibernate.dialect.Oracle10gDialect</hibernateDialect.oracle>
+        <hibernateDialect.postgresql>org.hibernate.dialect.PostgreSQL82Dialect</hibernateDialect.postgresql>
 
         <!-- Meta information -->
         <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
@@ -491,6 +497,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>de.juplo</groupId>
+                    <artifactId>hibernate4-maven-plugin</artifactId>
+                    <version>1.0.2</version>
+                    <configuration>
+                        <target>SCRIPT</target>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

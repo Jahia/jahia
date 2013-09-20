@@ -16,6 +16,6 @@ jahia.jackrabbit.schema = mysql
 
 jahia.database.schemascriptdir = sql/schema/mysql
 jahia.database.transactions = false
-jahia.database.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+jahia.database.hibernate.dialect = ${hibernateDialect.mysql}
 
 jahia.jboss.datasource.typeMapping = mySQL

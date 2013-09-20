@@ -1,7 +1,7 @@
 
-    drop table jahia_contenthistory;
+    drop table if exists jahia_contenthistory cascade;
 
-    drop table jahia_db_test;
+    drop table if exists jahia_db_test cascade;
 
     create table jahia_contenthistory (
         id varchar(32) not null,

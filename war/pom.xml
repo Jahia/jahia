@@ -187,76 +187,64 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>${antrun.plugin.version}</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.hibernate</groupId>
-                                <artifactId>hibernate-core</artifactId>
-                                <version>${hibernate.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.hibernate</groupId>
-                                <artifactId>hibernate-tools</artifactId>
-                                <version>3.2.3.GA</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-log4j12</artifactId>
-                                <version>${slf4j.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-api</artifactId>
-                                <version>${slf4j.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.jahia.server</groupId>
-                                <artifactId>jahia-impl</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
-                        </dependencies>
+                        <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>generate-ddl</id>
-                                <phase>generate-resources</phase>
+                                <phase>process-resources</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>unpack</goal>
                                 </goals>
                                 <configuration>
-                                    <tasks if="jahia.generate.ddl">
-                                        <echo message="Generating DDL schemata..."/>
-
-                                        <taskdef name="hibernatetool"
-                                                 classname="org.hibernate.tool.ant.HibernateToolTask">
-                                            <classpath>
-                                                <path refid="maven.dependency.classpath"/>
-                                                <pathelement path="${maven.build.dest}"/>
-                                                <pathelement path="${maven.test.dest}"/>
-                                            </classpath>
-                                        </taskdef>
-                                        <hibernatetool
-                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
-                                            <annotationconfiguration
-                                                    configurationfile="${basedir}/tools/derby.hibernate.cfg.xml"/>
-                                            <hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false"
-                                                     drop="true"/>
-                                        </hibernatetool>
-                                        <hibernatetool
-                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
-                                            <annotationconfiguration
-                                                    configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml"/>
-                                            <hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false"
-                                                     drop="true"/>
-                                        </hibernatetool>
-                                        <hibernatetool
-                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
-                                            <annotationconfiguration
-                                                    configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml"/>
-                                            <hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false"
-                                                     drop="true"/>
-                                        </hibernatetool>
-                                    </tasks>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-impl</artifactId>
+                                            <version>${project.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
+                                            <includes>org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>de.juplo</groupId>
+                        <artifactId>hibernate4-maven-plugin</artifactId>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>ddl-derby</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jahia-schema.sql</outputFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jahia-schema.sql</outputFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql</id>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jahia-schema.sql</outputFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1039,6 +1027,14 @@
                 <configuration>
                     <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
                     <webResources>
+                        <resource>
+                            <directory>${pom.basedir}/src/main/webapp/WEB-INF/var/db</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>*.script</include>
+                            </includes>
+                            <targetPath>WEB-INF/var/db</targetPath>
+                        </resource>
                         <resource>
                             <directory>${project.build.directory}/native2ascii</directory>
                             <targetPath>WEB-INF/classes</targetPath>

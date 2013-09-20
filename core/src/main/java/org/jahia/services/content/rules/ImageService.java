@@ -105,7 +105,7 @@ public class ImageService {
                     try {
                         return (((Image) o).getPath().equals(imageNode.getPath()));
                     } catch (RepositoryException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
                 return false;

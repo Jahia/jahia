@@ -832,58 +832,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     if (!installedModules.contains(deps.getRootFolder())) {
                         modules.add(deps.getRootFolder());
                     }
-<<<<<<< .working
-=======
-                });
-    }
-
-    public void deployModuleToAllSites(String modulePath, boolean updateOnly, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
-        if (sites == null) {
-            sites = new ArrayList<JCRNodeWrapper>();
-            NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                if(!next.isNodeType("jnt:virtualsite")) {
-                	continue;
->>>>>>> .merge-right.r47400
                 }
             }
         }
     }
 
-<<<<<<< .working
     public void autoInstallModulesToSites(JahiaTemplatesPackage module, JCRSessionWrapper session)
             throws RepositoryException {
         moduleInstallationHelper.autoInstallModulesToSites(module, session);
-=======
-        JCRNodeWrapper tpl = sessionWrapper.getNode(modulePath);
-        for (JCRNodeWrapper site : sites) {
-            if(!site.isNodeType("jnt:virtualsite")) {
-            	continue;
-            }
-            if (tpl.hasProperty("j:siteType") && MODULE_TYPE_TEMPLATES_SET.equals(tpl.getProperty("j:siteType").getString())) {
-                if (tpl.getName().equals(site.getResolveSite().getTemplateFolder())) {
-                    deployModule(modulePath, site.getPath(), sessionWrapper);
-                }
-            } else {
-                List<String> installedModules = site.getResolveSite().getInstalledModules();
-                /*Value[] dependencies = tpl.hasProperty("j:dependencies") ? tpl.getProperty(
-                        "j:dependencies").getValues() : null;
-                List<String> deps = new ArrayList<String>();
-                if (dependencies != null && dependencies.length > 0) {
-                    for (Value value : dependencies) {
-                        deps.add(value.getString());
-                    }
-                    if (!installedModules.containsAll(deps)) {
-                        continue;
-                    }
-                }*/
-                if (!updateOnly || installedModules.contains(tpl.getName())) {
-                    deployModule(modulePath, site.getPath(), sessionWrapper);
-                }
-            }
-        }
->>>>>>> .merge-right.r47400
     }
 
     /**

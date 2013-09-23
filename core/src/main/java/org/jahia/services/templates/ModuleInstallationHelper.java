@@ -175,7 +175,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             NodeIterator ni = sessionWrapper.getNode("/sites").getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-                if(!next.getPrimaryNodeTypeName().equals("jnt:virtualsite")) {
+                if(!next.isNodeType("jnt:virtualsite")) {
                 	continue;
                 }
                 sites.add(next);
@@ -184,7 +184,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
 
         JCRNodeWrapper tpl = sessionWrapper.getNode("/modules/" + module.getRootFolderWithVersion());
         for (JCRNodeWrapper site : sites) {
-            if(!site.getPrimaryNodeTypeName().equals("jnt:virtualsite")) {
+            if(!site.isNodeType("jnt:virtualsite")) {
             	continue;
             }
             if (tpl.hasProperty("j:moduleType")

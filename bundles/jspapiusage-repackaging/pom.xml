@@ -8,7 +8,7 @@
         <version>6.7.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Jahia Repackaging of libraries that use the JSP API</name>
+    <name>Jahia JSP API Libraries Repackaging</name>
     <description>This OSGi bundle is a repackaging of some of the libraries that use the JSP API since we must
         put a copy of them in a different class loader (inside an OSGi bundle) to make sure they use the JSP API
         that is packaged in the PAX Web JSP bundle.

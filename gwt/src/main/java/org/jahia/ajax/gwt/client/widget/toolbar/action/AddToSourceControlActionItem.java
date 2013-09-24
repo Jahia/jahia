@@ -40,18 +40,14 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.MessageBox;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +55,7 @@ import java.util.Map;
 /**
  * Add file to SCM
  */
+@SuppressWarnings("serial")
 public class AddToSourceControlActionItem extends BaseActionItem {
 
     @Override
@@ -68,7 +65,7 @@ public class AddToSourceControlActionItem extends BaseActionItem {
         if (singleSelection == null) {
             return;
         }
-        JahiaContentManagementService.App.getInstance().addToSourceControl(JahiaGWTParameters.getSiteKey(), singleSelection, new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().addToSourceControl(JahiaGWTParameters.getSiteKey(), singleSelection, new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put("node", singleSelection);
@@ -77,7 +74,9 @@ public class AddToSourceControlActionItem extends BaseActionItem {
             }
 
             public void onApplicationFailure(Throwable caught) {
-                Info.display(Messages.get("label.error", "Error"), Messages.get("label.sourceControl.add.failure", "Failed to add to Source Control"));
+                        Info.display(Messages.get("label.error", "Error"),
+                                Messages.get("label.sourceControl.add.failure", "Failed to add to Source Control")
+                                        + "\n" + caught.getLocalizedMessage());
             }
         });
     }

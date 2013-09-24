@@ -674,35 +674,7 @@ public class TemplatePackageRegistry {
                 }
             }
             if (bean instanceof DefaultEventListener) {
-                final DefaultEventListener eventListener = (DefaultEventListener) bean;
-                if (eventListener.getEventTypes() > 0) {
-                    try {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, eventListener.getWorkspace(), new JCRCallback<Object>() {
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                final Workspace workspace = session.getWorkspace();
-
-                                ObservationManager observationManager = workspace.getObservationManager();
-                                //first remove existing listener of same type
-                                final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
-                                javax.jcr.observation.EventListener toBeRemoved = null;
-                                while (registeredEventListeners.hasNext()) {
-                                    javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
-                                    if (next.getClass().equals(eventListener.getClass())) {
-                                        toBeRemoved = next;
-                                        break;
-                                    }
-                                }
-                                observationManager.removeEventListener(toBeRemoved);
-                                return null;
-                            }
-                        });
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Unregistering event listener" + eventListener.getClass().getName() + " for workspace '" + eventListener.getWorkspace() + "'");
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
+                handleJCREventListener(bean, false);
             }
             if (bean instanceof BackgroundAction) {
                 BackgroundAction backgroundAction = (BackgroundAction) bean;
@@ -837,39 +809,7 @@ public class TemplatePackageRegistry {
                 }
             }
             if (bean instanceof DefaultEventListener) {
-                final DefaultEventListener eventListener = (DefaultEventListener) bean;
-                if (eventListener.getEventTypes() > 0) {
-                    try {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, eventListener.getWorkspace(), new JCRCallback<Object>() {
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                final Workspace workspace = session.getWorkspace();
-
-                                ObservationManager observationManager = workspace.getObservationManager();
-                                //first remove existing listener of same type
-                                final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
-                                javax.jcr.observation.EventListener toBeRemoved = null;
-                                while (registeredEventListeners.hasNext()) {
-                                    javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
-                                    if (next.getClass().equals(eventListener.getClass())) {
-                                        toBeRemoved = next;
-                                        break;
-                                    }
-                                }
-                                observationManager.removeEventListener(toBeRemoved);
-                                observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
-                                return null;
-                            }
-                        });
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Registering event listener" + eventListener.getClass().getName() + " for workspace '" + eventListener.getWorkspace() + "'");
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                } else {
-                    logger.info("Skipping listener {} as it has no event types configured.",
-                            eventListener.getClass().getName());
-                }
+                handleJCREventListener(bean, true);
             }
             if (bean instanceof BackgroundAction) {
                 BackgroundAction backgroundAction = (BackgroundAction) bean;
@@ -963,6 +903,46 @@ public class TemplatePackageRegistry {
             }
 
             return bean;
+        }
+
+        private void handleJCREventListener(Object bean, final boolean register) {
+            final DefaultEventListener eventListener = (DefaultEventListener) bean;
+            if (eventListener.getEventTypes() > 0) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, eventListener.getWorkspace(), new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            final Workspace workspace = session.getWorkspace();
+
+                            ObservationManager observationManager = workspace.getObservationManager();
+                            //first remove existing listener of same type
+                            final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
+                            javax.jcr.observation.EventListener toBeRemoved = null;
+                            while (registeredEventListeners.hasNext()) {
+                                javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
+                                if (next.getClass().equals(eventListener.getClass())) {
+                                    toBeRemoved = next;
+                                    break;
+                                }
+                            }
+                            observationManager.removeEventListener(toBeRemoved);
+                            if (register) {
+                                observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
+                            }
+                            return null;
+                        }
+                    });
+                    if (logger.isDebugEnabled()) {
+                        logger.debug((register ? "Registering" : "Unregistering") + " event listener"
+                                + eventListener.getClass().getName() + " for workspace '"
+                                + eventListener.getWorkspace() + "'");
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else {
+                logger.info("Skipping listener {} as it has no event types configured.",
+                        eventListener.getClass().getName());
+            }
         }
 
         public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {

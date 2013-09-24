@@ -174,9 +174,9 @@ public abstract class BaseView implements View, Comparable<View> {
 
     @Override
     public Properties getDefaultProperties() {
-        if (defaultProperties == null) {
-            readProperties();
-        }
+//        if (defaultProperties == null) {
+//            readProperties();
+//        }
         return defaultProperties;
     }
 
@@ -228,22 +228,22 @@ public abstract class BaseView implements View, Comparable<View> {
 
     @Override
     public Properties getProperties() {
-        if (properties == null) {
-            readProperties();
-        }
+//        if (properties == null) {
+//            readProperties();
+//        }
         return properties;
     }
 
-    protected Properties getProperties(String path, boolean defaultProperties) {
-        String pathWithoutExtension = defaultProperties ? StringUtils.substringBefore(path, ".") : StringUtils.substringBeforeLast(path, ".");
-        Properties p = propCache.get(pathWithoutExtension);
-        if (p == null) {
-            p = loadProperties(pathWithoutExtension + ".properties", pathWithoutExtension + ".png");
-            propCache.put(pathWithoutExtension, p);
-        }
-
-        return p;
-    }
+//    protected Properties getProperties(String path, boolean defaultProperties) {
+//        String pathWithoutExtension = defaultProperties ? StringUtils.substringBefore(path, ".") : StringUtils.substringBeforeLast(path, ".");
+//        Properties p = propCache.get(pathWithoutExtension);
+//        if (p == null) {
+//            p = loadProperties(pathWithoutExtension + ".properties", pathWithoutExtension + ".png");
+//            propCache.put(pathWithoutExtension, p);
+//        }
+//
+//        return p;
+//    }
 
     protected abstract URL getResource(String resource);
 
@@ -293,9 +293,18 @@ public abstract class BaseView implements View, Comparable<View> {
         return p;
     }
 
-    protected void readProperties() {
-        properties = getProperties(path, false);
-        defaultProperties = getProperties(path, true);
+//    protected void readProperties() {
+//        properties = getProperties(path, false);
+//        defaultProperties = getProperties(path, true);
+//    }
+
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public void setDefaultProperties(Properties defaultProperties) {
+        this.defaultProperties = defaultProperties;
     }
 
     @Override

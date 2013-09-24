@@ -42,6 +42,7 @@ package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRContentUtils;
@@ -64,6 +65,7 @@ import org.springframework.context.ApplicationListener;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -117,6 +119,20 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                 } else if (!existingBundleScripts.contains(scriptResource)) {
                     existingBundleScripts.add(scriptResource);
                 }
+                String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
+                final URL propertiesResource = bundle.getResource(properties);
+                if (propertiesResource != null) {
+                    Properties p = new Properties();
+                    try {
+                        p.load(propertiesResource.openStream());
+                    } catch (IOException e) {
+                        logger.error("Cannot read properties", e);
+                    }
+                    scriptResource.setProperties(p);
+                } else {
+                    scriptResource.setProperties(new Properties());
+                }
+
             }
         }
         clearCaches();
@@ -301,7 +317,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                         defaultModuleProcessed = true;
                     }
                     for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, packageName, aPackage);
+                        getViewsSet(type, views, templateType, aPackage);
                     }
                 }
             }
@@ -309,7 +325,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                 JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
                 if (defaultModule != null) {
                     for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, "default", defaultModule);
+                        getViewsSet(type, views, templateType, defaultModule);
                     }
                 }
             }
@@ -344,8 +360,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     /*
      * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
      */
-    private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType, String module,
-            JahiaTemplatesPackage tplPackage) {
+    private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType,
+                             JahiaTemplatesPackage tplPackage) {
         StringBuilder pathBuilder = new StringBuilder(64);
         pathBuilder.append("/").append(JCRContentUtils.replaceColon(nt.getAlias())).append("/").append(templateType)
                 .append("/");
@@ -356,10 +372,35 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                 .append(".");
 
         // find scripts in the module bundle, matching that path prefix
-        Set<ViewResourceInfo> sortedScripts = findBundleScripts(module, pathBuilder.toString());
+        Set<ViewResourceInfo> sortedScripts = findBundleScripts(tplPackage.getRootFolder(), pathBuilder.toString());
+        Properties defaultProperties = null;
+        if (!sortedScripts.isEmpty()) {
+            defaultProperties = new Properties();
+            JahiaTemplatesPackage aPackage = nt.getTemplatePackage();
+            if (aPackage == null) {
+                aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default");
+            }
+            if (!aPackage.getRootFolder().equals(tplPackage.getRootFolder())) {
+                Set<ViewResourceInfo> defaultScripts = findBundleScripts(aPackage.getRootFolder(), pathBuilder.toString());
+                for (ViewResourceInfo defaultScript : defaultScripts) {
+                    if (defaultScript.viewKey.equals("default")) {
+                        defaultProperties.putAll(defaultScript.getProperties());
+                        break;
+                    }
+                }
+            }
+            for (ViewResourceInfo defaultScript : sortedScripts) {
+                if (defaultScript.viewKey.equals("default")) {
+                    defaultProperties.putAll(defaultScript.getProperties());
+                    break;
+                }
+            }
+        }
         for (ViewResourceInfo res : sortedScripts) {
             if (!views.containsKey(res.viewKey)) {
                 BundleView view = new BundleView(path + res.filename, res.viewKey, tplPackage, res.filename);
+                view.setProperties(res.getProperties());
+                view.setDefaultProperties(defaultProperties);
                 views.put(res.viewKey, view);
                 scriptFactoryMap.get(res.extension).initView(view);
             }

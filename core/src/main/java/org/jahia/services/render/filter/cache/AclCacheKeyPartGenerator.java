@@ -152,37 +152,17 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             final Set<String> aclsKeys = new TreeSet<String>();
 
             aclsKeys.add(URLEncoder.encode(nodePath, "UTF-8"));
-            final Set<String> dependencies = resource.getDependencies();
 
-            for (final String dependency : dependencies) {
-                if (!dependency.equals(nodePath)) {
-                    try {
-                        if (!dependency.contains("/")) {
-                            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
-                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                    final JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(dependency);
-                                    try {
-                                        aclsKeys.add(URLEncoder.encode(nodeByIdentifier.getPath(), "UTF-8"));
-                                    } catch (UnsupportedEncodingException e) {
-                                    }
-                                    return null;
-                                }
-                            });
-                        } else {
-                            aclsKeys.add(URLEncoder.encode(dependency, "UTF-8"));
-                        }
-                    } catch (ItemNotFoundException ex) {
-                        logger.warn("ItemNotFound: " + dependency + "  it could be an invalid reference, check jcr integrity");
-                    } catch (PathNotFoundException ex) {
-                        logger.warn("PathNotFound: "
-                                + dependency
-                                + "  it could be an invalid reference, check jcr integrity");
-                    }
+            String s = (String) properties.get("cache.dependsOnVisibilityOf");
+            if (s != null) {
+                String[] dependencies = s.split(",");
+                for (int i = 0; i < dependencies.length; i++) {
+                    String dep = dependencies[i];
+                    dep = dep.replace("$currentNode", nodePath);
+                    dep = dep.replace("$currentSite", renderContext.getSite().getPath());
+                    dep = dep.replace("$mainResource", renderContext.getMainResource().getNode().getPath());
+                    aclsKeys.add("*" + URLEncoder.encode(dep, "UTF-8"));
                 }
-            }
-
-            for (final String dependency : resource.getRegexpDependencies()) {
-                aclsKeys.add("*" + URLEncoder.encode(dependency, "UTF-8"));
             }
 
             if ("true".equals(properties.get("cache.mainResource"))) {

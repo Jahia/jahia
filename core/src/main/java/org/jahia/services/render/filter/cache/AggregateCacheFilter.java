@@ -175,14 +175,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 // (resource and context) and the cache properties. The generated key will contains temporary placeholders
                 // that will be replaced to have the final key.
                 Properties properties = getAttributesForKey(renderContext, resource);
+        final Boolean forceGeneration = (Boolean) resource.getModuleParams().remove("cache.forceGeneration");
+
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+
+        // Store the cache key in module params for usage in execute
+        resource.getModuleParams().put("cacheKey", key);
 
         if (debugEnabled) {
             logger.debug("Cache filter for key with placeholders : {}", key);
         }
 
         // Check if a force generation parameter is passed.
-        if (Boolean.TRUE.equals(resource.getModuleParams().remove("cache.forceGeneration"))) {
+        if (Boolean.TRUE.equals(forceGeneration)) {
             return null;
         }
 
@@ -357,8 +362,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
         }
 
-        // Generates the cache key
-        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+        // Get the key generated in prepare
+        String key = (String) resource.getModuleParams().remove("cacheKey");
+
+
+        // Generates the cache key - check
+        String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+        if (!generatedKey.equals(key)) {
+            logger.warn("Key generation does not give the same result after execution , was" + key  + " , now is "+generatedKey);
+        }
 
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
@@ -505,6 +517,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * cache properties may come from the script properties file, or from the jmix:cache mixin (for the cache.perUser
      * only).
      *
+     * If the component is a list, the properties can also come from its hidden.load script properties.
+     *
      * cache.perUser : is the cache entry specific for each user. Is set by j:perUser node property or cache.perUser
      * property in script properties
      *
@@ -526,12 +540,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
         boolean isBound = resource.getNode().isNodeType("jmix:bindedComponent");
+        boolean isList = resource.getNode().isNodeType("jmix:list");
 
         Properties properties = new Properties();
 
         if (script != null) {
             properties.putAll(script.getView().getDefaultProperties());
             properties.putAll(script.getView().getProperties());
+        }
+
+        if (isList) {
+            Resource listLoader = new Resource(resource.getNode(), resource.getTemplateType(), "hidden.load" , Resource.CONFIGURATION_INCLUDE);
+            try {
+                Script s = service.resolveScript(listLoader, renderContext);
+                properties.putAll(s.getView().getProperties());
+            } catch (TemplateNotFoundException e) {
+                logger.error("Cannot find loader script for list" + resource.getNode().getPath(), e);
+            }
         }
 
         if (resource.getNode().hasProperty("j:perUser")) {

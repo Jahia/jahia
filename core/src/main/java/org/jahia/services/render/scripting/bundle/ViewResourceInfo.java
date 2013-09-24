@@ -42,6 +42,8 @@ package org.jahia.services.render.scripting.bundle;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Properties;
+
 /**
  * Represents an information for view resource in an OSGi bundle.
  * 
@@ -56,6 +58,8 @@ class ViewResourceInfo {
     String path;
 
     String viewKey;
+
+    Properties properties;
 
     ViewResourceInfo(String path) {
         super();
@@ -72,6 +76,14 @@ class ViewResourceInfo {
         int end = this.filename.lastIndexOf(".");
         this.viewKey = start < end ? filename.substring(filename.indexOf(".") + 1, filename.lastIndexOf("."))
                 : "default";
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 
     @Override

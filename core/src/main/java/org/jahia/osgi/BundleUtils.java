@@ -172,12 +172,26 @@ public final class BundleUtils {
         return pkg;
     }
 
-    private static String getModuleName(Bundle bundle) {
+    /**
+     * Returns the module name read from the provided bundle.
+     * 
+     * @param bundle
+     *            the bundle to read module name from
+     * @return the module name read from the provided bundle
+     */
+    public static String getModuleName(Bundle bundle) {
         return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Jahia-Root-Folder"),
                 bundle.getSymbolicName());
     }
 
-    private static String getModuleVersion(Bundle bundle) {
+    /**
+     * Returns a version of the module read from the provided bundle.
+     * 
+     * @param bundle
+     *            the bundle to read the module version from
+     * @return a version of the module read from the provided bundle
+     */
+    public static String getModuleVersion(Bundle bundle) {
         return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Implementation-Version"), bundle
                 .getVersion().toString());
     }

@@ -43,6 +43,7 @@ package org.jahia.services.templates;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ProvisionActivator;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
@@ -59,6 +60,7 @@ import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -115,7 +117,7 @@ public class TemplatePackageDeployer {
                         }
                     }
 
-                    return null;
+                    return Boolean.TRUE;
                 }
             });
         } catch (RepositoryException e) {
@@ -197,10 +199,9 @@ public class TemplatePackageDeployer {
 
         componentRegistry.registerComponents(aPackage, session);
 
-        if (aPackage.isActiveVersion()) {
-            if (templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
-                service.autoInstallModulesToSites(aPackage, session);
-            }
+        if (aPackage.isActiveVersion()
+                && templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
+            service.autoInstallModulesToSites(aPackage, session);
         }
         session.save();
     }
@@ -403,14 +404,8 @@ public class TemplatePackageDeployer {
             Bundle bundle = ProvisionActivator.getInstance().getBundleContext().installBundle(location);
             bundle.update();
             bundle.start();
-            String moduleName = (String) bundle.getHeaders().get("Jahia-Root-Folder");
-            if (moduleName == null) {
-                moduleName = bundle.getSymbolicName();
-            }
-            String version = (String) bundle.getHeaders().get("Implementation-Version");
-            if (version == null) {
-                version = bundle.getVersion().toString();
-            }
+            String moduleName = BundleUtils.getModuleName(bundle);
+            String version = BundleUtils.getModuleVersion(bundle);
             return service.getTemplatePackageRegistry().lookupByFileNameAndVersion(moduleName, new ModuleVersion(version));
         } catch (BundleException e) {
             logger.error("Cannot deploy module",e);
@@ -423,14 +418,8 @@ public class TemplatePackageDeployer {
         Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
             if (bundle.getHeaders().get("Jahia-Root-Folder") != null) {
-                String moduleName = bundle.getHeaders().get("Jahia-Root-Folder").toString();
-                if (moduleName == null) {
-                    moduleName = bundle.getSymbolicName();
-                }
-                String version = (String) bundle.getHeaders().get("Implementation-Version");
-                if (version == null) {
-                    version = bundle.getVersion().toString();
-                }
+                String moduleName = BundleUtils.getModuleName(bundle);
+                String version = BundleUtils.getModuleVersion(bundle);
                 if (moduleName.equals(pack.getRootFolder()) && version.equals(pack.getVersion().toString())) {
                     try {
                         bundle.uninstall();

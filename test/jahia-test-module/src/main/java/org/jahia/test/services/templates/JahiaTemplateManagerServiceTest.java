@@ -58,23 +58,23 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rincevent
- * Date: 12/10/11
- * Time: 9:46 AM
- * To change this template use File | Settings | File Templates.
+ * Test cases for the {@link JahiaTemplateManagerService}.
+ * 
+ * @author rincevent
  */
 public class JahiaTemplateManagerServiceTest {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaTemplateManagerServiceTest.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerServiceTest.class);
     private final static String TEST_SITE_NAME = "templateManagerServiceTest";
     private final static String SITE_CONTENT_ROOT_NODE = "/sites/" + TEST_SITE_NAME;
 

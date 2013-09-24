@@ -1,6 +1,7 @@
 package org.jahia.test.services.render.filter.cache;
 
 import net.sf.ehcache.Ehcache;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -23,10 +24,12 @@ import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -38,7 +41,7 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.*;
 
 public class CacheFilterHttpTest extends JahiaTestCase {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
+    transient static Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
     private final static String TESTSITE_NAME = "cachetest";
     private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
@@ -322,7 +325,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 session.save();
             }
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -426,7 +429,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
                 resultCode = method.getStatusCode();
                 result = method.getResponseBodyAsString();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

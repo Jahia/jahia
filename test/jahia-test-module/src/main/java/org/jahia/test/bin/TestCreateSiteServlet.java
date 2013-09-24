@@ -48,16 +48,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
-import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -157,7 +151,7 @@ public class TestCreateSiteServlet extends BaseTestController {
                     }
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         } else if (httpServletRequest.getParameter("site").equals("mySite")) {
             try {

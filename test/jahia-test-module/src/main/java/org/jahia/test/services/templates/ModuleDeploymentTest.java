@@ -66,7 +66,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.*;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 public class ModuleDeploymentTest {
 
@@ -76,13 +75,11 @@ public class ModuleDeploymentTest {
 
     private final static String TESTSITE_NAME = "ModuleDeploymentTestSite";
 
-    private static JahiaSite site;
-
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
-            site = TestHelper.createSite(TESTSITE_NAME);
+            TestHelper.createSite(TESTSITE_NAME);
         } catch (Exception e) {
             logger.error("Cannot create or publish site", e);
         }
@@ -125,7 +122,7 @@ public class ModuleDeploymentTest {
                         try {
                             bundle.uninstall();
                         } catch (BundleException e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage(), e);
                         }
                     }
                 }
@@ -133,7 +130,7 @@ public class ModuleDeploymentTest {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
                 return null;
             }
@@ -145,7 +142,6 @@ public class ModuleDeploymentTest {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                SettingsBean settingsBean = SettingsBean.getInstance();
 
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
@@ -154,7 +150,7 @@ public class ModuleDeploymentTest {
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     fail(e.toString());
                 }
 
@@ -163,7 +159,7 @@ public class ModuleDeploymentTest {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
                 assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
                 assertNotNull("Spring context is null", pack.getContext());
@@ -187,8 +183,6 @@ public class ModuleDeploymentTest {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                SettingsBean settingsBean = SettingsBean.getInstance();
-
                 try {
                     File tmpFile = File.createTempFile("module",".jar");
                     InputStream stream = managerService.getTemplatePackageByFileName("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
@@ -201,7 +195,7 @@ public class ModuleDeploymentTest {
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     fail(e.toString());
                 }
 
@@ -210,7 +204,7 @@ public class ModuleDeploymentTest {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
                 assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
                 assertEquals("Active module version is incorrect", "1.1", pack.getVersion().toString());
@@ -235,7 +229,7 @@ public class ModuleDeploymentTest {
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
 
 //        managerService.scanSharedModulesFolderNow();
@@ -255,14 +249,14 @@ public class ModuleDeploymentTest {
             assertTrue("Module view is not correctly registered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").contains(pack));
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             fail(e.toString());
         } finally {
             FileUtils.deleteQuietly(f);
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -283,7 +277,7 @@ public class ModuleDeploymentTest {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
 
                     managerService.undeployModule(pack);
@@ -298,7 +292,7 @@ public class ModuleDeploymentTest {
 //                    }
                     assertTrue("Module view is not correctly unregistered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").isEmpty());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     fail(e.toString());
                 }
 
@@ -319,7 +313,7 @@ public class ModuleDeploymentTest {
                     managerService.deployModule(tmpFile, session);
                     tmpFile.delete();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     fail(e.toString());
                 }
 
@@ -343,147 +337,5 @@ public class ModuleDeploymentTest {
             }
         });
     }
-
-
-
-    /*@Test
-    public void testDefinitionUpdate() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaModulesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
-
-                File def = new File(settingsBean.getJahiaModulesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/definitions.cnd");
-                try {
-                    BufferedWriter w = new BufferedWriter(new FileWriter(def, true));
-                    w.write("[jnt:testComponent2] > jnt:content, jmix:layoutComponentContent\n");
-                    w.write(" - property (string)\n");
-                    w.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                managerService.scanSharedModulesFolderNow();
-
-                pack = managerService.getTemplatePackageByFileName("dummy1");
-
-                assertNotNull("Spring context is null", pack.getContext());
-                assertTrue("No action defined", !pack.getContext().getBeansOfType(Action.class).isEmpty());
-                assertTrue("Action not registered", managerService.getActions().containsKey("my-post-action"));
-
-                try {
-                    NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
-                    NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent2");
-                } catch (NoSuchNodeTypeException e) {
-                    fail("Definition not registered");
-                }
-                assertTrue("Module view is not correctly registered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").contains(pack));
-
-                return null;
-            }
-        });
-    }*/
-
-    /*@Test
-    public void testContextUpdate() throws IOException, RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
-
-                File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
-                File newspring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1-modified.xml");
-                try {
-                    SAXReader reader = new SAXReader();
-                    Document document = reader.read(spring);
-
-                    Element newBean = document.getRootElement().addElement("bean");
-                    newBean.addAttribute("class", "org.jahia.bin.DefaultPostAction");
-                    Element prop = newBean.addElement("property");
-                    prop.addAttribute("name","name");
-                    prop.addAttribute("value","my-new-post-action");
-                    spring.delete();
-                    XMLWriter writer = new XMLWriter(new FileWriter(newspring), OutputFormat.createPrettyPrint());
-                    writer.write(document);
-                    writer.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                managerService.scanSharedModulesFolderNow();
-
-                pack = managerService.getTemplatePackageByFileName("dummy1");
-
-                assertNotNull("Spring context is null", pack.getContext());
-                assertTrue("No action defined", !pack.getContext().getBeansOfType(Action.class).isEmpty());
-                assertTrue("Action not registered", managerService.getActions().containsKey("my-post-action"));
-                assertTrue("New action not registered", managerService.getActions().containsKey("my-new-post-action"));
-
-                try {
-                    NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
-                } catch (NoSuchNodeTypeException e) {
-                    fail("Definition not registered");
-                }
-                assertTrue("Module view is not correctly registered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").contains(pack));
-
-                return null;
-            }
-        });
-    }
-
-    @Test
-    public void testContextUpdateWithInitializingBean() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                SettingsBean settingsBean = SettingsBean.getInstance();
-                File deployedTemplatesFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), managerService.getTemplatePackageByFileName("jahia-test-module-war").getRootFolderWithVersion());
-                JahiaTemplatesPackage pack = managerService.deployModule(new File(deployedTemplatesFolder, "resources/dummy1-" + VERSION + ".war"), session);
-
-                TestInitializingBean.resetInstance();
-
-                File spring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1.xml");
-                File newspring = new File(settingsBean.getJahiaTemplatesDiskPath(), pack.getRootFolderWithVersion() + "/META-INF/spring/dummy1-modified-2.xml");
-                try {
-                    SAXReader reader = new SAXReader();
-                    Document document = reader.read(spring);
-
-                    Element newBean = document.getRootElement().addElement("bean");
-                    newBean.addAttribute("class", TestInitializingBean.class.getName());
-                    spring.delete();
-                    XMLWriter writer = new XMLWriter(new FileWriter(newspring), OutputFormat.createPrettyPrint());
-                    writer.write(document);
-                    writer.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                managerService.scanSharedModulesFolderNow();
-
-                pack = managerService.getTemplatePackageByFileName("dummy1");
-
-                assertNotNull("Spring context is null", pack.getContext());
-                assertTrue("No action defined", !pack.getContext().getBeansOfType(Action.class).isEmpty());
-                assertTrue("Action not registered", managerService.getActions().containsKey("my-post-action"));
-
-                assertNotNull("Bean not instantiated",TestInitializingBean.getInstance());
-                assertTrue("Bean not initialized",TestInitializingBean.getInstance().isInitialized());
-                assertTrue("Bean not started",TestInitializingBean.getInstance().isStarted());
-                try {
-                    NodeTypeRegistry.getInstance().getNodeType("jnt:testComponent1");
-                } catch (NoSuchNodeTypeException e) {
-                    fail("Definition not registered");
-                }
-                assertTrue("Module view is not correctly registered", managerService.getModulesWithViewsForComponent("jnt:testComponent1").contains(pack));
-
-                managerService.undeployModule(pack, session);
-
-                assertTrue("Bean stopped",TestInitializingBean.getInstance().isStopped());
-                return null;
-            }
-        });
-    }*/
-
 
 }

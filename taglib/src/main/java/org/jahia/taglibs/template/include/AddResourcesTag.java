@@ -168,9 +168,6 @@ public class AddResourcesTag extends AbstractJahiaTag {
                     String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
                     String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path :
                             renderContext.getRequest().getContextPath() + path;
-                    String pathWithVersion =
-                            pack.getRootFolderPath() + "/" + pack.getVersion() + "/" + type + "/" + resource;
-//                    String pathWithVersionAndContext = renderContext.getRequest().getContextPath().isEmpty() ? pathWithVersion : renderContext.getRequest().getContextPath() + pathWithVersion;
                     Resource templateResource = pack.getResource("/" + type + "/" + resource);
                     if (templateResource != null && templateResource.exists()) {
                         // we found it

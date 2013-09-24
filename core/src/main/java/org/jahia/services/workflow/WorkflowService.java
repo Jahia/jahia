@@ -70,9 +70,8 @@ import java.util.*;
 /**
  * Jahia service for managing content workflow.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 2 févr. 2010
  */
 public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializationService {
     public static final String CANDIDATE = "candidate";
@@ -89,6 +88,11 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
     private JCRTemplate jcrTemplate;
     private WorkflowObservationManager observationManager = new WorkflowObservationManager(this);
 
+    /**
+     * Returns a singleton instance of this service.
+     * 
+     * @return a singleton instance of this service
+     */
     public static WorkflowService getInstance() {
         if (instance == null) {
             instance = new WorkflowService();
@@ -103,6 +107,12 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    /**
+     * Performs the registration of the provided workflow type.
+     * 
+     * @param type
+     *            the helper object instance for registerng a new workflow type
+     */
     public void registerWorkflowType(WorklowTypeRegistration type) {
         if (type != null && !workflowTypeByDefinition.containsKey(type.getDefinition())) {
             workflowTypeByDefinition.put(type.getDefinition(), type);
@@ -113,6 +123,12 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    /**
+     * Performs the unregistration of the provided workflow type.
+     * 
+     * @param type
+     *            the helper object instance for unregisterng a workflow type
+     */
     public void unregisterWorkflowType(WorklowTypeRegistration type) {
         if (workflowTypeByDefinition.get(type.getDefinition()) == type) {
             workflowTypeByDefinition.remove(type.getDefinition());
@@ -120,13 +136,21 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    /**
+     * Returns a map with the registered workflow providers.
+     * 
+     * @return a map with the registered workflow providers
+     */
     public Map<String, WorkflowProvider> getProviders() {
         return providers;
     }
 
-    public void start() {
-    }
-
+    /**
+     * Adds the specified workflow provider into the registry.
+     * 
+     * @param provider
+     *            a workflow provider to be registered
+     */
     public void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
         if (provider instanceof WorkflowObservationManagerAware) {
@@ -134,6 +158,12 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         }
     }
 
+    /**
+     * Removes the specified provider from the registry.
+     * 
+     * @param provider
+     *            the provider to be removed
+     */
     public void removeProvider(final WorkflowProvider provider) {
         providers.remove(provider.getKey());
     }
@@ -176,6 +206,7 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
      *
      * @param locale
      * @return A list of available workflows per provider.
+     * @throws RepositoryException in case of an error 
      */
     public List<WorkflowDefinition> getWorkflows(Locale locale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
@@ -185,6 +216,13 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
         return workflowsByProvider;
     }
 
+    /**
+     * Returns a list of available workflow definitions for the specified type.
+     * @param type workflow type
+     * @param locale the locale used to localize workflow labels
+     * @return a list of available workflow definitions for the specified type
+     * @throws RepositoryException in case of an error 
+     */
     public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, Locale locale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
@@ -752,8 +790,6 @@ public class WorkflowService implements BeanPostProcessor, JahiaAfterInitializat
 
         Collection<WorkflowRule> results = new HashSet<WorkflowRule>();
         Collection<WorkflowRule> rules = getWorkflowRules(objectNode, locale);
-
-        JCRSiteNode site = objectNode.getResolveSite();
 
         for (WorkflowRule rule : rules) {
             final WorklowTypeRegistration worklowTypeRegistration = workflowTypeByDefinition.get(rule.getWorkflowDefinitionKey());

@@ -299,6 +299,11 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
     }
 
+    /**
+     * Returns a map, keyed by the module name, with the sorted map (by version ascending) of {@link JahiaTemplatesPackage} objects.
+     * 
+     * @return a map, keyed by the module name, with the sorted map (by version ascending) of {@link JahiaTemplatesPackage} objects
+     */
     public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
         Map<Bundle,ModuleState> moduleStates = templateManagerService.getModuleStates();
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> allModuleVersions = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();
@@ -315,6 +320,11 @@ public class ModuleManagementFlowHandler implements Serializable {
         return result;
     }
 
+    /**
+     * Returns a map, keyed by the module name, with all available module updates.
+     * 
+     * @return a map, keyed by the module name, with all available module updates
+     */
     public Map<String,Module> getAvailableUpdates() {
         Map<String,Module> availableUpdate = new HashMap<String, Module>();
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> moduleStates = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();

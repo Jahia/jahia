@@ -40,8 +40,8 @@ public ActionResult doExecute(HttpServletRequest req, RenderContext renderContex
 
         // Prepare mail to be sent :
         boolean toAdministratorMail = Boolean.valueOf(getParameter(parameters, "toAdministrator", "false"));
-        String to = toAdministratorMail ? SettingsBean.getInstance().getMail_administrator():getParameter(parameters, "to");
-        String from = parameters.get("from")==null?SettingsBean.getInstance().getMail_from():getParameter(parameters, "from");
+        String to = toAdministratorMail ? mailService.getSettings().getTo():getParameter(parameters, "to");
+        String from = parameters.get("from")==null?mailService.getSettings().getFrom():getParameter(parameters, "from");
         String cc = parameters.get("cc")==null?null:getParameter(parameters, "cc");
         String bcc = parameters.get("bcc")==null?null:getParameter(parameters, "bcc");
 

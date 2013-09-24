@@ -43,6 +43,7 @@
 import java.util.Locale;
 import java.util.Map;
 
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
@@ -59,6 +60,16 @@ import javax.script.ScriptException;
  * Time: 12:22:20 PM
  */
 public abstract class MailService extends JahiaService {
+    
+    /**
+     * Returns an instance of the mail service.
+     * 
+     * @return an instance of the mail service
+     */
+    public static MailService getInstance() {
+        return ServicesRegistry.getInstance().getMailService();
+    }
+
     /**
      * Send message to the default Jahia settings defined in the jahia.properties
      * file.

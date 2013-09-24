@@ -741,6 +741,21 @@ public class JahiaTemplatesPackage {
             return null;
         }
     }
+    
+    /**
+     * Checks if the specified resource is present in the module's bundle.
+     * 
+     * @param relativePath
+     *            a path of the bundle resource
+     * @return <code>true</code> if the specified resource is present in the module's bundle; <code>false</code> otherwise
+     * @see Bundle#getEntry(String)
+     */
+    public boolean resourceExists(String relativePath) {
+        if (relativePath == null) {
+            return false;
+        }
+        return bundle.getEntry(relativePath) != null;
+    }
 
     /**
      * Returns resources from the module's bundle and its attached fragments for the specified path.

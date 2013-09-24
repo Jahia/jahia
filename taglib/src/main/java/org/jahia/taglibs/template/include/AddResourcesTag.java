@@ -40,6 +40,7 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -48,11 +49,11 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -164,20 +165,21 @@ public class AddResourcesTag extends AbstractJahiaTag {
                 }
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
             } else {
+                String relativeResourcePath = "/" + type + "/" + resource;
                 for (JahiaTemplatesPackage pack : packages) {
-                    String path = pack.getRootFolderPath() + "/" + type + "/" + resource;
-                    String pathWithContext = renderContext.getRequest().getContextPath().isEmpty() ? path :
-                            renderContext.getRequest().getContextPath() + path;
-                    Resource templateResource = pack.getResource("/" + type + "/" + resource);
-                    if (templateResource != null && templateResource.exists()) {
+                    if (pack.resourceExists(relativeResourcePath)) {
                         // we found it
+                        String path = pack.getRootFolderPath() + relativeResourcePath;
+                        String contextPath = renderContext.getRequest().getContextPath();
+                        String pathWithContext = contextPath.isEmpty() ? path : contextPath + path;
 
                         // apply mapping
-                        if (mapping.containsKey(path)) {
-                            for (String mappedResource : mapping.get(path).split(" ")) {
+                        String mappedPath = mapping.get(path);
+                        if (mappedPath != null) {
+                            for (String mappedResource : StringUtils.split(mappedPath, " ")) {
                                 path = mappedResource;
-                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ?
-                                        renderContext.getRequest().getContextPath() + path : path;
+                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? (contextPath
+                                        .isEmpty() ? path : contextPath + path) : path;
                                 writeResourceTag(type, pathWithContext, resource);
                             }
                         } else {

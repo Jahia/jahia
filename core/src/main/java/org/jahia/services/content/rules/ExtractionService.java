@@ -173,28 +173,17 @@ public class ExtractionService {
 
         if (metadata.size() > 0) {
             try {
-<<<<<<< .working
                 WorkingMemory memory = drools.getWorkingMemory();
                 for (String key : metadata.names()) {
                     if (!Metadata.CONTENT_TYPE.equals(key)) {
                         // TODO handle multivalue metadata properties
                         String value = metadata.get(key);
-                        if (value != null) {
+                        if (StringUtils.isNotBlank(value)) {
                             String[] mappedTo = mapping.get(key);
                             memory.insert(new ExtractedVariable(node.getPath(), key, value, mappedTo != null ? mappedTo[0] : null, mappedTo != null ? mappedTo[1] : null));
+                        } else {
+                            logger.debug("Ignoring blank value for metadata " + key);
                         }
-=======
-            WorkingMemory memory = drools.getWorkingMemory();
-            for (String key : metadata.names()) {
-                if (!Metadata.CONTENT_TYPE.equals(key)) {
-                    // TODO handle multivalue metadata properties
-                    String value = metadata.get(key); 
-                    if (StringUtils.isNotBlank(value)) {
-                        String[] mappedTo = mapping.get(key);
-                        memory.insert(new ExtractedVariable(node.getPath(), key, value, mappedTo != null ? mappedTo[0] : null, mappedTo != null ? mappedTo[1] : null));
->>>>>>> .merge-right.r47411
-                    } else {
-                        logger.debug("Ignoring blank value for metadata " + key);
                     }
                 }
             } catch (Exception e) {

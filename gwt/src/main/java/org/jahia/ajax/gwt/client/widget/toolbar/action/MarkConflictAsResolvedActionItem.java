@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Info;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -54,6 +55,7 @@ import java.util.Map;
 /**
  * Mark conflicted file as resolved in SCM
  */
+@SuppressWarnings("serial")
 public class MarkConflictAsResolvedActionItem extends BaseActionItem {
 
     @Override
@@ -63,7 +65,7 @@ public class MarkConflictAsResolvedActionItem extends BaseActionItem {
         if (singleSelection == null) {
             return;
         }
-        JahiaContentManagementService.App.getInstance().markConflictAsResolved(JahiaGWTParameters.getSiteKey(), singleSelection, new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().markConflictAsResolved(JahiaGWTParameters.getSiteKey(), singleSelection, new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put("node", singleSelection);
@@ -72,7 +74,10 @@ public class MarkConflictAsResolvedActionItem extends BaseActionItem {
             }
 
             public void onApplicationFailure(Throwable caught) {
-                Info.display(Messages.get("label.error", "Error"), Messages.get("label.sourceControl.resolve.failure", "Failed to mark conflict as resolved"));
+                        Info.display(
+                                Messages.get("label.error", "Error"),
+                                Messages.get("label.sourceControl.resolve.failure",
+                                        "Failed to mark conflict as resolved") + "\n" + caught.getLocalizedMessage());
             }
         });
     }

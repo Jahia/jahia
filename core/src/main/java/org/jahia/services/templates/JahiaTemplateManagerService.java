@@ -41,13 +41,11 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
-
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
-
 import net.htmlparser.jericho.Source;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -64,11 +62,6 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -78,7 +71,6 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.exolab.core.util.Messages;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -120,7 +112,6 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;

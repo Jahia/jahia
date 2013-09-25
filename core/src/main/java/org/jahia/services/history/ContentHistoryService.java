@@ -382,8 +382,8 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             camelContext.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
-                    from(from).filter("groovy", "!request.body.contains(\" viewed \")").to(new ProcessorEndpoint(
-                            "contentHistoryService", camelContext, contentHistoryService));
+                    from(from).filter(body().not().contains(" viewed ")).to(
+                            new ProcessorEndpoint("contentHistoryService", camelContext, contentHistoryService));
                 }
             });
         } catch (Exception e) {

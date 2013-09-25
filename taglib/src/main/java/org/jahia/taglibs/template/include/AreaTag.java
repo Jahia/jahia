@@ -153,7 +153,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
 
             boolean isEdiatble = true;
-            
+
             StringBuilder additionalParameters = new StringBuilder();
             additionalParameters.append("missingList=\"true\"");
             if (conflictsWith != null) {
@@ -228,6 +228,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (node == null) {
                         return;
                     }
+                    if (!renderContext.getMainResource().getNode().getPath().equals(node.getPath())) {
+                        parameters.put("readOnly", "true");
+                        editable = false;
+                    }
+
                     if(logger.isDebugEnabled()) {
                         logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
                                      " saved template = "+templateNode.serialize()+", previousTemplate set to null");
@@ -239,7 +244,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         path = node.getPath() + "/" + path;
                     }
                     node = null;
-                    missingResource(renderContext, currentResource);
+                    if (editable) {
+                        missingResource(renderContext, currentResource);
+                    }
                 } finally {
                     if (node == null && logger.isDebugEnabled()) {
                         if (level == null) {

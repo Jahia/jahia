@@ -200,7 +200,7 @@
     <input id="selectedPermissions" type="hidden" name="selectedPermissions"/>
     <input id="partialSelectedPermissions" type="hidden" name="partialSelectedPermissions"/>
 
-        <button class="btn" name="_eventId_rolesList"><i class=" icon-chevron-left"></i>&nbsp;Back</button>
+        <button class="btn" name="_eventId_rolesList"><i class=" icon-chevron-left"></i>&nbsp;<fmt:message key="backToPreviousPage"/></button>
 
         <button class="submitButton btn ${handler.roleBean.dirty ? 'btn-danger' : 'btn-primary'}" type="submit" name="_eventId_saveRole">
             <i class="icon-ok icon-white"></i>
@@ -237,10 +237,10 @@
                 <c:set var="key" value="${fn:replace(key,'/','_')}" />
                 <fmt:message key="rolesmanager.rolesAndPermissions.context.${key}" var="label"/>
                 <c:if test="${not fn:startsWith(label, '???')}">
-                    ${label} :
+                    ${label}:
                 </c:if>
                 <c:if test="${fn:startsWith(label, '???')}">
-                    <fmt:message key="rolesmanager.rolesAndPermissions.context"/> &nbsp; ${permissionGroup.key} :
+                    <fmt:message key="rolesmanager.rolesAndPermissions.context"/>&nbsp;${permissionGroup.key}:
                 </c:if>
 
             <c:forEach items="${centry.value}" var="gentry" varStatus="status">

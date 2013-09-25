@@ -48,11 +48,13 @@ import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
 
+import net.htmlparser.jericho.Source;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.StatusLine;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
@@ -62,6 +64,11 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -71,6 +78,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.exolab.core.util.Messages;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -141,7 +149,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
 
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
-    
+
     private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
         public boolean equals(Object o, Object o1) {
             String s1 = (String) o;
@@ -171,9 +179,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private ApplicationEventPublisher applicationEventPublisher;
 
     private ModuleBuildHelper moduleBuildHelper;
-    
+
     private ModuleInstallationHelper moduleInstallationHelper;
-    
+
     private SourceControlHelper scmHelper;
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -234,7 +242,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleName,
-            String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+                                         String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleName, version, session);
     }
 
@@ -391,18 +399,35 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * Manage forge
      */
     public String createForgeModule(ModuleReleaseInfo releaseInfo, File jar) throws IOException {
+
         String moduleUrl = null;
-
-        Part[] parts = { new StringPart("action","action"), new FilePart("file",jar) };
-
         final String url = releaseInfo.getForgeUrl();
+        HttpClient client = new HttpClient();
+        // Get token from forge home page
+        GetMethod getMethod = new GetMethod(url + "/home.html");
+        getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
+        client.executeMethod(getMethod);
+        Source source = new Source(getMethod.getResponseBodyAsString());
+        String token = "";
+        if (source.getFirstElementByClass("file_upload") != null) {
+            List<net.htmlparser.jericho.Element> els = source.getFirstElementByClass("file_upload").getAllElements("input");
+            for (net.htmlparser.jericho.Element el : els) {
+                if (StringUtils.equals(el.getAttributeValue("name"),"form-token")) {
+                    token = el.getAttributeValue("value");
+                }
+            }
+        } else {
+            throw new IOException("Unable to get forge site information, please check your credentials");
+        }
+
+        Part[] parts = {new StringPart("form-token",token),new FilePart("file",jar) };
+
+        // send module
         PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
         postMethod.getParams().setSoTimeout(0);
         postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
         postMethod.addRequestHeader("accept", "application/json");
         postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
-        HttpClient client = httpClientService.getHttpClient();
-
         String result = null;
         try {
             client.executeMethod(null, postMethod);
@@ -508,9 +533,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         if (session.getLocale() != null) {
             logger.error("Cannot generated export with i18n session");
-            return modifiedFiles; 
+            return modifiedFiles;
         }
-        
+
         SourceControlManagement scm = null;
         try {
             scm = scmHelper.getSourceControlFactory().getSourceControlManagement(sources);
@@ -547,7 +572,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void regenerateImportFileInternal(JCRSessionWrapper session, List<File> modifiedFiles, File sourcesImportFolder,
-            JahiaTemplatesPackage aPackage) throws FileNotFoundException, RepositoryException, SAXException,
+                                              JahiaTemplatesPackage aPackage) throws FileNotFoundException, RepositoryException, SAXException,
             IOException, TransformerException, PathNotFoundException {
         File f = File.createTempFile("import", null);
 
@@ -1289,7 +1314,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Injects an instance of the SCM helper.
-     * 
+     *
      * @param scmHelper
      *            an instance of the SCM helper
      */

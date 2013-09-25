@@ -43,7 +43,7 @@ package org.jahia.bin.filters;
 import com.phloc.commons.io.IInputStreamProvider;
 import com.phloc.css.ECSSVersion;
 import com.phloc.css.decl.*;
-import com.phloc.css.handler.CSSHandler;
+import com.phloc.css.reader.CSSReader;
 import com.phloc.css.writer.CSSWriter;
 
 import org.apache.commons.io.Charsets;
@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class CSSChannelFilter implements Filter {
             String uri = ((HttpServletRequest) request).getRequestURI();
             final InputStream stream = servletContext.getResourceAsStream(uri.replace(Jahia.getContextPath(), ""));
 
-            CascadingStyleSheet css = CSSHandler.readFromStream(new IInputStreamProvider() {
+            CascadingStyleSheet css = CSSReader.readFromStream(new IInputStreamProvider() {
                 public InputStream getInputStream() {
                     return stream;
                 }
@@ -97,7 +98,7 @@ public class CSSChannelFilter implements Filter {
                         filteredOutRules.add(mediaRule);
                     } else {
                         for (CSSMediaQuery mediaQuery : mediaRule.getAllMediaQueries()) {
-                            mediaQuery.getMediaExpressions().clear();
+                            mediaQuery.getAllMediaExpressions().clear();
                         }
                     }
                 }
@@ -148,7 +149,7 @@ public class CSSChannelFilter implements Filter {
 
     private boolean evalMediaRule(Channel channel, List<CSSMediaQuery> mediaQueries, String channelVariant) {
         for (CSSMediaQuery mediaQuery : mediaQueries) {
-            for (CSSMediaExpression mediaExpr : mediaQuery.getMediaExpressions()) {
+            for (CSSMediaExpression mediaExpr : mediaQuery.getAllMediaExpressions()) {
                 if (!evalFeature(mediaExpr, channel, channelVariant)) {
                     return false;
                 }

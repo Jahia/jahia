@@ -41,6 +41,8 @@
 package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Model;
+import org.jahia.utils.PomUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpContext;
 import org.slf4j.Logger;
@@ -62,7 +64,7 @@ import java.util.List;
  * HttpContext that can look up resources in files as well as the default OSGi HttpContext
  */
 public class FileHttpContext implements HttpContext {
-    
+
     private static final URL[] EMPTY_URL_ARRAY = new URL[0];
 
     private static Logger logger = LoggerFactory.getLogger(FileHttpContext.class);
@@ -77,30 +79,41 @@ public class FileHttpContext implements HttpContext {
 
     public static URL[] getSourceURLs(Bundle bundle) {
         URL[] urls = EMPTY_URL_ARRAY;
-        String sourceFolderHeader = (String) bundle.getHeaders().get("Jahia-Source-Folders");
-        if (StringUtils.isNotEmpty(sourceFolderHeader)) {
+        String sourceFolder = (String) bundle.getHeaders().get("Jahia-Source-Folders");
+        if (StringUtils.isNotEmpty(sourceFolder)) {
             List<URL> sourceURLs = new ArrayList<URL>();
-            String[] sourceFolders = StringUtils.split(sourceFolderHeader, ",");
-
-            for (String sourceFolder : sourceFolders) {
-                File resourceFolderFile = new File(sourceFolder, "src/main/resources");
-                if (resourceFolderFile.exists()) {
-                    try {
-                        sourceURLs.add(resourceFolderFile.toURI().toURL());
-                    } catch (MalformedURLException e) {
-                        logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
-                    }
+            try {
+                final Model model = PomUtils.read(new File(sourceFolder, "pom.xml"));
+                String s = model.getVersion();
+                if (s == null) {
+                    s = model.getParent().getVersion();
                 }
-                // Legacy sources
-                File webappFolderFile = new File(sourceFolder, "src/main/webapp");
-                if (webappFolderFile.exists()) {
-                    try {
-                        sourceURLs.add(webappFolderFile.toURI().toURL());
-                    } catch (MalformedURLException e) {
-                        logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
-                    }
+                if (!s.equals(bundle.getHeaders().get("Implementation-Version"))) {
+                    return null;
+                }
+            } catch (Exception e) {
+                logger.warn("Invalid source folder " + sourceFolder + ", cannot read pom file", e.getMessage());
+                return null;
+            }
+
+            File resourceFolderFile = new File(sourceFolder, "src/main/resources");
+            if (resourceFolderFile.exists()) {
+                try {
+                    sourceURLs.add(resourceFolderFile.toURI().toURL());
+                } catch (MalformedURLException e) {
+                    logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
                 }
             }
+            // Legacy sources
+            File webappFolderFile = new File(sourceFolder, "src/main/webapp");
+            if (webappFolderFile.exists()) {
+                try {
+                    sourceURLs.add(webappFolderFile.toURI().toURL());
+                } catch (MalformedURLException e) {
+                    logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
+                }
+            }
+
             urls = sourceURLs.toArray(new URL[sourceURLs.size()]);
             logger.debug("Detected {} source folders for bundle {}", sourceURLs.size(), bundle.getSymbolicName());
         }

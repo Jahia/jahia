@@ -80,8 +80,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private Map<String, JCRStoreProvider> providers;
     private List<JCRStoreProvider> providerList = new LinkedList<JCRStoreProvider>();
     private Set<String> allMountPoints = new HashSet<String>();
-    private SortedMap<String, JCRStoreProvider> mountPoints = new TreeMap<String, JCRStoreProvider>();
-    private SortedMap<String, JCRStoreProvider> dynamicMountPoints = new TreeMap<String, JCRStoreProvider>();
+    private SortedMap<String, JCRStoreProvider> mountPoints;
+    private SortedMap<String, JCRStoreProvider> dynamicMountPoints;
     private static JCRSessionFactory instance;
     private String servletContextAttributeName;
     private ServletContext servletContext;

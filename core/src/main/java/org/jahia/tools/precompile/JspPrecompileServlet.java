@@ -169,7 +169,7 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("<ul>");
             Map<String, Long> moduleBundles = new TreeMap<String, Long>();
             for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-                if (BundleUtils.isJahiaModuleBundle(bundle)) {
+                if (BundleUtils.isJahiaModuleBundle(bundle) && bundle.getState() == Bundle.ACTIVE) {
                     Enumeration<?> en = bundle.findEntries("/", "*.jsp", true);
                     if (en != null && en.hasMoreElements()) {
                         moduleBundles.put(bundle.getSymbolicName(), bundle.getBundleId());
@@ -225,7 +225,9 @@ public class JspPrecompileServlet extends HttpServlet {
     private List<String> searchForBundleJsps() {
         List<String> foundJsps = new ArrayList<String>();
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-            foundJsps.addAll(searchForBundleJsps(bundle));
+            if (BundleUtils.isJahiaModuleBundle(bundle) && bundle.getState() == Bundle.ACTIVE) {
+                foundJsps.addAll(searchForBundleJsps(bundle));
+            }
         }
         return foundJsps;
     }

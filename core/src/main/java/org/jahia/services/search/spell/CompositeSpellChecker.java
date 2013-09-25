@@ -40,6 +40,7 @@
 
 package org.jahia.services.search.spell;
 
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.QueryHandler;
@@ -67,6 +68,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Token;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.utils.DateUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -514,8 +516,10 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                                                             name, language);
                                                                 }
                                                             }
-                                                            logger.info("Spell checker index refreshed in {} ms",
-                                                                    System.currentTimeMillis() - time);
+                                                            logger.info(
+                                                                    "Spell checker index refreshed in {}",
+                                                                    DateUtils.formatDurationWords(System
+                                                                            .currentTimeMillis() - time));
                                                         } catch (IOException e) {
                                                             logger.error(e.getMessage(), e);
                                                         } finally {

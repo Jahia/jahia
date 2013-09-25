@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ page import="org.jahia.services.content.JCRContentUtils" %>
+<%@page import="org.jahia.utils.DateUtils"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <head>
@@ -21,11 +22,11 @@ try {
 } catch (Exception e) {
 
 } finally {
-    pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+    pageContext.setAttribute("took", DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
     pageContext.setAttribute("deleted", deleted);
 }
 %>
-<p style="color: blue">Successfully executed in <strong>${took}</strong> ms. <strong>${deleted}</strong> data record(s) deleted.</p>
+<p style="color: blue">Successfully executed in <strong>${took}</strong>. <strong>${deleted}</strong> data record(s) deleted.</p>
 </c:if>
 <p>Available actions:</p>
 <ul>

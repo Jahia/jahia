@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
 
 /**
  * Convenient date utility methods.
@@ -174,6 +175,22 @@ public final class DateUtils {
         return "1 0 0 ? * "
                 + (daysOfWeek != null && !daysOfWeek.isEmpty() ? StringUtils.join(daysOfWeek, ',')
                         : "*");
+    }
+    
+    /**
+     * Returns a human-readable representation of the time taken.
+     * 
+     * @param durationMillis
+     *            the time take in milliseconds
+     * @return a human-readable representation of the time taken
+     * @see DurationFormatUtils#formatDurationWords(long, boolean, boolean)
+     */
+    public static String formatDurationWords(long durationMillis) {
+        if (durationMillis <= 1000) {
+            return durationMillis + " ms";
+        } else {
+            return DurationFormatUtils.formatDurationWords(durationMillis, true, true) + " (" + durationMillis + " ms)";
+        }
     }
 
     /**

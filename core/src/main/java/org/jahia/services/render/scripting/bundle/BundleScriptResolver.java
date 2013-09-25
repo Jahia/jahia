@@ -447,6 +447,5 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public static void clearCaches() {
         viewSetCache.clear();
-        BaseView.clearPropertiesCache();
     }
 }

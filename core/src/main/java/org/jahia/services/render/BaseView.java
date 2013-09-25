@@ -61,12 +61,6 @@ public abstract class BaseView implements View, Comparable<View> {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseView.class);
 
-    private static Map<String, Properties> propCache = new ConcurrentHashMap<String, Properties>(512);
-
-    public static void clearPropertiesCache() {
-        propCache.clear();
-    }
-
     private Properties defaultProperties;
 
     private String displayName;

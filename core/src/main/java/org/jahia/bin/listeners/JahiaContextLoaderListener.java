@@ -233,7 +233,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             
             jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
             if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
-                SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextInitializedEvent(event.getServletContext()));
+                SpringContextSingleton.getInstance().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));
             }
             contextInitialized = true;
             
@@ -322,7 +322,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void contextDestroyed(ServletContextEvent event) {
         contextInitialized = false;
         if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(
+            SpringContextSingleton.getInstance().publishEvent(
                     new ServletContextDestroyedEvent(event.getServletContext()));
         }
         removePID(servletContext);
@@ -419,28 +419,28 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void sessionCreated(HttpSessionEvent se) {
         sessionCount++;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionCreatedEvent(se.getSession()));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionCreatedEvent(se.getSession()));
         }
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {
         sessionCount--;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionDestroyedEvent(se.getSession()));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionDestroyedEvent(se.getSession()));
         }
     }
 
     public void requestDestroyed(ServletRequestEvent sre) {
         requestTimes.remove(sre.getServletRequest());
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletRequestDestroyedEvent(sre.getServletRequest()));
+            SpringContextSingleton.getInstance().publishEvent(new ServletRequestDestroyedEvent(sre.getServletRequest()));
         }
     }
 
     public void requestInitialized(ServletRequestEvent sre) {
         requestTimes.put(sre.getServletRequest(), System.currentTimeMillis());
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletRequestInitializedEvent(sre.getServletRequest()));
+            SpringContextSingleton.getInstance().publishEvent(new ServletRequestInitializedEvent(sre.getServletRequest()));
         }
     }
 
@@ -458,50 +458,50 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     public void sessionWillPassivate(HttpSessionEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionActivationEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionWillPassivateEvent(se.getSession()));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionWillPassivateEvent(se.getSession()));
         }
     }
 
     public void sessionDidActivate(HttpSessionEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionActivationEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionDidActivateEvent(se.getSession()));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionDidActivateEvent(se.getSession()));
         }
     }
 
     public void attributeAdded(HttpSessionBindingEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionAttributeListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionAttributeAddedEvent(se));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionAttributeAddedEvent(se));
         }
     }
 
     public void attributeRemoved(HttpSessionBindingEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionAttributeListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionAttributeRemovedEvent(se));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionAttributeRemovedEvent(se));
         }
     }
 
     public void attributeReplaced(HttpSessionBindingEvent se) {
         if (isEventInterceptorActivated("interceptHttpSessionAttributeListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionAttributeReplacedEvent(se));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionAttributeReplacedEvent(se));
         }
     }
 
     public void valueBound(HttpSessionBindingEvent event) {
         if (isEventInterceptorActivated("interceptHttpSessionBindingListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionValueBoundEvent(event));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionValueBoundEvent(event));
         }
     }
 
     public void valueUnbound(HttpSessionBindingEvent event) {
         if (isEventInterceptorActivated("interceptHttpSessionBindingListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new HttpSessionValueUnboundEvent(event));
+            SpringContextSingleton.getInstance().publishEvent(new HttpSessionValueUnboundEvent(event));
         }
     }
 
     public void attributeAdded(ServletContextAttributeEvent scab) {
         if (contextInitialized) {
             if (isEventInterceptorActivated("interceptServletContextAttributeListenerEvents")) {
-                SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextAttributeAddedEvent(scab));
+                SpringContextSingleton.getInstance().publishEvent(new ServletContextAttributeAddedEvent(scab));
             }
         }
     }
@@ -509,7 +509,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void attributeRemoved(ServletContextAttributeEvent scab) {
         if (contextInitialized) {
             if (isEventInterceptorActivated("interceptServletContextAttributeListenerEvents")) {
-                SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextAttributeRemovedEvent(scab));
+                SpringContextSingleton.getInstance().publishEvent(new ServletContextAttributeRemovedEvent(scab));
             }
         }
     }
@@ -517,26 +517,26 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     public void attributeReplaced(ServletContextAttributeEvent scab) {
         if (contextInitialized) {
             if (isEventInterceptorActivated("interceptServletContextAttributeListenerEvents")) {
-                SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletContextAttributeReplacedEvent(scab));
+                SpringContextSingleton.getInstance().publishEvent(new ServletContextAttributeReplacedEvent(scab));
             }
         }
     }
 
     public void attributeAdded(ServletRequestAttributeEvent srae) {
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletRequestAttributeAddedEvent(srae));
+            SpringContextSingleton.getInstance().publishEvent(new ServletRequestAttributeAddedEvent(srae));
         }
     }
 
     public void attributeRemoved(ServletRequestAttributeEvent srae) {
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletRequestAttributeRemovedEvent(srae));
+            SpringContextSingleton.getInstance().publishEvent(new ServletRequestAttributeRemovedEvent(srae));
         }
     }
 
     public void attributeReplaced(ServletRequestAttributeEvent srae) {
         if (isEventInterceptorActivated("interceptServletRequestAttributeListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new ServletRequestAttributeReplacedEvent(srae));
+            SpringContextSingleton.getInstance().publishEvent(new ServletRequestAttributeReplacedEvent(srae));
         }
     }
 

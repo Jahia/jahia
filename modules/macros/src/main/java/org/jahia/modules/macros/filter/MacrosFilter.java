@@ -65,7 +65,6 @@ import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 /**
@@ -75,7 +74,7 @@ import org.springframework.context.ApplicationListener;
  * @since JAHIA 6.5
  * Created : 21/12/10
  */
-public class MacrosFilter extends AbstractFilter implements InitializingBean, ApplicationListener<ApplicationEvent> {
+public class MacrosFilter extends AbstractFilter implements InitializingBean, ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private transient static Logger logger = LoggerFactory.getLogger(MacrosFilter.class);
 
@@ -204,50 +203,10 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
             scriptCache.put(macroName, macro);
         }
         return null;
-
-
-//        String lookup = macroLookupPath.replace("{macro}", macroName);
-//        try {
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Looking up macro using path {}", lookup);
-//            }
-//            org.springframework.core.io.Resource[] resources = SpringContextSingleton.getInstance()
-//                    .getResources(lookup);
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Found {} resources", resources.length);
-//            }
-//            org.springframework.core.io.Resource script = resources.length > 0 ? resources[0]
-//                    : null;
-//            if (resources.length > 1) {
-//                logger.warn("Found multiple matches for macro \"{}\"."
-//                        + " Taking the first script \"{}\".", macroName, script);
-//            }
-//
-//            if (script == null) {
-//                logger.info("No macro script found for macro \"{}\" using lookup \"{}\".",
-//                        macroName, lookup);
-//                if(!replaceByErrorMessageOnMissingMacros) {
-//                    scriptCache.put(macroName, macro);
-//                }
-//                return null;
-//            } else {
-//                logger.info("Macro script found for macro \"{}\" using lookup \"{}\".",macroName, lookup);
-//            }
-//
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Using script {}", script);
-//            }
-//        } catch (IOException e) {
-//            logger.warn("Error looking up macros", e);
-//        }
-//
-//        return macro;
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof TemplatePackageRedeployedEvent) {
-            scriptCache.clear();
-        }
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        scriptCache.clear();
     }
 
     public void setMacroLookupPath(String macroLookupPath) {

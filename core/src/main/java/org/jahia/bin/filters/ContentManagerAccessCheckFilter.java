@@ -74,7 +74,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 /**
@@ -83,7 +82,7 @@ import org.springframework.context.ApplicationListener;
  * @author Sergiy Shyrkov
  */
 public class ContentManagerAccessCheckFilter implements Filter,
-        ApplicationListener<ApplicationEvent> {
+        ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private static final Logger logger = LoggerFactory
             .getLogger(ContentManagerAccessCheckFilter.class);
@@ -234,10 +233,8 @@ public class ContentManagerAccessCheckFilter implements Filter,
         return request.getRequestURI().equals(Jahia.getContextPath() + "/engines/contentpicker.jsp");
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof TemplatePackageRedeployedEvent) {
-            mapping = null;
-        }
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        mapping = null;
     }
 
     public void setDefaultContentManager(String defaultContentManager) {

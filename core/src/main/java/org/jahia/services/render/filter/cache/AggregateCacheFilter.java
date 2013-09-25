@@ -61,7 +61,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.PathNotFoundException;
@@ -83,7 +82,7 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  *        Created : 8 janv. 2010
  */
-public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<ApplicationEvent>, InitializingBean {
+public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
     protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
@@ -1086,10 +1085,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof TemplatePackageRedeployedEvent) {
-            notCacheableFragment.clear();
-        }
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        notCacheableFragment.clear();
     }
 
     public void removeNotCacheableFragment(String key) {

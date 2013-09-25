@@ -61,6 +61,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
 /**
@@ -125,11 +127,38 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return context;
     }
 
-    public void publishEventInModuleContexts(ApplicationEvent event) {
-        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
+    public void publishEvent(ApplicationEvent event) {
+        publishEvent(event, true);
+    }
+
+    /**
+     * Publishes the specified event in the core Spring context and if <code>propagateToModules</code> is set to true, publishes that event
+     * to each module's context. When publishing the event to a module, the
+     * {@link ApplicationEventMulticaster#multicastEvent(ApplicationEvent)} method is used to skip publishing event to the module's parent
+     * context (which is our Spring core context).
+     * 
+     * @param event
+     *            the Spring event to be published
+     * @param propagateToModules
+     *            whether to propagate the event to all modules
+     */
+    public void publishEvent(ApplicationEvent event, boolean propagateToModules) {
+        getContext().publishEvent(event);
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null) {
-                aPackage.getContext().publishEvent(event);
+                multicastEvent(event, aPackage.getContext());
             }
+        }
+    }
+
+    private void multicastEvent(ApplicationEvent event, AbstractApplicationContext ctx) {
+        if (ctx.containsBean(AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) {
+            ((ApplicationEventMulticaster) ctx
+                    .getBean(AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)).multicastEvent(event);
+        } else {
+            // fall back to publishEvent()
+            ctx.publishEvent(event);
         }
     }
 

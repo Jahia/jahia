@@ -82,6 +82,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.JahiaService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
@@ -763,10 +764,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getRootFolder(), this));
     }
 
+    /**
+     * Fires a Spring event in core context and contexts of all modules to notify listeners about the fact that a module bundle is either
+     * started or stopped.
+     * 
+     * @param aPackage
+     *            the module that generated this event
+     */
     public void fireTemplatePackageRedeployedEvent(JahiaTemplatesPackage aPackage) {
-        applicationEventPublisher.publishEvent(new TemplatePackageRedeployedEvent(JahiaTemplateManagerService.class.getName()));
+        SpringContextSingleton.getInstance().publishEvent(new TemplatePackageRedeployedEvent(aPackage.getRootFolder()));
     }
-
 
     public void setSourcesFolderInPackage(JahiaTemplatesPackage pack, File sources) {
         scmHelper.setSourcesFolderInPackage(pack, sources);

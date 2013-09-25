@@ -254,7 +254,7 @@ public class Logout implements Controller {
         Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
 
         if (fireLogoutEvent) {
-            SpringContextSingleton.getInstance().publishEventInModuleContexts(new LogoutEvent(this, request, response));
+            SpringContextSingleton.getInstance().publishEvent(new LogoutEvent(this, request, response));
         }
 
         Map<String,Object> savedSessionAttributes = preserveSessionAttributes(request);

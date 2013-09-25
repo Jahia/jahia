@@ -157,7 +157,14 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 ok &= node.hasPermission("template-" + templateNode.getName());
             }
 
-<<<<<<< .working
+            if (!ok) {
+                // check the current value of the page template, if it's the current template node, we will have
+                // to let it pass anyway.
+                if (node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
+                    ok = true;
+                }
+            }
+
             if (ok) {
                 String templateName = templateNode.getName();
                 try {
@@ -166,26 +173,6 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                         String templateTitle = templateTitleProperty.getString();
                         if (StringUtils.isNotEmpty(templateTitle)) {
                             templateName = templateTitle;
-=======
-                if (!ok) {
-                    // check the current value of the page template, if it's the current template node, we will have
-                    // to let it pass anyway.
-                    if (node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
-                        ok = true;
-                    }
-                }
-
-                if (ok) {
-
-                    String templateName = templateNode.getName();
-                    try {
-                        Property templateTitleProperty = templateNode.getI18N(locale).getProperty(Constants.JCR_TITLE);
-                        if (templateTitleProperty != null) {
-                            String templateTitle = templateTitleProperty.getString();
-                            if (StringUtils.isNotEmpty(templateTitle)) {
-                                templateName = templateTitle;
-                            }
->>>>>>> .merge-right.r47429
                         }
                     }
                 } catch (RepositoryException re) {

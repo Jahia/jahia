@@ -77,7 +77,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 args.add(file.getPath().substring(rootPath.length() + 1));
             }
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
@@ -89,8 +89,8 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
                 || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
         if (commitRequired) {
-            checkExecutionResult(executeCommand(executable, "commit -a -m \"" + message + "\""));
-            checkExecutionResult(executeCommand(executable, "push -u origin master"));
+            checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m","\"" + message + "\""}));
+            checkExecutionResult(executeCommand(executable, new String[]{"push","-u","origin","master"}));
         }
     }
 
@@ -101,7 +101,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     private Map<String, Status> createStatusMap(boolean folder) throws IOException {
         Map<String, Status> newMap = new HashMap<String, Status>();
-        ExecutionResult result = executeCommand(executable, "status --porcelain");
+        ExecutionResult result = executeCommand(executable, new String[]{"status","--porcelain"});
         for (String line : readLines(result.out)) {
             if (StringUtils.isBlank(line)) {
                 continue;
@@ -166,7 +166,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     @Override
     public String getURI() throws IOException {
-        ExecutionResult result = executeCommand(executable, "remote -v");
+        ExecutionResult result = executeCommand(executable, new String[]{"remote","-v"});
         String url = StringUtils.substringBefore(StringUtils.substringAfter(result.out,"origin"),"(").trim();
         if (!StringUtils.isEmpty(url)) {
             return "scm:git:"+url;
@@ -176,26 +176,26 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, "clone " + uri + " " + workingDirectory.getName());
+        ExecutionResult r = executeCommand(executable, new String[]{"clone",uri,workingDirectory.getName()});
         if (r.exitValue > 0) {
             throw new IOException(r.err);
         }
         this.rootFolder = workingDirectory;
         if (!StringUtils.isEmpty(branchOrTag)) {
-            executeCommand(executable, "checkout " + branchOrTag);
+            executeCommand(executable, new String[]{"checkout ",branchOrTag});
         }
         this.rootFolder = workingDirectory;
     }
 
     protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
-        executeCommand(executable, "init");
-        executeCommand(executable, "add .");
-        executeCommand(executable, "commit -a -m \"First commit\"");
-        executeCommand(executable, "remote add origin " + url);
-        executeCommand(executable, "fetch");
-        executeCommand(executable, "merge origin/master");
-        executeCommand(executable, "push -u origin master");
+        executeCommand(executable, new String[]{"init"});
+        executeCommand(executable, new String[]{"add","."});
+        executeCommand(executable, new String[]{"commit","-a","-m","First commit"});
+        executeCommand(executable, new String[]{"remote","add","origin",url});
+        executeCommand(executable, new String[]{"fetch"});
+        executeCommand(executable, new String[]{"merge","origin/master"});
+        executeCommand(executable, new String[]{"push","-u","origin","master"});
     }
 
     protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
@@ -227,7 +227,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         } else {
             args.add(dst.getPath().substring(rootPath.length() + 1));
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
@@ -247,25 +247,25 @@ public class GitSourceControlManagement extends SourceControlManagement {
         } else {
             args.add(file.getPath().substring(rootPath.length() + 1));
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
     @Override
     public void update() throws IOException {
-        executeCommand(executable, "stash clear");
+        executeCommand(executable, new String[]{"stash","clear"});
 
         Map<String, Status> statusMap = createStatusMap(false);
         boolean stashRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
                 || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
                 || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
         if (stashRequired) {
-            executeCommand(executable, "stash");
+            executeCommand(executable, new String[]{"stash"});
         }
-        ExecutionResult pullResult = executeCommand(executable, "pull --rebase");
+        ExecutionResult pullResult = executeCommand(executable, new String[]{"pull","--rebase"});
         ExecutionResult stashPopResult = null;
         if (stashRequired) {
-            stashPopResult = executeCommand(executable, "stash pop");
+            stashPopResult = executeCommand(executable, new String[]{"stash pop"});
         }
         invalidateStatusCache();
         checkExecutionResult(pullResult);

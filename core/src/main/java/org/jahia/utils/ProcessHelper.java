@@ -63,7 +63,7 @@ public final class ProcessHelper {
 
     /**
      * Executes the external process using the provided command.
-     * 
+     *
      * @param command
      *            the command to be executed
      * @return the execution status
@@ -76,7 +76,7 @@ public final class ProcessHelper {
 
     /**
      * Executes the external process using the provided command, arguments (optional).
-     * 
+     *
      * @param command
      *            the command to be executed
      * @param arguments
@@ -85,14 +85,14 @@ public final class ProcessHelper {
      * @throws JahiaRuntimeException
      *             in case the process execution failed
      */
-    public static int execute(String command, String arguments) throws JahiaRuntimeException {
+    public static int execute(String command, String[] arguments) throws JahiaRuntimeException {
         return execute(command, arguments, null);
     }
 
     /**
      * Executes the external process using the provided command, arguments (optional), parameter substitution map to expand variables in the
      * command or arguments in form of <code>${variable}<code> (optional).
-     * 
+     *
      * @param command
      *            the command to be executed
      * @param arguments
@@ -103,7 +103,7 @@ public final class ProcessHelper {
      * @throws JahiaRuntimeException
      *             in case the process execution failed
      */
-    public static int execute(String command, String arguments,
+    public static int execute(String command, String[] arguments,
             Map<String, Object> parameterSubstitutionMap) throws JahiaRuntimeException {
 
         return execute(command, arguments, parameterSubstitutionMap, null, null, null);
@@ -130,7 +130,7 @@ public final class ProcessHelper {
      * @throws JahiaRuntimeException
      *             in case the process execution failed
      */
-    public static int execute(String command, String arguments,
+    public static int execute(String command, String arguments[],
             Map<String, Object> parameterSubstitutionMap, File workingDir, StringBuilder resultOut,
             StringBuilder resultErr) throws JahiaRuntimeException {
         return execute(command, arguments, parameterSubstitutionMap, workingDir, resultOut, resultErr, true);
@@ -159,7 +159,7 @@ public final class ProcessHelper {
      * @throws JahiaRuntimeException
      *             in case the process execution failed
      */
-    public static int execute(String command, String arguments,
+    public static int execute(String command, String arguments[],
             Map<String, Object> parameterSubstitutionMap, File workingDir, StringBuilder resultOut,
             StringBuilder resultErr, boolean redirectOutputs) throws JahiaRuntimeException {
 
@@ -167,7 +167,7 @@ public final class ProcessHelper {
 
         CommandLine cmd = new CommandLine(command);
 
-        if (StringUtils.isNotEmpty(arguments)) {
+        if (arguments != null && arguments.length > 0) {
             cmd.addArguments(arguments);
         }
 
@@ -178,8 +178,8 @@ public final class ProcessHelper {
         if (logger.isDebugEnabled()) {
             logger.debug("Execuiting command: {}", cmd.toString());
         } else if (redirectOutputs) {
-            System.out.print("Execuiting command: ");
-            System.out.println(cmd.toString());
+            logger.info("Execuiting command: ");
+            logger.info(cmd.toString());
         }
 
         int exitValue = 0;

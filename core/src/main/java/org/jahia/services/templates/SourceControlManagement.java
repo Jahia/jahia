@@ -144,7 +144,7 @@ public abstract class SourceControlManagement {
 
     protected abstract Map<String, Status> createStatusMap() throws IOException;
 
-    protected ExecutionResult executeCommand(String command, String arguments) throws IOException {
+    protected ExecutionResult executeCommand(String command, String[] arguments) throws IOException {
         try {
             StringBuilder resultOut = new StringBuilder();
             StringBuilder resultErr = new StringBuilder();

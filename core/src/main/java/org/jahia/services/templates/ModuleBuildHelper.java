@@ -156,7 +156,7 @@ public class ModuleBuildHelper {
             StringBuilder out = new StringBuilder();
             int r = 0;
             try {
-                r = ProcessHelper.execute(mavenExecutable, "clean install", null, sources, out, out);
+                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean","install"}, null, sources, out, out);
             } catch (JahiaRuntimeException e) {
                 logger.error(e.getCause().getMessage(), e.getCause());
                 throw e;
@@ -208,11 +208,11 @@ public class ModuleBuildHelper {
 
         String[] archetypeParams = { "archetype:generate", "-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local",
                 "-DarchetypeGroupId=org.jahia.archetypes", "-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype",
-                "-Dversion=1.0-SNAPSHOT", "-DmoduleName=" + moduleName, "-DartifactId=" + artifactId,
+                "-Dversion=1.0-SNAPSHOT", "\"-DmoduleName=" + moduleName+ "\"", "-DartifactId=" + artifactId,
                 "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION, "-DinteractiveMode=false" };
 
         StringBuilder out = new StringBuilder();
-        int ret = ProcessHelper.execute(mavenExecutable, StringUtils.join(archetypeParams, " "), null, sources, out,
+        int ret = ProcessHelper.execute(mavenExecutable, archetypeParams, null, sources, out,
                 out);
 
         if (ret > 0) {
@@ -277,7 +277,7 @@ public class ModuleBuildHelper {
                         new String[] { "--settings", settings.getPath() });
             }
             StringBuilder out = new StringBuilder();
-            int ret = ProcessHelper.execute(mavenExecutable, StringUtils.join(deployParams, " "), null,
+            int ret = ProcessHelper.execute(mavenExecutable, deployParams, null,
                     generatedWar.getParentFile(), out, out);
 
             if (ret > 0) {
@@ -345,14 +345,14 @@ public class ModuleBuildHelper {
                     "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=true",
                     "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode" };
             StringBuilder out = new StringBuilder();
-            ret = ProcessHelper.execute(mavenExecutable, StringUtils.join(installParams, " "), null, sources, out, out);
+            ret = ProcessHelper.execute(mavenExecutable, installParams, null, sources, out, out);
 
             FileUtils.deleteDirectory(tmpRepo);
 
             if (ret > 0) {
                 logger.error("Maven release call returnedError release, maven out : " + out);
                 logger.error("Error when releasing, maven out : " + out);
-                ProcessHelper.execute(mavenExecutable, "release:rollback", null, sources, out, out);
+                ProcessHelper.execute(mavenExecutable, new String[]{"release:rollback"}, null, sources, out, out);
                 logger.error("Rollback release : " + out);
                 throw new IOException("Maven invocation failed");
             }

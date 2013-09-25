@@ -88,7 +88,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                 ignoreCmd.add("-F");
                 ignoreCmd.add(file.getAbsolutePath());
                 ignoreCmd.add(".");
-                executeCommand(executable, StringUtils.join(ignoreCmd, ' '));
+                executeCommand(executable, ignoreCmd.toArray(new String[ignoreCmd.size()]));
             }
             if (file.getPath().equals(rootPath)) {
                 args.add(".");
@@ -96,20 +96,20 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                 args.add(file.getPath().substring(rootPath.length() + 1));
             }
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
     @Override
     public void commit(String message) throws IOException {
         invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, "commit -m \"" + message + "\""));
+        checkExecutionResult(executeCommand(executable, new String[]{"commit","-m",message}));
     }
 
     @Override
     protected Map<String, Status> createStatusMap() throws IOException {
         Map<String, Status> newMap = new HashMap<String, Status>();
-        ExecutionResult result = executeCommand(executable, "status");
+        ExecutionResult result = executeCommand(executable, new String[]{"status"});
         for (String line : readLines(result.out)) {
             if (StringUtils.isBlank(line)) {
                 continue;
@@ -148,7 +148,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public String getURI() throws IOException {
-        ExecutionResult result = executeCommand(executable, "info");
+        ExecutionResult result = executeCommand(executable, new String[]{"info"});
         String url = (String) CollectionUtils.find(readLines(result.out), URL_PREDICATE);
         if (url != null) {
             url = StringUtils.substringAfter(url,"URL:").trim();
@@ -159,7 +159,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, "checkout " + uri + " " + workingDirectory.getName());
+        ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri ,workingDirectory.getName()});
         if (r.exitValue > 0) {
             throw new IOException(r.err);
         }
@@ -192,7 +192,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         } else {
             args.add(file.getPath().substring(rootPath.length() + 1));
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
@@ -216,7 +216,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         } else {
             args.add(dst.getPath().substring(rootPath.length() + 1));
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
@@ -236,14 +236,14 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         } else {
             args.add(file.getPath().substring(rootPath.length() + 1));
         }
-        executeCommand(executable, StringUtils.join(args, ' '));
+        executeCommand(executable, args.toArray(new String[args.size()]));
         invalidateStatusCache();
     }
 
     @Override
     public void update() throws IOException {
         invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, "update --non-interactive"));
+        checkExecutionResult(executeCommand(executable, new String[]{"update","--non-interactive"}));
     }
     
 }

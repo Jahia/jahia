@@ -763,6 +763,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getRootFolder(), this));
     }
 
+    public void fireTemplatePackageRedeployedEvent(JahiaTemplatesPackage aPackage) {
+        applicationEventPublisher.publishEvent(new TemplatePackageRedeployedEvent(JahiaTemplateManagerService.class.getName()));
+    }
+
 
     public void setSourcesFolderInPackage(JahiaTemplatesPackage pack, File sources) {
         scmHelper.setSourcesFolderInPackage(pack, sources);

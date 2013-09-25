@@ -520,8 +520,8 @@ public class Activator implements BundleActivator {
         long startTime = System.currentTimeMillis();
 
         templatePackageRegistry.register(jahiaTemplatesPackage);
-
         jahiaTemplatesPackage.setActiveVersion(true);
+        templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
         // scan for resource and call observers
         for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
@@ -599,6 +599,7 @@ public class Activator implements BundleActivator {
 
         templatePackageRegistry.unregister(jahiaTemplatesPackage);
         jahiaTemplatesPackage.setActiveVersion(false);
+        templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
         // scan for resource and call observers
         for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {

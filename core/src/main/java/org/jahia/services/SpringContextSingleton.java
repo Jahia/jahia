@@ -153,6 +153,9 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     }
 
     private void multicastEvent(ApplicationEvent event, AbstractApplicationContext ctx) {
+        if (!ctx.isActive()) {
+            return;
+        }
         if (ctx.containsBean(AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) {
             ((ApplicationEventMulticaster) ctx
                     .getBean(AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)).multicastEvent(event);

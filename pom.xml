@@ -506,6 +506,15 @@
                         <target>SCRIPT</target>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.jahia.server</groupId>
+                    <artifactId>jahia-hibernate-maven-plugin</artifactId>
+                    <version>4.0-SNAPSHOT</version>
+                    <configuration>
+                        <persistenceUnitName>org.jahia.services.workflow.jbpm</persistenceUnitName>
+                        <hibernateNamingStrategy>org.jahia.hibernate.JahiaNamingStrategy</hibernateNamingStrategy>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>

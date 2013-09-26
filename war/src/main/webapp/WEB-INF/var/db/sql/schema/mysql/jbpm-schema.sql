@@ -1,636 +1,839 @@
 
-    alter table JBPM4_DEPLOYPROP 
+    alter table jbpm_attachment 
         drop 
-        foreign key FK_DEPLPROP_DEPL;
+        foreign key FK_anhlt1ywoxmhaippy7h78baxk;
 
-    alter table JBPM4_EXECUTION 
+    alter table jbpm_attachment 
         drop 
-        foreign key FK_EXEC_SUBPI;
+        foreign key FK_s73kjv5ko89qn5xnvxulcd67g;
 
-    alter table JBPM4_EXECUTION 
+    alter table jbpm_boolean_expression 
         drop 
-        foreign key FK_EXEC_INSTANCE;
+        foreign key FK_nbrfj26gq8axs7ayswkuxq0i5;
 
-    alter table JBPM4_EXECUTION 
+    alter table jbpm_correlation_property_info 
         drop 
-        foreign key FK_EXEC_SUPEREXEC;
+        foreign key FK_91u8nc7udwpc496ldpaett8oa;
 
-    alter table JBPM4_EXECUTION 
+    alter table jbpm_deadline 
         drop 
-        foreign key FK_EXEC_PARENT;
+        foreign key FK_qd0gx9omsbf3aoghofg2v3oxr;
 
-    alter table JBPM4_HIST_ACTINST 
+    alter table jbpm_deadline 
         drop 
-        foreign key FK_HACTI_HPROCI;
+        foreign key FK_rklcbb9hsd16cc9acp7cdvwmx;
 
-    alter table JBPM4_HIST_ACTINST 
+    alter table jbpm_delegation_delegates 
         drop 
-        foreign key FK_HTI_HTASK;
+        foreign key FK_9apnaigsuutvonmkr21peocui;
 
-    alter table JBPM4_HIST_DETAIL 
+    alter table jbpm_delegation_delegates 
         drop 
-        foreign key FK_HDETAIL_HVAR;
+        foreign key FK_oriwrke8vcl3opfut68n472r9;
 
-    alter table JBPM4_HIST_DETAIL 
+    alter table jbpm_escalation 
         drop 
-        foreign key FK_HDETAIL_HPROCI;
+        foreign key FK_7g5gvv0kep2olcpvmef7kvoi2;
 
-    alter table JBPM4_HIST_DETAIL 
+    alter table jbpm_event_types 
         drop 
-        foreign key FK_HDETAIL_HTASK;
+        foreign key FK_6n2ptqm4wpn907h23e6tqbbha;
 
-    alter table JBPM4_HIST_DETAIL 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_HDETAIL_HACTI;
+        foreign key FK_5innbucbtx4lfii02bnpve8p;
 
-    alter table JBPM4_HIST_TASK 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_HSUPERT_SUB;
+        foreign key FK_e03i5m0xowu3tlckdntdvcmj2;
 
-    alter table JBPM4_HIST_VAR 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_HVAR_HPROCI;
+        foreign key FK_kqgti9te780wtpviwdnfrufr7;
 
-    alter table JBPM4_HIST_VAR 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_HVAR_HTASK;
+        foreign key FK_oc0h7p2a4abkflrmdh8iib35t;
 
-    alter table JBPM4_ID_GROUP 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_GROUP_PARENT;
+        foreign key FK_me9v2v0ea50skfj700g3a2t61;
 
-    alter table JBPM4_ID_MEMBERSHIP 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_MEM_GROUP;
+        foreign key FK_9y5pivj1g7xkuicw96cu8u2i;
 
-    alter table JBPM4_ID_MEMBERSHIP 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_MEM_USER;
+        foreign key FK_sf8hq8wp349bf2pt22vjopoma;
 
-    alter table JBPM4_JOB 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_JOB_CFG;
+        foreign key FK_h2gg5m9ylnih8mfjx1iunwnbe;
 
-    alter table JBPM4_LOB 
+    alter table jbpm_i18ntext 
         drop 
-        foreign key FK_LOB_DEPLOYMENT;
+        foreign key FK_esqmn5micj3ljsjadbbmyjgfc;
 
-    alter table JBPM4_PARTICIPATION 
+    alter table jbpm_notificat_email_headers 
         drop 
-        foreign key FK_PART_SWIMLANE;
+        foreign key FK_epvmc6tmrn1wq6nu8peaywt1k;
 
-    alter table JBPM4_PARTICIPATION 
+    alter table jbpm_notificat_email_headers 
         drop 
-        foreign key FK_PART_TASK;
+        foreign key FK_kf8fd1lw8m7jxkyekbsex81c8;
 
-    alter table JBPM4_SWIMLANE 
+    alter table jbpm_notification 
         drop 
-        foreign key FK_SWIMLANE_EXEC;
+        foreign key FK_lsx8dgmw3ilrncmkruoqimm28;
 
-    alter table JBPM4_TASK 
+    alter table jbpm_notification_bas 
         drop 
-        foreign key FK_TASK_SWIML;
+        foreign key FK_ai0cdcnws5a5ht5xpe3c01mxp;
 
-    alter table JBPM4_TASK 
+    alter table jbpm_notification_bas 
         drop 
-        foreign key FK_TASK_SUPERTASK;
+        foreign key FK_rrdpb88hvc55jslc4msf6u440;
 
-    alter table JBPM4_VARIABLE 
+    alter table jbpm_notification_recipients 
         drop 
-        foreign key FK_VAR_EXESYS;
+        foreign key FK_je2kqu2jgy4j17wsli8ex57c7;
 
-    alter table JBPM4_VARIABLE 
+    alter table jbpm_notification_recipients 
         drop 
-        foreign key FK_VAR_LOB;
+        foreign key FK_c5x1hqb09c91br1oy949yg5i7;
 
-    alter table JBPM4_VARIABLE 
+    alter table jbpm_people_ass_excl_owners 
         drop 
-        foreign key FK_VAR_TASK;
+        foreign key FK_9rfplx6e347cgvpt9b442vje8;
 
-    alter table JBPM4_VARIABLE 
+    alter table jbpm_people_ass_excl_owners 
         drop 
-        foreign key FK_VAR_EXECUTION;
+        foreign key FK_g6xxe0615p0hu79q0d111clnl;
 
-    drop table if exists JBPM4_DEPLOYMENT;
+    alter table jbpm_people_assignm_pot_owners 
+        drop 
+        foreign key FK_1vlj3kfu51ukgo45p3fm4krwx;
 
-    drop table if exists JBPM4_DEPLOYPROP;
+    alter table jbpm_people_assignm_pot_owners 
+        drop 
+        foreign key FK_1sqbvhk1obasgfp839uk387tb;
 
-    drop table if exists JBPM4_EXECUTION;
+    alter table jbpm_people_assignm_recipients 
+        drop 
+        foreign key FK_gcw7a7bs3m50jhvfa5jx7gg60;
 
-    drop table if exists JBPM4_HIST_ACTINST;
+    alter table jbpm_people_assignm_recipients 
+        drop 
+        foreign key FK_l5h85stwvy0aetdg6saoblec0;
 
-    drop table if exists JBPM4_HIST_DETAIL;
+    alter table jbpm_people_assignm_stakehold 
+        drop 
+        foreign key FK_b30nkrrs9b4fmsr6lgf4rrox8;
 
-    drop table if exists JBPM4_HIST_PROCINST;
+    alter table jbpm_people_assignm_stakehold 
+        drop 
+        foreign key FK_eblnc1w5r25dekutmwn3dujn6;
 
-    drop table if exists JBPM4_HIST_TASK;
+    alter table jbpm_people_assignments_bas 
+        drop 
+        foreign key FK_ojn5ekkacrgupp069yrqss9pd;
 
-    drop table if exists JBPM4_HIST_VAR;
+    alter table jbpm_people_assignments_bas 
+        drop 
+        foreign key FK_ekd3d8qrxvxa7kq3iw5d34bfw;
 
-    drop table if exists JBPM4_ID_GROUP;
+    alter table jbpm_reass_potential_owners 
+        drop 
+        foreign key FK_rm075l73m0whh7uxwnu9cx3vr;
 
-    drop table if exists JBPM4_ID_MEMBERSHIP;
+    alter table jbpm_reass_potential_owners 
+        drop 
+        foreign key FK_jsldbpqi48q1w9c9g99d6wnqk;
 
-    drop table if exists JBPM4_ID_USER;
+    alter table jbpm_reassignment 
+        drop 
+        foreign key FK_fkj43wo6ovwdhwt1q2d8ce0pd;
 
-    drop table if exists JBPM4_JOB;
+    alter table jbpm_task 
+        drop 
+        foreign key FK_3flcq2koknmx53wygbeyuteng;
 
-    drop table if exists JBPM4_LOB;
+    alter table jbpm_task 
+        drop 
+        foreign key FK_r4b5cbeyk3axu7rr8aek6u9w1;
 
-    drop table if exists JBPM4_PARTICIPATION;
+    alter table jbpm_task 
+        drop 
+        foreign key FK_7i7nh49lv4kdks9ljkomxj2uh;
 
-    drop table if exists JBPM4_PROPERTY;
+    alter table jbpm_task_comment 
+        drop 
+        foreign key FK_bl2skw5rlmgsg4xi0f50061tm;
 
-    drop table if exists JBPM4_SWIMLANE;
+    alter table jbpm_task_comment 
+        drop 
+        foreign key FK_nuqjfe1rpp1ad7jlfjjki6tog;
 
-    drop table if exists JBPM4_TASK;
+    alter table jbpm_task_event 
+        drop 
+        foreign key FK_jgfka618xsfgj4vxibvs81mln;
 
-    drop table if exists JBPM4_VARIABLE;
+    drop table if exists jbpm_attachment;
 
-    create table JBPM4_DEPLOYMENT (
-        DBID_ bigint not null,
-        NAME_ longtext,
-        TIMESTAMP_ bigint,
-        STATE_ varchar(255),
-        primary key (DBID_)
+    drop table if exists jbpm_bamtask_summary;
+
+    drop table if exists jbpm_boolean_expression;
+
+    drop table if exists jbpm_content;
+
+    drop table if exists jbpm_context_mapping_info;
+
+    drop table if exists jbpm_correlation_key_info;
+
+    drop table if exists jbpm_correlation_property_info;
+
+    drop table if exists jbpm_deadline;
+
+    drop table if exists jbpm_delegation_delegates;
+
+    drop table if exists jbpm_email_header;
+
+    drop table if exists jbpm_escalation;
+
+    drop table if exists jbpm_event_types;
+
+    drop table if exists jbpm_i18ntext;
+
+    drop table if exists jbpm_node_instance_log;
+
+    drop table if exists jbpm_notificat_email_headers;
+
+    drop table if exists jbpm_notification;
+
+    drop table if exists jbpm_notification_bas;
+
+    drop table if exists jbpm_notification_recipients;
+
+    drop table if exists jbpm_organizational_entity;
+
+    drop table if exists jbpm_people_ass_excl_owners;
+
+    drop table if exists jbpm_people_assignm_pot_owners;
+
+    drop table if exists jbpm_people_assignm_recipients;
+
+    drop table if exists jbpm_people_assignm_stakehold;
+
+    drop table if exists jbpm_people_assignments_bas;
+
+    drop table if exists jbpm_process_instance_info;
+
+    drop table if exists jbpm_process_instance_log;
+
+    drop table if exists jbpm_reass_potential_owners;
+
+    drop table if exists jbpm_reassignment;
+
+    drop table if exists jbpm_session_info;
+
+    drop table if exists jbpm_task;
+
+    drop table if exists jbpm_task_comment;
+
+    drop table if exists jbpm_task_event;
+
+    drop table if exists jbpm_variable_instance_log;
+
+    drop table if exists jbpm_work_item_info;
+
+    create table jbpm_attachment (
+        attachment_id bigint not null auto_increment,
+        access_type integer,
+        attached_at datetime,
+        attachment_content_id bigint not null,
+        content_type varchar(255),
+        name varchar(255),
+        attachment_size integer,
+        attached_by varchar(255),
+        task_data_attachments_id bigint,
+        primary key (attachment_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_DEPLOYPROP (
-        DBID_ bigint not null,
-        DEPLOYMENT_ bigint,
-        OBJNAME_ varchar(255),
-        KEY_ varchar(255),
-        STRINGVAL_ varchar(255),
-        LONGVAL_ bigint,
-        primary key (DBID_)
+    create table jbpm_bamtask_summary (
+        bamtask_id bigint not null auto_increment,
+        created_date datetime,
+        duration bigint,
+        end_date datetime,
+        process_instance_id bigint not null,
+        start_date datetime,
+        status varchar(255),
+        task_id bigint not null,
+        task_name varchar(255),
+        user_id varchar(255),
+        primary key (bamtask_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_EXECUTION (
-        DBID_ bigint not null,
-        CLASS_ varchar(255) not null,
-        DBVERSION_ integer not null,
-        ACTIVITYNAME_ varchar(255),
-        PROCDEFID_ varchar(255),
-        HASVARS_ bit,
-        NAME_ varchar(255),
-        KEY_ varchar(255),
-        ID_ varchar(255) unique,
-        STATE_ varchar(255),
-        SUSPHISTSTATE_ varchar(255),
-        PRIORITY_ integer,
-        HISACTINST_ bigint,
-        PARENT_ bigint,
-        INSTANCE_ bigint,
-        SUPEREXEC_ bigint,
-        SUBPROCINST_ bigint,
-        PARENT_IDX_ integer,
-        primary key (DBID_)
+    create table jbpm_boolean_expression (
+        id bigint not null auto_increment,
+        expression longtext,
+        type varchar(255),
+        escalation_constraints_id bigint,
+        primary key (id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_HIST_ACTINST (
-        DBID_ bigint not null,
-        CLASS_ varchar(255) not null,
-        DBVERSION_ integer not null,
-        HPROCI_ bigint,
-        TYPE_ varchar(255),
-        EXECUTION_ varchar(255),
-        ACTIVITY_NAME_ varchar(255),
-        START_ datetime,
-        END_ datetime,
-        DURATION_ bigint,
-        TRANSITION_ varchar(255),
-        NEXTIDX_ integer,
-        HTASK_ bigint,
-        primary key (DBID_)
+    create table jbpm_content (
+        id bigint not null auto_increment,
+        content longblob,
+        primary key (id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_HIST_DETAIL (
-        DBID_ bigint not null,
-        CLASS_ varchar(255) not null,
-        DBVERSION_ integer not null,
-        USERID_ varchar(255),
-        TIME_ datetime,
-        HPROCI_ bigint,
-        HPROCIIDX_ integer,
-        HACTI_ bigint,
-        HACTIIDX_ integer,
-        HTASK_ bigint,
-        HTASKIDX_ integer,
-        HVAR_ bigint,
-        HVARIDX_ integer,
-        MESSAGE_ longtext,
-        OLD_STR_ varchar(255),
-        NEW_STR_ varchar(255),
-        OLD_INT_ integer,
-        NEW_INT_ integer,
-        OLD_TIME_ datetime,
-        NEW_TIME_ datetime,
-        PARENT_ bigint,
-        PARENT_IDX_ integer,
-        primary key (DBID_)
+    create table jbpm_context_mapping_info (
+        mapping_id bigint not null auto_increment,
+        context_id varchar(255) not null,
+        ksession_id integer not null,
+        optlock integer,
+        primary key (mapping_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_HIST_PROCINST (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        ID_ varchar(255),
-        PROCDEFID_ varchar(255),
-        KEY_ varchar(255),
-        START_ datetime,
-        END_ datetime,
-        DURATION_ bigint,
-        STATE_ varchar(255),
-        ENDACTIVITY_ varchar(255),
-        NEXTIDX_ integer,
-        primary key (DBID_)
+    create table jbpm_correlation_key_info (
+        key_id bigint not null auto_increment,
+        name varchar(255),
+        process_instance_id bigint not null,
+        optlock integer,
+        primary key (key_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_HIST_TASK (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        EXECUTION_ varchar(255),
-        OUTCOME_ varchar(255),
-        ASSIGNEE_ varchar(255),
-        PRIORITY_ integer,
-        STATE_ varchar(255),
-        CREATE_ datetime,
-        END_ datetime,
-        DURATION_ bigint,
-        NEXTIDX_ integer,
-        SUPERTASK_ bigint,
-        primary key (DBID_)
+    create table jbpm_correlation_property_info (
+        property_id bigint not null auto_increment,
+        name varchar(255),
+        value varchar(255),
+        optlock integer,
+        correlation_key bigint,
+        primary key (property_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_HIST_VAR (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        PROCINSTID_ varchar(255),
-        EXECUTIONID_ varchar(255),
-        VARNAME_ varchar(255),
-        VALUE_ varchar(255),
-        HPROCI_ bigint,
-        HTASK_ bigint,
-        primary key (DBID_)
+    create table jbpm_deadline (
+        id bigint not null auto_increment,
+        deadline_date datetime,
+        escalated smallint,
+        deadlines_start_dead_line_id bigint,
+        deadlines_end_dead_line_id bigint,
+        primary key (id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_ID_GROUP (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        ID_ varchar(255),
-        NAME_ varchar(255),
-        TYPE_ varchar(255),
-        PARENT_ bigint,
-        primary key (DBID_)
+    create table jbpm_delegation_delegates (
+        task_id bigint not null,
+        entity_id varchar(255) not null
     ) ENGINE=InnoDB;
 
-    create table JBPM4_ID_MEMBERSHIP (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        USER_ bigint,
-        GROUP_ bigint,
-        NAME_ varchar(255),
-        primary key (DBID_)
+    create table jbpm_email_header (
+        id bigint not null auto_increment,
+        body longtext,
+        from_address varchar(255),
+        language varchar(255),
+        reply_to_address varchar(255),
+        subject varchar(255),
+        primary key (id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_ID_USER (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        ID_ varchar(255),
-        PASSWORD_ varchar(255),
-        GIVENNAME_ varchar(255),
-        FAMILYNAME_ varchar(255),
-        BUSINESSEMAIL_ varchar(255),
-        primary key (DBID_)
+    create table jbpm_escalation (
+        id bigint not null auto_increment,
+        name varchar(255),
+        deadline_escalation_id bigint,
+        primary key (id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_JOB (
-        DBID_ bigint not null,
-        CLASS_ varchar(255) not null,
-        DBVERSION_ integer not null,
-        DUEDATE_ datetime,
-        STATE_ varchar(255),
-        ISEXCLUSIVE_ bit,
-        LOCKOWNER_ varchar(255),
-        LOCKEXPTIME_ datetime,
-        EXCEPTION_ longtext,
-        RETRIES_ integer,
-        PROCESSINSTANCE_ bigint,
-        EXECUTION_ bigint,
-        CFG_ bigint,
-        SIGNAL_ varchar(255),
-        EVENT_ varchar(255),
-        REPEAT_ varchar(255),
-        primary key (DBID_)
+    create table jbpm_event_types (
+        instance_id bigint not null,
+        event_types varchar(255)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_LOB (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        BLOB_VALUE_ longblob,
-        DEPLOYMENT_ bigint,
-        NAME_ longtext,
-        primary key (DBID_)
+    create table jbpm_i18ntext (
+        i18ntext_id bigint not null auto_increment,
+        language varchar(255),
+        short_text varchar(255),
+        text longtext,
+        task_subjects_id bigint,
+        task_names_id bigint,
+        task_descriptions_id bigint,
+        reassignment_documentation_id bigint,
+        notification_subjects_id bigint,
+        notification_names_id bigint,
+        notification_documentation_id bigint,
+        notification_descriptions_id bigint,
+        deadline_documentation_id bigint,
+        primary key (i18ntext_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_PARTICIPATION (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        GROUPID_ varchar(255),
-        USERID_ varchar(255),
-        TYPE_ varchar(255),
-        TASK_ bigint,
-        SWIMLANE_ bigint,
-        primary key (DBID_)
+    create table jbpm_node_instance_log (
+        id bigint not null auto_increment,
+        r_connection varchar(255),
+        log_date datetime,
+        external_id varchar(255),
+        node_id varchar(255),
+        node_instance_id varchar(255),
+        node_name varchar(255),
+        node_type varchar(255),
+        process_id varchar(255),
+        process_instance_id bigint not null,
+        type integer not null,
+        work_item_id bigint,
+        primary key (id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_PROPERTY (
-        KEY_ varchar(255) not null,
-        VERSION_ integer not null,
-        VALUE_ varchar(255),
-        primary key (KEY_)
+    create table jbpm_notificat_email_headers (
+        notification bigint not null,
+        email_headers bigint not null,
+        mapkey varchar(255) not null,
+        primary key (notification, mapkey)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_SWIMLANE (
-        DBID_ bigint not null,
-        DBVERSION_ integer not null,
-        NAME_ varchar(255),
-        ASSIGNEE_ varchar(255),
-        EXECUTION_ bigint,
-        primary key (DBID_)
+    create table jbpm_notification (
+        dtype varchar(31) not null,
+        notification_id bigint not null auto_increment,
+        priority integer not null,
+        escalation_notifications_id bigint,
+        primary key (notification_id)
     ) ENGINE=InnoDB;
 
-    create table JBPM4_TASK (
-        DBID_ bigint not null,
-        CLASS_ char(1) not null,
-        DBVERSION_ integer not null,
-        NAME_ varchar(255),
-        DESCR_ longtext,
-        STATE_ varchar(255),
-        SUSPHISTSTATE_ varchar(255),
-        ASSIGNEE_ varchar(255),
-        FORM_ varchar(255),
-        PRIORITY_ integer,
-        CREATE_ datetime,
-        DUEDATE_ datetime,
-        PROGRESS_ integer,
-        SIGNALLING_ bit,
-        EXECUTION_ID_ varchar(255),
-        ACTIVITY_NAME_ varchar(255),
-        HASVARS_ bit,
-        SUPERTASK_ bigint,
-        EXECUTION_ bigint,
-        PROCINST_ bigint,
-        SWIMLANE_ bigint,
-        TASKDEFNAME_ varchar(255),
-        primary key (DBID_)
+    create table jbpm_notification_bas (
+        task_id bigint not null,
+        entity_id varchar(255) not null
     ) ENGINE=InnoDB;
 
-    create table JBPM4_VARIABLE (
-        DBID_ bigint not null,
-        CLASS_ varchar(255) not null,
-        DBVERSION_ integer not null,
-        KEY_ varchar(255),
-        CONVERTER_ varchar(255),
-        HIST_ bit,
-        EXECUTION_ bigint,
-        TASK_ bigint,
-        LOB_ bigint,
-        DATE_VALUE_ datetime,
-        DOUBLE_VALUE_ double precision,
-        CLASSNAME_ varchar(255),
-        LONG_VALUE_ bigint,
-        STRING_VALUE_ varchar(255),
-        TEXT_VALUE_ longtext,
-        EXESYS_ bigint,
-        primary key (DBID_)
+    create table jbpm_notification_recipients (
+        task_id bigint not null,
+        entity_id varchar(255) not null
     ) ENGINE=InnoDB;
 
-    create index IDX_DEPLPROP_DEPL on JBPM4_DEPLOYPROP (DEPLOYMENT_);
+    create table jbpm_organizational_entity (
+        dtype varchar(31) not null,
+        id varchar(255) not null,
+        primary key (id)
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_DEPLOYPROP 
-        add index FK_DEPLPROP_DEPL (DEPLOYMENT_), 
-        add constraint FK_DEPLPROP_DEPL 
-        foreign key (DEPLOYMENT_) 
-        references JBPM4_DEPLOYMENT (DBID_);
+    create table jbpm_people_ass_excl_owners (
+        task_id bigint not null,
+        entity_id varchar(255) not null
+    ) ENGINE=InnoDB;
 
-    create index IDX_EXEC_SUBPI on JBPM4_EXECUTION (SUBPROCINST_);
+    create table jbpm_people_assignm_pot_owners (
+        task_id bigint not null,
+        entity_id varchar(255) not null
+    ) ENGINE=InnoDB;
 
-    create index IDX_EXEC_PARENT on JBPM4_EXECUTION (PARENT_);
+    create table jbpm_people_assignm_recipients (
+        task_id bigint not null,
+        entity_id varchar(255) not null
+    ) ENGINE=InnoDB;
 
-    create index IDX_EXEC_SUPEREXEC on JBPM4_EXECUTION (SUPEREXEC_);
+    create table jbpm_people_assignm_stakehold (
+        task_id bigint not null,
+        entity_id varchar(255) not null
+    ) ENGINE=InnoDB;
 
-    create index IDX_EXEC_INSTANCE on JBPM4_EXECUTION (INSTANCE_);
+    create table jbpm_people_assignments_bas (
+        task_id bigint not null,
+        entity_id varchar(255) not null
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_EXECUTION 
-        add index FK_EXEC_SUBPI (SUBPROCINST_), 
-        add constraint FK_EXEC_SUBPI 
-        foreign key (SUBPROCINST_) 
-        references JBPM4_EXECUTION (DBID_);
+    create table jbpm_process_instance_info (
+        instance_id bigint not null auto_increment,
+        last_modification_date datetime,
+        last_read_date datetime,
+        process_id varchar(255),
+        process_instance_byte_array longblob,
+        start_date datetime,
+        state integer not null,
+        optlock integer,
+        primary key (instance_id)
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_EXECUTION 
-        add index FK_EXEC_INSTANCE (INSTANCE_), 
-        add constraint FK_EXEC_INSTANCE 
-        foreign key (INSTANCE_) 
-        references JBPM4_EXECUTION (DBID_);
+    create table jbpm_process_instance_log (
+        id bigint not null auto_increment,
+        duration bigint,
+        end_date datetime,
+        external_id varchar(255),
+        user_identity varchar(255),
+        outcome varchar(255),
+        parent_process_instance_id bigint,
+        process_id varchar(255),
+        process_instance_id bigint not null,
+        process_name varchar(255),
+        process_version varchar(255),
+        start_date datetime,
+        status integer,
+        primary key (id)
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_EXECUTION 
-        add index FK_EXEC_SUPEREXEC (SUPEREXEC_), 
-        add constraint FK_EXEC_SUPEREXEC 
-        foreign key (SUPEREXEC_) 
-        references JBPM4_EXECUTION (DBID_);
+    create table jbpm_reass_potential_owners (
+        task_id bigint not null,
+        entity_id varchar(255) not null
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_EXECUTION 
-        add index FK_EXEC_PARENT (PARENT_), 
-        add constraint FK_EXEC_PARENT 
-        foreign key (PARENT_) 
-        references JBPM4_EXECUTION (DBID_);
+    create table jbpm_reassignment (
+        id bigint not null auto_increment,
+        escalation_reassignments_id bigint,
+        primary key (id)
+    ) ENGINE=InnoDB;
 
-    create index IDX_HTI_HTASK on JBPM4_HIST_ACTINST (HTASK_);
+    create table jbpm_session_info (
+        id integer not null auto_increment,
+        last_modification_date datetime,
+        rules_byte_array longblob,
+        start_date datetime,
+        optlock integer,
+        primary key (id)
+    ) ENGINE=InnoDB;
 
-    create index IDX_HACTI_HPROCI on JBPM4_HIST_ACTINST (HPROCI_);
+    create table jbpm_task (
+        task_id bigint not null auto_increment,
+        archived smallint,
+        allowed_to_delegate varchar(255),
+        form_name varchar(255),
+        priority integer not null,
+        sub_task_strategy varchar(255),
+        activation_time datetime,
+        created_on datetime,
+        deployment_id varchar(255),
+        document_access_type integer,
+        document_content_id bigint not null,
+        document_type varchar(255),
+        expiration_time datetime,
+        fault_access_type integer,
+        fault_content_id bigint not null,
+        fault_name varchar(255),
+        fault_type varchar(255),
+        output_access_type integer,
+        output_content_id bigint not null,
+        output_type varchar(255),
+        parent_id bigint not null,
+        previous_status integer,
+        process_id varchar(255),
+        process_instance_id bigint not null,
+        process_session_id integer not null,
+        skipable boolean not null,
+        status varchar(255),
+        work_item_id bigint not null,
+        task_type varchar(255),
+        optlock integer,
+        task_initiator varchar(255),
+        actual_owner varchar(255),
+        created_by varchar(255),
+        primary key (task_id)
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_HIST_ACTINST 
-        add index FK_HACTI_HPROCI (HPROCI_), 
-        add constraint FK_HACTI_HPROCI 
-        foreign key (HPROCI_) 
-        references JBPM4_HIST_PROCINST (DBID_);
+    create table jbpm_task_comment (
+        id bigint not null auto_increment,
+        added_at datetime,
+        text longtext,
+        added_by varchar(255),
+        task_data_comments_id bigint,
+        primary key (id)
+    ) ENGINE=InnoDB;
 
-    alter table JBPM4_HIST_ACTINST 
-        add index FK_HTI_HTASK (HTASK_), 
-        add constraint FK_HTI_HTASK 
-        foreign key (HTASK_) 
-        references JBPM4_HIST_TASK (DBID_);
+    create table jbpm_task_event (
+        task_event_id bigint not null auto_increment,
+        task_id bigint not null,
+        type integer,
+        r_user varchar(255),
+        primary key (task_event_id)
+    ) ENGINE=InnoDB;
 
-    create index IDX_HDET_HVAR on JBPM4_HIST_DETAIL (HVAR_);
+    create table jbpm_variable_instance_log (
+        id bigint not null auto_increment,
+        log_date datetime,
+        external_id varchar(255),
+        old_value varchar(255),
+        process_id varchar(255),
+        process_instance_id bigint not null,
+        value varchar(255),
+        variable_id varchar(255),
+        variable_instance_id varchar(255),
+        primary key (id)
+    ) ENGINE=InnoDB;
 
-    create index IDX_HDET_HACTI on JBPM4_HIST_DETAIL (HACTI_);
+    create table jbpm_work_item_info (
+        work_item_id bigint not null auto_increment,
+        creation_date datetime,
+        name varchar(255),
+        process_instance_id bigint not null,
+        state bigint not null,
+        optlock integer,
+        work_item_byte_array longblob,
+        primary key (work_item_id)
+    ) ENGINE=InnoDB;
 
-    create index IDX_HDET_HTASK on JBPM4_HIST_DETAIL (HTASK_);
+    alter table jbpm_notificat_email_headers 
+        add constraint UK_epvmc6tmrn1wq6nu8peaywt1k unique (email_headers);
 
-    create index IDX_HDET_HPROCI on JBPM4_HIST_DETAIL (HPROCI_);
+    alter table jbpm_attachment 
+        add index FK_anhlt1ywoxmhaippy7h78baxk (attached_by), 
+        add constraint FK_anhlt1ywoxmhaippy7h78baxk 
+        foreign key (attached_by) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_HIST_DETAIL 
-        add index FK_HDETAIL_HVAR (HVAR_), 
-        add constraint FK_HDETAIL_HVAR 
-        foreign key (HVAR_) 
-        references JBPM4_HIST_VAR (DBID_);
+    alter table jbpm_attachment 
+        add index FK_s73kjv5ko89qn5xnvxulcd67g (task_data_attachments_id), 
+        add constraint FK_s73kjv5ko89qn5xnvxulcd67g 
+        foreign key (task_data_attachments_id) 
+        references jbpm_task (task_id);
 
-    alter table JBPM4_HIST_DETAIL 
-        add index FK_HDETAIL_HPROCI (HPROCI_), 
-        add constraint FK_HDETAIL_HPROCI 
-        foreign key (HPROCI_) 
-        references JBPM4_HIST_PROCINST (DBID_);
+    alter table jbpm_boolean_expression 
+        add index FK_nbrfj26gq8axs7ayswkuxq0i5 (escalation_constraints_id), 
+        add constraint FK_nbrfj26gq8axs7ayswkuxq0i5 
+        foreign key (escalation_constraints_id) 
+        references jbpm_escalation (id);
 
-    alter table JBPM4_HIST_DETAIL 
-        add index FK_HDETAIL_HTASK (HTASK_), 
-        add constraint FK_HDETAIL_HTASK 
-        foreign key (HTASK_) 
-        references JBPM4_HIST_TASK (DBID_);
+    alter table jbpm_correlation_property_info 
+        add index FK_91u8nc7udwpc496ldpaett8oa (correlation_key), 
+        add constraint FK_91u8nc7udwpc496ldpaett8oa 
+        foreign key (correlation_key) 
+        references jbpm_correlation_key_info (key_id);
 
-    alter table JBPM4_HIST_DETAIL 
-        add index FK_HDETAIL_HACTI (HACTI_), 
-        add constraint FK_HDETAIL_HACTI 
-        foreign key (HACTI_) 
-        references JBPM4_HIST_ACTINST (DBID_);
+    alter table jbpm_deadline 
+        add index FK_qd0gx9omsbf3aoghofg2v3oxr (deadlines_start_dead_line_id), 
+        add constraint FK_qd0gx9omsbf3aoghofg2v3oxr 
+        foreign key (deadlines_start_dead_line_id) 
+        references jbpm_task (task_id);
 
-    create index IDX_HSUPERT_SUB on JBPM4_HIST_TASK (SUPERTASK_);
+    alter table jbpm_deadline 
+        add index FK_rklcbb9hsd16cc9acp7cdvwmx (deadlines_end_dead_line_id), 
+        add constraint FK_rklcbb9hsd16cc9acp7cdvwmx 
+        foreign key (deadlines_end_dead_line_id) 
+        references jbpm_task (task_id);
 
-    alter table JBPM4_HIST_TASK 
-        add index FK_HSUPERT_SUB (SUPERTASK_), 
-        add constraint FK_HSUPERT_SUB 
-        foreign key (SUPERTASK_) 
-        references JBPM4_HIST_TASK (DBID_);
+    alter table jbpm_delegation_delegates 
+        add index FK_9apnaigsuutvonmkr21peocui (entity_id), 
+        add constraint FK_9apnaigsuutvonmkr21peocui 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    create index IDX_HVAR_HTASK on JBPM4_HIST_VAR (HTASK_);
+    alter table jbpm_delegation_delegates 
+        add index FK_oriwrke8vcl3opfut68n472r9 (task_id), 
+        add constraint FK_oriwrke8vcl3opfut68n472r9 
+        foreign key (task_id) 
+        references jbpm_task (task_id);
 
-    create index IDX_HVAR_HPROCI on JBPM4_HIST_VAR (HPROCI_);
+    alter table jbpm_escalation 
+        add index FK_7g5gvv0kep2olcpvmef7kvoi2 (deadline_escalation_id), 
+        add constraint FK_7g5gvv0kep2olcpvmef7kvoi2 
+        foreign key (deadline_escalation_id) 
+        references jbpm_deadline (id);
 
-    alter table JBPM4_HIST_VAR 
-        add index FK_HVAR_HPROCI (HPROCI_), 
-        add constraint FK_HVAR_HPROCI 
-        foreign key (HPROCI_) 
-        references JBPM4_HIST_PROCINST (DBID_);
+    alter table jbpm_event_types 
+        add index FK_6n2ptqm4wpn907h23e6tqbbha (instance_id), 
+        add constraint FK_6n2ptqm4wpn907h23e6tqbbha 
+        foreign key (instance_id) 
+        references jbpm_process_instance_info (instance_id);
 
-    alter table JBPM4_HIST_VAR 
-        add index FK_HVAR_HTASK (HTASK_), 
-        add constraint FK_HVAR_HTASK 
-        foreign key (HTASK_) 
-        references JBPM4_HIST_TASK (DBID_);
+    alter table jbpm_i18ntext 
+        add index FK_5innbucbtx4lfii02bnpve8p (task_subjects_id), 
+        add constraint FK_5innbucbtx4lfii02bnpve8p 
+        foreign key (task_subjects_id) 
+        references jbpm_task (task_id);
 
-    create index IDX_GROUP_PARENT on JBPM4_ID_GROUP (PARENT_);
+    alter table jbpm_i18ntext 
+        add index FK_e03i5m0xowu3tlckdntdvcmj2 (task_names_id), 
+        add constraint FK_e03i5m0xowu3tlckdntdvcmj2 
+        foreign key (task_names_id) 
+        references jbpm_task (task_id);
 
-    alter table JBPM4_ID_GROUP 
-        add index FK_GROUP_PARENT (PARENT_), 
-        add constraint FK_GROUP_PARENT 
-        foreign key (PARENT_) 
-        references JBPM4_ID_GROUP (DBID_);
+    alter table jbpm_i18ntext 
+        add index FK_kqgti9te780wtpviwdnfrufr7 (task_descriptions_id), 
+        add constraint FK_kqgti9te780wtpviwdnfrufr7 
+        foreign key (task_descriptions_id) 
+        references jbpm_task (task_id);
 
-    create index IDX_MEM_GROUP on JBPM4_ID_MEMBERSHIP (GROUP_);
+    alter table jbpm_i18ntext 
+        add index FK_oc0h7p2a4abkflrmdh8iib35t (reassignment_documentation_id), 
+        add constraint FK_oc0h7p2a4abkflrmdh8iib35t 
+        foreign key (reassignment_documentation_id) 
+        references jbpm_reassignment (id);
 
-    create index IDX_MEM_USER on JBPM4_ID_MEMBERSHIP (USER_);
+    alter table jbpm_i18ntext 
+        add index FK_me9v2v0ea50skfj700g3a2t61 (notification_subjects_id), 
+        add constraint FK_me9v2v0ea50skfj700g3a2t61 
+        foreign key (notification_subjects_id) 
+        references jbpm_notification (notification_id);
 
-    alter table JBPM4_ID_MEMBERSHIP 
-        add index FK_MEM_GROUP (GROUP_), 
-        add constraint FK_MEM_GROUP 
-        foreign key (GROUP_) 
-        references JBPM4_ID_GROUP (DBID_);
+    alter table jbpm_i18ntext 
+        add index FK_9y5pivj1g7xkuicw96cu8u2i (notification_names_id), 
+        add constraint FK_9y5pivj1g7xkuicw96cu8u2i 
+        foreign key (notification_names_id) 
+        references jbpm_notification (notification_id);
 
-    alter table JBPM4_ID_MEMBERSHIP 
-        add index FK_MEM_USER (USER_), 
-        add constraint FK_MEM_USER 
-        foreign key (USER_) 
-        references JBPM4_ID_USER (DBID_);
+    alter table jbpm_i18ntext 
+        add index FK_sf8hq8wp349bf2pt22vjopoma (notification_documentation_id), 
+        add constraint FK_sf8hq8wp349bf2pt22vjopoma 
+        foreign key (notification_documentation_id) 
+        references jbpm_notification (notification_id);
 
-    create index IDX_JOBRETRIES on JBPM4_JOB (RETRIES_);
+    alter table jbpm_i18ntext 
+        add index FK_h2gg5m9ylnih8mfjx1iunwnbe (notification_descriptions_id), 
+        add constraint FK_h2gg5m9ylnih8mfjx1iunwnbe 
+        foreign key (notification_descriptions_id) 
+        references jbpm_notification (notification_id);
 
-    create index IDX_JOBDUEDATE on JBPM4_JOB (DUEDATE_);
+    alter table jbpm_i18ntext 
+        add index FK_esqmn5micj3ljsjadbbmyjgfc (deadline_documentation_id), 
+        add constraint FK_esqmn5micj3ljsjadbbmyjgfc 
+        foreign key (deadline_documentation_id) 
+        references jbpm_deadline (id);
 
-    create index IDX_JOBLOCKEXP on JBPM4_JOB (LOCKEXPTIME_);
+    alter table jbpm_notificat_email_headers 
+        add index FK_epvmc6tmrn1wq6nu8peaywt1k (email_headers), 
+        add constraint FK_epvmc6tmrn1wq6nu8peaywt1k 
+        foreign key (email_headers) 
+        references jbpm_email_header (id);
 
-    create index IDX_JOB_CFG on JBPM4_JOB (CFG_);
+    alter table jbpm_notificat_email_headers 
+        add index FK_kf8fd1lw8m7jxkyekbsex81c8 (notification), 
+        add constraint FK_kf8fd1lw8m7jxkyekbsex81c8 
+        foreign key (notification) 
+        references jbpm_notification (notification_id);
 
-    create index IDX_JOB_EXE on JBPM4_JOB (EXECUTION_);
+    alter table jbpm_notification 
+        add index FK_lsx8dgmw3ilrncmkruoqimm28 (escalation_notifications_id), 
+        add constraint FK_lsx8dgmw3ilrncmkruoqimm28 
+        foreign key (escalation_notifications_id) 
+        references jbpm_escalation (id);
 
-    create index IDX_JOB_PRINST on JBPM4_JOB (PROCESSINSTANCE_);
+    alter table jbpm_notification_bas 
+        add index FK_ai0cdcnws5a5ht5xpe3c01mxp (entity_id), 
+        add constraint FK_ai0cdcnws5a5ht5xpe3c01mxp 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_JOB 
-        add index FK_JOB_CFG (CFG_), 
-        add constraint FK_JOB_CFG 
-        foreign key (CFG_) 
-        references JBPM4_LOB (DBID_);
+    alter table jbpm_notification_bas 
+        add index FK_rrdpb88hvc55jslc4msf6u440 (task_id), 
+        add constraint FK_rrdpb88hvc55jslc4msf6u440 
+        foreign key (task_id) 
+        references jbpm_notification (notification_id);
 
-    create index IDX_LOB_DEPLOYMENT on JBPM4_LOB (DEPLOYMENT_);
+    alter table jbpm_notification_recipients 
+        add index FK_je2kqu2jgy4j17wsli8ex57c7 (entity_id), 
+        add constraint FK_je2kqu2jgy4j17wsli8ex57c7 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_LOB 
-        add index FK_LOB_DEPLOYMENT (DEPLOYMENT_), 
-        add constraint FK_LOB_DEPLOYMENT 
-        foreign key (DEPLOYMENT_) 
-        references JBPM4_DEPLOYMENT (DBID_);
+    alter table jbpm_notification_recipients 
+        add index FK_c5x1hqb09c91br1oy949yg5i7 (task_id), 
+        add constraint FK_c5x1hqb09c91br1oy949yg5i7 
+        foreign key (task_id) 
+        references jbpm_notification (notification_id);
 
-    create index IDX_PART_TASK on JBPM4_PARTICIPATION (TASK_);
+    alter table jbpm_people_ass_excl_owners 
+        add index FK_9rfplx6e347cgvpt9b442vje8 (entity_id), 
+        add constraint FK_9rfplx6e347cgvpt9b442vje8 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_PARTICIPATION 
-        add index FK_PART_SWIMLANE (SWIMLANE_), 
-        add constraint FK_PART_SWIMLANE 
-        foreign key (SWIMLANE_) 
-        references JBPM4_SWIMLANE (DBID_);
+    alter table jbpm_people_ass_excl_owners 
+        add index FK_g6xxe0615p0hu79q0d111clnl (task_id), 
+        add constraint FK_g6xxe0615p0hu79q0d111clnl 
+        foreign key (task_id) 
+        references jbpm_task (task_id);
 
-    alter table JBPM4_PARTICIPATION 
-        add index FK_PART_TASK (TASK_), 
-        add constraint FK_PART_TASK 
-        foreign key (TASK_) 
-        references JBPM4_TASK (DBID_);
+    alter table jbpm_people_assignm_pot_owners 
+        add index FK_1vlj3kfu51ukgo45p3fm4krwx (entity_id), 
+        add constraint FK_1vlj3kfu51ukgo45p3fm4krwx 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    create index IDX_SWIMLANE_EXEC on JBPM4_SWIMLANE (EXECUTION_);
+    alter table jbpm_people_assignm_pot_owners 
+        add index FK_1sqbvhk1obasgfp839uk387tb (task_id), 
+        add constraint FK_1sqbvhk1obasgfp839uk387tb 
+        foreign key (task_id) 
+        references jbpm_task (task_id);
 
-    alter table JBPM4_SWIMLANE 
-        add index FK_SWIMLANE_EXEC (EXECUTION_), 
-        add constraint FK_SWIMLANE_EXEC 
-        foreign key (EXECUTION_) 
-        references JBPM4_EXECUTION (DBID_);
+    alter table jbpm_people_assignm_recipients 
+        add index FK_gcw7a7bs3m50jhvfa5jx7gg60 (entity_id), 
+        add constraint FK_gcw7a7bs3m50jhvfa5jx7gg60 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    create index IDX_TASK_SUPERTASK on JBPM4_TASK (SUPERTASK_);
+    alter table jbpm_people_assignm_recipients 
+        add index FK_l5h85stwvy0aetdg6saoblec0 (task_id), 
+        add constraint FK_l5h85stwvy0aetdg6saoblec0 
+        foreign key (task_id) 
+        references jbpm_task (task_id);
 
-    alter table JBPM4_TASK 
-        add index FK_TASK_SWIML (SWIMLANE_), 
-        add constraint FK_TASK_SWIML 
-        foreign key (SWIMLANE_) 
-        references JBPM4_SWIMLANE (DBID_);
+    alter table jbpm_people_assignm_stakehold 
+        add index FK_b30nkrrs9b4fmsr6lgf4rrox8 (entity_id), 
+        add constraint FK_b30nkrrs9b4fmsr6lgf4rrox8 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_TASK 
-        add index FK_TASK_SUPERTASK (SUPERTASK_), 
-        add constraint FK_TASK_SUPERTASK 
-        foreign key (SUPERTASK_) 
-        references JBPM4_TASK (DBID_);
+    alter table jbpm_people_assignm_stakehold 
+        add index FK_eblnc1w5r25dekutmwn3dujn6 (task_id), 
+        add constraint FK_eblnc1w5r25dekutmwn3dujn6 
+        foreign key (task_id) 
+        references jbpm_task (task_id);
 
-    create index IDX_VAR_EXESYS on JBPM4_VARIABLE (EXESYS_);
+    alter table jbpm_people_assignments_bas 
+        add index FK_ojn5ekkacrgupp069yrqss9pd (entity_id), 
+        add constraint FK_ojn5ekkacrgupp069yrqss9pd 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    create index IDX_VAR_TASK on JBPM4_VARIABLE (TASK_);
+    alter table jbpm_people_assignments_bas 
+        add index FK_ekd3d8qrxvxa7kq3iw5d34bfw (task_id), 
+        add constraint FK_ekd3d8qrxvxa7kq3iw5d34bfw 
+        foreign key (task_id) 
+        references jbpm_task (task_id);
 
-    create index IDX_VAR_EXECUTION on JBPM4_VARIABLE (EXECUTION_);
+    alter table jbpm_reass_potential_owners 
+        add index FK_rm075l73m0whh7uxwnu9cx3vr (entity_id), 
+        add constraint FK_rm075l73m0whh7uxwnu9cx3vr 
+        foreign key (entity_id) 
+        references jbpm_organizational_entity (id);
 
-    create index IDX_VAR_LOB on JBPM4_VARIABLE (LOB_);
+    alter table jbpm_reass_potential_owners 
+        add index FK_jsldbpqi48q1w9c9g99d6wnqk (task_id), 
+        add constraint FK_jsldbpqi48q1w9c9g99d6wnqk 
+        foreign key (task_id) 
+        references jbpm_reassignment (id);
 
-    alter table JBPM4_VARIABLE 
-        add index FK_VAR_EXESYS (EXESYS_), 
-        add constraint FK_VAR_EXESYS 
-        foreign key (EXESYS_) 
-        references JBPM4_EXECUTION (DBID_);
+    alter table jbpm_reassignment 
+        add index FK_fkj43wo6ovwdhwt1q2d8ce0pd (escalation_reassignments_id), 
+        add constraint FK_fkj43wo6ovwdhwt1q2d8ce0pd 
+        foreign key (escalation_reassignments_id) 
+        references jbpm_escalation (id);
 
-    alter table JBPM4_VARIABLE 
-        add index FK_VAR_LOB (LOB_), 
-        add constraint FK_VAR_LOB 
-        foreign key (LOB_) 
-        references JBPM4_LOB (DBID_);
+    alter table jbpm_task 
+        add index FK_3flcq2koknmx53wygbeyuteng (task_initiator), 
+        add constraint FK_3flcq2koknmx53wygbeyuteng 
+        foreign key (task_initiator) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_VARIABLE 
-        add index FK_VAR_TASK (TASK_), 
-        add constraint FK_VAR_TASK 
-        foreign key (TASK_) 
-        references JBPM4_TASK (DBID_);
+    alter table jbpm_task 
+        add index FK_r4b5cbeyk3axu7rr8aek6u9w1 (actual_owner), 
+        add constraint FK_r4b5cbeyk3axu7rr8aek6u9w1 
+        foreign key (actual_owner) 
+        references jbpm_organizational_entity (id);
 
-    alter table JBPM4_VARIABLE 
-        add index FK_VAR_EXECUTION (EXECUTION_), 
-        add constraint FK_VAR_EXECUTION 
-        foreign key (EXECUTION_) 
-        references JBPM4_EXECUTION (DBID_);
+    alter table jbpm_task 
+        add index FK_7i7nh49lv4kdks9ljkomxj2uh (created_by), 
+        add constraint FK_7i7nh49lv4kdks9ljkomxj2uh 
+        foreign key (created_by) 
+        references jbpm_organizational_entity (id);
+
+    alter table jbpm_task_comment 
+        add index FK_bl2skw5rlmgsg4xi0f50061tm (added_by), 
+        add constraint FK_bl2skw5rlmgsg4xi0f50061tm 
+        foreign key (added_by) 
+        references jbpm_organizational_entity (id);
+
+    alter table jbpm_task_comment 
+        add index FK_nuqjfe1rpp1ad7jlfjjki6tog (task_data_comments_id), 
+        add constraint FK_nuqjfe1rpp1ad7jlfjjki6tog 
+        foreign key (task_data_comments_id) 
+        references jbpm_task (task_id);
+
+    alter table jbpm_task_event 
+        add index FK_jgfka618xsfgj4vxibvs81mln (r_user), 
+        add constraint FK_jgfka618xsfgj4vxibvs81mln 
+        foreign key (r_user) 
+        references jbpm_organizational_entity (id);

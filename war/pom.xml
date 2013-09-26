@@ -263,92 +263,41 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>${antrun.plugin.version}</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.hibernate</groupId>
-                                <artifactId>hibernate-core</artifactId>
-                                <version>${hibernate.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.hibernate</groupId>
-                                <artifactId>hibernate-tools</artifactId>
-                                <version>3.2.3.GA</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-log4j12</artifactId>
-                                <version>${slf4j.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.jahia.server</groupId>
-                                <artifactId>jahia-impl</artifactId>
-                                <version>${project.version}</version>
-                            </dependency>
-                        </dependencies>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>jahia-hibernate-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>generate-jbpm-ddl</id>
-                                <phase>generate-resources</phase>
+                                <id>ddl-derby</id>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>jpa-schema-export</goal>
                                 </goals>
                                 <configuration>
-                                    <tasks if="jahia.generate.jbpm.ddl">
-                                        <echo message="Generating DDL schemata for jBPM..."/>
-                                        <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar"
-                                               dest="${project.build.directory}/jbpm">
-                                            <patternset>
-                                                <include name="*.hbm.xml"/>
-                                            </patternset>
-                                        </unzip>
-                                        <taskdef name="hibernatetool"
-                                                 classname="org.hibernate.tool.ant.HibernateToolTask">
-                                            <classpath>
-                                                <path refid="maven.dependency.classpath"/>
-                                                <pathelement path="${maven.build.dest}"/>
-                                                <pathelement path="${maven.test.dest}"/>
-                                            </classpath>
-                                        </taskdef>
-                                        <hibernatetool
-                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
-                                            <configuration propertyfile="${basedir}/tools/derby.hibernate.properties">
-                                                <fileset dir="${project.build.directory}/jbpm">
-                                                    <include name="*.hbm.xml"/>
-                                                </fileset>
-                                            </configuration>
-                                            <hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false"
-                                                     drop="true"/>
-                                        </hibernatetool>
-                                        <hibernatetool
-                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
-                                            <configuration propertyfile="${basedir}/tools/mysql.hibernate.properties">
-                                                <fileset dir="${project.build.directory}/jbpm">
-                                                    <include name="*.hbm.xml"/>
-                                                </fileset>
-                                            </configuration>
-                                            <hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false"
-                                                     drop="true"/>
-                                        </hibernatetool>
-                                        <hibernatetool
-                                                destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
-                                            <configuration
-                                                    propertyfile="${basedir}/tools/postgresql.hibernate.properties">
-                                                <fileset dir="${project.build.directory}/jbpm">
-                                                    <include name="*.hbm.xml"/>
-                                                </fileset>
-                                            </configuration>
-                                            <hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false"
-                                                     drop="true"/>
-                                        </hibernatetool>
-                                        <delete dir="${project.build.directory}/jbpm"/>
-                                    </tasks>
+                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
+                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jbpm-schema.sql</outputFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-mysql</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jbpm-schema.sql</outputFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ddl-postgresql</id>
+                                <goals>
+                                    <goal>jpa-schema-export</goal>
+                                </goals>
+                                <configuration>
+                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
+                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jbpm-schema.sql</outputFile>
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>                
                 </plugins>
             </build>
         </profile>

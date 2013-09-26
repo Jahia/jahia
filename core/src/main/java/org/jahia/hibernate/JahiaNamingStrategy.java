@@ -41,6 +41,7 @@
 package org.jahia.hibernate;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
 
@@ -50,6 +51,11 @@ import java.util.List;
 
 /**
  * A custom naming strategy to prefix the table names, prefix any name that uses an SQL reserved word, and forces names to use lowercase.
+ * Also limits the table and column names to 30 characters using the
+ * <a href="http://code.google.com/p/hibernate-naming-strategy-for-oracle/">hibernate-naming-strategy-for-oracle</a> project as an example.
+ * 
+ * @author Serge Huber
+ * @author Sergiy Shyrkov
  */
 public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Serializable {
 
@@ -57,10 +63,14 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
      * A convenient singleton instance
      */
     public static final NamingStrategy INSTANCE = new JahiaNamingStrategy();
+    
+    private static final int MAX_LENGTH = 30;
 
     private static final long serialVersionUID = 2436201913019906777L;
 
     private static String[] sqlReservedWords = new String[0];
+
+    private static final String VOWELS = "aeiou";
 
     static {
         InputStream sqlReservedWordsStream = JahiaNamingStrategy.class.getClassLoader().getResourceAsStream(
@@ -80,6 +90,30 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
                 IOUtils.closeQuietly(bufferedReader);
             }
         }
+    }
+
+    private static String ensureLength(String name) {
+        if (name.length() <= MAX_LENGTH)
+            return name;
+
+        String[] tokens = StringUtils.split(name, '_');
+        
+        shorten(name, tokens);
+
+        return StringUtils.join(tokens, '_');
+    }
+
+    private static int getIndexOfLongest(String[] tokens) {
+        int maxLength = 0;
+        int index = -1;
+        for (int i = 0; i < tokens.length; i++) {
+            String string = tokens[i];
+            if (maxLength < string.length()) {
+                maxLength = string.length();
+                index = i;
+            }
+        }
+        return index;
     }
 
     public static boolean isSqlReservedWord(String name) {
@@ -112,25 +146,49 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
         return processNameCase("jbpm_" + tableName);
     }
 
+    private static void shorten(String someName, String[] tokens) {
+        int currentLength = someName.length();
+        while (currentLength > MAX_LENGTH) {
+            int tokenIndex = getIndexOfLongest(tokens);
+            String oldToken = tokens[tokenIndex];
+            tokens[tokenIndex] = substringAfterLastVowel(oldToken);
+            currentLength -= oldToken.length() - tokens[tokenIndex].length();
+        }
+    }
+
+    private static String substringAfterLastVowel(String token) {
+        boolean vowelFound = false;
+        for (int i = token.length() -1; i >= 0 ; i--) {
+            char c = token.charAt(i);
+            boolean isVowel = VOWELS.indexOf(c) != -1;
+            if (isVowel) {
+                vowelFound = true;
+            } else if (vowelFound) {
+                return token.substring(0, i+1);
+            } 
+        }
+        return StringUtils.EMPTY;
+    }
+
     @Override
     public String classToTableName(String className) {
         String tableName = super.classToTableName(className);
         return processTableName(tableName);
     }
-
+    
     @Override
     public String columnName(String columnName) {
-        return processColumnName(super.columnName(columnName));
+        return ensureLength(processColumnName(super.columnName(columnName)));
     }
 
     @Override
     public String propertyToColumnName(String propertyName) {
         String columnName = super.propertyToColumnName(propertyName);
-        return processColumnName(columnName);
+        return ensureLength(processColumnName(columnName));
     }
 
     @Override
     public String tableName(String tableName) {
-        return processTableName(super.tableName(tableName));
+        return ensureLength(processTableName(super.tableName(tableName)));
     }
 }

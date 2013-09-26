@@ -41,6 +41,7 @@
 package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -117,11 +118,15 @@ public class WorkflowService implements BeanPostProcessor {
                             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                                 @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                    initializePermission(session, def, type.getModule());
-                                    session.save();
+                                    boolean updated = initializePermission(session, def, type.getModule());
+                                    if (updated) {
+                                        session.save();
+                                        JahiaPrivilegeRegistry.addModulePrivileges(session,"/modules/" + type.getModule().getRootFolderWithVersion());
+                                    }
                                     return null;
                                 }
                             });
+
                         } catch (RepositoryException e) {
                             logger.error("Cannot register workflow permissions",e);
                         }
@@ -179,7 +184,8 @@ public class WorkflowService implements BeanPostProcessor {
         providers.remove(provider.getKey());
     }
 
-    private void initializePermission(JCRSessionWrapper session, WorkflowDefinition definition, JahiaTemplatesPackage module) throws RepositoryException {
+    private boolean initializePermission(JCRSessionWrapper session, WorkflowDefinition definition, JahiaTemplatesPackage module) throws RepositoryException {
+        boolean updated = false;
         Map<String, String> map = workflowRegistrationByDefinition.get(definition.getKey()).getPermissions();
         if (map == null) {
             map = new HashMap<String, String>();
@@ -200,10 +206,12 @@ public class WorkflowService implements BeanPostProcessor {
                         perms.addNode("workflow-tasks", "jnt:permission");
                     }
                     perms.getNode("workflow-tasks").addNode(permissionName, "jnt:permission");
+                    updated = true;
                 }
                 map.put(task, "/workflow-tasks/" + permissionName);
             }
         }
+        return updated;
     }
 
     /**

@@ -157,11 +157,28 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 ok &= node.hasPermission("template-" + templateNode.getName());
             }
 
+<<<<<<< .working
             if (!ok) {
                 // check the current value of the page template, if it's the current template node, we will have
                 // to let it pass anyway.
                 if (node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
                     ok = true;
+=======
+                if (!ok) {
+                    // check the current value of the page template, if it's the current template node, we will have
+                    // to let it pass anyway.
+                    if (context.get("contextNode") != null && node.hasProperty("j:templateNode")) {
+                        try {
+                            if (node.getProperty("j:templateNode").getNode() != null &&
+                                    node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
+                                ok = true;
+                            }
+                        } catch (ItemNotFoundException infe) {
+                            // if we don't have access to the template not we simply don't do allow the template
+                            ok = false;
+                        }
+                    }
+>>>>>>> .merge-right.r47451
                 }
             }
 

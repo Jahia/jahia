@@ -296,6 +296,7 @@
                         <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}
                         </Jahia-Source-Control-DeveloperConnection>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
+                        <Jahia-Forge>${jahia-forge}</Jahia-Forge>
 
                         <Export-Package></Export-Package>
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>

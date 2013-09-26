@@ -137,4 +137,28 @@
         <entry key="groupDisplayLimit" value="${jahia.settings.groupDisplayLimit:100}"/>
         <entry key="memberDisplayLimit" value="${jahia.settings.memberDisplayLimit:100}"/>
     </util:map>
+
+    <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
+        <property name="type" value="publish"/>
+        <property name="definition" value="1-step-publication"/>
+        <property name="forms">
+            <map>
+                <entry key="start" value="jnt:simpleWorkflow"/>
+                <entry key="" value="jnt:simpleWorkflow"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
+        <property name="type" value="unpublish"/>
+        <property name="definition" value="1-step-unpublication"/>
+        <property name="forms">
+            <map>
+                <entry key="start" value="jnt:simpleWorkflow"/>
+                <entry key="First review" value="jnt:simpleWorkflow"/>
+            </map>
+        </property>
+    </bean>
+
+
 </beans>

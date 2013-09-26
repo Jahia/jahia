@@ -54,6 +54,7 @@ public class WorkflowDefinition extends WorkflowBase {
     private static final long serialVersionUID = 3356236148908996978L;
     
     private final String key;
+    private String packageName;
     private String formResourceName;
     private Set<String> tasks;
 
@@ -64,6 +65,14 @@ public class WorkflowDefinition extends WorkflowBase {
 
     public String getKey() {
         return key;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     @Override

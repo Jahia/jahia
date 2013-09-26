@@ -1,6 +1,5 @@
 package org.jahia.services.workflow.jbpm;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
@@ -21,8 +20,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
-import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
-import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -71,9 +68,7 @@ import org.springframework.transaction.support.AbstractPlatformTransactionManage
 import javax.jcr.RepositoryException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -264,7 +259,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 Collection<org.kie.api.definition.process.Process> processes = kieBase.getProcesses();
                 List<WorkflowDefinition> workflowDefinitions = new ArrayList<WorkflowDefinition>();
                 for (org.kie.api.definition.process.Process process : processes) {
-                    workflowDefinitions.add(convertToWorkflowDefinition(process, locale, ksession));
+                    if (workflowService.getWorkflowRegistration(process.getName()) != null) {
+                        workflowDefinitions.add(convertToWorkflowDefinition(process, locale, ksession));
+                    }
                 }
                 return workflowDefinitions;
             }
@@ -404,7 +401,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 }
                 for (String connectionId : connectionIds) {
                     WorkflowAction workflowAction = new WorkflowAction(connectionId, key);
-                    i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName());
+                    i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName(), processInstance.getProcess().getPackageName());
                     workflowActions.add(workflowAction);
                 }
 
@@ -421,12 +418,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             public List<WorkflowTask> execute(Context context) {
                 KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
                 List<WorkflowTask> availableTasks = new ArrayList<WorkflowTask>();
-                List<TaskSummary> tasksOwned = taskService.getTasksOwnedByStatus(user.getUserKey(), OPEN_STATUS_LIST, locale.toString());
+                List<TaskSummary> tasksOwned = taskService.getTasksOwnedByStatus(user.getUserKey(), Arrays.asList(Status.Reserved), locale.toString());
                 if (tasksOwned != null && tasksOwned.size() > 0) {
                     availableTasks.addAll(convertToWorkflowTasks(locale, tasksOwned, ksession));
                 }
                 // how do we retrieve group tasks ?
-                List<TaskSummary> potentialOwnerTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus(user.getUserKey(), OPEN_STATUS_LIST, locale.toString());
+                List<TaskSummary> potentialOwnerTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus(user.getUserKey(), Arrays.asList(Status.Created, Status.InProgress, Status.Ready), locale.toString());
                 if (potentialOwnerTasks != null && potentialOwnerTasks.size() > 0) {
                     availableTasks.addAll(convertToWorkflowTasks(locale, potentialOwnerTasks, ksession));
                 }
@@ -750,7 +747,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     workflowTaskHistory.add(workflowTask);
                     if (locale != null) {
                         final WorkflowDefinition definition = getWorkflowDefinitionById(taskSummary.getProcessId(), locale, ksession);
-                        ResourceBundle resourceBundle = getResourceBundle(locale, definition.getKey());
+                        ResourceBundle resourceBundle = getResourceBundle(locale, definition.getPackageName(), definition.getKey());
                         String rbActionName = i18nName(workflowTask.getName(), resourceBundle);
                         workflowTask.setDisplayName(rbActionName);
                     }
@@ -787,6 +784,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
         String startFormName = workflowService.getFormForAction(wf.getKey(), "start");
         wf.setFormResourceName(startFormName);
+        wf.setPackageName(process.getPackageName());
 
         Node[] nodes = workflowProcess.getNodes();
 
@@ -801,7 +799,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
         if (locale != null) {
             try {
-                ResourceBundle resourceBundle = getResourceBundle(locale, wf.getKey());
+                ResourceBundle resourceBundle = getResourceBundle(locale, process.getPackageName(), wf.getKey());
                 wf.setDisplayName(resourceBundle.getString("name"));
             } catch (Exception e) {
                 wf.setDisplayName(wf.getName());
@@ -890,7 +888,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         if (instance != null) {
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessId(), locale, ksession);
             workflowTask.setWorkflowDefinition(definition);
-            i18nOfWorkflowAction(locale, workflowTask, definition.getKey());
+            i18nOfWorkflowAction(locale, workflowTask, definition.getKey(), definition.getPackageName());
             workflowTask.setFormResourceName(workflowService.getFormForAction(definition.getKey(), workflowTask.getName()));
             // ((TaskImpl)task).getFormName()
         }
@@ -937,12 +935,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
     }
 
-    private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
+    private ResourceBundle getResourceBundle(Locale locale, String packageName, final String definitionKey) {
         try {
             if (workflowService.getModuleForWorkflow(definitionKey) != null) {
                 JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(workflowService.getModuleForWorkflow(definitionKey));
                 return ResourceBundles
-                        .get("org.jahia.modules.custom.workflow." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), module, locale);
+                        .get(packageName + "." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), module, locale);
             }
             return ResourceBundles
                     .get("org.jahia.modules.workflow." + Patterns.SPACE.matcher(definitionKey).replaceAll(""), locale);
@@ -952,10 +950,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
     }
 
-    private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {
+    private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey, String packageName) {
         ResourceBundle resourceBundle = null;
         if (displayLocale != null) {
-            resourceBundle = getResourceBundle(displayLocale, definitionKey);
+            resourceBundle = getResourceBundle(displayLocale, packageName, definitionKey);
             String rbActionName = i18nName(workflowAction.getName(), resourceBundle);
             workflowAction.setDisplayName(rbActionName);
         }

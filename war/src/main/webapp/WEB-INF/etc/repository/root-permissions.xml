@@ -148,12 +148,7 @@
             <tagManager jcr:primaryType="jnt:permission"/>
         </managers>
 
-        <workflow-tasks jcr:primaryType="jnt:permission">
-            <_x0031_-step-publication-start jcr:primaryType="jnt:permission" />
-            <_x0031_-step-publication-review jcr:primaryType="jnt:permission" />
-            <_x0031_-step-unpublication-start jcr:primaryType="jnt:permission" />
-            <_x0031_-step-unpublication-unpublish jcr:primaryType="jnt:permission" />
-        </workflow-tasks>
+        <workflow-tasks jcr:primaryType="jnt:permission"/>
 
         <wysiwyg-editor-toolbar jcr:primaryType="jnt:permission">
             <view-full-wysiwyg-editor jcr:primaryType="jnt:permission"/>

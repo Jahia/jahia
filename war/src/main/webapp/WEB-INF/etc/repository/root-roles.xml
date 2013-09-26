@@ -69,7 +69,7 @@
         </translator>
 
         <reviewer j:hidden="false"
-                  j:permissionNames="jcr:read_default publish 1-step-publication-choose-remote-publication 1-step-publication-review 1-step-unpublication-choose-remote-publication 1-step-unpublication-unpublish 2-step-publication-choose-remote-publication 2-step-publication-final-review 2-step-publication-first-review"
+                  j:permissionNames="jcr:read_default publish 1-step-publication-review 1-step-unpublication-unpublish"
                   j:privilegedAccess="true"
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">

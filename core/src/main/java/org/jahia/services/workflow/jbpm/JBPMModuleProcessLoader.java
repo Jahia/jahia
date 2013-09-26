@@ -117,11 +117,6 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
             }
             logger.info("...workflow processes deployed.");
             jbpm6WorkflowProvider.recompilePackages();
-            try {
-                jbpm6WorkflowProvider.getWorkflowService().initAfterAllServicesAreStarted();
-            } catch (JahiaInitializationException e) {
-                logger.error("Initialization error", e);
-            }
         }
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);

@@ -901,6 +901,9 @@ class NodeHelper {
                     if (versionInfo.hasProperty("j:scmURI")) {
                         n.set("j:scmURI", versionInfo.getProperty("j:scmURI").getString());
                     }
+                    if (StringUtils.isNotEmpty(packageByFileName.getForgeUrl()))  {
+                        n.set("j:forgeUrl",packageByFileName.getForgeUrl());
+                    }
                 }
             }
         } catch (RepositoryException e) {

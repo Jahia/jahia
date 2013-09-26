@@ -17,12 +17,7 @@ public class GoToForgeActionItem extends BaseActionItem {
     @Override
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
-        String s = siteNode.get("j:versionInfo");
-        if (s != null && s.endsWith("-SNAPSHOT") && siteNode.get("j:sourcesFolder") != null) {
-            setEnabled(true);
-        } else {
-            setEnabled(false);
-        }
+        setEnabled(siteNode.getProperties().containsKey("j:forgeUrl"));
     }
 
     @Override
@@ -71,6 +66,5 @@ public class GoToForgeActionItem extends BaseActionItem {
                     "No target distribution server configured for this module yet."), null);
         }
     }
-
 
 }

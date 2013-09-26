@@ -116,7 +116,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             for (String installedModule : installedModules) {
                 JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
                 if (aPackage != null) {
-                    addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd, locale);
+                    addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd, locale, context);
                 }
             }
 
@@ -128,7 +128,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
         return vs;
     }
 
-    private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, JCRNodeWrapper defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale) throws RepositoryException {
+    private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, JCRNodeWrapper defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale, Map<String, Object> context) throws RepositoryException {
         final QueryManager queryManager = session.getWorkspace().getQueryManager();
         QueryResult result = queryManager.createQuery(
                 "select * from [jnt:" + templateType + "] as n where isdescendantnode(n,['" + path + "'])", Query.JCR_SQL2).execute();
@@ -157,28 +157,19 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 ok &= node.hasPermission("template-" + templateNode.getName());
             }
 
-<<<<<<< .working
             if (!ok) {
                 // check the current value of the page template, if it's the current template node, we will have
                 // to let it pass anyway.
-                if (node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
-                    ok = true;
-=======
-                if (!ok) {
-                    // check the current value of the page template, if it's the current template node, we will have
-                    // to let it pass anyway.
-                    if (context.get("contextNode") != null && node.hasProperty("j:templateNode")) {
-                        try {
-                            if (node.getProperty("j:templateNode").getNode() != null &&
-                                    node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
-                                ok = true;
-                            }
-                        } catch (ItemNotFoundException infe) {
-                            // if we don't have access to the template not we simply don't do allow the template
-                            ok = false;
+                if (context.get("contextNode") != null && node.hasProperty("j:templateNode")) {
+                    try {
+                        if (node.getProperty("j:templateNode").getNode() != null &&
+                                node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
+                            ok = true;
                         }
+                    } catch (ItemNotFoundException infe) {
+                        // if we don't have access to the template not we simply don't do allow the template
+                        ok = false;
                     }
->>>>>>> .merge-right.r47451
                 }
             }
 

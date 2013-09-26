@@ -703,7 +703,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
                 String language = resolveLanguage();
                 if (language == null) {
-                    logger.warn("The node " + node.getId().toString() + " with is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property !");
+                    logger.warn("The node " + node.getId().toString() + " which is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property !");
                 } else {
                     doc.add(new Field(
                             TRANSLATION_LANGUAGE, language,

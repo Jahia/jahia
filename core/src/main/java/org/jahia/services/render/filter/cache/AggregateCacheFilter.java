@@ -171,9 +171,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         boolean debugEnabled = logger.isDebugEnabled();
         // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
-                // (resource and context) and the cache properties. The generated key will contains temporary placeholders
-                // that will be replaced to have the final key.
-                Properties properties = getAttributesForKey(renderContext, resource);
+        // (resource and context) and the cache properties. The generated key will contains temporary placeholders
+        // that will be replaced to have the final key.
+        Properties properties = getAttributesForKey(renderContext, resource);
         final Boolean forceGeneration = (Boolean) resource.getModuleParams().remove("cache.forceGeneration");
 
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
@@ -224,7 +224,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             logger.warn("Error while rendering " + renderContext.getMainResource() + e.getMessage(), e);
         }
 
-        if (element != null && element.getValue() != null) {
+        if (element != null && element.getObjectValue() != null) {
             // The element is found in the cache. Need to
             return returnFromCache(renderContext, resource, key, finalKey, element, cache);
         } else {
@@ -236,7 +236,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest(), resource, properties);
             if (countDownLatch == null) {
                 element = cache.get(finalKey);
-                if (element != null && element.getValue() != null) {
+                if (element != null && element.getObjectValue() != null) {
                     return returnFromCache(renderContext, resource, key, finalKey, element, cache);
                 }
             } else {
@@ -307,7 +307,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (logger.isDebugEnabled()) {
             logger.debug("Content retrieved from cache for node with key: {}", finalKey);
         }
-        CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getValue();
+        CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getObjectValue();
         String cachedContent = (String) cacheEntry.getObject();
 
         // Calls aggregation on the fragment content
@@ -484,7 +484,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             depNodeWrappers = resource.getDependencies();
             for (String path : depNodeWrappers) {
                 Element element1 = dependenciesCache.get(path);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.<String>emptySet();
                 if (!dependencies.contains("ALL")) {
                     Set<String> newDependencies = new HashSet<String>(dependencies.size() + 1);
                     newDependencies.addAll(dependencies);
@@ -501,7 +501,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
             for (String regexp : regexpDepNodeWrappers) {
                 Element element1 = regexpDependenciesCache.get(regexp);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getValue() : Collections.<String>emptySet();
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.<String>emptySet();
                 Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
                 newDependencies.addAll(dependencies);
                 addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, newDependencies);
@@ -548,6 +548,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             properties.putAll(script.getView().getProperties());
         }
 
+        // store view expiration
+        String expiration = properties.getProperty("cache.expiration");
+
         if (isList) {
             Resource listLoader = new Resource(resource.getNode(), resource.getTemplateType(), "hidden.load" , Resource.CONFIGURATION_INCLUDE);
             try {
@@ -577,11 +580,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         requestParameters = stringBuilder.toString();
         properties.put("cache.requestParameters", requestParameters);
-
+        // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
         if (renderContext.getRequest().getAttribute("expiration") != null) {
             properties.put("cache.expiration", renderContext.getRequest().getAttribute("expiration"));
         } else if (resource.getNode().hasProperty("j:expiration")) {
             properties.put("cache.expiration", resource.getNode().getProperty("j:expiration").getString());
+        } else if (expiration != null) {
+            properties.put("cache.expiration", expiration);
         } else {
             properties.put("cache.expiration", "-1");
         }
@@ -712,12 +717,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (cache.isKeyInCache(replacedCacheKey)) {
                     // If fragment is in cache, get it from there and aggregate recursively
                     final Element element = cache.get(replacedCacheKey);
-                    if (element != null && element.getValue() != null) {
+                    if (element != null && element.getObjectValue() != null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("It has been found in cache");
                         }
                         @SuppressWarnings("unchecked")
-                        final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
+                        final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getObjectValue();
                         String content = cacheEntry.getObject();
                         /*if (logger.isDebugEnabled()) {
                             logger.debug("Document replace from : " + segment.getStartTagType() + " to " +

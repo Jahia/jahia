@@ -701,9 +701,20 @@ public class JahiaNodeIndexer extends NodeIndexer {
                             Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
                 }
 
+<<<<<<< .working
                 doc.add(new Field(
                         TRANSLATION_LANGUAGE, false, resolveLanguage(),
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+=======
+                String language = resolveLanguage();
+                if (language == null) {
+                    logger.warn("The node " + node.getId().toString() + " with is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property !");
+                } else {
+                    doc.add(new Field(
+                            TRANSLATION_LANGUAGE, language,
+                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+                }
+>>>>>>> .merge-right.r47454
 
                 // copy properties from parent into translation node, including node types
                 Set<Name> parentNodePropertyNames = new HashSet<Name>(parentNode.getPropertyNames());

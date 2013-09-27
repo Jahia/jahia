@@ -14,7 +14,7 @@
     	<property name="configurationResource">
 			<bean class="org.jahia.settings.EhCacheConfigFactoryBean">
 				<constructor-arg index="0" value="/ehcache-jahia.xml" />
-				<constructor-arg index="1" value="${cluster.activated}" />
+				<constructor-arg index="1" value="${cluster.activated:false}" />
 			</bean>
     	</property>
         <!-- This property allows to fix a limit for cache entries dependencies management,

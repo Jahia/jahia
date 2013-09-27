@@ -91,8 +91,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
-    private String serverId;
-
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
     private List<Resource> dslFiles;
@@ -147,14 +145,6 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public void setRuleFiles(Set<String> ruleFiles) {
         this.ruleFiles = ruleFiles;
-    }
-
-    public String getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(String serverId) {
-        this.serverId = serverId;
     }
 
     public void start() throws Exception {

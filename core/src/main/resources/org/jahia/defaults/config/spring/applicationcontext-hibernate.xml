@@ -43,7 +43,7 @@
                         <entry key="net.sf.ehcache.configurationResourceName">
                             <bean class="org.jahia.settings.EhCacheConfigFactoryBean">
                                 <constructor-arg index="0" value="/ehcache-hibernate.xml"/>
-                                <constructor-arg index="1" value="${cluster.activated}"/>
+                                <constructor-arg index="1" value="${cluster.activated:false}"/>
                             </bean>
                         </entry>
                     </map>

@@ -1,6 +1,6 @@
 package org.jahia.services.content.rules.extraction
 
-#list any import classes here.
+// list any import classes here
 import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
@@ -8,7 +8,7 @@ import org.slf4j.Logger
 
 expander rules.dsl
 
-#declare any global variables here
+// declare any global variables here
 global User user
 global Service service
 global ImageService imageService
@@ -17,7 +17,7 @@ global Logger logger
 global JCRStoreProvider provider
 
 rule "Properties extraction"
-#Extract all possible data from a file when it's uploaded
+// Extract all possible data from a file when it's uploaded
     salience 10
     when
         A file content has been modified

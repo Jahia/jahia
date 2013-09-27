@@ -1,7 +1,6 @@
-#created on: 20 dec. 2007
 package org.jahia.services.content.rules
 
-#list any import classes here.
+// list any import classes here
 import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import org.jahia.services.atmosphere.rules.*
@@ -10,7 +9,7 @@ import org.slf4j.Logger
 
 expander rules.dsl
 
-#declare any global variables here
+// declare any global variables here
 global User user
 global Service service
 global ImageService imageService

@@ -1,7 +1,6 @@
-###############################################################################
 package org.jahia.modules.rules
 
-#list any import classes here.
+// list any import classes here
 import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
@@ -9,14 +8,13 @@ import org.slf4j.Logger
 
 expander rules.dsl
 
-#declare any global variables here
+// declare any global variables here
 global User user
 global Service service
 global ImageService imageService
 global ExtractionService extractionService
 global Logger logger
 global JCRStoreProvider provider
-###############################################################################
 
 rule "Tagging"
    when
@@ -27,7 +25,7 @@ rule "Tagging"
 end
 
 rule "Image type"
-#Assign jmix:image type for an image node
+// Assign jmix:image type for an image node
     salience 50
     no-loop
     when
@@ -40,7 +38,7 @@ end
 
 rule "Image update"
     salience 25
-#Rebuild thumbnail for an updated image and update height/width
+// Rebuild thumbnail for an updated image and update height/width
     when
         A file content has been modified
              - the mimetype matches image/.*

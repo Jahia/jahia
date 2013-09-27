@@ -241,7 +241,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 } finally {
                     IOUtils.closeQuietly(drlInputStream);
                 }
-                StringBuilder drl = new StringBuilder(1024);
+                StringBuilder drl = new StringBuilder(4 * 1024);
                 for (String line : lines) {
                     if (drl.length() > 0) {
                         drl.append("\n");

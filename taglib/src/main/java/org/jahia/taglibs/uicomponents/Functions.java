@@ -46,6 +46,7 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -93,6 +94,8 @@ public class Functions {
                     mainResource.getPath())) {
                 renderContext.getResourcesStack().peek().getDependencies().add(boundComponentNode.getCanonicalPath());
             }
+        } catch (ItemNotFoundException e) {
+            logger.debug(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

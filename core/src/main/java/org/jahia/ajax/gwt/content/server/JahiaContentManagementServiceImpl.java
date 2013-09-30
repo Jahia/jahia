@@ -44,10 +44,12 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.*;
@@ -91,9 +93,9 @@ import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -114,7 +116,7 @@ import java.util.regex.Pattern;
  */
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
 
@@ -143,7 +145,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ChannelHelper channelHelper;
     private TranslationHelper translationHelper;
     private StubHelper stubHelper;
-    private List<String> propertiesSnippetTypes;
     private ModuleHelper moduleHelper;
 
     public void setAcl(ACLHelper acl) {
@@ -243,7 +244,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Injection of a StubHelper class to handle display of code Snippets in the code editor
-     * @param stubHelper instaqce to be injected.
+     * @param stubHelper instance to be injected.
      * @see StubHelper
      */
     public void setStubHelper(StubHelper stubHelper) {
@@ -2271,9 +2272,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
         List<GWTJahiaNodeType> types = contentDefinition.getNodeTypes(names, getUILocale());
 
-        JCRSessionWrapper s = retrieveCurrentSession();
-
-        Map<String, JCRNodeWrapper> nodesForTypes = new HashMap<String, JCRNodeWrapper>();
         try {
             if (getSite().getPath().startsWith("/sites")) {
                 for (GWTJahiaNodeType type : types) {
@@ -2334,6 +2332,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
+    @SuppressWarnings("unchecked")
     public ModelData getVisibilityInformation(String path) throws GWTJahiaServiceException {
         ModelData result = new BaseModelData();
         try {
@@ -2365,7 +2364,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     Object val = jahiaNode.get(prop);
                     if (val instanceof List) {
                         List<Object> nl = new ArrayList<Object>();
-                        for (Object v :(List) val) {
+                        for (Object v : (List<Object>) val) {
                             if (v instanceof String) {
                                 nl.add(Messages.get(rb,nt.getPropertyDefinition(prop).getResourceBundleKey() + "." + JCRContentUtils.replaceColon((String) v),(String) v));
                             } else {
@@ -2406,116 +2405,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Initialize a map with all data needed to render the code editor.
-     * @param path path from where we are trying to open the code editor
-     * @param isNew is this a new file or an existing one
-     * @param nodeTypeName null or the node type associated with the file
-     * @param fileType the type o file we are creating/editing
+     * 
+     * @param path
+     *            path from where we are trying to open the code editor
+     * @param isNew
+     *            is this a new file or an existing one
+     * @param nodeTypeName
+     *            null or the node type associated with the file
+     * @param fileType
+     *            the type of file we are creating/editing
      * @return a RpcMap containing all information to display code editor
-     * @throws GWTJahiaServiceException if something happened
+     * @throws GWTJahiaServiceException
+     *             if something happened
      */
 
     public RpcMap initializeCodeEditor(String path, boolean isNew, String nodeTypeName, String fileType)
             throws GWTJahiaServiceException {
-        RpcMap r = new RpcMap();
-
-        try {
-            if (path != null && nodeTypeName == null) {
-                JCRNodeWrapper node = retrieveCurrentSession().getNode(path);
-                JCRNodeWrapper parent = node.isNodeType("jnt:nodeTypeFolder") ? node : JCRContentUtils.getParentOfType(
-                        node, "jnt:nodeTypeFolder");
-                if (parent != null) {
-                    nodeTypeName = parent.getName().replaceFirst("_", ":");
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error while trying to find the node type associated with this path "+path, e);
-        }
-
-        Map<String, String> stubs = stubHelper.getCodeSnippets(fileType, "stub");
-
-        // Remove stubs not defined for the current nodetype
-        if (nodeTypeName != null ) {
-            Map<String, String> st = new HashMap<String, String>(stubs);
-            for (String key : stubs.keySet()) {
-                // the key mask is stubfilename/nodetype
-                if (StringUtils.contains(key,"/")) {
-                    String[] s = key.split("/");
-                    if (s.length >0) {
-                        try {
-                            ExtendedNodeType n = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
-                            if (!n.isNodeType(s[s.length -1])) {
-                                st.remove(key);
-                            }
-                        } catch (NoSuchNodeTypeException e) {
-                            // node type not found, do nothing
-                        }
-                    }
-
-                }
-            }
-            stubs = st;
-        }
-        r.put("stubs", stubs);
-        List<GWTJahiaValueDisplayBean> snippetsByType;
-        Map<String, List<GWTJahiaValueDisplayBean>> snippets = new LinkedHashMap<String, List<GWTJahiaValueDisplayBean>>();
-
-        if (nodeTypeName != null) {
-            GWTJahiaNodeType nodeType = contentDefinition.getNodeType(nodeTypeName, getUILocale());
-            r.put("nodeType", nodeType);
-            for (String snippetType : propertiesSnippetTypes) {
-                snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
-                for (Map.Entry<String, String> propertySnippetEntry : stubHelper.getCodeSnippets(fileType,
-                        snippetType).entrySet()) {
-                    List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
-                    items.addAll(nodeType.getInheritedItems());
-
-                    for (GWTJahiaItemDefinition definition : items) {
-                        if (!"*".equals(definition.getName()) && !definition.isNode() && !definition.isHidden()) {
-                            String propertySnippet = propertySnippetEntry.getValue().replace("__value__",
-                                    definition.getName());
-                            String label = stubHelper.getLabel(fileType, snippetType, propertySnippetEntry.getKey(),
-                                    getUILocale(), definition.getName());
-                            GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet, label);
-                            displayBean.set("text", propertySnippet.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
-                            snippetsByType.add(displayBean);
-                        }
-
-                    }
-                }
-                snippets.put(snippetType, snippetsByType);
-            }
-        }
-
-        Map<String, Set<String>> availableResources = template.getAvailableResources(getSite().getName());
-
-        snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
-        for (Map.Entry<String, String> resourceSnippetEntry : stubHelper.getCodeSnippets(fileType,
-                "resources").entrySet()) {
-            for (Map.Entry<String, Set<String>> resourcesEntry : availableResources.entrySet()) {
-                for (String resource : resourcesEntry.getValue()) {
-                    String resourceSnippet = resourceSnippetEntry.getValue().replace("__resource__", resource).replace(
-                            "__resourceType__", resourcesEntry.getKey());
-                    String label = stubHelper.getLabel(fileType, "resources", resourceSnippetEntry.getKey(),
-                            getUILocale(), resource);
-                    snippetsByType.add(new GWTJahiaValueDisplayBean(resourceSnippet, label));
-                }
-            }
-        }
-        if (!snippetsByType.isEmpty()|| !snippets.isEmpty()) {
-            r.put("availableResources", availableResources);
-            snippets.put("resources", snippetsByType);
-            r.put("snippets", snippets);
-        }
-
-        return r;
-    }
-
-    /**
-     * Injection of the list of code snippets we want to display in the code editor.
-     * @param propertiesSnippetTypes List of type of snippets to be displayed in the code editor.
-     */
-    public void setPropertiesSnippetTypes(List<String> propertiesSnippetTypes) {
-        this.propertiesSnippetTypes = propertiesSnippetTypes;
+        return stubHelper.initializeCodeEditor(path, isNew, nodeTypeName, fileType, getSite().getName(), getUILocale(),
+                retrieveCurrentSession());
     }
 
     @Override

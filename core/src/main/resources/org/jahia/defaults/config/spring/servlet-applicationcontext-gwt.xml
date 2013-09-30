@@ -57,13 +57,6 @@
         <property name="channelHelper" ref="ChannelHelper"/>
         <property name="translationHelper" ref="TranslationHelper"/>
         <property name="stubHelper" ref="StubHelper"/>
-        <property name="propertiesSnippetTypes">
-            <list value-type="java.lang.String">
-                <value>properties</value>
-                <value>conditionals</value>
-                <value>loops</value>
-            </list>
-        </property>
         <property name="moduleHelper" ref="ModuleHelper"/>
     </bean>
 

@@ -134,7 +134,20 @@
     </bean>
 
     <bean name="StubHelper" class="org.jahia.ajax.gwt.helper.StubHelper">
-        <property name="stubService" ref="StubService" />
+        <property name="contentDefinition" ref="ContentDefinitionHelper"/>
+        <property name="nodeTypeView">
+            <map>
+                <entry key="hidden.load" value="jmix:list" />
+            </map>
+        </property>
+        <property name="propertiesSnippetTypes">
+            <list value-type="java.lang.String">
+                <value>properties</value>
+                <value>conditionals</value>
+                <value>loops</value>
+            </list>
+        </property>
+        <property name="template" ref="TemplateHelper"/>
     </bean>
 
     <bean name="ModuleHelper" class="org.jahia.ajax.gwt.helper.ModuleHelper">

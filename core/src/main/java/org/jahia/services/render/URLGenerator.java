@@ -52,8 +52,6 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -63,8 +61,6 @@ import java.util.Map;
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
  */
 public class URLGenerator {
-    private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
-
     /**
      * Returns the server URL, including scheme, host and port. The URL is in the form <code><scheme><host>:<port></code>, e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case of standard HTTP (80) and HTTPS (443)
      * ports.
@@ -125,7 +121,6 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-//        base = context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         base = getBase(resource.getLocale().getLanguage());
 
         final String resourcePath = getResourcePath();
@@ -186,40 +181,53 @@ public class URLGenerator {
         return contribute;
     }
 
+    /**
+     * Returns the URL for the current resource in studio mode.
+     * 
+     * @return the URL for the current resource in studio mode
+     */
     public String getStudio() {
-        if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
-            if (studio == null) {
-                studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
-                if (context.getSite() != null) {
-                    if (context.getSite().getPath().startsWith("/modules")) {
-                        studio = "/cms/studio/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                        studio += ".html";
-                        return studio;
-                    }
-                }
-                studio = "/welcome/studiomode";
-            }
+        if (studio == null) {
+            studio = getStudio(false);
         }
         return studio;
     }
+    
+    /**
+     * Returns the URL for the current resource in specified studio mode.
+     * 
+     * @param isVisual
+     *            if the visual studio mode is used
+     * @return the URL for the current resource in specified studio mode
+     */
+    private String getStudio(boolean isVisual) {
+        String mode = isVisual ? "studiovisual" : "studio";
+        SettingsBean cfg = SettingsBean.getInstance();
+        if (cfg.isDistantPublicationServerMode() || cfg.isProductionMode()) {
+            return null;
+        }
+        String url;
+        if (context.getSite() != null && context.getSite().getPath().startsWith("/modules")) {
+            url = "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale()
+                    + context.getSite().getPath() + ".html";
+        } else {
+            url = isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";
+        }
+        return url;
+    }
 
+    /**
+     * Returns the URL for the current resource in visual studio mode.
+     * 
+     * @return the URL for the current resource in visual studio mode
+     */
     public String getStudioVisual() {
-        if (!SettingsBean.getInstance().isDistantPublicationServerMode() && !SettingsBean.getInstance().isProductionMode()) {
-            if (studioVisual == null) {
-                studioVisual = "/cms/studiovisual/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/modules";
-                if (context.getSite() != null) {
-                    if (context.getSite().getPath().startsWith("/modules")) {
-                        studioVisual = "/cms/studiovisual/" + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getSite().getPath();
-                        studioVisual += ".html";
-                        return studioVisual;
-                    }
-                }
-                studio = "/welcome/studiovisualmode";
-            }
+        if (studioVisual == null) {
+            studioVisual = getStudio(true);
         }
         return studioVisual;
     }
-
+    
     public String getFind() {
         return find;
     }

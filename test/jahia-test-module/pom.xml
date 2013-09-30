@@ -250,63 +250,6 @@
             <artifactId>hamcrest-all</artifactId>
             <version>1.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.jbpm.jbpm4</groupId>
-            <artifactId>jbpm-test-base</artifactId>
-            <version>4.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jbpm-api</artifactId>
-                    <groupId>org.jbpm.jbpm4</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>hibernate-core</artifactId>
-                    <groupId>org.hibernate</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j</artifactId>
-                    <groupId>log4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>cglib-nodep</artifactId>
-                    <groupId>cglib</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jbpm-log</artifactId>
-                    <groupId>org.jbpm.jbpm4</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>oro</artifactId>
-                    <groupId>oro</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>mail</artifactId>
-                    <groupId>javax.mail</groupId>
-                </exclusion>
-                <!--
-                <exclusion>
-                    <artifactId>mockrunner</artifactId>
-                    <groupId>com.mockrunner</groupId>
-                </exclusion>
-                -->
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

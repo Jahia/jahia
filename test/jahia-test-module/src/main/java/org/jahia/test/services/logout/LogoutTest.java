@@ -83,6 +83,7 @@ public class LogoutTest extends JahiaTestCase {
     
     private static JahiaSite defaultSite = null;
     
+    private static boolean isSiteForServername = false;    
     private static boolean seoRulesEnabled = false;
     private static boolean seoRemoveCmsPrefix = false;
 
@@ -115,7 +116,17 @@ public class LogoutTest extends JahiaTestCase {
         service.updateSystemSitePermissions(site);
         service.setDefaultSite(site);
         
+<<<<<<< .working
         setSessionSite(site);
+=======
+        ParamBean ctx = (ParamBean) Jahia.getThreadParamBean();
+        ctx.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
+        
+        JahiaSite siteForServerName = service.getSiteByServerName(ctx.getServerName());
+        if (siteForServerName != null && !siteForServerName.equals(site)) {
+            isSiteForServername = true;
+        }
+>>>>>>> .merge-right.r47508
 
         // Add two page and publish one
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
@@ -185,13 +196,13 @@ public class LogoutTest extends JahiaTestCase {
     @Test
     public void logoutEditPrivate() throws Exception {
         String returnUrl = perform("/cms/render/default/en/sites/"+SITE_KEY+"/home/privPage.html");
-        assertEquals("Logout from default unPublished page failed ", "/sites/"+SITE_KEY+"/home.html", returnUrl);
+        assertEquals("Logout from default unPublished page failed ", (isSiteForServername ? "" : "/sites/" + SITE_KEY) + "/home.html", returnUrl);
     }
 
     @Test
-    public void logoutuserDashboard() throws Exception {
+    public void logoutUserDashboard() throws Exception {
         String returnUrl = perform("/en/users/root.user-home.html");
-        assertEquals("Logout from user dashboard page failed ", "/sites/"+SITE_KEY+"/home.html", returnUrl);
+        assertEquals("Logout from user dashboard page failed ", (isSiteForServername ? "" : "/sites/" + SITE_KEY) + "/home.html", returnUrl);
     }
 
     @Test

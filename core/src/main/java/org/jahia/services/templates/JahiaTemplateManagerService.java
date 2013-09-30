@@ -334,6 +334,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } catch (XmlPullParserException e) {
             throw new IOException(e);
         }
+        // reset scm uri if the one define in the pom not equals the one get by scm command.
+        if (!StringUtils.equals(model.getScm().getConnection(),scmUrl)) {
+            scmUrl = null;
+        }
         String lastVersion = PomUtils.getVersion(model);
         if (!lastVersion.endsWith("-SNAPSHOT")) {
             throw new IOException("Cannot release a non-SNAPSHOT version");

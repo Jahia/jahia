@@ -265,7 +265,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         ExecutionResult pullResult = executeCommand(executable, new String[]{"pull","--rebase"});
         ExecutionResult stashPopResult = null;
         if (stashRequired) {
-            stashPopResult = executeCommand(executable, new String[]{"stash pop"});
+            stashPopResult = executeCommand(executable, new String[]{"stash","pop"});
         }
         invalidateStatusCache();
         checkExecutionResult(pullResult);

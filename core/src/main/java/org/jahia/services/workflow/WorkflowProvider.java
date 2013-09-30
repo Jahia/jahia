@@ -96,16 +96,6 @@ public interface WorkflowProvider {
 
     void completeTask(String taskId, JahiaUser jahiaUser, String outcome, Map<String, Object> args);
 
-    /**
-     * Add a group as a potential participator in the task. The role will determine
-     * what the members of the group may do.
-     *
-     * @param taskId
-     * @param group
-     * @param role
-     */
-    void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
     void addComment(String processId, String comment, String user);
 
     WorkflowTask getWorkflowTask(String taskId, Locale locale);

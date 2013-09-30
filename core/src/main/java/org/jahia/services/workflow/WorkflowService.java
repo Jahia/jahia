@@ -643,7 +643,6 @@ public class WorkflowService implements BeanPostProcessor {
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {
-        lookupProvider(provider).addParticipatingGroup(taskId, group, role);
     }
 
     public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow) throws RepositoryException {

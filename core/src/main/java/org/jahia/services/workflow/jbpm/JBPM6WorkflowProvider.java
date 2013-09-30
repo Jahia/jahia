@@ -660,13 +660,26 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public void addParticipatingGroup(String taskId, JahiaGroup group, String role) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void addComment(String processId, String comment, String user) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void addComment(final String processId, final String comment, final String user) {
+        executeCommand(new GenericCommand() {
+            @Override
+            public Object execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ProcessInstance processInstance = ksession.getProcessInstance(Long.parseLong(processId));
+                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+                List<WorkflowComment> comments = (List<WorkflowComment>) workflowProcessInstance.getVariable("comments");
+                if ( comments == null) {
+                    comments = new ArrayList<WorkflowComment>();
+                }
+                final WorkflowComment wfComment = new WorkflowComment();
+                wfComment.setComment(comment);
+                wfComment.setUser(user);
+                wfComment.setTime(new Date());
+                comments.add(wfComment);
+                workflowProcessInstance.setVariable("comments",comments);
+                return null;
+            }
+        });
     }
 
     @Override

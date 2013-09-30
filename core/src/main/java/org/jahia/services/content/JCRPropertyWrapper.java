@@ -49,6 +49,8 @@ import javax.jcr.version.VersionException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Interface for wrappers for javax.jcr.property to allow more data format.
@@ -56,11 +58,28 @@ import java.util.Calendar;
  * @author : toto
  */
 public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
+    Iterator<JCRPropertyWrapper> EMPTY = new Iterator<JCRPropertyWrapper>() {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public JCRPropertyWrapper next() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+
+        }
+    };
+
     /**
-     * @deprecated use getNode instead
      * @return
      * @throws ValueFormatException
      * @throws RepositoryException
+     * @deprecated use getNode instead
      */
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
 
@@ -77,7 +96,7 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
     void addValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     void addValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
-    
+
     void addValue(Node value, boolean weak) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     void addValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
@@ -88,9 +107,24 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
 
     void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
-    Value getRealValue() throws ValueFormatException,RepositoryException;
 
-    Value[] getRealValues() throws ValueFormatException,RepositoryException;
+    JCRValueWrapper getValue() throws RepositoryException;
+
+    JCRValueWrapper[] getValues() throws RepositoryException;
+
+    /**
+     * @return
+     * @throws ValueFormatException
+     * @throws RepositoryException
+     */
+    JCRValueWrapper getRealValue() throws ValueFormatException, RepositoryException;
+
+    /**
+     * @return
+     * @throws ValueFormatException
+     * @throws RepositoryException
+     */
+    JCRValueWrapper[] getRealValues() throws ValueFormatException, RepositoryException;
 
     JCRNodeWrapper getContextualizedNode() throws ValueFormatException, RepositoryException;
 

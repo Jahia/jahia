@@ -305,8 +305,8 @@ public class ConflictResolver {
                     throw new RepositoryException();
                 } else {
                     if (prop1.isMultiple()) {
-                        List<Value> vs1 = Arrays.asList(prop1.getRealValues());
-                        List<Value> vs2 = Arrays.asList(prop2.getRealValues());
+                        List<? extends Value> vs1 = Arrays.asList(prop1.getRealValues());
+                        List<? extends Value> vs2 = Arrays.asList(prop2.getRealValues());
 
                         Map<String, Value> added = new HashMap<String, Value>();
                         for (Value value : vs2) {
@@ -800,7 +800,7 @@ public class ConflictResolver {
                 targetNode.checkout();
             }
 
-            List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
+            List<? extends Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
             List<Value> newValues = new ArrayList<Value>();
             for (Value value : oldValues) {
                 if (!equalsValue(value, oldValue)) {

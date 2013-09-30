@@ -879,4 +879,18 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     void unmarkForDeletion() throws RepositoryException;
 
+    @Override
+    JCRNodeIteratorWrapper getNodes() throws RepositoryException;
+
+    @Override
+    JCRNodeIteratorWrapper getNodes(String namePattern) throws RepositoryException;
+
+    @Override
+    JCRNodeIteratorWrapper getNodes(String[] nameGlobs) throws RepositoryException;
+
+    @Override
+    JCRNodeIteratorWrapper getSharedSet() throws RepositoryException;
+
+    @Override
+    JCRNodeIteratorWrapper merge(String srcWorkspace, boolean bestEffort) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException;
 }

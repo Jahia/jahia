@@ -253,23 +253,6 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         }
     }
 
-    public Value getValue() throws ValueFormatException, RepositoryException {
-        Value value = JCRStoreService.getInstance().getInterceptorChain().afterGetValue(this, property.getValue());
-        value = new JCRValueWrapperImpl(value, getDefinition(), getSession());
-        return value;
-    }
-
-    public Value[] getValues() throws ValueFormatException, RepositoryException {
-        Value[] values = JCRStoreService.getInstance().getInterceptorChain().afterGetValues(this, property.getValues());
-
-        Value[] wrappedValues = new Value[values.length];
-        for (int i = 0; i < values.length; i++) {
-            Value value = values[i];
-            wrappedValues[i] = new JCRValueWrapperImpl(value, getDefinition(), getSession());
-        }
-        return wrappedValues;
-    }
-
     public String getString() throws ValueFormatException, RepositoryException {
         return getValue().getString();
     }
@@ -330,7 +313,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     public JCRNodeWrapper getContextualizedNode() throws ValueFormatException, RepositoryException {
         JCRNodeWrapper ref = getNode();
         try {
-            return session.getNode(getParent().getPath()+JCRSessionWrapper.DEREF_SEPARATOR+ref.getRealNode().getName());
+            return session.getNode(getParent().getPath() + JCRSessionWrapper.DEREF_SEPARATOR + ref.getRealNode().getName());
         } catch (PathNotFoundException e) {
             throw new ItemNotFoundException(e.getMessage(), e);
         }
@@ -379,7 +362,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
      * @deprecated use getNode instead
      */
     public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
-        return ((JCRValueWrapperImpl) getValue()).getCategory();
+        return getValue().getCategory();
     }
 
     public String getName() throws RepositoryException {
@@ -437,22 +420,39 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         } else {
             property.remove();
         }
-        if(node instanceof JCRNodeWrapperImpl)
-        ((JCRNodeWrapperImpl) node).flushLocalCaches();
+        if (node instanceof JCRNodeWrapperImpl)
+            ((JCRNodeWrapperImpl) node).flushLocalCaches();
     }
 
     public boolean isMultiple() throws RepositoryException {
         return property.isMultiple();
     }
 
-    public Value getRealValue() throws ValueFormatException, RepositoryException {
-        return new JCRValueWrapperImpl(property.getValue(), getDefinition(), getSession());
+    public JCRValueWrapper getValue() throws ValueFormatException, RepositoryException {
+        Value value = JCRStoreService.getInstance().getInterceptorChain().afterGetValue(this, property.getValue());
+        return wrap(value);
     }
 
-    public Value[] getRealValues() throws ValueFormatException, RepositoryException {
-        Value[] values = property.getValues();
+    public JCRValueWrapper getRealValue() throws ValueFormatException, RepositoryException {
+        return wrap(property.getValue());
+    }
 
-        Value[] wrappedValues = new Value[values.length];
+    private JCRValueWrapper wrap(Value value) throws RepositoryException {
+        return new JCRValueWrapperImpl(value, getDefinition(), getSession());
+    }
+
+    public JCRValueWrapper[] getValues() throws ValueFormatException, RepositoryException {
+        Value[] values = JCRStoreService.getInstance().getInterceptorChain().afterGetValues(this, property.getValues());
+
+        return wrap(values);
+    }
+
+    public JCRValueWrapper[] getRealValues() throws ValueFormatException, RepositoryException {
+        return wrap(property.getValues());
+    }
+
+    private JCRValueWrapper[] wrap(Value[] values) throws RepositoryException {
+        JCRValueWrapper[] wrappedValues = new JCRValueWrapper[values.length];
         for (int i = 0; i < values.length; i++) {
             Value value = values[i];
             wrappedValues[i] = new JCRValueWrapperImpl(value, getDefinition(), getSession());
@@ -479,7 +479,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public boolean removeValue(Value value) throws ValueFormatException, VersionException,
             LockException, ConstraintViolationException, RepositoryException {
-        return removeValues(new Value[] { value });
+        return removeValues(new Value[]{value});
     }
 
     public boolean removeValues(Value[] values) throws ValueFormatException, VersionException,

@@ -953,25 +953,25 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public NodeIterator getNodes() throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
         return getNodes(null, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public NodeIterator getNodes(String namePattern) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String namePattern) throws RepositoryException {
         return getNodes(namePattern, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String[] nameGlobs) throws RepositoryException {
         return getNodes(null, nameGlobs);
     }
 
-    protected NodeIterator getNodes(String namePattern, String[] nameGlobs) throws RepositoryException {
+    protected JCRNodeIteratorWrapper getNodes(String namePattern, String[] nameGlobs) throws RepositoryException {
         List<JCRNodeWrapper> list = new LinkedList<JCRNodeWrapper>();
         if (provider.getService() != null) {
             Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
@@ -3275,7 +3275,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public NodeIterator merge(String s, boolean b) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
+    public JCRNodeIteratorWrapper merge(String s, boolean b) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
         throw new UnsupportedOperationException();
     }
 
@@ -3615,7 +3615,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public NodeIterator getSharedSet() throws RepositoryException {
+    public JCRNodeIteratorWrapper getSharedSet() throws RepositoryException {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
 
         NodeIterator ni = objectNode.getSharedSet();

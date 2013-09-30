@@ -207,13 +207,13 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     }
 
     @Override
-    public NodeIterator getNodes() throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
         List<JCRNodeWrapper> childEntries = internalGetChildren();
         return new NodeIteratorImpl(childEntries.iterator(), childEntries.size());
     }
 
     @Override
-    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String[] nameGlobs) throws RepositoryException {
         List<JCRNodeWrapper> childEntries = internalGetChildren();
         List<JCRNodeWrapper> childs = new LinkedList<JCRNodeWrapper>();
         for (JCRNodeWrapper childEntry : childEntries) {
@@ -228,7 +228,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     }
 
     @Override
-    public NodeIterator getNodes(String namePattern) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String namePattern) throws RepositoryException {
         List<JCRNodeWrapper> childEntries = internalGetChildren();
         List<JCRNodeWrapper> childs = new LinkedList<JCRNodeWrapper>();
         for (JCRNodeWrapper childEntry : childEntries) {

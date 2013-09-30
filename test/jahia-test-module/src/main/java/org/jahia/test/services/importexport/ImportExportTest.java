@@ -825,10 +825,10 @@ public class ImportExportTest {
                 boolean isReference = sourceProperty.getDefinition().getRequiredType() == PropertyType.REFERENCE || sourceProperty
                         .getDefinition().getRequiredType() == PropertyType.WEAKREFERENCE;
                 if (sourceProperty.isMultiple() && targetProperty.isMultiple()) {
-                    Set<Value> sourceValues = Sets.newHashSet(sourceProperty.getValues());
-                    Set<Value> targetValues = Sets.newHashSet(targetProperty.getValues());
+                    Set<? extends Value> sourceValues = Sets.newHashSet(sourceProperty.getValues());
+                    Set<? extends Value> targetValues = Sets.newHashSet(targetProperty.getValues());
                     if (sourceValues.size() != targetValues.size() && "jcr:mixinTypes".equals(sourceProperty.getDefinition().getName())) {
-                        Iterator<Value> it = sourceValues.iterator();
+                        Iterator<? extends Value> it = sourceValues.iterator();
                         while (it.hasNext()) {
                             if (optionalMixins.contains(it.next().getString())) {
                                 it.remove();
@@ -948,16 +948,16 @@ public class ImportExportTest {
         return matches;
     }
 
-    private boolean compareArrayValues(Set<Value> sourceValues, Set<Value> targetValues) {
+    private boolean compareArrayValues(Set<? extends Value> sourceValues, Set<? extends Value> targetValues) {
         boolean match = true;
 
-        for (Iterator<Value> it = sourceValues.iterator(); match && it.hasNext(); ) {
+        for (Iterator<? extends Value> it = sourceValues.iterator(); match && it.hasNext(); ) {
             match = targetValues.contains(it.next());
         }
         return match;
     }
 
-    private boolean compareReferenceValues(Set<Value> sourceValues, Set<Value> targetValues, JCRSessionWrapper sourceSession,
+    private boolean compareReferenceValues(Set<? extends Value> sourceValues, Set<? extends Value> targetValues, JCRSessionWrapper sourceSession,
             JCRSessionWrapper targetSession) {
         boolean match = true;
         Set<String> sourceReferences = new HashSet<String>();

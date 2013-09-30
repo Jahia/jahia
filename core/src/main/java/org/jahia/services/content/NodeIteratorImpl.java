@@ -51,15 +51,35 @@ import java.util.LinkedList;
  * 
  * @author toto 
  */
-public class NodeIteratorImpl extends RangeIteratorImpl implements NodeIterator {
+public class NodeIteratorImpl extends RangeIteratorImpl implements JCRNodeIteratorWrapper {
     
-    public static final NodeIteratorImpl EMPTY = new NodeIteratorImpl(new LinkedList<Node>().iterator(), 0);
+    public static final NodeIteratorImpl EMPTY = new NodeIteratorImpl(new LinkedList<JCRNodeWrapper>().iterator(), 0);
 
-    public NodeIteratorImpl(Iterator<? extends Node> iterator, long size) {
+    public NodeIteratorImpl(Iterator<JCRNodeWrapper> iterator, long size) {
         super(iterator, size);
     }
 
     public Node nextNode() {
         return (Node) next();
+    }
+
+    @Override
+    public Iterator<JCRNodeWrapper> iterator() {
+        return new Iterator<JCRNodeWrapper>() {
+            @Override
+            public boolean hasNext() {
+                return NodeIteratorImpl.this.hasNext();
+            }
+
+            @Override
+            public JCRNodeWrapper next() {
+                return (JCRNodeWrapper) NodeIteratorImpl.this.next();
+            }
+
+            @Override
+            public void remove() {
+                NodeIteratorImpl.this.remove();
+            }
+        };
     }
 }

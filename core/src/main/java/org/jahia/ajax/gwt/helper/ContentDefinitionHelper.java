@@ -584,7 +584,7 @@ public class ContentDefinitionHelper {
                 break;
             case PropertyType.WEAKREFERENCE:
                 GWTJahiaNodePropertyValue convertedValue = null;
-                JCRNodeWrapper node = (JCRNodeWrapper) ((JCRValueWrapper) val).getNode();
+                JCRNodeWrapper node = ((JCRValueWrapper) val).getNode();
                 // check if the referenced node exists
                 if (node != null) {
                     convertedValue = new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode(node),
@@ -593,7 +593,7 @@ public class ContentDefinitionHelper {
                 return convertedValue;
             case PropertyType.REFERENCE:
                 return new GWTJahiaNodePropertyValue(
-                        navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode()),
+                        navigation.getGWTJahiaNode(((JCRValueWrapper) val).getNode()),
                         GWTJahiaNodePropertyType.REFERENCE);
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;

@@ -76,11 +76,11 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         return getRootNode().getNode(s);
     }
 
-    public NodeIterator getNodes() throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
         return getRootNode().getNodes();
     }
 
-    public NodeIterator getNodes(String s) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String s) throws RepositoryException {
         return getRootNode().getNodes(s);
     }
 

@@ -448,15 +448,15 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getNode(s);
     }
 
-    public NodeIterator getNodes() throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
         return node.getNodes();
     }
 
-    public NodeIterator getNodes(String s) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String s) throws RepositoryException {
         return node.getNodes(s);
     }
 
-    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes(String[] nameGlobs) throws RepositoryException {
         return node.getNodes(nameGlobs);
     }
 
@@ -576,7 +576,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.update(s);
     }
 
-    public NodeIterator merge(String s, boolean b) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
+    public JCRNodeIteratorWrapper merge(String s, boolean b) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
         return node.merge(s, b);
     }
 
@@ -584,7 +584,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getCorrespondingNodePath(s);
     }
 
-    public NodeIterator getSharedSet() throws RepositoryException {
+    public JCRNodeIteratorWrapper getSharedSet() throws RepositoryException {
         return node.getSharedSet();
     }
 

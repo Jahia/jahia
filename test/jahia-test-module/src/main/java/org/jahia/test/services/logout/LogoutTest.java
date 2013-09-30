@@ -115,18 +115,13 @@ public class LogoutTest extends JahiaTestCase {
         site.setDefaultLanguage("en");
         service.updateSystemSitePermissions(site);
         service.setDefaultSite(site);
-        
-<<<<<<< .working
+
         setSessionSite(site);
-=======
-        ParamBean ctx = (ParamBean) Jahia.getThreadParamBean();
-        ctx.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
-        
-        JahiaSite siteForServerName = service.getSiteByServerName(ctx.getServerName());
+                
+        JahiaSite siteForServerName = service.getSiteByServerName(getRequest().getServerName());
         if (siteForServerName != null && !siteForServerName.equals(site)) {
             isSiteForServername = true;
         }
->>>>>>> .merge-right.r47508
 
         // Add two page and publish one
         JCRPublicationService jcrService = ServicesRegistry.getInstance()

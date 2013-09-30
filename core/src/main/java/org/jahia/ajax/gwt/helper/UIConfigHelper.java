@@ -566,12 +566,26 @@ public class UIConfigHelper {
     }
 
     /**
-     * Get edit configuration
-     *
-     * @return
-     * @throws GWTJahiaServiceException
+     * Get edit configuration.
+     * 
+     * @param name
+     *            Spring bean name for the configuration object
+     * @param contextNodePath
+     *            currently selected node path
+     * @param jahiaUser
+     *            the user object
+     * @param locale
+     *            current content (JCR session) locale
+     * @param uiLocale
+     *            current UI locale
+     * @param request
+     *            the request object instance
+     * @param session
+     *            JCR session
+     * @return the GWT edit module settings
+     * @throws GWTJahiaServiceException in case of a processing error
      */
-    public GWTEditConfiguration getGWTEditConfiguration(String name, String contextPath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTEditConfiguration getGWTEditConfiguration(String name, String contextNodePath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             EditConfiguration config = (EditConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
@@ -601,7 +615,7 @@ public class UIConfigHelper {
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
 
-                JCRNodeWrapper contextNode = session.getNode(contextPath);
+                JCRNodeWrapper contextNode = session.getNode(contextNodePath);
                 JCRSiteNode site = contextNode.getResolveSite();
 
                 gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));

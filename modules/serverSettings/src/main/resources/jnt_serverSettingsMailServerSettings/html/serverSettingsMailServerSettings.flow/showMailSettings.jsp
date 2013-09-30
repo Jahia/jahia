@@ -21,10 +21,10 @@
 <script type="text/javascript">
     <!--
     function testSettings() {
-        if (document.jahiaAdmin.host.value.length == 0) {
+        if (document.jahiaAdmin.uri.value.length == 0) {
         <fmt:message key="serverSettings.mailServerSettings.errors.server.mandatory" var="msg"/>
             alert("${functions:escapeJavaScript(msg)}");
-            document.jahiaAdmin.host.focus();
+            document.jahiaAdmin.uri.focus();
         } else if (document.jahiaAdmin.to.value.length == 0) {
         <fmt:message key="serverSettings.mailServerSettings.errors.administrator.mandatory" var="msg"/>
             alert("${functions:escapeJavaScript(msg)}");
@@ -44,7 +44,7 @@
                 dataType:'text',
                 cache:false,
                 data:{
-                    host:document.jahiaAdmin.host.value,
+                    host:document.jahiaAdmin.uri.value,
                     from:document.jahiaAdmin.from.value,
                     to:document.jahiaAdmin.to.value
                 },
@@ -105,7 +105,7 @@
         <div class="control-group">
             <label class="control-label"><fmt:message key="serverSettings.mailServerSettings.address"/> &nbsp;:</label>
             <div class="controls ">
-                <input type="text" name="host" size="70" maxlength="250" value="<c:out value='${mailSettings.host}'/>"/>&nbsp;
+                <input type="text" name="uri" size="70" maxlength="250" value="<c:out value='${mailSettings.uri}'/>"/>&nbsp;
                 <a class="btn btn-info" href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><i class="icon-info-sign icon-white"></i></a>
             </div>
         </div>

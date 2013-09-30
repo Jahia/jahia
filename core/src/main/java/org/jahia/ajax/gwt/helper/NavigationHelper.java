@@ -62,6 +62,7 @@ import org.springframework.util.CollectionUtils;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 
 /**
@@ -339,17 +340,23 @@ public class NavigationHelper {
 
         for (String path : paths) {
             // replace $user and $site by the right values
-            String displayName = "";
-            if (site != null && path.contains("$site/") || path.endsWith("$site")) {
-                if (StringUtils.startsWith(site.getPath(),"/modules")) {
-                    String moduleName = StringUtils.split(site.getPath(), '/')[1];
-                    path = StringUtils.replace(path,"$site", site.getPath() + "/" + ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
-                } else {
-                    path = StringUtils.replace(path,"$site", site.getPath());
+            String displayName = null;
+            if (site != null) {
+                if (path.contains("$site/") || path.endsWith("$site")) {
+                    String sitePath = site.getPath();
+                    if (StringUtils.startsWith(sitePath, "/modules/")) {
+                        String moduleName = StringUtils.substringBetween(sitePath, "/modules/", "/");
+                        path = StringUtils.replace(path, "$site", sitePath
+                                + "/"
+                                + ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                                        .getTemplatePackageByFileName(moduleName).getVersion().toString());
+                    } else {
+                        path = StringUtils.replace(path, "$site", sitePath);
+                    }
                 }
-            }
-            if (path.contains("$siteKey/")) {
-                path = path.replace("$siteKey", site.getSiteKey());
+                if (path.contains("$siteKey/")) {
+                    path = path.replace("$siteKey", site.getSiteKey());
+                }
             }
             if (path.contains("$moduleversion")) {
                 String moduleName = StringUtils.split(path, '/')[1];
@@ -391,7 +398,7 @@ public class NavigationHelper {
                 } else {
                     GWTJahiaNode root = getNode(path, fields, currentUserSession, uiLocale);
                     if (root != null) {
-                        if (!StringUtils.isEmpty(displayName)) {
+                        if (displayName != null) {
                             root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
                         }
                         userNodes.add(root);

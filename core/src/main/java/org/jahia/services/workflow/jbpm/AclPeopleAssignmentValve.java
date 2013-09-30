@@ -51,10 +51,13 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
                     potentialOwners.add(new UserImpl(((JahiaUser) principal).getUserKey()));
                 }
             }
-            List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
-            administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
-            peopleAssignments.getBusinessAdministrators().addAll(administrators);
+            final GroupImpl admin = new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey());
+            potentialOwners.add(admin);
             peopleAssignments.getPotentialOwners().addAll(potentialOwners);
+
+            List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
+            administrators.add(admin);
+            peopleAssignments.getBusinessAdministrators().addAll(administrators);
         } catch (RepositoryException e) {
             throw new RuntimeException("Error while setting up task assignees and creating a JCR task", e);
         }

@@ -60,24 +60,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Main URL generation class. This class is exposed to the template developers to make it easy to them to access
- * basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>.
- * User: toto
- * Date: Sep 14, 2009
- * Time: 11:13:37 AM
+ * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
  */
 public class URLGenerator {
     private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
 
     /**
-     * Returns the server URL, including scheme, host and port.
-     * The URL is in the form <code><scheme><host>:<port></code>,
-     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
-     * of standard HTTP (80) and HTTPS (443) ports.
-     *
-     * @deprecated Please use Url.getServer(HttpServletRequest request) instead
+     * Returns the server URL, including scheme, host and port. The URL is in the form <code><scheme><host>:<port></code>, e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case of standard HTTP (80) and HTTPS (443)
+     * ports.
      *
      * @return the server URL, including scheme, host and port
+     * @deprecated Please use Url.getServer(HttpServletRequest request) instead
      */
     public static String getServer(HttpServletRequest request) {
         return Url.getServer(request);
@@ -102,6 +95,8 @@ public class URLGenerator {
 
     private Map<String, String> templateTypes;
 
+    private Map<String, String> bases;
+
     private String templatesPath;
 
     private String baseLive;
@@ -110,11 +105,11 @@ public class URLGenerator {
     private String basePreview;
     private String convert;
     private String myProfile;
-    
+
     private String server;
-    
+
     private String login;
-    
+
     private String logout;
 
     public URLGenerator(RenderContext context, Resource resource) {
@@ -130,7 +125,8 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-        base = context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+//        base = context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        base = getBase(resource.getLocale().getLanguage());
 
         final String resourcePath = getResourcePath();
 
@@ -151,7 +147,7 @@ public class URLGenerator {
     }
 
     public String getResourcePath() {
-        return context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate()))?"."+context.getMainResource().getTemplate()+".":".") + context.getMainResource().getTemplateType();
+        return context.getMainResource().getNode().getPath() + ((!"default".equals(context.getMainResource().getTemplate())) ? "." + context.getMainResource().getTemplate() + "." : ".") + context.getMainResource().getTemplateType();
     }
 
     public String getContext() {
@@ -171,7 +167,7 @@ public class URLGenerator {
     }
 
     public String getBasePlaceholders() {
-        return StringUtils.substringBeforeLast(context.getServletPath(),"/")+"/{mode}/{lang}";
+        return StringUtils.substringBeforeLast(context.getServletPath(), "/") + "/{mode}/{lang}";
     }
 
     public String getLive() {
@@ -259,14 +255,18 @@ public class URLGenerator {
         if (languages == null) {
             languages = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object lang) {
-                    return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() +
-                            ("default".equals(resource.getTemplate()) ? "" : "." + resource.getTemplate())
-                            + ".html";
+                    return getLanguage((String) lang);
                 }
             });
         }
 
         return languages;
+    }
+
+    public String getLanguage(String languageCode) {
+        return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + context.getMainResource().getNode().getPath() +
+                ("default".equals(resource.getTemplate()) ? "" : "." + resource.getTemplate())
+                + ".html";
     }
 
     @SuppressWarnings("unchecked")
@@ -274,11 +274,15 @@ public class URLGenerator {
         if (templates == null) {
             templates = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object template) {
-                    return buildURL(resource.getNode(), (String) template, resource.getTemplateType());
+                    return getTemplate((String) template);
                 }
             });
         }
         return templates;
+    }
+
+    public String getTemplate(String template) {
+        return buildURL(resource.getNode(), template, resource.getTemplateType());
     }
 
     @SuppressWarnings("unchecked")
@@ -286,27 +290,33 @@ public class URLGenerator {
         if (templateTypes == null) {
             templateTypes = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object templateType) {
-                    return buildURL(resource.getNode(), resource.getResolvedTemplate(), (String) templateType);
+                    return getTemplateType((String) templateType);
                 }
             });
         }
         return templateTypes;
     }
 
+    public String getTemplateType(String templateType) {
+        return buildURL(resource.getNode(), resource.getResolvedTemplate(), templateType);
+    }
+
     @SuppressWarnings("unchecked")
     public Map<String, String> getBases() {
-        if (languages == null) {
-            languages = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
+        if (bases == null) {
+            bases = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object lang) {
-                    return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() +
-                            ("default".equals(resource.getTemplate()) ? "" : "." + resource.getTemplate())
-                            + ".html";
+                    return getBase((String) lang);
                 }
             });
         }
-
-        return languages;
+        return bases;
     }
+
+    public String getBase(String languageCode) {
+        return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
+    }
+
     /**
      * Returns the path to the templates folder.
      *
@@ -317,11 +327,9 @@ public class URLGenerator {
     }
 
     /**
-     * Returns the URL of the main resource (normally, page), depending on the
-     * current mode.
+     * Returns the URL of the main resource (normally, page), depending on the current mode.
      *
-     * @return the URL of the main resource (normally, page), depending on the
-     *         current mode
+     * @return the URL of the main resource (normally, page), depending on the current mode
      */
     public String getMainResource() {
         return base + context.getMainResource().getNode().getPath() + "." + context.getMainResource().getResolvedTemplate() + ".html";
@@ -330,7 +338,7 @@ public class URLGenerator {
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
         return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
-    
+
     public String buildURL(JCRNodeWrapper node, String languageCode, String template, String templateType) {
         if (StringUtils.isEmpty(languageCode)) {
             return buildURL(node, template, templateType);
@@ -387,18 +395,14 @@ public class URLGenerator {
             }
         }
     }
-    
+
     /**
-     * Returns the server URL, including scheme, host and port, depending on the
-     * current site. The URL is in the form <code><scheme><host>:<port></code>,
-     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
-     * of standard HTTP (80) and HTTPS (443) ports.
-     * 
-     * If the site's server name is configured to be "localhost", then take the
-     * servername from the request.
-     * 
-     * @return the server URL, including scheme, host and port, depending on the
-     *         current site
+     * Returns the server URL, including scheme, host and port, depending on the current site. The URL is in the form <code><scheme><host>:<port></code>, e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case of standard
+     * HTTP (80) and HTTPS (443) ports.
+     * <p/>
+     * If the site's server name is configured to be "localhost", then take the servername from the request.
+     *
+     * @return the server URL, including scheme, host and port, depending on the current site
      */
     public String getServer() {
         if (server == null) {
@@ -408,22 +412,22 @@ public class URLGenerator {
             if (Url.isLocalhost(host)) {
                 host = context.getRequest().getServerName();
             }
-            
+
             int port = SettingsBean.getInstance().getSiteURLPortOverride();
-            
+
             if (port == 0) {
                 port = context.getRequest().getServerPort();
             }
-            
+
             url.append(scheme).append("://").append(host);
-            
+
             if (!(port == 80 && "http".equals(scheme) || port == 443 && "https".equals(scheme))) {
                 url.append(":").append(port);
             }
-            
+
             server = url.toString();
         }
-        
+
         return server;
     }
 
@@ -440,7 +444,7 @@ public class URLGenerator {
                     LoginConfig.getInstance().getCustomLoginUrl(context.getRequest()),
                     Login.getServletPath());
         }
-        
+
         return login;
     }
 

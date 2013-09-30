@@ -144,7 +144,7 @@
         <property name="forms">
             <map>
                 <entry key="start" value="jnt:simpleWorkflow"/>
-                <entry key="" value="jnt:simpleWorkflow"/>
+                <entry key="review" value="jnt:simpleWorkflow"/>
             </map>
         </property>
     </bean>
@@ -155,7 +155,7 @@
         <property name="forms">
             <map>
                 <entry key="start" value="jnt:simpleWorkflow"/>
-                <entry key="First review" value="jnt:simpleWorkflow"/>
+                <entry key="unpublish" value="jnt:simpleWorkflow"/>
             </map>
         </property>
     </bean>

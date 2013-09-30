@@ -697,9 +697,16 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     @Override
     public List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale locale) {
-        final List<HistoryWorkflow> workflows = new LinkedList<HistoryWorkflow>();
-        return workflows;
-    }
+        List<String> l = new ArrayList<String>();
+        List<VariableInstanceLog> result = em
+                .createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId AND v.value like :variableValue")
+                .setParameter("variableId", "nodePath")
+                .setParameter("variableValue", path).getResultList();
+        for (VariableInstanceLog log : result) {
+            l.add(Long.toString(log.getProcessInstanceId()));
+        }
+
+        return getHistoryWorkflows(l, locale);    }
 
     @Override
     public List<HistoryWorkflow> getHistoryWorkflows(final List<String> processIds, final Locale locale) {

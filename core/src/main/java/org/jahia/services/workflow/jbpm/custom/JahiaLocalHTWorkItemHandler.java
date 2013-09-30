@@ -2,6 +2,7 @@ package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
@@ -19,6 +20,7 @@ import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -117,7 +119,10 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
         String createdBy = (String) workItem.getParameter("CreatedBy");
         if (createdBy != null && createdBy.trim().length() > 0) {
             taskData.setCreatedBy(new UserImpl(createdBy));
+        } else if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+            taskData.setCreatedBy(new UserImpl(JCRSessionFactory.getInstance().getCurrentUser().getUserKey()));
         }
+        taskData.setCreatedOn(new Date());
         PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
 

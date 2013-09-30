@@ -2,6 +2,7 @@ package org.jahia.services.workflow.jbpm;
 
 import org.apache.jackrabbit.util.ISO9075;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.EnvironmentFactory;
@@ -681,9 +682,17 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     @Override
-    public List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale locale) {
-        final List<HistoryWorkflow> workflows = new LinkedList<HistoryWorkflow>();
-        return workflows;
+    public List<HistoryWorkflow> getHistoryWorkflowsForNode(final String nodeId, Locale locale) {
+        List<String> l = new ArrayList<String>();
+        List<VariableInstanceLog> result = em
+                .createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId AND v.value = :variableValue")
+                .setParameter("variableId", "nodeId")
+                .setParameter("variableValue", nodeId).getResultList();
+        for (VariableInstanceLog log : result) {
+            l.add(Long.toString(log.getProcessInstanceId()));
+        }
+
+        return getHistoryWorkflows(l, locale);
     }
 
     @Override
@@ -734,14 +743,37 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
                 final List<HistoryWorkflowTask> workflowTaskHistory = new LinkedList<HistoryWorkflowTask>();
 
-                List<TaskSummary> tasksIds = taskService.getTasksByStatusByProcessInstanceId(Long.parseLong(processId), OPEN_STATUS_LIST, locale != null ? locale.getLanguage() : null);
+                setLogEnvironment(context);
+                ProcessInstanceLog processInstanceLog = auditLogService.findProcessInstance(Long.parseLong(processId));
+                List<NodeInstanceLog> nodeInstanceLogs = auditLogService.findNodeInstances(processInstanceLog.getProcessInstanceId());
+                for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
+                    if (nodeInstanceLog.getWorkItemId() != null && "HumanTaskNode".equals(nodeInstanceLog.getNodeType())) {
+                        Task task = taskService.getTaskByWorkItemId(nodeInstanceLog.getWorkItemId());
+                        final HistoryWorkflowTask workflowTask = new HistoryWorkflowTask(task.getId().toString(),
+                                nodeInstanceLog.getProcessId(),
+                                nodeInstanceLog.getNodeName(),
+                                key,
+                                task.getTaskData().getActualOwner() != null ? task.getTaskData().getActualOwner().getId() : null,
+                                task.getTaskData().getCreatedOn(),
+                                nodeInstanceLog.getDate(),
+                                "outcome");
+                        final WorkflowDefinition definition = getWorkflowDefinitionById(nodeInstanceLog.getProcessId(), locale, ksession);
+                        ResourceBundle resourceBundle = getResourceBundle(locale, definition.getPackageName(), definition.getKey());
+                        String rbActionName = i18nName(workflowTask.getName(), resourceBundle);
+                        workflowTask.setDisplayName(rbActionName);
+
+                        workflowTaskHistory.add(workflowTask);
+                    }
+                }
+
+                List<TaskSummary> tasksIds = taskService.getTasksByStatusByProcessInstanceId(Long.parseLong(processId), Arrays.asList(Status.Created, Status.InProgress, Status.Ready, Status.Reserved), locale != null ? locale.getLanguage() : null);
                 for (TaskSummary taskSummary : tasksIds) {
                     final HistoryWorkflowTask workflowTask = new HistoryWorkflowTask(Long.toString(taskSummary.getId()),
                             Long.toString(taskSummary.getProcessInstanceId()),
                             taskSummary.getName(),
                             key,
-                            null,
-                            taskSummary.getActivationTime(),
+                            null, //taskSummary.getActualOwner() != null ? taskSummary.getActualOwner().getId() : null,
+                            taskSummary.getCreatedOn(),
                             null,
                             null);
                     workflowTaskHistory.add(workflowTask);
@@ -753,21 +785,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     }
                 }
 
-                setLogEnvironment(context);
-                ProcessInstanceLog processInstanceLog = auditLogService.findProcessInstance(Long.parseLong(processId));
-                List<NodeInstanceLog> nodeInstanceLogs = auditLogService.findNodeInstances(processInstanceLog.getProcessInstanceId());
-                for (NodeInstanceLog nodeInstanceLog : nodeInstanceLogs) {
-                    if (nodeInstanceLog.getWorkItemId() != null) {
-                        workflowTaskHistory.add(new HistoryWorkflowTask(nodeInstanceLog.getWorkItemId().toString(),
-                                nodeInstanceLog.getProcessId(),
-                                nodeInstanceLog.getNodeName(),
-                                key,
-                                "user", // @todo properly implement this
-                                nodeInstanceLog.getDate(),
-                                nodeInstanceLog.getDate(),
-                                "outcome")); // @todo properly implement this.
-                    }
-                }
                 return workflowTaskHistory;
             }
         });
@@ -1000,21 +1017,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
         return actionName;
     }
-
-    public static String getI18NText(List<I18NText> i18NTexts, Locale locale) {
-        if (locale == null || i18NTexts == null || i18NTexts.size() == 0) {
-            return "";
-        }
-        for (I18NText i18NText : i18NTexts) {
-            if (i18NText.getLanguage().equals(locale.toString())) {
-                return i18NText.getText();
-            } else if (i18NText.getLanguage().equals(locale.getLanguage())) {
-                return i18NText.getText();
-            }
-        }
-        return "";
-    }
-
 
     private <T> T executeCommand(Command<T> t) {
         CommandBasedStatefulKnowledgeSession s = (CommandBasedStatefulKnowledgeSession) getKieSession();

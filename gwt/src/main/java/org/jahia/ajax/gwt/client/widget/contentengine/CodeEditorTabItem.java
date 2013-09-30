@@ -130,6 +130,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             });
 
             if (stubType != null) {
+                // stub type is defined -> create combos for code snippets
                 snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
                 snippetType.setTypeAhead(true);
                 snippetType.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
@@ -143,12 +144,14 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 snippetType.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                        // snippet type has changed -> populate code snippets 
                         mirrorTemplates.clear();
                         mirrorTemplates.getStore().removeAll();
                         mirrorTemplates.getStore().add(snippets.get(se.getSelectedItem().getValue()));
                     }
                 });
 
+                // code templates combo
                 mirrorTemplates = new ComboBox<GWTJahiaValueDisplayBean>();
                 mirrorTemplates.setTypeAhead(true);
                 mirrorTemplates.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
@@ -164,9 +167,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
                 String path = engine.isExistingNode() ? engine.getNode().getPath() : engine.getTargetNode().getPath();
                 String nodeType = typeName != null ? typeName.getValues().get(0).getString() : null;
+                // get code editor data from the server
                 JahiaContentManagementService.App.getInstance().initializeCodeEditor(path, !engine.isExistingNode(), nodeType, stubType, new BaseAsyncCallback<RpcMap>() {
                     public void onSuccess(RpcMap result) {
                         if (!result.isEmpty() && result.get("snippets") != null) {
+                            // we have got snippets -> populate snippet type combo
                             snippets = (Map<String, List<GWTJahiaValueDisplayBean>>) result.get("snippets");
                             for (String type : snippets.keySet()) {
                                 snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
@@ -189,6 +194,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             actions.add(mirrorTemplates);
                             actions.add(button);
                             Button addAllButton = new Button(Messages.get("label.addAll"));
+                            // create add all snippets button
                             addAllButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
@@ -223,9 +229,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                 for (String stub : stubs.keySet()) {
                                     String display;
                                     String viewName = "";
-                                    if (stub.contains("/")) {
-                                        String s = stub.split("/")[0];
-                                        viewName = s.substring(s.indexOf(".") ,s.lastIndexOf("."));
+                                    if (stub.indexOf('/') != -1) {
+                                        viewName = stub.substring(stub.indexOf("."), stub.lastIndexOf("."));
                                         display =  Messages.get("label.stub" + viewName);
                                     } else {
                                         display = Messages.get("label.stub.default");

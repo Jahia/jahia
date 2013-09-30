@@ -103,12 +103,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         horizontalPanel.setSpacing(10);
         horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         tab.add(horizontalPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,40));
-//        final HorizontalPanel actionStubs = new HorizontalPanel();
-//        actionStubs.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         final HorizontalPanel actions = new HorizontalPanel();
         actions.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
         horizontalPanel.add(actions);
-//        horizontalPanel.add(actionStubs);
         if (!tab.isProcessed()) {
             // Add list of properties
             GWTJahiaNodeProperty typeName = engine.getProperties().get("nodeTypeName");

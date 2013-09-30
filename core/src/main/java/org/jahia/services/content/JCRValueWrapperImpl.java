@@ -40,25 +40,24 @@
 
 package org.jahia.services.content;
 
-import org.slf4j.Logger;
-import org.jahia.services.categories.Category;
-import org.jahia.services.content.nodetypes.ExtendedPropertyType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.data.beans.CategoryBean;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.categories.Category;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.Calendar;
-import java.util.Date;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Implementation of JCRValueWrapper Interface.
  *
- * @author : $Author$
- * Last Modified : $Date$
+ * @author : $Author$ Last Modified : $Date$
  */
 public class JCRValueWrapperImpl implements JCRValueWrapper {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRValueWrapperImpl.class);
@@ -73,12 +72,11 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
     }
 
     /**
-     * 
      * @return a CategoryBean if value match a valid category
      * @throws ValueFormatException if category not found or object not a category
-     * @throws RepositoryException for all other errors
+     * @throws RepositoryException  for all other errors
      */
-    public CategoryBean getCategory() throws ValueFormatException,RepositoryException {
+    public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
         try {
             // As we are storing path inside the jcr and taht actually we cannot search by path on the
             // category service we need to get the last value to have the "real" key of the category
@@ -94,7 +92,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
             logger.error("Category not found");
         }
 
-    throw new ItemNotFoundException("category " + getString() + " not found");
+        throw new ItemNotFoundException("category " + getString() + " not found");
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {
@@ -154,7 +152,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
                 } catch (PathNotFoundException e1) {
                     return null;
                 }
-            } 
+            }
         } else {
             // TODO: The specification suggests using value conversion
             throw new ValueFormatException("property must be of type REFERENCE or STRING");
@@ -172,9 +170,10 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof JCRValueWrapperImpl) {
-            return value.equals(((JCRValueWrapperImpl)obj).value);
+        if (obj instanceof JCRValueWrapperImpl) {
+            return value.equals(((JCRValueWrapperImpl) obj).value);
         }
-        else return obj != null && obj.getClass().equals(value.getClass()) && value.equals(obj);
+        // allow equality test on subclasses of Value and invert equality test since value is usually a JCR-proper class which doesn't allow equality checks on subclasses
+        else return obj != null && obj instanceof Value && obj.equals(value);
     }
 }

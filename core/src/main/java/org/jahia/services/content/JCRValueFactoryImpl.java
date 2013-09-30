@@ -40,22 +40,18 @@
 
 package org.jahia.services.content;
 
-import javax.jcr.Node;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
-
 import org.apache.jackrabbit.value.AbstractValueFactory;
 import org.jahia.api.Constants;
 
+import javax.jcr.*;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Calendar;
+
 /**
- * Jahia's extension of the value factory, which takes care that references are always created as 
- * weakrerences, unless one is using the method createValue(Node, false)   
- * 
- * @author Benjamin Papez
+ * Jahia's extension of the value factory, which takes care that references are always created as weakrerences, unless one is using the method createValue(Node, false)
  *
+ * @author Benjamin Papez
  */
 public class JCRValueFactoryImpl extends AbstractValueFactory {
 
@@ -91,13 +87,98 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
     @Override
     public Value createValue(Node value) throws RepositoryException {
         // always generate weakreferences on default
-        return super.createValue(value, value.isNodeType(Constants.NT_VERSION) ? false : true);
+        final Value valueToBeWrapped = super.createValue(value, !value.isNodeType(Constants.NT_VERSION));
+        return new EqualsFriendlierValue(valueToBeWrapped);
     }
 
     @Override
-    public Value createValue(String value, int type)
-            throws ValueFormatException {
-        return super.createValue(value, type != PropertyType.REFERENCE ? type
-                : PropertyType.WEAKREFERENCE);
+    public Value createValue(String value, int type) throws ValueFormatException {
+        final Value valueToBeWrapped = super.createValue(value, type != PropertyType.REFERENCE ? type : PropertyType.WEAKREFERENCE);
+        return new EqualsFriendlierValue(valueToBeWrapped);
+    }
+
+    private static class EqualsFriendlierValue implements Value {
+        private final Value value;
+
+        private EqualsFriendlierValue(Value value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+            return value.getString();
+        }
+
+        @Override
+        public InputStream getStream() throws RepositoryException {
+            return value.getStream();
+        }
+
+        @Override
+        public Binary getBinary() throws RepositoryException {
+            return value.getBinary();
+        }
+
+        @Override
+        public long getLong() throws ValueFormatException, RepositoryException {
+            return value.getLong();
+        }
+
+        @Override
+        public double getDouble() throws ValueFormatException, RepositoryException {
+            return value.getDouble();
+        }
+
+        @Override
+        public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+            return value.getDecimal();
+        }
+
+        @Override
+        public Calendar getDate() throws ValueFormatException, RepositoryException {
+            return value.getDate();
+        }
+
+        @Override
+        public boolean getBoolean() throws ValueFormatException, RepositoryException {
+            return value.getBoolean();
+        }
+
+        @Override
+        public int getType() {
+            return value.getType();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Value) {
+                Value val = (Value) obj;
+
+                // otherwise look deeper
+                final int type = value.getType();
+                if (type != val.getType()) {
+                    return false;
+                } else {
+                    try {
+                        switch (type) {
+                            case PropertyType.BOOLEAN:
+                                return value.getBoolean() == val.getBoolean();
+                            case PropertyType.DATE:
+                                return value.getDate().equals(val.getDate());
+                            case PropertyType.DOUBLE:
+                                return value.getDouble() == val.getDouble();
+                            case PropertyType.LONG:
+                                return value.getLong() == val.getLong();
+                            default:
+                                return value.getString().equals(val.getString());
+                        }
+                    } catch (RepositoryException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
     }
 }

@@ -193,7 +193,7 @@ public class WorkflowService implements BeanPostProcessor {
         }
         Set<String> tasks = definition.getTasks();
 
-        final String permissionPath = "/modules/" + module.getRootFolderWithVersion() + "/permissions/";
+        final String permissionPath = "/modules/" + module.getRootFolderWithVersion() + "/permissions";
 
         for (String task : tasks) {
             if (!map.containsKey(task)) {
@@ -313,14 +313,14 @@ public class WorkflowService implements BeanPostProcessor {
 
                 List<JahiaPrincipal> principals = Collections.emptyList();
                 Map<String, String> perms = workflowRegistrationByDefinition.get(definition.getKey()).getPermissions();
-                String permName = perms != null ? perms.get(activityName) : null;
-                if (permName == null) {
+                String permPath = perms != null ? perms.get(activityName) : null;
+                if (permPath == null) {
                     return principals;
                 }
 
                 Workflow w = getWorkflow(definition.getProvider(), processId, null);
                 JCRNodeWrapper node = session.getNodeByIdentifier((String)w.getVariables().get("nodeId"));
-                if (permName.indexOf("$") > -1) {
+                if (permPath.indexOf("$") > -1) {
                     if (w != null) {
                         for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
                             if (entry.getValue() instanceof List) {
@@ -329,7 +329,7 @@ public class WorkflowService implements BeanPostProcessor {
                                 for (Object workflowVariable : variable) {
                                     if (workflowVariable instanceof WorkflowVariable) {
                                         String v = ((WorkflowVariable) workflowVariable).getValue();
-                                        permName = permName.replace("$" + entry.getKey(), v);
+                                        permPath = permPath.replace("$" + entry.getKey(), v);
                                     }
                                 }
                             }
@@ -340,25 +340,19 @@ public class WorkflowService implements BeanPostProcessor {
                     Set<String> roles = new HashSet<String>();
                     Set<String> extPerms = new HashSet<String>();
 
-                    try {
-                        String path = "/permissions" + permName;
-                        while (path.length() >= "/permissions".length()) {
-                            JCRNodeWrapper permissionNode = session.getNode(path);
-                            NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '"+permissionNode.getName()+"'", Query.JCR_SQL2).execute().getNodes();
-                            while (ni.hasNext()) {
-                                JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
-                                roles.add(roleNode.getName());
-                            }
-                            path = StringUtils.substringBeforeLast(path, "/");
-
-                            ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '"+permissionNode.getName()+"'", Query.JCR_SQL2).execute().getNodes();
-                            while (ni.hasNext()) {
-                                JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
-                                extPerms.add(roleNode.getParent().getName()+"/"+roleNode.getName());
-                            }
+                    while (!StringUtils.isEmpty(permPath)) {
+                        String permissionName = StringUtils.substringAfterLast(permPath,"/");
+                        NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '"+permissionName+"'", Query.JCR_SQL2).execute().getNodes();
+                        while (ni.hasNext()) {
+                            JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
+                            roles.add(roleNode.getName());
                         }
-                    } catch (PathNotFoundException e) {
-                        logger.warn("Unable to find the node for the permission " + permName);
+                        ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '"+permissionName+"'", Query.JCR_SQL2).execute().getNodes();
+                        while (ni.hasNext()) {
+                            JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
+                            extPerms.add(roleNode.getParent().getName()+"/"+roleNode.getName());
+                        }
+                        permPath = StringUtils.substringBeforeLast(permPath, "/");
                     }
 
                     Map<String, List<String[]>> m = node.getAclEntries();

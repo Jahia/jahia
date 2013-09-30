@@ -40,15 +40,19 @@
 
 package org.jahia.taglibs.jcr.node;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRValueFactoryImpl;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.text.SimpleDateFormat;
@@ -58,11 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 
- * User: toto
- * Date: Mar 25, 2010
- * Time: 8:35:48 PM
- * 
+ * User: toto Date: Mar 25, 2010 Time: 8:35:48 PM
  */
 public class JCRFilterTag extends AbstractJCRTag {
     private static final long serialVersionUID = 7977579361895318499L;
@@ -105,31 +105,54 @@ public class JCRFilterTag extends AbstractJCRTag {
 
     @Override
     public int doEndTag() throws JspException {
-        List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
         try {
             final JSONObject jsonObject = new JSONObject(properties);
             final String uuid = (String) jsonObject.get("uuid");
             if (uuid.equals(node.getIdentifier())) {
                 String name = (String) jsonObject.get("name");
-                String value = (String) jsonObject.get("value");
+                String valueAsString = (String) jsonObject.get("value");
                 String op = (String) jsonObject.get("op");
-                String type = null;
+                String type = (String) jsonObject.get("type");
                 String format;
                 SimpleDateFormat dateFormat = null;
                 try {
-                    type = (String) jsonObject.get("type");
                     format = (String) jsonObject.get("format");
                     dateFormat = new SimpleDateFormat(format);
                 } catch (JSONException e) {
                 }
+
+                type = type == null ? "String" : type;
+
+                // backward compatibility with previously documented "date" type where appropriate JCR type should be "Date"
+                final boolean isLowerCaseDate = "date".equals(type);
+                Value value = isLowerCaseDate ? null : JCRValueFactoryImpl.getInstance().createValue(valueAsString, PropertyType.valueFromName(type));
+
+                List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
                 for (JCRNodeWrapper re : list) {
                     final JCRPropertyWrapper property = re.getProperty(name);
                     if (property != null) {
                         if ("eq".equals(op)) {
-                            if(type!=null&&"date".equals(type)) {
-                                if(dateFormat!=null && dateFormat.format(property.getDate().getTime()).equals(value)) {
+
+                            // backward compatibility
+                            if (isLowerCaseDate) {
+                                if (dateFormat != null && dateFormat.format(property.getDate().getTime()).equals(valueAsString)) {
                                     res.add(re);
                                 }
+                            } else if (property.isMultiple()) {
+                                final JCRValueWrapper[] values = property.getValues();
+                                // we cannot do simply as follows because JCR*Wrapper break the commutativity of equals
+                                /*if (values.contains(value)) {
+                                    res.add(re);
+                                }*/
+                                // so we need to hack around :(
+                                for (Value wrappedValue : values) {
+                                    if (wrappedValue.equals(value)) {
+                                        res.add(re);
+                                    }
+                                }
+
+                            } else if (property.getValue().equals(value)) {
+                                res.add(re);
                             }
                         }
                     }

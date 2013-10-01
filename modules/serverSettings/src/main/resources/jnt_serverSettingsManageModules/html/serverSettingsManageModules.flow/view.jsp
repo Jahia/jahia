@@ -21,9 +21,6 @@
 
 <template:addResources>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('.button-download').click(workInProgress)
-        });
         $(document).ready(function () {
             $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
         });

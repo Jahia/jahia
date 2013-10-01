@@ -4,11 +4,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js"/>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#${currentNode.identifier}-next').click(workInProgress)
+            $('#${currentNode.identifier}-next').click(function() {workInProgress('${i18nWaiting}');});
         });
     </script>
 </template:addResources>

@@ -111,9 +111,8 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 path = StringUtils.substringAfter(path, " -> ");
             }
             path = StringUtils.removeEnd(path, "/");
-            String combinedStatus = line.substring(0, 2);
-            char indexStatus = combinedStatus.charAt(0);
-            char workTreeStatus = combinedStatus.charAt(1);
+            char indexStatus = line.charAt(0);
+            char workTreeStatus = line.charAt(1);
             Status status = null;
             if (workTreeStatus == ' ') {
                 if (indexStatus == 'M') {
@@ -141,17 +140,17 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 status = Status.UNTRACKED;
             }
             if (status != null) {
+                // put resource status
                 newMap.put(path, status);
-                if (folder) {
-                    String[] pathSegments = path.split("/");
-                    String subPath = "";
-                    for (String segment : pathSegments) {
-                        newMap.put(subPath, Status.MODIFIED);
-                        if (subPath.isEmpty()) {
-                            subPath = segment;
-                        } else {
-                            subPath += "/" + segment;
+                if (folder && path.indexOf('/') != -1) {
+                    // store intermediate folder status as MODIFIED 
+                    StringBuilder subPath = new StringBuilder();
+                    for (String segment : StringUtils.split(path, '/')) {
+                        if (subPath.length() > 0) {
+                            newMap.put(subPath.toString(), Status.MODIFIED);
+                            subPath.append('/');
                         }
+                        subPath.append(segment);
                     }
                 }
             }

@@ -94,7 +94,7 @@ public abstract class SourceControlManagement {
     protected File rootFolder;
 
     private volatile Map<String, Status> statusMap;
-
+    
     protected SourceControlManagement(String executable) {
         super();
         this.executable = executable;
@@ -196,7 +196,7 @@ public abstract class SourceControlManagement {
 
     protected final Map<String, Status> getStatusMap() throws IOException {
         if (statusMap == null) {
-            synchronized (SourceControlManagement.class) {
+            synchronized (this) {
                 if (statusMap == null) {
                     statusMap = createStatusMap();
                 }
@@ -223,7 +223,7 @@ public abstract class SourceControlManagement {
     /**
      * Invalidates the SCM status cache and forces for the next check the SCM interaction.
      */
-    public void invalidateStatusCache() {
+    public synchronized void invalidateStatusCache() {
         statusMap = null;
     }
 

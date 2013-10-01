@@ -46,24 +46,13 @@ import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
-import net.htmlparser.jericho.Source;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.StatusLine;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
-import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.io.OutputFormat;
 import org.jahia.api.Constants;
@@ -83,15 +72,12 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -116,8 +102,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 
 /**
  * Template and template set deployment and management service.
@@ -160,8 +144,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private JahiaSitesService siteService;
 
-    private HttpClientService httpClientService;
-
     private ApplicationEventPublisher applicationEventPublisher;
 
     private ModuleBuildHelper moduleBuildHelper;
@@ -169,6 +151,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private ModuleInstallationHelper moduleInstallationHelper;
 
     private SourceControlHelper scmHelper;
+    
+    private ForgeHelper forgeHelper;
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -373,9 +357,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         activateModuleVersion(module.getRootFolder(), releaseInfo.getNextVersion());
 
         if (releaseInfo.isPublishToMaven() || releaseInfo.isPublishToForge()) {
-            releaseInfo.setArtifactUrl(computeModuleJarUrl(releaseVersion, releaseInfo, model));
+            releaseInfo.setArtifactUrl(forgeHelper.computeModuleJarUrl(releaseVersion, releaseInfo, model));
             if (releaseInfo.isPublishToForge() && releaseInfo.getForgeUrl() != null) {
-                String forgeModuleUrl = createForgeModule(releaseInfo, generatedWar);
+                String forgeModuleUrl = forgeHelper.createForgeModule(releaseInfo, generatedWar);
                 releaseInfo.setForgeModulePageUrl(forgeModuleUrl);
             } else if (releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryUrl() != null) {
                 deployToMaven(releaseInfo, generatedWar);
@@ -383,77 +367,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         return generatedWar;
-    }
-
-    /**
-     * Manage forge
-     */
-    public String createForgeModule(ModuleReleaseInfo releaseInfo, File jar) throws IOException {
-
-        String moduleUrl = null;
-        final String url = releaseInfo.getForgeUrl();
-        HttpClient client = new HttpClient();
-        // Get token from forge home page
-        GetMethod getMethod = new GetMethod(url + "/home.html");
-        getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
-        client.executeMethod(getMethod);
-        Source source = new Source(getMethod.getResponseBodyAsString());
-        String token = "";
-        if (source.getFirstElementByClass("file_upload") != null) {
-            List<net.htmlparser.jericho.Element> els = source.getFirstElementByClass("file_upload").getAllElements("input");
-            for (net.htmlparser.jericho.Element el : els) {
-                if (StringUtils.equals(el.getAttributeValue("name"),"form-token")) {
-                    token = el.getAttributeValue("value");
-                }
-            }
-        } else {
-            throw new IOException("Unable to get forge site information, please check your credentials");
-        }
-
-        Part[] parts = {new StringPart("form-token",token),new FilePart("file",jar) };
-
-        // send module
-        PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
-        postMethod.getParams().setSoTimeout(0);
-        postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
-        postMethod.addRequestHeader("accept", "application/json");
-        postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
-        String result = null;
-        try {
-            client.executeMethod(null, postMethod);
-            StatusLine statusLine = postMethod.getStatusLine();
-
-            if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
-                result = postMethod.getResponseBodyAsString();
-            } else {
-                logger.warn("Connection to URL: " + url + " failed with status " + statusLine);
-            }
-
-        } catch (HttpException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
-        } catch (IOException e) {
-            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
-        } finally {
-            postMethod.releaseConnection();
-        }
-
-        if (StringUtils.isNotEmpty(result)) {
-            try {
-                JSONObject json = new JSONObject(result);
-                if (!json.isNull("moduleAbsoluteUrl")) {
-                    moduleUrl = json.getString("moduleAbsoluteUrl");
-                } else if (!json.isNull("error")) {
-                    throw new IOException(json.getString("error"));
-                } else {
-                    logger.warn("Cannot find 'moduleAbsoluteUrl' entry in the create module actin response: {}", result);
-                    throw new IOException("unknown");
-                }
-            } catch (JSONException e) {
-                logger.error("Unable to parse the response of the module creation action. Cause: " + e.getMessage(), e);
-            }
-        }
-
-        return moduleUrl;
     }
 
     public void deployToMaven(ModuleReleaseInfo releaseInfo, File generatedWar) throws IOException {
@@ -491,32 +404,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return pomFile;
     }
 
-
-    private String computeModuleJarUrl(String releaseVersion, ModuleReleaseInfo releaseInfo, Model model) {
-        StringBuilder url = new StringBuilder(64);
-        url.append(releaseInfo.getRepositoryUrl());
-        if (!releaseInfo.getRepositoryUrl().endsWith("/")) {
-            url.append("/");
-        }
-        String groupId = model.getGroupId();
-        if (groupId == null && model.getParent() != null) {
-            groupId = model.getParent().getGroupId();
-        }
-        url.append(StringUtils.replace(groupId, ".", "/"));
-        url.append("/");
-        url.append(model.getArtifactId());
-        url.append("/");
-        url.append(releaseVersion);
-        url.append("/");
-        url.append(model.getArtifactId());
-        url.append("-");
-        url.append(releaseVersion);
-        url.append(".");
-        String packaging = model.getPackaging();
-        url.append(packaging == null || packaging.equals("bundle") ? "jar" : packaging);
-
-        return url.toString();
-    }
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         List<File> modifiedFiles = new ArrayList<File>();
@@ -1164,10 +1051,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         this.moduleStates = moduleStates;
     }
 
-    public void setHttpClientService(HttpClientService httpClientService) {
-        this.httpClientService = httpClientService;
-    }
-
     /**
      * This event is fired when a template module is re-deployed (in runtime, not on the server startup).
      *
@@ -1242,5 +1125,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setModuleBuildHelper(ModuleBuildHelper moduleBuildHelper) {
         this.moduleBuildHelper = moduleBuildHelper;
+    }
+
+    /**
+     * Injects an instance of the helper class for Forge related operations.
+     * 
+     * @param forgeHelper
+     *            an instance helper class for Forge related operations
+     */
+    public void setForgeHelper(ForgeHelper forgeHelper) {
+        this.forgeHelper = forgeHelper;
     }
 }

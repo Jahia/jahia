@@ -9,14 +9,15 @@
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespace.zip"/>
 <template:addResources type="javascript"
-                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.blockUI.js"/>
+                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <jsp:useBean id="nowDate" class="java.util.Date"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#${currentNode.identifier}-deleteRolesConfirmed').click(workInProgress);
+            $('#${currentNode.identifier}-deleteRolesConfirmed').click(function() {workInProgress('${i18nWaiting}');});
         });
     </script>
 </template:addResources>

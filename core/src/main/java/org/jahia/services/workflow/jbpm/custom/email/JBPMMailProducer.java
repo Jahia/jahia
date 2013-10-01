@@ -51,7 +51,6 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -153,16 +152,14 @@ public class JBPMMailProducer {
                             } else {
                                 return Collections.emptyList();
                             }
-                        } catch (MessagingException e) {
-                            logger.error(e.getMessage(), e);
-                        } catch (ScriptException e) {
-                            logger.error(e.getMessage(), e);
+                        } catch (Exception e) {
+                            logger.error("Cannot produce mail", e);
                         }
                         return Collections.emptyList();
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                logger.error("Cannot produce mail", e);
             }
         }
         return Collections.emptyList();
@@ -179,73 +176,57 @@ public class JBPMMailProducer {
      *
      * @see {@link InternetAddress#getLocalAddress(Session)}
      */
-    protected void fillFrom(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
-        try {
-            AddressTemplate fromTemplate = getTemplate().getFrom();
-            // "from" attribute is optional
-            if (fromTemplate == null) return;
+    protected void fillFrom(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+        AddressTemplate fromTemplate = getTemplate().getFrom();
+        // "from" attribute is optional
+        if (fromTemplate == null) return;
 
-            // resolve and parse addresses
-            String addresses = fromTemplate.getAddresses();
-            if (addresses != null) {
-                addresses = evaluateExpression(workItem, addresses, session);
-                // non-strict parsing applies to a list of mail addresses entered by a human
-                email.addFrom(InternetAddress.parse(addresses, false));
-            }
+        // resolve and parse addresses
+        String addresses = fromTemplate.getAddresses();
+        if (addresses != null) {
+            addresses = evaluateExpression(workItem, addresses, session);
+            // non-strict parsing applies to a list of mail addresses entered by a human
+            email.addFrom(InternetAddress.parse(addresses, false));
+        }
 
-            // resolve and tokenize users
-            String userList = fromTemplate.getUsers();
-            if (userList != null) {
-                String[] userIds = tokenizeActors(userList, workItem, session);
-                List<User> users = new ArrayList<User>();
-                for (String userId : userIds) {
-                    users.add(taskIdentityService.getUserById(userId));
-                }
-                email.addFrom(getAddresses(users));
+        // resolve and tokenize users
+        String userList = fromTemplate.getUsers();
+        if (userList != null) {
+            String[] userIds = tokenizeActors(userList, workItem, session);
+            List<User> users = new ArrayList<User>();
+            for (String userId : userIds) {
+                users.add(taskIdentityService.getUserById(userId));
             }
+            email.addFrom(getAddresses(users));
+        }
 
-            // resolve and tokenize groups
-            String groupList = fromTemplate.getGroups();
-            if (groupList != null) {
-                for (String groupId : tokenizeActors(groupList, workItem, session)) {
-                    Group group = taskIdentityService.getGroupById(groupId);
-                    email.addFrom(getAddresses(group));
-                }
+        // resolve and tokenize groups
+        String groupList = fromTemplate.getGroups();
+        if (groupList != null) {
+            for (String groupId : tokenizeActors(groupList, workItem, session)) {
+                Group group = taskIdentityService.getGroupById(groupId);
+                email.addFrom(getAddresses(group));
             }
-        } catch (ScriptException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
         }
     }
 
-    protected void fillRecipients(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
-        try {
-            // to
-            AddressTemplate to = getTemplate().getTo();
-            if (to != null) {
-                fillRecipients(to, email, Message.RecipientType.TO, workItem, session);
-            }
+    protected void fillRecipients(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+        // to
+        AddressTemplate to = getTemplate().getTo();
+        if (to != null) {
+            fillRecipients(to, email, Message.RecipientType.TO, workItem, session);
+        }
 
-            // cc
-            AddressTemplate cc = getTemplate().getCc();
-            if (cc != null) {
-                fillRecipients(cc, email, Message.RecipientType.CC, workItem, session);
-            }
+        // cc
+        AddressTemplate cc = getTemplate().getCc();
+        if (cc != null) {
+            fillRecipients(cc, email, Message.RecipientType.CC, workItem, session);
+        }
 
-            // bcc
-            AddressTemplate bcc = getTemplate().getBcc();
-            if (bcc != null) {
-                fillRecipients(bcc, email, Message.RecipientType.BCC, workItem, session);
-            }
-        } catch (ScriptException e) {
-            logger.error(e.getMessage(), e);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        // bcc
+        AddressTemplate bcc = getTemplate().getBcc();
+        if (bcc != null) {
+            fillRecipients(bcc, email, Message.RecipientType.BCC, workItem, session);
         }
     }
 
@@ -354,68 +335,54 @@ public class JBPMMailProducer {
         return new InternetAddress(email, personal, "UTF-8");
     }
 
-    protected void fillSubject(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
+    protected void fillSubject(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         String subject = getTemplate().getSubject();
         if (subject != null) {
-            try {
-                String evaluatedSubject = evaluateExpression(workItem, subject, session).replaceAll("[\r\n]", "");
-                email.setSubject(WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (ScriptException e) {
-                logger.error(e.getMessage(), e);
-            }
+            String evaluatedSubject = evaluateExpression(workItem, subject, session).replaceAll("[\r\n]", "");
+            email.setSubject(WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
         }
     }
 
-    protected void fillContent(Message email, WorkItem workItem, JCRSessionWrapper session) throws MessagingException {
+    protected void fillContent(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         String text = getTemplate().getText();
         String html = getTemplate().getHtml();
         List<AttachmentTemplate> attachmentTemplates = getTemplate().getAttachmentTemplates();
 
-        try {
-            if (html != null || !attachmentTemplates.isEmpty()) {
-                // multipart
-                MimeMultipart multipart = new MimeMultipart("related");
+        if (html != null || !attachmentTemplates.isEmpty()) {
+            // multipart
+            MimeMultipart multipart = new MimeMultipart("related");
 
-                BodyPart p = new MimeBodyPart();
-                Multipart alternatives = new MimeMultipart("alternative");
-                p.setContent(alternatives, "multipart/alternative");
-                multipart.addBodyPart(p);
+            BodyPart p = new MimeBodyPart();
+            Multipart alternatives = new MimeMultipart("alternative");
+            p.setContent(alternatives, "multipart/alternative");
+            multipart.addBodyPart(p);
 
-                // html
-                if (html != null) {
-                    BodyPart htmlPart = new MimeBodyPart();
-                    html = evaluateExpression(workItem, html, session);
-                    htmlPart.setContent(html, "text/html; charset=UTF-8");
-                    alternatives.addBodyPart(htmlPart);
-                }
-
-                // text
-                if (text != null) {
-                    BodyPart textPart = new MimeBodyPart();
-                    text = evaluateExpression(workItem, text, session);
-                    textPart.setContent(text, "text/plain; charset=UTF-8");
-                    alternatives.addBodyPart(textPart);
-                }
-
-                // attachments
-                if (!attachmentTemplates.isEmpty()) {
-                    addAttachments(workItem, multipart, session);
-                }
-
-                email.setContent(multipart);
-            } else if (text != null) {
-                // unipart
-                text = evaluateExpression(workItem, text, session);
-                email.setText(text);
+            // html
+            if (html != null) {
+                BodyPart htmlPart = new MimeBodyPart();
+                html = evaluateExpression(workItem, html, session);
+                htmlPart.setContent(html, "text/html; charset=UTF-8");
+                alternatives.addBodyPart(htmlPart);
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        } catch (ScriptException e) {
-            logger.error(e.getMessage(), e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+
+            // text
+            if (text != null) {
+                BodyPart textPart = new MimeBodyPart();
+                text = evaluateExpression(workItem, text, session);
+                textPart.setContent(text, "text/plain; charset=UTF-8");
+                alternatives.addBodyPart(textPart);
+            }
+
+            // attachments
+            if (!attachmentTemplates.isEmpty()) {
+                addAttachments(workItem, multipart, session);
+            }
+
+            email.setContent(multipart);
+        } else if (text != null) {
+            // unipart
+            text = evaluateExpression(workItem, text, session);
+            email.setText(text);
         }
     }
 
@@ -442,13 +409,9 @@ public class JBPMMailProducer {
         Locale locale = (Locale) vars.get("locale");
         final Bindings bindings = new MyBindings(workItem);
         WorkflowDefinition workflowDefinition = (WorkflowDefinition) vars.get("workflow");
-        try {
-            ResourceBundle resourceBundle = ResourceBundles.get(
-                    "org.jahia.services.workflow." + workflowDefinition.getName(), locale);
-            bindings.put("bundle", resourceBundle);
-        } catch (Exception e) {
-            logger.error("Cannot get bundle",e);
-        }
+        ResourceBundle resourceBundle = ResourceBundles.get(
+                "org.jahia.services.workflow." + workflowDefinition.getName(), locale);
+        bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
@@ -537,11 +500,7 @@ public class JBPMMailProducer {
         String url = attachmentTemplate.getUrl();
         if (url != null) {
             url = evaluateExpression(workItem, url, session);
-            try {
-                targetUrl = new URL(url);
-            } catch (MalformedURLException e) {
-                throw new Exception("could not read attachment content, malformed url: " + url, e);
-            }
+            targetUrl = new URL(url);
         }
         // resolve classpath resource
         else {

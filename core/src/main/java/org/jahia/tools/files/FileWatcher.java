@@ -194,6 +194,7 @@ public class FileWatcher extends Observable implements Serializable {
         try {
             schedulerService.getRAMScheduler().deleteJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {
+            logger.warn("Unable to delete the job " + jobName + "_Job. Cause: " + e.getMessage());
         }
         try {
             schedulerService.getRAMScheduler().scheduleJob(jobDetail, trigger);
@@ -207,10 +208,12 @@ public class FileWatcher extends Observable implements Serializable {
         try {
             schedulerService.getRAMScheduler().unscheduleJob(trigger.getName(),Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {
+            logger.warn("Unable to unschedule the job with trigger " + trigger.getName() + ". Cause: " + e.getMessage());
         }
         try {
             schedulerService.getRAMScheduler().deleteJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {
+            logger.warn("Unable to delete the job " + jobName + "_Job. Cause: " + e.getMessage());
         }
     }
 

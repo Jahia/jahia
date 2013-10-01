@@ -51,9 +51,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Background job that allows to watch files for modifications and call appropriate observers.
+ */
 public class FileWatcherJob implements StatefulJob {
-    public FileWatcherJob() {
-    }
 
     public void execute(JobExecutionContext context) throws JobExecutionException {
         //logger.debug("Checking files in directory " + m_Folder.toString() + "...");

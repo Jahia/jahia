@@ -28,7 +28,6 @@
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
-<template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 
@@ -92,11 +91,21 @@
             ready = false;
             $(".taskaction-complete").addClass("taskaction-disabled");
             $(".taskaction").addClass("taskaction-disabled");
-            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                $('${identifierName}').load('${reloadurl}',null,function() {
-                    $("#taskdetail_"+uuid).css("display","block");
+            post = function () {
+                $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                    $('${identifierName}').load('${reloadurl}',null,function() {
+                        $("#taskdetail_"+uuid).css("display","block");
+                    });
+                }, "json");
+            }
+
+            if ($("#taskDataForm_"+uuid).size() > 0) {
+                $("#taskDataForm_"+uuid).ajaxSubmit( {
+                    success: post
                 });
-            }, "json");
+            } else {
+                post()
+            }
         }
     };
     function sendNewAssignee(uuid, task, key) {
@@ -208,7 +217,7 @@
                                         <li><a class="taskaction taskaction-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
                                         <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
                                         <c:if test="${not empty task.properties['targetNode'].node}">
-                                        	<c:set var="currentTaskNode" value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" />                                        	   
+                                        	<c:set var="currentTaskNode" value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" />
                                             <li><a class="taskaction taskaction-preview" target="_blank" href="<c:url value="${url.basePreview}${currentTaskNode.path}.html"/>"><fmt:message key="label.preview"/></a></li>
                                         </c:if>
                                         <c:if test="${not empty task.properties['possibleOutcomes']}">
@@ -222,13 +231,12 @@
                                             <c:set var="taskId" value="${task.identifier}"/>
                                             <li><div class="taskaction-complete"><input class="completeTaskAction" taskPath="<c:url value='${url.base}${currentNode.path}'/>" type="checkbox" id="btnComplete-${taskId}" onchange="sendNewStatus('${taskId}','${task.path}','finished')"/>&nbsp;<label for="btnComplete-${taskId}"><fmt:message key="label.actions.completed"/></label></div></li>
                                         </c:if>
-                                        <jcr:node var="taskData" path="${task.path}/taskData"/>
-                                        <c:if test="${not empty taskData}">
-                                            <script>
-                                                initEditFields('${taskData.identifier}');
-                                            </script>
-                                            <template:module path="${task.path}/taskData" view="contribute.edit" />
-                                        </c:if>
+                                        <li>
+                                            <jcr:node var="taskData" path="${task.path}/taskData"/>
+                                            <c:if test="${not empty taskData}">
+                                                <template:module path="${task.path}/taskData" view="taskData" />
+                                            </c:if>
+                                        </li>
                                     </c:when>
                                     <c:when test="${task.properties.state.string == 'finished'}">
                                         <li><div class="taskaction-complete"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></div></li>

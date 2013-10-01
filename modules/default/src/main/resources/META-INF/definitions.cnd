@@ -256,3 +256,5 @@
  - roles (name, choicelist[nodes='/roles;jnt:role;name']) multiple nofulltext
  - roleGroup (string)
  - contextNodePath (string)
+
+[jnt:simpleWorkflow] > mix:title, nt:base, jmix:i18n

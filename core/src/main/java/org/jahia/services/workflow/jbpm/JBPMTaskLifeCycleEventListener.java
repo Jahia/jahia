@@ -182,7 +182,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     JCRNodeWrapper jcrTask = tasks.addNode(JCRContentUtils.findAvailableNodeName(tasks, taskName), "jnt:workflowTask");
                     String definitionKey = JBPM6WorkflowProvider.getDecodedProcessKey(task.getTaskData().getProcessId());
                     jcrTask.setProperty("taskName", taskName);
-                    String bundle = WorkflowService.class.getPackage().getName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll("");
+                    String bundle = workflow.getWorkflowDefinition().getPackageName() + "." + Patterns.SPACE.matcher(definitionKey).replaceAll("");
                     jcrTask.setProperty("taskBundle", bundle);
                     jcrTask.setProperty("taskId", task.getId());
                     jcrTask.setProperty("provider", "jBPM");
@@ -239,9 +239,13 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                             if (variable instanceof List) {
                                 List<WorkflowVariable> list = (List<WorkflowVariable>) variable;
                                 if (m.get(s).isMultiple()) {
-//                                    data.setProperty(s, list.get(0).getValue());
+                                    List<Value> v = new ArrayList<Value>();
+                                    for (WorkflowVariable workflowVariable : list) {
+                                        v.add(session.getValueFactory().createValue(workflowVariable.getValue(), workflowVariable.getType()));
+                                    }
+                                    data.setProperty(s, v.toArray(new Value[v.size()]));
                                 } else if (!list.isEmpty()) {
-                                    data.setProperty(s, list.get(0).getValue());
+                                    data.setProperty(s, list.get(0).getValue(), list.get(0).getType());
                                 }
                             }
                         }

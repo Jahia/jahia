@@ -115,8 +115,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                 continue;
             }
             String path = line.substring(8);
-            String combinedStatus = line.substring(0, 7);
-            char firstColumn = combinedStatus.charAt(0);
+            char firstColumn = line.charAt(0);
             Status status = null;
             if (firstColumn == 'A') {
                 status = Status.ADDED;

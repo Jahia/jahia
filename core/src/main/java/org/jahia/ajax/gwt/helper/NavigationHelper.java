@@ -345,7 +345,9 @@ public class NavigationHelper {
                 if (path.contains("$site/") || path.endsWith("$site")) {
                     String sitePath = site.getPath();
                     if (StringUtils.startsWith(sitePath, "/modules/")) {
-                        String moduleName = StringUtils.substringBetween(sitePath, "/modules/", "/");
+                        String moduleName = sitePath.indexOf('/', "/modules/".length()) != -1 ? StringUtils
+                                .substringBetween(sitePath, "/modules/", "/") : StringUtils.substringAfter(sitePath,
+                                "/modules/");
                         path = StringUtils.replace(path, "$site", sitePath
                                 + "/"
                                 + ServicesRegistry.getInstance().getJahiaTemplateManagerService()

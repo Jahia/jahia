@@ -2,7 +2,6 @@ package org.jahia.services.workflow.jbpm;
 
 import org.apache.jackrabbit.util.ISO9075;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.EnvironmentFactory;
@@ -11,11 +10,7 @@ import org.drools.persistence.TransactionManager;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -28,7 +23,6 @@ import org.jbpm.process.audit.*;
 import org.jbpm.process.audit.command.AbstractHistoryLogCommand;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -58,6 +52,7 @@ import org.kie.internal.command.Context;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.spring.persistence.KieSpringJpaManager;
 import org.kie.spring.persistence.KieSpringTransactionManager;
 import org.slf4j.Logger;
@@ -499,61 +494,68 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private ThreadLocal loop = new ThreadLocal();
 
     @Override
-    public void assignTask(String taskId, final JahiaUser user) {
+    public void assignTask(final String taskId, final JahiaUser user) {
         if (loop.get() != null) {
             return;
         }
         try {
-            loop.set(Boolean.TRUE);
-            Task task = taskService.getTaskById(Long.parseLong(taskId));
-            Map<String, Object> taskInputParameters = getTaskInputParameters(task);
-            Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
-            if (user == null) {
-                taskService.release(task.getId(), null);
-            } else {
-                if (user.getUserKey().equals(task.getTaskData().getActualOwner().toString())) {
-                    return;
+            executeCommand(new GenericCommand<List<WorkflowTask>>() {
+                @Override
+                public List<WorkflowTask> execute(Context context) {
+                    loop.set(Boolean.TRUE);
+                    Task task = taskService.getTaskById(Long.parseLong(taskId));
+                    Map<String, Object> taskInputParameters = getTaskInputParameters(task);
+                    Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
+                    if (user == null) {
+                        taskService.release(task.getId(), JCRSessionFactory.getInstance().getCurrentUser().getUserKey());
+                    } else if (task.getTaskData().getActualOwner() != null && user.getUserKey().equals(task.getTaskData().getActualOwner().getId())) {
+                        logger.debug("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is already owner");
+                    } else if (!checkParticipation(task, user)) {
+                        logger.error("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is not candidate");
+                    } else {
+                        taskService.claim(Long.parseLong(taskId), user.getUserKey());
+                    }
+                    JahiaUser actualUser = null;
+                    if (task.getTaskData().getActualOwner() != null) {
+                        actualUser = userManager.lookupUserByKey(task.getTaskData().getActualOwner().getId());
+                    }
+                    if (actualUser != null) {
+                        taskOutputParameters.put("currentUser", user.getUserKey());
+                        ((InternalTaskService) taskService).addContent(Long.parseLong(taskId), taskOutputParameters);
+                    }
+                    updateTaskNode(actualUser, (String) taskOutputParameters.get("task-" + taskId));
+                    return null;
                 }
-
-                if (!checkParticipation(task, user)) {
-                    logger.error("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is not candidate");
-                    return;
-                }
-
-                taskService.claim(Long.parseLong(taskId), user.getUserKey());
-            }
-            if (user != null) {
-                taskOutputParameters.put("currentUser", user.getUserKey());
-                ((TaskServiceEntryPointImpl) taskService).addContent(Long.parseLong(taskId), taskOutputParameters);
-            }
-
-            final String uuid = (String) taskOutputParameters.get("task-" + taskId);
-            if (uuid != null) {
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
-                            if (user != null) {
-                                if (!nodeByUUID.hasProperty("assigneeUserKey") ||
-                                        !nodeByUUID.getProperty("assigneeUserKey").getString().equals(user.getName())) {
-                                    nodeByUUID.setProperty("assigneeUserKey", user.getName());
-                                    session.save();
-                                }
-                            } else {
-                                if (nodeByUUID.hasProperty("assigneeUserKey")) {
-                                    nodeByUUID.getProperty("assigneeUserKey").remove();
-                                    session.save();
-                                }
-                            }
-                            return null;
-                        }
-                    });
-                } catch (RepositoryException e) {
-                    e.printStackTrace();
-                }
-            }
+            });
         } finally {
             loop.set(null);
+        }
+    }
+
+    private void updateTaskNode(final JahiaUser user, final String taskUuid) {
+        if (taskUuid != null) {
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper nodeByUUID = session.getNodeByUUID(taskUuid);
+                        if (user != null) {
+                            if (!nodeByUUID.hasProperty("assigneeUserKey") ||
+                                    !nodeByUUID.getProperty("assigneeUserKey").getString().equals(user.getName())) {
+                                nodeByUUID.setProperty("assigneeUserKey", user.getName());
+                                session.save();
+                            }
+                        } else {
+                            if (nodeByUUID.hasProperty("assigneeUserKey")) {
+                                nodeByUUID.getProperty("assigneeUserKey").remove();
+                                session.save();
+                            }
+                        }
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Cannot update task",e);
+            }
         }
     }
 
@@ -591,11 +593,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
         for (OrganizationalEntity potentialOwner : potentialOwners) {
             if (potentialOwner instanceof User) {
-                if (user.getUserKey().equals(potentialOwner.toString())) {
+                if (user.getUserKey().equals(potentialOwner.getId())) {
                     return true;
                 }
             } else if (potentialOwner instanceof Group) {
-                if (groupManager.getUserMembership(user).contains(potentialOwner.toString())) {
+                if (groupManager.getUserMembership(user).contains(potentialOwner.getId())) {
                     return true;
                 }
             }

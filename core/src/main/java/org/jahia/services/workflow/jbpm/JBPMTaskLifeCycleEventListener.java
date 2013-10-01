@@ -49,6 +49,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.*;
@@ -203,7 +204,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     ValueFactory valueFactory = session.getValueFactory();
                     for (JahiaPrincipal principal : candidates) {
                         if (principal instanceof JahiaGroup) {
-                            candidatesArray.add(valueFactory.createValue("g:" + principal.getName()));
+                            candidatesArray.add(valueFactory.createValue("g:" + ((JCRGroup) principal).getGroupKey()));
                         } else if (principal instanceof JahiaUser) {
                             candidatesArray.add(valueFactory.createValue("u:" + principal.getName()));
                         }

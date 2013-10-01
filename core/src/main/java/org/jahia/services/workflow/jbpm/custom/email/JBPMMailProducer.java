@@ -410,7 +410,7 @@ public class JBPMMailProducer {
         final Bindings bindings = new MyBindings(workItem);
         WorkflowDefinition workflowDefinition = (WorkflowDefinition) vars.get("workflow");
         ResourceBundle resourceBundle = ResourceBundles.get(
-                "org.jahia.services.workflow." + workflowDefinition.getName(), locale);
+                workflowDefinition.getPackageName() + "." + workflowDefinition.getName(), locale);
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)

@@ -46,14 +46,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringReader;
+import java.util.Map;
 
+import org.apache.maven.model.Build;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tika.io.IOUtils;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -155,6 +161,59 @@ public final class PomUtils {
             throws IOException, XmlPullParserException {
         Model model = read(pomXmlFile);
         model.getProperties().put("jahia-forge", forgeUrl);
+        write(model, pomXmlFile);
+    }
+
+    /**
+     * Updates the Jahia-Depends information in the maven-bundle-plugin to reflect the new list of dependencies.
+     * 
+     * @param pomXmlFile
+     *            the Maven project descriptor file to update
+     * @param depends
+     *            comma-separated list of dependencies
+     * @throws IOException
+     *             in case of a reading problem
+     * @throws XmlPullParserException
+     *             in case of a parsing error
+     */
+    public static void updateJahiaDepends(File pomXmlFile, String depends) throws IOException, XmlPullParserException {
+        Model model = read(pomXmlFile);
+        Build build = model.getBuild();
+        if (build == null) {
+            build = new Build();
+            model.setBuild(build);
+        }
+        Map<String, Plugin> pluginsAsMap = build.getPluginsAsMap();
+        Plugin plugin = pluginsAsMap.get("org.apache.felix:maven-bundle-plugin");
+        if (plugin == null) {
+            plugin = new Plugin();
+            plugin.setGroupId("org.apache.felix");
+            plugin.setArtifactId("maven-bundle-plugin");
+            plugin.setExtensions(true);
+            build.addPlugin(plugin);
+        }
+
+        Xpp3Dom cfg = (Xpp3Dom) plugin.getConfiguration();
+        if (cfg == null) {
+            plugin.setConfiguration(Xpp3DomBuilder.build(new StringReader(
+                    "<configuration><instructions><Jahia-Depends>" + depends
+                            + "</Jahia-Depends></instructions></configuration>")));
+        } else {
+            Xpp3Dom instructions = cfg.getChild("instructions");
+            if (instructions == null) {
+                cfg.addChild(Xpp3DomBuilder.build(new StringReader("<instructions><Jahia-Depends>" + depends
+                        + "</Jahia-Depends></instructions>")));
+            } else {
+                Xpp3Dom jahiaDepends = instructions.getChild("Jahia-Depends");
+                if (jahiaDepends == null) {
+                    instructions.addChild(Xpp3DomBuilder.build(new StringReader("<Jahia-Depends>" + depends
+                            + "</Jahia-Depends>")));
+                } else {
+                    jahiaDepends.setValue(depends);
+                }
+            }
+        }
+
         write(model, pomXmlFile);
     }
 

@@ -65,12 +65,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
@@ -609,83 +604,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void setDependenciesInPom(File sources, List<String> dependencies) {
+        File pom = new File(sources, "pom.xml");
         try {
-            SAXReader reader = new SAXReader();
-            File pom = new File(sources, "pom.xml");
-            Document document = reader.read(pom);
-            Element e = document.getRootElement();
-            List<?> elements = e.elements("build");
-            if (elements.isEmpty()) {
-                e = e.addElement("build");
-            } else {
-                e = (Element) elements.get(0);
-            }
-            elements = e.elements("plugins");
-            if (elements.isEmpty()) {
-                e = e.addElement("plugins");
-            } else {
-                e = (Element) elements.get(0);
-            }
-            Element pluginArtifactId = (Element) e.selectSingleNode("*[name()='plugin']/*[name()='artifactId' and text()='maven-bundle-plugin']");
-            if (pluginArtifactId == null) {
-                pluginArtifactId = (Element) e.selectSingleNode("*[name()='plugin']/*[name()='artifactId' and text()='maven-war-plugin']");
-                if (pluginArtifactId == null) {
-                    e = e.addElement("plugin");
-                    e.addElement("groupId").setText("org.apache.felix");
-                    e.addElement("artifactId").setText("maven-bundle-plugin");
-                    e.addElement("extensions").setText("true");
-                    e = e.addElement("configuration");
-                    e = e.addElement("instructions");
-                    e = e.addElement("Jahia-Depends");
-                } else {
-                    e = pluginArtifactId.getParent();
-                    e = (Element) e.elements("configuration").get(0);
-                    e = (Element) e.elements("archive").get(0);
-                    e = (Element) e.elements("manifestEntries").get(0);
-                    e = (Element) e.elements("depends").get(0);
-                }
-            } else {
-                e = pluginArtifactId.getParent();
-                elements = e.elements("configuration");
-                if (elements.isEmpty()) {
-                    e = e.addElement("configuration");
-                } else {
-                    e = (Element) elements.get(0);
-                }
-                elements = e.elements("instructions");
-                if (elements.isEmpty()) {
-                    e = e.addElement("instructions");
-                } else {
-                    e = (Element) elements.get(0);
-                }
-                elements = e.elements("Jahia-Depends");
-                if (elements.isEmpty()) {
-                    e = e.addElement("Jahia-Depends");
-                } else {
-                    e = (Element) elements.get(0);
-                }
-            }
-            e.setText(StringUtils.join(dependencies, ","));
-            File modifiedPom = new File(sources, "pom-modified.xml");
-            XMLWriter writer = new XMLWriter(new FileOutputStream(modifiedPom), prettyPrint);
-            try {
-                writer.write(document);
-            } finally {
-                writer.close();
-            }
-            InputStream source = new BufferedInputStream(new FileInputStream(modifiedPom));
-            try {
-                saveFile(source, pom);
-            } catch (PatchFailedException e1) {
-                logger.error(e1.getMessage(), e1);
-            } finally {
-                IOUtils.closeQuietly(source);
-                modifiedPom.delete();
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (DocumentException e2) {
-            logger.error(e2.getMessage(), e2);
+            PomUtils.updateJahiaDepends(pom, StringUtils.join(dependencies, ","));
+        } catch (Exception e) {
+            logger.error("Unable to updated dependencies in pom file: " + pom, e);
         }
     }
 

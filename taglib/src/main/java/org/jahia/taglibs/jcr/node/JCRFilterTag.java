@@ -59,13 +59,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * User: toto Date: Mar 25, 2010 Time: 8:35:48 PM
  */
 public class JCRFilterTag extends AbstractJCRTag {
     private static final long serialVersionUID = 7977579361895318499L;
+    public static final String EQ = "eq";
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFilterTag.class);
     private Collection<JCRNodeWrapper> list;
 
@@ -76,7 +76,7 @@ public class JCRFilterTag extends AbstractJCRTag {
 
     public void setList(Object o) {
         if (o instanceof Collection) {
-            this.list = (Collection) o;
+            this.list = new ArrayList<JCRNodeWrapper>((Collection<? extends JCRNodeWrapper>) o);
         } else if (o instanceof Iterator) {
             this.list = new ArrayList<JCRNodeWrapper>();
             final Iterator iterator = (Iterator) o;
@@ -109,29 +109,37 @@ public class JCRFilterTag extends AbstractJCRTag {
             final JSONObject jsonObject = new JSONObject(properties);
             final String uuid = (String) jsonObject.get("uuid");
             if (uuid.equals(node.getIdentifier())) {
-                String name = (String) jsonObject.get("name");
-                String valueAsString = (String) jsonObject.get("value");
-                String op = (String) jsonObject.get("op");
-                String type = (String) jsonObject.get("type");
-                String format;
-                SimpleDateFormat dateFormat = null;
-                try {
-                    format = (String) jsonObject.get("format");
-                    dateFormat = new SimpleDateFormat(format);
-                } catch (JSONException e) {
+                final String name = (String) jsonObject.get("name");
+                final String valueAsString = (String) jsonObject.get("value");
+
+                String op = getValueOrDefaultIfMissingOrEmpty(jsonObject, "op", EQ);
+
+                // check for negation operator
+                boolean isNegated = false;
+                if (op.startsWith("!")) {
+                    isNegated = true; // we want the negated usual outcome
+                    op = op.substring(1); // remove negation operator
                 }
 
-                type = type == null ? "String" : type;
+                // if we don't have a type, assume "String"
+                String type = getValueOrDefaultIfMissingOrEmpty(jsonObject, "type", "String");
+
+                // optional format
+                SimpleDateFormat dateFormat = null;
+                String format = getValueOrDefaultIfMissingOrEmpty(jsonObject, "format", null);
+                if (format != null) {
+                    dateFormat = new SimpleDateFormat(format);
+                }
 
                 // backward compatibility with previously documented "date" type where appropriate JCR type should be "Date"
                 final boolean isLowerCaseDate = "date".equals(type);
                 Value value = isLowerCaseDate ? null : JCRValueFactoryImpl.getInstance().createValue(valueAsString, PropertyType.valueFromName(type));
 
-                List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
+                Collection<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
                 for (JCRNodeWrapper re : list) {
                     final JCRPropertyWrapper property = re.getProperty(name);
                     if (property != null) {
-                        if ("eq".equals(op)) {
+                        if (EQ.equals(op)) {
 
                             // backward compatibility
                             if (isLowerCaseDate) {
@@ -140,11 +148,6 @@ public class JCRFilterTag extends AbstractJCRTag {
                                 }
                             } else if (property.isMultiple()) {
                                 final JCRValueWrapper[] values = property.getValues();
-                                // we cannot do simply as follows because JCR*Wrapper break the commutativity of equals
-                                /*if (values.contains(value)) {
-                                    res.add(re);
-                                }*/
-                                // so we need to hack around :(
                                 for (Value wrappedValue : values) {
                                     if (wrappedValue.equals(value)) {
                                         res.add(re);
@@ -157,6 +160,13 @@ public class JCRFilterTag extends AbstractJCRTag {
                         }
                     }
                 }
+
+                // if we had negated the operation, remove all matching elements from the original list
+                if (isNegated) {
+                    list.removeAll(res);
+                    res = list;
+                }
+
                 pageContext.setAttribute(var, res, scope);
             } else {
                 pageContext.setAttribute(var, list, scope);
@@ -169,4 +179,13 @@ public class JCRFilterTag extends AbstractJCRTag {
         return super.doEndTag();
     }
 
+    private String getValueOrDefaultIfMissingOrEmpty(final JSONObject jsonObject, final String paramName, final String defaultValue) {
+        String paramValue = null;
+        try {
+            paramValue = (String) jsonObject.get(paramName);
+        } catch (JSONException e) {
+            // ignore exception indicating missing value, this is an annoying idiom of the JSON.org API, would be better if it conformed to returning null if no value was associated to the key
+        }
+        return (paramValue == null || paramValue.isEmpty()) ? defaultValue : paramValue;
+    }
 }

@@ -322,7 +322,7 @@ public class URLGenerator {
     }
 
     public String getBase(String languageCode) {
-        return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
+        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
     }
 
     /**

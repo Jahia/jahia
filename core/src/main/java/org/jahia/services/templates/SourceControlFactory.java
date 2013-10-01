@@ -40,93 +40,40 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.PumpStreamHandler;
-import org.jahia.utils.StringOutputStream;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.jahia.utils.StringOutputStream;
+
+/**
+ * Source control management central factory class responsible for checking out a remote SCM repository content and instantiating
+ * {@link SourceControlManagement} helpers for SCM operations on module's sources.
+ */
 public class SourceControlFactory {
-    private Map<String,String> sourceControlExecutables;
+    private Map<String, String> sourceControlExecutables;
 
-    public Map<String, String> getSourceControlExecutables() {
-        return sourceControlExecutables;
-    }
-
-    public void setSourceControlExecutables(Map<String, String> sourceControlExecutables) {
-        this.sourceControlExecutables = new HashMap<String, String>();
-        for (Map.Entry<String, String> entry : sourceControlExecutables.entrySet()) {
-            try {
-                DefaultExecutor executor = new DefaultExecutor();
-                executor.setStreamHandler(new PumpStreamHandler(new StringOutputStream(), new StringOutputStream()));
-                executor.execute(new CommandLine(entry.getValue()), System.getenv());
-            } catch (ExecuteException e) {
-            } catch (IOException e) {
-                continue;
-            }
-            this.sourceControlExecutables.put(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public Set<String> getSupportedSourceControls() {
-        return sourceControlExecutables.keySet();
-    }
-
-    public SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {
-        SourceControlManagement scm = null;
-        while (true) {
-            if (new File(workingDir,".git").exists()) {
-                if (!sourceControlExecutables.containsKey("git")) {
-                    return null;
-                }
-                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
-                break;
-            } else if (new File(workingDir,".svn").exists()) {
-                if (!sourceControlExecutables.containsKey("svn")) {
-                    return null;
-                }
-                scm = new SvnSourceControlManagement(sourceControlExecutables.get("svn"));
-                break;
-            } else {
-                if (workingDir.getParentFile() == null) {
-                    break;
-                }  else {
-                    workingDir = workingDir.getParentFile();
-                }
-            }
-        }
-        if (scm != null) {
-            scm.initWithWorkingDirectory(workingDir);
-        }
-        return scm;
-    }
-
-    public SourceControlManagement createNewRepository(File workingDir, String scmURI) throws IOException {
-        SourceControlManagement scm = null;
-
-        if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
-
-            if (scmProvider.equals("git") && sourceControlExecutables.containsKey("git")) {
-                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
-            } else {
-                throw new IOException("Unknown repository type");
-            }
-
-            scm.initWithEmptyFolder(workingDir, scmUrl);
-        }
-
-        return scm;
-    }
-
-    public SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag) throws IOException {
+    /**
+     * Performs checkout of the remote SCM content into the provided working directory.
+     * 
+     * @param workingDir
+     *            working directory to perform checkout into
+     * @param scmURI
+     *            the remote SCM repository URL
+     * @param branchOrTag
+     *            the name of the remote branch or tag if any
+     * @return an instance of the {@link SourceControlManagement} helper for the checked out content
+     * @throws IOException
+     *             in case of communication errors
+     */
+    public SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag)
+            throws IOException {
         SourceControlManagement scm = null;
 
         if (scmURI.startsWith("scm:")) {
@@ -144,5 +91,80 @@ public class SourceControlFactory {
             scm.initFromURI(workingDir, scmUrl, branchOrTag);
         }
         return scm;
+    }
+
+    /**
+     * Returns a registry of executables (paths to the SCM executables) by SCM type.
+     * 
+     * @return a registry of executables (paths to the SCM executables) by SCM type
+     */
+    public Map<String, String> getSourceControlExecutables() {
+        return sourceControlExecutables;
+    }
+
+    /**
+     * Returns an instance of the {@link SourceControlManagement} helper for the specified working directory.
+     * 
+     * @param workingDir
+     *            the working directory to get SCM helper for
+     * @return an instance of the {@link SourceControlManagement} helper for the specified working directory
+     * @throws IOException
+     *             in case of I/O errors
+     */
+    public SourceControlManagement getSourceControlManagement(File workingDir1) throws IOException {
+        SourceControlManagement scm = null;
+        File dir = workingDir1;
+        do {
+            if (new File(dir, ".git").exists()) {
+                if (!sourceControlExecutables.containsKey("git")) {
+                    // no git SCM provider found
+                    break;
+                }
+                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
+            } else if (new File(dir, ".svn").exists()) {
+                if (!sourceControlExecutables.containsKey("svn")) {
+                    // no SVN SCM provider found
+                    break;
+                }
+                scm = new SvnSourceControlManagement(sourceControlExecutables.get("svn"));
+            } else {
+                dir = dir.getParentFile();
+            }
+        } while (scm == null && dir != null);
+
+        if (scm != null) {
+            scm.initWithWorkingDirectory(dir);
+        }
+        return scm;
+    }
+
+    /**
+     * Returns a set of supported SCM types.
+     * 
+     * @return a set of supported SCM types
+     */
+    public Set<String> getSupportedSourceControls() {
+        return sourceControlExecutables.keySet();
+    }
+
+    /**
+     * Sets the executables for various SCM providers.
+     * 
+     * @param sourceControlExecutables
+     *            a map with paths to SCM executables by SCM type
+     */
+    public void setSourceControlExecutables(Map<String, String> sourceControlExecutables) {
+        this.sourceControlExecutables = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : sourceControlExecutables.entrySet()) {
+            try {
+                DefaultExecutor executor = new DefaultExecutor();
+                executor.setStreamHandler(new PumpStreamHandler(new StringOutputStream(), new StringOutputStream()));
+                executor.execute(new CommandLine(entry.getValue()), System.getenv());
+            } catch (ExecuteException e) {
+            } catch (IOException e) {
+                continue;
+            }
+            this.sourceControlExecutables.put(entry.getKey(), entry.getValue());
+        }
     }
 }

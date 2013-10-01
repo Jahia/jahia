@@ -175,19 +175,21 @@ public abstract class SourceControlManagement {
      *             in case of SCM errors
      */
     public Status getStatus(String path) throws IOException {
-        if (getStatusMap().containsKey(path)) {
-            return getStatusMap().get(path);
+        Map<String, Status> statuses = getStatusMap();
+        Status s = statuses.get(path);
+        if (s != null) {
+            return s;
         } else {
-            String[] pathSegments = path.split("/");
-            String subPath = "";
-            for (String segment : pathSegments) {
-                if (getStatusMap().containsKey(subPath) && getStatusMap().get(subPath) == Status.UNTRACKED) {
-                    return Status.UNTRACKED;
-                }
-                if (subPath.isEmpty()) {
-                    subPath = segment;
-                } else {
-                    subPath += "/" + segment;
+            if (path.indexOf('/') != -1 && statuses.values().contains(Status.UNTRACKED)) {
+                StringBuilder subPath = new StringBuilder(32);
+                for (String segment : StringUtils.split(path, '/')) {
+                    if (subPath.length() > 0) {
+                        if (statuses.get(subPath.toString()) == Status.UNTRACKED) {
+                            return Status.UNTRACKED;
+                        }
+                        subPath.append('/');
+                    }
+                    subPath.append(segment);
                 }
             }
         }

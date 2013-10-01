@@ -54,9 +54,13 @@ import java.util.Map;
 public class WorklowTypeRegistration implements JahiaModuleAware{
     private String type;
     private String definition;
+    private String provider;
     private Map<String, String> permissions;
     private Map<String, String> forms;
     private JahiaTemplatesPackage module;
+
+    private boolean canBeUsedForDefault;
+    private int defaultPriority;
 
     public String getDefinition() {
         return definition;
@@ -64,6 +68,14 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
 
     public void setDefinition(String definition) {
         this.definition = definition;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     public String getType() {
@@ -88,6 +100,22 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
 
     public void setForms(Map<String, String> forms) {
         this.forms = forms;
+    }
+
+    public int getDefaultPriority() {
+        return defaultPriority;
+    }
+
+    public void setDefaultPriority(int defaultPriority) {
+        this.defaultPriority = defaultPriority;
+    }
+
+    public boolean isCanBeUsedForDefault() {
+        return canBeUsedForDefault;
+    }
+
+    public void setCanBeUsedForDefault(boolean canBeUsedForDefault) {
+        this.canBeUsedForDefault = canBeUsedForDefault;
     }
 
     public JahiaTemplatesPackage getModule() {

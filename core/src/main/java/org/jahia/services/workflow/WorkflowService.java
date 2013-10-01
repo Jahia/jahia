@@ -131,10 +131,15 @@ public class WorkflowService implements BeanPostProcessor {
                             logger.error("Cannot register workflow permissions",e);
                         }
 
+                        type.setProvider(provider.getKey());
                         ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle(def.getPackageName() + "." + type.getDefinition(), type.getModule());
                         break;
                     }
                 }
+            }
+            if (type.getProvider() == null) {
+                workflowRegistrationByDefinition.remove(type.getDefinition());
+                modulesForWorkflowDefinition.remove(type.getDefinition());
             }
         }
     }
@@ -820,6 +825,18 @@ public class WorkflowService implements BeanPostProcessor {
         try {
             List<WorkflowRule> rules = new ArrayList<WorkflowRule>();
             recurseOnRules(rules, objectNode);
+
+            Map<String,WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
+            for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
+                if (registration.isCanBeUsedForDefault() &&
+                        (!m.containsKey(registration.getType()) || m.get(registration.getType()).getDefaultPriority() < registration.getDefaultPriority())) {
+                    m.put(registration.getType(), registration);
+                }
+            }
+            for (Map.Entry<String, WorklowTypeRegistration> entry : m.entrySet()) {
+                rules.add(new WorkflowRule("/",entry.getValue().getProvider(),entry.getValue().getDefinition()));
+            }
+
             return rules;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

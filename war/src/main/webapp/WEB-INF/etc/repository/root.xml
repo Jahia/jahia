@@ -46,9 +46,4 @@
                             jcr:primaryType="jnt:ace"/>
     </j:acl>
 
-    <j:workflowRules jcr:primaryType="jnt:workflowRules">
-        <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule"/>
-        <jBPM_1-step-unpublication j:workflow="jBPM:1-step-unpublication" jcr:primaryType="jnt:workflowRule"/>
-    </j:workflowRules>
-
 </content>

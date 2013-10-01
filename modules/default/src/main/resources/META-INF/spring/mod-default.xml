@@ -141,6 +141,8 @@
     <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
         <property name="type" value="publish"/>
         <property name="definition" value="1-step-publication"/>
+        <property name="canBeUsedForDefault" value="true"/>
+        <property name="defaultPriority" value="1"/>
         <property name="forms">
             <map>
                 <entry key="start" value="jnt:simpleWorkflow"/>
@@ -152,6 +154,8 @@
     <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
         <property name="type" value="unpublish"/>
         <property name="definition" value="1-step-unpublication"/>
+        <property name="canBeUsedForDefault" value="true"/>
+        <property name="defaultPriority" value="1"/>
         <property name="forms">
             <map>
                 <entry key="start" value="jnt:simpleWorkflow"/>

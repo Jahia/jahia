@@ -41,18 +41,21 @@
 package org.jahia.services.query;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.MultipleIterator;
 import org.jahia.services.content.MultipleNodeIterator;
 
-import javax.jcr.*;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is an adapter to support JCR query result functionality for multiple providers.
@@ -113,8 +116,8 @@ public class QueryResultWrapperImpl implements QueryResultWrapper {
         return resultRowIterator;
     }
 
-    public NodeIterator getNodes() throws RepositoryException {
-        NodeIterator nodeIterator = NodeIteratorAdapter.EMPTY;
+    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
+        JCRNodeIteratorWrapper nodeIterator = JCRNodeIteratorWrapper.EMPTY;
 
         if (!queryResults.isEmpty()) {
             List<NodeIterator> nodeIterators = new ArrayList<NodeIterator>();

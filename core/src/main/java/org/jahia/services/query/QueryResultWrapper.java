@@ -42,13 +42,16 @@ package org.jahia.services.query;
 
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.jahia.services.content.JCRNodeIteratorWrapper;
+
+import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Wrapper for the JCR {@link QueryResult} adding facets and other methods.
- * 
+ *
  * @author Thomas Draier
  */
 public interface QueryResultWrapper extends QueryResult {
@@ -56,13 +59,13 @@ public interface QueryResultWrapper extends QueryResult {
     public List<FacetField> getFacetFields();
 
     public List<FacetField> getFacetDates();
-    
+
     public List<RangeFacet> getRangeFacets();
 
     public FacetField getFacetField(String name);
 
     public FacetField getFacetDate(String name);
-    
+
     public RangeFacet getRangeFacet(String name);
 
     public boolean isFacetFieldsEmpty(List<FacetField> facetFields);
@@ -73,9 +76,13 @@ public interface QueryResultWrapper extends QueryResult {
 
     /**
      * Check if the queryResultWrapper contains any facet results
+     *
      * @return true is queryResultWrapper doesn't contains any facet results
      */
     public boolean isFacetResultsEmpty();
 
     public long getApproxCount();
+
+    @Override
+    JCRNodeIteratorWrapper getNodes() throws RepositoryException;
 }

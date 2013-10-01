@@ -8,7 +8,7 @@ import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.FacetedQueryResult;
 import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
-import org.apache.jackrabbit.value.*;
+import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.api.Constants;
@@ -16,7 +16,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
@@ -40,8 +43,8 @@ public class QueryResultAdapter implements QueryResult {
      * @author Sergiy Shyrkov
      */
     public class RowDecorator implements Row {
-        private Node node;
-        private Map<String, Node> nodesBySelector;
+        private JCRNodeWrapper node;
+        private Map<String, JCRNodeWrapper> nodesBySelector;
         private Row row;
 
         /**
@@ -55,19 +58,19 @@ public class QueryResultAdapter implements QueryResult {
             row = decoratedRow;
         }
 
-        public Node getNode() throws RepositoryException {
+        public JCRNodeWrapper getNode() throws RepositoryException {
             if (node == null) {
                 node = wrap(row.getNode());
             }
             return node;
         }
 
-        public Node getNode(String selectorName) throws RepositoryException {
+        public JCRNodeWrapper getNode(String selectorName) throws RepositoryException {
             return getNodes().get(selectorName);
         }
 
         @SuppressWarnings("unchecked")
-        public Map<String, Node> getNodes() throws RepositoryException {
+        public Map<String, JCRNodeWrapper> getNodes() throws RepositoryException {
             if (nodesBySelector == null) {
                 nodesBySelector = LazyMap.decorate(new HashMap<String, Node>(), new Transformer() {
                     public Object transform(Object selector) {
@@ -105,7 +108,7 @@ public class QueryResultAdapter implements QueryResult {
             return row.getScore(selectorName);
         }
 
-        public Value getValue(String columnName) throws ItemNotFoundException, RepositoryException {
+        public Value getValue(String columnName) throws RepositoryException {
             if (columnName.equals(JcrConstants.JCR_PATH)) {
                 return new StringValue(getPath());
             }
@@ -115,7 +118,7 @@ public class QueryResultAdapter implements QueryResult {
                 if (!columnName.startsWith("rep:spellcheck(")
                         && !columnName.startsWith("rep:excerpt(")
                         && !(row.getNode() != null && row.getNode().hasProperty(columnName))) {
-                    JCRNodeWrapper node = (JCRNodeWrapper) getNode();
+                    JCRNodeWrapper node = getNode();
                     try {
                         property = node.getProperty(columnName);
                     } catch (RepositoryException e) {
@@ -134,7 +137,7 @@ public class QueryResultAdapter implements QueryResult {
             return row.getValues();
         }
 
-        private Node wrap(Node node) throws RepositoryException {
+        private JCRNodeWrapper wrap(Node node) throws RepositoryException {
             JCRSessionWrapper session = getSession();
             if (node != null && session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
                 String language = node.getProperty(Constants.JCR_LANGUAGE).getString();
@@ -149,14 +152,14 @@ public class QueryResultAdapter implements QueryResult {
                 }
             }
             return node != null && !(node instanceof JCRNodeWrapper) ? getProvider()
-                    .getNodeWrapper(node, session) : node;
+                    .getNodeWrapper(node, session) : (JCRNodeWrapper) node;
         }
 
-        public String getSpellcheck() throws ItemNotFoundException, RepositoryException {
+        public String getSpellcheck() throws RepositoryException {
             Value suggestion = row.getValue("rep:spellcheck()");
             return suggestion != null ? suggestion.getString() : null;
         }
-    };
+    }
 
     public QueryResultAdapter(QueryResult result, JCRStoreProvider provider,
                               JCRSessionWrapper session) {
@@ -184,7 +187,7 @@ public class QueryResultAdapter implements QueryResult {
         };
     }
 
-    public NodeIterator getNodes() throws RepositoryException {
+    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
         final NodeIterator ni ;
         if (result.getSelectorNames().length <= 1) {
             ni = result.getNodes();

@@ -43,6 +43,7 @@ package org.jahia.services.content;
 import org.jahia.api.Constants;
 
 import javax.jcr.*;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -51,7 +52,7 @@ import java.util.NoSuchElementException;
  *
  * @author Sergiy Shyrkov
  */
-public class NodeIteratorWrapper implements NodeIterator {
+public class NodeIteratorWrapper implements JCRNodeIteratorWrapper {
     private NodeIterator ni;
     private JCRNodeWrapper nextNode = null;
     private JCRSessionWrapper session;
@@ -129,6 +130,10 @@ public class NodeIteratorWrapper implements NodeIterator {
     }
 
     public Object next() {
+        return wrappedNext();
+    }
+
+    private JCRNodeWrapper wrappedNext() {
         final JCRNodeWrapper res = nextNode;
         if (res == null) {
             throw new NoSuchElementException();
@@ -139,5 +144,25 @@ public class NodeIteratorWrapper implements NodeIterator {
 
     public void remove() {
         ni.remove();
+    }
+
+    @Override
+    public Iterator<JCRNodeWrapper> iterator() {
+        return new Iterator<JCRNodeWrapper>() {
+            @Override
+            public boolean hasNext() {
+                return NodeIteratorWrapper.this.hasNext();
+            }
+
+            @Override
+            public JCRNodeWrapper next() {
+                return NodeIteratorWrapper.this.wrappedNext();
+            }
+
+            @Override
+            public void remove() {
+                NodeIteratorWrapper.this.remove();
+            }
+        };
     }
 }

@@ -39,10 +39,55 @@
  */
 package org.jahia.services.content;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author Christophe Laprun
  */
 public interface JCRNodeIteratorWrapper extends NodeIterator, Iterable<JCRNodeWrapper> {
+    JCRNodeIteratorWrapper EMPTY = new JCRNodeIteratorWrapper() {
+        @Override
+        public Iterator<JCRNodeWrapper> iterator() {
+            return JCRNodeWrapper.EMPTY;
+        }
+
+        @Override
+        public Node nextNode() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void skip(long skipNum) {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public long getSize() {
+            return 0;
+        }
+
+        @Override
+        public long getPosition() {
+            return 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public JCRNodeWrapper next() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    };
+
 }

@@ -73,6 +73,23 @@ import java.util.*;
  */
 public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
+    Iterator<JCRNodeWrapper> EMPTY = new Iterator<JCRNodeWrapper>() {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public JCRNodeWrapper next() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    };
+
     /**
      * Gets the real <code>Node</code> wrapped by this <code>JCRNodeWrapper</code>
      *

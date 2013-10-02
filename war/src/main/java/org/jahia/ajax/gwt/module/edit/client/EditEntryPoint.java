@@ -84,9 +84,8 @@ public class EditEntryPoint extends CommonEntryPoint {
             JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config, new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
-                    final String s = DOM.getInnerHTML(panel.getElement());
                     DOM.setInnerHTML(panel.getElement(), "");
-                    panel.add(new EditPanelViewport(s,
+                    panel.add(new EditPanelViewport(
                             path,
                             DOM.getElementAttribute(panel.getElement(), "template"), 
                             DOM.getElementAttribute(panel.getElement(), "nodetypes"),

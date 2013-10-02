@@ -45,8 +45,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -56,9 +54,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 /**
  * Edit mode manager widget.
- * User: toto
- * Date: Aug 18, 2009
- * Time: 5:55:47 PM
+ * @author toto
  */
 public class EditManager extends ContentPanel {
 
@@ -68,7 +64,7 @@ public class EditManager extends ContentPanel {
     private EditLinker editLinker;
     private BorderLayout borderLayout ;
 
-    public EditManager(String html, String path, String template, String nodeTypes, String locale, final GWTEditConfiguration config) {
+    public EditManager(String path, String template, String nodeTypes, String locale, final GWTEditConfiguration config) {
         long start = System.currentTimeMillis();
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
@@ -99,7 +95,7 @@ public class EditManager extends ContentPanel {
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.NONE);
-        mainModule = new MainModule(html, path, template, nodeTypes, config);
+        mainModule = new MainModule(path, template, nodeTypes, config);
         if (mainModule.getHeader() != null) {
             mainModule.getHeader().addStyleName("gwt-only-panel");
         }

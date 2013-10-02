@@ -108,7 +108,7 @@ public class MainModule extends Module {
     private String newLocation = null;
     private boolean firstLoad = true;
 
-    public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
+    public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
         setScrollMode(Style.Scroll.NONE);
 
@@ -217,7 +217,7 @@ public class MainModule extends Module {
         String location = newLocation;
         newLocation = null;
         if (location == null && !Window.Location.getHash().equals("")) {
-            location = Window.Location.getHash().substring(Window.Location.getHash().indexOf("|")+1);
+            location = Window.Location.getHash().substring(Window.Location.getHash().indexOf('|')+1);
         }
         if (location == null) {
             location = Window.Location.getPath();
@@ -379,6 +379,18 @@ public class MainModule extends Module {
         return false;
     }
 
+    /**
+     * Changes the frame URL to the provided one.
+     * 
+     * @param url
+     *            the URL to be used for the frame
+     * @param forceImageRefresh
+     *            should we force refresh of the images?
+     * @param forceCssRefresh
+     *            should we force refresh of the CSS files?
+     * @param forceJavascriptRefresh
+     *            should we force refresh of the JavaScript files?
+     */
     public void goToUrl(final String url, final boolean forceImageRefresh, boolean forceCssRefresh, boolean forceJavascriptRefresh) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         layoutChannel();
@@ -397,6 +409,11 @@ public class MainModule extends Module {
         return getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html";
     }
 
+    /**
+     * Computes the base URL for the main module frame.
+     * 
+     * @return the base URL for the main module frame
+     */
     public String getBaseUrl() {
         String baseUrl = JahiaGWTParameters.getBaseUrl();
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/"+JahiaGWTParameters.getWorkspace()+"/"));
@@ -431,7 +448,7 @@ public class MainModule extends Module {
             com.google.gwt.dom.client.Element el = elementsByTagName.getItem(i);
             String url = el.getAttribute("src");
             if (url != null && url.startsWith(base)) {
-                el.setAttribute("src", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+                el.setAttribute("src", url + (url.indexOf('?') == -1 ? "?" : "&") + suffix);
             }
         }
     }
@@ -449,7 +466,7 @@ public class MainModule extends Module {
             String url = el.getAttribute("href");
             String type = el.getAttribute("type");
             if (type != null && type.equals("text/css") && url != null && url.startsWith(base)) {
-                el.setAttribute("href", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+                el.setAttribute("href", url + (url.indexOf('?') == -1 ? "?" : "&") + suffix);
             }
         }
     }
@@ -467,7 +484,7 @@ public class MainModule extends Module {
             String url = el.getAttribute("src");
             String type = el.getAttribute("type");
             if (type != null && type.equals("text/javascript") && url != null && url.startsWith(base)) {
-                el.setAttribute("src", url + (url.indexOf("?") == -1 ? "?" : "&") + suffix);
+                el.setAttribute("src", url + (url.indexOf('?') == -1 ? "?" : "&") + suffix);
             }
         }
     }
@@ -568,8 +585,9 @@ public class MainModule extends Module {
                 }
             }
         } else {
-            if (currentHref.indexOf("#") > 0) {
-                currentHref = currentHref.substring(0, currentHref.indexOf("#"));
+            int hashPosition = currentHref.indexOf('#');
+            if (hashPosition > 0) {
+                currentHref = currentHref.substring(0, hashPosition);
             }
             Window.Location.assign(currentHref + "#" + MainModule.getInstance().getConfig().getName() + "|" + URL.encode(path));
         }
@@ -1052,7 +1070,7 @@ public class MainModule extends Module {
     private String getPathFromUrl(String url) {
         if (url.contains("://")) {
             url = url.substring(url.indexOf("://")+3);
-            url = url.substring(url.indexOf("/"));
+            url = url.substring(url.indexOf('/'));
         }
         return url;
     }

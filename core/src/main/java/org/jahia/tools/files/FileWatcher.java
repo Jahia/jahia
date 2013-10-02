@@ -49,8 +49,11 @@
 
 package org.jahia.tools.files;
 
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.scheduler.SchedulerService;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,8 +62,8 @@ import java.util.Observable;
 
 /**
  * An Observer/Observable Implementation of a Deamon Thread
- * that looks at any new File created in a gived Folder.
- * New files are checked by their last modif date.
+ * that looks at any new File created in a given Folder.
+ * New files are checked by their last modification date.
  *
  * Build a list of files and pass it to any Registered Observer.<br>
  *
@@ -76,8 +79,7 @@ public class FileWatcher extends Observable implements Serializable {
 
     private static final long serialVersionUID = -5173318550711639571L;
 
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(FileWatcher.class);
+    private static Logger logger = LoggerFactory.getLogger(FileWatcher.class);
 
     /** The Full Real Path to the Folder to Watch **/
     private String m_FolderPath = "";
@@ -88,11 +90,10 @@ public class FileWatcher extends Observable implements Serializable {
     /** Define at what interval the folder must be checked, in millis **/
     private long m_Interval;
 
-    /** The internal Thread Timer **/
-    private JobDetail jobDetail;
-    private Trigger trigger;
+    private String triggerName;
 
     private String jobName;
+    
     private int maxJobNameLength = 50;
 
     /** Both file and directory or only file **/
@@ -103,18 +104,38 @@ public class FileWatcher extends Observable implements Serializable {
     /** Define if the Thread is User or Deamon Thread **/
     private boolean m_IsDeamon = true;
 
-    /** Check files by their last modif date status or not **/
+    /** Check files by their last modification date status or not **/
     public boolean mCheckDate = false;
 
     /** the Last Time the Folder was checked **/
     private long lastCheckTime;
 
-    private SchedulerService schedulerService;
+    /**
+     * Constructor
+     * 
+     * @param jobName
+     *            the name of the background job to use
+     * @param fullFolderPath
+     *            the real Path to the folder to watch
+     * @param checkDate
+     *            check by last modification date or not
+     * @param interval
+     *            the interval to do the repeat Task
+     * @param fileOnly
+     *            checks only files if true, not directories
+     * @exception IOException
+     */
+    public FileWatcher(String jobName, String fullFolderPath, boolean checkDate, long interval, boolean fileOnly)
+            throws IOException {
+
+        this(jobName, fullFolderPath, checkDate, interval, fileOnly, true, null);
+    }
+    
     /**
      * Constructor
      *
      * @param fullFolderPath  the real Path to the folder to watch
-     * @param checkDate check by last modif date or not
+     * @param checkDate check by last modification date or not
      * @param interval the interval to do the repeat Task
      * @param fileOnly checks only files if true, not directories
      * @exception IOException
@@ -126,11 +147,7 @@ public class FileWatcher extends Observable implements Serializable {
                         SchedulerService schedulerService)
             throws IOException {
 
-        setFolderPath(fullFolderPath);
-        setCheckDate(checkDate);
-        setInterval(interval);
-        setFileOnly(fileOnly);
-        this.schedulerService = schedulerService;
+        this(fullFolderPath, checkDate, interval, fileOnly, true, null);
     }
 
     /**
@@ -154,12 +171,39 @@ public class FileWatcher extends Observable implements Serializable {
     )
             throws IOException {
 
+        this(null, fullFolderPath, checkDate, interval, fileOnly, isDeamon, schedulerService);
+    }
+
+    /**
+     * Constructor
+     * Precise if the Thread to Create is a Deamon or not
+     *
+     * @param jobName the name of the background job to use
+     * @param fullFolderPath the real Path to the folder to watch
+     * @param checkDate check new files by date changes ?
+     * @param interval the interval to do the repeat Task
+     * @param isDeamon create a User or Deamon Thread
+     * @param fileOnly checks only files if true, not directories
+     * @param schedulerService a dependency injection of the service to use to schedule the file watching job.
+     * @exception IOException
+     */
+    public FileWatcher( String jobName,
+                        String fullFolderPath,
+                        boolean checkDate,
+                        long interval,
+                        boolean fileOnly,
+                        boolean isDeamon,
+                        SchedulerService schedulerService
+    )
+            throws IOException {
+
+        super();
+        this.jobName = jobName;
         setFolderPath(fullFolderPath);
         setCheckDate(checkDate);
         setInterval(interval);
         setFileOnly(fileOnly);
         setDeamon(isDeamon);
-        this.schedulerService = schedulerService;
     }
 
     /**
@@ -175,29 +219,31 @@ public class FileWatcher extends Observable implements Serializable {
         logger.debug("Time created, Check Interval=" + getInterval() +
                 " (millis) ");
 
-        jobDetail = new JobDetail(jobName + "_Job", Scheduler.DEFAULT_GROUP,
+        JobDetail jobDetail = new JobDetail(jobName, Scheduler.DEFAULT_GROUP,
                 FileWatcherJob.class);
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("fileWatcher", this);
         jobDetail.setJobDataMap(jobDataMap);
 
-        trigger = new SimpleTrigger(jobName + "_Trigger",
+        Trigger trigger = new SimpleTrigger(jobName + "_Trigger",
                 Scheduler.DEFAULT_GROUP,
                 SimpleTrigger.REPEAT_INDEFINITELY,
                 m_Interval);
         // not persisted Job and trigger
         trigger.setVolatility(true);
+        triggerName = trigger.getName(); 
+        
         jobDetail.setRequestsRecovery(false);
         jobDetail.setDurability(false);
         jobDetail.setVolatility(true);
 
         try {
-            schedulerService.getRAMScheduler().deleteJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
+            ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().deleteJob(jobName, Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {
-            logger.warn("Unable to delete the job " + jobName + "_Job. Cause: " + e.getMessage());
+            logger.warn("Unable to delete the job " + jobName + ". Cause: " + e.getMessage());
         }
         try {
-            schedulerService.getRAMScheduler().scheduleJob(jobDetail, trigger);
+            ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().scheduleJob(jobDetail, trigger);
         } catch (SchedulerException je) {
             logger.error("Error while scheduling file watch for " + m_FolderPath, je);
         }
@@ -206,14 +252,14 @@ public class FileWatcher extends Observable implements Serializable {
 
     public void stop() {
         try {
-            schedulerService.getRAMScheduler().unscheduleJob(trigger.getName(),Scheduler.DEFAULT_GROUP);
+            ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().unscheduleJob(triggerName, Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {
-            logger.warn("Unable to unschedule the job with trigger " + trigger.getName() + ". Cause: " + e.getMessage());
+            logger.warn("Unable to unschedule the job with trigger " + triggerName + ". Cause: " + e.getMessage());
         }
         try {
-            schedulerService.getRAMScheduler().deleteJob(jobName + "_Job", Scheduler.DEFAULT_GROUP);
+            ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().deleteJob(jobName, Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {
-            logger.warn("Unable to delete the job " + jobName + "_Job. Cause: " + e.getMessage());
+            logger.warn("Unable to delete the job " + jobName + ". Cause: " + e.getMessage());
         }
     }
 
@@ -259,7 +305,9 @@ public class FileWatcher extends Observable implements Serializable {
      */
     protected void setFolderPath( String fullFolderPath ){
         m_FolderPath = fullFolderPath;
-        jobName = m_FolderPath;
+        if (jobName == null) {
+            jobName = m_FolderPath;
+        }
         int jobNameLength = jobName.length();
         if (jobNameLength > maxJobNameLength) {
             int jobNameHashCode = jobName.hashCode();
@@ -294,16 +342,16 @@ public class FileWatcher extends Observable implements Serializable {
     /**
      * Returns The Check File Mode
      *
-     * @return (boolean) if check new file by controling the last modif date
+     * @return (boolean) if check new file by controlling the last modification date
      */
     public boolean getCheckDate(){
         return mCheckDate;
     }
 
     /**
-     * Set The Check File Mode ( by last modif date or returns all files found
+     * Set The Check File Mode ( by last modification date or returns all files found
      *
-     * @param checkDate check by last modif date or not
+     * @param checkDate check by last modification date or not
      */
     public void setCheckDate( boolean checkDate){
         mCheckDate = checkDate;

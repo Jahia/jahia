@@ -30,7 +30,6 @@
     <template:addResources type="javascript"
                            resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
     <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
-    <template:addResources type="javascript" resources="contributedefault.js"/>
     <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
     <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 
@@ -154,13 +153,12 @@
                             for="btnComplete-${taskId}"><fmt:message key="label.actions.completed"/></label></div>
                 </li>
             </c:if>
-            <jcr:node var="taskData" path="${currentNode.path}/taskData"/>
-            <c:if test="${not empty taskData}">
-                <script>
-                    initEditFields('${taskData.identifier}');
-                </script>
-                <template:module path="${currentNode.path}/taskData" view="contribute.edit"/>
-            </c:if>
+            <li>
+                <jcr:node var="taskData" path="${task.path}/taskData"/>
+                <c:if test="${not empty taskData}">
+                    <template:module path="${task.path}/taskData" view="taskData" />
+                </c:if>
+            </li>
         </c:when>
         <c:when test="${currentNode.properties.state.string == 'finished'}">
             <li>

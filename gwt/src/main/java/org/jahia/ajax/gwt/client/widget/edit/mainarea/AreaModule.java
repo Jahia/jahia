@@ -73,9 +73,8 @@ import java.util.Map;
  */
 public class AreaModule extends SimpleModule {
 
-    private String moduleType;
     private String mockupStyle;
-    private String areaType = "jnt:contentList";  // todo set the areatype
+    private String areaType = "jnt:contentList";
     private String areaHolder;
     private boolean missingList;
     private final LayoutContainer content;
@@ -102,7 +101,6 @@ public class AreaModule extends SimpleModule {
             this.conflictsWith = null;
         }
 
-        this.moduleType = moduleType;
         String areaTitle;
         if (path.contains("/")) {
             areaTitle = path.substring(path.lastIndexOf('/') + 1);

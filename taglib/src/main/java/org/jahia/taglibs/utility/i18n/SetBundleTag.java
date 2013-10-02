@@ -40,13 +40,13 @@
 
 package org.jahia.taglibs.utility.i18n;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -54,6 +54,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -64,14 +65,15 @@ import java.util.ResourceBundle;
  */
 @SuppressWarnings("serial")
 public class SetBundleTag extends AbstractJahiaTag {
-    
+
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(SetBundleTag.class);
-    
+
     private String basename;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
     private boolean useUiLocale = false;
     private String templateName;
+
     @Override
     protected void resetState() {
         basename = null;
@@ -101,11 +103,12 @@ public class SetBundleTag extends AbstractJahiaTag {
             }
             ResourceBundle resourceBundle = null;
             try {
-                resourceBundle = ResourceBundles.get(basename,
-                        templateName!=null?ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templateName):
-                        context != null && context.getSite() != null && context.getSite().getSession().isLive() ? context
-                                .getSite().getTemplatePackage() : null, locale);
-            } catch (RepositoryException e) {
+                if (templateName == null) {
+                    resourceBundle = ResourceBundles.get(basename, locale);
+                } else {
+                    resourceBundle = ResourceBundles.get(basename, ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templateName), locale);
+                }
+            } catch (MissingResourceException e) {
                 logger.warn(e.getMessage(), e);
             }
             LocalizationContext locCtxt = new LocalizationContext(resourceBundle, locale);
@@ -131,7 +134,7 @@ public class SetBundleTag extends AbstractJahiaTag {
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
     }
-    
+
     public void setUseUILocale(String useUILocale) {
         this.useUiLocale = Boolean.parseBoolean(useUILocale);
     }

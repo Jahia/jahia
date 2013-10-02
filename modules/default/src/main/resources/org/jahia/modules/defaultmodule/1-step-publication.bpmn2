@@ -8,13 +8,6 @@
   <bpmn2:itemDefinition id="ItemDefinition_5437" itemKind="Physical" structureRef="Integer"/>
   <bpmn2:process id="_x0031_-step-publication" drools:version="1" drools:packageName="org.jahia.modules.defaultmodule" drools:adHoc="false" name="1-step-publication" isExecutable="true">
     <bpmn2:extensionElements>
-      <drools:global identifier="nodeId" type="String"/>
-      <drools:global identifier="nodePath" type="String"/>
-      <drools:global identifier="nodeIds" type="java.util.List"/>
-      <drools:global identifier="workspace" type="String"/>
-      <drools:global identifier="locale" type="java.util.Locale"/>
-      <drools:global identifier="workflow" type="org.jahia.services.workflow.WorkflowDefinition"/>
-      <drools:global identifier="user" type="String"/>
       <drools:import name="java.util.List"/>
       <drools:import name="java.util.Locale"/>
       <drools:import name="org.jahia.services.workflow.WorkflowDefinition"/>
@@ -28,6 +21,7 @@
     <bpmn2:property id="workflow" itemSubjectRef="ItemDefinition_4088"/>
     <bpmn2:property id="user" itemSubjectRef="ItemDefinition_901"/>
     <bpmn2:property id="currentUser" itemSubjectRef="ItemDefinition_901"/>
+    <bpmn2:property id="jcr:title" itemSubjectRef="ItemDefinition_267"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start">
       <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -182,14 +176,23 @@
       <bpmn2:incoming>SequenceFlow_28</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_InputOutputSpecification_3">
+        <bpmn2:dataInput id="DataInput_6" itemSubjectRef="ItemDefinition_267" name="jcr:title"/>
         <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="ItemDefinition_901" name="outcome"/>
         <bpmn2:dataOutput id="DataOutput_2" itemSubjectRef="ItemDefinition_901" name="currentUser"/>
-        <bpmn2:inputSet id="_InputSet_3" name="Input Set 3"/>
+        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="ItemDefinition_267" name="jcr:title"/>
+        <bpmn2:inputSet id="_InputSet_3" name="Input Set 3">
+          <bpmn2:dataInputRefs>DataInput_6</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
         <bpmn2:outputSet id="_OutputSet_3" name="Output Set">
           <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
           <bpmn2:dataOutputRefs>DataOutput_2</bpmn2:dataOutputRefs>
+          <bpmn2:dataOutputRefs>DataOutput_3</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_6">
+        <bpmn2:sourceRef>jcr:title</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_6</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
         <bpmn2:sourceRef>DataOutput_1</bpmn2:sourceRef>
         <bpmn2:targetRef>publicationOutcome</bpmn2:targetRef>
@@ -197,6 +200,10 @@
       <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
         <bpmn2:sourceRef>DataOutput_2</bpmn2:sourceRef>
         <bpmn2:targetRef>currentUser</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn2:sourceRef>DataOutput_3</bpmn2:sourceRef>
+        <bpmn2:targetRef>jcr:title</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_5" drools:priority="1" sourceRef="UserTask_1" targetRef="ExclusiveGateway_1"/>

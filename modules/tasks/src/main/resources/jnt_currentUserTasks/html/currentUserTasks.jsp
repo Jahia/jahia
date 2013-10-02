@@ -6,6 +6,7 @@
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -215,7 +216,7 @@
                                     <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
                                         <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
                                         <li><a class="taskaction taskaction-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
-                                        <fmt:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
+                                        <utility:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"  />
                                         <c:if test="${not empty task.properties['targetNode'].node}">
                                         	<c:set var="currentTaskNode" value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" />
                                             <li><a class="taskaction taskaction-preview" target="_blank" href="<c:url value="${url.basePreview}${currentTaskNode.path}.html"/>"><fmt:message key="label.preview"/></a></li>

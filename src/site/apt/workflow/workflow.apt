@@ -50,13 +50,15 @@ Workflow Integration
 [../images/workflow/workflow-start.png]
 
   A workflow will probably create tasks that will be assigned to users who have a role matching the required permissions.
-  A user who has waiting task can execute them by opening his dasboard in workflow / Workflow Dashboard :
+  A user who has waiting task can execute them by opening his dashboard in workflow / Workflow Dashboard :
 
 [../images/workflow/dashboard.png]
 
+  A user can also check and execute its tasks in the "My tasks" section of the start page.
+
 * {Using} jBPM
 
-  For more information about jBPM, see {{http://docs.jboss.com/jbpm/v4/userguide/html_single/}} .
+  For more information about jBPM, see {{http://www.jboss.org/drools/documentation}} .
 
 ** jBPM configuration
 
@@ -69,12 +71,19 @@ Workflow Integration
    This file contains references to other services, the path used by jBPM to get the process definitions, and location
    of the jBPM configfile.
 
+   The JBPMModuleProcessLoader bean, which is loaded in the context of every module, defines where the system will look
+   for the process definition files. This bean is defined in :
+
++-------------------------
+ WEB-INF/etc/spring/modules-applicationcontext-registry.xml
++-------------------------
+
 ** Declaring a workflow in jBPM
 
-   As you can see in the jBPM configuration file, we use a wildcard classpath lookup to search for the jPDL workflow
-   process definition files. This means that you can simply put in your module in the proper package (by default
-   <<<org.jahia.services.workflow>>>) a file with the extension jpdl.xml and it will be picked-up on Jahia's startup.
-   In order to be fully available in Jahia, the process must be declared in a configuration file - see {{Workflow declaration}}
+   As you can see in the jBPM configuration file, we use a wildcard classpath lookup to search for the BPMN workflow
+   process definition files. This means that you can simply put in your module in the proper package (by default under
+   <<<org.jahia.modules>>>) a file with the extension bpmn2 and it will be picked-up on Jahia's startup.
+   In order to be available in Jahia, the process must also be declared in a configuration file - see {{Workflow declaration}}
 
 ** jBPM forms
 
@@ -97,37 +106,42 @@ Workflow Integration
 +--------------------
 
    The execution of this task will display a form that the user will need to fill. Data entered in this form can later
-   be used in other activities.
+   be used in other work items.
 
 ** jBPM task assignation
 
-   jBPM needs to know how to assign new tasks to users. Depending on the roles assigned to the node, the task won't be
-   assigned to the same users and groups. jBPM allows embedding system to set an assignement-handler to correctly
-   handle task assignation. Jahia provides an assignement handler, that must be used for every task defined in your
-   process. It can be declared in a jpdl file like the following :
+   jBPM needs to know how to assign new tasks to users when the task is created. Depending on the roles assigned to the
+   node, the task won't be assigned to the same users and groups. Jahia will automatically assign the task to the users
+   or groups who have the correct permission when the task is created.
+   Subsequent changes to the roles won't be visible for existing tasks.
 
-+--------------------
-     <task name="request" form="jnt:translationRequest">
-         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener"/>
-         ...
-
-     </task>
-+--------------------
-
-   {{http://docs.jboss.com/jbpm/v4/userguide/html_single/#task}}
-
-** Using jBPM customs
+** Using jBPM customs work items handlers
 
    At one point of the process, it can be required that the process need to interact with Jahia services. For instance,
    a publication workflow will probably need to publish some nodes after a validation. There's multiple ways to do this
-   with jBPM, but the simplest way is to create custom activities - a few custom activities are provided with Jahia,
+   with jBPM, but the simplest way is to create custom handlers - a few handlers are provided with Jahia,
    to lock/unlock nodes and publish/unpublish nodes. They are located in org.jahia.services.workflow.jbpm.custom.* .
 
    {{http://docs.jboss.com/jbpm/v4/userguide/html_single/#custom}}
 
+   Handlers need to be registered in your module spring file with a name, which will be used in the bpmn files in the
+   drools:taskName property of a task. For instance, the following handler can be defined :
+
++--------------------
+    <bean id="unlockWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.UnlockWorkItemHandler">
+        <property name="name" value="Unlock node"/>
+    </bean>
++--------------------
+
+   And it will be used in a process by the following task :
+
++--------------------
+    <bpmn2:task id="Task_16" drools:taskName="Unlock node" name="Unlock the node">
++--------------------
+
 ** Internationalize workflow labels
 
-   An optional resource bundle file can be created along with the jpdl file to internationalize the name and labels
+   An optional resource bundle file can be created along with the bpmn file to internationalize the name and labels
    of the process - the resource bundle must be named with the key of the jBPM process. If the process has the key
    "translation-workflow", the file need to be named translation-workflow.properties . This file can include
    resources for process name, actions, and action outcomes. You can also specified a key for completed tasks, add
@@ -135,32 +149,32 @@ Workflow Integration
 
 ** Sending mail with jBPM
 
-  The standard mail system from jBPM can be used. You can create a mail activity in your process to send a mail.
+  Sending a mail can be done by using the "Send mail" task handler provided by Jahia. You can define a task
+  as in the following example :
 
-  Jahia provide some keyword that you can use in the from and recipients fields to define to which people you want to send the mail.
++--------------------
+   <bpmn2:task id="Task_13" drools:taskName="Send mail" name="Send Mail">
++--------------------
 
-+--------------------------------
-<mail name="done">
-   <from users="jahiaSettingsProperty"/>
-   <to users="currentWorkflowStarter"/>
-   <cc users="previousTaskAssignable"/>
-   <subject>Your request for translation has been accepted</subject>
-   <text>Your request for translation has been accepted</text>
-   <transition to="end"/>
-</mail>
-+--------------------------------
+  This task require a few inputs variables to send a mail :
 
-  <<jahiaSettingsProperty>> will return the mail_from property defined in jahia.properties or the administration center.
+  * user : The user initiating the workflow
 
-  <<currentWorkflowStarter>> refer to the person who have started the workflow.
+  * currentUser : The user whi has executed the last task
 
-  <<previousTaskAssignable>> or <<nextTaskAssignable>> refer to the people that can participate to the previous task or
-  the next one in your process flow.
+  * templateKey : Name of the mail template to use
 
-  However, if you need to send more dynamic mails, it can be easier to use mail templates, using a custom mail producer.
-  First you need to create a mail template - mail templates are found like workflows, in a path specified in the
-  applicationcontext-jBPM.xml file. By default all resources in the package <<<org.jahia.services.workflow>>> with the
-  extension <<<.mail>>> are taken.
+  * workflow : The workflow definition
+
+  * nodeIds : The list of nodes on which the workflow has been started
+
+  * locale : The locale on which the workflow has been started
+
+  * workspace : The workspace on which the workflow has been started
+
+  The templateKey input will define which template will be used to send a mail.
+  Mail templates are found like workflows, in a path specified in the JBPMModuleProcessLoader bean.
+  By default all resources in the package <<<org.jahia.modules>>> with the extension <<<.mail>>> are taken.
   The following example, <<<start-publication-template.mail>>> , defines a mail that will be sent
   when we start a publication workflow :
 
@@ -197,22 +211,11 @@ A publication workflow with one validation step has been started on ${date.forma
 
   The template contains both text and html versions of the mails, and use velocity language to get dynamic informations.
   Another script language (as defined by the JSR 223) can be used by using the key <<language:>> in the template file.
-  The following variables are bound when executing the script : <<bundle>>, <<user>>, <<date>>, <<submissionDate>>,
+  The following variables are bound when executing the script : <<bundle>>, <<user>>, <<currentUser>>, <<date>>, <<submissionDate>>,
   <<locale>>, <<workspace>>, <<nodes>>.
 
   It is also possible to declare one template per locale, by suffixing the template name by the language code :
   start-publication-template.fr.mail will be used when the workflow locale is french.
-
-  The template can be used in a JPDL mail activity using the following syntax :
-
-+--------------------------------
-    <mail class="org.jahia.services.workflow.jbpm.custom.email.JBPMMailProducer" name="sendStartMail">
-        <property name="templateKey">
-            <string value="start-publication-template"/>
-        </property>
-        <transition to="review"/>
-    </mail>
-+--------------------------------
 
 * {Workflow declaration}
 
@@ -223,41 +226,47 @@ A publication workflow with one validation step has been started on ${date.forma
   deploy process with the jBPM process engine.
 
   Once the workflow is available in the process engine, it has to be registered to the workflow service. This can
-  be done by creating a spring bean <<<org.jahia.services.workflow.WorklowTypeRegistration>>>
+  be done by creating a spring bean <<<org.jahia.services.workflow.WorklowTypeRegistration>>> in the module.
+  This bean has to declare multiple properties :
+
+  * <<definition>> : the key of the process definition, as declared in jBPM.
+
+  * <<type>> : the type of workflow , like publish , unpublish , or any other name.  Each workflow need to be
+    associated to a workflow type . Only one workflow per type can be associated to a node - for example, if
+    multiple publication workflow exist, one need to be choosed at a specific level.
+
+  * <<forms>> : a map from task name to task data node type. If a node type is associated to a task, a task data node
+    will be created under the task, and will be available for modification by the user completing the task. The task
+    data can be filled with task input parameters, and its values can also be mapped with output parameters to the
+    process variables. In the user dashboard from edit mode, a form based on that node type will be displayed to the
+    user when he will complete the task. In the "my tasks" components, the task data node is displayed with the view
+    "taskData" of this type.
+
+  * <<permissions>> : This is an optional map defining the mapping between workflow actions and Jahia permissions. The map contains
+       the workflow action as the key, and the permission full path as the value. A user need to be part of a role
+       containing that permission to be able to execute the workflow action (see {{Roles}}). Note that the permission name to use
+       can be based on a custom variable that has been set previously in the workflow context : in the translationWorkflow,
+       the permission <<<jcr:modifyProperties_default_$translateTo>>> will be replaced by jcr:modifyProperties_default_en if the
+       variable <<<translateTo>>> has been set to <<<en>>>.
+       If no permission is defined for a task, a specific permission will be automatically created.
+
+  * <<canBeUsedForDefault>> : If the workflow definition will be available by default on all nodes, without having to setup
+    a workflow rule.
+
+  * <<defaultPriority>> : If multiple workflows have "canBeUsedForDefault" , the one with the highest priority will be taken.
 
 +----------------
-  <bean name="translationWorkflow" class="org.jahia.services.workflow.WorklowTypeRegistration">
-        <property name="type" value="translation"/>
-        <property name="definition" value="translation-workflow"/>
-        <property name="permissions" >
+    <bean class="org.jahia.services.workflow.WorklowTypeRegistration">
+        <property name="type" value="unpublish"/>
+        <property name="definition" value="1-step-unpublication"/>
+        <property name="forms">
             <map>
-                <entry key="start" value="/repository-permissions/jcr:all_default/jcr:read_default"/>
-                <entry key="request" value="/repository-permissions/jcr:write_default/jcr:modifyProperties_default_$translateTo"/>
+                <entry key="start" value="jnt:simpleWorkflow"/>
+                <entry key="unpublish" value="jnt:simpleWorkflow"/>
             </map>
         </property>
-  </bean>
+    </bean>
 +----------------
-
-   This can also be done in the code by calling the method <<<registerWorkflowType()>>> in WorkflowService:
-
-+----------------
-  public void registerWorkflowType(String type, String definition, Map<String,String> perms)
-+----------------
-
-  The following properties / parameters are required :
-
-   * <<type>> : Each workflow need to be associated to a workflow type . Only one workflow per type can be associated to a
-   node - for example, if multiple publication workflow exist, one need to be choosed at a specific level.
-
-   * <<definition>> : The workflow key, as it defined in the workflow provider.
-
-   * <<permissions>> : This is an optional map defining the mapping between workflow actions and Jahia permissions. The map contains
-   the workflow action as the key, and the permission full path as the value. A user need to be part of a role
-   containing that permission to be able to execute the workflow action (see {{roles}}). Note that the permission name to use
-   can be based on a custom variable that has been set previously in the workflow context : in the translationWorkflow,
-   the permission <<<jcr:modifyProperties_default_$translateTo>>> will be replaced by jcr:modifyProperties_default_en if the
-   variable <<<translateTo>>> has been set to <<<en>>>.
-   If no permission is defined for a task, a specific permission will be automatically created.
 
 * Configuring new workflow providers
 

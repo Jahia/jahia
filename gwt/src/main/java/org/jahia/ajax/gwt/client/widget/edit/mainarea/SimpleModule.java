@@ -52,6 +52,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -116,6 +117,7 @@ public class SimpleModule extends Module {
         }
     }
 
+    @Override
     public void onParsed() {
         Log.debug("Add drag source for simple module " + path);
 

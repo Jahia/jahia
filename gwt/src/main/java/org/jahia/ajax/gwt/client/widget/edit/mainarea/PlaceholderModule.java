@@ -106,6 +106,7 @@ public class PlaceholderModule extends Module {
         add(panel);
     }
 
+    @Override
     public void onNodeTypesLoaded() {
         if (mainModule.getConfig().isEnableDragAndDrop()) {
             DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);

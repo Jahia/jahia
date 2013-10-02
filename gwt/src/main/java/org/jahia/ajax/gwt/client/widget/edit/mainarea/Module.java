@@ -150,12 +150,18 @@ public abstract class Module extends LayoutContainer {
         this.nodeTypes = nodeTypes;
     }
 
+    /**
+     * Callback that is executed when the DOM module for this module is parsed. 
+     */
     public void onParsed() {
-
+        // will be overridden in sub-classes
     }
 
+    /**
+     * Callback that is executed when the required node types are loaded from the server for this module. 
+     */
     public void onNodeTypesLoaded() {
-
+        // will be overridden in sub-classes
     }
 
     public Module getParentModule() {

@@ -60,12 +60,12 @@
 
     <query:definition var="listQuery" qom="${moduleMap.listQuery}">
         <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
+            <c:set var="escapedFacetKey" value="${jcr:escapeIllegalJcrChars(facet.key)}"/>
             <c:forEach items="${facet.value}" var="facetValue">
                 <c:if test="${not fn:endsWith(resultName, '-withFacetFilter')}">
                     <c:set var="resultName" value="${resultName}-withFacetFilter"/>
                 </c:if>
-                <query:fullTextSearch propertyName="rep:filter(${jcr:escapeIllegalJcrChars(facet.key)})"
-                                      searchExpression="${facetValue.value}"/>
+                <query:fullTextSearch propertyName="rep:filter(${escapedFacetKey})" searchExpression="${facetValue.value}"/>
             </c:forEach>
         </c:forEach>
     </query:definition>

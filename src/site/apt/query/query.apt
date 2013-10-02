@@ -11,7 +11,14 @@ Search and Query
     * the {{{./basics.html}basics}} about using queries 
     
     * an explanation of the {{{./configuration.html}search/indexing configuration}} options
+<<<<<<< .working
+=======
+    
+  More information about the search module and examples how to create simple and advanced {{{../jahia-modules/search/forms.html}search forms}} are described in the {{{../jahia-modules/search/index.html}search module}}.
+>>>>>>> .merge-right.r47542
 
+<<<<<<< .working
   More information about the search module and examples how to create simple and advanced {{{../jahia-modules/search/forms.html}search forms}} are described in the {{{../jahia-modules/search/index.html}search module}}.
 
-  We also provide more detailed information about using the {{{../jahia-modules/facets/index.html}facet module}} and you can reference the taglibDoc to get details about the provided tags.
+  We also provide more detailed information about using the {{{../jahia-modules/facets/index.html}facet module}} and you can reference the taglibDoc to get details about the provided tags.=======
+  We also provide more detailed information about using the {{{../jahia-modules/facets/index.html}facet module}} and you can reference the taglibDoc to get details about the provided tags.>>>>>>> .merge-right.r47542

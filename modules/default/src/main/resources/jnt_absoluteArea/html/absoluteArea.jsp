@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -11,6 +12,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="level" value="${currentNode.properties['j:level'].long}"/>
+<c:if test="${jcr:isNodeType(renderContext.mainResource.node,'jnt:page') && fn:startsWith(renderContext.mainResource.path,'/modules')}">
+    <c:set var="level" value="${level + 1}"/>
+</c:if>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions"/>
         <c:if test="${not empty restrictions}">
             <c:forEach items="${restrictions}" var="value">

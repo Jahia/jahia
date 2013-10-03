@@ -175,10 +175,12 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {
+        kieSession = null;
         workItemHandlers.put(name, workItemHandler);
     }
 
     public WorkItemHandler unregisterWorkItemHandler(String name) {
+        kieSession = null;
         return workItemHandlers.remove(name);
     }
 
@@ -1053,7 +1055,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         kieFileSystem.delete(kieResource.getURL().getPath());
     }
 
-    public void recompilePackages() {
+    public synchronized void recompilePackages() {
         kieBuilder = kieServices.newKieBuilder(kieFileSystem);
         KieContainer classPathKieContainer = kieServices.getKieClasspathContainer();
         Results classPathVerifyResults = classPathKieContainer.verify();
@@ -1083,7 +1085,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 .userGroupCallback(jahiaUserGroupCallback)
                 .get();
         if (runtimeManager != null) {
-            runtimeManager.disposeRuntimeEngine(runtimeEngine);
             runtimeManager.close();
         }
 

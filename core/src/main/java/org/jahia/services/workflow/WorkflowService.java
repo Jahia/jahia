@@ -346,7 +346,7 @@ public class WorkflowService implements BeanPostProcessor {
                     Set<String> extPerms = new HashSet<String>();
 
                     while (!StringUtils.isEmpty(permPath)) {
-                        String permissionName = StringUtils.substringAfterLast(permPath,"/");
+                        String permissionName = permPath.contains("/") ? StringUtils.substringAfterLast(permPath,"/") : permPath;
                         NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '"+permissionName+"'", Query.JCR_SQL2).execute().getNodes();
                         while (ni.hasNext()) {
                             JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
@@ -357,7 +357,7 @@ public class WorkflowService implements BeanPostProcessor {
                             JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
                             extPerms.add(roleNode.getParent().getName()+"/"+roleNode.getName());
                         }
-                        permPath = StringUtils.substringBeforeLast(permPath, "/");
+                        permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
                     }
 
                     Map<String, List<String[]>> m = node.getAclEntries();
@@ -799,7 +799,7 @@ public class WorkflowService implements BeanPostProcessor {
 
     private Collection<WorkflowRule> getWorkflowRulesForType(JCRNodeWrapper objectNode, boolean checkPermission, String type, Locale locale) throws RepositoryException {
 
-        Collection<WorkflowRule> results = new HashSet<WorkflowRule>();
+        Collection<WorkflowRule> results = new LinkedHashSet<WorkflowRule>();
         Collection<WorkflowRule> rules = getWorkflowRules(objectNode, locale);
 
         for (WorkflowRule rule : rules) {
@@ -808,6 +808,9 @@ public class WorkflowService implements BeanPostProcessor {
                 Map<String, String> perms = worklowTypeRegistration.getPermissions();
                 if (perms != null && checkPermission) {
                     String permName = perms.get("start");
+                    if (permName.contains("/")) {
+                        permName = StringUtils.substringAfterLast(permName, "/");
+                    }
                     if (permName != null) {
                         if (objectNode.hasPermission(permName)) {
                             results.add(rule);

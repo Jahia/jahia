@@ -19,7 +19,7 @@
                 />
 
         <contributor j:hidden="false"
-                     j:permissionNames="jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                     j:permissionNames="jcr:all_default"
                      j:privilegedAccess="true"
                      j:roleGroup="edit-role"
                      jcr:primaryType="jnt:role">
@@ -32,7 +32,7 @@
                               jcr:title="Contributor"/>
         </contributor>
         <editor j:hidden="false"
-                j:permissionNames="jcr:all_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                j:permissionNames="jcr:all_default"
                 j:privilegedAccess="true"
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
@@ -59,7 +59,7 @@
         </editor>
 
         <translator j:hidden="true"
-                    j:permissionNames="jcr:versionManagement_default 1-step-publication-start 1-step-unpublication-start 2-step-publication-finish-correction 2-step-publication-start"
+                    j:permissionNames="jcr:versionManagement_default"
                     j:privilegedAccess="true"
                     j:roleGroup="edit-role"
                     jcr:primaryType="jnt:role">
@@ -69,7 +69,7 @@
         </translator>
 
         <reviewer j:hidden="false"
-                  j:permissionNames="jcr:read_default publish 1-step-publication-review 1-step-unpublication-unpublish"
+                  j:permissionNames="jcr:read_default publish"
                   j:privilegedAccess="true"
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">

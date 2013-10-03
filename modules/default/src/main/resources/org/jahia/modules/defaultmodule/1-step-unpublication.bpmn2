@@ -8,13 +8,6 @@
   <bpmn2:itemDefinition id="ItemDefinition_5437" itemKind="Physical" structureRef="Integer"/>
   <bpmn2:process id="_x0031_-step-unpublication" drools:version="1" drools:packageName="org.jahia.modules.defaultmodule" drools:adHoc="false" name="1-step-unpublication" isExecutable="true">
     <bpmn2:extensionElements>
-      <drools:global identifier="nodeId" type="String"/>
-      <drools:global identifier="nodePath" type="String"/>
-      <drools:global identifier="nodeIds" type="java.util.List"/>
-      <drools:global identifier="workspace" type="String"/>
-      <drools:global identifier="locale" type="java.util.Locale"/>
-      <drools:global identifier="workflow" type="org.jahia.services.workflow.WorkflowDefinition"/>
-      <drools:global identifier="user" type="String"/>
       <drools:import name="java.util.List"/>
       <drools:import name="java.util.Locale"/>
       <drools:import name="org.jahia.services.workflow.WorkflowDefinition"/>

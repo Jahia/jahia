@@ -16,5 +16,9 @@
             <addComment jcr:primaryType="jnt:permission"/>
         </comments>
     </actions>
+    <workflow-tasks jcr:primaryType="jnt:permission">
+        <publication-start jcr:primaryType="jnt:permission"/>
+        <publication-review jcr:primaryType="jnt:permission"/>
+    </workflow-tasks>
 </permissions>
 

@@ -143,6 +143,12 @@
         <property name="definition" value="1-step-publication"/>
         <property name="canBeUsedForDefault" value="true"/>
         <property name="defaultPriority" value="1"/>
+        <property name="permissions" >
+            <map>
+                <entry key="start" value="publication-start"/>
+                <entry key="review" value="publication-review"/>
+            </map>
+        </property>
         <property name="forms">
             <map>
                 <entry key="start" value="jnt:simpleWorkflow"/>
@@ -156,6 +162,12 @@
         <property name="definition" value="1-step-unpublication"/>
         <property name="canBeUsedForDefault" value="true"/>
         <property name="defaultPriority" value="1"/>
+        <property name="permissions" >
+            <map>
+                <entry key="start" value="publication-start"/>
+                <entry key="unpublish" value="publication-review"/>
+            </map>
+        </property>
         <property name="forms">
             <map>
                 <entry key="start" value="jnt:simpleWorkflow"/>

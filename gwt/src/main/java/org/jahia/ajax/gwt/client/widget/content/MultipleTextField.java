@@ -58,6 +58,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Text field with multiple values
+ * @param <T>
+ */
 public class MultipleTextField<T> extends MultiField<List<T>> {
 
     protected Button addFieldButton;
@@ -91,16 +95,6 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
                 lc.layout();
             }
         });
-    }
-
-    @Override
-    public void setWidth(int width) {
-        super.setWidth(width);
-    }
-
-    @Override
-    public void setWidth(String width) {
-        super.setWidth(width);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     private void addField(T value) {
@@ -157,7 +151,7 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
 
     @Override
     public void setRawValue(String value) {
-        //
+        // Cannot set raw value
     }
 
     @Override
@@ -183,6 +177,9 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
         }
     }
 
+    /**
+     * Field for one value
+     */
     class ItemField extends TriggerField<T> {
 
         ItemField() {

@@ -374,6 +374,13 @@ public class ExtendedNodeType implements NodeType {
         return getDeclaredItems(false);
     }
 
+    /**
+     * Get declared items
+     *
+     * @param includeOverride if false, do not return items that are already declared in parent types
+     *
+     * @return list of declared items
+     */
     public List<ExtendedItemDefinition>  getDeclaredItems(boolean includeOverride) {
         getPropertyDefinitionsAsMap();
         getChildNodeDefinitionsAsMap();
@@ -775,7 +782,7 @@ public class ExtendedNodeType implements NodeType {
     void setPropertyDefinition(String name, ExtendedPropertyDefinition p) {
         if (name.equals("*")) {
             if (p.isMultiple()) {
-                unstructuredProperties.put(256 + p.getRequiredType(), p);
+                unstructuredProperties.put(ExtendedPropertyType.MULTIPLE_OFFSET + p.getRequiredType(), p);
             } else {
                 unstructuredProperties.put(p.getRequiredType(), p);
             }

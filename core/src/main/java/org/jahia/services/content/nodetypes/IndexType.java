@@ -40,6 +40,9 @@
 
 package org.jahia.services.content.nodetypes;
 
+/**
+ * The index parameters supported by Jahia.
+ */
 public class IndexType {
     public static final int NO = 0;
     public static final int TOKENIZED = 1;

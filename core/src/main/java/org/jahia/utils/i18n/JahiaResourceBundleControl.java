@@ -180,6 +180,12 @@ final class JahiaResourceBundleControl extends Control {
         return null;
     }
 
+    /**
+     * Override getTimeToLive : if sources are available, never cache resource bundles
+     * @param baseName
+     * @param locale
+     * @return
+     */
     @Override
     public long getTimeToLive(String baseName, Locale locale) {
         JahiaTemplatesPackage aPackage = templatePackageRegistry.getPackageForResourceBundle(baseName);

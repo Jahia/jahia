@@ -57,8 +57,8 @@ import org.jahia.services.content.JCRContentUtils;
  */
 public class ExtendedItemDefinition implements ItemDefinition {
 
-    protected ExtendedNodeType declaringNodeType;
-    protected Name name;
+    private ExtendedNodeType declaringNodeType;
+    private Name name;
     private boolean isProtected = false;
     private boolean autoCreated = false;
     private boolean mandatory = false;
@@ -158,11 +158,11 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public Map<String,String> getSelectorOptions() {
-        return Collections.unmodifiableMap(selectorOptions);
+        return selectorOptions;
     }
 
     public void setSelectorOptions(Map<String,String> selectorOptions) {
-        this.selectorOptions = selectorOptions;
+        this.selectorOptions = Collections.unmodifiableMap(selectorOptions);
     }
 
     public boolean isNode() {

@@ -154,7 +154,7 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
 
         ExtendedNodeDefinition that = (ExtendedNodeDefinition) o;
 
-        if (name.toString().equals("*")) {
+        if (getName().equals("*")) {
             if (!Arrays.equals(requiredPrimaryTypes, that.requiredPrimaryTypes)) return false;
         }
 
@@ -162,6 +162,6 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
     }
 
     public void remove() {
-        declaringNodeType.removeNodeDefinition(this);
+        getDeclaringNodeType().removeNodeDefinition(this);
     }
 }

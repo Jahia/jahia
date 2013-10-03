@@ -666,14 +666,6 @@
         <property name="icon" value="publishSite"/>
     </bean>
 
-    <bean id="Toolbar.Item.ReversePublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReversePublishActionItem"/>
-        </property>
-        <property name="titleKey" value="label.reversepublish"/>
-        <property name="icon" value="reversePublish"/>
-    </bean>
-
     <!-- new edit mode buttons: unpublish -->
     <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -780,6 +772,19 @@
     </bean>
 
     <bean id="Toolbar.Item.DeletePermanently" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
+                <property name="referenceTitleKey" value="label.deletePermanently"/>
+                <property name="permanentlyDelete" value="true"/>
+                <property name="allowedNodeTypes" value="jmix:markedForDeletionRoot"/>
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.deletePermanently"/>
+        <property name="icon" value="delete"/>
+    </bean>
+
+    <bean id="Toolbar.Item.DeletePermanentlyNoMarkForDeletion" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.deletePermanently"/>

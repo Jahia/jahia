@@ -104,7 +104,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     }
 
                 } else {
-                    MessageBox.alert(Messages.get("label.error", "Error"), Messages.get("label.issueOccursTryingResolve","An issue occurred when trying to resolve ") + node.getPath(), null);
+                    MessageBox.alert(Messages.get("label.error", "Error"), Messages.getWithArgs("label.issueOccursTryingResolve","An issue occurred when trying to resolve {0}",new Object[] {node.getPath()}), null);
                     return;
                 }
                 final String modulePath = "/modules/" + filePath[2];

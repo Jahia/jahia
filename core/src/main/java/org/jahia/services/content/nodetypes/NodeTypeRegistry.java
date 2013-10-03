@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.nodetypes;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.collections.map.ListOrderedMap;
@@ -101,6 +102,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return instance;
     }
 
+    /**
+     * Flush all labels for all node types and items
+     */
     public void flushLabels() {
         for (ExtendedNodeType nodeType : nodetypes.values()) {
             nodeType.clearLabels();
@@ -269,8 +273,8 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     public NodeTypeIterator getAllNodeTypes(List<String> systemIds) {
         List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
-        for (Iterator<ExtendedNodeType> iterator = nodetypes.values().iterator(); iterator.hasNext();) {
-            ExtendedNodeType nt = iterator.next();
+
+        for (ExtendedNodeType nt : nodetypes.values()) {
             if (systemIds == null || systemIds.contains(nt.getSystemId())) {
                 res.add(nt);
             }
@@ -455,12 +459,12 @@ public class NodeTypeRegistry implements NodeTypeManager {
                         }
                     }
                     for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
-                        if (Arrays.asList(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                        if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
                             throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
                         }
                     }
                     for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
-                        if (Arrays.asList(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                        if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
                             throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
                         }
                     }

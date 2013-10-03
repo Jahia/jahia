@@ -41,11 +41,7 @@
 package org.jahia.services.content.nodetypes;
 
 /**
- * 
- * User: toto
- * Date: Feb 4, 2010
- * Time: 8:24:09 PM
- * 
+ * The possible values for on-conflict action
  */
 public class OnConflictAction {
     public static final int IGNORE = 0;

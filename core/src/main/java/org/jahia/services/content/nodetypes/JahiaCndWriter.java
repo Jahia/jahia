@@ -73,6 +73,8 @@ public class JahiaCndWriter {
      */
     private static final String INDENT = " ";
 
+    private static final HashSet<String> ALL_OPERATORS = Sets.newHashSet(Lexer.ALL_OPERATORS);
+
     /**
      * the underlying writer
      */
@@ -225,11 +227,12 @@ public class JahiaCndWriter {
             Map<String, String> selectorOptions = pd.getSelectorOptions();
             if (!selectorOptions.isEmpty()) {
                 out.write("[");
-                Iterator<String> keys = selectorOptions.keySet().iterator();
+                Iterator<Map.Entry<String, String>> keys = selectorOptions.entrySet().iterator();
                 while (keys.hasNext()) {
-                    String key = keys.next();
+                    Map.Entry<String, String> entry = keys.next();
+                    String key = entry.getKey();
+                    String value = entry.getValue();
                     out.write(key);
-                    String value = selectorOptions.get(key);
                     if (StringUtils.isNotBlank(value)) {
                         out.write("='" + value + "'");
                     }
@@ -303,7 +306,7 @@ public class JahiaCndWriter {
     }
 
     private void writeQueryOperators(String[] availableQueryOperators) throws IOException {
-        if (Sets.newHashSet(Lexer.ALL_OPERATORS).equals(Sets.newHashSet(availableQueryOperators))) {
+        if (ALL_OPERATORS.equals(Sets.newHashSet(availableQueryOperators))) {
             return;
         }
         out.write(" queryops '");
@@ -354,11 +357,11 @@ public class JahiaCndWriter {
     }
     public static List<String> getValuesAsString(Value[] values) throws IOException {
         List<String> valuesAsString = new ArrayList<String>();
-        for (int i = 0; i < values.length; i++) {
+        for (Value value : values) {
             StringBuilder sb = new StringBuilder();
             try {
-                if (values[i] instanceof DynamicValueImpl) {
-                    DynamicValueImpl dynamicValue = (DynamicValueImpl) values[i];
+                if (value instanceof DynamicValueImpl) {
+                    DynamicValueImpl dynamicValue = (DynamicValueImpl) value;
                     sb.append(escape(dynamicValue.getFn()));
                     sb.append("(");
                     List<String> p = dynamicValue.getParams();
@@ -372,13 +375,13 @@ public class JahiaCndWriter {
                         }
                     }
                     sb.append(")");
-                } else if (values[i].getString() != null) {
+                } else if (value.getString() != null) {
                     sb.append("'");
-                    sb.append(escape(values[i].getString()));
+                    sb.append(escape(value.getString()));
                     sb.append("'");
                 }
             } catch (RepositoryException e) {
-                throw new IOException(e.getMessage());
+                throw new IOException(e);
             }
             valuesAsString.add(sb.toString());
         }
@@ -449,6 +452,9 @@ public class JahiaCndWriter {
      * @return the escaped string
      */
     private static String escape(String s) {
+        if (s.indexOf('\\') == -1 && s.indexOf('\'') == -1) {
+            return s;
+        }
         StringBuffer sb = new StringBuffer(s);
         for (int i = 0; i < sb.length(); i++) {
             if (sb.charAt(i) == '\\' || sb.charAt(i) == '\'') {

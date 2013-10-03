@@ -57,6 +57,8 @@ public class ExtendedPropertyType {
     public static final int URI = 11;
     public static final int DECIMAL = 12;
 
+    public static final int MULTIPLE_OFFSET = 256;
+
     /*
      * Undefined type.
      */

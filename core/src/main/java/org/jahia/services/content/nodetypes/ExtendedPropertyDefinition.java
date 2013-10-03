@@ -177,6 +177,12 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         return getDefaultValues(null);
     }
 
+    /**
+     * Get default values, as value object
+     *
+     * @param locale locale used to expand I15dValueInitializer
+     * @return the default values
+     */
     public Value[] getDefaultValues(Locale locale) {
         List<Value> res = new ArrayList<Value>();
         for (int i = 0; i < defaultValues.length; i++) {
@@ -192,6 +198,10 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         return res.toArray(new Value[res.size()]);
     }
 
+    /**
+     * Get default values, unexpanded
+     * @return
+     */
     public Value[] getDefaultValuesAsUnexpandedValue() {
        return defaultValues;
     }
@@ -307,7 +317,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         if (!super.equals(o)) return false;
 
         ExtendedPropertyDefinition that = (ExtendedPropertyDefinition) o;
-        if (name.toString().equals("*")) {
+        if (getName().equals("*")) {
             if (requiredType != that.requiredType) return false;
             if (multiple != that.multiple) return false;
         }
@@ -315,8 +325,11 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         return super.equals(o);
     }
 
+    /**
+     * Remove definition from declaring node type
+     */
     public void remove() {
-        declaringNodeType.removePropertyDefinition(this);
+        getDeclaringNodeType().removePropertyDefinition(this);
     }
     
     @Override

@@ -211,6 +211,19 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     }
 
+    /**
+     * Checkout module sources, compile and deploy
+     * @param moduleSources sources folder
+     * @param scmURI scm uri ( in mvn format , scm:<type>:<url>
+     * @param branchOrTag branch or tag
+     * @param moduleName name of the module to checkout, if there are multiple modules in the repository
+     * @param version version of the module to checkout, if there are multiple modules in the repository
+     * @param session session
+     * @return the module node
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws BundleException
+     */
     public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleName,
                                          String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleName, version, session);

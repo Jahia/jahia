@@ -203,7 +203,6 @@ public class ContentActions {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
-//                        data.put(Linker.REFRESH_ALL, true);
                         data.put("node", node);
                         linker.refresh(data);
                     }

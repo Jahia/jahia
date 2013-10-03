@@ -79,6 +79,9 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.*;
 
+/**
+ * Tab item to edit child items of a node type
+ */
 public class ChildItemsTabItem extends EditEngineTabItem {
     private static final long serialVersionUID = 1L;
 
@@ -101,19 +104,19 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private transient List<GWTJahiaNode> children;
     private transient List<GWTJahiaNode> removedChildren;
 
-    private transient String[] STRING = {"1", "string", "String", "STRING"};
-    private transient String[] BINARY = {"2", "binary", "Binary", "BINARY"};
-    private transient String[] LONG = {"3", "long", "Long", "LONG"};
-    private transient String[] DOUBLE = {"4", "double", "Double", "DOUBLE"};
-    private transient String[] BOOLEAN = {"5", "boolean", "Boolean", "BOOLEAN"};
-    private transient String[] DATE = {"6", "date", "Date", "DATE"};
-    private transient String[] NAME = {"7", "name", "Name", "NAME"};
-    private transient String[] PATH = {"8", "path", "Path", "PATH"};
-    private transient String[] REFERENCE = {"9", "reference", "Reference", "REFERENCE"};
-    private transient String[] WEAKREFERENCE = {"10", "WEAKREFERENCE", "WeakReference", "weakreference"};
-    private transient String[] URI = {"11", "URI", "Uri", "uri"};
-    private transient String[] DECIMAL = {"12", "DECIMAL", "Decimal", "decimal"};
-    private transient String[] UNDEFINED = new String[]{"0", "undefined", "Undefined", "UNDEFINED", "*"};
+    private final static String[] STRING = {"1", "string", "String", "STRING"};
+    private final static String[] BINARY = {"2", "binary", "Binary", "BINARY"};
+    private final static String[] LONG = {"3", "long", "Long", "LONG"};
+    private final static String[] DOUBLE = {"4", "double", "Double", "DOUBLE"};
+    private final static String[] BOOLEAN = {"5", "boolean", "Boolean", "BOOLEAN"};
+    private final static String[] DATE = {"6", "date", "Date", "DATE"};
+    private final static String[] NAME = {"7", "name", "Name", "NAME"};
+    private final static String[] PATH = {"8", "path", "Path", "PATH"};
+    private final static String[] REFERENCE = {"9", "reference", "Reference", "REFERENCE"};
+    private final static String[] WEAKREFERENCE = {"10", "WEAKREFERENCE", "WeakReference", "weakreference"};
+    private final static String[] URI = {"11", "URI", "Uri", "uri"};
+    private final static String[] DECIMAL = {"12", "DECIMAL", "Decimal", "decimal"};
+    private final static String[] UNDEFINED = new String[]{"0", "undefined", "Undefined", "UNDEFINED", "*"};
 
     public ChildItemsTabItem() {
     }
@@ -183,7 +186,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                final MessageBox box = MessageBox.prompt("Name", "Please enter the item name:");
+                final MessageBox box = MessageBox.prompt(Messages.get("label.name"), Messages.get("label.enterItemName")+ ":");
                 box.addCallback(new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
                         if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
@@ -379,7 +382,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     ColumnConfig colConfig = new ColumnConfig();
                     colConfig.setId(config[0]);
                     if (!"*".equals(config[1])) {
-                        colConfig.setWidth(new Integer(config[1]));
+                        colConfig.setWidth(Integer.valueOf(config[1]));
                     } else {
                         autoExpandColumn = config[0];
                     }
@@ -392,29 +395,32 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     colConfig.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                         @Override
                         public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
-                            String cellValue = "";
+                            StringBuilder cellValue = new StringBuilder();
                             if (node.get(property) != null) {
                                 if (node.get(property) instanceof ArrayList) {
                                     for (Object s : (ArrayList<Object>) node.get(property)) {
+                                        if (cellValue.length() != 0) {
+                                            cellValue.append(",");
+                                        }
                                         if (s instanceof GWTJahiaNodePropertyValue) {
-                                            cellValue = cellValue.equals("") ? ((GWTJahiaNodePropertyValue) s).getString() : cellValue + "," + ((GWTJahiaNodePropertyValue) s).getString();
+                                            cellValue.append(((GWTJahiaNodePropertyValue) s).getString());
                                         } else if (s instanceof String) {
-                                            cellValue = cellValue.equals("") ? (String) s : cellValue + "," + s;
+                                            cellValue.append(s);
                                         }
                                     }
                                 } else {
                                     Object p = node.get(property);
                                     if (p instanceof GWTJahiaNodePropertyValue) {
-                                        cellValue = ((GWTJahiaNodePropertyValue) p).getString();
+                                        cellValue.append(((GWTJahiaNodePropertyValue) p).getString());
                                     } else {
-                                        cellValue = p.toString();
+                                        cellValue.append(p);
                                     }
                                 }
-                                if (cellValue.startsWith("__")) {
-                                    cellValue = "*";
+                                if (cellValue.toString().startsWith("__")) {
+                                    return "*";
                                 }
                             }
-                            return cellValue;
+                            return cellValue.toString();
                         }
                     });
                 }
@@ -479,7 +485,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     }
 
     private void initValues(GWTJahiaNode item) {
-        HashMap<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
+        Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
         for (GWTJahiaItemDefinition definition : nodeType.getItems()) {
             if (definition instanceof GWTJahiaPropertyDefinition) {
                 GWTJahiaPropertyDefinition propertyDefinition = (GWTJahiaPropertyDefinition) definition;
@@ -616,6 +622,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                             for (GWTJahiaNode n : store.getModels()) {
                                 if (n.getPath().equals(path)) {
                                     duplicate = true;
+                                    break;
                                 }
                             }
                             if (!duplicate) {
@@ -629,9 +636,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                         }
                     }
                     itemDefinition.set("nodeProperties", pe.getProperties(false, true, !isNew));
-                    HashMap<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
-                    for (String s : peByLang.keySet()) {
-                        langCodeProperties.put(s, peByLang.get(s).getProperties(true,false,!isNew));
+                    Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
+                    for (Map.Entry<String, PropertiesEditor> entry : peByLang.entrySet()) {
+                        langCodeProperties.put(entry.getKey(), entry.getValue().getProperties(true,false,!isNew));
                     }
                     itemDefinition.set("nodeLangCodeProperties", langCodeProperties);
                 } else {
@@ -652,25 +659,24 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                         if (n.getPath().equals(((GWTJahiaNode) o2).getPath())) {
                             c2 = n;
                         }
-                    }
-                    if (c1 != null && c2 != null) {
-                        int index = grid.getStore().indexOf(c1);
-                        int index2 = grid.getStore().indexOf(c2);
-                        if (index == index2) {
-                            return 0;
+                        if (c1 != null && c2 != null) {
+                            int index = grid.getStore().indexOf(c1);
+                            int index2 = grid.getStore().indexOf(c2);
+                            if (index == index2) {
+                                return 0;
+                            } else if (index > index2) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
                         }
-
-                        if (index > index2) {
-                            return 1;
-                        }
                     }
 
-                    return -1;
+                    throw new IllegalArgumentException();
                 }
             });
             if (node != null) {
                 for (GWTJahiaNode child : this.removedChildren) {
-                    node.add(child);
                     node.remove(child);
                 }
                 for (GWTJahiaNode child : this.children) {
@@ -698,10 +704,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         if (node.getNodeTypes().contains("jnt:unstructuredPropertyDefinition")) {
             if (node.get("j:mutliple") != null) {
                 if (node.get("j:requiredType") instanceof String) {
-                    int i = 256 + getPropertyType((String) node.get("j:requiredType"));
+                    int i = GWTJahiaNodePropertyType.MULTIPLE_OFFSET + getPropertyType((String) node.get("j:requiredType"));
                     s1 = "__prop__" + i;
                 } else if (node.get("j:requiredType") instanceof GWTJahiaNodePropertyValue) {
-                    int i = 256 + getPropertyType(((GWTJahiaNodePropertyValue) node.get("j:requiredType")).getString());
+                    int i = GWTJahiaNodePropertyType.MULTIPLE_OFFSET + getPropertyType(((GWTJahiaNodePropertyValue) node.get("j:requiredType")).getString());
                     s1 = "__prop__" + i;
                 }
             } else {
@@ -734,7 +740,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     }
 
     public void syncWithPrevious(PropertiesEditor previous, PropertiesEditor propertiesEditor) {
-        if (previous != null && previous != propertiesEditor) {
+        if (previous != null && !previous.equals(propertiesEditor)) {
             // synch non18n properties
             List<GWTJahiaNodeProperty> previousNon18nProperties = previous.getProperties(false, true, true);
             if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {

@@ -157,4 +157,6 @@ public class GWTJahiaNodePropertyType implements Serializable {
 
     public static final int PAGE_LINK = 21;
 
+    public static final int MULTIPLE_OFFSET = 256;
+
 }

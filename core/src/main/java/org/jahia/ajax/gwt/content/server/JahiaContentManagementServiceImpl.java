@@ -44,12 +44,10 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
-
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.*;
@@ -101,7 +99,6 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
-
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -850,6 +847,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
+    /**
+     * Create node based on GWTJahiaNode with subnodes
+     *
+     * @param parentPath parent path
+     * @param newNode node to create
+     * @return new node
+     * @throws GWTJahiaServiceException
+     */
     @SuppressWarnings("unchecked")
     public GWTJahiaNode createNode(String parentPath, GWTJahiaNode newNode) throws GWTJahiaServiceException {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
@@ -871,7 +876,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param props
      * @param langCodeProperties
      * @param subNodes
-     *@param parentNodesType
+     * @param parentNodesType
      * @param forceCreation   @return
      * @throws GWTJahiaServiceException
      */
@@ -1511,6 +1516,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    /**
+     * Add file to source control.
+     *
+     * @param moduleName Module name
+     * @param node Node denoting a file from the sources folder of the module
+     * @throws GWTJahiaServiceException
+     */
     public void addToSourceControl(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException {
         try {
             moduleHelper.addToSourceControl(moduleName, node, retrieveCurrentSession(null));
@@ -2068,9 +2080,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.get.node", getUILocale()));
         }
     }
+
+    /**
+     * Get the list of all registered namespaces
+     *
+     * @return
+     */
     public List<String> getNamespaces() {
         return new ArrayList<String>(NodeTypeRegistry.getInstance().getNamespaces().keySet());
     }
+
     public List<GWTJahiaNode> getPortalNodes(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {

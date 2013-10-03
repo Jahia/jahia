@@ -58,8 +58,6 @@ import java.util.Map;
  * Created : 02/05/13
  */
 public class NamespaceChoiceListInitializer implements ChoiceListInitializer {
-    private static Logger logger = LoggerFactory.getLogger(NamespaceChoiceListInitializer.class);
-
     @Override
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param,
                                                      List<ChoiceListValue> values, Locale locale,

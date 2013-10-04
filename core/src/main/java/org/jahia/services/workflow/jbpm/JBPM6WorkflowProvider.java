@@ -283,11 +283,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         return executeCommand(new GenericCommand<List<Workflow>>() {
             @Override
             public List<Workflow> execute(Context context) {
-                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-                Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
+                KieSession ksession = getKieSession();
                 List<Workflow> activeWorkflows = new ArrayList<Workflow>();
-                for (ProcessInstance processInstance : processInstances) {
-                    activeWorkflows.add(convertToWorkflow(processInstance, locale, ksession));
+                for (String s : processIds) {
+                    activeWorkflows.add(convertToWorkflow(ksession.getProcessInstance(Long.parseLong(s)), locale, ksession));
                 }
                 return activeWorkflows;
             }
@@ -365,37 +364,37 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             public Set<WorkflowAction> execute(Context context) {
                 KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
                 ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
-                Set<String> connectionIds = new TreeSet<String>();
-                if (processInstance instanceof WorkflowProcessInstance) {
-                    WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
-                    Collection<NodeInstance> activeNodeInstances = workflowProcessInstance.getNodeInstances();
-                    for (NodeInstance nodeInstance : activeNodeInstances) {
-                        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
-                        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
-                            for (Connection connection : outgoingConnectionEntry.getValue()) {
-                                String uniqueId = (String) connection.getMetaData().get("UniqueId");
-                                connectionIds.add(uniqueId);
-                            }
-                        }
-                    }
-                }
+//                Set<String> connectionIds = new TreeSet<String>();
+//                if (processInstance instanceof WorkflowProcessInstance) {
+//                    WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
+//                    Collection<NodeInstance> activeNodeInstances = workflowProcessInstance.getNodeInstances();
+//                    for (NodeInstance nodeInstance : activeNodeInstances) {
+//                        Map<String, List<Connection>> outgoingConnections = nodeInstance.getNode().getOutgoingConnections();
+//                        for (Map.Entry<String, List<Connection>> outgoingConnectionEntry : outgoingConnections.entrySet()) {
+//                            for (Connection connection : outgoingConnectionEntry.getValue()) {
+//                                String uniqueId = (String) connection.getMetaData().get("UniqueId");
+//                                connectionIds.add(uniqueId);
+//                            }
+//                        }
+//                    }
+//                }
 
                 Set<WorkflowAction> workflowActions = new HashSet<WorkflowAction>();
                 List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
                 for (Long taskId : taskIds) {
                     Task task = taskService.getTaskById(taskId);
                     String taskName = task.getNames().get(0).getText();
-                    if (connectionIds.contains(taskName)) {
+//                    if (connectionIds.contains(taskName)) {
                         WorkflowAction workflowAction = convertToWorkflowTask(task, locale, ksession);
                         workflowActions.add(workflowAction);
-                        connectionIds.remove(taskName);
-                    }
+//                        connectionIds.remove(taskName);
+//                    }
                 }
-                for (String connectionId : connectionIds) {
-                    WorkflowAction workflowAction = new WorkflowAction(connectionId, key);
-                    i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName(), processInstance.getProcess().getPackageName());
-                    workflowActions.add(workflowAction);
-                }
+//                for (String connectionId : connectionIds) {
+//                    WorkflowAction workflowAction = new WorkflowAction(connectionId, key);
+//                    i18nOfWorkflowAction(locale, workflowAction, processInstance.getProcess().getName(), processInstance.getProcess().getPackageName());
+//                    workflowActions.add(workflowAction);
+//                }
 
                 return workflowActions;
 
@@ -717,7 +716,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             l.add(Long.toString(log.getProcessInstanceId()));
         }
 
-        return getHistoryWorkflows(l, locale);    }
+        return getHistoryWorkflows(l, locale);
+    }
 
     @Override
     public List<HistoryWorkflow> getHistoryWorkflows(final List<String> processIds, final Locale locale) {

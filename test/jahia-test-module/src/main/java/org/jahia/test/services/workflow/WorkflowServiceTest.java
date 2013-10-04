@@ -164,44 +164,6 @@ public class WorkflowServiceTest {
     }
 
     @Test
-    public void testSignalProcess() throws Exception {
-        final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        WorkflowDefinition workflow = null;
-        for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("2-step-publication-remotepublish".equals(workflowDefinition.getName())) {
-                workflow = workflowDefinition;
-                break;
-            }
-        }
-        assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
-        map.put("publicationInfos", publicationService.getPublicationInfos(
-                Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map, null);
-        assertNotNull("The startup of a process should have return an id", processId);
-        Thread.sleep(MILLIS);
-        getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
-        assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
-        final Set<WorkflowAction> availableActions = activeWorkflows.get(0).getAvailableActions();
-        assertTrue("There should be some active activities for the first workflow in jBPM",
-                availableActions.size() > 0);
-        final List<Workflow> newActiveWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
-        assertTrue("There should be some active workflow in jBPM", newActiveWorkflows.size() > 0);
-        final Set<WorkflowAction> newAvailableActions = newActiveWorkflows.get(0).getAvailableActions();
-        assertTrue("There should be some active activities for the first workflow in jBPM",
-                availableActions.size() > 0);
-        assertFalse("Available actions should not match", availableActions.equals(newAvailableActions));
-        assertTrue("Available action should match between service.getActiveWorkflows and getAvailableActions",
-                newAvailableActions.equals(service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH)));
-    }
-
-    @Test
     public void testAssignTask() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
@@ -241,42 +203,8 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), user, PROVIDER, workflowTask.getOutcomes().contains(
                 "accept") ? "accept" : "reject", emptyMap);
         assertTrue(service.getTasksForUser(user, Locale.ENGLISH).size() < forUser.size());
-        assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
-    }
-
-    @Test
-    public void testAddParticipatingGroup() throws Exception {
-        final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final WorkflowDefinition workflow = workflowList.iterator().next();
-        assertNotNull("Workflow should not be null", workflow);
-        map.put("publicationInfos", publicationService.getPublicationInfos(
-                Arrays.asList(stageNode.getIdentifier()),
-                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
-        processId = service.startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), workflow.getKey(), PROVIDER, map, null);
-        assertNotNull("The startup of a process should have return an id", processId);
-        Thread.sleep(MILLIS);
         getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
-        assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
-        Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
-        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
-        WorkflowAction action = actionSet.iterator().next();
-        assertTrue(action instanceof WorkflowTask);
-        WorkflowTask task = (WorkflowTask) action;
-        List<WorkflowTask> johnDoeList = service.getTasksForUser(johndoe, Locale.ENGLISH);
-        List<WorkflowTask> johnSmoeList = service.getTasksForUser(johnsmoe, Locale.ENGLISH);
-        assertTrue("John Doe and John Smoe should have the same tasks list", johnDoeList.equals(johnSmoeList));
-        service.assignTask(johnDoeList.get(0).getId(), PROVIDER, johndoe);
-        johnSmoeList = service.getTasksForUser(johnsmoe, Locale.ENGLISH);
-        johnDoeList = service.getTasksForUser(johndoe, Locale.ENGLISH);
-        assertFalse("John Doe and John Smoe should not have same tasks list", johnDoeList.equals(johnSmoeList));
-        service.completeTask(task.getId(), johndoe, PROVIDER, task.getOutcomes().iterator().next(),
-                new HashMap<String, Object>());
+        assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
     }
 
     @Test
@@ -379,7 +307,9 @@ public class WorkflowServiceTest {
         group.addMember(johndoe);
         group.addMember(johnsmoe);
 
-        JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getGroupname(), ImmutableSet.of("editor-in-chief"));
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        session.getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getGroupname(), ImmutableSet.of("editor-in-chief"));
+        session.save();
     }
 
     @Test

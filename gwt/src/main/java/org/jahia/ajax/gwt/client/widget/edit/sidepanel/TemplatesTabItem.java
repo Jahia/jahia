@@ -242,10 +242,6 @@ public class TemplatesTabItem extends BrowseTabItem {
 
         return tab;
     }
-    @Override
-    public void initWithLinker(EditLinker linker) {
-        super.initWithLinker(linker);
-    }
 
     @Override
     public boolean needRefresh(Map<String, Object> data) {

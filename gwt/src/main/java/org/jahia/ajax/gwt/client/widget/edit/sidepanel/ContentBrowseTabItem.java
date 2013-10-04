@@ -141,7 +141,10 @@ class ContentBrowseTabItem extends BrowseTabItem {
                 if (event.getSelectedItem() != null) {
                     if (displayGridForTypes != null) {
                         for (String type : event.getSelectedItem().getNodeTypes()) {
-                            displayGrid |= displayGridForTypes.contains(type);
+                            displayGrid = displayGridForTypes.contains(type);
+                            if (displayGrid) {
+                                break;
+                            }
                         }
                     } else {
                         displayGrid = true;

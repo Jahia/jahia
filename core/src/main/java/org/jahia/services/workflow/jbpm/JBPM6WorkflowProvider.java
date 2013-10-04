@@ -207,7 +207,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         runtimeManager.close();
     }
 
-    public KieSession getKieSession() {
+    public synchronized KieSession getKieSession() {
         if (kieSession != null) {
             return kieSession;
         }

@@ -43,33 +43,6 @@ rule "ACL removed"
         Update the privileged users
 end
 
-// This is an example that shows how to propagate a property to all sub folders and sub files
-// First rule copy the value from the parent when a file is uploaded / modified
-// Second rule propagates a property change to all children
-
-rule "Copy status parent value by new type"
-    salience 25
-    when
-        The type jmix:categorizedDocument has been assigned to a node
-        The property j:status is not defined for the node
-        The node has a parent
-        The parent has a property j:status
-    then
-        Log "Copy status parent value by new type"
-        Set the property j:status of the node with the value of that property
-end
-
-rule "Propagate status value to children"
-    salience 25
-    when
-        A property j:status has been set on a node
-        The node has a child
-            - it has the extension type jmix:categorizedDocument
-    then
-        Log "Propagate status value to child "+child
-        Set the property j:status of the child with the value of that property
-end
-
 rule "Import file"
     salience 50
     when

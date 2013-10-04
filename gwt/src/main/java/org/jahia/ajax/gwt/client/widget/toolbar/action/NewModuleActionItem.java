@@ -89,7 +89,6 @@ public class NewModuleActionItem extends BaseActionItem {
             moduleTypeCombo.setStore(new ListStore<SimpleComboValue<String>>());
             moduleTypeCombo.setFieldLabel(Messages.get("label.moduleType", "Module type"));
 
-            // todo get archetypes list
             moduleTypeCombo.add("module");
             moduleTypeCombo.add("templatesSet");
             moduleTypeCombo.add("jahiapp");

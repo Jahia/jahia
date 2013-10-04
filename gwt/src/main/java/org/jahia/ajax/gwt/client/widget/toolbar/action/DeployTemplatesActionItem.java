@@ -127,17 +127,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 }
             }
         } else {
-//            List<String> dependencies = JahiaGWTParameters.getSiteNode().get("j:resolvedDependencies");
             for (GWTJahiaSite site : sites) {
-                // dependencies are not required modules anymore
-                // todo: add a way to manage required modules
-/*
-                if (dependencies != null && dependencies.size() > 0) {
-                    if (!site.getInstalledModules().containsAll(dependencies)) {
-                        continue;
-                    }
-                }
-*/
                 // for profile modules we use only systemsite as a target
                 if (isProfileModule && !site.getSiteKey().equals("systemsite")) {
                     continue;

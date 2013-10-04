@@ -230,6 +230,9 @@ public class SimpleModule extends Module {
         }
     }
 
+    /**
+     * Handler class for the bind component action. 
+     */
     private class BindSelectionListener extends SelectionListener<IconButtonEvent> {
         private final MainModule mainModule;
 
@@ -240,13 +243,12 @@ public class SimpleModule extends Module {
         public void componentSelected(IconButtonEvent event) {
             if (bound != null && bound) {
                 List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-//                            final List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
                 final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty(boundProperty,
                         new GWTJahiaNodePropertyValue((String) null,
                                 GWTJahiaNodePropertyType.WEAKREFERENCE));
                 properties.add(gwtJahiaNodeProperty);
                 JahiaContentManagementService.App.getInstance()
-                        .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
+                        .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback<Object>() {
                             public void onSuccess(Object o) {
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_MAIN, true);
@@ -254,7 +256,8 @@ public class SimpleModule extends Module {
                             }
 
                             public void onApplicationFailure(Throwable throwable) {
-                                Window.alert("Failed : " + throwable);
+                                Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {0}",
+                                        new Object[] { throwable }));
                             }
                         });
 
@@ -282,7 +285,7 @@ public class SimpleModule extends Module {
                         }
                         properties.add(gwtJahiaNodeProperty);
                         JahiaContentManagementService.App.getInstance()
-                                .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback() {
+                                .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback<Object>() {
                                     public void onSuccess(Object o) {
                                         Map<String, Object> data = new HashMap<String, Object>();
                                         data.put(Linker.REFRESH_MAIN, true);
@@ -290,7 +293,8 @@ public class SimpleModule extends Module {
                                     }
 
                                     public void onApplicationFailure(Throwable throwable) {
-                                        Window.alert("Failed : " + throwable);
+                                        Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {0}",
+                                                new Object[] { throwable }));
                                     }
                                 });
 

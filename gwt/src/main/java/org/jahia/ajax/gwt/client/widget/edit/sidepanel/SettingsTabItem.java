@@ -293,7 +293,7 @@ public class SettingsTabItem extends SidePanelTabItem {
 
     private void resetPaths() {
         paths = new ArrayList<String>();
-        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().getProperties().get("j:installedModules") != null) {
+        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().get("j:installedModules") != null) {
             for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
                 paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
             }

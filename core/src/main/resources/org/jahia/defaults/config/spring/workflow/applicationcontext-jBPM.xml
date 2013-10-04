@@ -54,16 +54,6 @@
         <property name="platformTransactionManager" ref="jbpmTxManager"/>
         <property name="emf" ref="jbpmEmf"/>
         <property name="em" ref="jbpmEm"/>
-        <property name="processes">
-            <list>
-                <value>classpath*:org/jahia/modules/workflow/*.bpmn2</value>
-            </list>
-        </property>
-        <property name="mailTemplates">
-            <list>
-                <value>classpath*:org/jahia/modules/workflow/*.mail</value>
-            </list>
-        </property>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
         <property name="peopleAssignmentPipeline" ref="peopleAssignmentPipeline"/>

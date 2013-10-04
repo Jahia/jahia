@@ -173,7 +173,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("2 Step Publication Process".equals(workflowDefinition.getName())) {
+            if ("2-step-publication-remotepublish".equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
@@ -211,7 +211,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition currentWorkflow : workflowList) {
-            if (!currentWorkflow.getKey().contains("unpublic")) {
+            if ("1-step-publication-remotepublish".equals(currentWorkflow.getName())) {
                 workflow = currentWorkflow;
                 break;
             }
@@ -268,7 +268,6 @@ public class WorkflowServiceTest {
         WorkflowAction action = actionSet.iterator().next();
         assertTrue(action instanceof WorkflowTask);
         WorkflowTask task = (WorkflowTask) action;
-        service.addParticipatingGroup(task.getId(), PROVIDER, group, WorkflowService.CANDIDATE);
         List<WorkflowTask> johnDoeList = service.getTasksForUser(johndoe, Locale.ENGLISH);
         List<WorkflowTask> johnSmoeList = service.getTasksForUser(johnsmoe, Locale.ENGLISH);
         assertTrue("John Doe and John Smoe should have the same tasks list", johnDoeList.equals(johnSmoeList));
@@ -290,7 +289,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("2 Step Publication Process".equals(workflowDefinition.getName())) {
+            if ("2-step-publication-remotepublish".equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
@@ -393,7 +392,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("2 Step Publication Process".equals(workflowDefinition.getName())) {
+            if ("2-step-publication-remotepublish".equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
@@ -446,7 +445,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("1 Step Publication Process".equals(workflowDefinition.getName())) {
+            if ("1-step-publication-remotepublish".equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
@@ -485,7 +484,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("1 Step Publication Process".equals(workflowDefinition.getName())) {
+            if ("1-step-publication-remotepublish".equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }

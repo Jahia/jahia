@@ -647,9 +647,6 @@ public class WorkflowService implements BeanPostProcessor {
         completeTask(taskId, user, provider, outcome, args);
     }
 
-    public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {
-    }
-
     public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow) throws RepositoryException {
         // store the rule
         JCRNodeWrapper rules = null;

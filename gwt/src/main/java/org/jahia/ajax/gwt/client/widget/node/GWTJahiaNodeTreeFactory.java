@@ -64,9 +64,7 @@ import java.util.List;
 
 /**
  * Tree factory for loading {@link GWTJahiaNode} items.
- * User: toto
- * Date: Dec 24, 2009
- * Time: 3:14:02 PM
+ * @author toto
  */
 public class GWTJahiaNodeTreeFactory {
     protected String repository;
@@ -215,9 +213,10 @@ public class GWTJahiaNodeTreeFactory {
         this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
     }
 
+    /**
+     * {@link RpcProxy} implementation for {@link GWTJahiaNode} objects.
+     */
     class GWTJahiaNodeProxy extends RpcProxy<List<GWTJahiaNode>> {
-        public GWTJahiaNodeProxy() {
-        }
 
         @Override
         protected void load(Object currentPage, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
@@ -254,6 +253,9 @@ public class GWTJahiaNodeTreeFactory {
     }
 
 
+    /**
+     * Implementatoin of the {@link BaseTreeLoader} for {@link GWTJahiaNode} objects.
+     */
     public class GWTJahiaNodeTreeLoader extends BaseTreeLoader<GWTJahiaNode> {
         GWTJahiaNodeTreeLoader(DataProxy proxy) {
             super(proxy);
@@ -265,6 +267,9 @@ public class GWTJahiaNodeTreeFactory {
         }
     }
 
+    /**
+     * Dedicated {@link TreeGrid} implementation for displaying {@link GWTJahiaNode} objects.
+     */
     public class GWTJahiaNodeTreeGrid extends TreeGrid<GWTJahiaNode> {
         public GWTJahiaNodeTreeGrid(TreeStore store, ColumnModel cm) {
             super(store, cm);
@@ -299,6 +304,9 @@ public class GWTJahiaNodeTreeFactory {
 
     }
 
+    /**
+     * {@link TreePanel} implementation for {@link GWTJahiaNode} objects.
+     */
     public class GWTJahiaNodeTreePanel extends TreePanel<GWTJahiaNode> {
         GWTJahiaNodeTreePanel(TreeStore store) {
             super(store);

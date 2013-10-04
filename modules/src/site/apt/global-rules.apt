@@ -7,21 +7,20 @@ Jahia Modules - Rules
   Just define a rules.drl file at the root level of the module. An example from the tasks module:
 
 +-------------------------------------
-###############################################################################
 package org.jahia.modules.tasks.rules
 
-#list any import classes here.
+//list any import classes here.
 import org.jahia.services.content.rules.*
 import org.slf4j.Logger
 
 expander rules.dsl
 
-#declare any global variables here
+//declare any global variables here
 global User user
 global Service service
 global Logger logger
 global Tasks tasks
-###############################################################################
+
 
 rule "A welcome task for the new user"
    when
@@ -88,22 +87,20 @@ end
   [[2]] And the <<<templates/rss/rules.drl>>> file content is:
 
 +---------------------------------------
-###############################################################################
 package org.jahia.modules.rss.rules
 
-#list any import classes here.
+//list any import classes here.
 import org.slf4j.Logger
 import org.jahia.services.content.rules.*
 import org.jahia.modules.tasks.rules.*
 
 expander rules.dsl
 
-#declare any global variables here
+//declare any global variables here
 global User user
 global Service service
 global Logger logger
 global Tasks tasks
-###############################################################################
 
 rule "Notification about new RSS feed"
    when
@@ -153,4 +150,13 @@ global Tasks tasks
 </beans>
 +---------------------------------------
 
-  As for the dsl all modules will share the same set of global objects so be sure that the key, you use, is unique across all modules.  
+  As for the dsl all modules will share the same set of global objects so be sure that the key, you use, is unique across all modules.
+
+* Changes from Jahia 6.5 / 6.6
+
+  As a new version of drools is now used, some changes may be required in the rules files you developed for jahia 6.5 or 6.6.
+  The rules format did not change, but you may have to look after the following changes :
+
+  * The KnowledgeHelper class has moved from <<org.drools.spi>> to <<org.drools.core.spi>>
+
+  * The # sign for comments is deprecated, comments should now use java syntax : <<//>> or <</* */>>

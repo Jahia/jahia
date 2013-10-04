@@ -41,11 +41,13 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
+
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
+
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
@@ -76,6 +78,7 @@ import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DateUtils;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.Bundle;
@@ -93,6 +96,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -419,6 +423,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
+        logger.info("Re-generating initial import file for module {} in source folder {}", moduleName, sources);
+        long startTime = System.currentTimeMillis();
         List<File> modifiedFiles = new ArrayList<File>();
 
         if (session.getLocale() != null) {
@@ -458,6 +464,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error(e13.getMessage(), e13);
         }
 
+        logger.info("Initial import for module {} re-generated in {}", moduleName, DateUtils.formatDurationWords(System.currentTimeMillis() - startTime));
+        
         return modifiedFiles;
     }
 

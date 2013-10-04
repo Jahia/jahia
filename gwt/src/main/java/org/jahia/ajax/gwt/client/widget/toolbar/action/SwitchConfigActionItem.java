@@ -43,9 +43,10 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -55,6 +56,10 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
+/**
+ * Toolbar action item for switching between editing modes.
+ */
+@SuppressWarnings("serial")
 public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     private String configurationName;
     private boolean updateSidePanel =true;
@@ -95,6 +100,9 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
         setEnabled(isNodeTypeAllowed(node));
     }
 
+    /**
+     * Performs switch to the specified edit mode configuration.
+     */
     @Override
     public void onComponentSelection() {
         if (!configurationName.equals(MainModule.getInstance().getConfig().getName())) {
@@ -106,6 +114,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
 
                 public void onApplicationFailure(Throwable throwable) {
                     linker.loaded();
+                    Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {}", new Object[] {throwable}));
                     Log.error("Error when loading EditConfiguration", throwable);
                 }
             });

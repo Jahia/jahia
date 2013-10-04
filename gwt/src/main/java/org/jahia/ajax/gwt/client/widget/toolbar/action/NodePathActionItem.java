@@ -42,11 +42,16 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Text;
+
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
+/**
+ * Displays the currently selected node path in the main module toolbar.
+ */
+@SuppressWarnings("serial")
 public class NodePathActionItem extends BaseActionItem {
-    private transient  Text text;
+    private transient Text text;
 
     @Override
     public Component getCustomItem() {

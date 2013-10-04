@@ -65,18 +65,15 @@ import java.util.Map;
 
 
 /**
- * 
+ * Helper object that contains edit mode context information. 
  *
- * @author : rincevent
- * @since JAHIA 6.5
- *        Created : 24 août 2009
+ * @author rincevent
  */
 public class EditLinker implements Linker {
 
     private GWTEditConfiguration config;
     private String mainPath;
     private String template;
-    private String param;
 
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private Module selectedModule;
@@ -91,6 +88,18 @@ public class EditLinker implements Linker {
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
 
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param mainModule
+     *            the current main module
+     * @param sidePanel
+     *            reference to the side panel
+     * @param toolbar
+     *            toolbar container object
+     * @param config
+     *            the edit mode configuration settings
+     */
     public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
                       GWTEditConfiguration config) {
         if (config.isEnableDragAndDrop()) {
@@ -103,10 +112,21 @@ public class EditLinker implements Linker {
         registerLinker();
     }
 
+    /**
+     * Returns a side panel object.
+     * 
+     * @return a side panel object
+     */
     public SidePanel getSidePanel() {
         return sidePanel;
     }
 
+    /**
+     * Sets the site panel reference.
+     * 
+     * @param sidePanel
+     *            the site panel reference
+     */
     public void setSidePanel(SidePanel sidePanel) {
         this.sidePanel = sidePanel;
         if (sidePanel != null) {
@@ -118,10 +138,20 @@ public class EditLinker implements Linker {
         }
     }
 
+    /**
+     * Returns main module object.
+     * 
+     * @return main module object
+     */
     public MainModule getMainModule() {
         return mainModule;
     }
 
+    /**
+     * Returns edit mode configuration settings.
+     * 
+     * @return edit mode configuration settings
+     */
     public GWTEditConfiguration getConfig() {
         return config;
     }
@@ -145,14 +175,30 @@ public class EditLinker implements Linker {
         registerLinker(true, updateSidePanel, updateToolbar);
     }
 
+    /**
+     * Returns edit mode drag&drop listener instance.
+     * 
+     * @return edit mode drag&drop listener instance
+     */
     public EditModeDNDListener getDndListener() {
         return dndListener;
     }
 
+    /**
+     * Returns current content locale.
+     * 
+     * @return current content locale
+     */
     public String getLocale() {
         return locale;
     }
 
+    /**
+     * Sets current content locale.
+     * 
+     * @param locale
+     *            current content locale
+     */
     public void setLocale(GWTJahiaLanguage locale) {
         if (locale != null) {
             this.locale = locale.getLanguage();
@@ -162,14 +208,30 @@ public class EditLinker implements Linker {
         JahiaGWTParameters.setLanguage(locale);
     }
 
+    /**
+     * Returns currently selected module.
+     * @return currently selected module
+     */
     public Module getSelectedModule() {
         return selectedModule;
     }
 
+    /**
+     * Registers the module selection listener.
+     * 
+     * @param selectionListener
+     *            the module selection listener
+     */
     public void setSelectionListener(ModuleSelectionListener selectionListener) {
         this.selectionListener = selectionListener;
     }
 
+    /**
+     * Callback for the module selection event.
+     * 
+     * @param selection
+     *            the currently selected module
+     */
     public void onModuleSelection(Module selection) {
         if (this.selectionListener == null) {
             selectedModule = selection;
@@ -183,12 +245,25 @@ public class EditLinker implements Linker {
         }
     }
 
-    public void onMainSelection(String mainPath, String template, String param) {
+    /**
+     * Callback for the main module selection.
+     * 
+     * @param mainPath
+     *            the main module path
+     * @param template
+     *            the template
+     */
+    public void onMainSelection(String mainPath, String template) {
         this.mainPath = mainPath;
         this.template = template;
-        this.param = param;
     }
 
+    /**
+     * Performs refresh of the main module and side panel using provided refresh data.
+     * 
+     * @param data
+     *            the refresh data
+     */
     public void refresh(Map<String, Object> data) {
         mainModule.refresh(data);
         if (sidePanel != null) {
@@ -196,6 +271,9 @@ public class EditLinker implements Linker {
         }
     }
 
+    /**
+     * Callback for the module selection event.
+     */
     public void handleNewModuleSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         toolbar.handleNewLinkerSelection();
@@ -205,9 +283,12 @@ public class EditLinker implements Linker {
         }
     }
 
+    /**
+     * Callback for the new main module selection event.
+     */
     public void handleNewMainSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
-        mainModule.handleNewMainSelection(mainPath,template, param);
+        mainModule.handleNewMainSelection(mainPath,template);
         mainModule.handleNewModuleSelection(null);
         toolbar.handleNewLinkerSelection();
         if (sidePanel != null) {
@@ -215,6 +296,9 @@ public class EditLinker implements Linker {
         }
     }
 
+    /**
+     * Callback for the main module node loaded event.
+     */
     public void handleNewMainNodeLoaded() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
         toolbar.handleNewMainNodeLoaded(mainModule.getNode());
@@ -258,29 +342,61 @@ public class EditLinker implements Linker {
     }
 
 
+    /**
+     * Performs the selection of the specified module.
+     * 
+     * @param o
+     *            the module object
+     */
     public void select(Object o) {
         if (o == null || o instanceof Module) {
             onModuleSelection((Module) o);
         }
     }
 
+    /**
+     * Indicates that a processing action is finished and we can unmask the main module area.
+     */
     public void loaded() {
         mainModule.unmask();
     }
 
+    /**
+     * Masks the main module area and adds the specified message into the loading indicator.
+     * 
+     * @param resource
+     *            the message text to show in the loading indicator
+     */
     public void loading(String resource) {
         mainModule.mask(resource, "x-mask-loading");
 
     }
 
+    /**
+     * Callback for the event of data update.
+     * 
+     * @param paths
+     *            the updated items paths
+     */
     public void setSelectPathAfterDataUpdate(List<String> paths) {
-        // todo:implements
+        // no implementation so far
     }
 
+    /**
+     * Returns the current selection context.
+     * 
+     * @return the current selection context
+     */
     public LinkerSelectionContext getSelectionContext() {
         return selectionContext;
     }
 
+    /**
+     * Performs the synchronization with the current selection as a result of (main) module change or main module node loaded event.
+     * 
+     * @param context
+     *            the type of the context; see {@link LinkerSelectionContext}
+     */
     public void syncSelectionContext(int context) {
         selectionContext.setMainNode(getMainModule().getNode());
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
@@ -294,6 +410,12 @@ public class EditLinker implements Linker {
         selectionContext.refresh(context);
     }
 
+    /**
+     * Replaces the content of the main area with the specified widget (usually content edit engine).
+     * 
+     * @param w
+     *            the widget to replace the main module area with
+     */
     public void replaceMainAreaComponent(Widget w) {
         ContentPanel m;
         if (mainAreaComponent == null) {
@@ -309,6 +431,9 @@ public class EditLinker implements Linker {
         m.layout();
     }
 
+    /**
+     * Restores the view of the main module area.
+     */
     public void restoreMainArea() {
         ContentPanel m = (ContentPanel) mainAreaComponent.getParent();
         m.remove(mainAreaComponent);
@@ -318,33 +443,67 @@ public class EditLinker implements Linker {
         mainModule.getContainer().setVScrollPosition(mainAreaVScrollPosition);
     }
 
+    /**
+     * Indicates if we need to display hidden properties.
+     * 
+     * @return <code>true</code> if teh hidden properties should be shown
+     */
     public boolean isDisplayHiddenProperties() {
         return false;
     }
 
+    /**
+     * Returns an active channel instance.
+     * 
+     * @return an active channel instance
+     */
     public GWTJahiaChannel getActiveChannel() {
         return activeChannel;
     }
 
+    /**
+     * Sets currently active channel instance.
+     * 
+     * @param activeChannel
+     *            currently active channel instance
+     */
     public void setActiveChannel(GWTJahiaChannel activeChannel) {
         this.activeChannel = activeChannel;
     }
 
+    /**
+     * Returns an identifier of the currently active channel instance if any.
+     * 
+     * @return an identifier of the currently active channel instance if any; <code>null</code> if there is no currently active channel
+     */
     public String getActiveChannelIdentifier() {
-        if (activeChannel != null) {
-            return activeChannel.getValue();
-        }
-        return null;
+        return activeChannel != null ? activeChannel.getValue() : null;
     }
 
+    /**
+     * Returns active channel variant.
+     * 
+     * @return active channel variant
+     */
     public String getActiveChannelVariant() {
         return activeChannelVariant;
     }
 
+    /**
+     * Sets active channel variant.
+     * 
+     * @param activeChannelVariant
+     *            active channel variant
+     */
     public void setActiveChannelVariant(String activeChannelVariant) {
         this.activeChannelVariant = activeChannelVariant;
     }
 
+    /**
+     * Returns an index of the currently active channel variant.
+     * 
+     * @return an index of the currently active channel variant
+     */
     public int getActiveChannelVariantIndex() {
         int result = 0;
         if (getActiveChannel() != null && getActiveChannelVariant() != null) {
@@ -359,6 +518,4 @@ public class EditLinker implements Linker {
         }
         return result;
     }
-
-
 }

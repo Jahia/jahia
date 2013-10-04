@@ -352,14 +352,24 @@ public class MainModule extends Module {
     public void makeSelected() {
         if (selectable) {
             editLinker.onModuleSelection(null);
-//            editLinker.onModuleSelection(MainModule.this);
         }
     }
 
+    /**
+     * Returns an instance of the edit linker.
+     * 
+     * @return an instance of the edit linker
+     */
     public EditLinker getEditLinker() {
         return editLinker;
     }
 
+    /**
+     * Performs refresh of the main module, based on the provided data.
+     * 
+     * @param data
+     *            the refresh data
+     */
     public void refresh(Map<String, Object> data) {
         if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
             boolean forceCssRefresh = false;
@@ -690,20 +700,8 @@ public class MainModule extends Module {
         l.layout();
     }
 
-    public void handleNewMainSelection(String path, String template, String param) {
+    public void handleNewMainSelection(String path, String template) {
         Map<String, List<String>> params = null;
-        if (param != null && param.length() > 0) {
-            params = new HashMap<String, List<String>>();
-            for (String s : param.split("&")) {
-                final String[] key = s.split("=");
-                String decodedKey = URL.decode(key[0]);
-                if (!params.containsKey(decodedKey)) {
-                    params.put(decodedKey, new ArrayList<String>());
-                }
-                params.get(decodedKey).add(URL.decode(key[1]));
-            }
-        }
-
         if ((this.path != null ? this.path.equals(path) : path == null) &&
                 (this.template != null ? this.template.equals(template) : template == null) &&
                 (this.moduleParams != null ? this.moduleParams.equals(params) : params == null)) {
@@ -714,11 +712,6 @@ public class MainModule extends Module {
         this.template = template;
 
         moduleParams = params;
-
-//        String url = getCurrentUrl();
-//        if (!frame.getCurrentFrameUrl().endsWith(url)) {
-//            goToUrl(url, false);
-//        }
 
         if (head != null) {
             ((ToolbarHeader) head).handleNewLinkerSelection();

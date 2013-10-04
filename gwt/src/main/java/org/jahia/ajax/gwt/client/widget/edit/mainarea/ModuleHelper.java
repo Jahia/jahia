@@ -211,7 +211,7 @@ public class ModuleHelper {
                                     setNodeForModule(gwtJahiaNode);
                                 }
 
-                                m.getEditLinker().onMainSelection(fmainPath, fmainTemplate, null);
+                                m.getEditLinker().onMainSelection(fmainPath, fmainTemplate);
                                 m.getEditLinker().handleNewMainSelection();
                                 m.refreshInfoLayer();
                             }

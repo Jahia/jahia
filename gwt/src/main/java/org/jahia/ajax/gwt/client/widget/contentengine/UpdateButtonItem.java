@@ -169,7 +169,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                 }
                 GWTJahiaNode node = engine.getNode();
                 if (l != null && node.equals(l.getMainModule().getNode()) && !node.getName().equals(l.getMainModule().getNode().getName())) {
-                    l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), l.getMainModule().getTemplate(), null);
+                    l.getMainModule().handleNewMainSelection(node.getPath().substring(0, node.getPath().lastIndexOf("/") + 1) + node.getName(), l.getMainModule().getTemplate());
                 }
                 data.put("node", node);
                 ((EditContentEngine) engine).closeEngine();

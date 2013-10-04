@@ -403,11 +403,14 @@ public class RenderService {
 
     private SortedSet<Template> addTemplates(Resource resource, RenderContext renderContext, String templateName,
                                                            JCRNodeWrapper templateNode, String type) throws RepositoryException {
-        String key = new StringBuffer(templateNode.getPath()).append(type).append(
-                templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                resource.getNode().getNodeTypes() + aclCacheKeyPartGenerator.getAclKeyPartForNode(renderContext, resource.getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false);
-        if (templatesCache.containsKey(key)) {
-            return templatesCache.get(key);
+        String key = null;
+        if (renderContext.isLiveMode()) {
+            key = new StringBuffer(templateNode.getPath()).append(type).append(
+                    templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
+                    resource.getNode().getNodeTypes() + aclCacheKeyPartGenerator.getAclKeyPartForNode(renderContext, resource.getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false);
+            if (templatesCache.containsKey(key)) {
+                return templatesCache.get(key);
+            }
         }
         String query =
                 "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
@@ -427,7 +430,9 @@ public class RenderService {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
             addTemplate(resource, renderContext, contentTemplateNode, templates);
         }
-        templatesCache.put(key, null, templates);
+        if (key != null) {
+            templatesCache.put(key, null, templates);
+        }
         return templates;
     }
 

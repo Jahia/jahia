@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -71,11 +72,11 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import java.util.*;
 
 /**
- * Search tab item for the side panel for performing simple queries in the content repository.
- * User: toto
- * Date: Dec 21, 2009
- * Time: 3:14:11 PM
+ * Tab item for modifying dependencies of a module.
+ * 
+ * @author Quentin Lamerand
  */
+@SuppressWarnings("serial")
 class DependenciesTabItem extends SidePanelTabItem {
 
     protected transient Grid<GWTJahiaNode> availableModules;
@@ -85,6 +86,14 @@ class DependenciesTabItem extends SidePanelTabItem {
     protected transient ListStore dependenciesStore;
     protected GWTJahiaNode curentModuleVersion;
 
+    /**
+     * Performs the creation of the tab item and populates its content. The tab contains two panes: one with the list of available modules
+     * and the other one with the list of actual module dependencies. The modules can be moved between the panes to modify the dependencies.
+     * 
+     * @param config
+     *            the tab configuration
+     * @return the created tab item
+     */
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         VBoxLayout l = new VBoxLayout();

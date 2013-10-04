@@ -46,6 +46,7 @@ import java.util.Map;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
@@ -64,10 +65,9 @@ import com.extjs.gxt.ui.client.widget.selection.AbstractStoreSelectionModel;
 
 /**
  * Represents a single tab item in the side panel.
- * User: toto
- * Date: Dec 21, 2009
- * Time: 2:21:40 PM
+ * @author toto
  */
+@SuppressWarnings("serial")
 public class SidePanelTabItem implements Serializable {
     protected GWTSidePanelTab config;
 
@@ -76,9 +76,13 @@ public class SidePanelTabItem implements Serializable {
     protected transient Map autoRefreshData;
     protected transient boolean needManualRefresh;
 
-    public SidePanelTabItem() {
-    }
-
+    /**
+     * Performs the creation of the tab item and populates its content
+     * 
+     * @param sidePanelTab
+     *            the tab configuration
+     * @return the created tab item
+     */
     public TabItem create(GWTSidePanelTab sidePanelTab) {
         this.config = sidePanelTab;
 

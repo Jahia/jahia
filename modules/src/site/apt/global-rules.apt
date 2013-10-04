@@ -64,7 +64,7 @@ end
   global Tasks tasks
 +-------------------------------------
 
-* How do I extend the domain specific language for my rules ?
+* How do I extend the domain specific language for my rules?
 
   It is also very simple. You only have to add a rules.dsl file at the root level of your module. An example from the tasks module:
 
@@ -78,25 +78,25 @@ end
   
   Here is an example of using tasks in your own module (say, Jahia RSS Feeds module):
   
-  [[1]] In <<<templates/rss/META-INF/MANIFEST.MF>>> we have:
+  [[1]] In <<<META-INF/MANIFEST.MF>>> we have:
 
 +---------------------------------------
-  depends: Jahia Tasks
+  depends: tasks
 +---------------------------------------
 
-  [[2]] And the <<<templates/rss/rules.drl>>> file content is:
+  [[2]] And the <<<META-INF/rules.drl>>> file content is:
 
 +---------------------------------------
 package org.jahia.modules.rss.rules
 
-//list any import classes here.
+// list any import classes here.
 import org.slf4j.Logger
 import org.jahia.services.content.rules.*
 import org.jahia.modules.tasks.rules.*
 
 expander rules.dsl
 
-//declare any global variables here
+// declare any global variables here
 global User user
 global Service service
 global Logger logger
@@ -128,7 +128,7 @@ global Tasks tasks
 
 * How do I add my own global objects to my rule context for execution?
 
-  Define a spring file in your module (<<<META-INF/spring/module-name.xml>>>). Define a bean of type <<<ModuleGlobalObject>>>.
+  Define a Spring file in your module (<<<META-INF/spring/module-name.xml>>>). Define a bean of type <<<ModuleGlobalObject>>>.
   Example from the tasks module:
 
 +---------------------------------------
@@ -150,12 +150,12 @@ global Tasks tasks
 </beans>
 +---------------------------------------
 
-  As for the dsl all modules will share the same set of global objects so be sure that the key, you use, is unique across all modules.
+  As for the DSL all modules will share the same set of global objects so be sure that the key, you use, is unique across all modules.
 
 * Changes from Jahia 6.5 / 6.6
 
-  As a new version of drools is now used, some changes may be required in the rules files you developed for jahia 6.5 or 6.6.
-  The rules format did not change, but you may have to look after the following changes :
+  As a new version of Drools is now used, some changes may be required in the rules files you developed for jahia 6.5 or 6.6.
+  The rules format did not change, but you may have to look after the following changes:
 
   * The KnowledgeHelper class has moved from <<org.drools.spi>> to <<org.drools.core.spi>>
 

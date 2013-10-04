@@ -5,23 +5,21 @@ Using rules
   URL mappings for news items based on their title.
 
 +-------------
-###############################################################################
 package org.jahia.modules.seo.rules
 
-#list any import classes here.
+// list any import classes here.
 import org.jahia.services.content.rules.*
 import org.jahia.services.content.JCRContentUtils
 import org.slf4j.Logger
 
 expander rules.dsl
 
-#declare any global variables here
+// declare any global variables here
 global User user
 global Service service
 global Logger logger
 global SeoService seoService
 global JCRContentUtils jcrUtils
-###############################################################################
 
 rule "Add generated URL mapping for news item"
     when

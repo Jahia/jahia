@@ -139,20 +139,34 @@ public class SidePanelTabItem implements Serializable {
         return needManualRefresh;
     }
 
+    /**
+     * Callback for module selection event.
+     * 
+     * @param selectedModule
+     *            the selected module
+     */
     public void handleNewModuleSelection(Module selectedModule) {
         // do nothing by default
     }
 
+    /**
+     * Callback for the selection of a main module.
+     * 
+     * @param path
+     *            the path of the new main module node
+     */
     public void handleNewMainSelection(String path) {
         // do nothing by default
     }
 
+    /**
+     * Callback for the main module loaded event
+     * 
+     * @param node
+     *            the main module node
+     */
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
         tab.setEnabled(config.getRequiredPermission() == null || PermissionsUtils.isPermitted(config.getRequiredPermission(), node));
-    }
-
-    public void restoreState() {
-        // do nothing by default
     }
 
     /**

@@ -128,7 +128,6 @@ public class SidePanel extends ContentPanel {
         if (storage != null && storage.getItem(config.getName() +"_selectedTab") != null) {
             int selectedTab = Integer.parseInt(storage.getItem(config.getName() + "_selectedTab"));
             tabPanel.setSelection(tabPanel.getItem(selectedTab));
-            tabs.get(selectedTab).restoreState();
         } else {
             tabPanel.setSelection(tabPanel.getItem(0));
         }

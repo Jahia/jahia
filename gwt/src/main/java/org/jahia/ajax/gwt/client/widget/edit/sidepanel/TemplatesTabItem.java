@@ -54,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridView;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -70,10 +71,9 @@ import java.util.*;
 
 /**
  * Side panel tab item for browsing the pages tree.
- * User: toto
- * Date: Dec 21, 2009
- * Time: 2:22:37 PM
+ * @autor toto
  */
+@SuppressWarnings("serial")
 public class TemplatesTabItem extends BrowseTabItem {
 
     private transient TreeGrid<GWTJahiaNode> detailTree;
@@ -85,6 +85,16 @@ public class TemplatesTabItem extends BrowseTabItem {
     private  List<String> displayedDetailTypes;
     private  List<String> hiddenDetailTypes;
 
+    
+    /**
+     * Performs the creation of the tab item and populates its content. The tab contains two panes: one with the tree of templates,
+     * available in the module, and the second pane with the detail structure of the template content.
+     * 
+     * @param config
+     *            the tab configuration
+     * @return the created tab item
+     */
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {

@@ -94,6 +94,7 @@ class DependenciesTabItem extends SidePanelTabItem {
      *            the tab configuration
      * @return the created tab item
      */
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         VBoxLayout l = new VBoxLayout();

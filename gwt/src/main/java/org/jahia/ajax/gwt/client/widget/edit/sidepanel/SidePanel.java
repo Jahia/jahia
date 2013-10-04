@@ -65,9 +65,7 @@ import java.util.Map;
 /**
  * Side panel widget that allows creation of new content using drag and drop from different sources
  * (new content panel, file repository, image repository, page tree, portlets, etc.).
- * User: toto
- * Date: Dec 18, 2009
- * Time: 5:27:33 PM
+ * @author toto
  */
 public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
@@ -75,6 +73,12 @@ public class SidePanel extends ContentPanel {
     private ToolButton refreshButton;
     private TabPanel tabPanel;
 
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param config
+     *            the edit mode configuration settings
+     */
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         this.head = new ToolbarHeader();
@@ -82,6 +86,12 @@ public class SidePanel extends ContentPanel {
         initTabs(config);
     }
 
+    /**
+     * Initializes the tabs based on the edit mode settings
+     * 
+     * @param config
+     *            the edit mode configuration settings
+     */
     public void initTabs(GWTEditConfiguration config) {
         removeAll();
 
@@ -126,6 +136,12 @@ public class SidePanel extends ContentPanel {
         add(tabPanel);
     }
 
+    /**
+     * Performs tabs initialization using edit linker object.
+     * 
+     * @param editLinker
+     *            edit linker object
+     */
     public void initWithLinker(final EditLinker editLinker) {
         ((ToolbarHeader) head).removeAllTools();
         if (config.getSidePanelToolbar() != null) {
@@ -170,6 +186,12 @@ public class SidePanel extends ContentPanel {
         }
     }
 
+    /**
+     * Callback for module selection event.
+     * 
+     * @param selectedModule
+     *            the selected module
+     */
     public void handleNewModuleSelection(Module selectedModule) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewModuleSelection(selectedModule);
@@ -177,6 +199,12 @@ public class SidePanel extends ContentPanel {
         ((ToolbarHeader)head).handleNewLinkerSelection();
     }
 
+    /**
+     * Callback for the main module loaded event
+     * 
+     * @param node
+     *            the main module node
+     */
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewMainNodeLoaded(node);
@@ -185,6 +213,12 @@ public class SidePanel extends ContentPanel {
         layout();
     }
 
+    /**
+     * Callback for the selection of a main module.
+     * 
+     * @param path
+     *            the path of the new main module node
+     */
     public void handleNewMainSelection(String path) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewMainSelection(path);
@@ -192,6 +226,12 @@ public class SidePanel extends ContentPanel {
         ((ToolbarHeader)head).handleNewLinkerSelection();
     }
 
+    /**
+     * Specifies the items to be refreshed manually.
+     * 
+     * @param data
+     *            the refresh data
+     */
     public void markForManualRefresh(Map<String, Object> data) {
         for (SidePanelTabItem tab : tabs) {
             tab.markForManualRefresh(data);
@@ -199,6 +239,12 @@ public class SidePanel extends ContentPanel {
         updateRefreshButton();
     }
 
+    /**
+     * Performs the refresh of the side panel tabs, based on the provided data.
+     * 
+     * @param data
+     *            the refresh data
+     */
     public void refresh(Map<String, Object> data) {
         SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
 
@@ -212,6 +258,12 @@ public class SidePanel extends ContentPanel {
         updateRefreshButton();
     }
 
+    /**
+     * Sets the edit mode configuration settings.
+     * 
+     * @param config
+     *            the edit mode configuration settings
+     */
     public void setConfig(GWTEditConfiguration config) {
         this.config = config;
         setVisible(!config.getTabs().isEmpty());

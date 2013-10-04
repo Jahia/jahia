@@ -362,7 +362,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     private Button generateStartWorkflowButton(final GWTJahiaWorkflowDefinition wf) {
-        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ":" + wf.getName());
+        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ":" + wf.getDisplayName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

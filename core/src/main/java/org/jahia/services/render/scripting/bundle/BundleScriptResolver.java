@@ -321,6 +321,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                     }
                 }
             }
+            if (type.getTemplatePackage() != null && installedModules != null && !installedModules.contains(type.getSystemId())) {
+                for (String templateType : templateTypes) {
+                    getViewsSet(type, views, templateType, type.getTemplatePackage());
+                }
+            }
             if (!defaultModuleProcessed) {
                 JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
                 if (defaultModule != null) {

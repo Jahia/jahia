@@ -91,8 +91,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private KieSession kieSession;
     private TaskService taskService;
     private JBPMListener listener = new JBPMListener(this);
-    private Resource[] processes;
-    private Resource[] mailTemplates;
     private MailTemplateRegistry mailTemplateRegistry;
     private RuntimeManager runtimeManager;
     private RuntimeEngine runtimeEngine;
@@ -100,21 +98,13 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     private EntityManagerFactory emf;
     private EntityManager em;
     private Map<String, WorkItemHandler> workItemHandlers = new TreeMap<String, WorkItemHandler>();
-    private Map<String, AbstractTaskLifeCycleEventListener> taskAssignmentListeners = new TreeMap<String, AbstractTaskLifeCycleEventListener>();
+    private Map<String, AbstractTaskLifeCycleEventListener> taskLifeCycleEventListeners = new TreeMap<String, AbstractTaskLifeCycleEventListener>();
     private Pipeline peopleAssignmentPipeline;
     private JahiaUserGroupCallback jahiaUserGroupCallback;
     private Map<ReleaseId, KieModule> kieModules = new HashMap<ReleaseId, KieModule>();
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
-    }
-
-    public void setProcesses(Resource[] processes) {
-        this.processes = processes;
-    }
-
-    public void setMailTemplates(Resource[] mailTemplates) {
-        this.mailTemplates = mailTemplates;
     }
 
     public void setKey(String key) {
@@ -175,21 +165,25 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {
-        kieSession = null;
         workItemHandlers.put(name, workItemHandler);
+        if (kieSession != null) {
+            kieSession.getWorkItemManager().registerWorkItemHandler(name,workItemHandler);
+        }
     }
 
     public WorkItemHandler unregisterWorkItemHandler(String name) {
-        kieSession = null;
+        if (kieSession != null) {
+            kieSession.getWorkItemManager().registerWorkItemHandler(name,null);
+        }
         return workItemHandlers.remove(name);
     }
 
     public void registerTaskLifeCycleEventListener(String name, AbstractTaskLifeCycleEventListener taskAssignmentListener) {
-        taskAssignmentListeners.put(name, taskAssignmentListener);
+        taskLifeCycleEventListeners.put(name, taskAssignmentListener);
     }
 
     public AbstractTaskLifeCycleEventListener unregisterTaskLifeCycleEventListener(String name) {
-        return taskAssignmentListeners.remove(name);
+        return taskLifeCycleEventListeners.remove(name);
     }
 
     public void start() {
@@ -223,13 +217,13 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             kieSession.getWorkItemManager().registerWorkItemHandler(workItemHandlerEntry.getKey(), workItemHandlerEntry.getValue());
         }
 
-        for (Map.Entry<String, AbstractTaskLifeCycleEventListener> taskAssignmentListenerEntry : taskAssignmentListeners.entrySet()) {
-            AbstractTaskLifeCycleEventListener taskAssignmentListener = taskAssignmentListenerEntry.getValue();
-            taskAssignmentListener.setEnvironment(kieSession.getEnvironment());
-            taskAssignmentListener.setObservationManager(observationManager);
-            taskAssignmentListener.setTaskService(taskService);
+        for (Map.Entry<String, AbstractTaskLifeCycleEventListener> taskLifeCycleEventListenerEntry : taskLifeCycleEventListeners.entrySet()) {
+            AbstractTaskLifeCycleEventListener taskLifeCycleEventListener = taskLifeCycleEventListenerEntry.getValue();
+            taskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
+            taskLifeCycleEventListener.setObservationManager(observationManager);
+            taskLifeCycleEventListener.setTaskService(taskService);
             if (taskService instanceof EventService) {
-                ((EventService) taskService).registerTaskLifecycleEventListener(taskAssignmentListener);
+                ((EventService) taskService).registerTaskLifecycleEventListener(taskLifeCycleEventListener);
             }
         }
 

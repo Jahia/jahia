@@ -407,7 +407,9 @@ public class PrincipalViewHelper implements Serializable {
         if (siteID > 0) {
             try {
                 JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                return adjustStringSize(jahiaSite.getTitle(), size.intValue());
+                if (jahiaSite != null) {
+                    return adjustStringSize(jahiaSite.getTitle(), size.intValue());
+                }
             } catch (JahiaException je) {
                 logger.error("Error while retrieving site id=" + siteID, je);
             }

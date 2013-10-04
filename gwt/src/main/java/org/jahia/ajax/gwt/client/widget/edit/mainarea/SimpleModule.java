@@ -73,9 +73,9 @@ import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
 import java.util.*;
 
 /**
- * User: toto
- * Date: Aug 19, 2009
- * Time: 12:25:19 PM
+ * Represents an editable module (area) in the rendered page.
+ * 
+ * @author Thomas Draier
  */
 public class SimpleModule extends Module {
     protected boolean hasDragDrop = true;

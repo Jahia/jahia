@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface defining what is a mdoule on a rendered page in edit mode
+ * Interface defining what is a module on a rendered page in edit mode
  * A module could be selected, edited, dragged etc.
  */
 public abstract class Module extends LayoutContainer {
@@ -79,6 +79,7 @@ public abstract class Module extends LayoutContainer {
     protected int visibleChildCount = 0;
 
     public Module() {
+        super();
     }
 
     protected Module(String id, String path, Element divElement, MainModule mainModule) {

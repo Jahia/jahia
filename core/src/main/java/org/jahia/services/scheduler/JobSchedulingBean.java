@@ -68,6 +68,8 @@ import org.springframework.beans.factory.InitializingBean;
 public class JobSchedulingBean implements InitializingBean {
 
     private static Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
+    
+    private boolean disabled;
 
     private boolean isRamJob;
 
@@ -82,6 +84,9 @@ public class JobSchedulingBean implements InitializingBean {
     private List<Trigger> triggers = new LinkedList<Trigger>();
 
     public void afterPropertiesSet() throws Exception {
+        if (disabled) {
+            return;
+        }
         if (overwriteExisting == null) {
             overwriteExisting = settingsBean.isDevelopmentMode();
         }
@@ -181,6 +186,10 @@ public class JobSchedulingBean implements InitializingBean {
         }
     }
 
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+    
     public void setJobDetail(JobDetail jobDetail) {
         this.jobDetail = jobDetail;
     }

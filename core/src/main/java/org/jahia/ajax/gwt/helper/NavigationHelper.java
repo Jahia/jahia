@@ -179,21 +179,23 @@ public class NavigationHelper {
                 if (logger.isDebugEnabled()) {
                     logger.debug("----------");
                     if(nodeTypes != null) {
-                        for (String s : nodeTypes) {
-                            logger.debug(
+                    	for (String s : nodeTypes) {
+                    		logger.debug(
                                 "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" +
                                         matchNodeType + "]");
-                        }
+                    	}
                     }
-                    logger.debug("----------");
+                    logger.debug("----------"); 
                 }
                 boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
                 boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
                 boolean hasNodes = false;
-                try {
-                    hasNodes = childNode.hasNodes();
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                if (!mimeTypeFilter) { // we do not need to check for sub-nodes if the mimeTypeFilter is already true
+                    try {
+                        hasNodes = childNode.hasNodes();
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
                 // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
                 if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
@@ -201,6 +203,15 @@ public class NavigationHelper {
                     gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
                     if (hasOrderableChildren) {
                         gwtChildNode.set("index", new Integer(i++));
+                    }
+                    NodeIterator ni = childNode.getNodes();
+                    gwtChildNode.setHasChildren(false);
+                    while (ni.hasNext()) {
+                        Node n = ni.nextNode();
+                        if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
+                            gwtChildNode.setHasChildren(true);
+                            break;
+                        }
                     }
                     gwtNodeChildren.add(gwtChildNode);
                 } else if (checkSubChild && childNode.hasNodes()) {
@@ -211,40 +222,6 @@ public class NavigationHelper {
                 // Log this issue at warn level as it might just be that the node is being deleted
                 logger.warn(e.getMessage(), e);
             }
-<<<<<<< .working
-            boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
-            boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
-            boolean hasNodes = false;
-            if (!mimeTypeFilter) { // we do not need to check for sub-nodes if the mimeTypeFilter is already true
-                try {
-                    hasNodes = childNode.hasNodes();
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
-            if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
-                GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
-                gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
-                if (hasOrderableChildren) {
-                    gwtChildNode.set("index", new Integer(i++));
-                }
-                NodeIterator ni = childNode.getNodes();
-                gwtChildNode.setHasChildren(false);
-                while (ni.hasNext()) {
-                    Node n = ni.nextNode();
-                    if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
-                        gwtChildNode.setHasChildren(true);
-                        break;
-                    }
-                }
-                gwtNodeChildren.add(gwtChildNode);
-            } else if (checkSubChild && childNode.hasNodes()) {
-                getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
-                        displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates, uiLocale);
-            }
-=======
->>>>>>> .merge-right.r47591
         }
     }
 

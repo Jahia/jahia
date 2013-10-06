@@ -526,20 +526,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 inputStream.close();
                 inputStream = new ByteArrayInputStream(stream.getData());
             }
-<<<<<<< .working
             TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
             Transformer transformer = transformerFactory.newTransformer(new StreamSource(new File(xsl)));
             transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
-=======
-            XSLTransformer xslTransformer = new XSLTransformer(xsl);
-            SAXBuilder saxBuilder = new SAXBuilder(false);
-            saxBuilder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",
-                    false);
-            Document document = saxBuilder.build(inputStream);
-            Document document1 = xslTransformer.transform(document);
-            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
-            xmlOutputter.output(document1, outputStream);
->>>>>>> .merge-right.r47581
         }
     }
 

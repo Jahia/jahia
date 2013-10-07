@@ -342,6 +342,17 @@ public class WorkflowService implements BeanPostProcessor {
                     }
                 }
                 try {
+                    if (!permPath.contains("/")) {
+                        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='"+permPath+"'", Query.JCR_SQL2);
+                        NodeIterator ni = q.execute().getNodes();
+                        if (ni.hasNext()) {
+                            permPath = StringUtils.substringAfter(ni.nextNode().getPath(),"/permissions");
+
+                        } else {
+                            return principals;
+                        }
+                    }
+
                     Set<String> roles = new HashSet<String>();
                     Set<String> extPerms = new HashSet<String>();
 

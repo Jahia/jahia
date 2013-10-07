@@ -208,7 +208,7 @@ public class ContentTypeTree extends LayoutContainer {
         }
     }
 
-    public void fillStore(List<String> paths, List<String> types, List<String> excludedTypes, boolean includeSubTypes, boolean includeNonDependentModules) {
+    public void fillStore(List<String> types, List<String> excludedTypes, boolean includeSubTypes) {
         store.removeAll();
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(types, excludedTypes, includeSubTypes,
                 new BaseAsyncCallback<List<GWTJahiaNodeType>>() {

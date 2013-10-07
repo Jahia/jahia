@@ -156,6 +156,14 @@ public class EditLinker implements Linker {
         return config;
     }
 
+    /**
+     * Switch edit mode configuration
+     *
+     * @param config
+     * @param newPath
+     * @param updateSidePanel
+     * @param updateToolbar
+     */
     public void switchConfig(GWTEditConfiguration config, String newPath, boolean updateSidePanel, boolean updateToolbar) {
         this.config = config;
 
@@ -171,7 +179,7 @@ public class EditLinker implements Linker {
         if (updateToolbar) {
             toolbar.setConfig(config);
         }
-        EditPanelViewport.setViewportStyleName(config.getName());
+        EditPanelViewport.getInstance().setViewportStyleName(config.getName());
         registerLinker(true, updateSidePanel, updateToolbar);
     }
 

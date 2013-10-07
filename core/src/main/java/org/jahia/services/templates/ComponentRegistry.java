@@ -70,19 +70,7 @@ public class ComponentRegistry {
 
     private static final Ordering<String> CASE_INSENSITIVE_ORDERING = Ordering.from(String.CASE_INSENSITIVE_ORDER);
 
-    private static final String JMIX_DROPPABLE_CONTENT = "jmix:droppableContent";
-
-    protected static final String JMIX_STUDIO_ONLY = "jmix:studioOnly";
-
-    protected static final String JNT_COMPONENT = "jnt:component";
-
-    protected static final String JNT_COMPONENT_FOLDER = "jnt:componentFolder";
-
-    private static final String JNT_SIMPLE_COMPONENT = "jnt:simpleComponent";
-
     private static Logger logger = LoggerFactory.getLogger(ComponentRegistry.class);
-
-    private static final String NODE_COMPONENTS = "components";
 
     private static boolean allowType(ExtendedNodeType t, List<String> includeTypeList,
                                      List<String> excludeTypeList) {

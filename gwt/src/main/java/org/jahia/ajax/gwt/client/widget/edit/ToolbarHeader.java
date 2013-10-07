@@ -40,19 +40,16 @@
 
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 

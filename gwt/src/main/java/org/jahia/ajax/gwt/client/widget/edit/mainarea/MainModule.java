@@ -659,6 +659,14 @@ public class MainModule extends Module {
         return config;
     }
 
+    /**
+     * Set edit mode configuration and location.
+     * A path can be explicitly specified.
+     * It can also be stored and recalled from the HTML5 web storage, if available.
+     *
+     * @param config
+     * @param newPath
+     */
     public void setConfig(GWTEditConfiguration config, String newPath) {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
 

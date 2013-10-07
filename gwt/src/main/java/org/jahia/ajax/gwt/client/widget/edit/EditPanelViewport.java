@@ -50,13 +50,17 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 public class EditPanelViewport extends Viewport {
     private static EditPanelViewport instance;
 
-    public EditPanelViewport(String path, String template, String nodeTypes, String locale,
+    public static EditPanelViewport createInstance(String path, String template, String nodeTypes, String locale,
                              GWTEditConfiguration config) {
-        super();
-        instance = this;
-        setLayout(new FitLayout());
-        setStyleName("x-viewport-" + config.getName());
-        createUI(path, template, nodeTypes, locale, config);
+        instance = new EditPanelViewport();
+        instance.setLayout(new FitLayout());
+        instance.setViewportStyleName(config.getName());
+        instance.createUI(path, template, nodeTypes, locale, config);
+        return instance;
+    }
+
+    public static EditPanelViewport getInstance() {
+        return instance;
     }
 
     public void createUI(String path, String template, String nodeTypes, String locale,
@@ -67,8 +71,8 @@ public class EditPanelViewport extends Viewport {
         add(layout);
     }
 
-    public static void setViewportStyleName(String name) {
-        instance.setStyleName("x-viewport-" + name);
+    public void setViewportStyleName(String name) {
+        setStyleName("x-viewport-" + name);
     }
 
 

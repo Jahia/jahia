@@ -85,7 +85,7 @@ public class EditEntryPoint extends CommonEntryPoint {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
                     DOM.setInnerHTML(panel.getElement(), "");
-                    panel.add(new EditPanelViewport(
+                    panel.add(EditPanelViewport.createInstance(
                             path,
                             DOM.getElementAttribute(panel.getElement(), "template"), 
                             DOM.getElementAttribute(panel.getElement(), "nodetypes"),

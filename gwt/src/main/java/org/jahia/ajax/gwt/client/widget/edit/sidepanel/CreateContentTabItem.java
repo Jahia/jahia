@@ -82,8 +82,7 @@ class CreateContentTabItem extends SidePanelTabItem {
 
         initExcludedNodeTypes(linker);
 
-        contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
-//        contentTypeTree.setLinker(linker);
+        contentTypeTree.fillStore(baseTypes, excludedNodeTypes, true);
         if (linker.getConfig().isEnableDragAndDrop()) {
             gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
             gridDragSource.addDNDListener(linker.getDndListener());
@@ -120,7 +119,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     @Override
     public void doRefresh() {
         initExcludedNodeTypes(editLinker);
-        contentTypeTree.fillStore(paths, baseTypes, excludedNodeTypes, true, true);
+        contentTypeTree.fillStore(baseTypes, excludedNodeTypes, true);
     }
 
 }

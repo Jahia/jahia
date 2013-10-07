@@ -80,7 +80,7 @@ public class AreaModule extends SimpleModule {
     private final LayoutContainer content;
     private String conflictsWith = null;
 
-    private int MIN_WIDTH = 100;
+    private static int MIN_WIDTH = 100;
     
     public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
         super(id, path, divElement, mainModule);
@@ -208,7 +208,6 @@ public class AreaModule extends SimpleModule {
 
     public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
         if (node == null) {
-            String areaType = this.areaType;
             JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
                     areaType, null,null,null,null, null, null, true, new AsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {

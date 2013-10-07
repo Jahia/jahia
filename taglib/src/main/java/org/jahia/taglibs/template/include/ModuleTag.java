@@ -190,8 +190,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         try {
             RenderContext renderContext =
                     (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-//            if (true)
-//            throw new RuntimeException();
             buffer = new StringBuffer();
 
             Resource currentResource =
@@ -277,13 +275,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     boolean canEdit = node.hasPermission("jcr:write") && canEdit(renderContext) && contributeAccess(renderContext,
                             resource.getNode()) && !isExcluded(renderContext, resource);
 
-                    pageContext.getRequest().setAttribute("editableModule", canEdit && checkStudioLock(renderContext, node));
+                    boolean nodeEditable = checkNodeEditable(renderContext, node);
+                    pageContext.getRequest().setAttribute("editableModule", canEdit && nodeEditable);
                     if (canEdit) {
                         String type = getModuleType(renderContext);
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
                         String add = "";
-                        if (!checkStudioLock(renderContext, node)) {
+                        if (!nodeEditable) {
                             add = "editable=\"false\"";
                         }
                         if (contributeTypes != null) {
@@ -315,7 +314,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
                         printModuleEnd();
                     } else {
-//                        resource.getModuleParams().put("readOnly", Boolean.TRUE);
                         currentResource.getDependencies().add(node.getCanonicalPath());
                         if (isVisible) {
                             render(renderContext, resource);
@@ -331,7 +329,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
-//                }
             }
         } catch (RenderException ex) {
             throw new JspException(ex.getCause());
@@ -400,9 +397,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (renderContext.getRequest().getAttribute("areaListResource") != null) {
             contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
         }
-//        if (contributeNode == null) {
-//            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
-//        }
 
         try {
             if (node.hasProperty("j:contributeTypes")) {
@@ -504,17 +498,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return Resource.CONFIGURATION_MODULE;
     }
 
-    protected boolean checkStudioLock(RenderContext renderContext, JCRNodeWrapper node) {
+    protected boolean checkNodeEditable(RenderContext renderContext, JCRNodeWrapper node) {
         try {
             if (node != null && !renderContext.isEditable(node)) {
                 return false;
             }
-////                if (renderContext.getMainResource().getNode().getLockInfos().get(null) == null ||
-////                        !renderContext.getMainResource().getNode().getLockInfos().get(null).contains(renderContext.getUser().getUsername()+":user")) {
-////                    return false;
-////                }
         } catch (RepositoryException e) {
-
+            logger.error("Failed to check if the node " + node.getPath() + " is editable.", e);
         }
         return true;
     }
@@ -663,7 +653,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
 
-        if (canEdit(renderContext) && checkStudioLock(renderContext, currentResource.getNode()) && contributeAccess(renderContext, currentResource.getNode())) {
+        if (canEdit(renderContext) && checkNodeEditable(renderContext, currentResource.getNode()) && contributeAccess(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
                 List<String> contributeTypes = contributeTypes(renderContext, currentResource.getNode());
                 if (contributeTypes != null) {

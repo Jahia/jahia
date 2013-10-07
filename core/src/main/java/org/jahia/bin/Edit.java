@@ -75,7 +75,6 @@ public class Edit extends Render {
             context.setContributionMode(true);
         }
         context.setEditModeConfig(editConfiguration);
-//        context.setServletPath(editConfiguration.getDefaultUrlMapping());
         return context;
     }
 

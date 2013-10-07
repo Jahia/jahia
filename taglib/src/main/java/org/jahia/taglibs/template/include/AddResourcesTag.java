@@ -100,19 +100,15 @@ public class AddResourcesTag extends AbstractJahiaTag {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-//        try {
         if (isVisible) {
-            JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule",
-                    PageContext.REQUEST_SCOPE);
             JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                     getRenderContext().getSite().getTemplatePackageName());
             if (!addResources(getRenderContext(), templatesSetPackage, false)) {
+                JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule",
+                        PageContext.REQUEST_SCOPE);
                 addResources(getRenderContext(), templatesPackage, true);
             }
         }
-//        } catch (RepositoryException e) {
-//            logger.error(e.getMessage(), e);
-//        }
         resetState();
         return super.doEndTag();
     }

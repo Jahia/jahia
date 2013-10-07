@@ -75,6 +75,7 @@ import com.google.gwt.user.client.ui.Image;
 
 
 /**
+ * Module where a content can be created by clicking on a button or drag'n'dropping on it a content type
  *
  * User: toto
  * Date: Aug 19, 2009
@@ -86,7 +87,7 @@ public class PlaceholderModule extends Module {
     private LayoutContainer pasteButton;
     private LayoutContainer pasteAsReferenceButton;
 
-    private int MIN_WIDTH = 100;
+    private static int MIN_WIDTH = 100;
     
     public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());

@@ -207,7 +207,7 @@ public class URLGenerator {
             return null;
         }
         String url;
-        if (context.getSite() != null && context.getSite().getPath().startsWith("/modules")) {
+        if (context.getSite() != null && context.getSite().getPath().startsWith("/modules/")) {
             url = "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale()
                     + context.getSite().getPath() + ".html";
         } else {

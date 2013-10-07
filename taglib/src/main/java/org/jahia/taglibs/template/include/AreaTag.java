@@ -114,7 +114,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     protected void missingResource(RenderContext renderContext, Resource resource)
             throws RepositoryException, IOException {
-        if (renderContext.isEditMode() && checkStudioLock(renderContext, node)) {
+        if (renderContext.isEditMode() && checkNodeEditable(renderContext, node)) {
             try {
                 constraints = ConstraintsHelper
                         .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)), null);

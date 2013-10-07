@@ -803,6 +803,20 @@ public class ContentDefinitionHelper {
         return items;
     }
 
+    /**
+     * Returns a tree of node types and sub-types with name and label populated that are the
+     * sub-types of the specified node types.
+     *
+     *
+     * @param nodeTypes
+     * @param excludedNodeTypes
+     * @param includeSubTypes
+     * @param site
+     * @param uiLocale
+     * @param session
+     * @return a tree of node types
+     * @throws GWTJahiaServiceException
+     */
     public List<GWTJahiaNodeType> getContentTypesAsTree(final List<String> nodeTypes, final List<String> excludedNodeTypes, final boolean includeSubTypes, final JCRSiteNode site,
                                                         final Locale uiLocale, final JCRSessionWrapper session)
             throws GWTJahiaServiceException {

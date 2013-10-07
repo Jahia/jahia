@@ -380,9 +380,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 //                }
 
                 Set<WorkflowAction> workflowActions = new HashSet<WorkflowAction>();
-                List<Long> taskIds = taskService.getTasksByProcessInstanceId(Long.parseLong(processId));
-                for (Long taskId : taskIds) {
-                    Task task = taskService.getTaskById(taskId);
+                List<TaskSummary> taskSummaries = taskService.getTasksByStatusByProcessInstanceId(Long.parseLong(processId), OPEN_STATUS_LIST, "en");
+                for (TaskSummary taskSummary : taskSummaries) {
+                    Task task = taskService.getTaskById(taskSummary.getId());
                     String taskName = task.getNames().get(0).getText();
 //                    if (connectionIds.contains(taskName)) {
                         WorkflowAction workflowAction = convertToWorkflowTask(task, locale, ksession);
@@ -784,7 +784,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     }
                 }
 
-                List<TaskSummary> tasksIds = taskService.getTasksByStatusByProcessInstanceId(Long.parseLong(processId), Arrays.asList(Status.Created, Status.InProgress, Status.Ready, Status.Reserved), locale != null ? locale.getLanguage() : null);
+                List<TaskSummary> tasksIds = taskService.getTasksByStatusByProcessInstanceId(Long.parseLong(processId), OPEN_STATUS_LIST, "en");
                 for (TaskSummary taskSummary : tasksIds) {
                     final HistoryWorkflowTask workflowTask = new HistoryWorkflowTask(Long.toString(taskSummary.getId()),
                             Long.toString(taskSummary.getProcessInstanceId()),

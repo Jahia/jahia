@@ -46,6 +46,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ProcessorEndpoint;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
@@ -70,9 +71,7 @@ import java.util.regex.Pattern;
  * This service is responsible for listening to the metrics log and then constructing a history
  * table that we can query to know all the history of a content object.
  * <p/>
- * User: loom
- * Date: Oct 5, 2010
- * Time: 11:29:45 AM
+ * @author loom
  */
 public class ContentHistoryService implements Processor, CamelContextAware {
     private transient static Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
@@ -92,7 +91,6 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
     private static final Pattern PATTERN = Pattern.compile(
             "([0-9\\-]+ [0-9:,]+) user ([\\sa-zA-Z@.0-9_\\-]*) ip ([0-9.:]*) session ([a-zA-Z@0-9_\\-\\/]*) identifier ([a-zA-Z@0-9_\\-\\/:]*) path (.*) nodetype ([a-zA-Z:]*) (.*)");
-    private static final Pattern ARG_SPLIT_PATTERN = Pattern.compile(" ");
     private CamelContext camelContext;
     private String from;
     private Set<String> ignoreProperties = new HashSet<String>();
@@ -128,22 +126,18 @@ public class ContentHistoryService implements Processor, CamelContextAware {
         if (matcher.matches()) {
             processedCount++;
             processedSinceLastReport++;
-            final String dateStr = matcher.group(1);
-            final Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS").parse(dateStr);
-            final String userKey = matcher.group(2);
 //            final String ipAddress = matcher.group(3);
 //            final String httpSessionId = matcher.group(4);
-            final String nodeIdentifier = matcher.group(5);
-            final String path = matcher.group(6);
 //            final String nodeType = matcher.group(7);
             final String args = matcher.group(8);
             String propertyName = null;
-            String[] argList = ARG_SPLIT_PATTERN.split(args);
+            String[] argList = args != null && args.length() > 0 ? StringUtils.split(args, ' ')
+                    : ArrayUtils.EMPTY_STRING_ARRAY;
             String objectType = null;
             String action = null;
             if (argList.length >= 2) {
-                objectType = argList[0].trim();
-                action = argList[1].trim();
+                objectType = argList[0];
+                action = argList[1];
             }
 
             if (VIEWED_ACTION_NAME.equals(action)) {
@@ -151,6 +145,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 return;
             }
 
+            final String path = matcher.group(6);
             if ("property".equals(objectType)) {
                 int lastSlashPos = path.lastIndexOf("/");
                 if (lastSlashPos > -1) {
@@ -166,6 +161,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 return;
             }
 
+            final String nodeIdentifier = matcher.group(5);
             if ((nodeIdentifier != null) && (ignoreNodeTypes.size() > 0)) {
                 final JCRTemplate tpl = JCRTemplate.getInstance();
                 String matchingNodeType = null;
@@ -208,6 +204,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 if (latestTimeProcessed == 0) {
                     initTimestamps(session);
                 }
+                final Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS").parse(matcher.group(1));
                 if (latestTimeProcessed > date.getTime()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping content history entry since it's date {} is older than last processed date", date);
@@ -261,14 +258,15 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     historyEntry.setDate(date != null ? date.getTime() : null);
                     historyEntry.setPath(path);
                     historyEntry.setUuid(nodeIdentifier);
+                    final String userKey = matcher.group(2);
                     historyEntry.setUserKey(userKey);
                     historyEntry.setAction(action);
                     historyEntry.setPropertyName(propertyName);
                     String historyMessage = "";
                     if (PUBLISHED_ACTION_NAME.equals(action)) {
                         if (argList.length >= 8) {
-                            String sourceWorkspace = argList[3].trim();
-                            String destinationWorkspace = argList[5].trim();
+                            String sourceWorkspace = argList[3];
+                            String destinationWorkspace = argList[5];
                             String historyComments = "";
                             int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
                             if (commentsPos > -1) {

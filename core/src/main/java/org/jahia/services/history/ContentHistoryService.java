@@ -54,9 +54,11 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -71,7 +73,7 @@ import java.util.regex.Pattern;
  * Time: 11:29:45 AM
  */
 public class ContentHistoryService implements Processor, CamelContextAware {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHistoryService.class);
+    private transient static Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.SessionFactory sessionFactoryBean;
     private volatile long processedCount = 0;
@@ -84,7 +86,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     private volatile String lastPropertyProcessed = null;
     private volatile String lastActionProcessed = null;
 
-    private static ContentHistoryService instance;
+    private static ContentHistoryService instance = new ContentHistoryService();
 
     private static final Pattern PATTERN = Pattern.compile(
             "([0-9\\-]+ [0-9:,]+) user ([\\sa-zA-Z@.0-9_\\-]*) ip ([0-9.:]*) session ([a-zA-Z@0-9_\\-\\/]*) identifier ([a-zA-Z@0-9_\\-\\/:]*) path (.*) nodetype ([a-zA-Z:]*) (.*)");
@@ -110,15 +112,12 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     }
 
     public static ContentHistoryService getInstance() {
-        if (instance == null) {
-            instance = new ContentHistoryService();
-        }
         return instance;
     }
 
-    public void start() {
+    private void initTimestamps(Session session) {
         timeSinceLastReport = System.currentTimeMillis();
-        latestTimeProcessed = getMostRecentTimeInHistory();
+        latestTimeProcessed = getMostRecentTimeInHistory(session);
     }
 
     public void process(Exchange exchange) throws Exception {
@@ -204,7 +203,9 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             String whatDidWeDo = "inserted";
             boolean shouldSkipInsertion = false;
             try {
-
+                if (latestTimeProcessed == 0) {
+                    initTimestamps(session);
+                }
                 if (latestTimeProcessed > date.getTime()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping content history entry since it's date {} is older than last processed date", date);
@@ -361,16 +362,12 @@ public class ContentHistoryService implements Processor, CamelContextAware {
         }
     }
 
-    public long getMostRecentTimeInHistory() {
+    public long getMostRecentTimeInHistory(Session session) {
         Long timeStamp = -1L;
-        Session session = sessionFactoryBean.openSession();
-
         try {
             timeStamp = (Long) session.createQuery("select max(c.date) as latestDate from HistoryEntry c").uniqueResult();
         } catch (Exception e) {
             logger.error("Error while trying to retrieve latest date processed.", e);
-        } finally {
-            session.close();
         }
         return timeStamp != null ? timeStamp : -1;
     }

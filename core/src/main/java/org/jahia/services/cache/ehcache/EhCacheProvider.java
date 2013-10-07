@@ -41,6 +41,7 @@
 package org.jahia.services.cache.ehcache;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.CacheImplementation;
@@ -54,13 +55,11 @@ import java.lang.management.ManagementFactory;
 
 /**
  * EHCache based cache provider implementation.
- * User: Serge Huber
- * Date: 29 mars 2007
- * Time: 17:25:33
+ * @author Serge Huber
  */
 public class EhCacheProvider implements CacheProvider {
 
-    final private static Logger logger = org.slf4j.LoggerFactory.getLogger (EhCacheProvider.class);
+    final private static Logger logger = LoggerFactory.getLogger(EhCacheProvider.class);
 
     private CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
@@ -68,15 +67,15 @@ public class EhCacheProvider implements CacheProvider {
     private boolean statisticsEnabled;
     private boolean jmxActivated = true;
     private boolean initialized = false;
-    
+
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
         if (initialized) {
             return;
         }
         cacheManager = CacheManager.create(getClass().getResource(configurationResource));
         if (jmxActivated) {
-            ManagementService.registerMBeans(cacheManager,
-                    ManagementFactory.getPlatformMBeanServer(), true, true, true, true, true);
+            ManagementService.registerMBeans(cacheManager, ManagementFactory.getPlatformMBeanServer(), true, true,
+                    true, true, true);
         }
         initialized = true;
     }
@@ -108,8 +107,8 @@ public class EhCacheProvider implements CacheProvider {
         this.groupsSizeLimit = groupsSizeLimit;
     }
 
-	public void setConfigurationResource(String configurationResource) {
-    	this.configurationResource = configurationResource;
+    public void setConfigurationResource(String configurationResource) {
+        this.configurationResource = configurationResource;
     }
 
     public void setJmxActivated(boolean jmxActivated) {
@@ -117,10 +116,10 @@ public class EhCacheProvider implements CacheProvider {
     }
 
     public void setStatisticsEnabled(boolean statisticsEnabled) {
-	    this.statisticsEnabled = statisticsEnabled;
+        this.statisticsEnabled = statisticsEnabled;
     }
 
-	public boolean isStatisticsEnabled() {
-	    return statisticsEnabled;
+    public boolean isStatisticsEnabled() {
+        return statisticsEnabled;
     }
 }

@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
@@ -55,7 +56,6 @@ import org.apache.tika.parser.CompositeParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 
@@ -65,9 +65,9 @@ import org.xml.sax.SAXException;
  * 
  * @author Sergiy Shyrkov
  */
-public class TextExtractionService implements InitializingBean {
+public class TextExtractionService {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractionService.class);
+    private static Logger logger = LoggerFactory.getLogger(TextExtractionService.class);
 
     private static CompositeParser configureParser(Resource config, boolean autoDetectType) {
         CompositeParser parser = null;
@@ -147,13 +147,84 @@ public class TextExtractionService implements InitializingBean {
 
     private boolean enabled = true;
 
+    private boolean initialized;
+
     private int maxExtractedCharacters = 100000;
 
     private CompositeParser parser;
 
     private CompositeParser parserMetadata;
+    
+    /**
+     * Performs a check if the provided content can be handled by currently
+     * configured parsers. <br>
+     * The given document stream is consumed but not closed by this method. The
+     * responsibility to close the stream remains on the caller.
+     * 
+     * 
+     * @param stream the document stream to be parsed; can be null, in this case
+     *            the contentType only will be used to detect appropriate parser
+     * @param metadata the metadata containing parser specific information, like
+     *            content type, encoding etc.
+     * @return <code>true</code> if there is a parser that can handle provided
+     *         content
+     * @throws IOException in case of the read/write errors
+     */
+    public boolean canHandle(InputStream stream, Metadata metadata) throws IOException {
+        ensureInitialized();
+        if (!isEnabled()) {
+            return false;
+        }
+        MediaType contentMediaType = null;
+        if (parser instanceof AutoDetectParser) {
+        	contentMediaType = ((AutoDetectParser) parser).getDetector().detect(stream, metadata);
+        }
+        if (contentMediaType == null) {
+        	String contentType = metadata.get(Metadata.CONTENT_TYPE);
+        	contentMediaType = contentType != null ? new MediaType(StringUtils.substringBefore(contentType, "/"), StringUtils.substringAfter(contentType, "/")) : null;
+        }
 
-    public void afterPropertiesSet() throws Exception {
+        return contentMediaType != null ? parser.getParsers().containsKey(contentMediaType) : false;
+    }
+
+    private void ensureInitialized() {
+        if (!initialized) {
+            synchronized (this) {
+                if (!initialized) {
+                    initialize();
+                    initialized = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Performs the metadata extraction for the specified document stream. <br>
+     * The given document stream is consumed but not closed by this method. The
+     * responsibility to close the stream remains on the caller.
+     * 
+     * 
+     * @param stream the document stream to be parsed
+     * @param metadata the metadata containing parser specific information, like
+     *            content type, encoding etc.
+     * @throws IOException in case of the read/write errors
+     * @throws SAXException in case of parsing errors
+     * @throws TikaException in case of parsing errors
+     */
+    public void extractMetadata(InputStream stream, Metadata metadata) throws IOException, SAXException, TikaException {
+        ensureInitialized();
+        if (!isEnabled()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Text extraction service is disabled. Skipping metadata extraction.");
+            }
+        }
+        // TODO check if for HTML file parsing the approach with setting character limit to 0
+        // actually works.
+        // Otherwise use DefaultHandler as suggested in http://tika.markmail.org/message/hecedrucfge4evo2
+        doParse(parserMetadata, stream, metadata, 0);
+    }
+
+    private void initialize() {
         if (!enabled) {
             logger.info("Text extraction service is disabled");
             return;
@@ -188,62 +259,6 @@ public class TextExtractionService implements InitializingBean {
                 logger.info("Using same parser for metadata");
             }
         }
-    }
-
-    /**
-     * Performs a check if the provided content can be handled by currently
-     * configured parsers. <br>
-     * The given document stream is consumed but not closed by this method. The
-     * responsibility to close the stream remains on the caller.
-     * 
-     * 
-     * @param stream the document stream to be parsed; can be null, in this case
-     *            the contentType only will be used to detect appropriate parser
-     * @param metadata the metadata containing parser specific information, like
-     *            content type, encoding etc.
-     * @return <code>true</code> if there is a parser that can handle provided
-     *         content
-     * @throws IOException in case of the read/write errors
-     */
-    public boolean canHandle(InputStream stream, Metadata metadata) throws IOException {
-        if (!isEnabled()) {
-            return false;
-        }
-        MediaType contentMediaType = null;
-        if (parser instanceof AutoDetectParser) {
-        	contentMediaType = ((AutoDetectParser) parser).getDetector().detect(stream, metadata);
-        }
-        if (contentMediaType == null) {
-        	String contentType = metadata.get(Metadata.CONTENT_TYPE);
-        	contentMediaType = contentType != null ? new MediaType(StringUtils.substringBefore(contentType, "/"), StringUtils.substringAfter(contentType, "/")) : null;
-        }
-
-        return contentMediaType != null ? parser.getParsers().containsKey(contentMediaType) : false;
-    }
-
-    /**
-     * Performs the metadata extraction for the specified document stream. <br>
-     * The given document stream is consumed but not closed by this method. The
-     * responsibility to close the stream remains on the caller.
-     * 
-     * 
-     * @param stream the document stream to be parsed
-     * @param metadata the metadata containing parser specific information, like
-     *            content type, encoding etc.
-     * @throws IOException in case of the read/write errors
-     * @throws SAXException in case of parsing errors
-     * @throws TikaException in case of parsing errors
-     */
-    public void extractMetadata(InputStream stream, Metadata metadata) throws IOException, SAXException, TikaException {
-        if (!enabled) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Text extraction service is disabled. Skipping metadata extraction.");
-            }
-        }
-        // TODO check if for HTML file parsing the approach with setting character limit to 0
-        // actually works.
-        // Otherwise use DefaultHandler as suggested in http://tika.markmail.org/message/hecedrucfge4evo2
-        doParse(parserMetadata, stream, metadata, 0);
     }
 
     /**
@@ -295,7 +310,8 @@ public class TextExtractionService implements InitializingBean {
      */
     public String parse(InputStream stream, Metadata metadata, int characterLimit) throws IOException, SAXException,
             TikaException {
-        if (!enabled) {
+        ensureInitialized();
+        if (!isEnabled()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Text extraction service is disabled. Returning null.");
             }
@@ -319,6 +335,7 @@ public class TextExtractionService implements InitializingBean {
      * @throws TikaException in case of parsing errors
      */
     public String parse(InputStream stream, String contentType) throws IOException, SAXException, TikaException {
+        ensureInitialized();
         Metadata metadata = new Metadata();
         metadata.set(Metadata.CONTENT_TYPE, contentType);
         return parse(stream, metadata);

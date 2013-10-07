@@ -55,6 +55,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
+import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.slf4j.Logger;
 
@@ -62,6 +63,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -450,5 +452,11 @@ public class JahiaSearchIndex extends SearchIndex {
 
     public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
         this.addAclUuidInIndex = addAclUuidInIndex;
+    }
+
+    @Override
+    protected Parser createParser() {
+        // we disable binary indexing by Jackrabbit (is done by Jahia), so we do not need the parser
+        return null;
     }
 }

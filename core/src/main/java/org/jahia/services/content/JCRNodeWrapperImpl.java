@@ -41,7 +41,6 @@
 package org.jahia.services.content;
 
 import static org.jahia.api.Constants.*;
-
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 
@@ -89,6 +88,7 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -1353,7 +1353,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public List<Locale> getExistingLocales() throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
-        NodeIterator ni = objectNode.getNodes("j:translation*");
+        NodeIterator ni = getI18Ns();
         while (ni.hasNext()) {
             Node n = ni.nextNode();
             r.add(LanguageCodeConverters.languageCodeToLocale(n.getProperty("jcr:language").getString()));
@@ -1412,6 +1412,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         throw new ItemNotFoundException(locale.toString());
+    }
+
+    @Override
+    public NodeIterator getI18Ns() throws RepositoryException {
+        return objectNode.getNodes("j:translation*");
     }
 
     public Node getOrCreateI18N(Locale locale) throws RepositoryException {
@@ -2726,7 +2731,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public List<Locale> getLockedLocalesForUserAndType(String type) throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
-        NodeIterator ni = objectNode.getNodes("j:translation*");
+        NodeIterator ni = getI18Ns();
         while (ni.hasNext()) {
             Node n = ni.nextNode();
             if (n.isLocked() && n.hasProperty(Constants.JAHIA_LOCKTYPES)) {
@@ -2970,7 +2975,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!lockInfos.isEmpty()) {
             locks.put(null, lockInfos);
         }
-        NodeIterator ni = objectNode.getNodes("j:translation*");
+        NodeIterator ni = getI18Ns();
         while (ni.hasNext()) {
             Node n = ni.nextNode();
             lockInfos = getLockInfos(n);

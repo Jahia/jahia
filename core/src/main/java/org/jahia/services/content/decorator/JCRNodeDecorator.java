@@ -736,6 +736,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getExistingLocales();
     }
 
+    public NodeIterator getI18Ns() throws RepositoryException {
+        return node.getI18Ns();
+    }
+
     public Node getI18N(Locale locale) throws RepositoryException {
         return node.getI18N(locale);
     }

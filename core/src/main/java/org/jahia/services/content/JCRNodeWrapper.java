@@ -58,6 +58,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -804,6 +805,15 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     Node getI18N(Locale locale) throws RepositoryException;
 
+    /**
+     * Returns available translation sub-nodes of this node.
+     * 
+     * @return available translation sub-nodes of this node
+     * @throws RepositoryException
+     *             in case of a JCR exception
+     */
+    NodeIterator getI18Ns() throws RepositoryException;
+    
     /**
      * Checks if the translation node exists
      * Use only in un-localized session

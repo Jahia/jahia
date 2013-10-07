@@ -53,10 +53,12 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import java.text.SimpleDateFormat;
@@ -315,26 +317,30 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     @SuppressWarnings("unchecked")
     public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node, boolean withLanguageNodes) {
         Session session = sessionFactoryBean.openSession();
-        Criteria criteria = session.createCriteria(HistoryEntry.class);
         try {
-            criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
+            Criteria criteria = session.createCriteria(HistoryEntry.class);
+            Map<String, Locale> i18ns = null;
+            if (withLanguageNodes) {
+                i18ns = new HashMap<String, Locale>(4);
+                i18ns.put(node.getIdentifier(), null);
+                for (NodeIterator ni = node.getI18Ns(); ni.hasNext();) {
+                    Node n = ni.nextNode();
+                    i18ns.put(n.getIdentifier(),
+                            LanguageCodeConverters.languageCodeToLocale(n.getProperty("jcr:language").getString()));
+                }
+                criteria.add(Restrictions.in("uuid", i18ns.keySet()));
+            } else {
+                criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
+            }
             List<HistoryEntry> result = (List<HistoryEntry>) criteria.list();
             if (withLanguageNodes) {
-                List<Locale> existingLocales = node.getExistingLocales();
-                for (Locale existingLocale : existingLocales) {
-                    Node localeNode = node.getI18N(existingLocale);
-                    criteria = session.createCriteria(HistoryEntry.class);
-                    criteria.add(Restrictions.eq("uuid", localeNode.getIdentifier()));
-                    List<HistoryEntry> languageHistoryEntries = (List<HistoryEntry>) criteria.list();
-                    for (HistoryEntry languageHistoryEntry : languageHistoryEntries) {
-                        languageHistoryEntry.setLocale(existingLocale);
-                        result.add(languageHistoryEntry);
-                    }
+                for (HistoryEntry entry : result) {
+                    entry.setLocale(i18ns.get(entry.getUuid()));
                 }
             }
             return result;
         } catch (Exception e) {
-            return new ArrayList<HistoryEntry>();
+            return Collections.emptyList();
         } finally {
             session.close();
         }

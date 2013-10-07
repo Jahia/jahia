@@ -71,151 +71,165 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  */
 class JahiaPasswordPolicyManager {
 
-	private static final String HISTORY_NODENAME = "passwordHistory";
+    private static final String HISTORY_NODENAME = "passwordHistory";
 
-	private static final FastDateFormat NODENAME_FORMAT = FastDateFormat
-	        .getInstance("yyyy-MM-dd-HH-mm-ss");
+    private static final FastDateFormat NODENAME_FORMAT = FastDateFormat
+            .getInstance("yyyy-MM-dd-HH-mm-ss");
 
-	private static final String POLICY_NODENAME = "passwordPolicy";
+    private static final String POLICY_NODENAME = "passwordPolicy";
 
-	private static final String POLICY_NODETYPE = "jnt:passwordPolicy";
+    private static final String POLICY_NODETYPE = "jnt:passwordPolicy";
 
-	private static final String POLICY_PROPERTY = "j:policy";
+    private static final String POLICY_PROPERTY = "j:policy";
 
-	private static final XStream SERIALIZER;
+    private static volatile XStream serializer;
 
-	static {
-		SERIALIZER = new XStream(new XppDriver() {
-			@Override
-			public HierarchicalStreamWriter createWriter(Writer out) {
-				return new CompactWriter(out, getNameCoder());
-			}
-		});
-		SERIALIZER.alias("password-policy", JahiaPasswordPolicy.class);
-		SERIALIZER.alias("rule", JahiaPasswordPolicyRule.class);
-		SERIALIZER.alias("param", JahiaPasswordPolicyRuleParam.class);
-	}
+    private static XStream createSerializer() {
+        XStream xstream = new XStream(new XppDriver() {
+            @Override
+            public HierarchicalStreamWriter createWriter(Writer out) {
+                return new CompactWriter(out, getNameCoder());
+            }
+        });
+        xstream.alias("password-policy", JahiaPasswordPolicy.class);
+        xstream.alias("rule", JahiaPasswordPolicyRule.class);
+        xstream.alias("param", JahiaPasswordPolicyRuleParam.class);
 
-	/**
-	 * Returns the default password policy.
-	 * 
-	 * @return the default password policy
-	 * @throws RepositoryException
-	 *             in case of a JCR error
-	 */
-	public JahiaPasswordPolicy getDefaultPolicy() throws RepositoryException {
-		return JCRTemplate.getInstance().doExecuteWithSystemSession(
-		        new JCRCallback<JahiaPasswordPolicy>() {
-			        public JahiaPasswordPolicy doInJCR(JCRSessionWrapper session)
-			                throws RepositoryException {
-				        JahiaPasswordPolicy policy = null;
-				        try {
-					        JCRNodeWrapper policyNode = session.getNode("/"
-					                + POLICY_NODENAME);
-					        String serializedPolicy = policyNode.getProperty(
-					                POLICY_PROPERTY).getString();
-					        if (serializedPolicy != null) {
-						        policy = (JahiaPasswordPolicy) SERIALIZER.fromXML(serializedPolicy);
-					        }
-				        } catch (PathNotFoundException e) {
-					        // no policy was persisted yet
-				        }
+        return xstream;
+    }
 
-				        return policy;
-			        }
-		        });
-	}
+    private static XStream getSerializer() {
+        if (serializer == null) {
+            synchronized (JahiaPasswordPolicyManager.class) {
+                if (serializer == null) {
+                    serializer = createSerializer();
+                }
+            }
+        }
 
-	/**
-	 * Returns the (encrypted) password history map, sorted by change date
-	 * descending, i.e. the newer passwords are at the top of the list.
-	 * 
-	 * @return the (encrypted) password history list, sorted by change date
-	 *         descending, i.e. the newer passwords are at the top of the list
-	 * @throws RepositoryException
-	 *             in case of a JCR error
-	 */
-	public List<PasswordHistoryEntry> getPasswordHistory(final JahiaUser user)
-	        throws RepositoryException {
-		return JCRTemplate.getInstance().doExecuteWithSystemSession(
-		        new JCRCallback<List<PasswordHistoryEntry>>() {
-			        public List<PasswordHistoryEntry> doInJCR(JCRSessionWrapper session)
-			                throws RepositoryException {
-				        List<PasswordHistoryEntry> pwds = Collections.emptyList();
-				        try {
-					        pwds = new LinkedList<PasswordHistoryEntry>();
-					        for (@SuppressWarnings("unchecked")
-					        Iterator<JCRNodeWrapper> iterator = ((JCRUser) user).getNode(session)
-					                .getNode(HISTORY_NODENAME).getNodes(); iterator
-					                .hasNext();) {
-						        JCRNodeWrapper historyEntryNode = (JCRNodeWrapper) iterator.next();
-						        pwds.add(new PasswordHistoryEntry(historyEntryNode
-						                .getPropertyAsString("j:password"), historyEntryNode
-						                .getProperty(Constants.JCR_CREATED).getDate().getTime()));
-					        }
-					        Collections.sort(pwds);
-				        } catch (PathNotFoundException e) {
-					        // ignore
-					        pwds = Collections.emptyList();
-				        }
+        return serializer;
+    }
 
-				        return pwds;
-			        }
-		        });
-	}
+    /**
+     * Returns the default password policy.
+     * 
+     * @return the default password policy
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public JahiaPasswordPolicy getDefaultPolicy() throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(
+                new JCRCallback<JahiaPasswordPolicy>() {
+                    public JahiaPasswordPolicy doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        JahiaPasswordPolicy policy = null;
+                        try {
+                            JCRNodeWrapper policyNode = session.getNode("/"
+                                    + POLICY_NODENAME);
+                            String serializedPolicy = policyNode.getProperty(
+                                    POLICY_PROPERTY).getString();
+                            if (serializedPolicy != null) {
+                                policy = (JahiaPasswordPolicy) getSerializer().fromXML(serializedPolicy);
+                            }
+                        } catch (PathNotFoundException e) {
+                            // no policy was persisted yet
+                        }
 
-	/**
-	 * Stores the current user's password into password history.
-	 * 
-	 * @param user
-	 *            the user to store password history for
-	 * @throws RepositoryException
-	 *             in case of a JCR error
-	 */
-	public void storePasswordHistory(final JahiaUser user) throws RepositoryException {
-		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				JCRNodeWrapper pwdHistory = ((JCRUser) user).getNode(session).getNode(
-				        HISTORY_NODENAME);
-				session.checkout(pwdHistory);
-				JCRNodeWrapper entry = pwdHistory.addNode(
-				        JCRContentUtils.findAvailableNodeName(pwdHistory,
-				                "pwd-" + NODENAME_FORMAT.format(System.currentTimeMillis())),
-				        "jnt:passwordHistoryEntry");
-				entry.setProperty("j:password", user.getProperty("j:password"));
-				session.save();
-				return true;
-			}
-		});
-	}
+                        return policy;
+                    }
+                });
+    }
 
-	/**
-	 * Updates the specified policy.
-	 * 
-	 * @param policy
-	 *            the policy to update
-	 * @throws RepositoryException
-	 *             in case of a JCR error
-	 */
-	public void update(final JahiaPasswordPolicy policy) throws RepositoryException {
-		JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-			public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-				JCRNodeWrapper policyNode = null;
-				try {
-					policyNode = session.getNode("/" + POLICY_NODENAME);
-				} catch (PathNotFoundException e) {
-					// no policy was persisted yet -> create it
-					JCRNodeWrapper root = session.getRootNode();
-					session.checkout(root);
-					policyNode = root.addNode(POLICY_NODENAME, POLICY_NODETYPE);
-				}
-				policyNode.setProperty(POLICY_PROPERTY, SERIALIZER.toXML(policy));
+    /**
+     * Returns the (encrypted) password history map, sorted by change date
+     * descending, i.e. the newer passwords are at the top of the list.
+     * 
+     * @return the (encrypted) password history list, sorted by change date
+     *         descending, i.e. the newer passwords are at the top of the list
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public List<PasswordHistoryEntry> getPasswordHistory(final JahiaUser user)
+            throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(
+                new JCRCallback<List<PasswordHistoryEntry>>() {
+                    public List<PasswordHistoryEntry> doInJCR(JCRSessionWrapper session)
+                            throws RepositoryException {
+                        List<PasswordHistoryEntry> pwds = Collections.emptyList();
+                        try {
+                            pwds = new LinkedList<PasswordHistoryEntry>();
+                            for (@SuppressWarnings("unchecked")
+                            Iterator<JCRNodeWrapper> iterator = ((JCRUser) user).getNode(session)
+                                    .getNode(HISTORY_NODENAME).getNodes(); iterator
+                                    .hasNext();) {
+                                JCRNodeWrapper historyEntryNode = (JCRNodeWrapper) iterator.next();
+                                pwds.add(new PasswordHistoryEntry(historyEntryNode
+                                        .getPropertyAsString("j:password"), historyEntryNode
+                                        .getProperty(Constants.JCR_CREATED).getDate().getTime()));
+                            }
+                            Collections.sort(pwds);
+                        } catch (PathNotFoundException e) {
+                            // ignore
+                            pwds = Collections.emptyList();
+                        }
 
-				session.save();
+                        return pwds;
+                    }
+                });
+    }
 
-				return Boolean.TRUE;
-			}
-		});
-	}
+    /**
+     * Stores the current user's password into password history.
+     * 
+     * @param user
+     *            the user to store password history for
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public void storePasswordHistory(final JahiaUser user) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper pwdHistory = ((JCRUser) user).getNode(session).getNode(
+                        HISTORY_NODENAME);
+                session.checkout(pwdHistory);
+                JCRNodeWrapper entry = pwdHistory.addNode(
+                        JCRContentUtils.findAvailableNodeName(pwdHistory,
+                                "pwd-" + NODENAME_FORMAT.format(System.currentTimeMillis())),
+                        "jnt:passwordHistoryEntry");
+                entry.setProperty("j:password", user.getProperty("j:password"));
+                session.save();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Updates the specified policy.
+     * 
+     * @param policy
+     *            the policy to update
+     * @throws RepositoryException
+     *             in case of a JCR error
+     */
+    public void update(final JahiaPasswordPolicy policy) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper policyNode = null;
+                try {
+                    policyNode = session.getNode("/" + POLICY_NODENAME);
+                } catch (PathNotFoundException e) {
+                    // no policy was persisted yet -> create it
+                    JCRNodeWrapper root = session.getRootNode();
+                    session.checkout(root);
+                    policyNode = root.addNode(POLICY_NODENAME, POLICY_NODETYPE);
+                }
+                policyNode.setProperty(POLICY_PROPERTY, getSerializer().toXML(policy));
+
+                session.save();
+
+                return Boolean.TRUE;
+            }
+        });
+    }
 
 }

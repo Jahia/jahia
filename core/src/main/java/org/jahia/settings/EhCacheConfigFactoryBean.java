@@ -44,40 +44,40 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
- * Factory bean for obtaining the EhCache configuration resource from the base
- * name and taking into consideration if the cluster is activated.
+ * Factory bean for obtaining the EhCache configuration resource from the base name and taking into consideration if the cluster is
+ * activated.
  * 
  * @author Sergiy Shyrkov
  */
 public class EhCacheConfigFactoryBean extends AbstractFactoryBean<String> {
 
-	private String baseResource;
+    private String baseResource;
 
-	private boolean clusterActivated;
+    private boolean clusterActivated;
 
-	/**
-	 * Initializes an instance of this class.
-	 * 
-	 * @param baseResource
-	 *            the resource path to use if the cluster is not activated.
-	 * 
-	 * @param clusterActivated
-	 *            <code>true</code> if the cluster is activated
-	 */
-	public EhCacheConfigFactoryBean(String baseResource, boolean clusterActivated) {
-		super();
-		this.baseResource = baseResource;
-		this.clusterActivated = clusterActivated;
-	}
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param baseResource
+     *            the resource path to use if the cluster is not activated.
+     * 
+     * @param clusterActivated
+     *            <code>true</code> if the cluster is activated
+     */
+    public EhCacheConfigFactoryBean(String baseResource, boolean clusterActivated) {
+        super();
+        this.baseResource = baseResource;
+        this.clusterActivated = clusterActivated;
+    }
 
-	@Override
-	protected String createInstance() throws Exception {
-		return clusterActivated ? StringUtils.substringBeforeLast(baseResource, ".") + "-cluster."
-		        + StringUtils.substringAfterLast(baseResource, ".") : baseResource;
-	}
+    @Override
+    protected String createInstance() throws Exception {
+        return clusterActivated ? StringUtils.substringBeforeLast(baseResource, ".") + "-cluster."
+                + StringUtils.substringAfterLast(baseResource, ".") : baseResource;
+    }
 
-	@Override
-	public Class<String> getObjectType() {
-		return String.class;
-	}
+    @Override
+    public Class<String> getObjectType() {
+        return String.class;
+    }
 }

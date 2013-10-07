@@ -52,7 +52,6 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -77,7 +76,7 @@ import java.util.regex.Pattern;
  *
  * @author Khue ng
  */
-public class JahiaSitesService extends JahiaService implements JahiaAfterInitializationService {
+public class JahiaSitesService extends JahiaService {
     // authorized chars
     private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
     private static Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
@@ -651,9 +650,6 @@ public class JahiaSitesService extends JahiaService implements JahiaAfterInitial
         } else if (node.hasProperty("j:defaultSite")) {
             node.getProperty("j:defaultSite").remove();
         }
-    }
-
-    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
     }
 
     /**

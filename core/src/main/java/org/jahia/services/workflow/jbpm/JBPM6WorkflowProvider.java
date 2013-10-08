@@ -775,11 +775,13 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                                 task.getTaskData().getCreatedOn(),
                                 nodeInstanceLog.getDate(),
                                 "outcome");
-                        final WorkflowDefinition definition = getWorkflowDefinitionById(nodeInstanceLog.getProcessId(), locale, ksession);
-                        ResourceBundle resourceBundle = getResourceBundle(locale, definition.getPackageName(), definition.getKey());
-                        String rbActionName = i18nName(workflowTask.getName(), resourceBundle);
-                        workflowTask.setDisplayName(rbActionName);
 
+                        if (locale != null) {
+                            final WorkflowDefinition definition = getWorkflowDefinitionById(nodeInstanceLog.getProcessId(), locale, ksession);
+                            ResourceBundle resourceBundle = getResourceBundle(locale, definition.getPackageName(), definition.getKey());
+                            String rbActionName = i18nName(workflowTask.getName(), resourceBundle);
+                            workflowTask.setDisplayName(rbActionName);
+                        }
                         workflowTaskHistory.add(workflowTask);
                     }
                 }

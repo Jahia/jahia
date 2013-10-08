@@ -10,13 +10,8 @@
     -->
     <bean id="noCacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider"/>
 
-    <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider">
-    	<property name="configurationResource">
-			<bean class="org.jahia.settings.EhCacheConfigFactoryBean">
-				<constructor-arg index="0" value="/ehcache-jahia.xml" />
-				<constructor-arg index="1" value="${cluster.activated:false}" />
-			</bean>
-    	</property>
+    <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" depends-on="jahiaProperties">
+    	<property name="configurationResource" value="#{jahiaProperties['cluster.activated'] == 'true' ? '/ehcache-jahia-cluster.xml' : '/ehcache-jahia.xml'}"/>
         <!-- This property allows to fix a limit for cache entries dependencies management,
 if an entry have more than this value of dependencies then
 when we flush this entry we will flush the whole cache

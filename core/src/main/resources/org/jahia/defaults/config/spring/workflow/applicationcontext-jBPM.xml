@@ -17,6 +17,9 @@
         <property name="dataSource" ref="jbpmDataSource"/>
         <property name="persistenceUnitName" value="org.jahia.services.workflow.jbpm"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>            
+        </property>
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.dialect" value="${hibernate.dialect}" />

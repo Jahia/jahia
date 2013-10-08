@@ -71,17 +71,17 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BundleScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
-    
+
     private static Logger logger = LoggerFactory.getLogger(BundleScriptResolver.class);
-    
+
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>(512);
-    
+
     private Map<String, Set<ViewResourceInfo>> availableScripts = new HashMap<String, Set<ViewResourceInfo>>(64);
     private Map<String, ScriptFactory> scriptFactoryMap;
     private JahiaTemplateManagerService templateManagerService;
     private Comparator<ViewResourceInfo> scriptExtensionComparator;
     private List<String> scriptExtensionsOrdering;
-    
+
     public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
         this.scriptFactoryMap = scriptFactoryMap;
     }
@@ -187,9 +187,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             nodeTypeList.addAll(0, getNodeTypeList(resource.getResourceNodeType()));
         }
 
-        View res = resolveView(resource, nodeTypeList, renderContext);
-        
-        return res;
+        return resolveView(resource, nodeTypeList, renderContext);
     }
 
     /*
@@ -210,18 +208,16 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             }
 
             List<String> templateTypeMappings = null;
-            if (renderContext != null) {
-                Channel channel = renderContext.getChannel();
-                if (!channel.getFallBack().equals("root")) {
-                    templateTypeMappings = new LinkedList<String>();
-                    while (!channel.getFallBack().equals("root")) {
-                        if (channel.getCapability("template-type-mapping") != null) {
-                            templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
-                        }
-                        channel = ChannelService.getInstance().getChannel(channel.getFallBack());
+            Channel channel = renderContext.getChannel();
+            if (!channel.getFallBack().equals("root")) {
+                templateTypeMappings = new LinkedList<String>();
+                while (!channel.getFallBack().equals("root")) {
+                    if (channel.getCapability("template-type-mapping") != null) {
+                        templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
                     }
-                    templateTypeMappings.add(resource.getTemplateType());
+                    channel = ChannelService.getInstance().getChannel(channel.getFallBack());
                 }
+                templateTypeMappings.add(resource.getTemplateType());
             }
             Set<View> s = getViewsSet(nodeTypeList, site,
                     templateTypeMappings != null ? templateTypeMappings : Arrays.asList(resource.getTemplateType()));
@@ -264,20 +260,13 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
      */
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
-        SortedSet<View> t = null;
-        String cacheKey = nt.getName() + "_" + (site != null ? site.getSiteKey() : "") + "_" + templateType;
-        if (viewSetCache.containsKey(cacheKey)) {
-            t = viewSetCache.get(cacheKey);
-        } else {
-            try {
-                t = getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
-                viewSetCache.put(cacheKey, t);
-            } catch (NoSuchNodeTypeException e) {
-                logger.error(e.getMessage(), e);
-            }
+        try {
+            return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
+        } catch (NoSuchNodeTypeException e) {
+            logger.error(e.getMessage(), e);
         }
 
-        return t;
+        return null;
     }
 
     /**
@@ -302,40 +291,57 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      */
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,
             List<String> templateTypes) {
-        Map<String, View> views = new HashMap<String, View>();
 
-        Set<String> installedModules = getInstalledModules(site);
-
+        StringBuilder cacheKey = new StringBuilder();
         for (ExtendedNodeType type : nodeTypeList) {
-            boolean defaultModuleProcessed = false;
-            Set<JahiaTemplatesPackage> packages = templateManagerService
-                    .getModulesWithViewsForComponent(JCRContentUtils.replaceColon(type.getName()));
-            for (JahiaTemplatesPackage aPackage : packages) {
-                String packageName = aPackage.getRootFolder();
-                if (installedModules == null || installedModules.contains(packageName)) {
-                    if (aPackage.isDefault()) {
-                        defaultModuleProcessed = true;
-                    }
-                    for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, aPackage);
-                    }
-                }
-            }
-            if (type.getTemplatePackage() != null && installedModules != null && !installedModules.contains(type.getSystemId())) {
-                for (String templateType : templateTypes) {
-                    getViewsSet(type, views, templateType, type.getTemplatePackage());
-                }
-            }
-            if (!defaultModuleProcessed) {
-                JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
-                if (defaultModule != null) {
-                    for (String templateType : templateTypes) {
-                        getViewsSet(type, views, templateType, defaultModule);
-                    }
-                }
-            }
+            cacheKey.append(type.getName()).append("_");
         }
-        return new TreeSet<View>(views.values());
+        cacheKey.append("_").append((site != null ? site.getSiteKey() : "")).append("__");
+        for (String type : templateTypes) {
+            cacheKey.append(type).append("_");
+        }
+        final String s = cacheKey.toString();
+
+        if (viewSetCache.containsKey(s)) {
+            return viewSetCache.get(s);
+        } else {
+            Map<String, View> views = new HashMap<String, View>();
+
+            Set<String> installedModules = getInstalledModules(site);
+
+            for (ExtendedNodeType type : nodeTypeList) {
+                boolean defaultModuleProcessed = false;
+                Set<JahiaTemplatesPackage> packages = templateManagerService
+                        .getModulesWithViewsForComponent(JCRContentUtils.replaceColon(type.getName()));
+                for (JahiaTemplatesPackage aPackage : packages) {
+                    String packageName = aPackage.getRootFolder();
+                    if (installedModules == null || installedModules.contains(packageName)) {
+                        if (aPackage.isDefault()) {
+                            defaultModuleProcessed = true;
+                        }
+                        for (String templateType : templateTypes) {
+                            getViewsSet(type, views, templateType, aPackage);
+                        }
+                    }
+                }
+                if (type.getTemplatePackage() != null && installedModules != null && !installedModules.contains(type.getSystemId())) {
+                    for (String templateType : templateTypes) {
+                        getViewsSet(type, views, templateType, type.getTemplatePackage());
+                    }
+                }
+                if (!defaultModuleProcessed) {
+                    JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
+                    if (defaultModule != null) {
+                        for (String templateType : templateTypes) {
+                            getViewsSet(type, views, templateType, defaultModule);
+                        }
+                    }
+                }
+            }
+            SortedSet<View> t = new TreeSet<View>(views.values());
+            viewSetCache.put(s, t);
+            return t;
+        }
     }
 
     private Set<String> getInstalledModules(JCRSiteNode site) {

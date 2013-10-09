@@ -128,7 +128,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
-    private Map<String, Set<Privilege>> privilegesInRole = new HashMap<String, Set<Privilege>>();
+    private static final Map<String, Set<Privilege>> privilegesInRole = new HashMap<String, Set<Privilege>>();
     private LRUMap pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;
@@ -682,24 +682,26 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (privilegesInRole.containsKey(role)) {
             return privilegesInRole.get(role);
         } else {
-            Set<Privilege> list;
-            String externalPermission = null;
+            synchronized (privilegesInRole) {
+                Set<Privilege> list;
+                String externalPermission = null;
 
-            String roleName = role;
-            if (roleName.contains("/")) {
-                externalPermission = StringUtils.substringAfter(role, "/");
-                roleName = StringUtils.substringBefore(role, "/");
+                String roleName = role;
+                if (roleName.contains("/")) {
+                    externalPermission = StringUtils.substringAfter(role, "/");
+                    roleName = StringUtils.substringBefore(role, "/");
+                }
+
+                Node roleNode = findRoleNode(roleName);
+                if (roleNode != null) {
+                    list = getPrivileges(roleNode, externalPermission);
+                } else {
+                    list = Collections.EMPTY_SET;
+                }
+
+                privilegesInRole.put(role, list);
+                return list;
             }
-
-            Node roleNode = findRoleNode(roleName);
-            if (roleNode != null) {
-                list = getPrivileges(roleNode, externalPermission);
-            } else {
-                list = Collections.EMPTY_SET;
-            }
-
-            privilegesInRole.put(role, list);
-            return list;
         }
     }
 
@@ -858,16 +860,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Set<String> grantedRoles = getRoles(absPath);
 
         for (String role : grantedRoles) {
-            String externalPermission = null;
-
-            if (role.contains("/")) {
-                externalPermission = StringUtils.substringAfter(role, "/");
-                role = StringUtils.substringBefore(role, "/");
-            }
-
-            Node node = findRoleNode(role);
-            if (node != null) {
-                results.addAll(getPrivileges(node, externalPermission));
+            Set<Privilege> permissionsInRole = getPermissionsInRole(role);
+            if (!permissionsInRole.isEmpty()) {
+                results.addAll(permissionsInRole);
             } else {
                 logger.warn("Role " + role + " is missing despite still being in use in path " + absPath + " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
             }
@@ -987,5 +982,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         String principal;
         Set<String> roles = new HashSet<String>();
         boolean granted;
+    }
+
+    public static void flushPrivilegesInRoles() {
+        synchronized (privilegesInRole){
+            privilegesInRole.clear();
+        }
     }
 }

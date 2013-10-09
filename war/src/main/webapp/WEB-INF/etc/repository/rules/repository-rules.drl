@@ -5,7 +5,7 @@ import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.slf4j.Logger
-
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 expander rules.dsl
 
 // declare any global variables here
@@ -160,4 +160,12 @@ rule "Flush URL resolver cache"
     then
         Flush urlResolverNodePath
         Flush urlResolverSiteInfo
+end
+
+rule "Flush privileges in role cache"
+    when
+        A property j:permissionNames has been set on a node
+            - the node has the type jnt:role
+    then
+>       JahiaAccessManager.flushPrivilegesInRoles();
 end

@@ -196,6 +196,9 @@
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
+                        <bean class="org.jahia.services.workflow.WorkflowServiceCacheListener">
+                            <property name="cacheService" ref="JahiaCacheService"/>
+                        </bean>
                     </list>
                 </entry>
                 <entry key="live">

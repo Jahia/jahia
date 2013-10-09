@@ -265,10 +265,10 @@ public class WorkflowHelper {
             if (w != null && w.getWorkflowDefinition().getWorkflowType().equals("publish")) {
                 List<String> info = (List<String>) w.getVariables().get("nodeIds");
                 String workspace = (String) w.getVariables().get("workspace");
-                JCRPublicationService.getInstance().unlockForPublication(info, workspace, "publication-process-"+processId);
+                JCRPublicationService.getInstance().unlockForPublication(info, workspace, "publication-process-" + processId);
             }
         } catch (Exception e) {
-            logger.error("Cannot clear workflow locks",e);
+            logger.error("Cannot clear workflow locks", e);
         }
         service.abortProcess(processId, provider);
     }
@@ -644,27 +644,29 @@ public class WorkflowHelper {
                     }
                 }
                 for (Principal user : users) {
-                    Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
-                    if (broadcaster != null) {
-                        TaskEvent taskEvent = new TaskEvent();
-                        try {
-                            JahiaUser jahiaUser = (JahiaUser) user;
-                            Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
-                            if (preferredLocale == null) {
-                                preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
+                    if (user != null) {
+                        Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
+                        if (broadcaster != null) {
+                            TaskEvent taskEvent = new TaskEvent();
+                            try {
+                                JahiaUser jahiaUser = (JahiaUser) user;
+                                Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
+                                if (preferredLocale == null) {
+                                    preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
+                                }
+                                if (newTask) {
+                                    task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
+                                    taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
+                                }
+                                taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, preferredLocale));
+                                if (!newTask && user.equals(task.getAssignee())) {
+                                    taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
+                                }
+                            } catch (GWTJahiaServiceException e) {
                             }
-                            if (newTask) {
-                                task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
-                                taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
-                            }
-                            taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, preferredLocale));
-                            if (!newTask && user.equals(task.getAssignee())) {
-                                taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
-                            }
-                        } catch (GWTJahiaServiceException e) {
-                        }
 
-                        broadcaster.broadcast(taskEvent);
+                            broadcaster.broadcast(taskEvent);
+                        }
                     }
                 }
             }

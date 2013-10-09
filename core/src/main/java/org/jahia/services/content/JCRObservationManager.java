@@ -46,6 +46,8 @@ import javax.jcr.observation.EventListener;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.core.observation.EventImpl;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
@@ -224,6 +226,19 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session) {
+        final EventImpl eventImpl = (EventImpl) event;
+        if (event.getType() == Event.NODE_REMOVED && eventImpl.getPrimaryNodeTypeName() != null) {
+            try {
+                List<String> typeNames = new ArrayList<String>();
+                typeNames.add(JCRContentUtils.getJCRName(eventImpl.getPrimaryNodeTypeName().toString(), session.getWorkspace().getNamespaceRegistry()));
+                for (Name name :eventImpl.getMixinTypeNames()) {
+                    typeNames.add(JCRContentUtils.getJCRName(name.toString(), session.getWorkspace().getNamespaceRegistry()));
+                }
+                return new EventWrapper(event, typeNames, session);
+            } catch (RepositoryException e) {
+                logger.error("Cannot parse type for event on " +event);
+            }
+        }
         return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList(), session);
     }
 

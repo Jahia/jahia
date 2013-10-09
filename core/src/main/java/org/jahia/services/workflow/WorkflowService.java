@@ -44,8 +44,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -87,10 +90,12 @@ public class WorkflowService implements BeanPostProcessor {
     private Map<String, String> modulesForWorkflowDefinition = new HashMap<String, String>();
     private JCRTemplate jcrTemplate;
     private WorkflowObservationManager observationManager = new WorkflowObservationManager(this);
+    private CacheService cacheService;
+    private Cache<String, Map<String,WorkflowRule>> cache;
 
     /**
      * Returns a singleton instance of this service.
-     * 
+     *
      * @return a singleton instance of this service
      */
     public static WorkflowService getInstance() {
@@ -100,11 +105,20 @@ public class WorkflowService implements BeanPostProcessor {
         return instance;
     }
 
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
+    public void start() throws JahiaInitializationException {
+        if (cacheService != null) {
+            cache = cacheService.getCache("WorkflowRuleCache", true);
+        }
+    }
+
     /**
      * Performs the registration of the provided workflow type.
-     * 
-     * @param type
-     *            the helper object instance for registerng a new workflow type
+     *
+     * @param type the helper object instance for registerng a new workflow type
      */
     public void registerWorkflowType(final WorklowTypeRegistration type) {
         if (type != null && !workflowRegistrationByDefinition.containsKey(type.getDefinition())) {
@@ -121,14 +135,14 @@ public class WorkflowService implements BeanPostProcessor {
                                     boolean updated = initializePermission(session, def, type.getModule());
                                     if (updated) {
                                         session.save();
-                                        JahiaPrivilegeRegistry.addModulePrivileges(session,"/modules/" + type.getModule().getRootFolderWithVersion());
+                                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + type.getModule().getRootFolderWithVersion());
                                     }
                                     return null;
                                 }
                             });
 
                         } catch (RepositoryException e) {
-                            logger.error("Cannot register workflow permissions",e);
+                            logger.error("Cannot register workflow permissions", e);
                         }
 
                         type.setProvider(provider.getKey());
@@ -146,9 +160,8 @@ public class WorkflowService implements BeanPostProcessor {
 
     /**
      * Performs the unregistration of the provided workflow type.
-     * 
-     * @param type
-     *            the helper object instance for unregisterng a workflow type
+     *
+     * @param type the helper object instance for unregisterng a workflow type
      */
     public void unregisterWorkflowType(WorklowTypeRegistration type) {
         if (workflowRegistrationByDefinition.get(type.getDefinition()) == type) {
@@ -159,7 +172,7 @@ public class WorkflowService implements BeanPostProcessor {
 
     /**
      * Returns a map with the registered workflow providers.
-     * 
+     *
      * @return a map with the registered workflow providers
      */
     public Map<String, WorkflowProvider> getProviders() {
@@ -168,9 +181,8 @@ public class WorkflowService implements BeanPostProcessor {
 
     /**
      * Adds the specified workflow provider into the registry.
-     * 
-     * @param provider
-     *            a workflow provider to be registered
+     *
+     * @param provider a workflow provider to be registered
      */
     public void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
@@ -181,9 +193,8 @@ public class WorkflowService implements BeanPostProcessor {
 
     /**
      * Removes the specified provider from the registry.
-     * 
-     * @param provider
-     *            the provider to be removed
+     *
+     * @param provider the provider to be removed
      */
     public void removeProvider(final WorkflowProvider provider) {
         providers.remove(provider.getKey());
@@ -224,7 +235,7 @@ public class WorkflowService implements BeanPostProcessor {
      *
      * @param locale
      * @return A list of available workflows per provider.
-     * @throws RepositoryException in case of an error 
+     * @throws RepositoryException in case of an error
      */
     public List<WorkflowDefinition> getWorkflows(Locale locale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
@@ -236,10 +247,11 @@ public class WorkflowService implements BeanPostProcessor {
 
     /**
      * Returns a list of available workflow definitions for the specified type.
-     * @param type workflow type
+     *
+     * @param type   workflow type
      * @param locale the locale used to localize workflow labels
      * @return a list of available workflow definitions for the specified type
-     * @throws RepositoryException in case of an error 
+     * @throws RepositoryException in case of an error
      */
     public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, Locale locale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
@@ -324,7 +336,7 @@ public class WorkflowService implements BeanPostProcessor {
                 }
 
                 Workflow w = getWorkflow(definition.getProvider(), processId, null);
-                JCRNodeWrapper node = session.getNodeByIdentifier((String)w.getVariables().get("nodeId"));
+                JCRNodeWrapper node = session.getNodeByIdentifier((String) w.getVariables().get("nodeId"));
                 if (permPath.indexOf("$") > -1) {
                     if (w != null) {
                         for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
@@ -343,10 +355,10 @@ public class WorkflowService implements BeanPostProcessor {
                 }
                 try {
                     if (!permPath.contains("/")) {
-                        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='"+permPath+"'", Query.JCR_SQL2);
+                        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='" + permPath + "'", Query.JCR_SQL2);
                         NodeIterator ni = q.execute().getNodes();
                         if (ni.hasNext()) {
-                            permPath = StringUtils.substringAfter(ni.nextNode().getPath(),"/permissions");
+                            permPath = StringUtils.substringAfter(ni.nextNode().getPath(), "/permissions");
 
                         } else {
                             return principals;
@@ -357,16 +369,16 @@ public class WorkflowService implements BeanPostProcessor {
                     Set<String> extPerms = new HashSet<String>();
 
                     while (!StringUtils.isEmpty(permPath)) {
-                        String permissionName = permPath.contains("/") ? StringUtils.substringAfterLast(permPath,"/") : permPath;
-                        NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '"+permissionName+"'", Query.JCR_SQL2).execute().getNodes();
+                        String permissionName = permPath.contains("/") ? StringUtils.substringAfterLast(permPath, "/") : permPath;
+                        NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
                         while (ni.hasNext()) {
                             JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
                             roles.add(roleNode.getName());
                         }
-                        ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '"+permissionName+"'", Query.JCR_SQL2).execute().getNodes();
+                        ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
                         while (ni.hasNext()) {
                             JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
-                            extPerms.add(roleNode.getParent().getName()+"/"+roleNode.getName());
+                            extPerms.add(roleNode.getParent().getName() + "/" + roleNode.getName());
                         }
                         permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
                     }
@@ -834,10 +846,26 @@ public class WorkflowService implements BeanPostProcessor {
 
     public Collection<WorkflowRule> getWorkflowRules(JCRNodeWrapper objectNode, Locale locale) {
         try {
-            List<WorkflowRule> rules = new ArrayList<WorkflowRule>();
-            recurseOnRules(rules, objectNode);
+            Map<String,WorkflowRule> rules = recurseOnRules(objectNode);
+            return Collections.unmodifiableCollection(rules.values());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
 
-            Map<String,WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
+//    WeakHashMap<JCRSessionWrapper, Map<String, Map<String, WorkflowRule>>> cacheBySession = new WeakHashMap<JCRSessionWrapper, Map<String, Map<String, WorkflowRule>>>();
+
+    private Map<String, WorkflowRule> recurseOnRules(final JCRNodeWrapper n)
+            throws RepositoryException {
+        if (cache.containsKey(n.getPath())) {
+            return cache.get(n.getPath());
+        }
+
+        Map<String, WorkflowRule> results;
+        if ("/".equals(n.getPath())) {
+            results = new HashMap<String, WorkflowRule>();
+            Map<String, WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
             for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
                 if (registration.isCanBeUsedForDefault() &&
                         (!m.containsKey(registration.getType()) || m.get(registration.getType()).getDefaultPriority() < registration.getDefaultPriority())) {
@@ -845,52 +873,33 @@ public class WorkflowService implements BeanPostProcessor {
                 }
             }
             for (Map.Entry<String, WorklowTypeRegistration> entry : m.entrySet()) {
-                rules.add(new WorkflowRule("/",entry.getValue().getProvider(),entry.getValue().getDefinition()));
+                results.put(entry.getValue().getType(), new WorkflowRule("/", entry.getValue().getProvider(), entry.getValue().getDefinition()));
             }
+        } else {
+            results = recurseOnRules(n.getParent());
 
-            return rules;
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
+            if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
+                results = new HashMap<String, WorkflowRule>(results);
 
-    private void recurseOnRules(List<WorkflowRule> results, Node n)
-            throws RepositoryException {
-        try {
-            Set<String> foundTypes = new HashSet<String>();
-            while (true) {
-                if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
-                    Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
-                    NodeIterator rules = wfRules.getNodes();
-                    while (rules.hasNext()) {
-                        Node rule = rules.nextNode();
-                        final String wfName = rule.getProperty("j:workflow").getString();
-                        String name = StringUtils.substringAfter(wfName, ":");
-                        String prov = StringUtils.substringBefore(wfName, ":");
-                        final WorklowTypeRegistration type = workflowRegistrationByDefinition.get(name);
-                        if (type == null) {
-                            continue;
-                        }
-                        String wftype = type.getType();
-                        if (foundTypes.contains(wftype)) {
-                            continue;
-                        }
-                        foundTypes.add(wftype);
-                        results.add(new WorkflowRule(n.getPath(), prov, name));
-                        if (rule.hasProperty("j:inherit") && !rule.getProperty("j:inherit").getBoolean()) {
-                            return;
-                        }
+                Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
+                NodeIterator rules = wfRules.getNodes();
+                while (rules.hasNext()) {
+                    Node rule = rules.nextNode();
+                    final String wfName = rule.getProperty("j:workflow").getString();
+                    String name = StringUtils.substringAfter(wfName, ":");
+                    String prov = StringUtils.substringBefore(wfName, ":");
+                    final WorklowTypeRegistration type = workflowRegistrationByDefinition.get(name);
+                    if (type == null) {
+                        continue;
                     }
+                    String wftype = type.getType();
+
+                    results.put(wftype, new WorkflowRule(n.getPath(), prov, name));
                 }
-                if ("/".equals(n.getPath())) {
-                    break;
-                }
-                n = n.getParent();
             }
-        } catch (ItemNotFoundException e) {
-            logger.debug(e.getMessage(), e);
         }
+        cache.put(n.getPath(), results);
+        return results;
     }
 
     public Workflow getWorkflow(String provider, String id, Locale locale) {

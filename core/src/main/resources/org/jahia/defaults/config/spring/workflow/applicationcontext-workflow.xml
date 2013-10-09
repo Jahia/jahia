@@ -4,8 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" factory-method="getInstance">
+    <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" factory-method="getInstance" init-method="start">
         <property name="jcrTemplate" ref="jcrTemplate"/>
+        <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
 
 </beans>

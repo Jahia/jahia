@@ -159,6 +159,9 @@ public class SourceControlHelper {
     }
 
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
+        if (!SettingsBean.getInstance().isDevelopmentMode()) {
+            return false;
+        }
         if (!new File(sources, "src/main/resources").exists() && !new File(sources, "src/main/webapp").exists()) {
             return false;
         }

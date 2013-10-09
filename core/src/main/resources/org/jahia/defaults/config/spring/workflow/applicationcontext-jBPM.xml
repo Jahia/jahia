@@ -53,7 +53,6 @@
           factory-method="getInstance" init-method="start" destroy-method="stop">
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
-        <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="platformTransactionManager" ref="jbpmTxManager"/>
         <property name="emf" ref="jbpmEmf"/>
         <property name="em" ref="jbpmEm"/>

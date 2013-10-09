@@ -40,6 +40,8 @@
 
 package org.jahia.services.workflow;
 
+import java.io.Serializable;
+
 /**
  * 
  * User: toto
@@ -47,7 +49,7 @@ package org.jahia.services.workflow;
  * Time: 5:37:18 PM
  * 
  */
-public class WorkflowRule {
+public class WorkflowRule implements Serializable {
     private String definitionPath;
     private String providerKey;
     private String workflowDefinitionKey;

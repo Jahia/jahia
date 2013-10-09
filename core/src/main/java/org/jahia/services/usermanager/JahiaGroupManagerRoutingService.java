@@ -572,19 +572,36 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return providersTable.get(name);
     }
 
+    private static final Map<String, Integer> siteKeyIdMap = new HashMap<String, Integer>();
     private int getSiteId(final String siteKey) {
+        Integer id = siteKeyIdMap.get(siteKey);
+
+        if(id!=null) {
+            return id;
+        }
         try {
             if (siteKey != null) {
-                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+                id = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
                     @Override
                     public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey , session).getID();
+                        return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey,
+                                session).getID();
                     }
                 });
+                synchronized (siteKeyIdMap) {
+                    siteKeyIdMap.put(siteKey,id);
+                }
+                return id;
             }
         } catch (Exception e) {
         }
         return 0;
+    }
+
+    public static void flushSiteKeyIdMap() {
+        synchronized (siteKeyIdMap) {
+            siteKeyIdMap.clear();
+        }
     }
 
     @Override

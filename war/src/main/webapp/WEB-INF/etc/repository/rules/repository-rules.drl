@@ -6,6 +6,8 @@ import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.slf4j.Logger
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
+import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
+
 expander rules.dsl
 
 // declare any global variables here
@@ -136,6 +138,7 @@ rule "Flush group cache"
             - the parent has the type jnt:virtualsitesFolder
     then
         Flush group cache
+>       JahiaGroupManagerRoutingService.flushSiteKeyIdMap();
 end
 
 rule "Clear site cache when updated"
@@ -162,10 +165,27 @@ rule "Flush URL resolver cache"
         Flush urlResolverSiteInfo
 end
 
-rule "Flush privileges in role cache"
+rule "Flush privileges in role cache on role update"
     when
         A property j:permissionNames has been set on a node
             - the node has the type jnt:role
     then
 >       JahiaAccessManager.flushPrivilegesInRoles();
+end
+
+rule "Flush privileges in role cache on role deletion"
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:roles
+    then
+>       JahiaAccessManager.flushPrivilegesInRoles();
+end
+
+rule "Flush site key to site id map in jahia group manager routing service on site update"
+    when
+        A property j:siteId has been set on a node
+            - the node has the type jnt:virtualsite
+    then
+>       JahiaGroupManagerRoutingService.flushSiteKeyIdMap();
 end

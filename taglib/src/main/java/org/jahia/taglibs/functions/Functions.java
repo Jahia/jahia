@@ -348,7 +348,11 @@ public class Functions {
     public static String sqlEncode(String s) {
         return JCRContentUtils.sqlEncode(s);
     }
-
+    
+    public static String xpathPathEncode(String s) {
+        return JCRContentUtils.stringToJCRPathExp(s);
+    }    
+    
     public static String modulePath(HttpServletRequest req, String moduleName) {
         return req.getContextPath() + "/modules/" + moduleName;
     }

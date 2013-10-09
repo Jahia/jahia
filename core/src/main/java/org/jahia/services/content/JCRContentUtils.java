@@ -1403,7 +1403,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @return A valid string path suitable for use in XPATH queries
      */
     public static String stringToJCRPathExp(String str) {
-        return ISO9075.encode(Text.escapeIllegalJcrChars(str));
+        return ISO9075.encodePath(str);
     }
 
     /**

@@ -525,6 +525,16 @@
 
     <function>
         <description>
+            Encode string so that it can be used in a XPATH query path constraint
+        </description>
+        <name>xpathPathEncode</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String xpathPathEncode(java.lang.String)</function-signature>
+        <example>select * from [jnt:task] as t where isdescendantnode(t,['${functions:sqlencode(path)}'])</example>
+    </function>
+
+    <function>
+        <description>
             Get the URL path to a module root directory
         </description>
         <name>modulePath</name>

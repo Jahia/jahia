@@ -72,11 +72,9 @@ import org.slf4j.Logger;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-<<<<<<< .working
-import java.security.Principal;
-=======
 
->>>>>>> .merge-right.r47622
+import java.security.Principal;
+
 import java.util.*;
 
 /**

@@ -63,11 +63,13 @@ public class AddCacheDependencyTag extends TagSupport {
     }
 
     public void setUuid(final String uuid) {
-        try {
-            Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
-            setPath(resource.getNode().getSession().getNodeByIdentifier(uuid).getPath());
-        } catch (RepositoryException e) {
-            this.stringDependency = uuid;
+        if (!StringUtils.isEmpty(uuid)) {
+            try {
+                Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
+                setPath(resource.getNode().getSession().getNodeByIdentifier(uuid).getPath());
+            } catch (RepositoryException e) {
+                this.stringDependency = uuid;
+            }
         }
     }
 

@@ -208,7 +208,9 @@ public class JCRSessionWrapper implements Session {
 
     public JCRNodeWrapper getNodeByUUID(final String uuid, final boolean checkVersion)
             throws ItemNotFoundException, RepositoryException {
-
+        if(StringUtils.isEmpty(uuid)) {
+            throw new RepositoryException("invalid identifier: " + uuid);
+        }
         if (sessionCacheByIdentifier.containsKey(uuid)) {
             return sessionCacheByIdentifier.get(uuid);
         }

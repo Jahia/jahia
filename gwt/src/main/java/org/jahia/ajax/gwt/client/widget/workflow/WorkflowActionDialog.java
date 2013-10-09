@@ -49,6 +49,8 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -442,7 +444,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
                         public void onApplicationFailure(Throwable caught) {
                             WorkInProgressActionItem.removeStatus(status);
-                            Info.display("Workflow failed", "Workflow failed");
+                            Window.alert(Messages.get("label.workflow.failed", "Workflow failed") + ": " + caught.getMessage());
                             container.closeEngine();
                         }
                     });

@@ -72,7 +72,11 @@ import org.slf4j.Logger;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+<<<<<<< .working
 import java.security.Principal;
+=======
+
+>>>>>>> .merge-right.r47622
 import java.util.*;
 
 /**
@@ -273,8 +277,13 @@ public class WorkflowHelper {
 
     public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
-        HashMap<String, Object> map = getVariablesMap(properties);
-        service.assignAndCompleteTask(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
+        try { 
+            Map<String, Object> map = getVariablesMap(properties);
+            service.assignAndCompleteTask(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
+        } catch (Exception e) {
+            logger.error("Exception in task", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     private HashMap<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {

@@ -177,10 +177,10 @@
 [jmix:workflow] mixin
  - j:processId (string) protected multiple nofulltext hidden
 
-[jnt:workflowRules] > nt:base orderable
+[jnt:workflowRules] > nt:base,jmix:observable orderable
  + * (jnt:workflowRule)
 
-[jnt:workflowRule] > nt:base
+[jnt:workflowRule] > nt:base,jmix:observable
  - j:workflow (string,choicelist[workflow]) nofulltext
 
 

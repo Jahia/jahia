@@ -854,8 +854,6 @@ public class WorkflowService implements BeanPostProcessor {
         return null;
     }
 
-//    WeakHashMap<JCRSessionWrapper, Map<String, Map<String, WorkflowRule>>> cacheBySession = new WeakHashMap<JCRSessionWrapper, Map<String, Map<String, WorkflowRule>>>();
-
     private Map<String, WorkflowRule> recurseOnRules(final JCRNodeWrapper n)
             throws RepositoryException {
         if (cache.containsKey(n.getPath())) {

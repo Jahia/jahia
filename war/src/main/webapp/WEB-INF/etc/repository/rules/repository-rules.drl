@@ -189,3 +189,29 @@ rule "Flush site key to site id map in jahia group manager routing service on si
     then
 >       JahiaGroupManagerRoutingService.flushSiteKeyIdMap();
 end
+
+rule "Flush workflow rules cache on update"
+    when
+        A property has been set on a node
+            - the node has the type jnt:workflowRule
+    then
+        Flush WorkflowRuleCache
+end
+
+rule "Flush workflow rules cache on rule deletion"
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:workflowRules
+    then
+        Flush WorkflowRuleCache
+end
+
+rule "Flush workflow rules cache on all rules deletion"
+    when
+        A node is deleted
+            - its name is j:workflowRules
+    then
+        Flush WorkflowRuleCache
+end
+

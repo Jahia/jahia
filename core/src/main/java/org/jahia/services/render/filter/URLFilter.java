@@ -40,19 +40,23 @@
 
 package org.jahia.services.render.filter;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Traverses the content and searches for URLs in the configured elements.
  * Executes the list of configured visitors to modify the URL value.
  */
 public class URLFilter extends AbstractFilter {
-    
+
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param urlTraverser the URL utility class to visit HTML tag attributes
      */
     public URLFilter(HtmlTagAttributeTraverser urlTraverser) {
@@ -61,13 +65,36 @@ public class URLFilter extends AbstractFilter {
     }
 
     private HtmlTagAttributeTraverser urlTraverser;
-    
+
     private HtmlTagAttributeVisitor[] handlers;
 
-    public  String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         if (handlers != null && handlers.length > 0) {
-            previousOut = urlTraverser.traverse(previousOut, renderContext, resource, handlers);
+
+            final String thisuuid = StringUtils.leftPad(Integer.toHexString(resource.hashCode()),8,"0");
+
+            Map<String, String> m = new HashMap<String, String>();
+
+            StringBuilder sb = new StringBuilder(previousOut);
+            int i;
+            final String startTag = "<!-- jahia:temp value=\"URLParserStart";
+            while ((i = sb.indexOf(startTag)) > -1) {
+                String uuid = sb.substring(i+ startTag.length(), i+ startTag.length() +8);
+                final String endTag = "<!-- jahia:temp value=\"URLParserEnd" + uuid + "\" -->";
+                int j = sb.indexOf(endTag);
+                m.put(uuid, sb.substring(i, j + endTag.length()));
+                sb.replace(i, j + endTag.length(), "<jahia:URLParserParsedReplaced id=\"" + uuid + "\"/>");
+            }
+
+            StringBuilder replaced = new StringBuilder("<!-- jahia:temp value=\"URLParserStart" + thisuuid + "\" -->" + urlTraverser.traverse(sb.toString(), renderContext, resource, handlers) + "<!-- jahia:temp value=\"URLParserEnd" + thisuuid + "\" -->");
+
+            final String str2 = "<jahia:URLParserParsedReplaced id=\"";
+            while ((i = replaced.indexOf(str2)) > -1) {
+                String uuid = replaced.substring(i+str2.length(), i+str2.length() + 8);
+                replaced.replace(i, i+str2.length()+ 8 + 3, m.get(uuid));
+            }
+            return replaced.toString();
         }
 
         return previousOut;
@@ -79,6 +106,5 @@ public class URLFilter extends AbstractFilter {
     public void setHandlers(HtmlTagAttributeVisitor... visitors) {
         this.handlers = visitors;
     }
-
 
 }

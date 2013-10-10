@@ -97,6 +97,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     };
 
+    private static final Pattern CLEANUP_REGEXP = Pattern.compile(
+            "<!-- jahia:temp value=\".*?\" -->");
+
     private static final FastHashMap RANK;
 
     private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
@@ -372,8 +375,21 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         for (StartTag segment : esiResourceTags) {
             outputDocument.replace(segment,"");
         }
-        return outputDocument.toString().trim();
+        String s = outputDocument.toString();
+        s = removeTempTags(s);
+        return s.trim();
     }
+
+    public static String removeTempTags(String content) {
+        if (StringUtils.isNotEmpty(content)) {
+            return CLEANUP_REGEXP.matcher(content).replaceAll("");
+        } else {
+            return content;
+        }
+    }
+
+
+
 
     private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> map, String type) throws IOException {
         List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(map.entrySet());

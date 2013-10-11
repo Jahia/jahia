@@ -77,10 +77,6 @@ public class CacheEntry<V> implements Serializable {
     /** number of time the entry was requested. */
     protected int hits = 0;
 
-    /** the operation mode. */
-    protected String operationMode = ""; // this can take the values
-    // "normal", "edit" or "debug" (see ProcessingContext defined modes)
-
     /** the properties table. */
     protected Map<String, Serializable> properties = new HashMap<String, Serializable>();
 
@@ -215,32 +211,6 @@ public class CacheEntry<V> implements Serializable {
      * */
     final public void incrementHits () {
         hits++;
-    }
-
-
-    /** <p>Retrieve the operation mode.</p>
-     *
-     * <p>Returned values are <code>MODE_NORMAL</code>, <code>MODE_EDIT</code>
-     * or <code>MODE_DEBUG</code>, corresponding respectively to the normal
-     * operation mode, the edition mode and debugginf mode.</p>
-     *
-     * @return  the operation mode.
-     */
-    final public String getOperationMode () {
-        return this.operationMode;
-    }
-
-
-    /** <p>Sets the operation mode.</p>
-     *
-     * <p>Accepted values are <code>MODE_NORMAL</code>, <code>MODE_EDIT</code>
-     * or <code>MODE_DEBUG</code>, corresponding respectively to the normal
-     * operation mode, the edition mode and debugginf mode.</p>
-     *
-     * @param   opMode  the operation mode
-     */
-    final public void setOperationMode (final String opMode) {
-        this.operationMode = opMode;
     }
 
 

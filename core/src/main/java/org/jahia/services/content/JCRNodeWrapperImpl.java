@@ -50,6 +50,7 @@ import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
+import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
@@ -2304,7 +2305,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return true;
             }
             try {
-                if (epd != null && epd.isInternationalized()) {
+                if (epd.isInternationalized()) {
                     if (hasI18N(locale, true)) {
                         final Node localizedNode = getI18N(locale);
                         return localizedNode.hasProperty(propertyName);
@@ -2313,6 +2314,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } catch (ConstraintViolationException e) {
                 return false;
             }
+        }
+        if (objectNode instanceof NodeImpl) {
+            return ((NodeImpl)objectNode).hasProperty(((SessionImpl)objectNode.getSession()).getQName(propertyName));
         }
         return objectNode.hasProperty(propertyName);
     }

@@ -610,20 +610,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
         cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<esi:include src=\"$1\">");
 
-        if (cachedRenderContent.contains("<esi:include")) {
-            Source source = new Source(cachedRenderContent);
-    
-            //// This will remove all blank line and drastically reduce data in memory
-            // source = new Source((new SourceFormatter(source)).toString());
-    
-            // We will remove module:tag content here has we do not want to store them twice in memory
-            List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
-            OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
-    
-            cachedRenderContent = outputDocument.toString();
-        }
+        Source source = new Source(cachedRenderContent);
+
+        //// This will remove all blank line and drastically reduce data in memory
+        // source = new Source((new SourceFormatter(source)).toString());
+
+        // We will remove module:tag content here has we do not want to store them twice in memory
+        List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
+        OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
+
         // Finally, add the  <!-- cache:include --> around the content and create cache entry.
-        cachedRenderContent = surroundWithCacheTag(key, cachedRenderContent);
+        String output = outputDocument.toString();
+        cachedRenderContent = surroundWithCacheTag(key, output);
         CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
 
         return cacheEntry;
@@ -694,9 +692,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier,
                                       Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
-        if (cachedContent.contains("<esi:include")) {
-            return cachedContent;
-        }
         // aggregate content
         Source htmlContent = new Source(cachedContent);
 

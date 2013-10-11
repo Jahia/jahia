@@ -184,9 +184,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.EditSourceContent"/>
                                     <ref bean="Toolbar.Item.Separator"/>
@@ -219,9 +217,7 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>
-                        <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                         <ref bean="Toolbar.Item.EditSourceContent"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
@@ -568,7 +564,7 @@
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -732,9 +728,7 @@
                                         <property name="icon" value="newTemplate"/>
                                     </bean>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -749,9 +743,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.EditSourceContent"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -824,9 +816,7 @@
                                     <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.Download"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
@@ -849,9 +839,7 @@
                                     <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>

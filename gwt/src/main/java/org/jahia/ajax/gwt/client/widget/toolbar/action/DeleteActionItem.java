@@ -69,7 +69,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
     
     private boolean permanentlyDelete;
-    
+
     private String referenceTitleKey;
 
     private boolean checkEnabledWithMarkedForDeletion(LinkerSelectionContext lh) {
@@ -89,8 +89,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                     }
                 }
 
-                if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))
-                        ||  !selected.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
+                if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
                     // the node is already published or it is locked (not for deletion)
                     enabled = false;
                     break;

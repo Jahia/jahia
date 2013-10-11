@@ -1106,14 +1106,6 @@ public class JCRPublicationService extends JahiaService {
 
     public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages) throws RepositoryException {
         int status;
-        JCRNodeWrapper publishedNode = null;
-        try {
-            publishedNode = destinationSession.getNodeByUUID(node.getIdentifier());
-        } catch (ItemNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No live node for staging node " + node.getPath());
-            }
-        }
 
         if (!node.checkLanguageValidity(languages)) {
             status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
@@ -1123,9 +1115,7 @@ public class JCRPublicationService extends JahiaService {
                     status = PublicationInfo.MANDATORY_LANGUAGE_VALID;
                 }
             }
-        } else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
-            status = PublicationInfo.UNPUBLISHED;
-        } else if (publishedNode == null) {
+        } else if (!node.hasProperty("j:published")) {
             try {
                 try {
                     destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
@@ -1150,8 +1140,10 @@ public class JCRPublicationService extends JahiaService {
                     status = PublicationInfo.PUBLISHED;
                 }
             }
+        } else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
+            status = PublicationInfo.UNPUBLISHED;
         } else {
-            if (node.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
+            if (node.hasProperty("jcr:mergeFailed")) {
                 status = PublicationInfo.CONFLICT;
             } else if (node.getLastModifiedAsDate() == null) {
                 // No modification date - node is published
@@ -1162,7 +1154,7 @@ public class JCRPublicationService extends JahiaService {
                 } else {
                     Date pubProp = node.getLastPublishedAsDate();
                     if (pubProp == null) {
-                        publishedNode.getLastModifiedAsDate();
+                        destinationSession.getNodeByUUID(node.getIdentifier()).getLastModifiedAsDate();
                     }
                     Date modProp = pubProp != null ? node.getLastModifiedAsDate() : null;
                     if (modProp == null || pubProp == null) {

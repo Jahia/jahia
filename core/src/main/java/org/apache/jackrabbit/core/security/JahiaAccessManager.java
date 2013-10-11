@@ -549,10 +549,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private String resolveSite(Node node) throws RepositoryException {
         while (!node.isNodeType("jnt:virtualsite")) {
-            node = node.getParent();
             if (node.isNodeType("rep:root")) {
                 return null;
             }
+            node = node.getParent();
         }
         return node.getName();
     }

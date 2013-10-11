@@ -247,7 +247,7 @@ public class QueryWrapper implements Query {
     }
 
 
-    public QueryResult execute() throws RepositoryException {
+    public QueryResultWrapper execute() throws RepositoryException {
         long queryOffset = offset;
         long queryLimit = limit;
         List<QueryResultAdapter> results = new LinkedList<QueryResultAdapter>();

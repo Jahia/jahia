@@ -262,7 +262,7 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public QueryManager getQueryManager() {
+    public QueryManagerWrapper getQueryManager() {
         return new QueryManagerImpl(session, service);
     }
 

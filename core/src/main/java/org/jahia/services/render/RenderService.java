@@ -52,6 +52,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.query.QueryResultWrapper;
+import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
@@ -99,7 +101,7 @@ public class RenderService {
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";
 
-    private CacheImplementation<String, SortedSet<Template>> templatesCache;
+    private CacheImplementation<String, List<String>> templatesCache;
 
     private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
 
@@ -109,7 +111,7 @@ public class RenderService {
 
     @SuppressWarnings("unchecked")
     public void setCacheProvider(CacheProvider cacheProvider) {
-        templatesCache = (CacheImplementation<String, SortedSet<Template>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
+        templatesCache = (CacheImplementation<String, List<String>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
     }
 
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
@@ -403,37 +405,47 @@ public class RenderService {
 
     private SortedSet<Template> addTemplates(Resource resource, RenderContext renderContext, String templateName,
                                                            JCRNodeWrapper templateNode, String type) throws RepositoryException {
-        String key = null;
-        if (renderContext.isLiveMode()) {
-            key = new StringBuffer(templateNode.getPath()).append(type).append(
-                    templateName != null ? templateName : "default").toString() + renderContext.getServletPath() + resource.getWorkspace() + renderContext.isLoggedIn() +
-                    resource.getNode().getNodeTypes() + aclCacheKeyPartGenerator.getAclKeyPartForNode(renderContext, resource.getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false);
-            if (templatesCache.containsKey(key)) {
-                return templatesCache.get(key);
-            }
-        }
-        String query =
-                "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
-                        "'])";
-        if (templateName != null) {
-            query += " and name(w)='" + templateName + "'";
-        } else {
-            query += " and [j:defaultTemplate]=true";
-        }
-        query += " order by [j:priority] desc";
-        Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-        QueryResult result = q.execute();
-        NodeIterator ni = result.getNodes();
+        List<JCRNodeWrapper> nodes = getTemplateNodes(templateName, templateNode, type);
 
         SortedSet<Template> templates = new TreeSet<Template>(TEMPLATE_PRIORITY_COMPARATOR);
-        while (ni.hasNext()) {
-            final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
+        for (JCRNodeWrapper contentTemplateNode : nodes) {
             addTemplate(resource, renderContext, contentTemplateNode, templates);
         }
-        if (key != null) {
-            templatesCache.put(key, null, templates);
-        }
         return templates;
+    }
+
+    private List<JCRNodeWrapper> getTemplateNodes(String templateName, JCRNodeWrapper templateNode, String type) throws RepositoryException {
+        String key = new StringBuilder(templateNode.getPath())
+                .append(type)
+                .append(templateName != null ? templateName : "default").toString();
+
+        List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
+        if (templatesCache.containsKey(key)) {
+            List<String> nodeIds =  templatesCache.get(key);
+            for (String nodeId : nodeIds) {
+                JCRNodeWrapper node = templateNode.getSession().getNodeByIdentifier(nodeId);
+                nodes.add(node);
+            }
+        } else {
+            String query =
+                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
+                            "'])";
+            if (templateName != null) {
+                query += " and name(w)='" + templateName + "'";
+            } else {
+                query += " and [j:defaultTemplate]=true";
+            }
+            query += " order by [j:priority] desc";
+            QueryWrapper q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+            QueryResultWrapper result = q.execute();
+            List<String> nodeIds = new ArrayList<String>();
+            for (JCRNodeWrapper wrapper : result.getNodes()) {
+                nodes.add(wrapper);
+                nodeIds.add(wrapper.getIdentifier());
+            }
+            templatesCache.put(key, null, nodeIds);
+        }
+        return nodes;
     }
 
     private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<Template> templates)

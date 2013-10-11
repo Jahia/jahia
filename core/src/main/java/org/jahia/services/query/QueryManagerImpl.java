@@ -64,13 +64,14 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.QueryManagerWrapper;
 
 /**
  * Implementation of the {@link QueryManager} to support multiple providers.
  * 
  * @author Thomas Draier
  */
-public class QueryManagerImpl implements QueryManager {
+public class QueryManagerImpl implements QueryManagerWrapper {
 
     /**
      * Invocation handler to decorate the {@link QueryObjectModelFactory}
@@ -184,7 +185,7 @@ public class QueryManagerImpl implements QueryManager {
         }
     }
 
-    public Query getQuery(Node node) throws InvalidQueryException, RepositoryException {
+    public QueryWrapper getQuery(Node node) throws InvalidQueryException, RepositoryException {
         try {
             return new QueryWrapper(node, session, sessionFactory);
         } catch (PathNotFoundException e) {

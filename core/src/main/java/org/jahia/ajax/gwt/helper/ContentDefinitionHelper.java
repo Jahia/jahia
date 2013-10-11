@@ -716,46 +716,47 @@ public class ContentDefinitionHelper {
 
     private GWTChoiceListInitializer getChoiceListInitializerValues(ExtendedPropertyDefinition epd, Map<String, Object> context, Locale uiLocale) {
         GWTChoiceListInitializer initializer = null;
-        Map<String, String> map = epd.getSelectorOptions();
-        if (map.size() > 0) {
-            final List<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(32);
-            final Map<String, ChoiceListInitializer> initializers = choiceListInitializerService.getInitializers();
-            List<String> dependentProperties = null;
-            if (map.containsKey("dependentProperties")) {
-                dependentProperties = Lists.newArrayList(StringUtils.split(map.get("dependentProperties"), ','));
-                context.put("dependentProperties", dependentProperties);
-            }
-            List<ChoiceListValue> listValues = null;
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                if (initializers.containsKey(entry.getKey())) {
-                    listValues = initializers.get(entry.getKey())
-                            .getChoiceListValues(epd, entry.getValue(), listValues, uiLocale, context);
+        if (!epd.isHidden()) {
+            Map<String, String> map = epd.getSelectorOptions();
+            if (map.size() > 0) {
+                final List<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(32);
+                final Map<String, ChoiceListInitializer> initializers = choiceListInitializerService.getInitializers();
+                List<String> dependentProperties = null;
+                if (map.containsKey("dependentProperties")) {
+                    dependentProperties = Lists.newArrayList(StringUtils.split(map.get("dependentProperties"), ','));
+                    context.put("dependentProperties", dependentProperties);
                 }
-            }
-            if (listValues != null) {
-                for (ChoiceListValue choiceListValue : listValues) {
-                    try {
-                        final GWTJahiaValueDisplayBean displayBean =
-                                new GWTJahiaValueDisplayBean(choiceListValue.getValue().getString(),
-                                        choiceListValue.getDisplayName());
-                        final Map<String, Object> props = choiceListValue.getProperties();
-                        if (props != null) {
-                            for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
-                                if (objectEntry.getKey() == null || objectEntry.getValue() == null) {
-                                    logger.error("Null value : " + objectEntry.getKey() + " / " +
-                                            objectEntry.getValue());
-                                } else {
-                                    displayBean.set(objectEntry.getKey(), objectEntry.getValue());
-                                }
-                            }
-                        }
-                        displayBeans.add(displayBean);
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
+                List<ChoiceListValue> listValues = null;
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    if (initializers.containsKey(entry.getKey())) {
+                        listValues = initializers.get(entry.getKey()).getChoiceListValues(epd, entry.getValue(),
+                                listValues, uiLocale, context);
                     }
                 }
+                if (listValues != null) {
+                    for (ChoiceListValue choiceListValue : listValues) {
+                        try {
+                            final GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(
+                                    choiceListValue.getValue().getString(), choiceListValue.getDisplayName());
+                            final Map<String, Object> props = choiceListValue.getProperties();
+                            if (props != null) {
+                                for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
+                                    if (objectEntry.getKey() == null || objectEntry.getValue() == null) {
+                                        logger.error("Null value : " + objectEntry.getKey() + " / " +
+                                                     objectEntry.getValue());
+                                    } else {
+                                        displayBean.set(objectEntry.getKey(), objectEntry.getValue());
+                                    }
+                                }
+                            }
+                            displayBeans.add(displayBean);
+                        } catch (RepositoryException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+                initializer = new GWTChoiceListInitializer(displayBeans, dependentProperties);
             }
-            initializer = new GWTChoiceListInitializer(displayBeans, dependentProperties);
         }
         return initializer;
     }

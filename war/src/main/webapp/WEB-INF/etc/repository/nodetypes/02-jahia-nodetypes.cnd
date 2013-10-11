@@ -410,7 +410,7 @@
  - j:requireLoggedUser (boolean)
  - j:requirePrivilegedUser (boolean)
  - j:requiredMode (string, choicelist[renderModes]) nofulltext
- - j:requiredPermissions (weakreference, choicelist[nodes='/permissions//*;jnt:permission']) hidden nofulltext multiple
+ - j:requiredPermissions (weakreference) hidden nofulltext multiple
  - j:requiredPermissionNames (string, choicelist[permissions]) nofulltext multiple
  - j:contextNodePath (string)
  - j:invertCondition (boolean)

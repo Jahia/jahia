@@ -69,11 +69,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.AccessDeniedException;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
@@ -405,7 +403,7 @@ public class RenderService {
 
     private SortedSet<Template> addTemplates(Resource resource, RenderContext renderContext, String templateName,
                                                            JCRNodeWrapper templateNode, String type) throws RepositoryException {
-        List<JCRNodeWrapper> nodes = getTemplateNodes(templateName, templateNode, type);
+        List<JCRNodeWrapper> nodes = getTemplateNodes(templateName, templateNode.getPath(), type, templateName == null, templateNode.getSession());
 
         SortedSet<Template> templates = new TreeSet<Template>(TEMPLATE_PRIORITY_COMPARATOR);
         for (JCRNodeWrapper contentTemplateNode : nodes) {
@@ -414,29 +412,30 @@ public class RenderService {
         return templates;
     }
 
-    private List<JCRNodeWrapper> getTemplateNodes(String templateName, JCRNodeWrapper templateNode, String type) throws RepositoryException {
-        String key = new StringBuilder(templateNode.getPath())
+    public List<JCRNodeWrapper> getTemplateNodes(String templateName, String path, String type, boolean defaultOnly, JCRSessionWrapper session) throws RepositoryException {
+        String key = new StringBuilder(path)
                 .append(type)
+                .append(defaultOnly)
                 .append(templateName != null ? templateName : "default").toString();
 
         List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
         if (templatesCache.containsKey(key)) {
             List<String> nodeIds =  templatesCache.get(key);
             for (String nodeId : nodeIds) {
-                JCRNodeWrapper node = templateNode.getSession().getNodeByIdentifier(nodeId);
+                JCRNodeWrapper node = session.getNodeByIdentifier(nodeId);
                 nodes.add(node);
             }
         } else {
             String query =
-                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() +
-                            "'])";
+                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + path + "'])";
             if (templateName != null) {
                 query += " and name(w)='" + templateName + "'";
-            } else {
+            }
+            if (defaultOnly) {
                 query += " and [j:defaultTemplate]=true";
             }
             query += " order by [j:priority] desc";
-            QueryWrapper q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+            QueryWrapper q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
             QueryResultWrapper result = q.execute();
             List<String> nodeIds = new ArrayList<String>();
             for (JCRNodeWrapper wrapper : result.getNodes()) {

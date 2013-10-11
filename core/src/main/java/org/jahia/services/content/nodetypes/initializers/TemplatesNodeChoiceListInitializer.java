@@ -46,6 +46,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.render.RenderService;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -129,13 +130,8 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
     }
 
     private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, JCRNodeWrapper defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale, Map<String, Object> context) throws RepositoryException {
-        final QueryManager queryManager = session.getWorkspace().getQueryManager();
-        QueryResult result = queryManager.createQuery(
-                "select * from [jnt:" + templateType + "] as n where isdescendantnode(n,['" + path + "'])", Query.JCR_SQL2).execute();
-        final NodeIterator iterator = result.getNodes();
-        while (iterator.hasNext()) {
-            JCRNodeWrapper templateNode = (JCRNodeWrapper) iterator.next();
-
+        List<JCRNodeWrapper> nodes = RenderService.getInstance().getTemplateNodes(null, path, "jnt:"+templateType, false, session);
+        for (JCRNodeWrapper templateNode : nodes) {
             boolean ok = true;
             if (templateNode.hasProperty("j:applyOn")) {
                 ok = false;

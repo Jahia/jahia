@@ -252,7 +252,11 @@ public class AclListener extends DefaultEventListener {
             refAce.setProperty("j:sourceAce", new Value[] { session.getValueFactory().createValue(ace, true)});
         } else {
             JCRNodeWrapper refAce = acl.getNode(n);
-            refAce.getProperty("j:sourceAce").addValue(session.getValueFactory().createValue(ace, true));
+            if (refAce.hasProperty("j:sourceAce")) {
+                refAce.getProperty("j:sourceAce").addValue(session.getValueFactory().createValue(ace, true));
+            } else {
+                refAce.setProperty("j:sourceAce", new Value[] { session.getValueFactory().createValue(ace, true)});
+            }
         }
     }
 

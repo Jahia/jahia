@@ -223,7 +223,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (initialized) {
             throw new IllegalStateException("already initialized");
         }
-//        super.init(context, acProvider, wspAccessManager);
 
         pathPermissionCache = new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize());
         globalGroupMembershipCheckActivated = SettingsBean.getInstance().isGlobalGroupMembershipCheckActivated();
@@ -237,7 +236,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         Set<JahiaPrincipal> principals = subject.getPrincipals(JahiaPrincipal.class);
         if (!principals.isEmpty()) {
-            jahiaPrincipal = (JahiaPrincipal) principals.iterator().next();
+            jahiaPrincipal = principals.iterator().next();
         }
 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
@@ -309,23 +308,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
     }
 
-
-//    @Override
-//    public Privilege privilegeFromName(String privilegeName) throws AccessControlException, RepositoryException {
-//        checkInitialized();
-//
-//        return privilegeRegistry.getPrivilege(privilegeName, workspaceName);
-//    }
-//
-//    @Override
-//    public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-//        checkInitialized();
-//        checkValidNodePath(absPath);
-//
-//        // return all known privileges everywhere.
-//        return privilegeRegistry.getRegisteredPrivileges();
-//    }
-//
 
     @Override
     protected PrivilegeManager getPrivilegeManager() throws RepositoryException {
@@ -489,7 +471,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
 
-            while (!itemExists.booleanValue()) {
+            while (!itemExists) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
                 itemExists = getSecuritySession().itemExists(jcrPath);
             }
@@ -540,23 +522,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             // Todo : optimize site resolution
-//            int siteId = 0;
             String site = null;
             if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH)) {
                 if (jcrPath.length() > JahiaSitesService.SITES_JCR_PATH.length() + 1) {
                     site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
                 }
             } else {
-                Node s = n;
-                try {
-                    while (!s.isNodeType("jnt:virtualsite")) {
-                        s = s.getParent();
-                    }
-                    site = s.getName();
-                    //                siteId = (int) s.getProperty("j:siteId").getLong();
-                } catch (ItemNotFoundException e) {
-                } catch (PathNotFoundException e) {
-                }
+                site = resolveSite(n);
             }
 
 //            if (jahiaPrincipal != null) {
@@ -573,6 +545,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
         pathPermissionCache.put(absPathStr + " : " + permissions, res);
         return res;
+    }
+
+    private String resolveSite(Node node) throws RepositoryException {
+        while (!node.isNodeType("jnt:virtualsite")) {
+            node = node.getParent();
+            if (node.isNodeType("rep:root")) {
+                return null;
+            }
+        }
+        return node.getName();
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
@@ -916,16 +898,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Session s = getDefaultWorkspaceSecuritySession();
         Node n = s.getNode(absPath);
 
-        String site = null;
-        Node c = n;
-        try {
-            while (!c.isNodeType("jnt:virtualsite")) {
-                c = c.getParent();
-            }
-            site = c.getName();
-        } catch (ItemNotFoundException e) {
-        } catch (PathNotFoundException e) {
-        }
+        String site = resolveSite(n);
 
         try {
             while (true) {

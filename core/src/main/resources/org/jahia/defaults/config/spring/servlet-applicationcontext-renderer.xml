@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="rendererPlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="properties">
@@ -23,42 +23,42 @@
     <bean name="wfImage" class="org.jahia.bin.WorkflowImageController"/>
 
     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
-        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-        <property name="editConfiguration" ref="editmode" />
+        <property name="sessionExpiryTime" value="${sessionExpiryTime}"/>
+        <property name="editConfiguration" ref="editmode"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
-        <property name="workspace" value="default" />
+        <property name="workspace" value="default"/>
     </bean>
     <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Edit">
-        <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
-        <property name="editConfiguration" ref="contributemode" />
+        <property name="sessionExpiryTime" value="${sessionExpiryTime}"/>
+        <property name="editConfiguration" ref="contributemode"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
-        <property name="workspace" value="default" />
+        <property name="workspace" value="default"/>
     </bean>
     <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Edit">
-        <property name="sessionExpiryTime" value="60" />
-        <property name="editConfiguration" ref="studiomode" />
-        <property name="requiredPermission" value="studioModeAccess" />
+        <property name="sessionExpiryTime" value="60"/>
+        <property name="editConfiguration" ref="studiomode"/>
+        <property name="requiredPermission" value="studioModeAccess"/>
         <property name="availableInProductionMode" value="false"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
-        <property name="workspace" value="default" />
+        <property name="workspace" value="default"/>
     </bean>
 
     <bean name="org.jahia.bin.StudioVisual" parent="abstractRender" class="org.jahia.bin.Edit">
-        <property name="sessionExpiryTime" value="60" />
-        <property name="editConfiguration" ref="studiovisualmode" />
-        <property name="requiredPermission" value="studioModeAccess" />
+        <property name="sessionExpiryTime" value="60"/>
+        <property name="editConfiguration" ref="studiovisualmode"/>
+        <property name="requiredPermission" value="studioModeAccess"/>
         <property name="availableInProductionMode" value="false"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
-        <property name="workspace" value="default" />
+        <property name="workspace" value="default"/>
     </bean>
 
     <bean name="org.jahia.bin.AdministrationLayout" parent="abstractRender" class="org.jahia.bin.Edit">
-        <property name="sessionExpiryTime" value="60" />
-        <property name="editConfiguration" ref="adminmode" />
-        <property name="requiredPermission" value="administrationAccess" />
+        <property name="sessionExpiryTime" value="60"/>
+        <property name="editConfiguration" ref="adminmode"/>
+        <property name="requiredPermission" value="administrationAccess"/>
         <property name="availableInProductionMode" value="true"/>
         <property name="availableInDistantPublicationServerMode" value="true"/>
-        <property name="workspace" value="default" />
+        <property name="workspace" value="default"/>
     </bean>
 
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -89,29 +89,29 @@
                 <entry key="/studiovisualframe/**" value-ref="org.jahia.bin.StudioVisual"/>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find">
-                        <property name="urlResolverFactory" ref="urlResolverFactory" />
+                        <property name="urlResolverFactory" ref="urlResolverFactory"/>
                     </bean>
                 </entry>
                 <entry key="/findPrincipal">
                     <bean class="org.jahia.bin.FindPrincipal">
-                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
-                        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />
-                        <property name="jahiaSitesService" ref="JahiaSitesService" /> 
+                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
+                        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
+                        <property name="jahiaSitesService" ref="JahiaSitesService"/>
                         <property name="requiredPermission" value="adminUsers"/>
                     </bean>
                 </entry>
                 <entry key="/findUser">
                     <bean class="org.jahia.bin.FindUser">
-                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
+                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
                         <property name="hardLimit" value="20"/>
                     </bean>
                 </entry>
                 <entry key="/findUsersAndGroups">
                     <bean class="org.jahia.bin.FindUsersAndGroups">
-                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService" />
-                        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService" />
-                        <property name="jahiaSitesService" ref="JahiaSitesService" />
+                        <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
+                        <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
+                        <property name="jahiaSitesService" ref="JahiaSitesService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
                         <property name="hardLimit" value="20"/>
                     </bean>
@@ -123,7 +123,7 @@
                 </entry>
                 <entry key="/findHistory/**">
                     <bean class="org.jahia.bin.FindHistory">
-                        <property name="urlResolverFactory" ref="urlResolverFactory" />
+                        <property name="urlResolverFactory" ref="urlResolverFactory"/>
                     </bean>
                 </entry>
                 <entry key="/login">
@@ -135,10 +135,10 @@
                 <entry key="/logout">
                     <bean name="org.jahia.bin.Logout" class="org.jahia.bin.Logout">
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
-                        <property name="urlResolverFactory" ref="urlResolverFactory" />
-                        <property name="urlRewriteService" ref="UrlRewriteService" />
-                        <property name="fireLogoutEvent" value="${fireLogoutEvent:false}" />
-                        <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogout:}" />
+                        <property name="urlResolverFactory" ref="urlResolverFactory"/>
+                        <property name="urlRewriteService" ref="UrlRewriteService"/>
+                        <property name="fireLogoutEvent" value="${fireLogoutEvent:false}"/>
+                        <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogout:}"/>
                     </bean>
                 </entry>
                 <entry key="/captcha">
@@ -153,11 +153,11 @@
                     </bean>
                 </entry>
                 <entry key="/wcag/**">
-					<bean class="org.jahia.services.htmlvalidator.WCAGController"/>
+                    <bean class="org.jahia.services.htmlvalidator.WCAGController"/>
                 </entry>
                 <entry key="/serverStats/**">
                     <bean class="org.jahia.bin.ServerStats">
-                        <property name="requestLoadAverage" ref="RequestLoadAverage" />
+                        <property name="requestLoadAverage" ref="RequestLoadAverage"/>
                     </bean>
                 </entry>
                 <entry key="/wfImage" value-ref="wfImage"/>
@@ -181,7 +181,8 @@
                 <entry key="/text-extract">
                     <bean class="org.jahia.bin.TextExtractor">
                         <property name="settingsBean" ref="settingsBean"/>
-                        <property name="textExtractionService" ref="org.jahia.services.textextraction.TextExtractionService"/>
+                        <property name="textExtractionService"
+                                  ref="org.jahia.services.textextraction.TextExtractionService"/>
                         <property name="view" value="/tools/textExtractor.jsp"/>
                     </bean>
                 </entry>
@@ -189,5 +190,5 @@
         </property>
     </bean>
 
-    <bean id="localeResolver" class="org.jahia.services.multilang.CurrentLocaleResolver" />
+    <bean id="localeResolver" class="org.jahia.services.multilang.CurrentLocaleResolver"/>
 </beans>

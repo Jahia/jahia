@@ -164,7 +164,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public WorkItemHandler unregisterWorkItemHandler(String name) {
         if (kieSession != null) {
-            kieSession.getWorkItemManager().registerWorkItemHandler(name,null);
+            kieSession.getWorkItemManager().registerWorkItemHandler(name, null);
         }
         return workItemHandlers.remove(name);
     }
@@ -618,6 +618,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 if (module != null) {
                     l = Thread.currentThread().getContextClassLoader();
                     Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getChainedClassLoader());
+                }
+                if (args == null) {
+                    args = new HashMap<String, Object>();
                 }
                 args.put("outcome", outcome);
                 taskService.start(Long.parseLong(taskId), jahiaUser.getUserKey());

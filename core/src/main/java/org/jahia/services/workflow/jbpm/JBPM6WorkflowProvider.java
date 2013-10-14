@@ -1065,6 +1065,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
         runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
         taskService = runtimeEngine.getTaskService();
+        kieBase = null;
         kieSession = null;
     }
 

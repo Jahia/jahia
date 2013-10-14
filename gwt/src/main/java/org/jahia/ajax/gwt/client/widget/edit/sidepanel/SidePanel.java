@@ -55,7 +55,6 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,7 +156,6 @@ public class SidePanel extends ContentPanel {
                 } else {
                     ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
                 }
-                DeployTemplatesActionItem.refreshAllMenus(editLinker);
                 updateRefreshButton();
             }
         });

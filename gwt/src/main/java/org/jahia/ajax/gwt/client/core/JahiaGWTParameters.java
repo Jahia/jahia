@@ -44,12 +44,9 @@ import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -247,9 +244,6 @@ public class JahiaGWTParameters {
 
     public static void setSiteFromNode(GWTJahiaNode node, Linker linker) {
         setSiteNode(sitesMap.get(node.getSiteUUID()));
-        if (linker != null) {
-            DeployTemplatesActionItem.refreshAllMenus(linker);
-        }
     }
 
     public static String getWorkspace() {

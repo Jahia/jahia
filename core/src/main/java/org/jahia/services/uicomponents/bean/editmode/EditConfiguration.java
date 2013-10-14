@@ -91,6 +91,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private boolean forceHeaders = false;
 
+    private boolean loadSitesList = true;
+
     private boolean useFullPublicationInfoInMainAreaModules;
     
     public void addTab(SidePanelTab tab) {
@@ -302,6 +304,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setDefaultLocation(String defaultLocation) {
         this.defaultLocation = defaultLocation;
+    }
+
+    public boolean isLoadSitesList() {
+        return loadSitesList;
+    }
+
+    public void setLoadSitesList(boolean loadSitesList) {
+        this.loadSitesList = loadSitesList;
     }
 
     public boolean isUseFullPublicationInfoInMainAreaModules() {

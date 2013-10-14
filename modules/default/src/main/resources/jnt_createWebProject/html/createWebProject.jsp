@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -18,7 +19,7 @@
 <c:if test="${not empty currentNode.properties['class']}">
     <div class="${currentNode.properties['class'].string}">
 </c:if>
-
+<utility:setBundle basename="resources.JahiaServerSettings" var="internalBundle"/>
 <template:tokenizedForm>
 <form class="webProjectCreation" id="webProjectCreationForm" method="post" action="<c:url value='${url.base}/sites.adminCreateSite.do'/>" >
     <c:if test="${currentNode.properties.stayOnPage.boolean}">
@@ -31,11 +32,11 @@
         <p><label for="siteTitle"><fmt:message key="label.title"/> (*)</label>
             <input type="text" name="siteTitle" id="siteTitle" class="inputsize2" value="" tabindex="20"/></p>
 
-        <p><label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey"/> (*)</label>
+        <p><label for="siteKey"><fmt:message key="serverSettings.manageWebProjects.webProject.siteKey" bundle="${internalBundle}"/> (*)</label>
             <input type="text" name="siteKey" id="siteKey" class="inputsize2" value="" tabindex="20"/></p>
 
         <c:if test="${currentNode.properties['useServerName'].boolean}">
-            <p><label for="siteServerName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName"/> (*)</label>
+            <p><label for="siteServerName"><fmt:message key="serverSettings.manageWebProjects.webProject.serverName" bundle="${internalBundle}"/> (*)</label>
                 <input type="text" name="siteServerName" id="siteServerName" class="inputsize2" value="localhost" tabindex="20"/></p>
         </c:if>
 
@@ -46,7 +47,7 @@
 
 
         <c:if test="${currentNode.properties['useTemplatesSet'].boolean}">
-            <p><label for="siteDescr"><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet"/></label>
+            <p><label for="siteDescr"><fmt:message key="serverSettings.manageWebProjects.webProject.templateSet" bundle="${internalBundle}"/></label>
                 <select name="templatesSet">
                     <jcr:node var="sets" path="/modules"/>
                     <c:forEach items="${sets.nodes}" var="set">

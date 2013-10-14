@@ -617,7 +617,11 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
+<<<<<<< .working
             <version>1.8.6</version>
+=======
+            <version>1.7.11</version>
+>>>>>>> .merge-right.r47665
         </dependency>
 
         <!-- Maven dependencies -->

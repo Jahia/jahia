@@ -63,7 +63,8 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
          updateCheck="false" monitoring="autodetect"
          name="org.jahia.ehcachemanager"
          dynamicConfig="true"
-         maxBytesLocalHeap="10%">
+         maxBytesLocalHeap="10%"
+         maxBytesLocalDisk="20G">
 
     <!--
     DiskStore configuration
@@ -202,7 +203,9 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
 
     For more information on the Terracotta configuration, see the Terracotta documentation.
     -->
+    <!--
     <terracottaConfig url="localhost:9510"/>
+    -->
 
     <!--
     Cache configuration
@@ -670,7 +673,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     To indicate the cache should be clustered using synchronous-write locking level:
         <terracotta clustered="true" synchronousWrites="true"/>
     -->
-
+    
     <!--
     Default Cache configuration. These settings will be applied to caches
     created programmatically using CacheManager.add(String cacheName).
@@ -683,57 +686,62 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             eternal="false"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
-            overflowToDisk="true"
-            maxEntriesLocalDisk="100000"
-            diskPersistent="false"
-            diskExpiryThreadIntervalSeconds="600"
-            memoryStoreEvictionPolicy="LRU"
-            />
-
-
-    <cache
-            name="HTMLNodeUsersACLs"
-            overflowToDisk="true"
-            diskPersistent="false"
-            eternal="true"
-            />
-    <cache
-            name="HTMLCache"
-            overflowToDisk="true"
-            diskPersistent="true"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400"
-            maxEntriesLocalDisk="150000"
-            eternal="false"
-            />
-    <cache
-            name="HTMLDependenciesCache"
-            overflowToDisk="true"
-            diskPersistent="true"
-            eternal="true"
-            />
-    <cache
-            name="HTMLREGEXPDependenciesCache"
-            overflowToDisk="true"
-            diskPersistent="true"
-            eternal="true"/>
-
-    <cache
-            name="FileLastModifiedCache"
-            diskPersistent="true"
-            eternal="true"
-            />
-    <cache
-            name="FileContentCache"
             overflowToDisk="false"
-            />
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </defaultCache>
 
-    <cache
-            name="ExternalIdentifierMapping"
-            overflowToDisk="true"
-            diskPersistent="true"
-            maxEntriesLocalDisk="10000000"
+    <cache name="ExternalIdentifierMapping"
+            eternal="true"
+            overflowToDisk="false"
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </cache>
+
+    <cache name="FileContentCache"
+            overflowToDisk="false"
+            diskPersistent="false">
+    </cache>
+    <cache name="FileLastModifiedCache"
+            eternal="true"
+            overflowToDisk="false"
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </cache>
+
+    <cache name="HTMLCache"
+            eternal="false"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
-            />
+            overflowToDisk="false"
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </cache>
+    <cache name="HTMLDependenciesCache"
+            eternal="true"
+            overflowToDisk="false"
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </cache>
+    <cache name="HTMLNodeUsersACLs"
+            eternal="true"
+            diskExpiryThreadIntervalSeconds="600"
+            overflowToDisk="false"
+            diskPersistent="true">
+    </cache>
+    <cache name="HTMLREGEXPDependenciesCache"
+            eternal="true"
+            overflowToDisk="false"
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </cache>
+    <cache name="HTMLRequiredPermissionsCache"
+            eternal="false"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="14400"
+            overflowToDisk="false"
+            diskExpiryThreadIntervalSeconds="600"
+            diskPersistent="true">
+    </cache>
+
 </ehcache>

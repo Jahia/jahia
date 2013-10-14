@@ -566,26 +566,12 @@ public class UIConfigHelper {
     }
 
     /**
-     * Get edit configuration.
-     * 
-     * @param name
-     *            Spring bean name for the configuration object
-     * @param contextNodePath
-     *            currently selected node path
-     * @param jahiaUser
-     *            the user object
-     * @param locale
-     *            current content (JCR session) locale
-     * @param uiLocale
-     *            current UI locale
-     * @param request
-     *            the request object instance
-     * @param session
-     *            JCR session
-     * @return the GWT edit module settings
-     * @throws GWTJahiaServiceException in case of a processing error
+     * Get edit configuration
+     *
+     * @return
+     * @throws GWTJahiaServiceException
      */
-    public GWTEditConfiguration getGWTEditConfiguration(String name, String contextNodePath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTEditConfiguration getGWTEditConfiguration(String name, String contextPath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             EditConfiguration config = (EditConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
@@ -615,7 +601,7 @@ public class UIConfigHelper {
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
 
-                JCRNodeWrapper contextNode = session.getNode(contextNodePath);
+                JCRNodeWrapper contextNode = session.getNode(contextPath);
                 JCRSiteNode site = contextNode.getResolveSite();
 
                 gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
@@ -636,7 +622,7 @@ public class UIConfigHelper {
 
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
 
-                List<GWTJahiaNode> sites = navigation.retrieveRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, null, null, null, site, session, uiLocale, false, false, null, null);
+                List<GWTJahiaNode> sites = navigation.retrieveRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, site, session, uiLocale, false, false, null, null);
                 String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
                 Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
                 for (GWTJahiaNode aSite : sites) {
@@ -644,7 +630,7 @@ public class UIConfigHelper {
                         sitesMap.put(aSite.getSiteUUID(), aSite);
                     }
                 }
-                GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"),null);
+                GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"),GWTJahiaNode.DEFAULT_SITE_FIELDS);
                 if (!sitesMap.containsKey(systemSite.getUUID())) {
                     sitesMap.put(systemSite.getUUID(), systemSite);
                 }

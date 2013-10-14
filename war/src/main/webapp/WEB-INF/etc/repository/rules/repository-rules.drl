@@ -163,6 +163,7 @@ rule "Flush URL resolver cache"
     then
         Flush urlResolverNodePath
         Flush urlResolverSiteInfo
+<<<<<<< .working
 end
 
 rule "Flush privileges in role cache on role update"
@@ -215,3 +216,16 @@ rule "Flush workflow rules cache on all rules deletion"
         Flush WorkflowRuleCache
 end
 
+=======
+end
+
+rule "Ensure only one home page is set"
+    when
+        A property j:isHomePage has been set on a node
+			- the node has the type jnt:page
+            - the value is "true"
+    then
+        Check home page uniqueness for node
+end
+
+>>>>>>> .merge-right.r47656

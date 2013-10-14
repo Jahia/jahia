@@ -861,4 +861,22 @@ public class Service extends JahiaService {
             }
         });
     }
+
+    public void checkHomePage(AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
+        final JCRNodeWrapper n = nodeFact.getNode();
+        JCRSiteNode site = n.getResolveSite();
+        NodeIterator ni = site.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
+            if (next.hasProperty("j:isHomePage") && next.getProperty("j:isHomePage").getBoolean()) {
+                if (!n.getIdentifier().equals(next.getIdentifier())) {
+                    n.getProperty("j:isHomePage").remove();
+                    n.getSession().save();
+                    return;
+                }
+            }
+        }
+    }
+
+
 }

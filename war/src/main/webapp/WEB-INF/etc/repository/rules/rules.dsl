@@ -117,6 +117,9 @@
 [consequence][]Update the privileged users=service.updatePrivileges(node);
 [consequence][]Update dependencies for module=service.updateDependencies(node);
 [consequence][]Delete nodes of type {type} with property {property} referencing the {node}=service.deleteNodesWithReference("{type}", "{property}", {node} );
+<<<<<<< .working
 [consequence][]Send site message with parameters {params} = sitePubSubService.sendSiteMessage(node,{params}, drools);
 [consequence][]Send message to absolute {name} with parameters {params}= sitePubSubService.sendAbsoluteMessage({name},{params}, drools);
 [consequence][]Send message to {node} channel with parameters {params}= sitePubSubService.sendNodeMessage(node,{params}, drools);
+=======
+[consequence][]Check home page uniqueness for {node}=service.checkHomePage({node}, drools);>>>>>>> .merge-right.r47656

@@ -21,7 +21,7 @@
     <bpmn2:property id="workflow" itemSubjectRef="ItemDefinition_4088"/>
     <bpmn2:property id="user" itemSubjectRef="ItemDefinition_901"/>
     <bpmn2:property id="currentUser" itemSubjectRef="ItemDefinition_901"/>
-    <bpmn2:property id="jcr:title" itemSubjectRef="ItemDefinition_267"/>
+    <bpmn2:property id="jcr_title" itemSubjectRef="ItemDefinition_267"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start">
       <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -190,7 +190,7 @@
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
       <bpmn2:dataInputAssociation id="DataInputAssociation_6">
-        <bpmn2:sourceRef>jcr:title</bpmn2:sourceRef>
+        <bpmn2:sourceRef>jcr_title</bpmn2:sourceRef>
         <bpmn2:targetRef>DataInput_6</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
@@ -203,7 +203,7 @@
       </bpmn2:dataOutputAssociation>
       <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
         <bpmn2:sourceRef>DataOutput_3</bpmn2:sourceRef>
-        <bpmn2:targetRef>jcr:title</bpmn2:targetRef>
+        <bpmn2:targetRef>jcr_title</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_5" drools:priority="1" sourceRef="UserTask_1" targetRef="ExclusiveGateway_1"/>

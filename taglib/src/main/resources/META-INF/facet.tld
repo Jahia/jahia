@@ -10,6 +10,37 @@
     <short-name>facet</short-name>
     <uri>http://www.jahia.org/tags/facetLib</uri>
 
+    <tag>
+        <description>Sets up the facet query and initializes metadata used for rendering based on facet data.</description>
+        <name>setupQueryAndMetadata</name>
+        <tag-class>org.jahia.taglibs.facet.SetupQueryAndMetadataTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>boundComponent</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <name>existingQuery</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>javax.jcr.query.qom.QueryObjectModel</type>
+        </attribute>
+        <attribute>
+            <name>activeFacets</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Map</type>
+        </attribute>
+    </tag>
+
     <tag-file>
         <name>facetLabel</name>
         <path>/META-INF/tags/facet/facetLabel.tag</path>
@@ -33,7 +64,7 @@
                 org.jahia.services.render,
                 org.jahia.taglibs.utility
         -->
-    </tag-file> 
+    </tag-file>
 
     <function>
         <description>Get a list of applied facets</description>
@@ -45,7 +76,7 @@
             ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
         </example>
     </function>
-    
+
     <function>
         <description>Check whether a facet is currently applied to the query</description>
         <name>isFacetApplied</name>
@@ -53,10 +84,10 @@
         <function-signature>boolean isFacetApplied(java.lang.String, java.util.Map, javax.jcr.nodetype.PropertyDefinition)
         </function-signature>
         <example>
-            ${not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}        
+            ${not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}
         </example>
-    </function>    
-    
+    </function>
+
     <function>
         <description>Check whether a facet value is currently applied to the query</description>
         <name>isFacetValueApplied</name>
@@ -99,8 +130,8 @@
         <example>
             ${facet:isUnappliedFacetExisting(result, activeFacetsVars[activeFacetMapVarName]))}
         </example>
-    </function>    
-    
+    </function>
+
     <function>
         <description>Return true if there will be an unapplied facet value. Useful to decide whether a title should be displayed.</description>
         <name>isUnappliedFacetValueExisting</name>

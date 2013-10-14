@@ -73,9 +73,9 @@ import java.util.regex.Pattern;
  * Handle facet queries
  */
 public class FacetHandler {
-    public static final int FACET_COLUMNS = 0x1;    
+    public static final int FACET_COLUMNS = 0x1;
     public static final int ONLY_FACET_COLUMNS = 0x2;
-    
+
     /**
      * The logger instance for this class
      */
@@ -96,7 +96,7 @@ public class FacetHandler {
 
     private static final String FIELD_SPECIFIC_PREFIX = "f.";
 
-    private static final Pattern valueWithQuery = Pattern.compile("(.*)##q\\-\\>##(.*)");    
+    private static final Pattern valueWithQuery = Pattern.compile("(.*)##q\\-\\>##(.*)");
 
     // Facet stuff
     boolean facetsResolved = false;
@@ -123,7 +123,7 @@ public class FacetHandler {
     OpenBitSet docIdSet;
 
     SearchIndex index;
-    
+
     NamespaceMappings nsMappings;
 
     public FacetHandler(Map<String, PropertyValue> columns, Selector selector, OpenBitSet docIdSet, SearchIndex index, SessionImpl session, NamespaceMappings nsMappings) {
@@ -142,7 +142,7 @@ public class FacetHandler {
             if (isFacetFunction(column, session)) {
                 hasFacetRequest |= FACET_COLUMNS;
             } else {
-                hasFacetRequest &= ~ONLY_FACET_COLUMNS;                
+                hasFacetRequest &= ~ONLY_FACET_COLUMNS;
             }
         }
         return hasFacetRequest;
@@ -259,8 +259,7 @@ public class FacetHandler {
                 }
             }
 
-            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher,
-                    docIdSet, SolrParams.toSolrParams(parameters), index, session, nsMappings);
+            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher, docIdSet, SolrParams.toSolrParams(parameters), index, session, nsMappings);
             extractFacetInfo(facets.getFacetCounts());
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);
@@ -271,7 +270,109 @@ public class FacetHandler {
                 log.warn("Unable to close searcher: " + e);
             }
         }
-        return;
+    }
+
+
+    public void newHandleFacets(IndexReader reader) {
+        IndexSearcher searcher = new IndexSearcher(reader);
+        try {
+            String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);
+            NamedList<Object> parameters = new NamedList<Object>();
+
+            int counter = 0;
+            for (Map.Entry<String, PropertyValue> column : columns.entrySet()) {
+                if (isFacetFunction(column.getKey(), session)) {
+                    extractFacetParameters(facetFunctionPrefix, parameters, counter, column);
+                    counter++;
+                }
+            }
+
+            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher, docIdSet, SolrParams.toSolrParams(parameters), index, session, nsMappings);
+            extractFacetInfo(facets.getFacetCounts());
+        } catch (Exception ex) {
+            log.warn("Problem creating facets: ", ex);
+        } finally {
+            try {
+                searcher.close();
+            } catch (IOException e) {
+                log.warn("Unable to close searcher: " + e);
+            }
+        }
+    }
+
+    private void extractFacetParameters(String facetFunctionPrefix, NamedList<Object> parameters, int counter, Map.Entry<String, PropertyValue> column) throws RepositoryException {
+        // first extract options from rep:facet() from column key
+        final String key = column.getKey();
+        final String facetOptions = key.substring(facetFunctionPrefix.length(), key.lastIndexOf(')'));
+
+        // remember nodetype and query values if encountered so that we can process them once the whole facet is parsed
+        String nodeType = null;
+        String unparsedQuery = null;
+
+        // loop invariants
+        final String columnPropertyName = column.getValue().getPropertyName();
+        final String propertyName = columnPropertyName + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
+
+        // we can assert the facet type by checking whether the the options String contains date or range, otherwise, the type is field
+        String facetType = FacetParams.FACET_FIELD; // default facet type
+        if (facetOptions.contains("date")) {
+            facetType = FacetParams.FACET_DATE;
+        } else if (facetOptions.contains("range")) {
+            facetType = FacetParams.FACET_RANGE;
+        }
+        parameters.add(facetType, propertyName);
+
+        // populate parameters
+        // each parameter name/value pair is separated from the next one by & so split on this
+        final String[] paramPairs = facetOptions.split("&");
+        for (String paramPair : paramPairs) {
+            // for each pair, extract the name and value separated by =
+            int separator = paramPair.indexOf('=');
+            if (separator >= 0) { // todo: what should we do if a pair doesn't have an equal sign in it?
+                final String paramName = paramPair.substring(0, separator);
+                final String paramValue = paramPair.substring(separator + 1);
+
+                // some parameters need to be specially processed and not be added as others so process them and exit current iteration when encountered
+                if (paramName.equals("nodetype")) {
+                    nodeType = paramValue; // remember node type value for later processing
+                    continue;
+                } else if (paramName.contains("query")) {
+                    unparsedQuery = paramValue; // remember query value for later processing
+                    continue;
+                }
+
+                // create full parameter name and add its value to the parameters
+                String facetOption = getFacetOption(paramName);
+                parameters.add(getFullParameterName(propertyName, facetOption), paramValue);
+            }
+        }
+
+        // node type parameter
+        if (StringUtils.isEmpty(nodeType)) {
+            // if we didn't have a node type specified in the given options, extract it from the selector name and create the associated parameter
+            nodeType = getNodeTypeFromSelector(column.getValue().getSelectorName(), columnPropertyName);
+        }
+        parameters.add(getFullParameterName(propertyName, getFacetOption("nodetype")), nodeType);
+
+        // deal with embedded query if needed, at this point, nodeType will have been either extracted or asserted from selector name
+        if (StringUtils.isNotEmpty(unparsedQuery)) {
+            if (unparsedQuery.split("(?<!\\\\):").length == 1 && !columnPropertyName.equals("rep:facet()")) {
+                ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(nodeType).getPropertyDefinition(columnPropertyName);
+                if (epd != null) {
+                    String fieldNameInIndex = getFieldNameInIndex(propertyName, epd, "");
+                    unparsedQuery = QueryParser.escape(fieldNameInIndex) + ":" + unparsedQuery;
+                }
+            }
+            parameters.add(FacetParams.FACET_QUERY, unparsedQuery);
+        }
+    }
+
+    private String getFullParameterName(String propertyName, String facetOption) {
+        return FIELD_SPECIFIC_PREFIX + propertyName + "." + facetOption;
+    }
+
+    private String getFacetOption(String paramName) {
+        return FacetParams.FACET + "." + paramName;
     }
 
     public String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
@@ -330,7 +431,7 @@ public class FacetHandler {
                 FacetField f = new FacetField(key);
                 for (Map.Entry<String, Number> entry : facet.getValue()) {
                     String facetValue = entry.getKey();
-                    String query = entry.getKey();                    
+                    String query = entry.getKey();
                     Matcher matcher = valueWithQuery.matcher(facetValue);
                     if (matcher.matches()) {
                         query = matcher.group(2);
@@ -393,7 +494,7 @@ public class FacetHandler {
                 _facetDates.add(f);
             }
         }
-        
+
         // Parse range facets
         NamedList<NamedList<Object>> rf = (NamedList<NamedList<Object>>) info.get("facet_ranges");
         if (rf != null) {
@@ -402,32 +503,32 @@ public class FacetHandler {
             for (Map.Entry<String, NamedList<Object>> facet : rf) {
                 NamedList<Object> values = facet.getValue();
                 Object rawGap = values.get("gap");
-                
+
                 RangeFacet rangeFacet;
                 if (rawGap instanceof Number) {
-                  Number gap = (Number) rawGap;
-                  Number start = (Number) values.get("start");
-                  Number end = (Number) values.get("end");
+                    Number gap = (Number) rawGap;
+                    Number start = (Number) values.get("start");
+                    Number end = (Number) values.get("end");
 
-                  Number before = (Number) values.get("before");
-                  Number after = (Number) values.get("after");
+                    Number before = (Number) values.get("before");
+                    Number after = (Number) values.get("after");
 
-                  rangeFacet = new RangeFacet.Numeric(StringUtils.substringBeforeLast(facet.getKey(),
-                          SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), start, end, gap, before, after);
+                    rangeFacet = new RangeFacet.Numeric(StringUtils.substringBeforeLast(facet.getKey(),
+                            SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), start, end, gap, before, after);
                 } else {
-                  String gap = (String) rawGap;
-                  Date start = (Date) values.get("start");
-                  Date end = (Date) values.get("end");
+                    String gap = (String) rawGap;
+                    Date start = (Date) values.get("start");
+                    Date end = (Date) values.get("end");
 
-                  Number before = (Number) values.get("before");
-                  Number after = (Number) values.get("after");
+                    Number before = (Number) values.get("before");
+                    Number after = (Number) values.get("after");
 
-                  rangeFacet = new RangeFacet.Date(StringUtils.substringBeforeLast(facet.getKey(),
-                          SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), start, end, gap, before, after);
-                }                
-                
+                    rangeFacet = new RangeFacet.Date(StringUtils.substringBeforeLast(facet.getKey(),
+                            SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), start, end, gap, before, after);
+                }
+
                 NamedList<Integer> counts = (NamedList<Integer>) values.get("counts");
-                for (Map.Entry<String, Integer> entry : counts)   {
+                for (Map.Entry<String, Integer> entry : counts) {
                     try {
                         String key = StringUtils.substringBeforeLast(entry.getKey(),
                                 SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
@@ -444,7 +545,7 @@ public class FacetHandler {
                                 rangePrefix = RANGEFROM_INCLUSIVE_PREFIX;
                             }
                             if (!StringUtils.isEmpty(rangePrefix)) {
-                                ((RangeFacet.Count)rangeFacet.getCounts().get(rangeFacet.getCounts().size() - 1)).setFilterQuery(
+                                ((RangeFacet.Count) rangeFacet.getCounts().get(rangeFacet.getCounts().size() - 1)).setFilterQuery(
                                         ClientUtils.escapeQueryChars(StringUtils.substringBefore(
                                                 query, rangePrefix))
                                                 + rangePrefix
@@ -458,7 +559,7 @@ public class FacetHandler {
 
                 _facetRanges.add(rangeFacet);
             }
-        }        
+        }
     }
 
     public FacetRow getFacetsRow() {
@@ -466,7 +567,7 @@ public class FacetHandler {
         row.setFacetFields(_facetFields);
         row.setLimitingFacets(_limitingFacets);
         row.setFacetDates(_facetDates);
-        row.setRangeFacets(_facetRanges);        
+        row.setRangeFacets(_facetRanges);
         row.setFacetQuery(_facetQuery);
         return row;
     }

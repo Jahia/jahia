@@ -51,16 +51,11 @@ import java.util.List;
 
 public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
-    private String label;
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         final List<String> nodeIds = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
+        final String label = (String) workItem.getParameter("label");
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

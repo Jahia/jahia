@@ -53,13 +53,8 @@ import java.util.List;
 
 public class CustomLockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
-    private String type;
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    private void doLock(String id, JCRSessionWrapper session, String key)
+    private void doLock(String id, JCRSessionWrapper session, String key, String type)
             throws RepositoryException {
         JCRNodeWrapper node = session.getNodeByUUID(id);
         if (node.isLockable()) {
@@ -72,13 +67,14 @@ public class CustomLockWorkItemHandler extends AbstractWorkItemHandler implement
         final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
+        final String type = (String) workItem.getParameter("type");
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(userKey,
                     workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String id : uuids) {
-                        doLock(id, session, "process-" + workItem.getProcessInstanceId());
+                        doLock(id, session, "process-" + workItem.getProcessInstanceId(), type);
                     }
                     return null;
                 }

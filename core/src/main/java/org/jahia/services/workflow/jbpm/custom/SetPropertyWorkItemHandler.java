@@ -58,22 +58,12 @@ public class SetPropertyWorkItemHandler extends AbstractWorkItemHandler implemen
     private static final long serialVersionUID = 1L;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishWorkItemHandler.class);
 
-    private String propertyName;
-    private String value;
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         final String workspace = (String) workItem.getParameter("workspace");
-        final String userKey = (String) workItem.getParameter("user");
+        final String propertyName = (String) workItem.getParameter("propertyName");
+        final String value = (String) workItem.getParameter("value");
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {

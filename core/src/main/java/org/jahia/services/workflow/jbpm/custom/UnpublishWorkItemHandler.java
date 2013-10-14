@@ -68,8 +68,6 @@ public class UnpublishWorkItemHandler extends AbstractWorkItemHandler implements
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         List<String> ids = (List<String>) workItem.getParameter("nodeIds");
-        String workspace = (String) workItem.getParameter("workspace");
-        Locale locale = (Locale) workItem.getParameter("locale");
 
         String userKey = (String) workItem.getParameter("user");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();

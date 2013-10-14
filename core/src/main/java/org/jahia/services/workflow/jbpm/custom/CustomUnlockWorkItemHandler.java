@@ -55,13 +55,8 @@ import java.util.List;
 
 public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
     private static final long serialVersionUID = 1L;
-    private String type;
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    private void doUnlock(String id, JCRSessionWrapper session, String key)
+    private void doUnlock(String id, JCRSessionWrapper session, String key, String type)
             throws RepositoryException {
         try {
             JCRNodeWrapper node = session.getNodeByUUID(id);
@@ -81,13 +76,14 @@ public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler impleme
         final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
+        final String type = (String) workItem.getParameter("type");
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(userKey,
                     workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String id : uuids) {
-                        doUnlock(id, session, "process-" + workItem.getProcessInstanceId());
+                        doUnlock(id, session, "process-" + workItem.getProcessInstanceId(), type);
                     }
                     return null;
                 }

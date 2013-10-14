@@ -13,12 +13,10 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="cacheManagement" type="org.jahia.modules.serversettings.cache.CacheManagement"--%>
 <%--@elvariable id="cacheManager" type="org.jahia.modules.serversettings.flow.CacheManagerHandler"--%>
-<%--@elvariable id="manager" type="java.lang.String"--%>
-<%--@elvariable id="cacheEntry" type="org.jahia.modules.serversettings.flow.CacheManagerHandler.SerializedCacheManager"--%>
 <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.pack.js,admin-bootstrap.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css,tablecloth.css"/>
-<c:if test="${cacheManagement.showConfig}">
-    <template:addResources type="inline">
+<template:addResources type="inline">
+    <c:if test="${cacheManagement.showConfig}">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('.configLink').fancybox({
@@ -31,9 +29,7 @@
                 });
             });
         </script>
-    </template:addResources>
-</c:if>
-<template:addResources>
+    </c:if>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
             $("table").tablecloth({
@@ -41,10 +37,6 @@
                 sortable: true
             });
         });
-    </script>
-</template:addResources>
-<template:addResources type="inline">
-    <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
             if (id1) {
                 document.getElementById(id1).value=value1;
@@ -112,9 +104,9 @@
     </c:if>
 </div>
 
-<c:forEach items="${cacheManager.managersMap}" var="entry" varStatus="managerStatus">
-    <c:set var="manager" value="${entry.key}"/>
-    <h2>Cache Manager: ${manager}
+<c:forEach items="${cacheManagers}" var="entry" varStatus="managerStatus">
+    <c:set var="manager" value="${entry.value}"/>
+    <h2>Cache Manager: ${manager.name}
         <c:if test="${cacheManagement.showConfig}">
             &nbsp;
             <a class="btn btn-info configLink" title="<fmt:message key='serverSettings.cache.configLink.title'/>" href="#managerconfig-${managerStatus.index}">
@@ -122,34 +114,24 @@
             </a>
             <div style="display: none;">
                 <div id="managerconfig-${managerStatus.index}">
-                    <h3>${fn:escapeXml(manager)}</h3>
-                    <pre>${fn:escapeXml(manager)}</pre>
+                    <h3>${manager.name}</h3>
+                    <pre>${fn:escapeXml(manager.config)}</pre>
                 </div>
             </div>
         </c:if>
     </h2>
     <c:if test="${cacheManagement.showActions}">
         <p>
-            <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">
+            <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager.name}'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.title"/>">
                 <i class="icon-trash"></i>
-                &nbsp;<fmt:message key="serverSettings.cache.flushCaches"/>
-                &nbsp;${manager}
+                &nbsp;<fmt:message key="serverSettings.cache.flushCaches"/>&nbsp;${manager.name}
             </a>
             <c:if test="${cacheManager.clusterActivated}">
-                <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">
+                <a class="btn" href="#flushCaches" onclick="go('action', 'flushCaches', 'name', '${manager.name}', 'propagate', 'true'); return false;" title="<fmt:message key="serverSettings.cache.flushCaches.cluster.title"/>">
                     <i class="icon-trash"></i>
-                    &nbsp;<fmt:message key="serverSettings.cache.flushCaches.cluster"/>
-                    &nbsp;${manager}
+                    &nbsp;<fmt:message key="serverSettings.cache.flushCaches.cluster"/>&nbsp;${manager.name}
                 </a>
             </c:if>
-            <a class="btn" href="#enableStats" onclick="go('action', 'enableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.enable.title"/>">
-                <i class="icon-play"></i>
-                <fmt:message key="serverSettings.cache.stats.enable"/>
-            </a>
-            <a class="btn" href="#disableStats" onclick="go('action', 'disableStats', 'name', '${manager}'); return false;" title="<fmt:message key="serverSettings.cache.stats.disable.title"/>">
-                <i class="icon-stop"></i>
-                <fmt:message key="serverSettings.cache.stats.disable"/>
-            </a>
         </p>
     </c:if>
     <table class="table table-bordered table-hover table-striped">
@@ -160,9 +142,9 @@
                 <th rowspan="2">?</th>
             </c:if>
             <th rowspan="2"><fmt:message key="serverSettings.cache.names"/></th>
-            <th colspan="3"><fmt:message key="serverSettings.cache.entries"/></th>
+            <th colspan="${manager.overflowToOffHeap ? 4 : 3}"><fmt:message key="serverSettings.cache.entries"/></th>
             <c:if test="${cacheManagement.showBytes}">
-                <th colspan="2"><fmt:message key="serverSettings.cache.size"/></th>
+                <th colspan="${manager.overflowToOffHeap ? 3 : 2}"><fmt:message key="serverSettings.cache.size"/></th>
             </c:if>
             <th colspan="4"><fmt:message key="serverSettings.cache.stats"/></th>
             <c:if test="${cacheManagement.showActions}">
@@ -173,9 +155,15 @@
             <th><fmt:message key="serverSettings.cache.total"/></th>
             <th><fmt:message key="serverSettings.cache.memory"/></th>
             <th><fmt:message key="serverSettings.cache.disk"/></th>
+            <c:if test="${manager.overflowToOffHeap}">
+                <th><fmt:message key="serverSettings.cache.offHeap"/></th>
+            </c:if>
             <c:if test="${cacheManagement.showBytes}">
                 <th><fmt:message key="serverSettings.cache.memory"/></th>
                 <th><fmt:message key="serverSettings.cache.disk"/></th>
+                <c:if test="${manager.overflowToOffHeap}">
+                    <th><fmt:message key="serverSettings.cache.offHeap"/></th>
+                </c:if>
             </c:if>
             <th><fmt:message key="serverSettings.cache.total"/></th>
             <th><fmt:message key="serverSettings.cache.hits"/></th>
@@ -184,20 +172,9 @@
         </tr>
         </thead>
         <tbody>
-        <c:set var="entriesTotal" value="0"/>
-        <c:set var="entriesMemory" value="0"/>
-        <c:set var="entriesDisk" value="0"/>
 
-        <c:set var="sizeMemory" value="0"/>
-        <c:set var="sizeDisk" value="0"/>
-
-        <c:set var="accessTotal" value="0"/>
-        <c:set var="accessHits" value="0"/>
-        <c:set var="accessMisses" value="0"/>
-
-        <c:forEach items="${cacheManager.managersMap[manager]}" var="cacheEntry" varStatus="status">
-            <c:set var="activeCfg" value="${cacheEntry.config}"/>
-            <c:set var="statsEnabled" value="${cacheEntry.statisticsEnabled}"/>
+        <c:forEach items="${manager.caches}" var="cacheEntry" varStatus="status">
+            <c:set var="cache" value="${cacheEntry.value}"/>
 
             <tr>
                 <td><strong>${status.index + 1}</strong></td>
@@ -208,85 +185,84 @@
                         </a>
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
-                                <h3>${fn:escapeXml(cacheEntry.name)}</h3>
-                                <pre>${fn:escapeXml(activeCfg)}</pre>
+                                <h3>${cache.name}</h3>
+                                <pre>${fn:escapeXml(cache.config)}</pre>
                             </div>
                         </div>
                     </td>
                 </c:if>
 
-                <td>${cacheEntry.name}</td>
-                <td align="center">${cacheEntry.objectCount}</td>
-                <td align="center">${cacheEntry.memoryStoreObjectCount}</td>
-                <td align="center">${cacheEntry.overflowToDisk ? cacheEntry.diskStoreObjectCount : '-'}</td>
-                <c:set var="entriesTotal" value="${entriesTotal + cacheEntry.objectCount}"/>
-                <c:set var="entriesMemory" value="${entriesMemory + cacheEntry.memoryStoreObjectCount}"/>
-                <c:set var="entriesDisk" value="${entriesDisk +  cacheEntry.diskStoreObjectCount}"/>
+                <td>${cache.name}</td>
+                <td align="center">${cache.size}</td>
+                <td align="center">${cache.localHeapSize}</td>
+                <td align="center">${cache.overflowToDisk ? cache.localDiskSize : '-'}</td>
+                <c:if test="${manager.overflowToOffHeap}">
+                    <td align="center">${cache.overflowToOffHeap ? cache.localOffHeapSize : '-'}</td>
+                </c:if>
 
                 <c:if test="${cacheManagement.showBytes}">
-                    <td align="center">${cacheEntry.calculateInMemorySize}</td>
+                    <td align="center">${cache.localHeapSizeInBytesHumanReadable}</td>
                     <td align="center">
-                        <c:if test="${cacheEntry.overflowToDisk}">
-                            ${cacheEntry.calculateOnDiskSize}
-                        </c:if>
-                        <c:if test="${!cacheEntry.overflowToDisk}">
-                            -
-                        </c:if>
+                        ${cache.overflowToDisk ? cache.localDiskSizeInBytesHumanReadable : '-'}
                     </td>
+                    <c:if test="${manager.overflowToOffHeap}">
+                        <td align="center">${cache.overflowToOffHeap ? cache.localOffHeapSizeInBytesHumanReadable : '-'}</td>
+                    </c:if>
                 </c:if>
 
-                <c:set var="accessTotal" value="${accessTotal + cacheEntry.cacheHits + cacheEntry.cacheMisses}"/>
-                <c:set var="accessHits" value="${accessHits + cacheEntry.cacheHits}"/>
-                <c:set var="accessMisses" value="${accessMisses + cacheEntry.cacheMisses}"/>
+                <td align="center">${cache.accessCount}</td>
+                <td align="center">${cache.hitCount}</td>
+                <td align="center">${cache.missCount}</td>
 
-                <td align="center">${statsEnabled ? cacheEntry.cacheHits + cacheEntry.cacheMisses : '-'}</td>
-                <td align="center">${statsEnabled ? cacheEntry.cacheHits : '-'}</td>
-                <td align="center">${statsEnabled ? cacheEntry.cacheMisses : '-'}</td>
-                <c:if test="${statsEnabled}">
-                    <c:set var="cacheEfficiency" value="${cacheEntry.cacheHits + cacheEntry.cacheMisses > 0 ? cacheEntry.cacheHits * 100 / (cacheEntry.cacheHits + cacheEntry.cacheMisses) : 0}"/>
-                    <c:set var="effColour" value="#222222"/>
-                    <c:choose>
-                        <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
-                            <c:set var="effColour" value="label-important"/>
-                        </c:when>
-                        <c:when test="${cacheEfficiency >= 30 && cacheEfficiency < 70}">
-                            <c:set var="effColour" value="label-info"/>
-                        </c:when>
-                        <c:when test="${cacheEfficiency >= 70}">
-                            <c:set var="effColour" value="label-success"/>
-                        </c:when>
-                    </c:choose>
-                    <td align="center"><span class="label ${effColour}"><fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/></span></td>
-                </c:if>
-                <c:if test="${!statsEnabled}">
-                    <td align="center">-</td>
-                </c:if>
+                <c:set var="cacheEfficiency" value="${cache.hitRatio}"/>
+                <c:set var="effColour" value="#222222"/>
+                <c:choose>
+                    <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
+                        <c:set var="effColour" value="label-important"/>
+                    </c:when>
+                    <c:when test="${cacheEfficiency >= 30 && cacheEfficiency < 70}">
+                       <c:set var="effColour" value="label-info"/>
+                    </c:when>
+                    <c:when test="${cacheEfficiency >= 70}">
+                        <c:set var="effColour" value="label-success"/>
+                    </c:when>
+                </c:choose>
+                <td align="center"><span class="label ${effColour}"><fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/></span></td>
+
                 <c:if test="${cacheManagement.showActions}">
                     <td align="center">
-                        <a class="btn" href="#flush" onclick="go('action', 'flush', 'name', '${cacheEntry.name}'); return false;" title="Remove all entries from the ${cacheEntry.name}">
+                        <a class="btn" href="#flush" onclick="go('action', 'flush', 'name', '${cache.name}'); return false;" title="<fmt:message key='serverSettings.cache.flush'/>&nbsp;${cache.name}">
                             <i class="icon-trash"></i>
                         </a>
                     </td>
                 </c:if>
             </tr>
         </c:forEach>
+
         <tr class="info">
             <td colspan="${cacheManagement.showConfig ? '3' : '2'}"><fmt:message key="serverSettings.cache.total"/></td>
-            <td align="center">${entriesTotal}</td>
-            <td align="center">${entriesMemory}</td>
-            <td align="center">${entriesDisk}</td>
-            <c:if test="${cacheManagement.showBytes}">
-                <td align="center">${cacheManager.sizeMemory}</td>
-                <td align="center">${cacheManager.sizeDisk}</td>
+            <td align="center">${manager.size}</td>
+            <td align="center">${manager.localHeapSize}</td>
+            <td align="center">${manager.overflowToDisk ? manager.localDiskSize : '-'}</td>
+            <c:if test="${manager.overflowToOffHeap}">
+                <td align="center">${manager.localOffHeapSize}</td>
             </c:if>
-            <td align="center">${accessTotal}</td>
-            <td align="center">${accessHits}</td>
-            <td align="center">${accessMisses}</td>
+            <c:if test="${cacheManagement.showBytes}">
+                <td align="center">${manager.localHeapSizeInBytesHumanReadable}</td>
+                <td align="center">${manager.localDiskSizeInBytesHumanReadable}</td>
+                <c:if test="${manager.overflowToOffHeap}">
+                    <td align="center">${manager.localOffHeapSizeInBytesHumanReadable}</td>
+                </c:if>
+            </c:if>
+            <td align="center">${manager.accessCount}</td>
+            <td align="center">${manager.hitCount}</td>
+            <td align="center">${manager.missCount}</td>
             <td>&nbsp;</td>
             <c:if test="${cacheManagement.showActions}">
                 <td align="center">&nbsp;</td>
             </c:if>
         </tr>
+
         </tbody>
     </table>
 </c:forEach>

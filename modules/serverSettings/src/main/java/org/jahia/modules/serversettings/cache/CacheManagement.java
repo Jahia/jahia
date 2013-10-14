@@ -43,7 +43,8 @@ package org.jahia.modules.serversettings.cache;
 import java.io.Serializable;
 
 /**
- * Bean for cache management
+ * Bean for cache management.
+ * 
  * @author david
  */
 public class CacheManagement implements Serializable {

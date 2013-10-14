@@ -43,14 +43,21 @@ package org.jahia.services.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
+import net.sf.ehcache.statistics.StatisticsGateway;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.cache.ehcache.CacheInfo;
+import org.jahia.services.cache.ehcache.CacheManagerInfo;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Cache manager utility.
@@ -104,6 +111,28 @@ public final class CacheHelper {
         }
 
         logger.info("...done flushing all caches.");
+    }
+
+    /**
+     * Flushes the caches of the specified cache manager.
+     *
+     * @param cacheManagerName   the cache manager name to flush caches for
+     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
+     */
+    public static void flushCachesForManager(String cacheManagerName, boolean propagateInCluster) {
+        logger.info("Flushing caches for the cache manager '{}' {}", cacheManagerName, propagateInCluster ? " also propagating it to all cluster members" : "");
+        CacheManager ehcacheManager = getCacheManager(cacheManagerName);
+        if (ehcacheManager == null) {
+            return;
+        }
+        for (String cacheName : ehcacheManager.getCacheNames()) {
+            Cache cache = ehcacheManager.getCache(cacheName);
+            if (cache != null) {
+                // flush
+                cache.removeAll(!propagateInCluster);
+            }
+        }
+        logger.info("...done flushing caches for manager {}", cacheManagerName);
     }
 
     /**
@@ -164,28 +193,6 @@ public final class CacheHelper {
     }
 
     /**
-     * Flushes the caches of the specified cache manager.
-     *
-     * @param cacheManagerName   the cache manager name to flush caches for
-     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
-     */
-    public static void flushCachesForManager(String cacheManagerName, boolean propagateInCluster) {
-        logger.info("Flushing caches for the cache manager '{}' {}", cacheManagerName, propagateInCluster ? " also propagating it to all cluster members" : "");
-        CacheManager ehcacheManager = getCacheManager(cacheManagerName);
-        if (ehcacheManager == null) {
-            return;
-        }
-        for (String cacheName : ehcacheManager.getCacheNames()) {
-            Cache cache = ehcacheManager.getCache(cacheName);
-            if (cache != null) {
-                // flush
-                cache.removeAll(!propagateInCluster);
-            }
-        }
-        logger.info("...done flushing caches for manager {}", cacheManagerName);
-    }
-
-    /**
      * Flushes front-end Jahia caches (module HTML output caches) on the current cluster node only.
      */
     public static void flushOutputCaches() {
@@ -215,8 +222,47 @@ public final class CacheHelper {
         }
     }
 
-    private static CacheManager getHibernateCacheManager() {
-        return getCacheManager("org.jahia.hibernate.ehcachemanager");
+    private static CacheInfo getCacheInfo(Cache cache, boolean withConfig, boolean withSizeInBytes) {
+        CacheInfo info = new CacheInfo(cache);
+        info.setName(cache.getName());
+        if (withConfig) {
+            info.setConfig(cache.getCacheManager().getActiveConfigurationText(info.getName()));
+        }
+        StatisticsGateway stats = cache.getStatistics();
+        info.setHitCount(stats.cacheHitCount());
+        info.setMissCount(stats.cacheMissCount());
+        info.setHitRatio(info.getAccessCount() > 0 ? info.getHitCount() * 100 / info.getAccessCount() : 0);
+
+        info.setSize(stats.getSize());
+        
+        info.setLocalHeapSize(stats.getLocalHeapSize());
+
+        info.setOverflowToDisk(cache.getCacheConfiguration().isOverflowToDisk());
+        if (info.isOverflowToDisk()) {
+            info.setLocalDiskSize(stats.getLocalDiskSize());
+        }
+
+        info.setOverflowToOffHeap(cache.getCacheConfiguration().isOverflowToOffHeap());
+        if (info.isOverflowToOffHeap()) {
+            info.setLocalOffHeapSize(stats.getLocalOffHeapSize());
+        }
+
+        if (withSizeInBytes) {
+            info.setLocalHeapSizeInBytes(stats.getLocalHeapSizeInBytes());
+            info.setLocalHeapSizeInBytesHumanReadable(FileUtils.humanReadableByteCount(info.getLocalHeapSizeInBytes()));
+            if (info.isOverflowToDisk()) {
+                info.setLocalDiskSizeInBytes(stats.getLocalDiskSizeInBytes());
+                info.setLocalDiskSizeInBytesHumanReadable(FileUtils.humanReadableByteCount(info
+                        .getLocalDiskSizeInBytes()));
+            }
+            if (info.isOverflowToOffHeap()) {
+                info.setLocalOffHeapSizeInBytes(stats.getLocalOffHeapSizeInBytes());
+                info.setLocalOffHeapSizeInBytesHumanReadable(FileUtils.humanReadableByteCount(info
+                        .getLocalOffHeapSizeInBytes()));
+            }
+        }
+
+        return info;
     }
 
     public static CacheManager getCacheManager(String cacheManagerName) {
@@ -226,6 +272,76 @@ public final class CacheHelper {
             }
         }
         return null;
+    }
+
+    private static CacheManagerInfo getCacheManagerInfo(CacheManager manager, boolean withConfig,
+            boolean withSizeInBytes) {
+        CacheManagerInfo info = new CacheManagerInfo(manager);
+        info.setName(manager.getName());
+        if (withConfig) {
+            info.setConfig(manager.getActiveConfigurationText());
+        }
+
+        for (String name : manager.getCacheNames()) {
+            Cache cache = manager.getCache(name);
+            if (cache != null) {
+                CacheInfo cacheInfo = getCacheInfo(cache, withConfig, withSizeInBytes);
+                info.getCaches().put(name, cacheInfo);
+                info.setHitCount(info.getHitCount() + cacheInfo.getHitCount());
+                info.setMissCount(info.getMissCount() + cacheInfo.getMissCount());
+
+                info.setOverflowToDisk(info.isOverflowToDisk() || cacheInfo.isOverflowToDisk());
+                info.setOverflowToOffHeap(info.isOverflowToOffHeap() || cacheInfo.isOverflowToOffHeap());
+
+                info.setSize(info.getSize() + cacheInfo.getSize());
+                info.setLocalHeapSize(info.getLocalHeapSize() + cacheInfo.getLocalHeapSize());
+                if (info.isOverflowToDisk()) {
+                    info.setLocalDiskSize(info.getLocalDiskSize() + cacheInfo.getLocalDiskSize());
+                }
+                if (info.isOverflowToOffHeap()) {
+                    info.setLocalOffHeapSize(info.getLocalOffHeapSize() + cacheInfo.getLocalOffHeapSize());
+                }
+                if (withSizeInBytes) {
+                    info.setLocalDiskSizeInBytes(info.getLocalDiskSizeInBytes() + cacheInfo.getLocalDiskSizeInBytes());
+                    info.setLocalHeapSizeInBytes(info.getLocalHeapSizeInBytes() + cacheInfo.getLocalHeapSizeInBytes());
+                    info.setLocalOffHeapSizeInBytes(info.getLocalOffHeapSizeInBytes()
+                            + cacheInfo.getLocalOffHeapSizeInBytes());
+                }
+            }
+        }
+
+        if (withSizeInBytes) {
+            info.setLocalDiskSizeInBytesHumanReadable(FileUtils.humanReadableByteCount(info.getLocalDiskSizeInBytes()));
+            info.setLocalHeapSizeInBytesHumanReadable(FileUtils.humanReadableByteCount(info.getLocalHeapSizeInBytes()));
+            if (info.isOverflowToOffHeap()) {
+                info.setLocalOffHeapSizeInBytesHumanReadable(FileUtils.humanReadableByteCount(info
+                        .getLocalOffHeapSizeInBytes()));
+            }
+        }
+
+        return info;
+    }
+
+    /**
+     * Returns the configuration and statistics information for all the available cache managers.
+     * 
+     * @param withConfig
+     *            if <code>true</code> the configuration information will be also available
+     * @param withSizeInBytes
+     *            if <code>true</code> the calculation of the cache sizes (bytes) will be also available
+     * @return the configuration and statistics information for all the available cache managers
+     */
+    public static Map<String, CacheManagerInfo> getCacheManagerInfos(boolean withConfig, boolean withSizeInBytes) {
+        Map<String, CacheManagerInfo> infos = new TreeMap<String, CacheManagerInfo>();
+        for (CacheManager manager : CacheManager.ALL_CACHE_MANAGERS) {
+            infos.put(manager.getName(), getCacheManagerInfo(manager, withConfig, withSizeInBytes));
+        }
+
+        return infos;
+    }
+
+    private static CacheManager getHibernateCacheManager() {
+        return getCacheManager("org.jahia.hibernate.ehcachemanager");
     }
 
     private static CacheManager getJahiaCacheManager() {
@@ -242,4 +358,5 @@ public final class CacheHelper {
         ManagementService.registerMBeans(mgr, ManagementFactory.getPlatformMBeanServer(), true,
                 true, true, true, true);
     }
+
 }

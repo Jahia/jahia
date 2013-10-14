@@ -7,10 +7,12 @@
     <var name="cacheManager" class="org.jahia.modules.serversettings.flow.CacheManagerHandler"/>
 
     <on-start>
-        <evaluate expression="cacheManager.init()" />
         <evaluate expression="cacheManager.cacheManagement" result="flowScope.cacheManagement"/>
     </on-start>
     <view-state id="cache" model="cacheManagement">
+        <on-render>
+            <evaluate expression="cacheManager.cacheManagers" result="requestScope.cacheManagers"/>
+        </on-render>
         <transition on="submit" to="cache">
             <evaluate expression="cacheManager.performAction()"/>
         </transition>

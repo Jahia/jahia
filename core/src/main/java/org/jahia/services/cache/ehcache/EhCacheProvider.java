@@ -42,6 +42,8 @@ package org.jahia.services.cache.ehcache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.apache.tika.io.IOUtils;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.CacheImplementation;
@@ -51,6 +53,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 
 /**
@@ -63,7 +67,7 @@ public class EhCacheProvider implements CacheProvider {
 
     private CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
-    private String configurationResource = "/ehcache-jahia.xml";
+    private Resource configurationResource;
     private boolean statisticsEnabled;
     private boolean jmxActivated = true;
     private boolean initialized = false;
@@ -72,7 +76,15 @@ public class EhCacheProvider implements CacheProvider {
         if (initialized) {
             return;
         }
-        cacheManager = CacheManager.create(getClass().getResource(configurationResource));
+        InputStream is = null;
+        try {
+            is = configurationResource.getInputStream();
+            cacheManager = CacheManager.create(is);
+        } catch (IOException e) {
+            throw new JahiaInitializationException(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
         if (jmxActivated) {
             ManagementService.registerMBeans(cacheManager, ManagementFactory.getPlatformMBeanServer(), true, true,
                     true, true, true);
@@ -107,7 +119,7 @@ public class EhCacheProvider implements CacheProvider {
         this.groupsSizeLimit = groupsSizeLimit;
     }
 
-    public void setConfigurationResource(String configurationResource) {
+    public void setConfigurationResource(Resource configurationResource) {
         this.configurationResource = configurationResource;
     }
 

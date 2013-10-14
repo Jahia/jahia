@@ -127,8 +127,9 @@
         &nbsp;&nbsp;
     </c:if>
 </p>
-<% pageContext.setAttribute("cacheManagers", CacheManager.ALL_CACHE_MANAGERS); %>
-<c:forEach items="${cacheManagers}" var="manager" varStatus="managerStatus">
+<% pageContext.setAttribute("cacheManagers", CacheHelper.getCacheManagerInfos(Boolean.valueOf((String) pageContext.getAttribute("showConfig")), Boolean.valueOf((String) pageContext.getAttribute("showBytes")))); %>
+<c:forEach items="${cacheManagers}" var="managerEntry" varStatus="managerStatus">
+    <c:set var="manager" value="${managerEntry.value}"/>
     <h2>Cache Manager: ${manager.name}
         <c:if test="${showConfig}">
             &nbsp;
@@ -138,8 +139,8 @@
 
             <div style="display: none;">
                 <div id="managerconfig-${managerStatus.index}">
-                    <h3>${fn:escapeXml(manager.name)}</h3>
-                    <pre>${fn:escapeXml(manager.activeConfigurationText)}</pre>
+                    <h3>${manager.name}</h3>
+                    <pre>${fn:escapeXml(manager.config)}</pre>
                 </div>
             </div>
         </c:if>
@@ -163,9 +164,9 @@
                 <th rowspan="2">?</th>
             </c:if>
             <th rowspan="2">Name</th>
-            <th colspan="3">Entries</th>
+            <th colspan="${manager.overflowToOffHeap ? 4 : 3}">Entries</th>
             <c:if test="${showBytes}">
-                <th colspan="2">Size</th>
+                <th colspan="${manager.overflowToOffHeap ? 3 : 2}">Size</th>
             </c:if>
             <th colspan="4">Access statistics</th>
             <c:if test="${showActions}">
@@ -176,9 +177,15 @@
             <th>total</th>
             <th>memory</th>
             <th>disk</th>
+            <c:if test="${manager.overflowToOffHeap}">
+                <th>off-heap</th>
+            </c:if>
             <c:if test="${showBytes}">
                 <th>memory</th>
                 <th>disk</th>
+                <c:if test="${manager.overflowToOffHeap}">
+                    <th>off-heap</th>
+                </c:if>
             </c:if>
             <th>total</th>
             <th>hits</th>
@@ -187,38 +194,8 @@
         </tr>
         </thead>
         <tbody>
-        <%
-            CacheManager manager = (CacheManager) pageContext.getAttribute("manager");
-            String[] names = manager.getCacheNames();
-            Arrays.sort(names);
-            pageContext.setAttribute("cacheNames", names);
-        %>
-        <c:set var="entriesTotal" value="0"/>
-        <c:set var="entriesMemory" value="0"/>
-        <c:set var="entriesDisk" value="0"/>
-
-        <c:set var="sizeMemory" value="0"/>
-        <c:set var="sizeDisk" value="0"/>
-
-        <c:set var="accessTotal" value="0"/>
-        <c:set var="accessHits" value="0"/>
-        <c:set var="accessMisses" value="0"/>
-
-        <c:forEach items="${cacheNames}" var="cacheName" varStatus="status">
-            <%
-                String cacheName = (String) pageContext.getAttribute("cacheName");
-                Cache cache = manager.getCache(cacheName);
-                pageContext.setAttribute("cache", cache);
-                pageContext.setAttribute("activeCfg", manager.getActiveConfigurationText(cacheName));
-                EhCacheStatisticsWrapper stats = new EhCacheStatisticsWrapper(cache.getStatistics());
-                pageContext.setAttribute("stats", stats);
-            %>
-            <c:set var="cfg" value="${cache.cacheConfiguration}"/>
-
-            <c:set var="entriesTotal" value="${entriesTotal + stats.size}"/>
-            <c:set var="entriesMemory" value="${entriesMemory + stats.localHeapSize}"/>
-            <c:set var="entriesDisk" value="${entriesDisk + stats.localDiskSize}"/>
-
+        <c:forEach items="${manager.caches}" var="cacheEntry" varStatus="status">
+            <c:set var="cache" value="${cacheEntry.value}"/>
             <tr>
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${showConfig}">
@@ -230,47 +207,33 @@
 
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
-                                <h3>${fn:escapeXml(cache.name)}</h3>
-                                <pre>${fn:escapeXml(activeCfg)}</pre>
+                                <h3>${cache.name}</h3>
+                                <pre>${fn:escapeXml(cache.config)}</pre>
                             </div>
                         </div>
                     </td>
                 </c:if>
                 <td>${cache.name}</td>
-                <td align="center">${stats.size}</td>
-                <td align="center">${stats.localHeapSize}</td>
-                <td align="center">${cfg.overflowToDisk ? stats.localDiskSize : '-'}</td>
-
-                <c:if test="${showBytes}">
-                    <% long inMemorySize = stats.getLocalHeapSizeInBytes(); %>
-                    <c:set var="inMemorySize"><%= inMemorySize %>
-                    </c:set>
-                    <c:set var="sizeMemory" value="${sizeMemory + inMemorySize}"/>
-                    <td align="center"><%= FileUtils.humanReadableByteCount(inMemorySize) %>
-                    </td>
-                    <td align="center">
-                        <c:if test="${cfg.overflowToDisk}">
-                            <% long diskMemorySize = stats.getLocalDiskSizeInBytes(); %>
-                            <c:set var="diskMemorySize"><%= diskMemorySize %>
-                            </c:set>
-                            <c:set var="sizeDisk" value="${sizeDisk + diskMemorySize}"/>
-                            <%= FileUtils.humanReadableByteCount(diskMemorySize) %>
-                        </c:if>
-                        <c:if test="${!cfg.overflowToDisk}">
-                            -
-                        </c:if>
-                    </td>
+                <td align="center">${cache.size}</td>
+                <td align="center">${cache.localHeapSize}</td>
+                <td align="center">${cache.overflowToDisk ? cache.localDiskSize : '-'}</td>
+                <c:if test="${manager.overflowToOffHeap}">
+                    <td align="center">${cache.overflowToOffHeap ? cache.localOffHeapSize : '-'}</td>
                 </c:if>
 
-                <c:set var="accessTotal" value="${accessTotal + stats.cacheHitCount + stats.cacheMissCount}"/>
-                <c:set var="accessHits" value="${accessHits + stats.cacheHitCount}"/>
-                <c:set var="accessMisses" value="${accessMisses + stats.cacheMissCount}"/>
+                <c:if test="${showBytes}">
+                    <td align="center">${cache.localHeapSizeInBytesHumanReadable}</td>
+                    <td align="center">${cache.overflowToDisk ? cache.localDiskSizeInBytesHumanReadable : '-'}</td>
+                    <c:if test="${manager.overflowToOffHeap}">
+                        <td align="center">${cache.overflowToOffHeap ? cache.localOffHeapSizeInBytesHumanReadable : '-'}</td>
+                    </c:if>
+                </c:if>
 
-                <td align="center">${stats.cacheHitCount + stats.cacheMissCount}</td>
-                <td align="center">${stats.cacheHitCount}</td>
-                <td align="center">${stats.cacheMissCount}</td>
-                <c:set var="cacheEfficiency"
-                       value="${stats.cacheHitCount + stats.cacheMissCount > 0 ? stats.cacheHitCount * 100 / (stats.cacheHitCount + stats.cacheMissCount) : 0}"/>
+                <td align="center">${cache.accessCount}</td>
+                <td align="center">${cache.hitCount}</td>
+                <td align="center">${cache.missCount}</td>
+                
+                <c:set var="cacheEfficiency" value="${cache.hitRatio}"/>
                 <c:set var="effColour" value="#222222"/>
                 <c:choose>
                     <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
@@ -283,8 +246,11 @@
                         <c:set var="effColour" value="green"/>
                     </c:when>
                 </c:choose>
-                <td align="center"><span style="color: ${effColour}"><fmt:formatNumber value="${cacheEfficiency}"
-                                                                                       pattern="0.00"/></span></td>
+                <td align="center">
+                    <span style="color: ${effColour}">
+                        <fmt:formatNumber value="${cacheEfficiency}" pattern="0.00"/>
+                    </span>
+                </td>
                 <c:if test="${showActions}">
                     <td align="center"><a href="#flush"
                                           onclick="go('action', 'flush', 'name', '${cache.name}'); return false;"
@@ -292,20 +258,25 @@
                 </c:if>
             </tr>
         </c:forEach>
+
         <tr>
             <td colspan="${showConfig ? '3' : '2'}">Total</td>
-            <td align="center">${entriesTotal}</td>
-            <td align="center">${entriesMemory}</td>
-            <td align="center">${entriesDisk}</td>
-            <c:if test="${showBytes}">
-                <td align="center"><%= FileUtils.humanReadableByteCount((Long) pageContext.getAttribute("sizeMemory")) %>
-                </td>
-                <td align="center"><%= FileUtils.humanReadableByteCount((Long) pageContext.getAttribute("sizeDisk")) %>
-                </td>
+            <td align="center">${manager.size}</td>
+            <td align="center">${manager.localHeapSize}</td>
+            <td align="center">${manager.overflowToDisk ? manager.localDiskSize : '-'}</td>
+            <c:if test="${manager.overflowToOffHeap}">
+                <td align="center">${manager.localOffHeapSize}</td>
             </c:if>
-            <td align="center">${accessTotal}</td>
-            <td align="center">${accessHits}</td>
-            <td align="center">${accessMisses}</td>
+            <c:if test="${showBytes}">
+                <td align="center">${manager.localHeapSizeInBytesHumanReadable}</td>
+                <td align="center">${manager.localDiskSizeInBytesHumanReadable}</td>
+                <c:if test="${manager.overflowToOffHeap}">
+                    <td align="center">${manager.localOffHeapSizeInBytesHumanReadable}</td>
+                </c:if>
+            </c:if>
+            <td align="center">${manager.accessCount}</td>
+            <td align="center">${manager.hitCount}</td>
+            <td align="center">${manager.missCount}</td>
             <td>&nbsp;</td>
             <c:if test="${showActions}">
                 <td align="center">&nbsp;</td>
@@ -314,10 +285,6 @@
         </tbody>
     </table>
 </c:forEach>
-<p>
-    <a href="<c:url value='/administration/?do=status&sub=display'/>">to Server and Cache status (Jahia
-        Administration)</a>
-</p>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>

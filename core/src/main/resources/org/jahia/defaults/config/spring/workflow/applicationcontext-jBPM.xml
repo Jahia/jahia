@@ -73,7 +73,7 @@
     </bean>
 
     <bean id="addLabelWH" parent="abstractWH" class="org.jahia.services.workflow.jbpm.custom.AddLabelWorkItemHandler">
-        <property name="name" value="Add Label"/>
+        <property name="name" value="Add label"/>
     </bean>
 
     <bean id="customLockWH" parent="abstractWH"

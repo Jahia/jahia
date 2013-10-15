@@ -3,7 +3,6 @@
 <%@page import="net.sf.ehcache.Cache" %>
 <%@page import="net.sf.ehcache.CacheManager" %>
 <%@page import="org.jahia.services.cache.CacheHelper" %>
-<%@page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
 <%@page import="org.jahia.utils.FileUtils" %>
 <%@ page import="java.util.Arrays" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

@@ -315,7 +315,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     if (resource.getWorkspace().equals("live") && aggregateAndCompress) {
                         assets.put("css", aggregate(assets.get("css"), "css"));
-                        Map<String, Map<String, String>> scripts = new HashMap<String, Map<String, String>>(assets.get("javascript"));
+                        Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(assets.get("javascript"));
                         Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
                         assets.put("javascript", newScripts);
                         scripts.keySet().removeAll(newScripts.keySet());

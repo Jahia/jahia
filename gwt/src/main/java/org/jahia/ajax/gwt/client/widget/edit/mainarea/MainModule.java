@@ -385,52 +385,8 @@ public class MainModule extends Module {
         }
     }
 
-<<<<<<< .working
     public boolean needRefresh(Map<String, Object> data) {
         return false;
-=======
-    private void refresh(final String previousPath, final String previousTemplate, final boolean forceImageRefresh) {
-        JahiaContentManagementService.App.getInstance()
-                .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
-                        config.getName(), editLinker.getActiveChannelIdentifier(), editLinker.getActiveChannelVariant(), new BaseAsyncCallback<GWTRenderResult>() {
-                    public void onSuccess(GWTRenderResult result) {
-                        int i = scrollContainer.getVScrollPosition();
-                        if (head != null) {
-                            head.setText(Messages.get("label.page", "Page") + ": " + path);
-                        }
-                        nodeTypes = result.getNodeTypes();
-                        Selection.getInstance().hide();
-                        Hover.getInstance().removeAll();
-                        infoLayers.removeAll();
-
-                        display(result.getResult(), forceImageRefresh);
-
-                        scrollContainer.setVScrollPosition(i);
-                        List<String> list = new ArrayList<String>(1);
-                        list.add(path);
-                        node = null;
-                        editLinker.getMainModule().unmask();
-                        editLinker.onModuleSelection(MainModule.this);
-
-                        if (contextMenu != null) {
-                            contextMenu.hide();
-                        }
-
-                        switchStaticAssets(result.getStaticAssets());
-                    }
-
-                    @Override
-                    public void onApplicationFailure(Throwable caught) {
-                        if (!previousPath.equals(path)) {
-                            path = previousPath;
-                            template = previousTemplate;
-                            editLinker.onMainSelection(previousPath, previousTemplate, null);
-                        }
-                        editLinker.getMainModule().unmask();
-                    }
-                });
-
->>>>>>> .merge-right.r47668
     }
 
     /**
@@ -696,13 +652,9 @@ public class MainModule extends Module {
         }
 
         editLinker.handleNewMainNodeLoaded();
-<<<<<<< .working
-        ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
-=======
         if (head != null && head instanceof ToolbarHeader) {
             ((ToolbarHeader) head).handleNewMainNodeLoaded(node);
         }
->>>>>>> .merge-right.r47668
     }
 
     public GWTEditConfiguration getConfig() {

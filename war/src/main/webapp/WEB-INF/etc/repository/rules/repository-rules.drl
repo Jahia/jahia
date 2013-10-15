@@ -163,7 +163,6 @@ rule "Flush URL resolver cache"
     then
         Flush urlResolverNodePath
         Flush urlResolverSiteInfo
-<<<<<<< .working
 end
 
 rule "Flush privileges in role cache on role update"

@@ -800,20 +800,10 @@ public class ConflictResolver {
                 targetNode.checkout();
             }
 
-<<<<<<< .working
-            List<? extends Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
-            List<Value> newValues = new ArrayList<Value>();
-            for (Value value : oldValues) {
-                if (!equalsValue(value, oldValue)) {
-                    newValues.add(value);
-                }
-            }
-=======
->>>>>>> .merge-right.r47661
             if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                 targetNode.removeMixin(oldValue.getString());
             } else {
-                List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
+                List<? extends Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
                 List<Value> newValues = new ArrayList<Value>();
                 for (Value value : oldValues) {
                     if (!equalsValue(value, oldValue)) {

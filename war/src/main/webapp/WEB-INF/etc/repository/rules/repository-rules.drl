@@ -216,9 +216,6 @@ rule "Flush workflow rules cache on all rules deletion"
         Flush WorkflowRuleCache
 end
 
-=======
-end
-
 rule "Ensure only one home page is set"
     when
         A property j:isHomePage has been set on a node
@@ -227,5 +224,3 @@ rule "Ensure only one home page is set"
     then
         Check home page uniqueness for node
 end
-
->>>>>>> .merge-right.r47656

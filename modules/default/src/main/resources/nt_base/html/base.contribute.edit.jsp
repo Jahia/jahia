@@ -44,7 +44,6 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<utility:setBundle basename="JahiaContributeMode" templateName="Jahia Contribute Mode"/>
 <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(currentNode)}"/>
 <c:if test="${empty currentResource.moduleParams.contentType}">
     <c:set var="contentType" value="content"/>

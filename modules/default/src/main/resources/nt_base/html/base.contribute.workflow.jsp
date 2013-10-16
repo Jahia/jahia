@@ -26,7 +26,6 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<utility:setBundle basename="JahiaContributeMode" useUILocale="false"/>
 <c:set var="resourceNodeType" value="${currentResource.moduleParams.resourceNodeType}"/>
 <c:if test="${empty resourceNodeType}">
     <c:set var="resourceNodeType" value="${param.resourceNodeType}"/>

@@ -43,8 +43,11 @@ package org.jahia.services.cache.ehcache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.statistics.StatisticsGateway;
+
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheListener;
+import org.jahia.services.cache.CacheStatistics;
 import org.jahia.services.cache.GroupCacheKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +59,7 @@ import java.util.*;
  *
  * @author Serge Huber
  */
-public class EhCacheImpl implements CacheImplementation {
+public class EhCacheImpl implements CacheImplementation, CacheStatistics {
 
     final private static Logger logger = LoggerFactory.getLogger(EhCacheImpl.class);
 
@@ -298,5 +301,24 @@ public class EhCacheImpl implements CacheImplementation {
 
     public Collection<Object> getKeys() {
         return ehCache.getKeys();
+    }
+
+    @Override
+    public double getCacheEfficiency() {
+        StatisticsGateway stats = ehCache.getStatistics();
+        long hitCount = stats.cacheHitCount();
+        long total = hitCount + stats.cacheMissCount();
+        return total != 0 ? ((hitCount * 100.0) / total) : 0;
+    }
+
+    @Override
+    public long getSuccessHits() {
+        return ehCache.getStatistics().cacheHitCount();
+    }
+
+    @Override
+    public long getTotalHits() {
+        StatisticsGateway stats = ehCache.getStatistics();
+        return stats.cacheHitCount() + stats.cacheMissCount();
     }
 }

@@ -40,6 +40,7 @@
 
 package org.jahia.services.cache;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
@@ -60,36 +61,17 @@ public class CacheEntry<V> implements Serializable {
 
     private static final long serialVersionUID = -319255477144589731L;
 
-    /** the normal operation mode constant. */
-    public static final String MODE_NORMAL = "normal";
-
-    /** the debugging operation mode constant. */
-    public static final String MODE_DEBUG = "debug";
-
-    /** the edition operation mode constant. */
-    public static final String MODE_EDIT = "edit";
-
-
     /** the entry object. */
     private V object;
 
-
-    /** number of time the entry was requested. */
-    protected int hits = 0;
-
     /** the properties table. */
-    protected Map<String, Serializable> properties = new HashMap<String, Serializable>();
-
-    /** the entry's expiration date. */
-    protected Date expirationDate;
-
-    /** last accessed date. */
-    protected long lastAccessedTimeMillis;
+    private Map<String, Serializable> properties;
 
 
     /** <p>Default constructor, creates a new <code>CacheEntry</code> instance.</p>
      */
     public CacheEntry () {
+        super();
     }
 
 
@@ -98,6 +80,7 @@ public class CacheEntry<V> implements Serializable {
      * @param entryObj      the object instance to associate with the cache entry
      */
     public CacheEntry (final V entryObj) {
+        this();
         object = entryObj;
     }
 
@@ -131,15 +114,19 @@ public class CacheEntry<V> implements Serializable {
      * @param value the property's value
      */
     public void setProperty (final String key, final Serializable value) {
-        if (key == null)
+        if (key == null) {
             return;
+        }
+        if (properties == null) {
+            properties = new HashMap<String, Serializable>(1);
+        }
         properties.put (key, value);
     }
 
 
     /** <p>Retrieve the property value associated with the key <code>key</code>.</p>
      *
-     * <p>Propertiescan have a <code>null</code> value, but key names must be not
+     * <p>Properties can have a <code>null</code> value, but key names must be not
      * <code>null</code>. When value of <code>null</code> is returned, it does mean
      * the key is not found in the entry or the associated property has a
      * <code>null</code> value. The two cases can be distinguished with the
@@ -150,10 +137,9 @@ public class CacheEntry<V> implements Serializable {
      * @return  return the property value.
      */
     public Object getProperty (final String key) {
-        return properties.get (key);
+        return properties != null ? properties.get (key) : null;
     }
-
-
+    
     /** <p>Returns <code>true</code> if this entry contains the mapping for the specified
      * property name <code>key</code>.</p>
      *
@@ -163,18 +149,20 @@ public class CacheEntry<V> implements Serializable {
      *          property name <code>key</code>.
      */
     public boolean containsKey (final String key) {
-        if (key == null)
+        if (key == null || properties == null) {
             return false;
+        }
         return properties.containsKey (key);
     }
 
 
-    /** <p>Retrieves the properties <code>Map</code> instance.</p>
+    /**
+     * <p>Retrieves the properties <code>Map</code> instance.</p>
      *
      * @return  the properties <code>Map</code> instance
      */
-    public Map<String, Serializable> getExtendedProperties () {
-        return properties;
+    public Map<String, Serializable> getExtendedProperties() {
+        return properties != null ? properties : Collections.<String, Serializable>emptyMap();
     }
 
 
@@ -183,9 +171,10 @@ public class CacheEntry<V> implements Serializable {
      *
      * @param newProperties the new properties
      */
-    public void setExtendedProperties (final Map<String, Serializable> newProperties) {
-        if (newProperties == null)
+    public void setExtendedProperties(final Map<String, Serializable> newProperties) {
+        if (newProperties == null) {
             return;
+        }
         properties = newProperties;
     }
 
@@ -195,22 +184,25 @@ public class CacheEntry<V> implements Serializable {
      *
      * @return  the entry's hits
      */
+    @Deprecated
     final public int getHits () {
-        return hits;
+        return 0;
     }
 
 
     /** <p>Resets the number of times the entry was requested.</p>
      */
+    @Deprecated
     final public void resetHits () {
-        hits = 0;
     }
 
 
     /** <p>Increments the number of hits by one.</p>
-     * */
+     *
+     */
+    @Deprecated
     final public void incrementHits () {
-        hits++;
+        // do nothing
     }
 
 
@@ -218,8 +210,9 @@ public class CacheEntry<V> implements Serializable {
      *
      * @return  the expiration date
      */
+    @Deprecated
     final public Date getExpirationDate () {
-        return expirationDate;
+        return null;
     }
 
 
@@ -227,19 +220,21 @@ public class CacheEntry<V> implements Serializable {
      *
      * @param expirationDate    the expiration date
      */
+    @Deprecated
     final public void setExpirationDate (Date expirationDate) {
-        this.expirationDate = expirationDate;
+        // do nothing
     }
 
 
     /** <p>Set the last accessed date to the current time.</p>
      */
+    @Deprecated
     final public void setLastAccessedTimeNow () {
-        lastAccessedTimeMillis = System.currentTimeMillis();
-        // lastAccessedDate = new Date ();
     }
+    
+    @Deprecated
     public long getLastAccessedTimeMillis() {
-        return lastAccessedTimeMillis;
+        return 0;
     }
 
 }

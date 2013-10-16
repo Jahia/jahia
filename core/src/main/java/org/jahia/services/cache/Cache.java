@@ -42,8 +42,10 @@ package org.jahia.services.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** <p>This is the root class for all the cache in Jahia.</p>
  *
@@ -72,30 +74,22 @@ import java.util.List;
  * {@link org.jahia.services.cache.CacheFactory CacheFactory} class, which is responsible
  * for managing all the caches.</p>
  *
- * @author  Fulco Houkes, Copyright (c) 2003 by Jahia Ltd.
- * @version 1.0
+ * @author  Fulco Houkes
  * @since   Jahia 4.0
  * @see     org.jahia.services.cache.CacheFactory CacheFactory
  * @see     org.jahia.services.cache.CacheEntry CacheEntry
  * @see     org.jahia.services.cache.CacheListener CacheListener
  */
-public class Cache<K, V> {
+public class Cache<K, V> implements CacheStatistics {
 
     /** logging. */
-    final private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger (Cache.class);
+    final private static Logger logger = LoggerFactory.getLogger (Cache.class);
 
     /** cache map instance. */
     private CacheImplementation<K, CacheEntry<V>> cacheImplementation;
 
     /** Cache name. */
     private String name;
-
-    /** number of cache hit that could successfully be served. */
-    private long successHitCount = 0;
-
-    /** total number of cache hits. */
-    private long totalHitCount = 0;
 
     private List<CacheListener> listeners = null;
 
@@ -130,9 +124,6 @@ public class Cache<K, V> {
         if (entryKey == null)
             return null;
 
-        // a new cache hit
-        totalHitCount++;
-
         // Try to get the cache entry out of the JCS cache
         CacheEntry<V> entry = cacheImplementation.get (entryKey);
         if (entry == null) {
@@ -147,29 +138,6 @@ public class Cache<K, V> {
             }
             return null;
         }
-
-        // get the entry expiration date
-        Date date = entry.getExpirationDate ();
-
-        // check if the entry is expired
-        if (date != null) {
-            Date now = new Date ();
-            if (date.compareTo (now) < 0) {
-                // entry has expired, we must remove it and then exit.
-                logger.debug ("Cache entry has expired, ignoring entry and removing...");
-                remove (entryKey);
-                return null;
-            }
-        }
-
-        // at this point, the cache entry could be found -> another successful cache hit!
-        successHitCount++;
-
-        // increase the entry hits
-        entry.incrementHits ();
-
-        // update the last accessed time for the JCS cache entry.
-        entry.setLastAccessedTimeNow ();
 
         return entry;
     }
@@ -365,12 +333,8 @@ public class Cache<K, V> {
      */
     public void flush(boolean propagate) {
 
-		// clears the cache
-		cacheImplementation.flushAll(propagate);
-
-		// reset the cache statistics
-		successHitCount = 0;
-		totalHitCount = 0;
+        // clears the cache
+        cacheImplementation.flushAll(propagate);
 
         logger.debug("Flushed all entries from cache [{}]", name);
 
@@ -398,32 +362,24 @@ public class Cache<K, V> {
     }
 
 
-    /** <p>Retrieves the number of cache hits that could successfully be served.</p>
-     *
-     * @return  the number of cache hits that could successfully be served
-     */
+    @Override
     final public long getSuccessHits () {
-        return successHitCount;
+        return (cacheImplementation instanceof CacheStatistics) ? ((CacheStatistics) cacheImplementation)
+                .getSuccessHits() : 0;
     }
 
 
-    /** <p>Retrieves the total number of cache hits.</p>
-     *
-     * @return  the number of cache hits
-     */
+    @Override
     final public long getTotalHits () {
-        return totalHitCount;
+        return (cacheImplementation instanceof CacheStatistics) ? ((CacheStatistics) cacheImplementation)
+                .getTotalHits() : 0;
     }
 
 
-    /** <p>Retrieves the percentage of cache hit that could successfully be served.
-     * This efficiency is useful for tuning the maximum cache size. Cache size should
-     * be changed increased for low efficiency percentages.</p>
-     *
-     * @return  the percentage of cache hit that could successfully be served
-     */
+    @Override
     public double getCacheEfficiency () {
-        return (successHitCount * 100.0) / totalHitCount;
+        return (cacheImplementation instanceof CacheStatistics) ? ((CacheStatistics) cacheImplementation)
+                .getCacheEfficiency() : 0;
     }
 
     /** Checks if the specified <code>entryKey</code> is present in the cache.

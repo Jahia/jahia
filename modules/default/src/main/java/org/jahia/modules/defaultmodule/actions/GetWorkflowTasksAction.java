@@ -48,6 +48,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorklowTypeRegistration;
 import org.jahia.utils.Patterns;
 import org.json.JSONObject;
 import org.xml.sax.Attributes;
@@ -70,45 +72,20 @@ import java.util.Map;
  */
 public class GetWorkflowTasksAction extends Action {
 
+    private WorkflowService workflowService;
+
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String wfKey = parameters.get("workflowKey").get(0);
-        wfKey = StringUtils.substringAfter(wfKey,":");
-        InputStream in = getClass().getResourceAsStream("/org/jahia/services/workflow/"+wfKey+".jpdl.xml");
-        if (in != null) {
-            InputSource is = new InputSource(in);
-            SAXParserFactory factory;
-            factory = new SAXParserFactoryImpl();
-
-            factory.setNamespaceAware(true);
-
-            factory.setValidating(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-            SAXParser parser = factory.newSAXParser();
-
-            JpdlHandler handler = new JpdlHandler();
-            parser.parse(is, handler);
-            Map<String, String[]> c = handler.getCoords();
-
-            return new ActionResult(200, null, new JSONObject(c));
+        WorklowTypeRegistration workflowRegistration = workflowService.getWorkflowRegistration(wfKey);
+        if (workflowRegistration != null) {
+            return new ActionResult(200, null, new JSONObject(workflowRegistration.getCoordinates()));
         }
         return ActionResult.OK_JSON;
     }
 
-    class JpdlHandler extends DefaultHandler {
-        Map <String, String[]> coords = new HashMap<String, String[]>();
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            if (!StringUtils.isEmpty(attributes.getValue("name")) && !StringUtils.isEmpty(attributes.getValue("g")) && localName.equals("task") ) {
-                coords.put(attributes.getValue("name"), Patterns.COMMA.split(attributes.getValue("g")));
-            }
-        }
-
-        public Map<String, String[]> getCoords() {
-            return coords;
-        }
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
     }
 
 }

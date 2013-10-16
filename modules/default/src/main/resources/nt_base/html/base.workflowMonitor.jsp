@@ -138,7 +138,7 @@
         <div id="workflowImageDiv${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}"
              style="position:relative;">
             <div style="height:50px;"></div>
-            <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.provider}:${workflowDefinition.key}&language=${currentResource.locale}'/>"/>
+            <img src="<c:url value='/cms/wfImage?workflowKey=${workflowDefinition.packageName}:${workflowDefinition.key}&language=${currentResource.locale}'/>"/>
             <div style="height:50px;"></div>
 
             <c:forEach items="${activeWorkflow.availableActions}" var="task"
@@ -217,7 +217,7 @@
 
     function animateWorkflowTask${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}() {
         animated = true;
-        $.post('<c:url value="${url.base}${functions:escapeJavaScript(currentNode.path)}.getWorkflowTasks.do"/>', {'workflowKey':'${workflowDefinition.provider}:${workflowDefinition.key}'}, function (result) {
+        $.post('<c:url value="${url.base}${functions:escapeJavaScript(currentNode.path)}.getWorkflowTasks.do"/>', {'workflowKey':'${workflowDefinition.key}'}, function (result) {
             <c:forEach items="${activeWorkflow.availableActions}" var="task" varStatus="status">
             coords = result['${task.name}'];
             $("#running${task.id}").css('left', coords[0] + "px");
@@ -255,8 +255,8 @@
     $(document).ready(function () {
 
         $("#workflowImageLink${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')}").fancybox({
-            'onComplete':animateWorkflowTask${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')},
-            'onCleanup':stopAnimateWorkflowTask
+            'afterLoad':animateWorkflowTask${fn:replace(currentNode.identifier,'-','')}${fn:replace(workflowDefinition.key,'-','')},
+            'afterClose':stopAnimateWorkflowTask
         });
 
         $(".workflowLink").fancybox();

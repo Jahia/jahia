@@ -124,6 +124,7 @@
 
     <bean class="org.jahia.modules.defaultmodule.actions.GetWorkflowTasksAction">
         <property name="name" value="getWorkflowTasks"/>
+        <property name="workflowService" ref="workflowService"/>
     </bean>
 
     <bean id="WorkspaceSwitchFilter" class="org.jahia.modules.defaultmodule.WorkspaceSwitchFilter">

@@ -42,6 +42,10 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorklowTypeRegistration;
+import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -57,25 +61,34 @@ import java.io.InputStream;
  */
 public class WorkflowImageController implements Controller {
 
+    private WorkflowService workflowService;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String wfKey = request.getParameter("workflowKey");
+        String basePath = "/" + StringUtils.substringBefore(wfKey, ":").replaceAll("\\.", "/") + "/";
         wfKey = StringUtils.substringAfter(wfKey, ":");
+        WorklowTypeRegistration workflowRegistration = workflowService.getWorkflowRegistration(wfKey);
+        JahiaTemplatesPackage module = workflowRegistration.getModule();
 
         String language = request.getParameter("language");
 
-        InputStream in = getClass().getResourceAsStream("/org/jahia/services/workflow/"+wfKey+"_"+language+".png");
-        if (in == null) {
-            in = getClass().getResourceAsStream("/org/jahia/services/workflow/"+wfKey+".png");
+        Resource resource = module.getResource(basePath + wfKey + "_" + language + ".png");
+        if (resource == null) {
+            resource = module.getResource(basePath + wfKey + ".png");
         }
-        if (in != null) {
+        if (resource != null) {
             response.setContentType("image/png");
 
             ServletOutputStream out = response.getOutputStream();
 
-            IOUtils.copy(in, out);
+            IOUtils.copy(resource.getInputStream(), out);
             out.flush();
         }
         response.setStatus(HttpServletResponse.SC_OK);
         return null;
+    }
+
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
     }
 }

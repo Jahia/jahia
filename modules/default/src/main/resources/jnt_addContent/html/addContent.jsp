@@ -31,12 +31,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $("#addButton${currentNode.identifier}-${status.index}").fancybox({
-                'onComplete':function() {
+                'afterLoad':function() {
                     $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor(); })
                     
                 },
 
-                'onCleanup':function() {
+                'afterClose':function() {
                     $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function
                             () {
                         if ($(this).data('ckeditorInstance')) {

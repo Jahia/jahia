@@ -43,7 +43,9 @@ package org.jahia.services.workflow;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.templates.JahiaModuleAware;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper bean to allow auto-registration of the workflow types.
@@ -57,6 +59,7 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
     private String provider;
     private Map<String, String> permissions;
     private Map<String, String> forms;
+    private Map<String, String[]> coordinates;
     private JahiaTemplatesPackage module;
 
     private boolean canBeUsedForDefault;
@@ -100,6 +103,17 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
 
     public void setForms(Map<String, String> forms) {
         this.forms = forms;
+    }
+
+    public Map<String, String[]> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Map<String, String> coordinates) {
+        this.coordinates = new HashMap<String, String[]>();
+        for (Map.Entry<String,String> entry : coordinates.entrySet()) {
+            this.coordinates.put(entry.getKey(), entry.getValue().split(","));
+        }
     }
 
     public int getDefaultPriority() {

@@ -2,14 +2,15 @@
 
     <c:when test="${value.type == jcrPropertyTypes.BINARY}"> <%-- binary --%>
         <%
-            if (pageContext.getAttribute("child") instanceof JCRNodeWrapper) {
+            if (pageContext.getAttribute("node") instanceof JCRNodeWrapper) {
         %>
         <c:if test="${property.name == 'jcr:data'}" var="jcrData">
-            <c:if test="${currentNode.file}">
-                <c:url value="${currentNode.parent.url}" var="binaryUrl"/>
+            <c:set var="parentNode" value="${currentNode.parent}"/>
+            <c:if test="${parentNode.file}">
+                <c:url value="${parentNode.url}" var="binaryUrl"/>
             </c:if>
-            <c:if test="${!currentNode.file}">
-                <c:url value="${currentNode.parent.url}" var="binaryUrl">
+            <c:if test="${!parentNode.file}">
+                <c:url value="${parentNode.url}" var="binaryUrl">
                     <c:param name="t" value="${currentNode.name}"/>
                 </c:url>
             </c:if>
@@ -52,10 +53,11 @@
             <a href="#source" onclick="go('uuid', '${value.string}'); return false;">${value.string}</a>
         </c:if>
         <c:if test="${not versionableUuid}">
-            <c:set var="display" value="${fn:escapeXml(functions:abbreviate(functions:removeHtmlTags(value.string), 500,520,'...'))}"/>
-            <c:set var="raw" value="${fn:escapeXml(functions:abbreviate(value.string, 5000,5020,'...'))}"/>
+            <c:set var="val" value="${value.string}"/>
+            <c:set var="display" value="${fn:escapeXml(functions:abbreviate(functions:removeHtmlTags(val), 500,520,'...'))}"/>
+            <c:set var="raw" value="${fn:escapeXml(functions:abbreviate(val, 5000,5020,'...'))}"/>
             <c:if test="${display != raw}">
-                <span title="${raw}">[raw]&nbsp;</span>
+                <span title="${raw}">[raw: length=${fn:length(val)}]&nbsp;</span>
             </c:if>
             ${display}
         </c:if>

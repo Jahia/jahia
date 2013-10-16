@@ -629,14 +629,20 @@ public class MainModule extends Module {
         editLinker.refresh(data);
     }
 
+    @Override
     public void setNode(GWTJahiaNode node) {
+        setNodeAndSite(node,null);
+    }
+
+    @Override
+    public void setNodeAndSite(GWTJahiaNode node, GWTJahiaNode site) {
         this.node = node;
         if (node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
                     Messages.get("info_sharednode", "This is a shared node")));
         }
-        if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
-            JahiaGWTParameters.setSiteFromNode(node, editLinker);
+        if (site!=null) {
+            JahiaGWTParameters.setSiteNode(site);
             SiteSwitcherActionItem.refreshAllSitesList(editLinker);
             if (editLinker.getSidePanel() != null) {
                 Map<String, Object> data = new HashMap<String, Object>();

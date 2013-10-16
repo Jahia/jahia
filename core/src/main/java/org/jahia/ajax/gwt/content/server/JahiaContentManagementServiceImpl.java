@@ -390,10 +390,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         List<String> paths = new ArrayList<String>();
         for (ModelData params : getNodesParams) {
-            if (logger.isDebugEnabled()) {
-                paths.addAll(((List<String>) params.get("paths")));
+            Collection<String> paramsPropertyNames = params.getPropertyNames();
+            if (paramsPropertyNames.contains("paths")) {
+                if (logger.isDebugEnabled()) {
+                    paths.addAll(((List<String>) params.get("paths")));
+                }
+                nodes.addAll(getNodesInternal((List<String>) params.get("paths"), (List<String>) params.get("fields")));
+            } else if(paramsPropertyNames.contains("pathNodeForSite")) {
+                List<GWTJahiaNode> site = new ArrayList<GWTJahiaNode>();
+                try {
+                    JCRNodeWrapper node = retrieveCurrentSession(getWorkspace(), getLocale(), true).getNode(
+                            (String) params.get("pathNodeForSite")).getResolveSite();
+                    site.add(navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS));
+                    m.put("site",site);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
-            nodes.addAll(getNodesInternal((List<String>) params.get("paths"), (List<String>) params.get("fields")));
         }
         m.put("nodes", nodes);
         for (GWTJahiaNode node : nodes) {

@@ -623,7 +623,7 @@ public class UIConfigHelper {
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
 
                 if (config.isLoadSitesList()) {
-                    List<GWTJahiaNode> sites = navigation.retrieveRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, site, session, uiLocale, false, false, null, null);
+                    List<GWTJahiaNode> sites = navigation.retrieveRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITEMAP_FIELDS, null, null, site, session, uiLocale, false, false, null, null);
                     String permission = ((EditConfiguration)SpringContextSingleton.getBean(name)).getRequiredPermission();
                     Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
                     for (GWTJahiaNode aSite : sites) {
@@ -631,7 +631,7 @@ public class UIConfigHelper {
                             sitesMap.put(aSite.getSiteUUID(), aSite);
                         }
                     }
-                    GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"),GWTJahiaNode.DEFAULT_SITE_FIELDS);
+                    GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"),GWTJahiaNode.DEFAULT_SITEMAP_FIELDS);
                     if (!sitesMap.containsKey(systemSite.getUUID())) {
                         sitesMap.put(systemSite.getUUID(), systemSite);
                     }

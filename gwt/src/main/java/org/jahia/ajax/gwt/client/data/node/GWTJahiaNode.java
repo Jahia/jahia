@@ -115,6 +115,9 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> DEFAULT_SITE_FIELDS =
             Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO,"j:resolvedDependencies");
 
+    public static final List<String> DEFAULT_SITEMAP_FIELDS =
+            Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo","j:resolvedDependencies");
+
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,

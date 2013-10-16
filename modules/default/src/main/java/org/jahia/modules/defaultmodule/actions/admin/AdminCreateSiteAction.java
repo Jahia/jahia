@@ -135,7 +135,8 @@ public class AdminCreateSiteAction extends AdminAction {
             // add the site in siteManager...
             site = sitesService.addSite(session.getUser(), siteTitle, siteServerName, siteKey, siteDescr,
                     selectedLocale, getParameter(parameters,"templatesSet"),
-                    null,null, null,null, false, null, null);
+                    null,null, null,null, false, null, null,null,null,session);
+
 
             if (getParameter(parameters, "mixLanguage", "false").equals("true") || getParameter(parameters, "allowsUnlistedLanguages", "false").equals("true")) {
                 site.setMixLanguagesActive(getParameter(parameters, "mixLanguage", "false").equals("true"));

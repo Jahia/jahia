@@ -94,8 +94,6 @@ public class CacheManagerHandler implements Serializable {
         String action = StringUtils.defaultString(cacheManagement.getAction());
         if ("flushOutputCaches".equals(action)) {
             CacheHelper.flushOutputCaches(propagate);
-        } else if ("flushHibernateCaches".equals(action)) {
-            CacheHelper.flushHibernateCaches(propagate);
         } else if ("flushOutputCaches".equals(action)) {
             CacheHelper.flushOutputCaches(propagate);
         } else if ("flushCaches".equals(action)) {

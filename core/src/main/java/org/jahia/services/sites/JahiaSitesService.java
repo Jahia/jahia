@@ -197,7 +197,6 @@ public class JahiaSitesService extends JahiaService {
         try {
             site = getSiteByKey(siteKey, getUserSession());
         } catch (PathNotFoundException e) {
-            logger.warn("Unable to find site for key {}", siteKey);
             return null;
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
@@ -206,11 +205,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     private JCRSessionWrapper getUserSession() throws RepositoryException {
-//        if(JahiaUserManagerService.isGuest(sessionFactory.getCurrentUser())){
         return sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
-//        } else {
-//            return sessionFactory.getCurrentUserSession();
-//        }
     }
 
     public JCRSiteNode getSiteByKey(String siteKey, JCRSessionWrapper session) throws RepositoryException {

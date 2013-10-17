@@ -40,6 +40,9 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -182,25 +185,35 @@ public class PublishActionItem extends BaseActionItem {
     }
 
 
-    protected void callback(List<GWTJahiaPublicationInfo> result) {
+    protected void callback(final List<GWTJahiaPublicationInfo> result) {
         if (result.isEmpty()) {
             MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
         } else {
-            Map<Integer, List<String>> unpublishable = new HashMap<Integer, List<String>>();
+            List<GWTJahiaPublicationInfo> unpublishable = new ArrayList<GWTJahiaPublicationInfo>();
             for (GWTJahiaPublicationInfo info : result) {
                 Integer status = info.getStatus();
                 if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
-                    if (!unpublishable.containsKey(status)) {
-                        unpublishable.put(status, new ArrayList<String>());
-                    }
-                    unpublishable.get(status).add(info.getTitle());
+                    unpublishable.add(info);
                 }
             }
+
+            result.removeAll(unpublishable);
+
             if (unpublishable.isEmpty()) {
                 PublicationWorkflow.create(result, linker, checkForUnpublication);
             } else {
                 String message = "";
-                for (Map.Entry<Integer, List<String>> entry : unpublishable.entrySet()) {
+
+                Map<Integer, List<String>> unpublishableMap = new HashMap<Integer, List<String>>();
+                for (GWTJahiaPublicationInfo info : unpublishable) {
+                    Integer status = info.getStatus();
+                    if (!unpublishableMap.containsKey(status)) {
+                        unpublishableMap.put(status, new ArrayList<String>());
+                    }
+                    unpublishableMap.get(status).add(info.getTitle());
+                }
+
+                for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {
                     Integer status = entry.getKey();
                     List<String> values = entry.getValue();
                     final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
@@ -216,7 +229,18 @@ public class PublishActionItem extends BaseActionItem {
                         }
                     }
                 }
-                MessageBox.info(Messages.get("label.publish", "Publication"), message, null);
+                if (!result.isEmpty()) {
+                    message += "<br/>" + Messages.get("message.continue");
+                    MessageBox.confirm(Messages.get("label.publish", "Publication"), message, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                                PublicationWorkflow.create(result, linker, checkForUnpublication);
+                            }
+                        }
+                    });
+                } else {
+                    MessageBox.info(Messages.get("label.publish", "Publication"), message, null);
+                }
             }
         }
     }

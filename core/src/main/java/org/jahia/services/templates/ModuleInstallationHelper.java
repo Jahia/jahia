@@ -119,7 +119,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             throws RepositoryException {
         Set<String> autoInstalled = new HashSet<String>();
         if (StringUtils.isNotBlank(module.getAutoDeployOnSite())) {
-            if ("system".equals(module.getAutoDeployOnSite())) {
+            if ("system".equals(module.getAutoDeployOnSite()) || "systemsite".equals(module.getAutoDeployOnSite())) {
                 if (session.nodeExists("/sites/systemsite")) {
                     installModule(module, "/sites/systemsite", session);
                     autoInstalled.add("systemsite");

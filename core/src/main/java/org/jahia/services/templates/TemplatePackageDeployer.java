@@ -199,10 +199,6 @@ public class TemplatePackageDeployer {
 
         componentRegistry.registerComponents(aPackage, session);
 
-        if (aPackage.isActiveVersion()
-                && templatePackageRegistry.lookupByFileName(aPackage.getRootFolder()).equals(aPackage)) {
-            service.autoInstallModulesToSites(aPackage, session);
-        }
         session.save();
     }
 

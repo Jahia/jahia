@@ -75,7 +75,7 @@ import java.util.*;
  */
 public class Activator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(Activator.class);
+    static Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
     
@@ -89,6 +89,7 @@ public class Activator implements BundleActivator {
     private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
     private BundleListener bundleListener = null;
     private Set<Bundle> installedBundles = new HashSet<Bundle>();
+    private Set<Bundle> initializedBundles = new HashSet<Bundle>();
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
     private Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
     private JahiaTemplateManagerService templatesService;
@@ -321,6 +322,7 @@ public class Activator implements BundleActivator {
             templatePackageRegistry.unregisterPackageVersion(jahiaTemplatesPackage);
         }
         installedBundles.remove(bundle);
+        initializedBundles.remove(bundle);
 
         deleteBundleFileIfNeeded(bundle);
         
@@ -401,9 +403,8 @@ public class Activator implements BundleActivator {
 
         setModuleState(bundle, ModuleState.State.PARSED, null);
 
-        if (installedBundles.contains(bundle)) {
+        if (installedBundles.remove(bundle)) {
             logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
-            installedBundles.remove(bundle);
 
             scanForImportFiles(bundle, pkg);
 
@@ -418,6 +419,7 @@ public class Activator implements BundleActivator {
                 } catch (RepositoryException e) {
                     logger.error("Error while initializing module content for module " + pkg, e);
                 }
+                initializedBundles.add(bundle);
             }
             logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
@@ -534,24 +536,27 @@ public class Activator implements BundleActivator {
         registerHttpResources(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
+
+        if (initializedBundles.remove(bundle)) {
+            //auto deploy bundle according to bundle configuration
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        templatesService.autoInstallModulesToSites(jahiaTemplatesPackage, session);
+                        session.save();
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
+            }
+        }
+
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         setModuleState(bundle, ModuleState.State.STARTED, null);
-
+        
         startDependantBundles(jahiaTemplatesPackage.getRootFolder());
         startDependantBundles(jahiaTemplatesPackage.getName());
-
-        //auto deploy bundle according to bundle configuration
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    templatesService.autoInstallModulesToSites(jahiaTemplatesPackage, session);
-                    session.save();
-                    return null;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
-        }
     }
 
     private String getDisplayName(Bundle bundle) {
@@ -701,9 +706,12 @@ public class Activator implements BundleActivator {
         @Override
         public synchronized void frameworkEvent(FrameworkEvent event) {
             switch (event.getType()) {
-                case FrameworkEvent.PACKAGES_REFRESHED:
+                case FrameworkEvent.PACKAGES_REFRESHED: 
                     startAllBundles();
                     stopAllBundles();
+                    break;
+                case FrameworkEvent.STARTED: 
+                    break;
             }
         }
 
@@ -720,9 +728,10 @@ public class Activator implements BundleActivator {
             this.toStart.removeAll(toStart);
             for (Bundle bundle : toStart) {
                 try {
+                    logger.info("AAA starting {}", bundle.getSymbolicName());
                     bundle.start();
                 } catch (BundleException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -733,10 +742,11 @@ public class Activator implements BundleActivator {
             for (Bundle bundle : toStop) {
                 try {
                     if (bundle.getState() != Bundle.UNINSTALLED) {
+                        logger.info("AAA stopping {}", bundle.getSymbolicName());
                         bundle.stop();
                     }
                 } catch (BundleException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

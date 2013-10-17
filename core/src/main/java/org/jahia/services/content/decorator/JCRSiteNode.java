@@ -80,6 +80,8 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     private String defaultLanguage;
     
     private JCRNodeWrapper home;
+    
+    private int id = -2;
 
     private Set<String> languages;
     
@@ -241,15 +243,18 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     }
 
     public int getID() {
-        try {
-            return (int) getProperty("j:siteId").getLong();
-        } catch (PathNotFoundException e) {
-            // ignore it as for template sets the ID is not present
-            return 0;
-        } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
-            return -1;
+        if (id == -2) {
+            try {
+                id = (int) getProperty("j:siteId").getLong();
+            } catch (PathNotFoundException e) {
+                // ignore it as for template sets the ID is not present
+                id = 0;
+            } catch (RepositoryException e) {
+                logger.error("Cannot get site property", e);
+                id = -1;
+            }
         }
+        return id;
     }
 
     @SuppressWarnings("unchecked")

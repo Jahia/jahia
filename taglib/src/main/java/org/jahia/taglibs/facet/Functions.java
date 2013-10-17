@@ -72,7 +72,8 @@ public class Functions {
     private static final Pattern FACET_PARAM_DELIM_PATTERN = Pattern.compile(FACET_PARAM_DELIM);
     private static final String FACET_DELIM = "|||";
     private static final String FACET_NODE_TYPE = "jnt:facet";
-    private static final Pattern FILTER_STRING_PATTERN = Pattern.compile("\\|\\|\\|");
+    public static final String ESCAPED_FACET_DELIM = "\\|\\|\\|";
+    private static final Pattern FILTER_STRING_PATTERN = Pattern.compile(ESCAPED_FACET_DELIM);
 
     /**
      * Get a list of applied facets
@@ -200,25 +201,24 @@ public class Functions {
      */
     @SuppressWarnings("unchecked")
     public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
-        Map.Entry<String, List<KeyValue>> facetFilter;
-        try {
-            facetFilter = (Map.Entry<String, List<KeyValue>>)facetFilterObj;
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Passed parameter is not of type java.util.Map.Entry", e);
-        } 
-        StringBuilder builder = new StringBuilder();
-        builder.append(facetFilter.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey())
-                .append(FACET_PARAM_DELIM).append(facetValue.getValue());
-        String facetValueFilter = builder.toString();
-        int index = StringUtils.indexOf(queryString, facetValueFilter);
-        if (index != -1) {
-            queryString = queryString.replace(
-                    (index >= FACET_DELIM.length()
-                            && queryString.regionMatches(index - FACET_DELIM.length(), FACET_DELIM, 0, FACET_DELIM
-                                    .length()) ? FACET_DELIM : "")
-                            + facetValueFilter, "");
+        // retrieve all facet Strings from query
+        final String[] facets = queryString.split(ESCAPED_FACET_DELIM);
+
+        // rebuild a new query String omitting the facet String corresponding to the facet value we want to remove
+        StringBuilder newQueryString = new StringBuilder(queryString.length());
+        int index = 0;
+        final int newFacetNumber = facets.length - 1;
+        for (String facet : facets) {
+            if(!facet.contains(facetValue.getValue().toString())) {
+                newQueryString.append(facet);
+
+                // only append the facet delim if we're not processing the last facet String
+                if(index++ != newFacetNumber - 1) {
+                    newQueryString.append(FACET_DELIM);
+                }
+            }
         }
-        return queryString;
+        return newQueryString.toString();
     }
 
     /**

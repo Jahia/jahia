@@ -109,6 +109,7 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory.setCurrentAliasedUser(null);
                 sessionFactory.setCurrentServletPath(null);
                 sessionFactory.setCurrentPreviewDate(null);
+                sessionFactory.setCurrentSitePath(null);
                 /*sessionFactory.setVersionDate(null);
                 sessionFactory.setVersionLabel(null);*/
                 sessionFactory.closeAllSessions();

@@ -469,6 +469,7 @@ public class URLResolver {
             siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
         }
 
+        JCRSessionFactory.getInstance().setCurrentSitePath(siteInfo.getSitePath());
         JCRSessionWrapper userSession = siteInfo != null
                 && siteInfo.getDefaultLanguage() != null
                 && siteInfo.isMixLanguagesActive() ? JCRSessionFactory

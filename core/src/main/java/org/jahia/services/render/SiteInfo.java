@@ -57,12 +57,14 @@ public class SiteInfo implements Serializable {
     private boolean mixLanguagesActive;
     private boolean WCAGComplianceCheckEnabled;
     private String defaultLanguage;
+    private String sitePath;
 
     public SiteInfo(JCRSiteNode siteNode) {
         this.htmlMarkupFilterEnabled = siteNode.isHtmlMarkupFilteringEnabled();
         this.mixLanguagesActive = siteNode.isMixLanguagesActive();
         this.WCAGComplianceCheckEnabled = siteNode.isWCAGComplianceCheckEnabled();
         this.defaultLanguage = siteNode.getDefaultLanguage();
+        this.sitePath = siteNode.getPath();
     }
 
     public boolean isHtmlMarkupFilterEnabled() {
@@ -79,5 +81,9 @@ public class SiteInfo implements Serializable {
 
     public String getDefaultLanguage() {
         return defaultLanguage;
+    }
+
+    public String getSitePath() {
+        return sitePath;
     }
 }

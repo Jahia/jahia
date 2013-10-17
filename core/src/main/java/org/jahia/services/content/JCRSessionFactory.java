@@ -91,6 +91,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
     private LocalValidatorFactoryBean validatorFactoryBean;
+    private ThreadLocal<String> currentSitePath = new ThreadLocal<String>();
 
     private JCRSessionFactory() {
     }
@@ -300,7 +301,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     user = userService.lookupUser(jahiaPrincipal.getName());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale,  this, fallbackLocale);
         }
         throw new LoginException("Can't login");
     }
@@ -522,5 +523,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setValidatorFactoryBean(LocalValidatorFactoryBean validatorFactoryBean) {
         this.validatorFactoryBean = validatorFactoryBean;
+    }
+
+    public String getCurrentSitePath() {
+        return currentSitePath.get();
+    }
+
+    public void setCurrentSitePath(String currentSitePath) {
+        this.currentSitePath.set(currentSitePath);
     }
 }

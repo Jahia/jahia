@@ -600,9 +600,15 @@ public class UIConfigHelper {
                     }
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
-
-                JCRNodeWrapper contextNode = session.getNode(contextPath);
-                JCRSiteNode site = contextNode.getResolveSite();
+                JCRNodeWrapper contextNode;
+                JCRSiteNode site;
+                if(config.getSitesLocation().equals("/sites/systemsite")) {
+                    contextNode = session.getNode("/sites/systemsite");
+                    site = contextNode.getResolveSite();
+                } else {
+                    contextNode = session.getNode(contextPath);
+                    site = contextNode.getResolveSite();
+                }
 
                 gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
                 gwtConfig.setSidePanelToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));

@@ -613,11 +613,13 @@ public class MainModule extends Module {
     }
 
     public void switchLanguage(GWTJahiaLanguage language) {
-        editLinker.setLocale(language);
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put(Linker.REFRESH_MAIN, true);
-        data.put("event", "languageChanged");
-        editLinker.refresh(data);
+        if (!language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
+            editLinker.setLocale(language);
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(Linker.REFRESH_MAIN, true);
+            data.put("event", "languageChanged");
+            editLinker.refresh(data);
+        }
     }
 
     public void switchChannel(GWTJahiaChannel channel, String variant) {
@@ -631,24 +633,10 @@ public class MainModule extends Module {
 
     @Override
     public void setNode(GWTJahiaNode node) {
-        setNodeAndSite(node,null);
-    }
-
-    @Override
-    public void setNodeAndSite(GWTJahiaNode node, GWTJahiaNode site) {
         this.node = node;
         if (node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
                     Messages.get("info_sharednode", "This is a shared node")));
-        }
-        if (site!=null) {
-            JahiaGWTParameters.setSiteNode(site);
-            SiteSwitcherActionItem.refreshAllSitesList(editLinker);
-            if (editLinker.getSidePanel() != null) {
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put(Linker.REFRESH_ALL, true);
-                editLinker.getSidePanel().refresh(data);
-            }
         }
 
         setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());

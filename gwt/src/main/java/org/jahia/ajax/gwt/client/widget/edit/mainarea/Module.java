@@ -224,10 +224,6 @@ public abstract class Module extends LayoutContainer {
         this.node = node;
     }
 
-    public void setNodeAndSite(GWTJahiaNode node, GWTJahiaNode site) {
-        this.node = node;
-    }
-
     public MainModule getMainModule() {
         return mainModule;
     }

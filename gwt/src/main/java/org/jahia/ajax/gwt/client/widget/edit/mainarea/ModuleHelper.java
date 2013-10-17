@@ -174,11 +174,6 @@ public class ModuleHelper {
         final String fmainTemplate = mainTemplate;
 
         List<ModelData> params = new ArrayList<ModelData>();
-        if (m.getPath()!=null && !m.getPath().equals(mainPath) && !mainPath.split("/")[2].equals(m.getPath().split("/")[2])) {
-            BaseModelData siteModelData = new BaseModelData();
-            siteModelData.set("pathNodeForSite", fmainPath);
-            params.add(siteModelData);
-        }
         if (editModeConfig.isUseFullPublicationInfoInMainAreaModules()) {
             BaseModelData modelData1 = new BaseModelData();
             modelData1.set("paths", list);
@@ -201,10 +196,6 @@ public class ModuleHelper {
                 .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
                         new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {
                             public void onSuccess(Map<String, List<? extends ModelData>> result) {
-                                GWTJahiaNode site = null;
-                                if(result.get("site")!=null){
-                                    site = ((List<GWTJahiaNode>) result.get("site")).get(0);
-                                }
                                 List<GWTJahiaNodeType> types = (List<GWTJahiaNodeType>) result.get("types");
                                 for (GWTJahiaNodeType type : types) {
                                     if (type != null) {
@@ -217,7 +208,7 @@ public class ModuleHelper {
 
                                 List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) result.get("nodes");
                                 for (GWTJahiaNode gwtJahiaNode : nodes) {
-                                    setNodeForModule(gwtJahiaNode, site);
+                                    setNodeForModule(gwtJahiaNode);
                                 }
 
                                 m.getEditLinker().onMainSelection(fmainPath, fmainTemplate);
@@ -232,15 +223,11 @@ public class ModuleHelper {
         GWT.log("Parsing : " + (System.currentTimeMillis() - start) + " ms");
     }
 
-    public static void setNodeForModule(GWTJahiaNode gwtJahiaNode, GWTJahiaNode site) {
+    public static void setNodeForModule(GWTJahiaNode gwtJahiaNode) {
         final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
         if (moduleList != null) {
             for (Module module : moduleList) {
-                if(module instanceof MainModule && site!=null) {
-                    module.setNodeAndSite(gwtJahiaNode, site);
-                } else {
-                    module.setNode(gwtJahiaNode);
-                }
+                module.setNode(gwtJahiaNode);
             }
         }
     }

@@ -50,10 +50,13 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -156,22 +159,37 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     editLinker = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
                 }
                 final GWTJahiaNode jahiaNode = event.getSelection().get(0);
-                if (jahiaNode.get("j:languages") != null && ((List<String>)jahiaNode.get("j:languages")).size()>0 &&
-                        !((List<String>) jahiaNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage()) &&
-                        jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
-                    editLinker.setLocale((GWTJahiaLanguage) jahiaNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
-                }
-                JahiaGWTParameters.setSiteFromNode(jahiaNode, linker);
-                if (editLinker.getSidePanel() != null) {
-                    Map<String, Object> data = new HashMap<String, Object>();
-                    data.put(Linker.REFRESH_ALL, true);
-                    editLinker.getSidePanel().refresh(data);
-                }
-                if (root.get(0).startsWith("/modules")) {
-                    MainModule.staticGoTo(jahiaNode.getPath(), null);
-                } else {
-                    MainModule.staticGoTo((String) jahiaNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);
-                }
+                final EditLinker finalEditLinker = editLinker;
+                JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(jahiaNode.getPath()),GWTJahiaNode.DEFAULT_SITE_FIELDS,
+                        new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                            /**
+                             * Called when an asynchronous call completes successfully.
+                             *
+                             * @param result the return value of the remote produced call
+                             */
+                            @Override
+                            public void onSuccess(List<GWTJahiaNode> result) {
+                                GWTJahiaNode siteNode = result.get(0);
+                                if (finalEditLinker != null && siteNode.get("j:languages") != null && ((List<String>)siteNode.get("j:languages")).size()>0 &&
+                                    !((List<String>) siteNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage()) &&
+                                    siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
+                                    finalEditLinker.setLocale((GWTJahiaLanguage) siteNode.get(
+                                            GWTJahiaNode.DEFAULT_LANGUAGE));
+                                }
+                                JahiaGWTParameters.setSiteNode(siteNode);
+                                if (finalEditLinker !=null && finalEditLinker.getSidePanel() != null) {
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_ALL, true);
+                                    finalEditLinker.getSidePanel().refresh(data);
+                                }
+                                if (root.get(0).startsWith("/modules")) {
+                                    MainModule.staticGoTo(siteNode.getPath(), null);
+                                } else if (finalEditLinker!=null && !finalEditLinker.getMainModule().getPath().startsWith(siteNode.getPath())) {
+                                    MainModule.staticGoTo((String) siteNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);
+                                }
+                                refreshAllSitesList(finalEditLinker);
+                            }
+                        });
             }
         });
     }
@@ -209,4 +227,12 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         mainComponent.setEnabled(enabled);
     }
 
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        if (root.get(0).startsWith("/modules")) {
+            sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getUUID()));
+        } else {
+            sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()));
+        }
+    }
 }

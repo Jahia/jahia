@@ -390,23 +390,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         List<String> paths = new ArrayList<String>();
         for (ModelData params : getNodesParams) {
-            Collection<String> paramsPropertyNames = params.getPropertyNames();
-            if (paramsPropertyNames.contains("paths")) {
-                if (logger.isDebugEnabled()) {
-                    paths.addAll(((List<String>) params.get("paths")));
-                }
-                nodes.addAll(getNodesInternal((List<String>) params.get("paths"), (List<String>) params.get("fields")));
-            } else if(paramsPropertyNames.contains("pathNodeForSite")) {
-                List<GWTJahiaNode> site = new ArrayList<GWTJahiaNode>();
-                try {
-                    JCRNodeWrapper node = retrieveCurrentSession(getWorkspace(), getLocale(), true).getNode(
-                            (String) params.get("pathNodeForSite")).getResolveSite();
-                    site.add(navigation.getGWTJahiaNode(node, GWTJahiaNode.DEFAULT_SITE_FIELDS));
-                    m.put("site",site);
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
+            if (logger.isDebugEnabled()) {
+                paths.addAll(((List<String>) params.get("paths")));
             }
+            nodes.addAll(getNodesInternal((List<String>) params.get("paths"), (List<String>) params.get("fields")));
         }
         m.put("nodes", nodes);
         for (GWTJahiaNode node : nodes) {
@@ -434,7 +421,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get a node by its path if existing.
      *
-     * @param path path o fthe node you want
+     * @param path path of the node you want
      * @return the founded node if existing
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          if node does not exist

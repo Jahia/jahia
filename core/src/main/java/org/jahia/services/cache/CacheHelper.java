@@ -164,35 +164,6 @@ public final class CacheHelper {
     }
 
     /**
-     * Flushes Hibernate second level cache and propagates the flush to all cluster nodes.
-     */
-    public static void flushHibernateCaches() {
-        flushHibernateCaches(false);
-    }
-
-    /**
-     * Flushes Hibernate second level cache and propagates the flush to all cluster nodes.
-     *
-     * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
-     */
-    public static void flushHibernateCaches(boolean propagateInCluster) {
-        logger.info("Flushing Hibernate second level caches{}",
-                propagateInCluster ? " also propagating it to all cluster members" : "");
-        CacheManager ehcacheManager = getHibernateCacheManager();
-        if (ehcacheManager == null) {
-            return;
-        }
-        for (String cacheName : ehcacheManager.getCacheNames()) {
-            Cache cache = ehcacheManager.getCache(cacheName);
-            if (cache != null) {
-                // flush
-                cache.removeAll(!propagateInCluster);
-            }
-        }
-        logger.info("...done flushing Hibernate caches");
-    }
-
-    /**
      * Flushes front-end Jahia caches (module HTML output caches) on the current cluster node only.
      */
     public static void flushOutputCaches() {
@@ -338,10 +309,6 @@ public final class CacheHelper {
         }
 
         return infos;
-    }
-
-    private static CacheManager getHibernateCacheManager() {
-        return getCacheManager("org.jahia.hibernate.ehcachemanager");
     }
 
     private static CacheManager getJahiaCacheManager() {

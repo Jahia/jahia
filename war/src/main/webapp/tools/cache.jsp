@@ -84,10 +84,6 @@
             <% CacheHelper.flushOutputCaches(Boolean.valueOf(request.getParameter("propagate"))); %>
             <p style="color: blue">Output HTML caches were successfully flushed</p>
         </c:when>
-        <c:when test="${param.action == 'flushHibernateCaches'}">
-            <% CacheHelper.flushHibernateCaches(Boolean.valueOf(request.getParameter("propagate"))); %>
-            <p style="color: blue">Hibernate second level caches were successfully flushed</p>
-        </c:when>
         <c:when test="${param.action == 'flushCaches' && not empty param.name}">
             <% CacheHelper.flushCachesForManager(request.getParameter("name"), Boolean.valueOf(request.getParameter("propagate"))); %>
             <p style="color: blue">Caches for manager ${param.name} were successfully flushed</p>
@@ -117,7 +113,7 @@
         &nbsp;&nbsp;
     </c:if>
     <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;"
-       title="Triggers the flush of all caches, including back-end, front-end (module output) and Hibernate second level caches">${flushIcon}Flush
+       title="Triggers the flush of all caches, including back-end and front-end (module output)">${flushIcon}Flush
         all caches</a>
     <c:if test="${clusterActivated}">
         <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;"

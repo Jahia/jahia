@@ -115,10 +115,13 @@ public class ModuleCacheProvider implements InitializingBean {
             regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         }
 
-        syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
-        if (syncCache == null) {
-            cacheManager.addCache(CACHE_SYNC_NAME);
+        if (Boolean.getBoolean("cluster.activated")) {
+            // only create syncCache in cluster
             syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
+            if (syncCache == null) {
+                cacheManager.addCache(CACHE_SYNC_NAME);
+                syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
+            }
         }
     }
 
@@ -150,9 +153,9 @@ public class ModuleCacheProvider implements InitializingBean {
                 invalidateDependencies(deps);
             }
         }
-        if(propagateToOtherClusterNodes) {
+        if(propagateToOtherClusterNodes && syncCache != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of " + nodePath + " across cluster");
+                logger.debug("Sending flush of {} across cluster", nodePath);
             }
             syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), nodePath));
         }
@@ -163,7 +166,7 @@ public class ModuleCacheProvider implements InitializingBean {
             if (dep != null) {
                 boolean removed = blockingCache.remove(dep);
                 if (logger.isDebugEnabled() && !removed) {
-                    logger.debug("Failed to remove " + dep + " from cache");
+                    logger.debug("Failed to remove {} from cache", dep);
                 }
             }
         }
@@ -222,15 +225,11 @@ public class ModuleCacheProvider implements InitializingBean {
             Set<String> deps = (Set<String>) element.getObjectValue();
             invalidateDependencies(deps);
         }
-        if(propagateToOtherClusterNodes) {
+        if(propagateToOtherClusterNodes && syncCache != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of regexp " + key + " across cluster");
+                logger.debug("Sending flush of regexp {} across cluster", key);
             }
             syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), key));
         }
-    }
-
-    public Cache getSyncCache() {
-        return syncCache;
     }
 }

@@ -78,8 +78,7 @@ public class ModuleCacheProvider implements InitializingBean {
         return (ModuleCacheProvider) SpringContextSingleton.getBean("ModuleCacheProvider");
     }
 
-    private Cache blockingCache;
-    private int blockingTimeout = 5000;
+    private Cache htmlCache;
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
     private Cache syncCache;
@@ -99,10 +98,10 @@ public class ModuleCacheProvider implements InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
-        blockingCache = cacheManager.getCache(CACHE_NAME);
-        if (blockingCache == null) {
+        htmlCache = cacheManager.getCache(CACHE_NAME);
+        if (htmlCache == null) {
             cacheManager.addCache(CACHE_NAME);
-            blockingCache = cacheManager.getCache(CACHE_NAME);
+            htmlCache = cacheManager.getCache(CACHE_NAME);
         }
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         if (dependenciesCache == null) {
@@ -148,7 +147,7 @@ public class ModuleCacheProvider implements InitializingBean {
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
                 // do not propagate
-                blockingCache.removeAll(true);
+                htmlCache.removeAll(true);
             } else {
                 invalidateDependencies(deps);
             }
@@ -164,7 +163,7 @@ public class ModuleCacheProvider implements InitializingBean {
     private void invalidateDependencies(Set<String> deps) {
         for (String dep : deps) {
             if (dep != null) {
-                boolean removed = blockingCache.remove(dep);
+                boolean removed = htmlCache.remove(dep);
                 if (logger.isDebugEnabled() && !removed) {
                     logger.debug("Failed to remove {} from cache", dep);
                 }
@@ -173,7 +172,7 @@ public class ModuleCacheProvider implements InitializingBean {
     }
 
     public Cache getCache() {
-        return blockingCache;
+        return htmlCache;
     }
 
     public Cache getDependenciesCache() {
@@ -182,10 +181,6 @@ public class ModuleCacheProvider implements InitializingBean {
 
     public CacheKeyGenerator getKeyGenerator() {
         return keyGenerator;
-    }
-
-    public void setBlockingTimeout(int blockingTimeout) {
-        this.blockingTimeout = blockingTimeout;
     }
 
     public void setCacheProvider(EhCacheProvider cacheProvider) {
@@ -202,8 +197,8 @@ public class ModuleCacheProvider implements InitializingBean {
     }
 
     public void flushCaches() {
-        blockingCache.removeAll();
-        blockingCache.flush();
+        htmlCache.removeAll();
+        htmlCache.flush();
         dependenciesCache.removeAll();
         dependenciesCache.flush();
         regexpDependenciesCache.removeAll();

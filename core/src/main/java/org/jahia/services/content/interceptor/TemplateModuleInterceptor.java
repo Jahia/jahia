@@ -17,7 +17,7 @@ public class TemplateModuleInterceptor extends BaseInterceptor {
         if (StringUtils.startsWith(property.getSession().getSitePath(), "/sites") && StringUtils.startsWith(property.getPath(),"/modules")) {
             String localPath = property.getSession().getNodeByIdentifier(storedValue.getString()).getPath();
             String[] path = StringUtils.split(localPath,"/");
-            if (path.length > 2 && !StringUtils.equals(path[3],"templates")) {
+            if (StringUtils.startsWith(localPath,"/modules") && path.length > 2 && !StringUtils.equals(path[3],"templates")) {
                 StringBuilder sitePath = new StringBuilder(property.getSession().getSitePath());
                 for (int i=3; i < path.length;i++) {
                     sitePath.append("/").append(path[i]);

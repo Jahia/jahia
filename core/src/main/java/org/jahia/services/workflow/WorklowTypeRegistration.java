@@ -59,7 +59,7 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
     private String provider;
     private Map<String, String> permissions;
     private Map<String, String> forms;
-    private Map<String, String[]> coordinates;
+    private Map<String, String> coordinates;
     private JahiaTemplatesPackage module;
 
     private boolean canBeUsedForDefault;
@@ -106,14 +106,18 @@ public class WorklowTypeRegistration implements JahiaModuleAware{
     }
 
     public Map<String, String[]> getCoordinates() {
-        return coordinates;
+        if (coordinates == null) {
+            return null;
+        }
+        Map<String, String[]> splitCoords = new HashMap<String, String[]>();
+        for (Map.Entry<String,String> entry : coordinates.entrySet()) {
+            splitCoords.put(entry.getKey(), entry.getValue().split(","));
+        }
+        return splitCoords;
     }
 
     public void setCoordinates(Map<String, String> coordinates) {
-        this.coordinates = new HashMap<String, String[]>();
-        for (Map.Entry<String,String> entry : coordinates.entrySet()) {
-            this.coordinates.put(entry.getKey(), entry.getValue().split(","));
-        }
+        this.coordinates = coordinates;
     }
 
     public int getDefaultPriority() {

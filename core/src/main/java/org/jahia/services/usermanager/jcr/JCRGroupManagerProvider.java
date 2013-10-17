@@ -42,11 +42,11 @@ package org.jahia.services.usermanager.jcr;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -64,14 +64,14 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import java.util.*;
 
 /**
  * JCR-based implementation of the Group manager provider interface
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 8 juil. 2009
  */
 public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implements ApplicationListener<ProviderEvent> {
     private transient static Logger logger = LoggerFactory.getLogger(JCRGroupManagerProvider.class);
@@ -440,7 +440,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                 final Cache<String, List<String>> finalObjectCache = membershipCache;
                 return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                     public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        List<String> groups = new ArrayList<String>();
+                        Set<String> groups = new LinkedHashSet<String>();
                         try {
                             recurseOnGroups(session, groups, principalId);
                         } catch (JahiaException e) {
@@ -452,11 +452,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                             }
                             groups.add(JahiaGroupManagerService.GUEST_GROUPNAME);
                         }
-                        finalObjectCache.put(principalId, groups);
-                        return groups;
+                        List<String> result = new LinkedList<String>(groups);
+                        finalObjectCache.put(principalId, result);
+                        return result;
                     }
 
-                    private void recurseOnGroups(JCRSessionWrapper session, List<String> groups, String principalId) throws RepositoryException, JahiaException {
+                    private void recurseOnGroups(JCRSessionWrapper session, Set<String> groups, String principalId) throws RepositoryException, JahiaException {
                         JCRNodeWrapper node = session.getNodeByUUID(principalId);
                         PropertyIterator weakReferences = node.getWeakReferences("j:member");
                         while (weakReferences.hasNext()) {
@@ -467,15 +468,17 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                                     if (group.isNodeType("jnt:group")) {
                                         int siteID = 0;
                                         try {
-                                            String siteKey = group.getParent().getParent().getName();
-                                            if (!StringUtils.isEmpty(siteKey)) {
-                                                siteID = sitesService.getSiteByKey(siteKey,session).getID();
+                                            Node siteNode = group.getParent().getParent();
+                                            if (siteNode instanceof JCRSiteNode) {
+                                                siteID = ((JCRSiteNode) siteNode).getID();
                                             }
                                         } catch (NullPointerException e) {
                                             siteID = 0;
                                         }
-                                        groups.add(group.getName() + ":" + siteID);
-                                        recurseOnGroups(session, groups, group.getIdentifier());
+                                        if (groups.add(group.getName() + ":" + siteID)) {
+                                            // recurse on the found group only we have not done it yet
+                                            recurseOnGroups(session, groups, group.getIdentifier());
+                                        }
                                     }
                                 }
                             } catch (ItemNotFoundException e) {

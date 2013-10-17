@@ -76,13 +76,21 @@ public final class JahiaPrivilegeRegistry {
      * Per instance map containing the instance specific representation of
      * the registered privileges.
      */
-    private static final Map<String, Privilege> map = new HashMap<String, Privilege>();
-    private static final List<String> allPrivileges = new ArrayList<String>();
+    private static final Map<String, Privilege> map = new LinkedHashMap<String, Privilege>();
+    private static Privilege[] registeredPrivileges;
 
     private NamespaceRegistry ns;
 
     public static void init(Session session) throws RepositoryException {
-        Node perms = session.getNode("/permissions");
+        init(session, null);
+    }
+
+    public static void addModulePrivileges(Session session, String path) throws RepositoryException {
+        init(session, path);
+    }
+
+    private static void init(Session session, String path) throws RepositoryException {
+        Node perms = session.getNode(path != null ? (path + "/permissions") : "/permissions");
 
         Set<Privilege> privileges = new HashSet<Privilege>(20);
 
@@ -90,27 +98,10 @@ public final class JahiaPrivilegeRegistry {
 
         for (Privilege p : privileges) {
             map.put(p.getName(), p);
-            if (!allPrivileges.contains(p.getName())) {
-                allPrivileges.add(p.getName());
-            }
         }
+        registeredPrivileges = map.values().toArray(new Privilege[map.size()]);
     }
-
-    public static void addModulePrivileges(Session session, String path) throws RepositoryException {
-        Node perms = session.getNode(path + "/permissions");
-
-        Set<Privilege> privileges = new HashSet<Privilege>(20);
-
-        registerPrivileges(perms, privileges);
-
-        for (Privilege p : privileges) {
-            if (!allPrivileges.contains(p.getName())) {
-                map.put(p.getName(), p);
-                allPrivileges.add(p.getName());
-            }
-        }
-    }
-
+    
     public JahiaPrivilegeRegistry(NamespaceRegistry ns) {
         this.ns = ns;
     }
@@ -170,12 +161,7 @@ public final class JahiaPrivilegeRegistry {
      * @return all registered privileges.
      */
     public static Privilege[] getRegisteredPrivileges() {
-        Privilege[] privileges = new Privilege[allPrivileges.size()];
-        int i = 0;
-        for (String s : allPrivileges) {
-            privileges[i++] = map.get(s);
-        }
-        return privileges;
+        return registeredPrivileges;
     }
 
     /**
@@ -186,7 +172,8 @@ public final class JahiaPrivilegeRegistry {
      * @throws AccessControlException If no privilege with the given name exists.
      * @throws RepositoryException If another error occurs.
      */
-    public Privilege getPrivilege(String privilegeName, String workspaceName) throws AccessControlException, RepositoryException {
+    public Privilege getPrivilege(String privilegeName, String workspaceName) throws AccessControlException,
+            RepositoryException {
         if (!privilegeName.contains("{") && privilegeName.contains("/")) {
             privilegeName = StringUtils.substringAfterLast(privilegeName, "/");
         }
@@ -194,23 +181,24 @@ public final class JahiaPrivilegeRegistry {
         privilegeName = JCRContentUtils.getExpandedName(privilegeName, ns);
 
         String s = JahiaAccessManager.getPrivilegeName(privilegeName, workspaceName);
-        if (map.containsKey(s)) {
-            return map.get(s);
-        } else if (map.containsKey(privilegeName)) {
-            return map.get(privilegeName);
-        } else {
-            throw new AccessControlException("Unknown privilege " + privilegeName);
+        Privilege privilege = map.get(s);
+        if (privilege != null) {
+            return privilege;
         }
+        privilege = map.get(privilegeName);
+        if (privilege != null) {
+            return privilege;
+        }
+        throw new AccessControlException("Unknown privilege " + privilegeName);
     }
 
     public Privilege getPrivilege(Node node) throws AccessControlException, RepositoryException {
         String privilegeName = JCRContentUtils.getExpandedName(node.getName(), ns);
-        if (map.containsKey(privilegeName)) {
-            return map.get(privilegeName);
-        } else {
-            throw new AccessControlException("Unknown privilege " + privilegeName);
+        Privilege privilege = map.get(privilegeName);
+        if (privilege != null) {
+            return privilege;
         }
+        throw new AccessControlException("Unknown privilege " + privilegeName);
     }
-
 
 }

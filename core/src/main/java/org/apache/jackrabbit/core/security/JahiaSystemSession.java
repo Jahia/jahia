@@ -45,7 +45,6 @@ import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
-import org.apache.jackrabbit.core.security.authorization.PrivilegeRegistry;
 import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
@@ -62,13 +61,17 @@ import java.security.Principal;
 import java.util.Set;
 
 /**
- * TODO Comment me
+ * Jahia JCR system session.
  *
  * @author loom
- *         Date: Oct 15, 2010
- *         Time: 8:12:44 AM
  */
 public class JahiaSystemSession extends SessionImpl {
+    
+    static final AccessControlPolicy[] ACCESS_CONTROL_POLICIES = new AccessControlPolicy[0];
+    
+    private static final String SYSTEM_PRINCIPAL_NAME = new SystemPrincipal().getName();
+
+    private static SystemAccessManager systemAccessManager;
 
     /**
      * private constructor
@@ -87,8 +90,8 @@ public class JahiaSystemSession extends SessionImpl {
      *
      * @return the name of <code>SystemPrincipal</code>.
      */
-    protected String retrieveUserId(Subject subject, String workspaceName) throws RepositoryException {
-        return new SystemPrincipal().getName();
+    protected final String retrieveUserId(Subject subject, String workspaceName) throws RepositoryException {
+        return SYSTEM_PRINCIPAL_NAME;
     }
 
     /**
@@ -108,7 +111,10 @@ public class JahiaSystemSession extends SessionImpl {
          * configurable AccessManager to handle SystemPrincipal privileges
          * correctly
          */
-        return new SystemAccessManager();
+        if (systemAccessManager == null) {
+            systemAccessManager = new SystemAccessManager();
+        }
+        return systemAccessManager;
     }
 
 //--------------------------------------------------------< inner classes >
@@ -118,10 +124,8 @@ public class JahiaSystemSession extends SessionImpl {
      */
     private class SystemAccessManager extends DefaultAccessManager implements AccessManager {
 
-        private final PrivilegeRegistry privilegeRegistry;
-
         SystemAccessManager() {
-            privilegeRegistry = new PrivilegeRegistry(JahiaSystemSession.this);
+            super();
         }
 
         //----------------------------------------------------< AccessManager >
@@ -204,16 +208,6 @@ public class JahiaSystemSession extends SessionImpl {
         }
 
         /**
-         * Always returns true.
-         *
-         * @param itemPath
-         * @see org.apache.jackrabbit.core.security.AccessManager#canRead(org.apache.jackrabbit.spi.Path)
-         */
-        public boolean canRead(Path itemPath) throws RepositoryException {
-            return true;
-        }
-
-        /**
          * {@inheritDoc}
          *
          * @return always <code>true</code>
@@ -222,8 +216,6 @@ public class JahiaSystemSession extends SessionImpl {
         public boolean canAccess(String workspaceName) throws RepositoryException {
             return true;
         }
-
-        //-----------------------------------< AbstractAccessControlManager >---
 
         /**
          * @see org.apache.jackrabbit.core.security.AbstractAccessControlManager#checkInitialized()
@@ -239,16 +231,11 @@ public class JahiaSystemSession extends SessionImpl {
                 AccessDeniedException, PathNotFoundException, RepositoryException {
             // allow everything
         }
-
-        /**
-         * @see org.apache.jackrabbit.core.security.AbstractAccessControlManager#getPrivilegeRegistry()
-         */
-        protected PrivilegeRegistry getPrivilegeRegistry()
-                throws RepositoryException {
-            return privilegeRegistry;
+        
+        @Override
+        public void checkRepositoryPermission(int permissions) throws AccessDeniedException, RepositoryException {
+            // allow everything
         }
-
-        //-------------------------------------------< AccessControlManager >---
 
         /**
          * @see javax.jcr.security.AccessControlManager#hasPrivileges(String, javax.jcr.security.Privilege[])
@@ -266,7 +253,7 @@ public class JahiaSystemSession extends SessionImpl {
         public Privilege[] getPrivileges(String absPath)
                 throws PathNotFoundException, RepositoryException {
             checkValidNodePath(absPath);
-            return new Privilege[]{getPrivilegeRegistry().getPrivilege(Privilege.JCR_ALL)};
+            return new Privilege[] { privilegeFromName(Privilege.JCR_ALL) };
         }
 
         /**
@@ -275,11 +262,11 @@ public class JahiaSystemSession extends SessionImpl {
         public AccessControlPolicy[] getEffectivePolicies(String absPath) throws
                 PathNotFoundException, AccessDeniedException, RepositoryException {
             // cannot determine the effective policies for the system session.
-            return new AccessControlPolicy[0];
+            return ACCESS_CONTROL_POLICIES;
         }
 
         public AccessControlPolicy[] getEffectivePolicies(Set<Principal> principals) throws AccessDeniedException, AccessControlException, UnsupportedRepositoryOperationException, RepositoryException {
-            return new AccessControlPolicy[0];
+            return ACCESS_CONTROL_POLICIES;
         }
 
         /**

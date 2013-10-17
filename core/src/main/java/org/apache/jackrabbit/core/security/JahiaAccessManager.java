@@ -102,6 +102,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static final Logger logger = LoggerFactory.getLogger(JahiaAccessManager.class);
 
     private static final Map<String, Map<String, String>> PRIVILEGE_NAMES = new ConcurrentHashMap<String, Map<String, String>>(2);
+    
+    private static final Subject SYSTEM_SUBJECT = new Subject(true, new HashSet<SystemPrincipal>(
+            Arrays.asList(new SystemPrincipal())), Collections.EMPTY_SET, Collections.EMPTY_SET);
 
     /**
      * Subject whose access rights this AccessManager should reflect
@@ -183,13 +186,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return securitySession;
         }
 
-        // create subject with SystemPrincipal
-        Set<SystemPrincipal> principals = new HashSet<SystemPrincipal>();
-        principals.add(new SystemPrincipal());
-        Subject systemSubject = new Subject(true, principals, Collections.EMPTY_SET, Collections.EMPTY_SET);
-
-        securitySession = new JahiaSystemSession(repositoryContext, systemSubject,
-                workspaceConfig);
+        securitySession = new JahiaSystemSession(repositoryContext, SYSTEM_SUBJECT, workspaceConfig);
+        
         return securitySession;
     }
 
@@ -202,12 +200,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return defaultWorkspaceSecuritySession;
         }
 
-        // create subject with SystemPrincipal
-        Set<SystemPrincipal> principals = new HashSet<SystemPrincipal>();
-        principals.add(new SystemPrincipal());
-        Subject systemSubject = new Subject(true, principals, Collections.EMPTY_SET, Collections.EMPTY_SET);
-
-        defaultWorkspaceSecuritySession = new JahiaSystemSession(repositoryContext, systemSubject,
+        defaultWorkspaceSecuritySession = new JahiaSystemSession(repositoryContext, SYSTEM_SUBJECT,
                 repositoryContext.getRepository().getConfig().getWorkspaceConfig("default"));
         return defaultWorkspaceSecuritySession;
     }
@@ -414,8 +407,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         boolean res = false;
 
         String cacheKey = absPathStr + " : " + permissions;
-        if (pathPermissionCache.containsKey(cacheKey)) {
-            return (Boolean) pathPermissionCache.get(cacheKey);
+        Boolean result = (Boolean) pathPermissionCache.get(cacheKey);
+        if (result != null) {
+            return result;
         }
 
         try {
@@ -834,13 +828,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        Set<Privilege> results = new HashSet<Privilege>();
         if (isAdmin(jahiaPrincipal.getName(), 0)) {
             return getSupportedPrivileges(absPath);
         }
 
         Set<String> grantedRoles = getRoles(absPath);
 
+        Set<Privilege> results = new HashSet<Privilege>();
+        
         for (String role : grantedRoles) {
             Set<Privilege> permissionsInRole = getPermissionsInRole(role);
             if (!permissionsInRole.isEmpty()) {

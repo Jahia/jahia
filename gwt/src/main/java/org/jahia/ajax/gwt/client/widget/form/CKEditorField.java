@@ -136,6 +136,7 @@ public class CKEditorField extends Field<String> {
         super();
         ckeditor = new CKEditor(config, this);
         html = new Html();
+        html.setStyleAttribute("overflow","scroll");
     }
 
     public Component getComponent() {

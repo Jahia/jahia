@@ -1377,13 +1377,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
-        boolean b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
-                "j:translation_" + locale);
+        boolean b = false;
+        b = checkI18NNode(locale);
         if(!b && fallback) {
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
-                b = (i18NobjectNodes != null && i18NobjectNodes.containsKey(fallbackLocale)) || objectNode.hasNode(
-                        "j:translation_" + fallbackLocale);
+                b = checkI18NNode(fallbackLocale);
+            }
+        }
+        return b;
+    }
+
+    private boolean checkI18NNode(Locale locale) throws RepositoryException {
+        boolean b = false;
+        if ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
+                "j:translation_" + locale)) {
+            if (Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName())) {
+                final Node node = objectNode.getNode("j:translation_" + locale);
+                b = !node.hasProperty("j:published") || node.getProperty("j:published").getBoolean();
+            } else {
+                b = true;
             }
         }
         return b;
@@ -1402,8 +1415,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         } else if (objectNode.hasNode("j:translation_" + locale)) {
             node = objectNode.getNode("j:translation_" + locale);
-            i18NobjectNodes.put(locale, node);
-            return node;
+            if (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) || !node.hasProperty("j:published") || node.getProperty("j:published").getBoolean()) {
+                i18NobjectNodes.put(locale, node);
+                return node;
+            }
         }
 
         if (fallback) {

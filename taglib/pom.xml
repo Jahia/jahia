@@ -91,20 +91,17 @@
             <version>1.6</version>
             <scope>provided</scope>
         </dependency>
-<<<<<<< .working
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>taglibs-unstandard</artifactId>
             <version>20060829</version>
         </dependency>
-=======
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
->>>>>>> .merge-right.r47703
     </dependencies>
 
     <build>

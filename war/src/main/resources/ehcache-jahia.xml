@@ -686,14 +686,12 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             eternal="false"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
-            overflowToDisk="false"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">
     </defaultCache>
 
     <cache name="ExternalIdentifierMapping"
             eternal="true"
-            overflowToDisk="false"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">
     </cache>
@@ -704,7 +702,6 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     </cache>
     <cache name="FileLastModifiedCache"
             eternal="true"
-            overflowToDisk="false"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">
     </cache>
@@ -713,33 +710,21 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             eternal="false"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
-            overflowToDisk="false"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">
     </cache>
     <cache name="HTMLDependenciesCache"
             eternal="true"
-            overflowToDisk="false"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">
     </cache>
     <cache name="HTMLNodeUsersACLs"
             eternal="true"
             diskExpiryThreadIntervalSeconds="600"
-            overflowToDisk="false"
             diskPersistent="true">
     </cache>
     <cache name="HTMLREGEXPDependenciesCache"
             eternal="true"
-            overflowToDisk="false"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
-    </cache>
-    <cache name="HTMLRequiredPermissionsCache"
-            eternal="false"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400"
-            overflowToDisk="false"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">
     </cache>

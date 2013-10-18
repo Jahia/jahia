@@ -51,8 +51,7 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -75,32 +74,12 @@ public class ExecuteTaskAction extends Action {
         String providerKey = StringUtils.substringBefore(action, ":");
         String outcome = parameters.get("outcome").get(0);
 
-        workflowService.assignAndCompleteTask(actionId, providerKey, outcome, getVariablesMap(parameters),
-                                     renderContext.getUser());
+        String formNodeType = workflowService.getWorkflowTask(actionId, providerKey, resource.getLocale()).getFormResourceName();
+        workflowService.assignAndCompleteTask(actionId, providerKey, outcome,
+                WorkflowVariable.getVariablesMap(parameters, formNodeType, Arrays.asList("action", "outcome")),
+                renderContext.getUser());
 
         return ActionResult.OK_JSON;
     }
 
-    private HashMap<String, Object> getVariablesMap(Map<String, List<String>> properties) {
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        for (Map.Entry<String, List<String>> property : properties.entrySet()) {
-            if (!"action".equals(property.getKey()) && !"outcome".equals(property.getKey())) {
-                List<String> propertyValues = property.getValue();
-                List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.size());
-                boolean toBeAdded = false;
-                for (String value : propertyValues) {
-                    if (!"".equals(value.trim())) {
-                        values.add(new WorkflowVariable(value, 1));
-                        toBeAdded = true;
-                    }
-                }
-                if (toBeAdded) {
-                    map.put(property.getKey(), values);
-                } else {
-                    map.put(property.getKey(), new ArrayList<WorkflowVariable>());
-                }
-            }
-        }
-        return map;
-    }
 }

@@ -41,10 +41,12 @@
 package org.jahia.ajax.gwt.client.data.workflow;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -56,6 +58,7 @@ import java.util.List;
 public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowOutcome> outcomes;
     private List<GWTJahiaWorkflowComment> comments;
+    private Map<String, GWTJahiaNodeProperty> variables;
 
     public GWTJahiaWorkflowTask() {
     }
@@ -130,5 +133,13 @@ public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable 
 
     public String getDisplayName(){
         return get("displayName");
+    }
+
+    public Map<String, GWTJahiaNodeProperty> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Map<String, GWTJahiaNodeProperty> variables) {
+        this.variables = variables;
     }
 }

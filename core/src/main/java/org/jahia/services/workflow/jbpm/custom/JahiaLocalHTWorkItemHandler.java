@@ -3,6 +3,7 @@ package org.jahia.services.workflow.jbpm.custom;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
@@ -123,6 +124,10 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
             taskData.setCreatedBy(new UserImpl(JCRSessionFactory.getInstance().getCurrentUser().getUserKey()));
         }
         taskData.setCreatedOn(new Date());
+        WorkflowVariable dueDate = (WorkflowVariable) workItem.getParameter("dueDate");
+        if (dueDate != null) {
+            taskData.setExpirationTime(dueDate.getValueAsDate());
+        }
         PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
 

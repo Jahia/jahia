@@ -155,7 +155,12 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public void initStartWorkflowDialog(final GWTJahiaWorkflowDefinition workflowDefinition) {
-        initTabs(workflowDefinition.getFormResourceName());
+        Map<String, GWTJahiaNodeProperty> variables = new HashMap<String, GWTJahiaNodeProperty>();
+        if (title != null) {
+            variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
+                    new GWTJahiaNodePropertyValue(title, GWTJahiaNodePropertyType.STRING)));
+        }
+        initTabs(workflowDefinition.getFormResourceName(), variables);
         Button button = generateStartWorkflowButton(workflowDefinition);
         buttonsBar.add(button);
 
@@ -168,7 +173,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public void initExecuteActionDialog(final GWTJahiaWorkflowTask task) {
-        initTabs(task.getFormResourceName());
+        initTabs(task.getFormResourceName(), task.getVariables());
         List<Button> buttons = generateActionButtons(task);
 
         for (Button button : buttons) {
@@ -183,30 +188,20 @@ public class WorkflowActionDialog extends LayoutContainer {
         buttonsBar.add(cancel);
     }
 
-    private void initTabs(final String formResourceName) {
-        TabItem action = initActionTab(formResourceName);
+    private void initTabs(final String formResourceName, Map<String, GWTJahiaNodeProperty> variables) {
+        TabItem action = initActionTab(formResourceName, variables);
         tabPanel.add(action);
         TabItem comments = initCommentTab();
         tabPanel.add(comments);
     }
 
 
-    private TabItem initActionTab(String formResourceName) {
+    private TabItem initActionTab(String formResourceName, final Map<String, GWTJahiaNodeProperty> variables) {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
         actionTab.setLayout(new BorderLayout());
         if (formResourceName != null && !"".equals(formResourceName)) {
             contentManagement.getWFFormForNodeAndNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(final GWTJahiaNodeType result) {
-                    final Map<String, GWTJahiaNodeProperty> variables;
-                    if (workflow != null) {
-                        variables = workflow.getVariables();
-                    } else {
-                        variables = new HashMap<String, GWTJahiaNodeProperty>();
-                        if (title != null) {
-                            variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
-                                    new GWTJahiaNodePropertyValue(title, GWTJahiaNodePropertyType.STRING)));
-                        }
-                    }
                     JahiaContentManagementService.App.getInstance().initializeCreateEngine(result.getName(),
                             linker.getSelectionContext().getMultipleSelection().size()>1?linker.getSelectionContext().getMultipleSelection().get(0).getPath():linker.getSelectionContext().getSingleSelection().getPath(), null,
                             new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {

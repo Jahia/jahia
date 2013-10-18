@@ -6,11 +6,13 @@
   <bpmn2:itemDefinition id="ItemDefinition_628" itemKind="Physical" structureRef="java.util.Locale"/>
   <bpmn2:itemDefinition id="ItemDefinition_4088" itemKind="Physical" structureRef="org.jahia.services.workflow.WorkflowDefinition"/>
   <bpmn2:itemDefinition id="ItemDefinition_5437" itemKind="Physical" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="ItemDefinition_3" itemKind="Physical" structureRef="org.jahia.services.workflow.WorkflowVariable"/>
   <bpmn2:process id="_x0031_-step-publication" drools:version="1" drools:packageName="org.jahia.modules.defaultmodule" drools:adHoc="false" name="1-step-publication" isExecutable="true">
     <bpmn2:extensionElements>
       <drools:import name="java.util.List"/>
       <drools:import name="java.util.Locale"/>
       <drools:import name="org.jahia.services.workflow.WorkflowDefinition"/>
+      <drools:import name="org.jahia.services.workflow.WorkflowVariable"/>
     </bpmn2:extensionElements>
     <bpmn2:property id="publicationOutcome" itemSubjectRef="ItemDefinition_901"/>
     <bpmn2:property id="nodeId" itemSubjectRef="ItemDefinition_901"/>
@@ -21,7 +23,7 @@
     <bpmn2:property id="workflow" itemSubjectRef="ItemDefinition_4088"/>
     <bpmn2:property id="user" itemSubjectRef="ItemDefinition_901"/>
     <bpmn2:property id="currentUser" itemSubjectRef="ItemDefinition_901"/>
-    <bpmn2:property id="jcr_title" itemSubjectRef="ItemDefinition_267"/>
+    <bpmn2:property id="jcr_title" itemSubjectRef="ItemDefinition_3"/>
     <bpmn2:startEvent id="StartEvent_1" name="Start">
       <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
     </bpmn2:startEvent>

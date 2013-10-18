@@ -42,6 +42,7 @@ package org.jahia.modules.tasks.rules;
 
 import org.apache.commons.lang.StringUtils;
 import org.drools.core.spi.KnowledgeHelper;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -156,25 +157,20 @@ public class Tasks {
                 while (pi.hasNext()) {
                     JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
                     if (!property.getDefinition().getDeclaringNodeType().getName().equals("nt:base") && !property.getDefinition().getName().equals("jcr:uuid")) {
-                        Value[] propertyValues;
                         if (property.isMultiple()) {
-                            propertyValues = property.getValues();
-                        } else {
-                            propertyValues = new Value[]{property.getValue()};
-                        }
-                        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.length);
-                        boolean toBeAdded = false;
-                        for (Value value : propertyValues) {
-                            String s = value.getString();
-                            if (s != null && !"".equals(s)) {
-                                values.add(new WorkflowVariable(s, value.getType()));
-                                toBeAdded = true;
+                            List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
+                            for (Value value : property.getValues()) {
+                                String s = value.getString();
+                                if (StringUtils.isNotBlank(s)) {
+                                    values.add(new WorkflowVariable(s, value.getType()));
+                                }
                             }
-                        }
-                        if (toBeAdded) {
                             map.put(property.getName(), values);
                         } else {
-                            map.put(property.getName(), new ArrayList<WorkflowVariable>());
+                            String s = property.getString();
+                            if (StringUtils.isNotBlank(s)) {
+                                map.put(property.getName(), new WorkflowVariable(s, property.getType()));
+                            }
                         }
                     }
                 }

@@ -151,24 +151,8 @@ public class WorkflowHelper {
         gwtWf.setDefinition(getGWTJahiaWorkflowDefinition(wf.getWorkflowDefinition()));
         gwtWf.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
         Map<String, Object> map = wf.getVariables();
-        Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>(map.size());
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry.getValue() instanceof List) {
-                List variable = (List) entry.getValue();
-                GWTJahiaNodeProperty value = new GWTJahiaNodeProperty();
-                value.setName(entry.getKey());
-                for (Object workflowVariable : variable) {
-                    if (workflowVariable instanceof WorkflowVariable) {
-                        value.setValue(new GWTJahiaNodePropertyValue(((WorkflowVariable) workflowVariable).getValue(), ((WorkflowVariable) workflowVariable).getType()));
-                    }
-                }
-                if (value.getValues() != null) {
-                    properties.put(entry.getKey(), value);
-                }
-            }
-        }
         gwtWf.setStartTime(wf.getStartTime());
-        gwtWf.setVariables(properties);
+        gwtWf.setVariables(getPropertiesMap(map));
         if (map.get("customWorkflowInfo") != null) {
             gwtWf.setCustomWorkflowInfo((CustomWorkflow) map.get("customWorkflowInfo"));
         }
@@ -203,6 +187,7 @@ public class WorkflowHelper {
             i++;
             gwtOutcomes.add(gwtOutcome);
         }
+        task.setVariables(getPropertiesMap(workflowTask.getVariables()));
         return task;
     }
 
@@ -231,7 +216,7 @@ public class WorkflowHelper {
             throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
-            HashMap<String, Object> map = getVariablesMap(properties);
+            Map<String, Object> map = getVariablesMap(properties);
             service.startProcessAsJob(Arrays.asList(node.getIdentifier()), session, def.getId(), def.getProvider(), map, comments);
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);
@@ -247,7 +232,7 @@ public class WorkflowHelper {
             throws GWTJahiaServiceException {
 
         try {
-            HashMap<String, Object> map = getVariablesMap(properties);
+            Map<String, Object> map = getVariablesMap(properties);
             map.putAll(args);
             service.startProcessAsJob(uuids, session, def.getId(), def.getProvider(), map, comments);
         } catch (SchedulerException e) {
@@ -284,23 +269,51 @@ public class WorkflowHelper {
         }
     }
 
-    private HashMap<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+    private Map<String, GWTJahiaNodeProperty> getPropertiesMap(Map<String, Object> variables) {
+        Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>(variables.size());
+        for (Map.Entry<String, Object> entry : variables.entrySet()) {
+            GWTJahiaNodeProperty property = new GWTJahiaNodeProperty();
+            property.setName(entry.getKey());
+            Object variable = entry.getValue();
+            if (variable instanceof List) {
+                List list = (List) variable;
+                List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
+                for (Object o : list) {
+                    if (o instanceof WorkflowVariable) {
+                        values.add(new GWTJahiaNodePropertyValue(((WorkflowVariable) o).getValue(), ((WorkflowVariable) o).getType()));
+                    }
+                }
+                if (!values.isEmpty()) {
+                    property.setValues(values);
+                    properties.put(entry.getKey(), property);
+                }
+            } else if (variable instanceof WorkflowVariable) {
+                property.setValue(new GWTJahiaNodePropertyValue(((WorkflowVariable) variable).getValue(), ((WorkflowVariable) variable).getType()));
+                properties.put(entry.getKey(), property);
+            }
+        }
+        return properties;
+    }
+
+    private Map<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {
+        Map<String, Object> map = new HashMap<String, Object>();
         for (GWTJahiaNodeProperty property : properties) {
             List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-            List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.size());
-            boolean toBeAdded = false;
-            for (GWTJahiaNodePropertyValue value : propertyValues) {
-                String s = value.getString();
-                if (s != null && !"".equals(s)) {
-                    values.add(new WorkflowVariable(s, value.getType()));
-                    toBeAdded = true;
+            if (property.isMultiple()) {
+                List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
+                for (GWTJahiaNodePropertyValue value : propertyValues) {
+                    String s = value.getString();
+                    if (StringUtils.isNotBlank(s)) {
+                        values.add(new WorkflowVariable(s, value.getType()));
+                    }
                 }
-            }
-            if (toBeAdded) {
                 map.put(property.getName(), values);
-            } else {
-                map.put(property.getName(), new ArrayList<WorkflowVariable>());
+            } else if (!propertyValues.isEmpty()) {
+                GWTJahiaNodePropertyValue value = propertyValues.get(0);
+                String s = value.getString();
+                if (StringUtils.isNotBlank(s)) {
+                    map.put(property.getName(), new WorkflowVariable(s, value.getType()));
+                }
             }
         }
         return map;

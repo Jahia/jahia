@@ -340,15 +340,23 @@ public class WorkflowService implements BeanPostProcessor {
                 if (permPath.indexOf("$") > -1) {
                     if (w != null) {
                         for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
-                            if (entry.getValue() instanceof List) {
-                                @SuppressWarnings("unchecked")
-                                List<Object> variable = (List<Object>) entry.getValue();
-                                for (Object workflowVariable : variable) {
-                                    if (workflowVariable instanceof WorkflowVariable) {
-                                        String v = ((WorkflowVariable) workflowVariable).getValue();
-                                        permPath = permPath.replace("$" + entry.getKey(), v);
+                            Object value = entry.getValue();
+                            if (value instanceof List) {
+                                List list = (List) entry.getValue();
+                                StringBuilder sb = new StringBuilder();
+                                Iterator iterator = list.iterator();
+                                while (iterator.hasNext()) {
+                                    Object o = iterator.next();
+                                    if (o instanceof WorkflowVariable) {
+                                        sb.append(((WorkflowVariable) o).getValue());
+                                    }
+                                    if (iterator.hasNext()) {
+                                        sb.append(",");
                                     }
                                 }
+                                permPath = permPath.replace("$" + entry.getKey(), iterator.toString());
+                            } else if (value instanceof WorkflowVariable) {
+                                permPath = permPath.replace("$" + entry.getKey(), ((WorkflowVariable) value).getValue());
                             }
                         }
                     }
@@ -541,21 +549,25 @@ public class WorkflowService implements BeanPostProcessor {
     public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                                Map<String, Object> args, List<String> comments) throws RepositoryException {
         String mainId = nodeIds.iterator().next();
-        args.put("nodeId", mainId);
+        Map<String, Object> newArgs = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry : args.entrySet()) {
+            newArgs.put(entry.getKey().replaceAll(":", "_"), entry.getValue());
+        }
+        newArgs.put("nodeId", mainId);
         try {
-            args.put("nodePath", session.getNodeByIdentifier(mainId).getPath());
+            newArgs.put("nodePath", session.getNodeByIdentifier(mainId).getPath());
         } catch (ItemNotFoundException e) {
             // Node not found
         }
-        args.put("nodeIds", nodeIds);
-        args.put("workspace", session.getWorkspace().getName());
-        args.put("locale", session.getLocale());
-        args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey, session.getLocale()));
-        args.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
-        final String processId = lookupProvider(provider).startProcess(processKey, args);
+        newArgs.put("nodeIds", nodeIds);
+        newArgs.put("workspace", session.getWorkspace().getName());
+        newArgs.put("locale", session.getLocale());
+        newArgs.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey, session.getLocale()));
+        newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
+        final String processId = lookupProvider(provider).startProcess(processKey, newArgs);
         if (logger.isDebugEnabled()) {
             logger.debug("A workflow " + processKey + " from " + provider + " has been started on nodes: " + nodeIds +
-                    " from workspace " + args.get("workspace") + " in locale " + args.get("locale") + " with id " +
+                    " from workspace " + newArgs.get("workspace") + " in locale " + newArgs.get("locale") + " with id " +
                     processId);
         }
         if (comments != null) {

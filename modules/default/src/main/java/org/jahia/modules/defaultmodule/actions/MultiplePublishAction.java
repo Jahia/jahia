@@ -100,7 +100,7 @@ public class MultiplePublishAction extends Action {
                     entry.getValue().getDisplayName(), session.getUser().getName(), DateFormat.getDateInstance(DateFormat.SHORT, session.getLocale()).format(new Date()), pubInfos.size());
 
             WorkflowVariable var = new WorkflowVariable(title, PropertyType.STRING);
-            map.put("jcr:title",Arrays.asList(var));
+            map.put("jcr:title", var);
             
             if (entry.getValue() != null) {
                 workflowService.startProcessAsJob(entry.getKey().getAllUuids(),

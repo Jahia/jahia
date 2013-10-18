@@ -37,44 +37,7 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.modules.defaultmodule;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.ActionResult;
-import org.jahia.bin.Action;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLResolver;
-import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.WorkflowVariable;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-
-/**
- * @author toto
- * Date: Mar 18, 2010
- * Time: 12:16:14 PM
- */
-public class StartWorkflowAction extends Action {
-    protected WorkflowService workflowService;
-
-    public void setWorkflowService(WorkflowService workflowService) {
-        this.workflowService = workflowService;
-    }
-
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
-                                  JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        String process = parameters.get("process").get(0);
-        String workflowDefinitionKey = StringUtils.substringAfter(process, ":");
-        String providerKey = StringUtils.substringBefore(process, ":");
-
-        String formNodeType = workflowService.getWorkflowRegistration(workflowDefinitionKey).getForms().get("start");
-        Map<String, Object> map = WorkflowVariable.getVariablesMap(parameters, formNodeType, Arrays.asList("process"));
-        workflowService.startProcess(Arrays.asList(resource.getNode().getIdentifier()), session, workflowDefinitionKey, providerKey, map, null);
-        return ActionResult.OK_JSON;
-    }
-
+public abstract class WorkflowAction {
 }

@@ -226,8 +226,8 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                             ")## : " +
                             session.getNodeByIdentifier(uuid).getDisplayableName());
 
-                    if (taskInputParameters.get("jcr:title") instanceof List && ((List<WorkflowVariable>) taskInputParameters.get("jcr:title")).size() > 0) {
-                        jcrTask.setProperty("description", ((List<WorkflowVariable>) taskInputParameters.get("jcr:title")).get(0).getValue());
+                    if (taskInputParameters.containsKey("jcr:title") && taskInputParameters.get("jcr:title") instanceof WorkflowVariable) {
+                        jcrTask.setProperty("description", ((WorkflowVariable) taskInputParameters.get("jcr:title")).getValue());
                     }
                     String form = WorkflowService.getInstance().getFormForAction(definitionKey, taskName);
                     if (form != null && NodeTypeRegistry.getInstance().hasNodeType(form)) {
@@ -236,17 +236,19 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                         Map<String, ExtendedPropertyDefinition> m = type.getPropertyDefinitionsAsMap();
                         for (String s : m.keySet()) {
                             Object variable = taskInputParameters.get(s);
-                            if (variable instanceof List) {
-                                List<WorkflowVariable> list = (List<WorkflowVariable>) variable;
-                                if (m.get(s).isMultiple()) {
-                                    List<Value> v = new ArrayList<Value>();
-                                    for (WorkflowVariable workflowVariable : list) {
+                            if (variable instanceof WorkflowVariable) {
+                                WorkflowVariable workflowVariable = (WorkflowVariable) variable;
+                                data.setProperty(s, workflowVariable.getValue(), workflowVariable.getType());
+                            } else if (variable instanceof List) {
+                                List list = (List) variable;
+                                List<Value> v = new ArrayList<Value>();
+                                for (Object o : list) {
+                                    if (o instanceof WorkflowVariable) {
+                                        WorkflowVariable workflowVariable = (WorkflowVariable) o;
                                         v.add(session.getValueFactory().createValue(workflowVariable.getValue(), workflowVariable.getType()));
                                     }
-                                    data.setProperty(s, v.toArray(new Value[v.size()]));
-                                } else if (!list.isEmpty()) {
-                                    data.setProperty(s, list.get(0).getValue(), list.get(0).getType());
                                 }
+                                data.setProperty(s, v.toArray(new Value[v.size()]));
                             }
                         }
                     }

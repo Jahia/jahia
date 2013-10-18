@@ -48,6 +48,7 @@ import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.workflow.WorkflowVariable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -70,7 +71,8 @@ public class StartPublicationWorkflowAction extends StartWorkflowAction {
         String workflowDefinitionKey = StringUtils.substringAfter(process, ":");
         String providerKey = StringUtils.substringBefore(process, ":");
 
-        Map<String, Object> map = getVariablesMap(parameters);
+        String formNodeType = workflowService.getWorkflowRegistration(workflowDefinitionKey).getForms().get("start");
+        Map<String, Object> map = WorkflowVariable.getVariablesMap(parameters, formNodeType, Arrays.asList("process"));
         final LinkedHashSet<String> languages = new LinkedHashSet<String>();
         languages.add(resource.getLocale().toString());
         final List<PublicationInfo> infoList = publicationService.getPublicationInfo(resource.getNode().getIdentifier(),

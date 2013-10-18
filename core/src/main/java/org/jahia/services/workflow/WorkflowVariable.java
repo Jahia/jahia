@@ -40,12 +40,17 @@
 
 package org.jahia.services.workflow;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Represents single workflow variable.
@@ -97,5 +102,62 @@ public class WorkflowVariable implements Serializable {
             DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(value);
             return dateTime.toDate();
         }
+    }
+
+    /**
+     * Generate a map of task parameters with values of type WorkflowVariable or List<WorkflowVariable>
+     *
+     * @param parameters
+     * @param formNodeType
+     * @param excludedParameters
+     * @return a map of task parameters with values of type WorkflowVariable or List<WorkflowVariable>
+     */
+    public static HashMap<String, Object> getVariablesMap(Map<String, List<String>> parameters, String formNodeType,
+                                                          List<String> excludedParameters)  {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        ExtendedNodeType type = null;
+        if (formNodeType != null && NodeTypeRegistry.getInstance().hasNodeType(formNodeType)) {
+            try {
+                type = NodeTypeRegistry.getInstance().getNodeType(formNodeType);
+            } catch (NoSuchNodeTypeException e) {
+                // shouldn't happen as we tested the existence before
+            }
+        }
+        for (Map.Entry<String, List<String>> entry : parameters.entrySet()) {
+            String paramName = entry.getKey();
+            if (excludedParameters != null && excludedParameters.contains(paramName)) {
+                continue;
+            }
+            List<String> paramValue = parameters.get(paramName);
+            if (paramValue == null || paramValue.isEmpty()) {
+                continue;
+            }
+            ExtendedPropertyDefinition definition = null;
+            if (type != null) {
+                definition = type.getPropertyDefinition(paramName);
+            }
+            if (definition != null) {
+                if (definition.isMultiple()) {
+                    List<WorkflowVariable> list = new ArrayList<WorkflowVariable>();
+                    for (String s : paramValue) {
+                        if (StringUtils.isNotBlank(s)) {
+                            list.add(new WorkflowVariable(s, definition.getRequiredType()));
+                        }
+                    }
+                    map.put(paramName, list);
+                } else {
+                    String s = paramValue.get(0);
+                    if (StringUtils.isNotBlank(s)) {
+                        map.put(paramName, new WorkflowVariable(s, definition.getRequiredType()));
+                    }
+                }
+            } else {
+                String s = paramValue.get(0);
+                if (StringUtils.isNotBlank(s)) {
+                    map.put(paramName, paramValue.get(0));
+                }
+            }
+        }
+        return map;
     }
 }

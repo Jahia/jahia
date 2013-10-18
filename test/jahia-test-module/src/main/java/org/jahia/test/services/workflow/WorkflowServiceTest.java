@@ -143,9 +143,8 @@ public class WorkflowServiceTest {
     @Test
     public void testGetActiveWorkflows() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
+        map.put("startDate", new WorkflowVariable());
+        map.put("endDate", new WorkflowVariable());
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.iterator().next();
@@ -166,9 +165,8 @@ public class WorkflowServiceTest {
     @Test
     public void testAssignTask() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
+        map.put("startDate", new WorkflowVariable());
+        map.put("endDate", new WorkflowVariable());
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
@@ -210,9 +208,8 @@ public class WorkflowServiceTest {
     @Test
     public void testFullProcess2StepPublication() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
+        map.put("startDate", new WorkflowVariable());
+        map.put("endDate", new WorkflowVariable());
         final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
@@ -315,9 +312,8 @@ public class WorkflowServiceTest {
     @Test
     public void test2StepPublicationAccept() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
+        map.put("startDate", new WorkflowVariable());
+        map.put("endDate", new WorkflowVariable());
         final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
@@ -368,9 +364,8 @@ public class WorkflowServiceTest {
     @Test
     public void test1StepPublicationAccept() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
+        map.put("startDate", new WorkflowVariable());
+        map.put("endDate", new WorkflowVariable());
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
@@ -407,9 +402,8 @@ public class WorkflowServiceTest {
     @Test
     public void test1StepPublicationReject() throws Exception {
         final HashMap<String, Object> map = new HashMap<String, Object>();
-        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
-        map.put("startDate", values);
-        map.put("endDate", values);
+        map.put("startDate", new WorkflowVariable());
+        map.put("endDate", new WorkflowVariable());
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;

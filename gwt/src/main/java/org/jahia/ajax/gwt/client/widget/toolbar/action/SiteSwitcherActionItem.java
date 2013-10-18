@@ -229,7 +229,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        if (root.get(0).startsWith("/modules")) {
+        if (node.getPath().equals("/modules")) {
             sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getUUID()));
         } else {
             sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()));

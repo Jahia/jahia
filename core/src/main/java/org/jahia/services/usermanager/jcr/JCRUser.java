@@ -153,7 +153,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      *         property is present.
      */
     public Properties getProperties() {
-        if (properties == null) {
+        if (properties == null || properties.isEmpty()) {
             properties = new Properties();
             try {
                 return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {

@@ -596,19 +596,6 @@ public class WorkflowHelper {
             HistoryWorkflow historyWorkflow = service.getHistoryWorkflow(
                     task.getProcessId(), task.getProvider(), locale);
             if (historyWorkflow != null) {
-                GWTJahiaWorkflowHistoryProcess gwtWfHistory = getGWTJahiaHistoryProcess(historyWorkflow);
-<<<<<<< .working
-                try {
-                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
-                            locale).getNodeByIdentifier(task.getVariables().get("nodeId") != null ? (String) task.getVariables().get("nodeId") : gwtWfHistory.getNodeId());
-                } catch (ItemNotFoundException e) {
-                    continue;
-                } catch (RepositoryException e) {
-                    logger.warn(e.getMessage(), e);
-                    continue;
-                }
-=======
->>>>>>> .merge-right.r47712
                 total++;
             }
         }

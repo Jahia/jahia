@@ -280,7 +280,7 @@ public class JCRPublicationService extends JahiaService {
                     toPublish.add(node);
                 }
             } catch (javax.jcr.ItemNotFoundException e) {
-                logger.error("Impossible to publish missing node", e);
+                logger.debug("Impossible to publish missing node", e);
             }
         }
 

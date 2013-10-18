@@ -246,7 +246,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     data.put("node", gwtJahiaNode);
                     linker.refresh(data);
                 } else {
-                    JahiaGWTParameters.setSiteFromNode(gwtJahiaNode, linker);
+                    JahiaGWTParameters.setSiteNode(newModuleNode);
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_ALL, true);
                     linker.refresh(data);

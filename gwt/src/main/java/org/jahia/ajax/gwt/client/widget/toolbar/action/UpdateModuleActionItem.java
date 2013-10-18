@@ -130,7 +130,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                            JahiaGWTParameters.setSiteFromNode(result, linker);
+                            JahiaGWTParameters.setSiteNode(result);
                             if (((EditLinker) linker).getSidePanel() != null) {
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_ALL, true);

@@ -89,7 +89,7 @@ public class ReleaseModuleActionItem extends BaseActionItem {
 
                         JahiaGWTParameters.getSitesMap().remove(JahiaGWTParameters.getSiteNode().getUUID());
                         JahiaGWTParameters.getSitesMap().put(newModule.getUUID(), newModule);
-                        JahiaGWTParameters.setSiteFromNode(newModule, linker);
+                        JahiaGWTParameters.setSiteNode(newModule);
                         if (((EditLinker) linker).getSidePanel() != null) {
                             Map<String, Object> data = new HashMap<String, Object>();
                             data.put(Linker.REFRESH_ALL, true);

@@ -242,10 +242,6 @@ public class JahiaGWTParameters {
         JahiaGWTParameters.sitesMap = sitesMap;
     }
 
-    public static void setSiteFromNode(GWTJahiaNode node, Linker linker) {
-        setSiteNode(sitesMap.get(node.getSiteUUID()));
-    }
-
     public static String getWorkspace() {
         if (workspace == null) {
             if (jahiaParamDictionary.keySet().contains(WORKSPACE)) {

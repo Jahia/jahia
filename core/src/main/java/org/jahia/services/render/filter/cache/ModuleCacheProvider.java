@@ -164,7 +164,7 @@ public class ModuleCacheProvider implements InitializingBean {
         for (String dep : deps) {
             if (dep != null) {
                 boolean removed = htmlCache.remove(dep);
-                if (logger.isDebugEnabled() && !removed) {
+                if (!removed && logger.isDebugEnabled()) {
                     logger.debug("Failed to remove {} from cache", dep);
                 }
             }

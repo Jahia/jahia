@@ -286,9 +286,30 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTEditConfiguration config = null;
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
+<<<<<<< .working
             config = uiConfigHelper.getGWTEditConfiguration(name, path, getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), session);
         } catch (Exception e) {
+=======
+            config = uiConfig.getGWTEditConfiguration(session.getNode(path), getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
+                    getRequest(), name);
+            config.setSiteNode(navigation.getGWTJahiaNode(getSite(), GWTJahiaNode.DEFAULT_SITE_FIELDS));
+
+            List<GWTJahiaNode> sites = getRoot(Arrays.asList(config.getSitesLocation()), Arrays.asList("jnt:virtualsite"), null, null, GWTJahiaNode.DEFAULT_SITE_FIELDS, null, null, false, false, null, null);
+
+            Map<String, GWTJahiaNode> sitesMap = new HashMap<String, GWTJahiaNode>();
+            for (GWTJahiaNode site : sites) {
+                if (session.getNodeByUUID(site.getUUID()).hasPermission("jcr:read_default")) {
+                    sitesMap.put(site.getSiteUUID(), site);
+                }
+            }
+            config.setSitesMap(sitesMap);
+
+            setAvailablePermissions(config);
+
+            config.setChannels(channelHelper.getChannels());
+        } catch (RepositoryException e) {
+>>>>>>> .merge-right.r47706
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }

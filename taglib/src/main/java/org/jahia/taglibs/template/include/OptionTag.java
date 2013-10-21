@@ -46,10 +46,10 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -60,8 +60,7 @@ import java.util.Map;
 
 /**
  * @author : rincevent
- * @since JAHIA 6.5
- *        Created : 27 oct. 2009
+ * @since JAHIA 6.5 Created : 27 oct. 2009
  */
 public class OptionTag extends BodyTagSupport implements ParamParent {
     private static final long serialVersionUID = -4688234914421053917L;
@@ -81,68 +80,84 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
     @Override
     public int doEndTag() throws JspException {
         try {
-            String charset = pageContext.getResponse().getCharacterEncoding();
-            // Todo test if module is active
-            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext",
-                    PageContext.REQUEST_SCOPE);
-            Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
-                    PageContext.REQUEST_SCOPE);
-            String[] nodetypes = Patterns.COMMA.split(nodetype);
-            if (node.isNodeType(nodetypes[0])) {
-                ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetypes[0]);
+            renderNodeWithViewAndTypes(node, view, nodetype, pageContext, parameters);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new JspException(e);
+        }
+
+        nodetype = null;
+        node = null;
+        view = null;
+        parameters.clear();
+        return super.doEndTag();
+    }
+
+    public static void renderNodeWithViewAndTypes(JCRNodeWrapper node, String view, String nodeTypes, PageContext pageContext, Map<String, String> parameters) throws RepositoryException, IOException, RenderException {
+        String charset = pageContext.getResponse().getCharacterEncoding();
+        // Todo test if module is active
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+        Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+        String[] nodetypes = nodeTypes.split(",");
+
+        if (nodetypes.length > 0) {
+            final String primaryNodeType = nodetypes[0];
+
+            if (node.isNodeType(primaryNodeType)) {
+                ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(primaryNodeType);
+
+                // what is this for? This doesn't seem to be used anywhere else in the code
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
                     currentResource.removeOption(mixinNodeType);
                 }
-                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), view,
-                        Resource.CONFIGURATION_INCLUDE);
+
+                // create a resource to render the current node with the specified view
+                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), view, Resource.CONFIGURATION_INCLUDE);
                 wrappedResource.setResourceNodeType(mixinNodeType);
+
+                // set parameters
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
-                    wrappedResource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(
-                            param.getValue(), charset));
+                    wrappedResource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
                 }
 
+                // attempt to resolve script for the newly created resource
                 Script script = null;
                 try {
                     script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 } catch (TemplateNotFoundException e) {
+                    // if we didn't find a script, attempt to locate one based on secondary node type if one was specified
                     if (nodetypes.length > 1) {
                         mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetypes[1]);
                         wrappedResource.setResourceNodeType(mixinNodeType);
                         script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                     }
                 }
+
+                // if we have found a script, render it
                 if (script != null) {
-                    Object currentNode = pageContext.getRequest().getAttribute("currentNode");
-                    Resource currentOption = (Resource) pageContext.getRequest().getAttribute("optionResource");
-                    pageContext.getRequest().setAttribute("optionResource", currentResource);
-                    pageContext.getRequest().setAttribute("currentNode", node);
-                    pageContext.getRequest().setAttribute("currentResource", wrappedResource);
+                    final ServletRequest request = pageContext.getRequest();
+
+                    //save environment
+                    Object currentNode = request.getAttribute("currentNode");
+                    Resource currentOption = (Resource) request.getAttribute("optionResource");
+
+                    // set attributes to render the newly created resource
+                    request.setAttribute("optionResource", currentResource);
+                    request.setAttribute("currentNode", node);
+                    request.setAttribute("currentResource", wrappedResource);
                     try {
                         pageContext.getOut().write(script.execute(wrappedResource, renderContext));
                     } finally {
-                        pageContext.getRequest().setAttribute("optionResource", currentOption);
-                        pageContext.getRequest().setAttribute("currentNode", currentNode);
-                        pageContext.getRequest().setAttribute("currentResource", currentResource);
+                        // restore environment as it previously was
+                        request.setAttribute("optionResource", currentOption);
+                        request.setAttribute("currentNode", currentNode);
+                        request.setAttribute("currentResource", currentResource);
                     }
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new JspException(e);
-        } catch (RenderException e) {
-            logger.error(e.getMessage(), e);
-            throw new JspException(e);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new JspException(e);
         }
-        nodetype = null;
-        node = null;
-        view = null;
-        parameters.clear();
-        return super.doEndTag();
     }
 
     public void setNodetype(String nodetype) {

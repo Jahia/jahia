@@ -91,7 +91,7 @@ public class DocumentViewExporter {
     private List<JCRNodeWrapper> nodesList;
     private Stack<String> stack;
 
-    private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid");
+    private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;

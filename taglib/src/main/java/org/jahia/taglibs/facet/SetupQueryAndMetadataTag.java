@@ -92,9 +92,9 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
             QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
             QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
 
-            // what should be done here if boundComponent is of type jnt:query?
             String selectorName;
-            if (existing == null && !JCRTagUtils.isNodeType(boundComponent, "jnt:query")) {
+            if (existing == null) {
+                // here we assume that if existing is null, then bound component is not of type jnt:query
                 String wantedNodeType = "jnt:content";
                 if (currentNode.hasProperty("j:type")) {
                     wantedNodeType = currentNode.getPropertyAsString("j:type");
@@ -103,8 +103,6 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 selectorName = wantedNodeType;
                 qomBuilder.setSource(factory.selector(wantedNodeType, selectorName));
                 String path = boundComponent.getPath();
-                                /*path = path.substring(path.indexOf("/sites/"));
-                                path = "/sites/" + context.getSite().getName() + "/" + path;*/
                 qomBuilder.andConstraint(factory.descendantNode(selectorName, path));
             } else {
                 final Selector selector = (Selector) existing.getSource();

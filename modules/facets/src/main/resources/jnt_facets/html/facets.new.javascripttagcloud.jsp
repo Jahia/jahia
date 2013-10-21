@@ -16,6 +16,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
+<%@ page import="javax.jcr.query.qom.QueryObjectModel" %>
 <template:addResources type="css" resources="facets.css"/>
 <template:addResources type="css" resources="jqcloud.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jqcloud.js"/>
@@ -38,6 +39,10 @@
     <jsp:useBean id="facetLabels" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueLabels" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>
+
+    <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.load">
+        <template:param name="queryLoadAllUnsorted" value="true"/>
+    </template:option>
 
     <facet:setupQueryAndMetadata var="listQuery" boundComponent="${boundComponent}" existingQuery="${moduleMap.listQuery}" activeFacets="${activeFacetsVars[activeFacetMapVarName]}"/>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
@@ -73,11 +78,11 @@
                                facetValueCount="${facetValue}"
                                facetValueLabels="${facetValueLabels}"
                                facetValueFormats="${facetValueFormats}" display="false"/>
-                        {text:"${facetValueLabel}",weight:${functions:round(10 * tagCloud[facetValue.name] / totalUsages)},url:"${facetUrl}"}
+                                {text: "${facetValueLabel}", weight:${functions:round(10 * tagCloud[facetValue.name] / totalUsages)}, url: "${facetUrl}"}
                                 <c:if test="${not status.last}">, </c:if>
                                 </c:if>
                                 </c:forEach>);
-                        $(document).ready(function() {
+                        $(document).ready(function () {
                             $("#wordcloud").jQCloud(word_list);
                         });
                     </script>

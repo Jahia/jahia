@@ -60,6 +60,9 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.utils.ArrayUtils;
 import org.jahia.utils.Patterns;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * JCR content tagging service.
  * 
@@ -232,8 +235,8 @@ public class TaggingService {
      * Tag the current node with the specified tag. The tag value is assigned to
      * the node, if it is not tagged already with the same tag.
      * 
-     * @param node
-     *            the node to be tagged
+     * @param nodePath
+     *            the path of the node to be tagged
      * @param tag
      *            the tag to be used
      * @param siteKey
@@ -263,7 +266,6 @@ public class TaggingService {
                     doSessionCommit = true;
                 }
                 if (tagNode != null) {
-                    Value[] newValues = new Value[]{new ValueImpl(tagNode.getIdentifier(), PropertyType.WEAKREFERENCE)};
                     Value[] values = null;
                     boolean exists = false;
                     if (node.hasProperty(TAGS)) {
@@ -276,12 +278,17 @@ public class TaggingService {
                         }
                     }
                     if (!exists) {
-                        newValues = values != null ? ArrayUtils.join(values, newValues) : newValues;
+                        ArrayList<Value> newValues = new ArrayList<Value>();
+                        if (values != null) {
+                            newValues.addAll(Arrays.asList(values));
+                        }
+                        newValues.add(session.getValueFactory().createValue(tagNode.getIdentifier(), PropertyType.WEAKREFERENCE));
+
                         session.checkout(node);
                         if (!node.isNodeType(JAHIAMIX_TAGGED)) {
                             node.addMixin(JAHIAMIX_TAGGED);
                         }
-                        node.setProperty(TAGS, newValues);
+                        node.setProperty(TAGS, newValues.toArray(new Value[newValues.size()]));
                         applied = true;
                         doSessionCommit = true;
                     }

@@ -262,4 +262,29 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
             });
         }
     }
+
+    @Override
+    public void afterTaskReleasedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskResumedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskSuspendedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskForwardedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void afterTaskDelegatedEvent(Task ti) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

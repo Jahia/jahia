@@ -494,6 +494,10 @@
                     <groupId>xerces</groupId>
                     <artifactId>xercesImpl</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

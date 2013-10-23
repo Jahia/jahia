@@ -226,6 +226,7 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
             <version>${drools.version}</version>
+            <classifier>jahia</classifier>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -240,6 +241,10 @@
                     <groupId>org.eclipse.jdt</groupId>
                     <artifactId>core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!--
@@ -253,6 +258,12 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
             <version>${drools.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <!--Lucene dependencies-->
@@ -969,6 +980,12 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-flow</artifactId>
             <version>${jbpm.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -1004,6 +1021,10 @@
             <version>${jbpm.version}</version>
             <exclusions>
                 <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>javax.activation</groupId>
                     <artifactId>activation</artifactId>
                 </exclusion>
@@ -1022,6 +1043,12 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-workitems</artifactId>
             <version>${jbpm.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -1043,6 +1070,10 @@
             <artifactId>kie-spring</artifactId>
             <version>${jbpm.version}</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-core</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>javax.el</groupId>
                     <artifactId>el-api</artifactId>

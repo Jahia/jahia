@@ -88,12 +88,13 @@ Workflow Integration
 ** jBPM forms
 
    jBPM allows to associate a form to a task - in Jahia, this form is actually defined by a simple node type. This node
-   type will create the form, and the data will be stored like a standard JCR node in the process engine.
+   type will create the form, and the data will be stored like a standard JCR node in the process engine. Forms are associated
+   to tasks by a mapping in the workflow registration - see {{Workflow declaration}} for more details
 
    Here, the "request" task uses the "jnt:translationRequest" as a form :
 
 +--------------------
-     <task name="request" form="jnt:translationRequest">
+     <bpmn2:userTask id="UserTask_2" name="request">
         ...
 +--------------------
 
@@ -103,6 +104,20 @@ Workflow Integration
 [jnt:translationRequest] > mix:title
 - request (string, richtext)
 - translateTo (string, choicelist[siteLocales])
++--------------------
+
+   The mapping is done during the workflow registration :
+
++--------------------
+<bean name="translationWorkflow" class="org.jahia.services.workflow.WorklowTypeRegistration">
+    ...
+    <property name="forms">
+        <map>
+            <entry key="start" value="jnt:translationRequest"/>
+            <entry key="request" value="jnt:translationRequest"/>
+        </map>
+    </property>
+</bean>
 +--------------------
 
    The execution of this task will display a form that the user will need to fill. Data entered in this form can later

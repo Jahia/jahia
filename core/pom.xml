@@ -1014,11 +1014,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-human-task-audit</artifactId>
-            <version>${jbpm.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.seam.transaction</groupId>
             <artifactId>seam-transaction-api</artifactId>
             <version>3.1.0.Final</version>

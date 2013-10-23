@@ -1,4 +1,3 @@
-
     alter table jbpm_attachment 
         drop constraint FK_anhlt1ywoxmhaippy7h78baxk;
 
@@ -247,7 +246,7 @@
     drop sequence WORKITEMINFO_ID_SEQ;
 
     create table jbpm_attachment (
-        id int8 not null,
+        attachment_id int8 not null,
         access_type int4,
         attached_at timestamp,
         attachment_content_id int8 not null,
@@ -256,11 +255,11 @@
         attachment_size int4,
         attached_by varchar(255),
         task_data_attachments_id int8,
-        primary key (id)
+        primary key (attachment_id)
     );
 
     create table jbpm_bamtask_summary (
-        pk int8 not null,
+        bamtask_id int8 not null,
         created_date timestamp,
         duration int8,
         end_date timestamp,
@@ -270,7 +269,7 @@
         task_id int8 not null,
         task_name varchar(255),
         user_id varchar(255),
-        primary key (pk)
+        primary key (bamtask_id)
     );
 
     create table jbpm_boolean_expression (
@@ -349,7 +348,7 @@
     );
 
     create table jbpm_i18ntext (
-        id int8 not null,
+        i18ntext_id int8 not null,
         language varchar(255),
         short_text varchar(255),
         text text,
@@ -362,7 +361,7 @@
         notification_documentation_id int8,
         notification_descriptions_id int8,
         deadline_documentation_id int8,
-        primary key (id)
+        primary key (i18ntext_id)
     );
 
     create table jbpm_node_instance_log (
@@ -487,7 +486,7 @@
     );
 
     create table jbpm_task (
-        id int8 not null,
+        task_id int8 not null,
         archived int2,
         allowed_to_delegate varchar(255),
         form_name varchar(255),
@@ -520,7 +519,7 @@
         task_initiator varchar(255),
         actual_owner varchar(255),
         created_by varchar(255),
-        primary key (id)
+        primary key (task_id)
     );
 
     create table jbpm_task_comment (
@@ -533,11 +532,11 @@
     );
 
     create table jbpm_task_event (
-        id int8 not null,
+        task_event_id int8 not null,
         task_id int8 not null,
         type int4,
         r_user varchar(255),
-        primary key (id)
+        primary key (task_event_id)
     );
 
     create table jbpm_variable_instance_log (

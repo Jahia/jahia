@@ -40,6 +40,7 @@
 
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -62,7 +63,7 @@ public class TemplateCacheKeyPartGenerator implements CacheKeyPartGenerator {
             template = resource.getResolvedTemplate();
         }
         String defaultView = (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
-        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE) && defaultView != null && "default".equals(template)) {
+        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE) && StringUtils.isNotBlank(defaultView) && "default".equals(template)) {
             template = defaultView;
         }
         return template;

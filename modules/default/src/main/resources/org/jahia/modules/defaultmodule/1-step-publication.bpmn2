@@ -178,10 +178,10 @@
       <bpmn2:incoming>SequenceFlow_28</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_InputOutputSpecification_3">
-        <bpmn2:dataInput id="DataInput_6" itemSubjectRef="ItemDefinition_267" name="jcr:title"/>
+        <bpmn2:dataInput id="DataInput_6" itemSubjectRef="ItemDefinition_3" name="jcr:title"/>
         <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="ItemDefinition_901" name="outcome"/>
         <bpmn2:dataOutput id="DataOutput_2" itemSubjectRef="ItemDefinition_901" name="currentUser"/>
-        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="ItemDefinition_267" name="jcr:title"/>
+        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="ItemDefinition_3" name="jcr:title"/>
         <bpmn2:inputSet id="_InputSet_3" name="Input Set 3">
           <bpmn2:dataInputRefs>DataInput_6</bpmn2:dataInputRefs>
         </bpmn2:inputSet>

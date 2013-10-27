@@ -709,9 +709,6 @@ public class Activator implements BundleActivator {
                 case FrameworkEvent.PACKAGES_REFRESHED: 
                     startAllBundles();
                     stopAllBundles();
-                    break;
-                case FrameworkEvent.STARTED: 
-                    break;
             }
         }
 
@@ -728,7 +725,6 @@ public class Activator implements BundleActivator {
             this.toStart.removeAll(toStart);
             for (Bundle bundle : toStart) {
                 try {
-                    logger.info("AAA starting {}", bundle.getSymbolicName());
                     bundle.start();
                 } catch (BundleException e) {
                     logger.error(e.getMessage(), e);
@@ -742,7 +738,6 @@ public class Activator implements BundleActivator {
             for (Bundle bundle : toStop) {
                 try {
                     if (bundle.getState() != Bundle.UNINSTALLED) {
-                        logger.info("AAA stopping {}", bundle.getSymbolicName());
                         bundle.stop();
                     }
                 } catch (BundleException e) {

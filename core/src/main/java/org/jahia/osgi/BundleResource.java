@@ -43,6 +43,7 @@ package org.jahia.osgi;
 import org.osgi.framework.Bundle;
 import org.springframework.core.io.UrlResource;
 
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -59,5 +60,10 @@ public class BundleResource extends UrlResource {
 
     public Bundle getBundle() {
         return bundle;
+    }
+
+    @Override
+    public long lastModified() throws IOException {
+        return bundle.getLastModified();
     }
 }

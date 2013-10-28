@@ -63,6 +63,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +79,11 @@ public class Activator implements BundleActivator {
     static Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
-    
+    private static final BundleURLScanner DSL_SCANNER = new BundleURLScanner("META-INF", "*.dsl", false);
+    private static final BundleURLScanner DRL_SCANNER = new BundleURLScanner("META-INF", "*.drl", false);
+    private static final BundleURLScanner URLREWRITE_SCANNER = new BundleURLScanner("META-INF", "*urlrewrite*.xml", false);
+    private static final BundleURLScanner FLOW_SCANNER = new BundleURLScanner("/", "flow.xml", true);
+
     private static final Comparator<Resource> IMPORT_FILE_COMPARATOR = new Comparator<Resource>() {
         public int compare(Resource o1, Resource o2) {
             return StringUtils.substringBeforeLast(o1.getFilename(), ".").compareTo(StringUtils.substringBeforeLast(o2.getFilename(), "."));
@@ -116,8 +121,8 @@ public class Activator implements BundleActivator {
 
         // register rule observers
         RulesBundleObserver rulesBundleObserver = new RulesBundleObserver();
-        extensionObservers.put(new BundleURLScanner("META-INF", "*.dsl", false), rulesBundleObserver);
-        extensionObservers.put(new BundleURLScanner("META-INF", "*.drl", false), rulesBundleObserver);
+        extensionObservers.put(DSL_SCANNER, rulesBundleObserver);
+        extensionObservers.put(DRL_SCANNER, rulesBundleObserver);
 
         BundleScriptResolver bundleScriptResolver = (BundleScriptResolver) SpringContextSingleton.getBean("BundleScriptResolver");
 
@@ -130,7 +135,7 @@ public class Activator implements BundleActivator {
 
         bundleStarter = new BundleStarter();
 
-        extensionObservers.put(new BundleURLScanner("/", "flow.xml", true), new BundleObserver<URL>() {
+        extensionObservers.put(FLOW_SCANNER, new BundleObserver<URL>() {
             @Override
             public void addingEntries(Bundle bundle, List<URL> entries) {
                 for (URL entry : entries) {
@@ -156,6 +161,8 @@ public class Activator implements BundleActivator {
             }
         });
 
+        // observer for URL rewrite rules
+        extensionObservers.put(URLREWRITE_SCANNER, new UrlRewriteBundleObserver());
 
         // we won't register CND observer, but will rather call it manually
         cndBundleObserver = new CndBundleObserver();

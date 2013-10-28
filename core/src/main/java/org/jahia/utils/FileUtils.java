@@ -47,31 +47,25 @@
 
 package org.jahia.utils;
 
+import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
+import org.artofsolving.jodconverter.document.DocumentFamily;
+import org.artofsolving.jodconverter.document.DocumentFormat;
+import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections.FastHashMap;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.util.ResourceUtils;
-import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
-import org.artofsolving.jodconverter.document.DocumentFamily;
-import org.artofsolving.jodconverter.document.DocumentFormat;
-import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
-import org.jahia.services.SpringContextSingleton;
+import java.util.*;
 
 public final class FileUtils {
 
@@ -248,9 +242,7 @@ public final class FileUtils {
      */
     public static long getLastModified(Resource resource) throws IOException {
         URL resourceUrl = resource.getURL();
-        return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(
-                ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.getFile()
-                .lastModified();
+        return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.lastModified();
     }
     
     public static List<DocumentFormat> getPossibleFormats() {

@@ -40,16 +40,6 @@
 
 package org.jahia.services.seo.urlrewrite;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -74,6 +64,15 @@ import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 import org.tuckey.web.filters.urlrewrite.utils.Log;
 
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+
 /**
  * URL rewriter service.
  *
@@ -83,7 +82,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteService.class);
 
-    private Resource[] configurationResources;
+    private Set<Resource> configurationResources;
 
     /**
      * A user defined setting that says how often to check the configuration has changed. <b>0</b> means check on each call.
@@ -94,14 +93,14 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private Map<Integer, Long> lastModified = new HashMap<Integer, Long>(1);
 
-    private Resource[] lastConfigurationResources;
+    private Set<Resource> lastConfigurationResources;
 
     private List<HandlerMapping> renderMapping;
 
-    private Resource[] seoConfigurationResources;
+    private Set<Resource> seoConfigurationResources;
 
     private boolean seoRulesEnabled;
-    
+
     private boolean seoRemoveCmsPrefix;
 
     private ServletContext servletContext;
@@ -113,58 +112,41 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private URLResolverFactory urlResolverFactory;
 
     private Set<String> reservedUrlPrefixSet;
-    
+
     private JahiaSitesService siteService;
-    
+
     private SettingsBean settingsBean;
 
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
 
-        // add SEO rules if provided and SEO URL rewriting is enabled 
-        if (seoRulesEnabled && seoConfigurationResources != null
-                && seoConfigurationResources.length > 0) {
-            if (configurationResources != null) {
-                Resource[] cfg = new Resource[configurationResources.length
-                        + seoConfigurationResources.length];
-                System.arraycopy(configurationResources, 0, cfg, 0, configurationResources.length);
-                System.arraycopy(seoConfigurationResources, 0, cfg, configurationResources.length,
-                        seoConfigurationResources.length);
-                configurationResources = cfg;
-            } else {
-                configurationResources = seoConfigurationResources;
-            }
-        }
-        
-        // add rules which are executed as last, if provided
-        if (lastConfigurationResources != null && lastConfigurationResources.length > 0) {
-            if (configurationResources != null) {
-                Resource[] cfg = new Resource[configurationResources.length
-                        + lastConfigurationResources.length];
-                System.arraycopy(configurationResources, 0, cfg, 0, configurationResources.length);
-                System.arraycopy(lastConfigurationResources, 0, cfg, configurationResources.length,
-                        lastConfigurationResources.length);
-                configurationResources = cfg;
-            } else {
-                configurationResources = lastConfigurationResources;
-            }
+        final int seoSize = seoConfigurationResources != null ? seoConfigurationResources.size() : 0;
+        final int lastSize = lastConfigurationResources != null ? lastConfigurationResources.size() : 0;
+
+        if (configurationResources == null) {
+            configurationResources = new HashSet<Resource>(seoSize + lastSize);
         }
 
-        if (configurationResources != null && configurationResources.length > 0
-                && settingsBean.isDevelopmentMode()
-                && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
+        // add SEO rules if provided and SEO URL rewriting is enabled 
+        if (seoRulesEnabled && seoSize > 0) {
+            configurationResources.addAll(seoConfigurationResources);
+        }
+
+        // add rules which are executed as last, if provided
+        if (lastSize > 0) {
+            configurationResources.addAll(lastConfigurationResources);
+        }
+
+        if (!configurationResources.isEmpty() && settingsBean.isDevelopmentMode() && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
             confReloadCheckIntervalSeconds = 5;
-            logger.info("Development mode is activated."
-                    + " Setting URL rewriter configuration check interval to 5 seconds.");
+            logger.info("Development mode is activated. Setting URL rewriter configuration check interval to 5 seconds.");
         }
         // do first call to load the configuration and initialize the engine
         getEngine();
 
-        logger.info("URL rewriting service started in {} ms using configurations [{}]."
-                + " Configuration check interval set to {} seconds.",
-                new Object[] { System.currentTimeMillis() - timer, configurationResources,
-                        confReloadCheckIntervalSeconds });
+        logger.info("URL rewriting service started in {} ms using configurations [{}]. Configuration check interval set to {} seconds.",
+                new Object[]{System.currentTimeMillis() - timer, configurationResources, confReloadCheckIntervalSeconds});
     }
 
     public void destroy() throws Exception {
@@ -175,7 +157,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     /**
      * Initializes an instance of this class.
-     *
      */
     public UrlRewriteEngine getEngine() {
         try {
@@ -183,7 +164,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 if (urlRewriteEngine != null) {
                     urlRewriteEngine.destroy();
                 }
-                urlRewriteEngine = new UrlRewriteEngine(servletContext, configurationResources);
+                urlRewriteEngine = new UrlRewriteEngine(servletContext, configurationResources.toArray(new Resource[configurationResources.size()]));
                 urlRewriteEngine.setUrlResolverFactory(urlResolverFactory);
                 urlRewriteEngine.setVanityUrlService(vanityUrlService);
                 urlRewriteEngine.setUrlRewriteSeoRulesEnabled(isSeoRulesEnabled());
@@ -198,8 +179,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     protected List<HandlerMapping> getRenderMapping() {
         if (renderMapping == null) {
             LinkedList<HandlerMapping> mapping = new LinkedList<HandlerMapping>();
-            ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute(
-                    "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
+            ApplicationContext ctx = (ApplicationContext) servletContext.getAttribute("org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
             if (ctx != null) {
                 mapping.addAll(ctx.getBeansOfType(HandlerMapping.class).values());
                 mapping.addAll(ctx.getParent().getBeansOfType(HandlerMapping.class)
@@ -218,28 +198,25 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     public boolean isSeoRulesEnabled() {
         return seoRulesEnabled;
     }
-    
+
     public boolean isResrvedPrefix(String prefix) {
         return reservedUrlPrefixSet.contains(prefix);
     }
 
     protected boolean needsReloading() throws IOException {
-        if (confReloadCheckIntervalSeconds > -1 && configurationResources != null
-                && configurationResources.length > 0) {
+        if (confReloadCheckIntervalSeconds > -1 && configurationResources != null && !configurationResources.isEmpty()) {
 
             boolean doReload = false;
-
             if (confReloadCheckIntervalSeconds == 0
                     || lastChecked == 0
-                    || lastChecked + confReloadCheckIntervalSeconds * 1000L < System
-                            .currentTimeMillis()) {
+                    || lastChecked + confReloadCheckIntervalSeconds * 1000L < System.currentTimeMillis()) {
                 logger.debug("Checking for modifications in URL rewriter configuration resources.");
                 for (Resource resource : configurationResources) {
                     long resourceLastModified = FileUtils.getLastModified(resource);
                     int hash = resource.hashCode();
                     Long previous = lastModified.get(hash);
                     doReload = doReload || previous == null || resourceLastModified > previous;
-                    lastModified.put(hash, Long.valueOf(resourceLastModified));
+                    lastModified.put(hash, resourceLastModified);
                 }
                 logger.debug(doReload ? "Changes detected" : "No changes detected");
             }
@@ -261,12 +238,12 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         if (input.contains(";")) {
             input = StringUtils.substringBefore(input, ";");
         }
-        
+
         String prefix = StringUtils.EMPTY;
         if (isSeoRemoveCmsPrefix() && input.length() > 1 && input.indexOf('/') == 0) {
             int end = input.indexOf('/', 1);
-            prefix = end != -1 ? input.substring(1, end) : input.substring(1); 
-        } 
+            prefix = end != -1 ? input.substring(1, end) : input.substring(1);
+        }
         if (prefix.length() > 1) {
             boolean contains = reservedUrlPrefixSet.contains(prefix);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_ADD_CMS_PREFIX, !contains);
@@ -278,7 +255,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
 
         String path = request.getPathInfo() != null ? request.getPathInfo() : input;
-        try{
+        try {
             List<HandlerMapping> mappings = getRenderMapping();
             if (mappings != null) {
                 for (HandlerMapping mapping : mappings) {
@@ -300,7 +277,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                     }
                 }
             }
-        }catch(Exception ex) {
+        } catch (Exception ex) {
             logger.warn("Unable to load the handler mappings", ex);
         }
         String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
@@ -325,10 +302,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         } else if (path.startsWith("/sites/")) {
             targetSiteKey = StringUtils.substringAfter(path, "/sites/");
             if (targetSiteKey.contains("/")) {
-                targetSiteKey = StringUtils.substringBefore(targetSiteKey,"/");
+                targetSiteKey = StringUtils.substringBefore(targetSiteKey, "/");
             } else if (targetSiteKey.contains(".")) {
                 // remove templateType from the url
-                targetSiteKey = StringUtils.substringBeforeLast(targetSiteKey,".");
+                targetSiteKey = StringUtils.substringBeforeLast(targetSiteKey, ".");
             }
         }
 
@@ -376,13 +353,23 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public String rewriteOutbound(String url, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, ServletException,
+                                  HttpServletResponse response) throws IOException, ServletException,
             InvocationTargetException {
         return getEngine().rewriteOutbound(url, request, response);
     }
 
     public void setConfigurationResources(Resource[] configurationResources) {
-        this.configurationResources = configurationResources;
+        this.configurationResources = createIfNeededAndAddAll(configurationResources, this.configurationResources);
+    }
+
+    public void addConfigurationResource(Resource resource) {
+        configurationResources = addTo(resource, configurationResources);
+    }
+
+    public void removeConfigurationResource(Resource resource) {
+        if (configurationResources != null && resource != null) {
+            configurationResources.remove(resource);
+        }
     }
 
     public void setConfReloadCheckIntervalSeconds(int confReloadCheckIntervalSeconds) {
@@ -390,7 +377,17 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public void setSeoConfigurationResources(Resource[] seoConfigurationResources) {
-        this.seoConfigurationResources = seoConfigurationResources;
+        this.seoConfigurationResources = createIfNeededAndAddAll(seoConfigurationResources, this.seoConfigurationResources);
+    }
+
+    public void addSeoConfigurationResource(Resource resource) {
+        seoConfigurationResources = addTo(resource, seoConfigurationResources);
+    }
+
+    public void removeSeoConfigurationResource(Resource resource) {
+        if (seoConfigurationResources != null && resource != null) {
+            seoConfigurationResources.remove(resource);
+        }
     }
 
     public void setSeoRulesEnabled(boolean seoRulesEnabled) {
@@ -414,8 +411,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setReservedUrlPrefixes(String reservedUrlPrefixes) {
         this.reservedUrlPrefixSet = StringUtils.isNotBlank(reservedUrlPrefixes) ? new HashSet<String>(
-                Arrays.asList(StringUtils.split(reservedUrlPrefixes, ", "))) : Collections
-                .<String> emptySet();
+                Arrays.asList(StringUtils.split(reservedUrlPrefixes, ", "))) : Collections.<String>emptySet();
     }
 
     public void setSiteService(JahiaSitesService siteService) {
@@ -427,7 +423,17 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public void setLastConfigurationResources(Resource[] postSeoConfigurationResources) {
-        this.lastConfigurationResources = postSeoConfigurationResources;
+        this.lastConfigurationResources = createIfNeededAndAddAll(postSeoConfigurationResources, this.lastConfigurationResources);
+    }
+
+    public void addLastConfigurationResource(Resource resource) {
+        lastConfigurationResources = addTo(resource, lastConfigurationResources);
+    }
+
+    public void removeLastConfigurationResource(Resource resource) {
+        if (lastConfigurationResources != null && resource != null) {
+            lastConfigurationResources.remove(resource);
+        }
     }
 
     public boolean isSeoRemoveCmsPrefix() {
@@ -436,5 +442,25 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setSeoRemoveCmsPrefix(boolean seoRemoveCmsPrefix) {
         this.seoRemoveCmsPrefix = seoRemoveCmsPrefix;
+    }
+
+    private Set<Resource> addTo(Resource resource, Set<Resource> resources) {
+        if (resource != null) {
+            if (resources == null) {
+                resources = new HashSet<Resource>(7);
+            }
+            resources.add(resource);
+        }
+
+        return resources;
+    }
+
+    private Set<Resource> createIfNeededAndAddAll(Resource[] newResources, Set<Resource> resources) {
+        if (newResources != null) {
+            resources = new HashSet<Resource>(newResources.length);
+            Collections.addAll(resources, newResources);
+        }
+
+        return resources;
     }
 }

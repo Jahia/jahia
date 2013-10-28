@@ -49,14 +49,12 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -74,7 +72,6 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     private transient LayoutContainer mainComponent;
     private transient ComboBox<GWTJahiaNode> sitesCombo;
-    private transient SimpleComboBox<String> modulesCombo;
     private boolean filterOnAvailableSources = false;
 
     private List<String> root = Arrays.asList("/sites/*");
@@ -153,14 +150,29 @@ public class SiteSwitcherActionItem extends BaseActionItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 EditLinker editLinker = null;
-                if (linker instanceof  EditLinker) {
+                if (linker instanceof EditLinker) {
                     editLinker = (EditLinker) linker;
                 } else if (linker instanceof SidePanelTabItem.SidePanelLinker) {
                     editLinker = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
                 }
-                final GWTJahiaNode jahiaNode = event.getSelection().get(0);
+
+                final GWTJahiaNode jahiaNode;
+
+                if (event.getSelection().size() == 0) {
+                    GWTJahiaNode node = null;
+                    for (GWTJahiaNode currentNode : JahiaGWTParameters.getSitesMap().values()) {
+                        if (currentNode.getPath().equals("/sites/systemsite")) {
+                            node = currentNode;
+                            break;
+                        }
+                    }
+                    jahiaNode = node;
+                } else {
+                    jahiaNode = event.getSelection().get(0);
+                }
+
                 final EditLinker finalEditLinker = editLinker;
-                JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(jahiaNode.getPath()),GWTJahiaNode.DEFAULT_SITE_FIELDS,
+                JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(jahiaNode.getPath()), GWTJahiaNode.DEFAULT_SITE_FIELDS,
                         new BaseAsyncCallback<List<GWTJahiaNode>>() {
                             /**
                              * Called when an asynchronous call completes successfully.
@@ -170,21 +182,25 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                             @Override
                             public void onSuccess(List<GWTJahiaNode> result) {
                                 GWTJahiaNode siteNode = result.get(0);
-                                if (finalEditLinker != null && siteNode.get("j:languages") != null && ((List<String>)siteNode.get("j:languages")).size()>0 &&
-                                    !((List<String>) siteNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage()) &&
-                                    siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
+                                if (finalEditLinker != null && siteNode.get("j:languages") != null && ((List<String>) siteNode.get("j:languages")).size() > 0 &&
+                                        !((List<String>) siteNode.get("j:languages")).contains(JahiaGWTParameters.getLanguage()) &&
+                                        siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE) != null) {
                                     finalEditLinker.setLocale((GWTJahiaLanguage) siteNode.get(
                                             GWTJahiaNode.DEFAULT_LANGUAGE));
                                 }
                                 JahiaGWTParameters.setSiteNode(siteNode);
-                                if (finalEditLinker !=null && finalEditLinker.getSidePanel() != null) {
+                                if (finalEditLinker != null && finalEditLinker.getSidePanel() != null) {
                                     Map<String, Object> data = new HashMap<String, Object>();
                                     data.put(Linker.REFRESH_ALL, true);
                                     finalEditLinker.getSidePanel().refresh(data);
                                 }
                                 if (root.get(0).startsWith("/modules")) {
-                                    MainModule.staticGoTo(siteNode.getPath(), null);
-                                } else if (finalEditLinker!=null && !finalEditLinker.getMainModule().getPath().startsWith(siteNode.getPath())) {
+                                    if (!siteNode.getPath().equals("/sites/systemsite")) {
+                                        MainModule.staticGoTo(siteNode.getPath(), null);
+                                    } else if (finalEditLinker != null) {
+                                        finalEditLinker.handleNewMainSelection();
+                                    }
+                                } else if (finalEditLinker != null && !finalEditLinker.getMainModule().getPath().startsWith(siteNode.getPath())) {
                                     MainModule.staticGoTo((String) siteNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);
                                 }
                                 refreshAllSitesList(finalEditLinker);
@@ -205,12 +221,12 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         sitesCombo.setTypeAhead(true);
         sitesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
         sitesCombo.setForceSelection(true);
-        sitesCombo.getListView().setStyleAttribute("font-size","11px");
+        sitesCombo.getListView().setStyleAttribute("font-size", "11px");
         sitesCombo.setAllowBlank(true);
 //        if (filterOnAvailableSources) {
 //            sitesCombo.setWidth(250);
 //        } else {
-            sitesCombo.setWidth(200);
+        sitesCombo.setWidth(200);
 //        }
         setEnabled(true);
     }
@@ -229,10 +245,6 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        if (node.getPath().equals("/modules")) {
-            sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getUUID()));
-        } else {
-            sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()));
-        }
+        sitesCombo.setValue(JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()));
     }
 }

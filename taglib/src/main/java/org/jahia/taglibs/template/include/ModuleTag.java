@@ -303,7 +303,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                     null, add);
                         }
                         nodeTypes = oldNodeTypes;
-<<<<<<< .working
                         currentResource.getDependencies().add(node.getCanonicalPath());
                         if (isVisible) {
                             render(renderContext, resource);
@@ -312,29 +311,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         if (currentResource.getNode().getPath().equals(resource.getNode().getPath())) {
                             currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
                             currentResource.getDependencies().addAll(resource.getDependencies());
-=======
-                    }
-                    currentResource.getDependencies().add(node.getCanonicalPath());
-                    render(renderContext, resource);
-                    
-                    //Copy dependencies to parent Resource (only for include of the same node)
-                    if (currentResource.getNode().getPath().equals(resource.getNode().getPath())) {
-                        currentResource.getRegexpDependencies().addAll(resource.getRegexpDependencies());
-                        currentResource.getDependencies().addAll(resource.getDependencies());
-                        // we copy the form tokens to parent
-                        if (resource.getFormInputs() != null) {
-                            for (String key : resource.getFormInputs().keySet()) {
-                                if (currentResource.getFormInputs() == null
-                                        || !currentResource.getFormInputs().containsKey(key)) {
-                                    currentResource.addFormInputs(key, resource.getFormInputs().get(key));
-                                }
-                            }
->>>>>>> .merge-right.r47736
                         }
-                    }
-                    if (canEdit) {
                         printModuleEnd();
-<<<<<<< .working
                     } else {
                         currentResource.getDependencies().add(node.getCanonicalPath());
                         if (isVisible) {
@@ -348,9 +326,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             currentResource.getDependencies().addAll(resource.getDependencies());
                         }
                     }
-=======
-                    }                    
->>>>>>> .merge-right.r47736
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

@@ -132,6 +132,8 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         remoteUser.setName("remoteUser");
         remoteUser.setFieldLabel(Messages.get("label.remoteUser", "Remote user"));
         remoteUser.setAllowBlank(false);
+        remoteUser.setValue("root");
+        remoteUser.setEnabled(false);
         add(remoteUser);
 
         final TextField<String> remotePassword = new TextField<String>();

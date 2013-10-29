@@ -6,13 +6,6 @@
 
     <!-- Block direct access -->
     <rule enabled="true">
-        <name>Allow access</name>
-        <note>Allow access to the some resources</note>
-        <condition type="attribute" name="javax.servlet.forward.request_uri" operator="equal">^$</condition>
-        <from>^/modules/.*/FlexPaper\.properties$</from>
-        <set type="request" name="jahiaResourceAccessGranted">yes</set>
-    </rule>
-    <rule enabled="true">
         <name>Block direct access</name>
         <note>Restricts direct access to the resources</note>
         <condition type="attribute" name="javax.servlet.forward.request_uri" operator="equal">^$</condition>

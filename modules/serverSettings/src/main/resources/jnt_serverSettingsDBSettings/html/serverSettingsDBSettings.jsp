@@ -35,7 +35,7 @@ try {
         <td>${fn:escapeXml(info.URL)}</td>
 
     </tr>
-<c:if test="${ds.class.name == 'org.apache.commons.dbcp.BasicDataSource'}">
+<c:if test="${ds.class.name == 'org.apache.commons.dbcp.BasicDataSource' || ds.class.name == 'org.apache.tomcat.jdbc.pool.DataSource'}">
     <%-- Special DBCP pool case, so we can display more info --%>
     <tr>
         <td><strong><fmt:message key="serverSettings.dbSettings.pool"/>:</strong></td>

@@ -656,28 +656,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Database drivers -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${driver.mysql.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>${driver.derby.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
-            <version>${driver.derby.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${driver.postgresql.version}</version>
-        </dependency>
-
         <!-- JSTL -->
         <dependency>
             <groupId>javax.servlet</groupId>

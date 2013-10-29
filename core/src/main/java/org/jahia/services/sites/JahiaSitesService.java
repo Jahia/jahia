@@ -66,7 +66,6 @@ import org.springframework.core.io.Resource;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -84,7 +83,7 @@ public class JahiaSitesService extends JahiaService {
     private static final Pattern JCR_KEY_PATTERN = Pattern.compile("{jcr}", Pattern.LITERAL);
 
     private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
-    
+
     protected static JahiaSitesService instance = null;
 
     public static final String SYSTEM_SITE_KEY = "systemsite";
@@ -279,7 +278,7 @@ public class JahiaSitesService extends JahiaService {
     public JahiaSite addSite(final JahiaUser currentUser, final String title, final String serverName, final String siteKey, final String descr,
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
                              final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final String legacyMappingFilePath, final String legacyDefinitionsFilePath) throws JahiaException, IOException {
-        
+
         JahiaSite site = null;
         final List<Exception> errors = new ArrayList<Exception>(1);
         try {
@@ -292,7 +291,7 @@ public class JahiaSitesService extends JahiaService {
                     } catch (JahiaException e) {
                         errors.add(e);
                     }
-                    
+
                     return null;
                 }
             });
@@ -310,7 +309,7 @@ public class JahiaSitesService extends JahiaService {
                 throw new JahiaException("", "", 0, 0, e);
             }
         }
-        
+
         return site;
     }
 
@@ -453,16 +452,14 @@ public class JahiaSitesService extends JahiaService {
                         adminGroup.addMember(currentUser);
                     }
 
-                    if (!siteKey.equals(SYSTEM_SITE_KEY)) {
-                        JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getSiteKey(),
-                                JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
-                        if (sitePrivGroup == null) {
-                            sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
-                                    false);
-                        }
-                        // atach site privileged group to server privileged
-                        privGroup.addMember(sitePrivGroup);
+                    JahiaGroup sitePrivGroup = jgms.lookupGroup(site.getSiteKey(),
+                            JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                    if (sitePrivGroup == null) {
+                        sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
+                                false);
                     }
+                    // atach site privileged group to server privileged
+                    privGroup.addMember(sitePrivGroup);
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
                         siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));

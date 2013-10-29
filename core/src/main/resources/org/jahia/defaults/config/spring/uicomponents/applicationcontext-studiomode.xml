@@ -23,6 +23,7 @@
 
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="studioModeAccess"/>
+        <property name="nodeCheckPermission" value="/modules"/>
         <property name="forceHeaders" value="true"/>
         <property name="componentsPaths">
             <list>

@@ -76,6 +76,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private boolean enableDragAndDrop = true;
 
     private String requiredPermission;
+    private String nodeCheckPermission;
     private String defaultUrlMapping;
 
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
@@ -195,6 +196,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
+    }
+
+    public String getNodeCheckPermission() {
+        return nodeCheckPermission;
+    }
+
+    public void setNodeCheckPermission(String nodeCheckPermission) {
+        this.nodeCheckPermission = nodeCheckPermission;
     }
 
     public String getDefaultUrlMapping() {

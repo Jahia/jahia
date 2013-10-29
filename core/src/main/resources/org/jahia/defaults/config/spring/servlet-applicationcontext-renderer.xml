@@ -39,7 +39,6 @@
     <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="studiomode"/>
-        <property name="requiredPermission" value="studioModeAccess"/>
         <property name="availableInProductionMode" value="false"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
         <property name="workspace" value="default"/>
@@ -48,7 +47,6 @@
     <bean name="org.jahia.bin.StudioVisual" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="studiovisualmode"/>
-        <property name="requiredPermission" value="studioModeAccess"/>
         <property name="availableInProductionMode" value="false"/>
         <property name="availableInDistantPublicationServerMode" value="false"/>
         <property name="workspace" value="default"/>
@@ -57,7 +55,6 @@
     <bean name="org.jahia.bin.AdministrationLayout" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="adminmode"/>
-        <property name="requiredPermission" value="administrationAccess"/>
         <property name="availableInProductionMode" value="true"/>
         <property name="availableInDistantPublicationServerMode" value="true"/>
         <property name="workspace" value="default"/>

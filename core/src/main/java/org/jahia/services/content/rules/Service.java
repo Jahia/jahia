@@ -734,7 +734,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void updatePrivileges(NodeFact node) throws RepositoryException {
+    public void updatePrivileges(final NodeFact node) throws RepositoryException {
         final JCRSiteNode site = node.getParent().getNode().getResolveSite();
         final String name = StringUtils.substringAfterLast(node.getPath(), "/");
         if (name.startsWith("REF")) {
@@ -760,33 +760,53 @@ public class Service extends JahiaService {
         if (p != null) {
             boolean needPrivileged = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    QueryManager q = session.getWorkspace().getQueryManager();
-                    String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and isdescendantnode(ace, ['" + site.getPath() + "'])";
-                    QueryResultWrapper qr = (QueryResultWrapper) q.createQuery(sql, Query.JCR_SQL2).execute();
-
+                    List<String> rolesName = new ArrayList<String>();
                     boolean needPrivileged = false;
-                    for (FacetField facetField : qr.getFacetFields()) {
-                        if (facetField.getValues() != null) {
-                            for (Count facetFieldValue : facetField.getValues()) {
-                                try {
-                                    NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
-                                            "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + facetFieldValue.getName() + "' and isdescendantnode(r,['/roles'])",
-                                            Query.JCR_SQL2).execute().getNodes();
-                                    if (ni.hasNext()) {
-                                        JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.nextNode();
-                                        if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
-                                            needPrivileged = true;
-                                            break;
-                                        }
-                                    }
-                                } catch (PathNotFoundException e) {
-                                    // ignore exception
+                    if (node instanceof AddedNodeFact && ((AddedNodeFact) node).getNode().isNodeType("jnt:ace")) {
+                        for (Value v : ((AddedNodeFact) node).getNode().getProperty("j:roles").getValues()) {
+                            rolesName.add(v.getString());
+                        }
+                    } else {
+                        String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and isdescendantnode(ace, ['" + site.getPath() + "'])";
+                        rolesName.addAll(getRolesName(session, sql));
+                        if (StringUtils.equals(site.getPath(),JCRContentUtils.getSystemSitePath())) {
+                            sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and (not isdescendantnode(ace, ['/sites']))";
+                        }
+                        rolesName.addAll(getRolesName(session, sql));
+                    }
+                    try {
+                        for (String roleName : rolesName) {
+                            NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
+                                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + roleName + "' and isdescendantnode(r,['/roles'])",
+                                    Query.JCR_SQL2).execute().getNodes();
+                            if (ni.hasNext()) {
+                                JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.nextNode();
+                                if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
+                                    needPrivileged = true;
+                                    break;
                                 }
                             }
                         }
+                    } catch (PathNotFoundException e) {
+                        // ignore exception
                     }
-
                     return needPrivileged;
+                }
+
+                private List<String> getRolesName(JCRSessionWrapper session, String sql) throws RepositoryException {
+                    QueryManager q = session.getWorkspace().getQueryManager();
+                    // (not ([j:externalPermissionsName] is not null)) => do not return jnt:externalAce
+                    List<String> rolesName = new ArrayList<String>();
+                    QueryResultWrapper qr = (QueryResultWrapper) q.createQuery(sql, Query.JCR_SQL2).execute();
+
+                    for (FacetField facetField : qr.getFacetFields()) {
+                        if (facetField.getValues() != null) {
+                            for (Count facetFieldValue : facetField.getValues()) {
+                                rolesName.add(facetFieldValue.getName());
+                            }
+                        }
+                    }
+                    return rolesName;
                 }
             });
 

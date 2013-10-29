@@ -151,7 +151,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String PLUTO_ACTION = "ac";
     public static final String PLUTO_RESOURCE = "rs";
 
-    private String requiredPermission;
     private String workspace;
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
@@ -970,13 +969,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected boolean hasAccess(JCRNodeWrapper node) {
-        if (requiredPermission != null) {
-            try {
-                return node.getResolveSite().hasPermission(requiredPermission);
-            } catch (RepositoryException e) {
-                return false;
-            }
-        }
         return true;
     }
 
@@ -997,10 +989,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static String getRenderServletPath() {
         // TODO move this into configuration
         return "/cms/render";
-    }
-
-    public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
     }
 
     public void setWorkspace(String workspace) {

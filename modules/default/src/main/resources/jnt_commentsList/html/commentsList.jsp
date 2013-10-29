@@ -22,11 +22,13 @@
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty boundComponent}">
     <jcr:node var="comments" path="${boundComponent.path}/comments"/>
-    <c:if test="${not empty comments}">
-        <template:addCacheDependency node="${comments}"/>
-        <template:module node="${comments}" />
-    </c:if>
-    <c:if test="${empty comments}">
-        <template:addCacheDependency node="${boundComponent}"/>
-    </c:if>
+    <c:choose>
+        <c:when test="${empty comments}">
+            <template:addCacheDependency node="${boundComponent}"/>
+        </c:when>
+        <c:otherwise>
+            <template:addCacheDependency node="${comments}"/>
+            <template:module node="${comments}"/>
+        </c:otherwise>
+    </c:choose>
 </c:if>

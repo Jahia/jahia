@@ -89,7 +89,7 @@
                       j:roleGroup="server-role"
                       jcr:primaryType="jnt:role">
             <modules-access j:path="/modules"
-                            j:permissionNames="jcr:all_default studioMode"
+                            j:permissionNames="components editModeActions editSelector engineTabs jcr:all_default managers studioMode templates useComponent wysiwyg-editor-toolbar"
                             jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Gives full access to the studio"
                               jcr:language="en"

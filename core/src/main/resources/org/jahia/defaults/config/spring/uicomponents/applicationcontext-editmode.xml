@@ -452,7 +452,6 @@
                             <property name="folderTypes">
                                 <list>
                                     <value>nt:folder</value>
-                                    <value>jnt:mountPoint</value>
                                 </list>
                             </property>
                         </bean>

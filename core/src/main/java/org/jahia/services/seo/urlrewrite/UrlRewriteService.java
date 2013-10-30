@@ -121,22 +121,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
 
-        final int seoSize = seoConfigurationResources != null ? seoConfigurationResources.size() : 0;
-        final int lastSize = lastConfigurationResources != null ? lastConfigurationResources.size() : 0;
-
-        if (configurationResources == null) {
-            configurationResources = new HashSet<Resource>(seoSize + lastSize);
-        }
-
-        // add SEO rules if provided and SEO URL rewriting is enabled 
-        if (seoRulesEnabled && seoSize > 0) {
-            configurationResources.addAll(seoConfigurationResources);
-        }
-
-        // add rules which are executed as last, if provided
-        if (lastSize > 0) {
-            configurationResources.addAll(lastConfigurationResources);
-        }
+        mergeConfigurationResources();
 
         if (!configurationResources.isEmpty() && settingsBean.isDevelopmentMode() && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
             confReloadCheckIntervalSeconds = 5;
@@ -147,6 +132,25 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
         logger.info("URL rewriting service started in {} ms using configurations [{}]. Configuration check interval set to {} seconds.",
                 new Object[]{System.currentTimeMillis() - timer, configurationResources, confReloadCheckIntervalSeconds});
+    }
+
+    private void mergeConfigurationResources() {
+        final int seoSize = seoConfigurationResources != null ? seoConfigurationResources.size() : 0;
+        final int lastSize = lastConfigurationResources != null ? lastConfigurationResources.size() : 0;
+
+        if (configurationResources == null) {
+            configurationResources = new HashSet<Resource>(seoSize + lastSize);
+        }
+
+        // add SEO rules if provided and SEO URL rewriting is enabled
+        if (seoRulesEnabled && seoSize > 0) {
+            configurationResources.addAll(seoConfigurationResources);
+        }
+
+        // add rules which are executed as last, if provided
+        if (lastSize > 0) {
+            configurationResources.addAll(lastConfigurationResources);
+        }
     }
 
     public void destroy() throws Exception {
@@ -367,9 +371,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public void removeConfigurationResource(Resource resource) {
-        if (configurationResources != null && resource != null) {
-            configurationResources.remove(resource);
-        }
+        removeFrom(resource, configurationResources);
     }
 
     public void setConfReloadCheckIntervalSeconds(int confReloadCheckIntervalSeconds) {
@@ -385,9 +387,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public void removeSeoConfigurationResource(Resource resource) {
-        if (seoConfigurationResources != null && resource != null) {
-            seoConfigurationResources.remove(resource);
-        }
+        removeFrom(resource, seoConfigurationResources);
     }
 
     public void setSeoRulesEnabled(boolean seoRulesEnabled) {
@@ -431,9 +431,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public void removeLastConfigurationResource(Resource resource) {
-        if (lastConfigurationResources != null && resource != null) {
-            lastConfigurationResources.remove(resource);
-        }
+        removeFrom(resource, lastConfigurationResources);
     }
 
     public boolean isSeoRemoveCmsPrefix() {
@@ -450,9 +448,21 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 resources = new HashSet<Resource>(7);
             }
             resources.add(resource);
+
+            // make sure we reload the merged configuration resources so that changes can be detected
+            mergeConfigurationResources();
         }
 
         return resources;
+    }
+
+    private void removeFrom(Resource resource, Set<Resource> resources) {
+        if (resources != null && resource != null) {
+            resources.remove(resource);
+
+            // make sure we reload the merged configuration resources so that changes can be detected
+            mergeConfigurationResources();
+        }
     }
 
     private Set<Resource> createIfNeededAndAddAll(Resource[] newResources, Set<Resource> resources) {

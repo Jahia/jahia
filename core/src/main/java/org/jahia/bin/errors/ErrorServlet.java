@@ -41,16 +41,6 @@
 package org.jahia.bin.errors;
 
 import org.apache.commons.lang.StringUtils;
-<<<<<<< .working
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.render.URLResolver;
-import org.jahia.services.render.URLResolverFactory;
-import org.jahia.services.sites.JahiaSitesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-=======
->>>>>>> .merge-right.r47754
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -60,6 +50,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
@@ -124,9 +115,10 @@ public class ErrorServlet extends HttpServlet {
     protected String getErrorPagePath(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String page = "error_" + getErrorCode(request) + ".jsp";
-
         String path = null;
+
+        int errorCode = getErrorCode(request);
+        String page = "error_" + errorCode + ".jsp";
 
         if (siteLevelErrorPagesEnabled) {
             String siteKey = resolveSiteKey(request);
@@ -151,25 +143,10 @@ public class ErrorServlet extends HttpServlet {
                                     .getTemplatePackage(site
                                             .getTemplatePackageName());
                             if (pkg != null) {
-                                pathToCheck = pkg.getRootFolderPath()
-                                        + "/errors/" + page;
-                                path = getServletContext().getResource(
-                                        pathToCheck) != null ? pathToCheck
-                                        : null;
-                                if (null == path) {
-<<<<<<< .working
-                                    if (pkg.getResource("/errors/" + page) != null) {
-                                        path = "/modules/"+pkg.getRootFolder() + "/errors/"+ page;
-                                    } else if (pkg.getResource("/errors/error.jsp") != null) {
-                                        path = "/modules/"+pkg.getRootFolder() + "/errors/error.jsp";
-                                    }
-=======
-                                    pathToCheck = pkg.getRootFolderPath()
-                                            + "/errors/error.jsp";
-                                    path = getServletContext().getResource(
-                                            pathToCheck) != null ? pathToCheck
-                                            : null;
->>>>>>> .merge-right.r47754
+                                if (pkg.getResource("/errors/" + page) != null) {
+                                    path = "/modules/" + pkg.getRootFolder() + "/errors/" + page;
+                                } else if (pkg.getResource("/errors/error.jsp") != null) {
+                                    path = "/modules/" + pkg.getRootFolder() + "/errors/error.jsp";
                                 }
                             }
                         }

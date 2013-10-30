@@ -40,16 +40,8 @@
 
 package org.jahia.bin.errors;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
@@ -57,18 +49,34 @@ import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> .merge-right.r47754
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 /**
  * Error pages dispatcher servlet.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ErrorServlet extends HttpServlet {
@@ -80,7 +88,7 @@ public class ErrorServlet extends HttpServlet {
     public static final String MAINTENANCE_MODE = "Jahia in under maintenance";
 
     private static final long serialVersionUID = -6990851339777685000L;
-    
+
     protected boolean siteLevelErrorPagesEnabled;
 
     protected JahiaSitesService sitesService;
@@ -88,9 +96,9 @@ public class ErrorServlet extends HttpServlet {
     protected JahiaTemplateManagerService templateService;
 
     protected URLResolverFactory urlResolverFactory;
-    
+
     protected void forwardToErrorPage(String errorPagePath, HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+                                      HttpServletResponse response) throws ServletException, IOException {
         if (null == errorPagePath) {
             logger.info("No appropriate error page found for error code '" + getErrorCode(request)
                     + "'. Using server's default page.");
@@ -116,72 +124,70 @@ public class ErrorServlet extends HttpServlet {
     protected String getErrorPagePath(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String page = "error_" + getErrorCode(request) + ".jsp";
+
         String path = null;
-        String page = request.getParameter("page");
-        int errorCode = getErrorCode(request);
 
-        if (null == page) {
-            page = "error_" + errorCode + ".jsp";
-        }
+        if (siteLevelErrorPagesEnabled) {
+            String siteKey = resolveSiteKey(request);
 
-        // use specified page
-        if (page.startsWith("/")) {
-            // absolute path specified
-            if (getServletContext().getResource(page) != null) {
-                path = page;
-            } else {
-                logger.warn("No resource found at the specified path '" + page
-                        + "'. Fallback to standard error page heuristic algorithm.");
-            }
-        }
-
-        if (null == path) {
-            if (siteLevelErrorPagesEnabled) {
-                String siteKey = resolveSiteKey(request);
-
-                // site information available?
-                if (siteKey != null) {
-                    // check site-specific page
-                    String pathToCheck = "/errors/sites/" + siteKey + "/" + page;
-                    if (getServletContext().getResource(pathToCheck) != null) {
-                        path = pathToCheck;
-                    } else {
-                        pathToCheck = "/errors/sites/" + siteKey + "/error.jsp";
-                        path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                                : null;
-                    }
-                    if (null == path) {
-                        try {
-                            JahiaSite site = sitesService.getSiteByKey(siteKey);
-                            if (site != null) {
-                                // try template set error page considering inheritance
-                                JahiaTemplatesPackage pkg = templateService
-                                        .getTemplatePackage(site
-                                                .getTemplatePackageName());
-                                if (pkg != null) {
+            // site information available?
+            if (siteKey != null) {
+                // check site-specific page
+                String pathToCheck = "/errors/sites/" + siteKey + "/" + page;
+                if (getServletContext().getResource(pathToCheck) != null) {
+                    path = pathToCheck;
+                } else {
+                    pathToCheck = "/errors/sites/" + siteKey + "/error.jsp";
+                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                            : null;
+                }
+                if (null == path) {
+                    try {
+                        JahiaSite site = sitesService.getSiteByKey(siteKey);
+                        if (site != null) {
+                            // try template set error page considering inheritance
+                            JahiaTemplatesPackage pkg = templateService
+                                    .getTemplatePackage(site
+                                            .getTemplatePackageName());
+                            if (pkg != null) {
+                                pathToCheck = pkg.getRootFolderPath()
+                                        + "/errors/" + page;
+                                path = getServletContext().getResource(
+                                        pathToCheck) != null ? pathToCheck
+                                        : null;
+                                if (null == path) {
+<<<<<<< .working
                                     if (pkg.getResource("/errors/" + page) != null) {
                                         path = "/modules/"+pkg.getRootFolder() + "/errors/"+ page;
                                     } else if (pkg.getResource("/errors/error.jsp") != null) {
                                         path = "/modules/"+pkg.getRootFolder() + "/errors/error.jsp";
                                     }
+=======
+                                    pathToCheck = pkg.getRootFolderPath()
+                                            + "/errors/error.jsp";
+                                    path = getServletContext().getResource(
+                                            pathToCheck) != null ? pathToCheck
+                                            : null;
+>>>>>>> .merge-right.r47754
                                 }
                             }
-                        } catch (JahiaException e) {
-                            logger.debug("Cannot find site",e);
                         }
+                    } catch (JahiaException e) {
+                        logger.debug("Cannot find site", e);
                     }
                 }
             }
+        }
 
-            if (null == path) {
-                String pathToCheck = "/errors/" + page;
-                if (getServletContext().getResource(pathToCheck) != null) {
-                    path = pathToCheck;
-                } else {
-                    pathToCheck = "/errors/error.jsp";
-                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                            : null;
-                }
+        if (null == path) {
+            String pathToCheck = "/errors/" + page;
+            if (getServletContext().getResource(pathToCheck) != null) {
+                path = pathToCheck;
+            } else {
+                pathToCheck = "/errors/error.jsp";
+                path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+                        : null;
             }
         }
 
@@ -265,11 +271,11 @@ public class ErrorServlet extends HttpServlet {
         } else {
             if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
                     && StringUtils.equals(ErrorServlet.MAINTENANCE_MODE,
-                            (String) request.getAttribute("javax.servlet.error.message"))) {
+                    (String) request.getAttribute("javax.servlet.error.message"))) {
                 forwardToErrorPage("/errors/maintenance.jsp", request, response);
             } else if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
                     && StringUtils.equals(ErrorServlet.LICENSE_TERMS_VIOLATION_MODE,
-                            (String) request.getAttribute("javax.servlet.error.message"))) {
+                    (String) request.getAttribute("javax.servlet.error.message"))) {
                 forwardToErrorPage("/errors/license.jsp", request, response);
             } else {
                 // otherwise continue with processing of the error

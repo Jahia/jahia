@@ -40,8 +40,8 @@
 
 package org.jahia.services.render;
 
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.services.content.*;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
@@ -52,6 +52,7 @@ import javax.jcr.observation.EventIterator;
 
 /**
  * JCR listener to invalidate URL resolver caches
+ *
  * @todo This implementation is not optimal, we should try to perfom finer invalidations.
  */
 public class URLResolverListener extends DefaultEventListener {
@@ -63,7 +64,7 @@ public class URLResolverListener extends DefaultEventListener {
 
     @Override
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.NODE_MOVED;
+        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.NODE_MOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED;
     }
 
     public void onEvent(final EventIterator events) {
@@ -71,32 +72,20 @@ public class URLResolverListener extends DefaultEventListener {
             return;
         }
         try {
-            String userId = ((JCREventIterator)events).getSession().getUserID();
-            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
-                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
-            }
+            while (events.hasNext()) {
+                Event event = events.nextEvent();
 
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    while (events.hasNext()) {
-                        Event event = events.nextEvent();
-
-                        if (isExternal(event)) {
-                            continue;
-                        }
-
-                        String path = event.getPath();
-                        if (event.getType() == Event.NODE_ADDED) {
-                            nodeAdded(session, path);
-                        } else if (event.getType() == Event.NODE_REMOVED) {
-                            nodeRemoved(session, path);
-                        } else if (event.getType() == Event.NODE_MOVED) {
-                            nodeMoved(session, path);
-                        }
-                    }
-                    return null;  
+                if (isExternal(event)) {
+                    continue;
                 }
-            });
+
+                String path = event.getPath();
+                if (event.getType() == Event.NODE_ADDED || event.getType() == Event.NODE_REMOVED || event.getType() == Event.NODE_MOVED ||
+                        path.endsWith("/j:published") ) {
+                    flushCaches(path);
+                    return;
+                }
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -109,26 +98,13 @@ public class URLResolverListener extends DefaultEventListener {
 
     public void setVanityUrlService(VanityUrlService vanityUrlService) {
         this.vanityUrlService = vanityUrlService;
-    }    
-    
-    private void nodeAdded(JCRSessionWrapper session, String path) throws RepositoryException {
+    }
+
+    private void flushCaches(String path) throws RepositoryException {
         urlResolverFactory.flushCaches();
         if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
             vanityUrlService.flushCaches();
         }
     }
 
-    private void nodeRemoved(JCRSessionWrapper session, String path) throws RepositoryException {
-        urlResolverFactory.flushCaches();
-        if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
-            vanityUrlService.flushCaches();
-        }
-    }
-
-    private void nodeMoved(JCRSessionWrapper session, String path) {
-        urlResolverFactory.flushCaches();
-        if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
-            vanityUrlService.flushCaches();
-        }
-    }
 }

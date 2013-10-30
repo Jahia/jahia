@@ -134,6 +134,8 @@
             <entry key="jnt:modules">
                 <list>
                     <value>studioMode</value>
+                    <value>editMode,contributeMode,managers,wysiwyg-editor-toolbar</value>
+                    <value>templates,components</value>
                     <value>repository-default</value>
                 </list>
             </entry>

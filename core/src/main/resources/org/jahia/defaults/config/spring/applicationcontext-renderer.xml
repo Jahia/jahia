@@ -179,7 +179,6 @@
                 <value type="java.lang.String">variant</value>
                 <value type="java.lang.String">noembed</value>
             </list>
-<<<<<<< .working
         </property>
         <property name="traverser"
                   ref="org.jahia.services.render.filter.URLTraverser"/>
@@ -190,6 +189,7 @@
         <property name="description"
                   value="Traverses the content and searches for URLs in the configured elements. Executes the list of configured visitors (ContextPlaceholdersReplacer, VanityUrlSetter and SiteParameterAdder) to modify the URL value."/>
         <property name="applyOnConfigurations" value="page,gwt,module,wrappedcontent"/>
+        <property name="applyOnTemplateTypes" value="html,html-.+" />
         <property name="handlers">
             <list>
                 <bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer">
@@ -200,28 +200,6 @@
                               ref="org.jahia.services.seo.jcr.VanityUrlService"/>
                     <property name="urlResolverFactory" ref="urlResolverFactory"/>
                 </bean>
-=======
-		</property>
-		<property name="traverser"
-			ref="org.jahia.services.render.filter.URLTraverser" />
-	</bean>
-	<bean class="org.jahia.services.render.filter.URLFilter">
-		<constructor-arg ref="org.jahia.services.render.filter.URLTraverser" />
-		<property name="priority" value="21" />
-        <property name="description" value="Traverses the content and searches for URLs in the configured elements. Executes the list of configured visitors (ContextPlaceholdersReplacer, VanityUrlSetter and SiteParameterAdder) to modify the URL value."/>
-		<property name="applyOnConfigurations" value="page,gwt,module,wrappedcontent" />
-        <property name="applyOnTemplateTypes" value="html,html-.+" />
-		<property name="handlers">
-			<list>
-				<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer">
-            <property name="urlRewriteService" ref="UrlRewriteService" />
-				</bean>
-				<bean class="org.jahia.services.seo.filter.VanityUrlSetter">
-					<property name="vanityUrlService"
-						ref="org.jahia.services.seo.jcr.VanityUrlService" />
-                    <property name="urlResolverFactory" ref="urlResolverFactory" />
-				</bean>
->>>>>>> .merge-right.r47767
                 <bean class="org.jahia.services.render.filter.SiteParameterAdder">
                     <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
                 </bean>

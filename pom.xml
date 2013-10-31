@@ -31,6 +31,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+<<<<<<< .working
+=======
+        <jahia.package.version>${project.version}</jahia.package.version>
+        <jahia.project.structure.version>2</jahia.project.structure.version>
+
+        <jahia.deployers.version>2.7.2</jahia.deployers.version>
+
+        <jahia.war.classifier />
+
+>>>>>>> .merge-right.r47770
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <springwebflow-version>2.3.2.RELEASE</springwebflow-version>
@@ -80,6 +90,7 @@
         <surefire.plugin.version>2.7.2</surefire.plugin.version>
         <eclipse.plugin.version>2.8</eclipse.plugin.version>
 
+<<<<<<< .working
         <!-- OSGi versions -->
         <felix.framework.version>4.2.1</felix.framework.version>
         <felix.http.version>2.2.0</felix.http.version>
@@ -110,6 +121,27 @@
             org.jahia.exceptions,
             org.jahia.services
         </jahia.modules.importPackage>
+=======
+        <!-- Jahia Maven plugin version and default settings -->
+        <jahia.plugin.version>3.0.2</jahia.plugin.version>
+        <!-- common settings -->
+        <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
+		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
+		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+        <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
+        <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
+        <jahia.deploy.war.contextPath />
+        <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
+        <!-- DBMS -->
+        <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
+        <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
+        <jahia.configure.databaseUsername />
+        <jahia.configure.databasePassword />
+        <!-- Application server -->
+        <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+        <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
+        <!-- end of Jahia Maven plugin default settings -->
+>>>>>>> .merge-right.r47770
     </properties>
 
     <scm>

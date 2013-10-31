@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueFactoryImpl;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
@@ -52,19 +53,43 @@ import javax.jcr.ValueFormatException;
  * Intercepts reading of reference/weakreference property values to translate the path from modules to site.
  */
 public class TemplateModuleInterceptor extends BaseInterceptor {
-    private final static int TEMPLATE = 3;
-    @Override
-    public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
+    
+    private static final int TEMPLATES_TOKEN_POSITION = 3;
 
-        if (StringUtils.startsWith(property.getSession().getSitePath(), "/sites") && StringUtils.startsWith(property.getPath(),"/modules") && StringUtils.equals(StringUtils.split(property.getPath(),"/")[TEMPLATE],"templates")) {
-            String referencePath = property.getSession().getNodeByIdentifier(storedValue.getString()).getPath();
-            String[] path = StringUtils.split(referencePath,"/");
-            StringBuilder sitePath = new StringBuilder(property.getSession().getSitePath());
-            if (StringUtils.startsWith(referencePath,"/modules") && path.length > 2 && !StringUtils.equals(path[TEMPLATE],"templates")) {
-                for (int i=TEMPLATE; i < path.length;i++) {
-                    sitePath.append("/").append(path[i]);
+    @Override
+    public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException,
+            RepositoryException {
+        String sessionSitePath = property.getSession().getSitePath();
+        if (StringUtils.startsWith(sessionSitePath, "/sites")) {
+            // we are under a site
+            String propertyPath = property.getPath();
+            if (propertyPath.startsWith("/modules/")) {
+                // node is under /modules
+                String[] propertyPathTokens = StringUtils.split(propertyPath, "/", TEMPLATES_TOKEN_POSITION + 2);
+                if (propertyPathTokens.length >= (TEMPLATES_TOKEN_POSITION + 2)
+                        && "templates".equals(propertyPathTokens[TEMPLATES_TOKEN_POSITION])) {
+                    // our node is under "templates" node in a module
+                    try {
+                        String referencePath = property.getSession().getNodeByIdentifier(storedValue.getString())
+                                .getPath();
+                        if (referencePath.startsWith("/modules/")) {
+                            // target is also in a module
+                            String[] path = StringUtils.split(referencePath, "/");
+                            if (path.length >= TEMPLATES_TOKEN_POSITION
+                                    && !"templates".equals(path[TEMPLATES_TOKEN_POSITION])) {
+                                StringBuilder sitePath = new StringBuilder(64);
+                                sitePath.append(sessionSitePath);
+                                for (int i = TEMPLATES_TOKEN_POSITION; i < path.length; i++) {
+                                    sitePath.append("/").append(path[i]);
+                                }
+                                return JCRValueFactoryImpl.getInstance().createValue(
+                                        property.getSession().getNode(sitePath.toString()));
+                            }
+                        }
+                    } catch (ItemNotFoundException e) {
+                        // referenced node not available
+                    }
                 }
-                return JCRValueFactoryImpl.getInstance().createValue(property.getSession().getNode(sitePath.toString()));
             }
         }
         return storedValue;

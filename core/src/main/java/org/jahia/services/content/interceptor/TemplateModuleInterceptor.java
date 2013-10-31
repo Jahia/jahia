@@ -52,14 +52,16 @@ import javax.jcr.ValueFormatException;
  * Intercepts reading of reference/weakreference property values to translate the path from modules to site.
  */
 public class TemplateModuleInterceptor extends BaseInterceptor {
+    private final static int TEMPLATE = 3;
     @Override
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
-        if (StringUtils.startsWith(property.getSession().getSitePath(), "/sites") && StringUtils.startsWith(property.getPath(),"/modules")) {
-            String localPath = property.getSession().getNodeByIdentifier(storedValue.getString()).getPath();
-            String[] path = StringUtils.split(localPath,"/");
-            if (StringUtils.startsWith(localPath,"/modules") && path.length > 2 && !StringUtils.equals(path[3],"templates")) {
-                StringBuilder sitePath = new StringBuilder(property.getSession().getSitePath());
-                for (int i=3; i < path.length;i++) {
+
+        if (StringUtils.startsWith(property.getSession().getSitePath(), "/sites") && StringUtils.startsWith(property.getPath(),"/modules") && StringUtils.equals(StringUtils.split(property.getPath(),"/")[TEMPLATE],"templates")) {
+            String referencePath = property.getSession().getNodeByIdentifier(storedValue.getString()).getPath();
+            String[] path = StringUtils.split(referencePath,"/");
+            StringBuilder sitePath = new StringBuilder(property.getSession().getSitePath());
+            if (StringUtils.startsWith(referencePath,"/modules") && path.length > 2 && !StringUtils.equals(path[TEMPLATE],"templates")) {
+                for (int i=TEMPLATE; i < path.length;i++) {
                     sitePath.append("/").append(path[i]);
                 }
                 return JCRValueFactoryImpl.getInstance().createValue(property.getSession().getNode(sitePath.toString()));

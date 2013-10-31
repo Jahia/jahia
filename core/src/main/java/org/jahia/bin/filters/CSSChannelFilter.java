@@ -121,17 +121,17 @@ public class CSSChannelFilter implements Filter {
                     }
 
                     CascadingStyleSheet sheet = new CascadingStyleSheet();
-                    final List<CSSMediaRule> allMediaRules = css.getAllMediaRules();
-                    for (CSSMediaRule rule : allMediaRules) {
-                        final List<ICSSTopLevelRule> allRules = rule.getAllRules();
-                        for (ICSSTopLevelRule icssTopLevelRule : allRules) {
-                            sheet.addRule(icssTopLevelRule);
-                        }
 
-                    }
-                    final List<CSSImportRule> allImportRules = css.getAllImportRules();
-                    for (CSSImportRule importRule : allImportRules) {
-                        sheet.addImportRule(importRule);
+                    final List<ICSSTopLevelRule> allRules = css.getAllRules();
+                    for (ICSSTopLevelRule rule : allRules) {
+                        if (rule instanceof CSSMediaRule) {
+                            final List<ICSSTopLevelRule> allRulesInMediaRule = ((CSSMediaRule)rule).getAllRules();
+                            for (ICSSTopLevelRule icssTopLevelRule : allRulesInMediaRule) {
+                                sheet.addRule(icssTopLevelRule);
+                            }
+                        } else {
+                            sheet.addRule(rule);
+                        }
                     }
                     CSSWriter w = new CSSWriter(ECSSVersion.CSS30);
                     w.writeCSS(sheet, response.getWriter());

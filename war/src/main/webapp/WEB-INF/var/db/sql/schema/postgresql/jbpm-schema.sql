@@ -1,3 +1,4 @@
+
     alter table jbpm_attachment 
         drop constraint FK_anhlt1ywoxmhaippy7h78baxk;
 
@@ -130,9 +131,6 @@
     alter table jbpm_task_comment 
         drop constraint FK_nuqjfe1rpp1ad7jlfjjki6tog;
 
-    alter table jbpm_task_event 
-        drop constraint FK_jgfka618xsfgj4vxibvs81mln;
-
     drop table if exists jbpm_attachment cascade;
 
     drop table if exists jbpm_bamtask_summary cascade;
@@ -246,7 +244,7 @@
     drop sequence WORKITEMINFO_ID_SEQ;
 
     create table jbpm_attachment (
-        attachment_id int8 not null,
+        id int8 not null,
         access_type int4,
         attached_at timestamp,
         attachment_content_id int8 not null,
@@ -255,11 +253,11 @@
         attachment_size int4,
         attached_by varchar(255),
         task_data_attachments_id int8,
-        primary key (attachment_id)
+        primary key (id)
     );
 
     create table jbpm_bamtask_summary (
-        bamtask_id int8 not null,
+        pk int8 not null,
         created_date timestamp,
         duration int8,
         end_date timestamp,
@@ -269,7 +267,7 @@
         task_id int8 not null,
         task_name varchar(255),
         user_id varchar(255),
-        primary key (bamtask_id)
+        primary key (pk)
     );
 
     create table jbpm_boolean_expression (
@@ -344,11 +342,11 @@
 
     create table jbpm_event_types (
         instance_id int8 not null,
-        event_types varchar(255)
+        element varchar(255)
     );
 
     create table jbpm_i18ntext (
-        i18ntext_id int8 not null,
+        id int8 not null,
         language varchar(255),
         short_text varchar(255),
         text text,
@@ -361,7 +359,7 @@
         notification_documentation_id int8,
         notification_descriptions_id int8,
         deadline_documentation_id int8,
-        primary key (i18ntext_id)
+        primary key (id)
     );
 
     create table jbpm_node_instance_log (
@@ -389,10 +387,10 @@
 
     create table jbpm_notification (
         dtype varchar(31) not null,
-        notification_id int8 not null,
+        id int8 not null,
         priority int4 not null,
         escalation_notifications_id int8,
-        primary key (notification_id)
+        primary key (id)
     );
 
     create table jbpm_notification_bas (
@@ -486,7 +484,7 @@
     );
 
     create table jbpm_task (
-        task_id int8 not null,
+        id int8 not null,
         archived int2,
         allowed_to_delegate varchar(255),
         form_name varchar(255),
@@ -519,7 +517,7 @@
         task_initiator varchar(255),
         actual_owner varchar(255),
         created_by varchar(255),
-        primary key (task_id)
+        primary key (id)
     );
 
     create table jbpm_task_comment (
@@ -532,11 +530,12 @@
     );
 
     create table jbpm_task_event (
-        task_event_id int8 not null,
-        task_id int8 not null,
-        type int4,
-        r_user varchar(255),
-        primary key (task_event_id)
+        id int8 not null,
+        log_time timestamp,
+        task_id int8,
+        type varchar(255),
+        user_id varchar(255),
+        primary key (id)
     );
 
     create table jbpm_variable_instance_log (
@@ -785,11 +784,6 @@
         add constraint FK_nuqjfe1rpp1ad7jlfjjki6tog 
         foreign key (task_data_comments_id) 
         references jbpm_task;
-
-    alter table jbpm_task_event 
-        add constraint FK_jgfka618xsfgj4vxibvs81mln 
-        foreign key (r_user) 
-        references jbpm_organizational_entity;
 
     create sequence ATTACHMENT_ID_SEQ;
 

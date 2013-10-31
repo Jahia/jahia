@@ -73,47 +73,44 @@ import java.util.*;
 /**
  * JBPM Task lifecycle event listener
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 4 févr. 2010
  */
 public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventListener {
 
-    private static final long serialVersionUID = 4434614988996316632L;
-
     @Override
     public void afterTaskActivatedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
     public void afterTaskClaimedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
     public void afterTaskSkippedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
     public void afterTaskStartedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
     public void afterTaskStoppedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
     public void afterTaskCompletedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
     public void afterTaskFailedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     @Override
@@ -141,7 +138,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
 
     @Override
     public void afterTaskExitedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     protected void createTask(final Task task,
@@ -162,7 +159,6 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                 workspace = (String) workflow.getVariables().get("workspace");
             }
             JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), workspace, null, new JCRCallback<Object>() {
-                @SuppressWarnings("unchecked")
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
                     if (user instanceof JCRUser) {
@@ -240,7 +236,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                                 WorkflowVariable workflowVariable = (WorkflowVariable) variable;
                                 data.setProperty(s, workflowVariable.getValue(), workflowVariable.getType());
                             } else if (variable instanceof List) {
-                                List list = (List) variable;
+                                List<?> list = (List<?>) variable;
                                 List<Value> v = new ArrayList<Value>();
                                 for (Object o : list) {
                                     if (o instanceof WorkflowVariable) {
@@ -261,5 +257,35 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                 }
             });
         }
+    }
+
+    @Override
+    public void afterTaskDelegatedEvent(Task arg0) {
+        // do nothing
+        
+    }
+
+    @Override
+    public void afterTaskForwardedEvent(Task arg0) {
+        // do nothing
+        
+    }
+
+    @Override
+    public void afterTaskReleasedEvent(Task arg0) {
+        // do nothing
+        
+    }
+
+    @Override
+    public void afterTaskResumedEvent(Task arg0) {
+        // do nothing
+        
+    }
+
+    @Override
+    public void afterTaskSuspendedEvent(Task arg0) {
+        // do nothing
+        
     }
 }

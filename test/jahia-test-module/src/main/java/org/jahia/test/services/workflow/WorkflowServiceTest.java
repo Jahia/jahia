@@ -156,7 +156,7 @@ public class WorkflowServiceTest {
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         assertTrue("There should be some active activities for the first workflow in jBPM", activeWorkflows.get(0)
                 .getAvailableActions().size() > 0);
@@ -184,7 +184,7 @@ public class WorkflowServiceTest {
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -202,7 +202,7 @@ public class WorkflowServiceTest {
                 "accept") ? "accept" : "reject", emptyMap);
         assertTrue(service.getTasksForUser(user, Locale.ENGLISH).size() < forUser.size());
         getCleanStageNode();
-        assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
+        assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).equals(actionSet));
     }
 
     @Test
@@ -227,7 +227,7 @@ public class WorkflowServiceTest {
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -240,7 +240,7 @@ public class WorkflowServiceTest {
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "accept", emptyMap);
         //assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
-        assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
+        assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).equals(actionSet));
         // Assign john smoe to the next task
         actionSet = service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH);
         service.assignTask(((WorkflowTask) actionSet.iterator().next()).getId(), PROVIDER, johnsmoe);
@@ -331,7 +331,7 @@ public class WorkflowServiceTest {
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
-        List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -345,7 +345,7 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "accept", emptyMap);
         //assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
 
-        activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
         action = actionSet.iterator().next();
@@ -358,7 +358,7 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "publish", emptyMap);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
 
-        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH).isEmpty());
+        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).isEmpty());
     }
 
     @Test
@@ -383,7 +383,7 @@ public class WorkflowServiceTest {
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -396,7 +396,7 @@ public class WorkflowServiceTest {
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "accept", emptyMap);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
-        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH).isEmpty());
+        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).isEmpty());
     }
 
     @Test
@@ -421,7 +421,7 @@ public class WorkflowServiceTest {
         assertNotNull("The startup of a process should have return an id", processId);
         Thread.sleep(MILLIS);
         getCleanStageNode();
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -434,7 +434,7 @@ public class WorkflowServiceTest {
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "reject", emptyMap);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
-        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH).isEmpty());
+        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).isEmpty());
     }
 
     @Test

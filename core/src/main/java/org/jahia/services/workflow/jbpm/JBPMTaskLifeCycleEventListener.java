@@ -162,7 +162,6 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                 workspace = (String) workflow.getVariables().get("workspace");
             }
             JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), workspace, null, new JCRCallback<Object>() {
-                @SuppressWarnings("unchecked")
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRUser jcrUser;
                     if (user instanceof JCRUser) {

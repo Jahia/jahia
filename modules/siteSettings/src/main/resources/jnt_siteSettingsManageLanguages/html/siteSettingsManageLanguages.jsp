@@ -10,6 +10,7 @@
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
+<c:set var="uiLocale" value="${renderContext.UILocale}"/>
 <c:set var="siteKey" value="${site.name}"/>
 <c:set var="installedModules" value="${site.installedModules}"/>
 <c:set var="templatePackageName" value="${site.templatePackageName}"/>
@@ -108,7 +109,7 @@
 <%
     JCRSiteNode site = (JCRSiteNode) pageContext.getAttribute("site");
     Resource r = (Resource) request.getAttribute("currentResource");
-    final Locale currentLocale = r.getLocale();
+    final Locale currentLocale = (Locale) pageContext.getAttribute("uiLocale");
     Set<Locale> siteLocales = new TreeSet<Locale>(new Comparator<Locale>() {
         public int compare(Locale o1, Locale o2) {
             return o1.getDisplayName(currentLocale).compareTo(o2.getDisplayName(currentLocale));
@@ -119,7 +120,7 @@
 
     request.setAttribute("siteLocales", siteLocales);
 
-    request.setAttribute("availableLocales", LanguageCodeConverters.getSortedLocaleList(r.getLocale()));
+    request.setAttribute("availableLocales", LanguageCodeConverters.getSortedLocaleList(currentLocale));
 %>
 
 

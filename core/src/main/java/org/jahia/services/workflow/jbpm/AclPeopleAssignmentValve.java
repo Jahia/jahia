@@ -3,7 +3,6 @@ package org.jahia.services.workflow.jbpm;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -12,7 +11,6 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.custom.JahiaLocalHTWorkItemHandler;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
@@ -33,12 +31,8 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
 
         JahiaLocalHTWorkItemHandler.PeopleAssignmentContext peopleAssignmentContext = (JahiaLocalHTWorkItemHandler.PeopleAssignmentContext) context;
         Task task = peopleAssignmentContext.getTask();
-        WorkItem workItem = peopleAssignmentContext.getWorkItem();
-//        String nodeId = (String) workItem.getParameter("nodeId");
         WorkflowDefinition def = provider.getWorkflowDefinitionById(task.getTaskData().getProcessId(), null);
-        JCRNodeWrapper node = null;
         try {
-//            node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(nodeId);
             String name = task.getNames().get(0).getText();
 
             PeopleAssignments peopleAssignments = task.getPeopleAssignments();

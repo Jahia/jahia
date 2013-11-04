@@ -41,16 +41,9 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
-import org.drools.compiler.kie.builder.impl.FileKieModule;
-import org.drools.compiler.kie.builder.impl.MemoryKieModule;
-import org.drools.compiler.kie.builder.impl.ZipKieModule;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.templates.JahiaModuleAware;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
-import org.kie.api.builder.KieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -58,25 +51,26 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * Loader that initializes workflow processes defined in modules
  */
-public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean, JahiaModuleAware {
+public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean {
+
+    private static final List<String> FIELDS = Arrays.asList("from", "to", "cc", "bcc",
+            "from-users", "to-users", "cc-users", "bcc-users",
+            "from-groups", "to-groups", "cc-groups", "bcc-groups",
+            "subject", "text", "html", "language");
 
     private transient static Logger logger = LoggerFactory.getLogger(JBPMModuleProcessLoader.class);
 
     private Resource[] processes;
     private Resource[] mailTemplates;
     private MailTemplateRegistry mailTemplateRegistry;
-    private JahiaTemplatesPackage module;
     private JBPM6WorkflowProvider jbpm6WorkflowProvider;
 
     public void setJbpm6WorkflowProvider(JBPM6WorkflowProvider jbpm6WorkflowProvider) {
@@ -85,11 +79,6 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
         this.mailTemplateRegistry = mailTemplateRegistry;
-    }
-
-    @Override
-    public void setJahiaModule(JahiaTemplatesPackage module) {
-        this.module = module;
     }
 
     @Override
@@ -121,11 +110,6 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
 
-            List keys = Arrays.asList("from", "to", "cc", "bcc",
-                    "from-users", "to-users", "cc-users", "bcc-users",
-                    "from-groups", "to-groups", "cc-groups", "bcc-groups",
-                    "subject", "text", "html", "language");
-
             for (Resource mailTemplateResource : mailTemplates) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
                 MailTemplate mailTemplate = new MailTemplate();
@@ -140,11 +124,11 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 StringBuilder buf = new StringBuilder();
                 while ((currentLine = reader.readLine()) != null) {
                     if (currentLine.contains(":")) {
-                        String prefix = StringUtils.substringBefore(currentLine, ":");
-                        if (keys.contains(prefix.toLowerCase())) {
+                        String prefix = StringUtils.substringBefore(currentLine, ":").toLowerCase();
+                        if (FIELDS.contains(prefix)) {
                             setMailTemplateField(mailTemplate, currentField, buf);
                             buf = new StringBuilder();
-                            currentField = keys.indexOf(prefix.toLowerCase());
+                            currentField = FIELDS.indexOf(prefix);
                             currentLine = StringUtils.substringAfter(currentLine, ":").trim();
                         }
                     } else {

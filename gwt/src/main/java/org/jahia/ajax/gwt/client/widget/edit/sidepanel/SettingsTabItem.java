@@ -285,7 +285,7 @@ public class SettingsTabItem extends SidePanelTabItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        if (this.mainNode == null || !this.mainNode.getPath().equals(node.getPath())) {
+        if (this.mainNode == null || !this.mainNode.getSiteKey().equals(node.getSiteKey())) {
             this.mainNode = node;
             doRefresh();
         }

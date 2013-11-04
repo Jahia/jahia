@@ -46,20 +46,19 @@ import org.jahia.services.content.JCRTemplate;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+
 import java.util.List;
 
 /**
  * Sets a property on a node
  */
 public class SetPropertyWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
-    private static final long serialVersionUID = 1L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishWorkItemHandler.class);
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         final String workspace = (String) workItem.getParameter("workspace");
         final String propertyName = (String) workItem.getParameter("propertyName");

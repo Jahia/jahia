@@ -46,6 +46,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import javax.jcr.RepositoryException;
+
 import java.util.List;
 
 /**
@@ -54,10 +55,10 @@ import java.util.List;
  * Lock the current node
  */
 public class UnlockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
-    private static final long serialVersionUID = 1L;
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         List<String> info = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         try {

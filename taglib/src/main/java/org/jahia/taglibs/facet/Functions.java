@@ -55,6 +55,7 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -137,6 +138,7 @@ public class Functions {
                     facetKey = facetCount.getFacetField().getName();
                     facetValue = facetCount.getName();
                 } else if (facetValueObj instanceof Map.Entry<?, ?>) {
+                    @SuppressWarnings("unchecked")
                     Map.Entry<String, Long> facetCount = (Map.Entry<String, Long>) facetValueObj;
                     facetKey = facetCount.getKey();
                     facetValue = facetCount.getValue().toString();
@@ -175,6 +177,7 @@ public class Functions {
                 builder.append(facetValue.getFacetField().getName()).append(FACET_PARAM_DELIM).append(facetValue.getName()).append(
                         FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());
             } else if (facetValueObj instanceof Map.Entry<?, ?>) {
+                @SuppressWarnings("unchecked")
                 Map.Entry<String, Long> facetValue = (Map.Entry<String, Long>) facetValueObj;
                 builder.append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey());
             } else {
@@ -201,7 +204,6 @@ public class Functions {
      * @param queryString the current facet filter URL query parameter 
      * @return the new facet filter URL query parameter
      */
-    @SuppressWarnings("unchecked")
     public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
         // retrieve all facet Strings from query
         final String[] facets = queryString.split(ESCAPED_FACET_DELIM);

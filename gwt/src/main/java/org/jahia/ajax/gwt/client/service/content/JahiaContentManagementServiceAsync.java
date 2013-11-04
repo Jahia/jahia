@@ -248,7 +248,7 @@ public interface JahiaContentManagementServiceAsync {
 
     public void getWorkflowHistoryProcesses(String nodeId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
-    public void getWorkflowHistoryTasks(String provider, String processId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
+    public void getWorkflowHistoryTasks(String provider, String processId, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
     void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>> async);
 

@@ -132,7 +132,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                     }
                 } else if (loadConfig instanceof GWTJahiaWorkflowHistoryProcess) {
                     final GWTJahiaWorkflowHistoryProcess process = (GWTJahiaWorkflowHistoryProcess) loadConfig;
-                    service.getWorkflowHistoryTasks(process.getProvider(), process.getProcessId(), locale, callback);
+                    service.getWorkflowHistoryTasks(process.getProvider(), process.getProcessId(), callback);
                 } else {
                     callback.onSuccess(new ArrayList<GWTJahiaWorkflowHistoryItem>());
                 }

@@ -66,7 +66,8 @@ public class ActiveWorkflowTag extends AbstractJahiaTag {
     private Locale locale;
 
     public int doEndTag() throws JspException {
-        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : getUILocale());
+        Locale uiLocale = getUILocale();
+        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
         pageContext.setAttribute(var, wfs, scope);
         node = null;
         var = null;

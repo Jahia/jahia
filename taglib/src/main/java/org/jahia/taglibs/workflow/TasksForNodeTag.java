@@ -75,7 +75,8 @@ public class TasksForNodeTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         List<WorkflowTask> tasks = new ArrayList<WorkflowTask>();
         if (node != null) {
-            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : getUILocale());
+            Locale uiLocale = getUILocale();
+            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
             if(logger.isDebugEnabled()){
                 if(actives.isEmpty()){
                     logger.debug("Could not find any active workflow for node : " +node.getPath());

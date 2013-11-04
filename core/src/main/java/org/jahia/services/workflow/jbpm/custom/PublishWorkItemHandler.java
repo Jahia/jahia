@@ -54,6 +54,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Locale;
@@ -64,11 +65,11 @@ import java.util.Locale;
  * Publish the current node
  */
 public class PublishWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
-    private static final long serialVersionUID = 1L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PublishWorkItemHandler.class);
+    private transient static Logger logger = LoggerFactory.getLogger(PublishWorkItemHandler.class);
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
@@ -76,7 +77,8 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
         // try to get some user who did an action on the workflow for the last time
         try {
             WorkflowDefinition def = (WorkflowDefinition) workItem.getParameter("workflow");
-            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(Long.toString(workItem.getProcessInstanceId()), def.getProvider(), Locale.getDefault());
+            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(
+                    Long.toString(workItem.getProcessInstanceId()), def.getProvider(), null);
             if (list.size() > 0) {
                 userKey = list.get(list.size() - 1).getUser();
             }

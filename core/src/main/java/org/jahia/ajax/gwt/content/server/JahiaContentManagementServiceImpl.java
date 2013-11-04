@@ -44,10 +44,12 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.*;
@@ -99,6 +101,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
+
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -1336,20 +1339,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException {
-        List<GWTJahiaWorkflowHistoryItem> res = workflow.getWorkflowHistoryForUser(getUser(), getUILocale());
-
-//        JCRSessionWrapper session = retrieveCurrentSession();
-
-//        for (GWTJahiaWorkflowHistoryItem jahiaWorkflow : res) {
-//            try {
-//                JCRNodeWrapper node =
-//                        session.getNodeByUUID(((GWTJahiaWorkflowHistoryProcess) jahiaWorkflow).getNodeId());
-//                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node, new ArrayList<String>());
-//                jahiaWorkflow.set("node", gwtJahiaNode);
-//            } catch (RepositoryException e) {
-//                logger.error(e.getMessage(), e);
-//            }
-//        }
+        List<GWTJahiaWorkflowHistoryItem> res = workflow.getWorkflowHistoryForUser(getUser(), getLocale(), getUILocale());
 
         return res;
     }
@@ -1410,7 +1400,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path) throws GWTJahiaServiceException {
-        return workflow.getWorkflowInfo(path, true, retrieveCurrentSession(), getLocale());
+        return workflow.getWorkflowInfo(path, true, retrieveCurrentSession(), getLocale(), getUILocale());
     }
 
     /**
@@ -1606,13 +1596,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.seo = seoHelper;
     }
 
-    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId, String locale)
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId, String lang)
             throws GWTJahiaServiceException {
-        return workflow.getWorkflowHistoryProcesses(nodeId,
-                retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)), getUILocale());
+        Locale locale = LanguageCodeConverters.languageCodeToLocale(lang);
+        return workflow.getWorkflowHistoryProcesses(nodeId, retrieveCurrentSession(locale), getUILocale());
     }
 
-    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId, String locale)
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId)
             throws GWTJahiaServiceException {
         return workflow.getWorkflowHistoryTasks(provider, processId, getUILocale());
     }
@@ -1952,8 +1942,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path)
             throws GWTJahiaServiceException {
-        JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
-        return workflow.getWorkflowRules(path, sessionWrapper, sessionWrapper.getLocale());
+        return workflow.getWorkflowRules(path, retrieveCurrentSession(), getUILocale());
     }
 
     /**
@@ -2016,11 +2005,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public Map<String,Object> getPollData(Set<String> keys) throws GWTJahiaServiceException {
         Map<String,Object> result = new HashMap<String, Object>();
+        Locale locale = getLocale();
         if (keys.contains("activeJobs")) {
-            result.put("activeJobs",schedulerHelper.getActiveJobs(getLocale()));
+            result.put("activeJobs",schedulerHelper.getActiveJobs(locale));
         }
         if (keys.contains("numberOfTasks")) {
-            result.put("numberOfTasks",workflow.getNumberOfTasksForUser(getUser(), getUILocale()));
+            result.put("numberOfTasks", workflow.getNumberOfTasksForUser(getUser()));
         }
         return result;
     }
@@ -2127,7 +2117,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public int getNumberOfTasksForUser() throws GWTJahiaServiceException {
-        return workflow.getNumberOfTasksForUser(getUser(), getUILocale());
+        return workflow.getNumberOfTasksForUser(getUser());
     }
 
     private WCAGValidationResult toWCAGResult(ValidatorResults validatorResults) {

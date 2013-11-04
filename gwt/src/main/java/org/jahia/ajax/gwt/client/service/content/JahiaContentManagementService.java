@@ -313,8 +313,7 @@ public interface JahiaContentManagementService extends RemoteService {
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,
                                                                          String locale) throws GWTJahiaServiceException;
 
-    List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId,
-                                                                     String locale) throws GWTJahiaServiceException;
+    List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId) throws GWTJahiaServiceException;
 
     Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path) throws GWTJahiaServiceException;
 

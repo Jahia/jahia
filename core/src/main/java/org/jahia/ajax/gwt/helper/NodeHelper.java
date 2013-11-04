@@ -267,11 +267,11 @@ class NodeHelper {
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)
                 || fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
-            populateWorkflowInfo(n, node);
+            populateWorkflowInfo(n, node, uiLocale);
         }
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFOS)) {
-            populateWorkflowInfos(n, node);
+            populateWorkflowInfos(n, node, uiLocale);
         }
 
         if (fields.contains(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
@@ -962,10 +962,10 @@ class NodeHelper {
         }
     }
 
-    private void populateWorkflowInfo(GWTJahiaNode n, JCRNodeWrapper node) {
+    private void populateWorkflowInfo(GWTJahiaNode n, JCRNodeWrapper node, Locale displayLocale) {
         try {
             n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), false,  node.getSession(), node
-                    .getSession().getLocale()));
+                    .getSession().getLocale(), displayLocale));
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing
             logger.debug(e.getMessage());
@@ -976,7 +976,7 @@ class NodeHelper {
         }
     }
 
-    private void populateWorkflowInfos(GWTJahiaNode n, JCRNodeWrapper node) {
+    private void populateWorkflowInfos(GWTJahiaNode n, JCRNodeWrapper node, Locale displayLocale) {
         try {
             JCRSiteNode node1 = node.getResolveSite();
             if (node1 != null) {
@@ -987,7 +987,7 @@ class NodeHelper {
                     JCRSessionWrapper localeSession = sessionFactory.getCurrentUserSession(session
                             .getWorkspace().getName(), locale);
                     GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(),
-                            true, localeSession, locale);
+                            true, localeSession, locale, displayLocale);
                     infoMap.put(code, info);
                 }
                 n.setWorkflowInfos(infoMap);

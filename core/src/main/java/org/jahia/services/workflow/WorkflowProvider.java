@@ -40,7 +40,6 @@
 
 package org.jahia.services.workflow;
 
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.List;
@@ -51,18 +50,17 @@ import java.util.Set;
 /**
  * BPM engine provider.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 2 févr. 2010
  */
 public interface WorkflowProvider {
     String getKey();
 
-    List<WorkflowDefinition> getAvailableWorkflows(Locale locale);
+    List<WorkflowDefinition> getAvailableWorkflows(Locale uiLocale);
 
-    WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale);
+    WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale uiLocale);
 
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale);
+    List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale uiLocale);
 
     /**
      * Start a process instance previously registered
@@ -75,22 +73,22 @@ public interface WorkflowProvider {
 
     void abortProcess(String processId);
 
-    Workflow getWorkflow(String processId, Locale locale);
+    Workflow getWorkflow(String processId, Locale uiLocale);
 
     /**
      * Returns the next possible connections for a given process (usually only for User tasks).
      *
      * @param processId
-     * @param locale
+     * @param uiLocale current UI display locale
      * @return
      */
-    Set<WorkflowAction> getAvailableActions(String processId, Locale locale);
+    Set<WorkflowAction> getAvailableActions(String processId, Locale uiLocale);
 
-    List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale);
+    List<WorkflowTask> getTasksForUser(JahiaUser user, Locale uiLocale);
 
-    List<Workflow> getWorkflowsForDefinition(String definition, Locale locale);
+    List<Workflow> getWorkflowsForDefinition(String definition, Locale uiLocale);
 
-    List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale);
+    List<Workflow> getWorkflowsForUser(JahiaUser user, Locale uiLocale);
 
     void assignTask(String taskId, JahiaUser user);
 
@@ -98,11 +96,11 @@ public interface WorkflowProvider {
 
     void addComment(String processId, String comment, String user);
 
-    WorkflowTask getWorkflowTask(String taskId, Locale locale);
+    WorkflowTask getWorkflowTask(String taskId, Locale uiLocale);
 
-    List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale locale);
+    List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale uiLocale);
 
-    List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale locale);
+    List<HistoryWorkflow> getHistoryWorkflowsForPath(String path, Locale uiLocale);
 
     /**
      * Returns a list of process instance history records for the specified
@@ -110,21 +108,21 @@ public interface WorkflowProvider {
      * workflow process instance.
      *
      * @param processIds list of process IDs to retrieve history records for
-     * @param locale
+     * @param uiLocale the UI locale
      * @return a list of process instance history records for the specified
      *         process IDs
      */
-    List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds, Locale locale);
+    List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds, Locale uiLocale);
 
     /**
      * Returns a list of history records for workflow tasks.
      * This method also returns not completed tasks.
      *
      * @param processId the process instance ID
-     * @param locale
+     * @param uiLocale the UI locale
      * @return a list of history records for workflow tasks
      */
-    List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale locale);
+    List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale uiLocale);
 
     void deleteProcess(String processId);
 }

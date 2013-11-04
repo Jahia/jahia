@@ -325,10 +325,10 @@ public class PublicationHelper {
             } else {
                 jcrNode = currentUserSession.getNodeByUUID(node.getUuid());
                 if (lastRule == null || jcrNode.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
-                    WorkflowRule rule = workflowService.getWorkflowRuleForAction(jcrNode, false, workflowAction, null);
+                    WorkflowRule rule = workflowService.getWorkflowRuleForAction(jcrNode, false, workflowAction);
                     if (rule != null) {
                         if (!rule.equals(lastRule)) {
-                            if (workflowService.getWorkflowRuleForAction(jcrNode, true, workflowAction, null) != null) {
+                            if (workflowService.getWorkflowRuleForAction(jcrNode, true, workflowAction) != null) {
                                 lastRule = rule;
                             } else {
                                 lastRule = null;

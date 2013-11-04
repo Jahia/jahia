@@ -44,7 +44,6 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.workflow.HistoryWorkflowTask;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.slf4j.Logger;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -56,8 +55,6 @@ import java.util.Locale;
  */
 public class WorkflowHistoryTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -4218981385406211476L;
-
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowHistoryTag.class);
 
     private String var;
 

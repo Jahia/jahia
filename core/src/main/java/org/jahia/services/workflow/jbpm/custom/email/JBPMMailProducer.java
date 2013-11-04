@@ -59,6 +59,7 @@ import org.kie.api.task.model.Group;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -71,10 +72,10 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.script.*;
+
 import java.io.File;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.*;
@@ -84,13 +85,11 @@ import java.util.regex.Pattern;
  * A work item handler to send email. This implementation extends the built-in JBPM 6 implementation by
  * re-introducing the mail template mechanism available in JBPM 4
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 14 sept. 2010
  */
 public class JBPMMailProducer {
-    private static final long serialVersionUID = -5084848266010688683L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
+    private transient static Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
     ScriptEngine scriptEngine;
     private Bindings bindings;

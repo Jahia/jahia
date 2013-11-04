@@ -5,5 +5,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
        
 
+<<<<<<< .working
 
+=======
+   <bean name="logWatcher" class="org.jahia.test.bin.LogWatcher"/>
+   <bean name="logWatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/logwatch" value-ref="logWatcher"/>
+            </map>
+        </property>
+    </bean>    
+>>>>>>> .merge-right.r47801
 </beans>

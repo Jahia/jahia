@@ -136,6 +136,13 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     flushParent = true;
                     flushChilds = true;
                 }
+                if (path.endsWith("/j:requiredPermissionNames")) {
+                    // Flushing cache of acl key for users as a group or an acl has been updated
+                    AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
+                    if (cacheKeyGenerator != null) {
+                        cacheKeyGenerator.flushPermissionCacheEntry(StringUtils.substringBeforeLast(path,"/j:requiredPermissionNames"),propagateToOtherClusterNodes);
+                    }
+                }
                 path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
                 flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                 try {

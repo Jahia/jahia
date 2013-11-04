@@ -690,20 +690,9 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             diskPersistent="true">
     </defaultCache>
 
-    <cache name="ExternalIdentifierMapping"
-            eternal="true"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
-    </cache>
-
     <cache name="FileContentCache"
             overflowToDisk="false"
             diskPersistent="false">
-    </cache>
-    <cache name="FileLastModifiedCache"
-            eternal="true"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
     </cache>
 
     <cache name="HTMLCache"
@@ -714,11 +703,6 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             diskPersistent="true">
     </cache>
     <cache name="HTMLDependenciesCache"
-            eternal="true"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
-    </cache>
-    <cache name="HTMLNodeUsersACLs"
             eternal="true"
             diskExpiryThreadIntervalSeconds="600"
             diskPersistent="true">

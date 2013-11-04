@@ -145,8 +145,10 @@ public class FileServlet extends HttpServlet {
                     Date lastModifiedDate = n.getLastModifiedAsDate();
                     long lastModified = lastModifiedDate != null ? lastModifiedDate.getTime() : 0;
                     String eTag = generateETag(n.getIdentifier(), lastModified);
-                    lastModifiedEntry = new FileLastModifiedCacheEntry(eTag, lastModified);
-                    lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
+                    if (lastModifiedEntry == null) {
+                        lastModifiedEntry = new FileLastModifiedCacheEntry(eTag, lastModified);
+                        lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
+                    }
 
                     if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
                         // resource is not changed

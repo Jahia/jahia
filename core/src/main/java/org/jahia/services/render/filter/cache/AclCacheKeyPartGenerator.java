@@ -384,4 +384,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
     }
 
+    public void flushPermissionCacheEntry(String path, boolean propageToOtherClusterNodes) {
+        synchronized (objForSync) {
+            permissionCache.remove(path);
+        }
+    }
 }

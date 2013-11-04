@@ -42,11 +42,11 @@ package org.jahia.taglibs.template.pager;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
  * User: toto
  * Date: Dec 7, 2009
  * Time: 11:39:29 AM
@@ -55,20 +55,7 @@ import java.util.Map;
 public class RemovePagerTag extends TagSupport {
     private static final long serialVersionUID = 1936952653989178313L;
 
-    private String prefix;
-
-    private int pageSize;
-    private long totalSize;
-
     private String id;
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public void setTotalSize(int totalSize) {
-        this.totalSize = totalSize;
-    }
 
     @Override
     public int doStartTag() throws JspException {
@@ -77,6 +64,7 @@ public class RemovePagerTag extends TagSupport {
 
     @Override
     public int doEndTag() throws JspException {
+        @SuppressWarnings("unchecked")
         Map<String,Object> moduleMap  = (HashMap<String,Object>)  pageContext.getRequest().getAttribute("moduleMap");
         if (moduleMap == null) {
             moduleMap = new HashMap<String,Object>();

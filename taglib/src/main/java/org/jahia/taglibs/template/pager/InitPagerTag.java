@@ -43,6 +43,7 @@ package org.jahia.taglibs.template.pager;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,8 +56,6 @@ import java.util.Map;
  */
 public class InitPagerTag extends TagSupport {
     private static final long serialVersionUID = 3487375821225747403L;
-
-    private String prefix;
 
     private int pageSize;
     private long totalSize;
@@ -75,6 +74,7 @@ public class InitPagerTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         try {
+            @SuppressWarnings("unchecked")
             Map<String,Object> moduleMap  = (HashMap<String,Object>)  pageContext.getRequest().getAttribute("moduleMap");
             if (moduleMap == null) {
                 moduleMap = new HashMap<String,Object>();
@@ -178,7 +178,6 @@ public class InitPagerTag extends TagSupport {
         super.release();
         id = null;
         pageSize = 0;
-        prefix = null;
         sizeNotExact = false;
         totalSize = 0;
     }

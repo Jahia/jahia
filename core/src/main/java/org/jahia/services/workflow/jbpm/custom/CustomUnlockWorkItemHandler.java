@@ -51,10 +51,10 @@ import org.kie.api.runtime.process.WorkItemManager;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
+
 import java.util.List;
 
 public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
-    private static final long serialVersionUID = 1L;
 
     private void doUnlock(String id, JCRSessionWrapper session, String key, String type)
             throws RepositoryException {
@@ -73,6 +73,7 @@ public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler impleme
 
     @Override
     public void executeWorkItem(final WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");

@@ -47,12 +47,14 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import javax.jcr.RepositoryException;
+
 import java.util.List;
 
 public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         final List<String> nodeIds = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         final String label = (String) workItem.getParameter("label");

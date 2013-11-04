@@ -56,6 +56,7 @@ public abstract class AbstractTaskLifeCycleEventListener extends JbpmServicesEve
         workflowProvider.unregisterTaskLifeCycleEventListener(name);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getTaskInputParameters(Task task) {
         Content taskContent = taskService.getContentById(task.getTaskData().getDocumentContentId());
         Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), environment);
@@ -66,6 +67,7 @@ public abstract class AbstractTaskLifeCycleEventListener extends JbpmServicesEve
         return taskInputParameters;
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getTaskOutputParameters(Task task, Map<String, Object> taskInputParameters) {
         Map<String, Object> taskOutputParameters = null;
         if (taskInputParameters != null) {

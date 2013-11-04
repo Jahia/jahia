@@ -49,10 +49,10 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import javax.jcr.RepositoryException;
+
 import java.util.List;
 
 public class CustomLockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
-    private static final long serialVersionUID = 1L;
 
     private void doLock(String id, JCRSessionWrapper session, String key, String type)
             throws RepositoryException {
@@ -64,6 +64,7 @@ public class CustomLockWorkItemHandler extends AbstractWorkItemHandler implement
 
     @Override
     public void executeWorkItem(final WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");

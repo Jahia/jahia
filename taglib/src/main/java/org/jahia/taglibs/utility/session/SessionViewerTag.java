@@ -383,6 +383,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
      * @param curAttrName String
      * @param curAttrObject Object
      */
+    @SuppressWarnings("unchecked")
     private void handleAttrDisplay (JspWriter out, String curAttrName,
                                     Object curAttrObject)
         throws IOException {
@@ -403,6 +404,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
         out.println("</ol>");
     }
 
+    @SuppressWarnings("unchecked")
     private void handleMapDisplay (JspWriter out, Map<Object, Object> map, int indent)
         throws IOException {
         Iterator<Map.Entry<Object, Object>> entryIter = map.entrySet().iterator();

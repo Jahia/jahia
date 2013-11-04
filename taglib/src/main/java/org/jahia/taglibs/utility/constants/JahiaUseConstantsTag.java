@@ -66,15 +66,14 @@ public class JahiaUseConstantsTag extends UseConstantsTag {
     @Override
     public int doStartTag() throws JspException {
         int scope = TagUtils.getScope(getScope(), 1);
-        Map constants = (Map) pageContext.getAttribute(getVar(), scope);
-        if (constants == null) {
+        if (pageContext.getAttribute(getVar(), scope) == null) {
             pageContext.setAttribute(getVar(), getConstants(), scope);
         }
         return SKIP_BODY;
     }
 
-    private Map getConstants() throws JspTagException {
-        Map constants = null;
+    private Map<?, ?> getConstants() throws JspTagException {
+        Map<?, ?> constants = null;
         try {
             constants = ClassUtils.getClassConstants(getClassName());
         } catch (ClassNotFoundException e) {

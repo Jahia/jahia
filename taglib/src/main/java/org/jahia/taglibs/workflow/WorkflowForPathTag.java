@@ -44,7 +44,6 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.workflow.HistoryWorkflow;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.slf4j.Logger;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -56,8 +55,6 @@ import java.util.Locale;
  */
 public class WorkflowForPathTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 7576104754630516538L;
-
-    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowForPathTag.class);
 
     private String var;
 

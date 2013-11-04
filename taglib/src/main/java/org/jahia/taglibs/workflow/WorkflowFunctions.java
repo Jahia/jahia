@@ -40,19 +40,14 @@
 
 package org.jahia.taglibs.workflow;
 
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowService;
 
 /**
- * 
- *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 21 mai 2010
  */
 public class WorkflowFunctions {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowFunctions.class);
 
     public static boolean hasActivePublicationWorkflow(JCRNodeWrapper node) {
         return WorkflowService.getInstance().hasActiveWorkflowForType(node, "publish");

@@ -48,7 +48,6 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.Config;

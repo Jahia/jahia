@@ -50,11 +50,12 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Publish custom activity for jBPM workflow
@@ -62,11 +63,11 @@ import java.util.Locale;
  * Publish the current node
  */
 public class UnpublishWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
-    private static final long serialVersionUID = 1L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(UnpublishWorkItemHandler.class);
+    private transient static Logger logger = LoggerFactory.getLogger(UnpublishWorkItemHandler.class);
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        @SuppressWarnings("unchecked")
         List<String> ids = (List<String>) workItem.getParameter("nodeIds");
 
         String userKey = (String) workItem.getParameter("user");

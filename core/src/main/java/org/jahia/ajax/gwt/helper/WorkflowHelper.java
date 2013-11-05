@@ -414,9 +414,10 @@ public class WorkflowHelper {
                                 gwtWfHistory.getNodeId());
                         gwtWfHistory.set("nodeWrapper", ((NavigationHelper) SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));
                     } catch (ItemNotFoundException e) {
-                        // Node cannot be found
+                        continue;
                     } catch (RepositoryException e) {
                         logger.warn(e.getMessage(), e);
+                        continue;
                     }
                     gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
                     gwtWorkflowsMap.put(task.getProcessId(), gwtWfHistory);
@@ -591,6 +592,16 @@ public class WorkflowHelper {
             HistoryWorkflow historyWorkflow = service.getHistoryWorkflow(
                     task.getProcessId(), task.getProvider(), null);
             if (historyWorkflow != null) {
+                GWTJahiaWorkflowHistoryProcess gwtWfHistory = getGWTJahiaHistoryProcess(historyWorkflow);
+                try {
+                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
+                            locale).getNodeByIdentifier(gwtWfHistory.getNodeId());
+                } catch (ItemNotFoundException e) {
+                    continue;
+                } catch (RepositoryException e) {
+                    logger.warn(e.getMessage(), e);
+                    continue;
+                }
                 total++;
             }
         }

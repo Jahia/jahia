@@ -89,6 +89,10 @@ public class Edit extends Render {
                 logger.error("Someone have tried to access the live repository in edit mode");
                 return false;
             }
+            // the site cannot be resolved
+            if (node.getResolveSite() == null) {
+                return false;
+            }
             String checkedPath = StringUtils.replace(editConfiguration.getNodeCheckPermission(),"$site",node.getResolveSite().getPath());
             if (editConfiguration.getNodeCheckPermission() == null) {
                 checkedPath = node.getResolveSite().getPath();

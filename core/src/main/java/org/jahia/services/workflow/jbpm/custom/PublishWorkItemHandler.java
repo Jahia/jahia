@@ -40,13 +40,12 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.workflow.HistoryWorkflowTask;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -57,7 +56,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Publish custom activity for jBPM workflow
@@ -74,16 +72,11 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
 
-        // try to get some user who did an action on the workflow for the last time
         try {
-            WorkflowDefinition def = (WorkflowDefinition) workItem.getParameter("workflow");
-            List<HistoryWorkflowTask> list = WorkflowService.getInstance().getHistoryWorkflowTasks(
-                    Long.toString(workItem.getProcessInstanceId()), def.getProvider(), null);
-            if (list.size() > 0) {
-                userKey = list.get(list.size() - 1).getUser();
-            }
+            userKey = StringUtils.defaultIfEmpty(((JBPM6WorkflowProvider) workflowProvider)
+                    .getWorkflowCurrentUser(String.valueOf(workItem.getProcessInstanceId())), null);
         } catch (Exception e) {
-            logger.error("Cannot get last user on the workflow", e);
+            logger.error("Cannot get current workflow user", e);
         }
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);

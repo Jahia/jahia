@@ -10,7 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public abstract class AbstractWorkItemHandler implements WorkItemHandler, InitializingBean, DisposableBean {
 
-    private JBPM6WorkflowProvider workflowProvider;
+    protected JBPM6WorkflowProvider workflowProvider;
     private String name;
 
     public void setName(String name) {

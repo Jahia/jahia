@@ -206,7 +206,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
             return kieSession;
         }
         kieSession = runtimeEngine.getKieSession();
-
+        
         for (Map.Entry<String, WorkItemHandler> workItemHandlerEntry : workItemHandlers.entrySet()) {
             kieSession.getWorkItemManager().registerWorkItemHandler(workItemHandlerEntry.getKey(), workItemHandlerEntry.getValue());
         }
@@ -338,6 +338,20 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         });
     }
 
+    public String getWorkflowCurrentUser(final String processId) {
+        return executeCommand(new GenericCommand<String>() {
+            private static final long serialVersionUID = 156409797390858735L;
+
+            @Override
+            public String execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ProcessInstance processInstance = ksession.getProcessInstance(Long.parseLong(processId));
+                return processInstance != null ? (String) ((WorkflowProcessInstance) processInstance)
+                        .getVariable("currentUser") : null;
+            }
+        });
+    }
+
     @Override
     public Set<WorkflowAction> getAvailableActions(final String processId, final Locale uiLocale) {
         return executeCommand(new GenericCommand<Set<WorkflowAction>>() {
@@ -457,17 +471,20 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                 @Override
                 public List<WorkflowTask> execute(Context context) {
                     loop.set(Boolean.TRUE);
-                    Task task = taskService.getTaskById(Long.parseLong(taskId));
+                    long id = Long.parseLong(taskId);
+                    Task task = taskService.getTaskById(id);
                     Map<String, Object> taskInputParameters = getTaskInputParameters(task);
                     Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
                     if (user == null) {
                         taskService.release(task.getId(), JCRSessionFactory.getInstance().getCurrentUser().getUserKey());
                     } else if (task.getTaskData().getActualOwner() != null && user.getUserKey().equals(task.getTaskData().getActualOwner().getId())) {
-                        logger.debug("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is already owner");
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is already owner");
+                        }
                     } else if (!checkParticipation(task, user)) {
                         logger.error("Cannot assign task " + task.getId() + " to user " + user.getName() + ", user is not candidate");
                     } else {
-                        taskService.claim(Long.parseLong(taskId), user.getUserKey());
+                        taskService.claim(id, user.getUserKey());
                     }
                     JahiaUser actualUser = null;
                     if (task.getTaskData().getActualOwner() != null) {
@@ -475,9 +492,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     }
                     if (actualUser != null) {
                         taskOutputParameters.put("currentUser", user.getUserKey());
-                        ((InternalTaskService) taskService).addContent(Long.parseLong(taskId), taskOutputParameters);
+                        ((InternalTaskService) taskService).addContent(id, taskOutputParameters);
                     }
-                    updateTaskNode(actualUser, (String) taskOutputParameters.get("task-" + taskId));
+                    updateTaskNode(actualUser, (String) taskOutputParameters.get("task-" + id));
                     return null;
                 }
             });
@@ -567,7 +584,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         }
         try {
             loop.set(Boolean.TRUE);
-            Task task = taskService.getTaskById(Long.parseLong(taskId));
+            long id = Long.parseLong(taskId);
+            Task task = taskService.getTaskById(id);
             Map<String, Object> taskInputParameters = getTaskInputParameters(task);
             Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
             final String uuid = (String) taskOutputParameters.get("task-" + taskId);
@@ -604,8 +622,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
                     args = new HashMap<String, Object>();
                 }
                 args.put("outcome", outcome);
-                taskService.start(Long.parseLong(taskId), jahiaUser.getUserKey());
-                taskService.complete(Long.parseLong(taskId), jahiaUser.getUserKey(), args);
+                taskService.start(id, jahiaUser.getUserKey());
+                taskService.complete(id, jahiaUser.getUserKey(), args);
             } finally {
                 if (l != null) {
                     Thread.currentThread().setContextClassLoader(l);
@@ -1024,6 +1042,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
     }
 
     public synchronized void recompilePackages() {
+        long timer = System.currentTimeMillis();
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
         kieBuilder.buildAll();
 
@@ -1059,6 +1078,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
         taskService = runtimeEngine.getTaskService();
         kieBase = null;
         kieSession = null;
+        
+        logger.info("Rebuilding KIE base took {} ms", System.currentTimeMillis() - timer);
     }
 
 

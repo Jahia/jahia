@@ -94,7 +94,6 @@ public class JBPMMailProducer {
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
-    private ThreadLocal<MailTemplate> template = new ThreadLocal<MailTemplate>();
     private MailTemplateRegistry mailTemplateRegistry;
     private TaskIdentityService taskIdentityService;
 
@@ -106,21 +105,16 @@ public class JBPMMailProducer {
         this.taskIdentityService = taskIdentityService;
     }
 
-    public MailTemplate getTemplate() {
-        return template.get();
-    }
-
-    public void setTemplate(MailTemplate template) {
-        this.template.set(template);
-    }
-
     public Collection<Message> produce(final WorkItem workItem) {
+        if (!ServicesRegistry.getInstance().getMailService().isEnabled()) {
+            return Collections.emptyList();
+        }
         final Map<String, Object> vars = workItem.getParameters();
         Locale locale = (Locale) vars.get("locale");
         String templateKey = (String) vars.get("templateKey");
+        MailTemplate template = null;
 
         if (templateKey != null) {
-            MailTemplate template = null;
             if (locale != null) {
                 template = (mailTemplateRegistry.getTemplate(templateKey + "." + locale.toString()));
                 if (template == null) {
@@ -130,21 +124,21 @@ public class JBPMMailProducer {
             if (template == null) {
                 template = mailTemplateRegistry.getTemplate(templateKey);
             }
-            setTemplate(template);
         }
 
-        if (ServicesRegistry.getInstance().getMailService().isEnabled() && getTemplate() != null) {
+        if (template != null) {
+            final MailTemplate usedTemplate = template;
             try {
                 return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "default", locale, new JCRCallback<Collection<Message>>() {
                     public Collection<Message> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
-                            scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(getTemplate().getLanguage());
+                            scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(usedTemplate.getLanguage());
                             bindings = null;
                             Message email = instantiateEmail();
-                            fillFrom(email, workItem, session);
-                            fillRecipients(email, workItem, session);
-                            fillSubject(email, workItem, session);
-                            fillContent(email, workItem, session);
+                            fillFrom(usedTemplate, email, workItem, session);
+                            fillRecipients(usedTemplate, email, workItem, session);
+                            fillSubject(usedTemplate, email, workItem, session);
+                            fillContent(usedTemplate, email, workItem, session);
                             Address[] addresses = email.getRecipients(Message.RecipientType.TO);
                             if (addresses != null && addresses.length > 0) {
                                 return Collections.singleton(email);
@@ -175,8 +169,8 @@ public class JBPMMailProducer {
      *
      * @see {@link InternetAddress#getLocalAddress(Session)}
      */
-    protected void fillFrom(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
-        AddressTemplate fromTemplate = getTemplate().getFrom();
+    protected void fillFrom(MailTemplate template, Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+        AddressTemplate fromTemplate = template.getFrom();
         // "from" attribute is optional
         if (fromTemplate == null) return;
 
@@ -209,21 +203,21 @@ public class JBPMMailProducer {
         }
     }
 
-    protected void fillRecipients(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+    protected void fillRecipients(MailTemplate template, Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         // to
-        AddressTemplate to = getTemplate().getTo();
+        AddressTemplate to = template.getTo();
         if (to != null) {
             fillRecipients(to, email, Message.RecipientType.TO, workItem, session);
         }
 
         // cc
-        AddressTemplate cc = getTemplate().getCc();
+        AddressTemplate cc = template.getCc();
         if (cc != null) {
             fillRecipients(cc, email, Message.RecipientType.CC, workItem, session);
         }
 
         // bcc
-        AddressTemplate bcc = getTemplate().getBcc();
+        AddressTemplate bcc = template.getBcc();
         if (bcc != null) {
             fillRecipients(bcc, email, Message.RecipientType.BCC, workItem, session);
         }
@@ -334,18 +328,18 @@ public class JBPMMailProducer {
         return new InternetAddress(email, personal, "UTF-8");
     }
 
-    protected void fillSubject(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
-        String subject = getTemplate().getSubject();
+    protected void fillSubject(MailTemplate template, Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+        String subject = template.getSubject();
         if (subject != null) {
             String evaluatedSubject = evaluateExpression(workItem, subject, session).replaceAll("[\r\n]", "");
             email.setSubject(WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
         }
     }
 
-    protected void fillContent(Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
-        String text = getTemplate().getText();
-        String html = getTemplate().getHtml();
-        List<AttachmentTemplate> attachmentTemplates = getTemplate().getAttachmentTemplates();
+    protected void fillContent(MailTemplate template, Message email, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+        String text = template.getText();
+        String html = template.getHtml();
+        List<AttachmentTemplate> attachmentTemplates = template.getAttachmentTemplates();
 
         if (html != null || !attachmentTemplates.isEmpty()) {
             // multipart
@@ -374,7 +368,7 @@ public class JBPMMailProducer {
 
             // attachments
             if (!attachmentTemplates.isEmpty()) {
-                addAttachments(workItem, multipart, session);
+                addAttachments(template, workItem, multipart, session);
             }
 
             email.setContent(multipart);
@@ -438,9 +432,9 @@ public class JBPMMailProducer {
         return bindings;
     }
 
-    protected void addAttachments(WorkItem workItem, Multipart multipart, JCRSessionWrapper session)
+    protected void addAttachments(MailTemplate template, WorkItem workItem, Multipart multipart, JCRSessionWrapper session)
             throws Exception {
-        for (AttachmentTemplate attachmentTemplate : getTemplate().getAttachmentTemplates()) {
+        for (AttachmentTemplate attachmentTemplate : template.getAttachmentTemplates()) {
             BodyPart attachmentPart = new MimeBodyPart();
 
             // resolve description

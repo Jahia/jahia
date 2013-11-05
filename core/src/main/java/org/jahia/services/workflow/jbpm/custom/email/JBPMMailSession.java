@@ -61,6 +61,10 @@ import java.util.Collection;
 public class JBPMMailSession implements DisposableBean {
     private MailServiceImpl mailService;
     private ProducerTemplate template;
+    
+    public boolean isEnabled() {
+        return mailService.isEnabled();
+    }
 
     public void setMailService(MailServiceImpl mailService) {
         this.mailService = mailService;

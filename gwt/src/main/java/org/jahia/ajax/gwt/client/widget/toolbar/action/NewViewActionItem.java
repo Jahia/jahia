@@ -40,7 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.TreeGridEvent;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.Event;
@@ -58,11 +61,18 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class NewViewActionItem extends BaseActionItem  {
 
     protected List<String> parentTypesAsList;
+
+    private static int TEMPLATE_TYPE_FOLDER_TOKEN = 2;
+    private static int VIEW_FILE_FOLDER_TOKEN = 3;
+
 
     private transient GWTJahiaNodeType fileNodeType;
 
@@ -87,7 +97,6 @@ public class NewViewActionItem extends BaseActionItem  {
 
     private void newView(final Linker linker, boolean isLoading) {
         final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
-        final String[] filePath = selectedNode.getPath().split("/");
 
         if (selectedNode.getNodeTypes().contains("jnt:moduleVersionFolder")) {
             // Open popup to select nodeType
@@ -124,7 +133,7 @@ public class NewViewActionItem extends BaseActionItem  {
                                 public void handleEvent(BaseEvent baseEvent) {
                                     GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel());
                                     if (gwtJahiaNodeType != null && linker != null) {
-                                        createEngine(fileNodeType, selectedNode, gwtJahiaNodeType.getName().replaceAll(":", "_"));
+                                        createEngine(fileNodeType, selectedNode, gwtJahiaNodeType.getName());
                                         popup.hide();
                                     }
                                 }
@@ -147,36 +156,56 @@ public class NewViewActionItem extends BaseActionItem  {
             if (isLoading) {
                 linker.loaded();
             }
-            createEngine(fileNodeType,selectedNode,filePath[5]);
+            createEngine(fileNodeType,selectedNode,findNodeType(selectedNode));
         }
     }
 
     private void createEngine(GWTJahiaNodeType nodeType, GWTJahiaNode selectedNode, String targetName) {
         HashMap<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
-        props.put("nodeTypeName", new GWTJahiaNodeProperty("nodeTypeName",targetName.replaceFirst("_",":")));
-        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, props, targetName, false);
+        props.put("nodeTypeName", new GWTJahiaNodeProperty("nodeTypeName",targetName));
+        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, props, targetName.replaceAll(":", "_"), false);
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode n = lh.getSingleSelection();
 
-        String[] filePath = n.getPath().split("/");
         boolean enabled = !"".equals(n.getChildConstraints().trim())
                 && !lh.isLocked()
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions());
 
         if (enabled) {
-            if (n.getNodeTypes().contains("jnt:nodeTypeFolder") || n.getNodeTypes().contains("jnt:templateTypeFolder")) {
-                updateTitle(getGwtToolbarItem().getTitle() + " : " + filePath[5]);
-            } else if (n.getNodeTypes().contains("jnt:moduleVersionFolder")) {
-                updateTitle(getGwtToolbarItem().getTitle());
+            String  title = getGwtToolbarItem().getTitle();
+            if (n.isNodeType("jnt:moduleVersionFolder")) {
+                updateTitle(title);
             } else {
-                enabled = false;
+                String nodetype = findNodeType(n);
+                if (nodetype.equals("")) {
+                    // the node type has not been resolved
+                    enabled = false;
+                } else {
+                    updateTitle(title + (!nodetype.equals("")?(" : " + nodetype):""));
+                }
+
             }
         }
         setEnabled(enabled) ;
+    }
+
+    private String findNodeType(GWTJahiaNode n) {
+
+        String[] splittedPath = n.getPath().split("/");
+        if (n.isNodeType("jnt:nodeTypeFolder")) {
+            return n.getName().replace("_",":");
+        } else if (splittedPath.length > TEMPLATE_TYPE_FOLDER_TOKEN && n.isNodeType("jnt:templateTypeFolder")) {
+            return  splittedPath[splittedPath.length - TEMPLATE_TYPE_FOLDER_TOKEN].replace("_",":");
+        }else if (splittedPath.length > VIEW_FILE_FOLDER_TOKEN  && n.isNodeType("jnt:viewFile")) {
+            return splittedPath[splittedPath.length - VIEW_FILE_FOLDER_TOKEN].replace("_",":");
+        } else if (n.isNodeType("jnt:nodeType")) {
+            return n.getName();
+        }
+        return "";
     }
 
 }

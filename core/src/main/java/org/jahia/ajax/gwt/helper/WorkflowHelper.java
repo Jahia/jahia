@@ -595,7 +595,7 @@ public class WorkflowHelper {
                 GWTJahiaWorkflowHistoryProcess gwtWfHistory = getGWTJahiaHistoryProcess(historyWorkflow);
                 try {
                     JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
-                            locale).getNodeByIdentifier(gwtWfHistory.getNodeId());
+                            null).getNodeByIdentifier(gwtWfHistory.getNodeId());
                 } catch (ItemNotFoundException e) {
                     continue;
                 } catch (RepositoryException e) {

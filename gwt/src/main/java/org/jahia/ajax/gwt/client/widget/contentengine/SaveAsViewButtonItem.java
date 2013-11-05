@@ -50,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -72,9 +71,11 @@ import java.util.*;
  */
 public class SaveAsViewButtonItem extends SaveButtonItem {
 
+    public static final int INDEX_OF_MODULE_NAME = 2;
     public static final int INDEX_OF_FILE_TYPE = 5;
     public static final int INDEX_OF_FILE_NAME = 7;
     public static final int INDEX_OF_TEMPLATE_TYPE = 6;
+    public static final String VIEWS_SOURCE_PATH="/sources/src/main/resources";
 
     public Button create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.saveAs", "Save as ..."));
@@ -107,8 +108,8 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     MessageBox.alert(Messages.get("label.error", "Error"), Messages.getWithArgs("label.issueOccursTryingResolve","An issue occurred when trying to resolve {0}",new Object[] {node.getPath()}), null);
                     return;
                 }
-                final String modulePath = "/modules/" + filePath[2];
-                final String moduleName = filePath[2];
+                final String modulePath = "/modules/" + filePath[INDEX_OF_MODULE_NAME];
+                final String moduleName = filePath[INDEX_OF_MODULE_NAME];
                 final String moduleVersion = moduleVersionTmp;
                 final String fileName = fileNameTmp;
                 final String fileView = fileName.indexOf(".") == fileName.lastIndexOf(".") ? "default" : fileName.substring(fileName.indexOf(".") + 1, fileName.lastIndexOf("."));
@@ -176,15 +177,15 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                             newfileView = "." + viewNameValue;
                         }
                         newModulePath = newModulePath + "/" +
-                                newModuleVersion + "/sources/" +
-                                fileType + "/" +
-                                newfileTemplateType;
+                                newModuleVersion + VIEWS_SOURCE_PATH +
+                                "/" + fileType +
+                                "/" + newfileTemplateType;
                         String ft = fileType.indexOf("_") > 1?fileType.substring(fileType.indexOf("_") + 1):fileName;
                         String newViewName = ft + newfileView + fileName.substring(fileName.lastIndexOf("."));
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
-                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion+"/sources/"+fileType, "jnt:folder");
-                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion+"/sources/"+fileType+"/"+newfileTemplateType, "jnt:folder");
+                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion + VIEWS_SOURCE_PATH + "/" + fileType, "jnt:folder");
+                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion + VIEWS_SOURCE_PATH + "/" + fileType+"/"+newfileTemplateType, "jnt:folder");
                         parentNodesType.put(newfileTemplateType, "jnt:folder");
                         prepareAndSave(newModulePath, newViewName, parentNodesType, engine, newModuleNode);
                         popup.hide();

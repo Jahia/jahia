@@ -64,7 +64,6 @@ import java.util.*;
  */
 public class CreateResourceButtonItem extends SaveButtonItem {
 
-    private String defaultContainerFolder;
     private String fileExtension;
 
     public Button create(final AbstractContentEngine engine) {
@@ -78,7 +77,6 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                     node = engine.getTargetNode();
                 }
                 final String nodePath = node.getPath();
-                final String[] filePath = nodePath.split("/");
 
                 final Window popup = new Window();
                 popup.setHeading(Messages.get("label.saveAs", "Save as..."));
@@ -98,20 +96,13 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                 b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
-                        String path;
-
                         Map<String, String> parentNodesType = new LinkedHashMap<String, String>();
-                        if (defaultContainerFolder.equals(filePath[4])) {
-                            path = nodePath;
-                        } else {
-                            path = "/modules/" + filePath[2] + "/" + filePath[3] + "/sources/" + defaultContainerFolder;
-                            parentNodesType.put("/modules/" + filePath[2] + "/" + filePath[3] + "/sources/" + defaultContainerFolder, "jnt:folder");
-                        }
+                        parentNodesType.put(nodePath, "jnt:folder");
                         String finalName = name.getValue();
                         if (!finalName.endsWith("." + fileExtension)) {
                             finalName += "." + fileExtension;
                         }
-                        prepareAndSave(path, finalName, parentNodesType, (CreateContentEngine) engine);
+                        prepareAndSave(nodePath, finalName, parentNodesType, (CreateContentEngine) engine);
                         popup.hide();
                     }
                 });
@@ -178,10 +169,6 @@ public class CreateResourceButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, boolean closeAfterSave) {
         //Nothing to do here
-    }
-
-    public void setDefaultContainerFolder(String defaultContainerFolder) {
-        this.defaultContainerFolder = defaultContainerFolder;
     }
 
     public void setFileExtension(String fileExtension) {

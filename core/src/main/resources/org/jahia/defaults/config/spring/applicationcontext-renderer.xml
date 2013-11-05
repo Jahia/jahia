@@ -318,6 +318,7 @@
                 <value>/modules/assets/javascript/codemirror/mode/clike/clike.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/htmlmixed/htmlmixed.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/htmlembedded/htmlembedded.js</value>
+                <value>/modules/assets/javascript/codemirror/mode/properties/properties.js</value>
                 <value>/modules/assets/javascript/codemirror.mode.jsp.js</value>
             </list>
         </property>

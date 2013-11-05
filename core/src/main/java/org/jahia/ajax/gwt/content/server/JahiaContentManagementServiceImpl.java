@@ -2478,4 +2478,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return result;
     }
+
+
 }

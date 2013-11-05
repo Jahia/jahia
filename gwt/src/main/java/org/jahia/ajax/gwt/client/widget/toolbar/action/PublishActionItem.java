@@ -192,7 +192,7 @@ public class PublishActionItem extends BaseActionItem {
             List<GWTJahiaPublicationInfo> unpublishable = new ArrayList<GWTJahiaPublicationInfo>();
             for (GWTJahiaPublicationInfo info : result) {
                 Integer status = info.getStatus();
-                if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                if (status == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE || status == GWTJahiaPublicationInfo.CONFLICT) {
                     unpublishable.add(info);
                 }
             }

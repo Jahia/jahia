@@ -386,18 +386,13 @@ public class JCRPublicationService extends JahiaService {
 
 
             Set<String> allCloned = new HashSet<String>();
-            boolean doClone = true;
-            while (doClone) {
-                doClone = false;
-                for (JCRNodeWrapper sourceNode : toPublish) {
-                    try {
-                        sourceNode.getCorrespondingNodePath(destinationWorkspace);
-                    } catch (ItemNotFoundException e) {
-                        CloneResult cloneResult = ensureNodeInDestinationWorkspace(sourceNode, destinationSession,
-                                toCheckpoint);
-                        allCloned.addAll(cloneResult.includedUuids);
-                        doClone |= cloneResult.hasConflictingNodeBeenRemoved;
-                    }
+            for (JCRNodeWrapper sourceNode : toPublish) {
+                try {
+                    sourceNode.getCorrespondingNodePath(destinationWorkspace);
+                } catch (ItemNotFoundException e) {
+                    CloneResult cloneResult = ensureNodeInDestinationWorkspace(sourceNode, destinationSession,
+                            toCheckpoint);
+                    allCloned.addAll(cloneResult.includedUuids);
                 }
             }
             uuidsToPublish.removeAll(allCloned);
@@ -513,7 +508,12 @@ public class JCRPublicationService extends JahiaService {
 
             final String path = node.getPath();
             String destinationPath =
-                    node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                    null;
+            try {
+                destinationPath = node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+            } catch (ItemNotFoundException e) {
+                return;
+            }
 
             // Item exists at "destinationPath" in live space, update it
 
@@ -624,7 +624,6 @@ public class JCRPublicationService extends JahiaService {
     class CloneResult {
         JCRNodeWrapper root;
         Set<String> includedUuids;
-        Boolean hasConflictingNodeBeenRemoved = Boolean.FALSE;
     }
 
     CloneResult doClone(JCRNodeWrapper sourceNode, JCRSessionWrapper sourceSession,
@@ -633,7 +632,7 @@ public class JCRPublicationService extends JahiaService {
         cloneResult.includedUuids = new HashSet<String>();
 
         JCRNodeWrapper parent = sourceNode.getParent();
-//                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
+
         final String sourceNodePath =
                 sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]" :
                         sourceNode.getPath();
@@ -652,12 +651,9 @@ public class JCRPublicationService extends JahiaService {
 
         JCRNodeWrapper destinationParent = destinationSession.getNode(destinationParentPath);
         if (destinationParent.hasNode(sourceNode.getName())) {
-            logger.error("Node " + sourceNode.getName() + " already exist under " + destinationParent.getPath() +
-                    " - live node is going to be removed !");
-            destinationParent.checkout();
-            destinationParent.getNode(sourceNode.getName()).remove();
-            destinationSession.save();
-            cloneResult.hasConflictingNodeBeenRemoved = Boolean.TRUE;
+            logger.error("Node " + sourceNode.getName() + " is in conflict, already exist under " + destinationParent.getPath() +
+                    " - cannot publish !");
+            return cloneResult;
         }
 
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
@@ -1003,7 +999,7 @@ public class JCRPublicationService extends JahiaService {
             info.setStatus(PublicationInfo.PUBLISHED);
             return info;
         }
-        boolean isInConflict = false;
+
         if (info == null) {
             info = new PublicationInfoNode(node.getIdentifier(), node.getPath());
 
@@ -1040,9 +1036,9 @@ public class JCRPublicationService extends JahiaService {
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication
             if (info.getStatus() == PublicationInfo.CONFLICT) {
-                isInConflict = true;
+                return info;
             }
-            if (!isInConflict && node.hasProperty(JAHIA_LOCKTYPES)) {
+            if (node.hasProperty(JAHIA_LOCKTYPES)) {
                 Value[] lockTypes = node.getProperty(JAHIA_LOCKTYPES).getValues();
                 for (Value lockType : lockTypes) {
                     if (lockType.getString().endsWith(":validation")) {
@@ -1052,10 +1048,10 @@ public class JCRPublicationService extends JahiaService {
             }
         }
         if (info.getStatus() == PublicationInfo.CONFLICT) {
-            isInConflict = true;
+            return info;
         }
         if (includesReferences || includesSubnodes) {
-            if (!isInConflict && includesReferences) {
+            if (includesReferences) {
                 getReferences(node, languages, includesReferences, includesSubnodes, sourceSession, destinationSession,
                         infosMap, infos, info);
             }
@@ -1080,7 +1076,7 @@ public class JCRPublicationService extends JahiaService {
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
                     }
-                } else if (!isInConflict || n.isNodeType("jnt:acl")) {
+                } else {
                     boolean hasIndependantPublication = hasIndependantPublication(n);
                     if (allsubtree && hasIndependantPublication) {
                         PublicationInfo newinfo = new PublicationInfo();

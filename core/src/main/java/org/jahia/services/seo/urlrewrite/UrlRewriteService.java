@@ -82,7 +82,11 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteService.class);
 
-    private Set<Resource> configurationResources;
+    private List<Resource> configurationResources;
+
+    private List<Resource> lastConfigurationResources;
+
+    private List<Resource> seoConfigurationResources;
 
     /**
      * A user defined setting that says how often to check the configuration has changed. <b>0</b> means check on each call.
@@ -93,11 +97,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private Map<Integer, Long> lastModified = new HashMap<Integer, Long>(1);
 
-    private Set<Resource> lastConfigurationResources;
-
     private List<HandlerMapping> renderMapping;
-
-    private Set<Resource> seoConfigurationResources;
 
     private boolean seoRulesEnabled;
 
@@ -117,13 +117,18 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     private SettingsBean settingsBean;
 
+    /**
+     * Flag to indicate that a resource has been added or removed from one of the resource lists, needed to bypass reload check interval
+     */
+    private transient boolean modified;
+
     public void afterPropertiesSet() throws Exception {
         long timer = System.currentTimeMillis();
         Log.setLevel("SLF4J");
 
-        mergeConfigurationResources();
+//        mergeConfigurationResources();
 
-        if (!configurationResources.isEmpty() && settingsBean.isDevelopmentMode() && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
+        if (!hasConfigurationResources() && settingsBean.isDevelopmentMode() && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
             confReloadCheckIntervalSeconds = 5;
             logger.info("Development mode is activated. Setting URL rewriter configuration check interval to 5 seconds.");
         }
@@ -131,25 +136,41 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         getEngine();
 
         logger.info("URL rewriting service started in {} ms using configurations [{}]. Configuration check interval set to {} seconds.",
-                new Object[]{System.currentTimeMillis() - timer, configurationResources, confReloadCheckIntervalSeconds});
+                new Object[]{System.currentTimeMillis() - timer, getMergedConfigurationResources(), confReloadCheckIntervalSeconds});
     }
 
-    private void mergeConfigurationResources() {
+    private boolean hasConfigurationResources() {
+        return (configurationResources != null && !configurationResources.isEmpty())
+                || (seoConfigurationResources != null && !seoConfigurationResources.isEmpty())
+                || (lastConfigurationResources != null && !lastConfigurationResources.isEmpty());
+
+    }
+
+    private List<Resource> getMergedConfigurationResources() {
         final int seoSize = seoConfigurationResources != null ? seoConfigurationResources.size() : 0;
         final int lastSize = lastConfigurationResources != null ? lastConfigurationResources.size() : 0;
 
-        if (configurationResources == null) {
-            configurationResources = new HashSet<Resource>(seoSize + lastSize);
-        }
+        final List<Resource> merged = configurationResources == null ? new ArrayList<Resource>(seoSize + lastSize) : new ArrayList<Resource>(configurationResources);
 
         // add SEO rules if provided and SEO URL rewriting is enabled
         if (seoRulesEnabled && seoSize > 0) {
-            configurationResources.addAll(seoConfigurationResources);
+            addAllWithoutDuplicates(merged, seoConfigurationResources);
         }
 
         // add rules which are executed as last, if provided
         if (lastSize > 0) {
-            configurationResources.addAll(lastConfigurationResources);
+            addAllWithoutDuplicates(merged, lastConfigurationResources);
+        }
+
+        return merged;
+    }
+
+    private void addAllWithoutDuplicates(List<Resource> merged, List<Resource> resourcesToAdd) {
+        for (Resource resource : resourcesToAdd) {
+            // make sure we don't add duplicates
+            if (!merged.contains(resource)) {
+                merged.add(resource);
+            }
         }
     }
 
@@ -164,11 +185,13 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
      */
     public UrlRewriteEngine getEngine() {
         try {
-            if (urlRewriteEngine == null || needsReloading()) {
+            // get merged resources if they were changed, null otherwise
+            final List<Resource> merged = getMergedResourcesIfReloadNeeded();
+            if (urlRewriteEngine == null || merged != null) {
                 if (urlRewriteEngine != null) {
                     urlRewriteEngine.destroy();
                 }
-                urlRewriteEngine = new UrlRewriteEngine(servletContext, configurationResources.toArray(new Resource[configurationResources.size()]));
+                urlRewriteEngine = new UrlRewriteEngine(servletContext, merged.toArray(new Resource[merged.size()]));
                 urlRewriteEngine.setUrlResolverFactory(urlResolverFactory);
                 urlRewriteEngine.setVanityUrlService(vanityUrlService);
                 urlRewriteEngine.setUrlRewriteSeoRulesEnabled(isSeoRulesEnabled());
@@ -207,29 +230,45 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         return reservedUrlPrefixSet.contains(prefix);
     }
 
-    protected boolean needsReloading() throws IOException {
-        if (confReloadCheckIntervalSeconds > -1 && configurationResources != null && !configurationResources.isEmpty()) {
+    /**
+     * @return <code>null</code> if resources were unchanged, the list of updated resources otherwise
+     * @throws IOException
+     */
+    private List<Resource> getMergedResourcesIfReloadNeeded() throws IOException {
+        if (confReloadCheckIntervalSeconds > -1 && hasConfigurationResources()) {
 
             boolean doReload = false;
-            if (confReloadCheckIntervalSeconds == 0
+            List<Resource> result = null;
+            if (modified
+                    || confReloadCheckIntervalSeconds == 0
                     || lastChecked == 0
                     || lastChecked + confReloadCheckIntervalSeconds * 1000L < System.currentTimeMillis()) {
                 logger.debug("Checking for modifications in URL rewriter configuration resources.");
-                for (Resource resource : configurationResources) {
+                List<Resource> mergedConfigurationResources = getMergedConfigurationResources();
+
+                // look at last modified time for resources
+                for (Resource resource : mergedConfigurationResources) {
                     long resourceLastModified = FileUtils.getLastModified(resource);
                     int hash = resource.hashCode();
                     Long previous = lastModified.get(hash);
-                    doReload = doReload || previous == null || resourceLastModified > previous;
-                    lastModified.put(hash, resourceLastModified);
+
+                    // if we detected that a resource was modified since last time we checked, we don't need to look further
+                    doReload = previous == null || resourceLastModified > previous;
+                    if (doReload) {
+                        lastModified.put(hash, resourceLastModified);
+                        result = mergedConfigurationResources;
+                        break;
+                    }
                 }
                 logger.debug(doReload ? "Changes detected" : "No changes detected");
             }
 
             lastChecked = System.currentTimeMillis();
+            modified = false; // we've checked if there were changes, so reset modified flag
 
-            return doReload;
+            return result;
         }
-        return false;
+        return null;
     }
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
@@ -442,32 +481,30 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         this.seoRemoveCmsPrefix = seoRemoveCmsPrefix;
     }
 
-    private Set<Resource> addTo(Resource resource, Set<Resource> resources) {
+    private List<Resource> addTo(Resource resource, List<Resource> resources) {
         if (resource != null) {
             if (resources == null) {
-                resources = new HashSet<Resource>(7);
+                resources = new ArrayList<Resource>(resources.size());
             }
-            resources.add(resource);
-
-            // make sure we reload the merged configuration resources so that changes can be detected
-            mergeConfigurationResources();
+            if (!resources.contains(resource)) {
+                resources.add(resource);
+                modified = true; // set modified flag
+            }
         }
 
         return resources;
     }
 
-    private void removeFrom(Resource resource, Set<Resource> resources) {
+    private void removeFrom(Resource resource, List<Resource> resources) {
         if (resources != null && resource != null) {
             resources.remove(resource);
-
-            // make sure we reload the merged configuration resources so that changes can be detected
-            mergeConfigurationResources();
+            modified = true; // set modified flag
         }
     }
 
-    private Set<Resource> createIfNeededAndAddAll(Resource[] newResources, Set<Resource> resources) {
+    private List<Resource> createIfNeededAndAddAll(Resource[] newResources, List<Resource> resources) {
         if (newResources != null) {
-            resources = new HashSet<Resource>(newResources.length);
+            resources = new ArrayList<Resource>(newResources.length);
             Collections.addAll(resources, newResources);
         }
 

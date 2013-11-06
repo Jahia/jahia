@@ -892,6 +892,7 @@ extends = jnt:content
  - cache.requestParameters (string)
  - cache.mainResource (boolean)
  - cache.perUser (boolean)
+ - cache.latch (boolean)
  - visible (boolean)
  - requirePermissions (string)
  - cache.expiration (long)

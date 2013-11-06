@@ -99,7 +99,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                         Map<String, String> parentNodesType = new LinkedHashMap<String, String>();
                         parentNodesType.put(nodePath, "jnt:folder");
                         String finalName = name.getValue();
-                        if (!finalName.endsWith("." + fileExtension)) {
+                        if (fileExtension != null && !finalName.endsWith("." + fileExtension)) {
                             finalName += "." + fileExtension;
                         }
                         prepareAndSave(nodePath, finalName, parentNodesType, (CreateContentEngine) engine);

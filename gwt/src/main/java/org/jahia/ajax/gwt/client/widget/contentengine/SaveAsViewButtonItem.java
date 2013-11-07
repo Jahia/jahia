@@ -221,6 +221,8 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         }
         List<GWTJahiaNodeProperty> changedProperties = engine.getChangedProperties();
         List<GWTJahiaNodeProperty> properties = null;
+        // this property has been added to create the engine with the right type, but has to be removed before really save it.
+        engine.getProperties().remove("nodeTypeName");
         if (engine.getProperties().size() > 0) {
             // Edit
             Map<String, GWTJahiaNodeProperty> engineProperties = new HashMap<String, GWTJahiaNodeProperty>(engine.getProperties());

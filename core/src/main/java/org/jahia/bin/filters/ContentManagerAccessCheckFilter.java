@@ -71,6 +71,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageR
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -94,6 +95,8 @@ public class ContentManagerAccessCheckFilter implements Filter,
     private Map<String, String> mapping;
 
     private boolean requireAuthenticatedUser = true;
+    
+    private SettingsBean settingsBean;
 
     protected boolean checkConfig(HttpServletRequest request) {
         String cfg = StringUtils.defaultIfEmpty(request.getParameter("conf"),
@@ -118,7 +121,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
                          FilterChain chain) throws IOException, ServletException {
 
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        if (requireAuthenticatedUser && JahiaUserManagerService.isGuest(getCurrentUser())) {
+        if (requireAuthenticatedUser && JahiaUserManagerService.isGuest(getCurrentUser()) || settingsBean.isReadOnlyMode()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -247,5 +250,9 @@ public class ContentManagerAccessCheckFilter implements Filter,
 
     public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
         this.requireAuthenticatedUser = requireAuthenticatedUser;
+    }
+
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
     }
 }

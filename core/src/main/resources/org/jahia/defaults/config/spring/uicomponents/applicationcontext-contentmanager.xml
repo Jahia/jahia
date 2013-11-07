@@ -1446,5 +1446,6 @@
         <property name="defaultContentManager" value="repositoryexplorer"/>
         <property name="defaultContentPicker" value="filepicker"/>
         <property name="requireAuthenticatedUser" value="true"/>
+        <property name="settingsBean" ref="settingsBean"/>
     </bean>
 </beans>

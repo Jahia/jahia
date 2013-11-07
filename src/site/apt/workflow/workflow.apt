@@ -120,8 +120,35 @@ Workflow Integration
 </bean>
 +--------------------
 
-   The execution of this task will display a form that the user will need to fill. Data entered in this form can later
-   be used in other work items.
+   The execution of this task will display a form in all the engine automatically that the user will need to fill.
+   Data entered in this form can later be used in other work items.
+
+   For using/rendering your form in html pages using the tasks modules, you will need to define a view of that form.
+
+   To be used by the tasks module teh view must have the name <<taskData>>, here an example from the
+   <<<workflowRemotePublicationForm.taskData.jsp>>> file :
+
++---------------------
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<template:tokenizedForm>
+    <c:url value='${url.base}${currentNode.path}' var="url"/>
+    <form id="taskDataForm_${currentNode.parent.identifier}" method="post" action="${url}">
+        <input type="hidden" name="jcrMethodToCall" value="put"/>
+        <div>
+            <jcr:propertyInitializers node="${currentNode}" name="remotePublicationToExecute" var="values"/>
+            <fmt:message key="jnt_workflowRemotePublicationForm.remotePublicationToExecute"/> :
+            <select name="remotePublicationToExecute">
+                <c:forEach items="${values}" var="value">
+                    <option value="${value.value.string}">${value.displayName}</option>
+                </c:forEach>
+            </select>
+        </div>
+    </form>
+</template:tokenizedForm>
++---------------------
 
 ** jBPM task assignation
 
@@ -283,13 +310,4 @@ A publication workflow with one validation step has been started on ${date.forma
     </bean>
 +----------------
 
-* Configuring new workflow providers
-
-  Jahia's workflow service uses an external back-end, by default the jBPM workflow implementation, but that can be replaced
-  by other implementations if need be.
-
-  Adding a new provider can be done by implementing the interface org.jahia.services.workflow.WorkflowProvider. The
-  provider must provide a key and need to register to the service at startup. A spring bean can be used to declare and
-  instantiate the new provider. The <<<JBPMProvider>>> , used to connect to the jBPM engine, can be used as an example. The
-  provider is registered via the spring file <<<applicationcontext-jBPM.xml>>> .
 

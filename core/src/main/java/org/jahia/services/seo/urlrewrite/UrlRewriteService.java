@@ -358,7 +358,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                 // remove template from the url
                 language = resolveSiteLanguage(StringUtils.substringBeforeLast(targetSiteKey, "."));
             }
-            logger.debug("Language resolved : " + language);
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, language);
         } catch (JahiaException e) {
             logger.error("Cannot get site for key " + targetSiteKey, e);

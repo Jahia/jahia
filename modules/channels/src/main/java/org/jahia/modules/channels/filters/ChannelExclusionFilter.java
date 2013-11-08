@@ -46,6 +46,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
+import org.slf4j.Logger;
 
 import javax.jcr.Property;
 import javax.jcr.Value;
@@ -54,6 +55,8 @@ import javax.jcr.Value;
  * This filter will exclude a module rendering from a node if it has the associated configuration.
  */
 public class ChannelExclusionFilter extends AbstractFilter {
+
+    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ChannelExclusionFilter.class);
 
     private ChannelService channelService;
 
@@ -65,6 +68,10 @@ public class ChannelExclusionFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (resource.getNode().isNodeType("jmix:channelSelection")) {
             // we have a mixin applied, let's test if we must exclude it from the current channel.
+            if (!resource.getNode().hasProperty("j:channelSelection")) {
+                logger.warn("Channel selection activated on resource "+resource.getPath()+" but no channels selected, please select channels for this function to be activated properly.");
+                return null;
+            }
             Property channelExclusionProperty = resource.getNode().getProperty("j:channelSelection");
             String includeOrExclude = resource.getNode().getProperty("j:channelIncludeOrExclude").getString();
             Value[] channelExclusionValues = channelExclusionProperty.getValues();

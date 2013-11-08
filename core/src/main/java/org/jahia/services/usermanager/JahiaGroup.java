@@ -253,7 +253,8 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
             return false;
         }
 
-        Boolean isMember = membership.isEmpty() ? membership.get(JahiaUserManagerService.getKey(principal)) : null;
+        String principalKey = JahiaUserManagerService.getKey(principal);
+        Boolean isMember = !membership.isEmpty() ? membership.get(principalKey) : null;
         if (isMember != null) {
             return isMember;
         }
@@ -263,13 +264,12 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
             // For each member check if it's the member we are looking for,
             // otherwise, if the member is a group, check recursively in this group
             // for the requested member.
-            String pname = JahiaUserManagerService.getKey(principal);
-            boolean principalIsGuest = pname.startsWith(JahiaUserManagerService.GUEST_USERNAME + ":");
+            boolean principalIsGuest = principalKey.startsWith(JahiaUserManagerService.GUEST_USERNAME + ":");
             for (Principal member : mMembers) {
                 if (member != null) {
                     // check if the member is the one we are looking for
                     String mname = JahiaUserManagerService.getKey(member);
-                    if (mname .equals (pname) ||
+                    if (mname .equals (principalKey) ||
                         (principalIsGuest && mname.startsWith(JahiaUserManagerService.GUEST_USERNAME+":"))) {
                         result = true;
                     } else {
@@ -308,9 +308,6 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
         }
 
         return result;
-
-        //Principal tmp = (Principal)getMembers().get(principal.getName());
-        //return (tmp != null);
     }
 
     /**

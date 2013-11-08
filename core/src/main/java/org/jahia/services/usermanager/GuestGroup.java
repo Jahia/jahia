@@ -49,9 +49,9 @@ import java.util.*;
 import java.security.Principal;
 
 /**
- * User: toto
- * Date: 13 mars 2006
- * Time: 16:44:20
+ * Special user group that represents anonymous users in the system.
+ * 
+ * @author Thomas Draier
  */
 public class GuestGroup extends JCRGroup {
 
@@ -61,10 +61,12 @@ public class GuestGroup extends JCRGroup {
         super(nodeWrapper, siteID);
     }
 
+    @Override
     public Enumeration<Principal> members() {
         return new Vector<Principal>(getRecursiveUserMembers()).elements();
     }
 
+    @Override
     public Set<Principal> getRecursiveUserMembers() {
         Set<Principal> users = new HashSet<Principal> ();
 
@@ -82,19 +84,23 @@ public class GuestGroup extends JCRGroup {
         return users;
     }
 
+    @Override
     public boolean addMember(Principal principal) {
         return false;
     }
 
+    @Override
     public boolean removeMember(Principal principal) {
         return false;
     }
 
+    @Override
     public boolean isMember(Principal principal) {
         return true;
     }
 
     @Override
     public void addMembers(Collection<Principal> principals) {
+        // do nothing
     }
 }

@@ -49,25 +49,23 @@ import java.util.*;
 import java.security.Principal;
 
 /**
+ * Special user group that represents all users of the system.
  * 
- * User: toto
- * Date: 13 mars 2006
- * Time: 16:44:20
- * 
+ * @author Thomas Draier
  */
 public class UsersGroup extends JCRGroup {
     private static final long serialVersionUID = 8220270074777283565L;
-    private static org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(UsersGroup.class);
 
     public UsersGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
         super(nodeWrapper, siteID);
     }
 
+    @Override
     public Enumeration<Principal> members() {
         return new Vector<Principal>(getRecursiveUserMembers()).elements();
     }
 
+    @Override
     public Set<Principal> getRecursiveUserMembers() {
         Set<Principal> users = new HashSet<Principal> ();
 
@@ -88,26 +86,23 @@ public class UsersGroup extends JCRGroup {
         return users;
     }
 
+    @Override
     public boolean addMember(Principal principal) {
         return false;
     }
 
+    @Override
     public boolean removeMember(Principal principal) {
         return false;
     }
 
+    @Override
     public boolean isMember(Principal principal) {
-        if (principal == null) {
-            return false;
-        }
-        if (principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-            return false;
-        }
-
-        return true;
+        return principal != null && !principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME);
     }
 
     @Override
     public void addMembers(Collection<Principal> principals) {
+        // do nothing
     }
 }

@@ -29,7 +29,6 @@
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.UILocale}.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 
 
@@ -40,8 +39,6 @@
 <template:addResources type="javascript" resources="tasks.js"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<template:addResources type="javascript" resources="contributedefault.js"/>
-<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 
 <template:addResources type="javascript" resources="timepicker.js"/>

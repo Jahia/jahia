@@ -41,6 +41,7 @@
 package org.jahia.services.templates;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.spi.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,15 +142,16 @@ public class GitSourceControlManagement extends SourceControlManagement {
             }
             if (status != null) {
                 // put resource status
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
+                }
                 newMap.put(path, status);
-                if (folder && path.indexOf('/') != -1) {
+                if (folder) {
                     // store intermediate folder status as MODIFIED 
                     StringBuilder subPath = new StringBuilder();
                     for (String segment : StringUtils.split(path, '/')) {
-                        if (subPath.length() > 0) {
-                            newMap.put(subPath.toString(), Status.MODIFIED);
-                            subPath.append('/');
-                        }
+                        newMap.put(subPath.length() == 0 ? "/" : subPath.toString(), Status.MODIFIED);
+                        subPath.append('/');
                         subPath.append(segment);
                     }
                 }

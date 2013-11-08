@@ -129,15 +129,16 @@ public class SvnSourceControlManagement extends SourceControlManagement {
                 status = Status.UNTRACKED;
             }
             if (status != null) {
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
+                }
                 path = FilenameUtils.separatorsToUnix(path);
                 newMap.put(path, status);
                 String[] pathSegments = StringUtils.split(path, '/');
                 StringBuilder subPath = new StringBuilder(64);
                 for (String segment : pathSegments) {
-                    newMap.put(subPath.toString(), Status.MODIFIED);
-                    if (subPath.length() > 0) {
-                        subPath.append("/");
-                    }
+                    newMap.put(subPath.length() == 0 ? "/" : subPath.toString(), Status.MODIFIED);
+                    subPath.append('/');
                     subPath.append(segment);
                 }
             }

@@ -136,8 +136,13 @@ Allowing content creation in live workspace by authenticated or non authenticate
  If your form is designed to be used in live mode (render/live) to allow your users to create content, then you must use the token system of
  Jahia for your forms and enforce the usage of captcha for at least your non authenticated users.
 
- When Jahia receive data from a tokenzied form, it will execute the action with system user. This ensure that anybody seeing
- the form will be able to execute the action, even if it requires write access.
+ When Jahia receive data from a tokenized form, it will execute the action with system user. This ensure that anybody seeing
+ the form will be able to execute the action, even if it requires write access. It will also bypass any action restrictions
+ that were set on the action, such as requiredWorkspace, requiredPermission, requiredAuthenticatedUser. If you need to
+ restrict the form display or submission to a specific workspace, you will have to add <c:if> statements around the
+ tokenized form rendering that test the current workspace and also implement checks inside your actions implementation
+ (make sure you do both because a malicious user could always try to submit a HTTP POST request directly to your action,
+ bypassing the HTML form entirely).
 
  First you will need to tokenize your form for that simply wrap your form inside the <<<<template:tokenizedForm>>>> tag
 

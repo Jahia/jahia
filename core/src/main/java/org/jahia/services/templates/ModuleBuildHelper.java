@@ -156,7 +156,7 @@ public class ModuleBuildHelper {
             StringBuilder out = new StringBuilder();
             int r = 0;
             try {
-                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean","install"}, null, sources, out, out);
+                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean","install"}, null, sources, out, null);
             } catch (JahiaRuntimeException e) {
                 logger.error(e.getCause().getMessage(), e.getCause());
                 throw e;
@@ -165,7 +165,7 @@ public class ModuleBuildHelper {
             if (r > 0) {
                 logger.error("Compilation error, returned status " + r);
                 logger.error("Maven out : " + out);
-                throw new IOException("Compilation error, status " + r);
+                throw new IOException(out.toString());
             }
             File file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".war");
             if (!file.exists()) {

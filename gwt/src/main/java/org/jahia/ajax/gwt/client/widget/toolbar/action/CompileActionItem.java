@@ -40,7 +40,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.user.client.ui.DirectionalTextHelper;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -63,6 +69,27 @@ public class CompileActionItem extends BaseActionItem {
             public void onApplicationFailure(Throwable caught) {
                 linker.loaded();
                 Info.display(Messages.get("label.error", "Error"), Messages.get("message.moduleCompilationFailed", "Module compilation failed"));
+                StringBuilder sb = new StringBuilder();
+                for (String line : caught.getMessage().split("\n")) {
+                    if (line .startsWith("[ERROR]")) {
+                        sb.append("<span style=\"color:red\">");
+                    }
+                    sb.append(line);
+                    sb.append("</br>");
+                    if (line .startsWith("[ERROR]")) {
+                        sb.append("</span>");
+                    }
+                }
+                final Dialog dl = new Dialog();
+                dl.setModal(true);
+                dl.setHeading(Messages.get("label.error", "Error"));
+                dl.setHideOnButtonClick(true);
+                dl.setLayout(new FlowLayout());
+                dl.setWidth(500);
+                dl.setScrollMode(Style.Scroll.AUTO);
+                dl.add(new HTML(sb.toString()));
+                dl.setHeight(500);
+                dl.show();
             }
         });
     }

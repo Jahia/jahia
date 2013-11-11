@@ -206,8 +206,6 @@ public class ComponentRegistry {
         return sortedComponents;
     }
 
-    private TemplatePackageRegistry templatePackageRegistry;
-
     private boolean registerComponent(JCRNodeWrapper components, ExtendedNodeType nt) throws RepositoryException {
         if (!Arrays.asList(nt.getDeclaredSupertypeNames()).contains("jmix:accessControllableContent")) {
             return false;
@@ -217,9 +215,7 @@ public class ComponentRegistry {
 
         final String name = "component-" + nt.getName().replace(':', '_');
         if (!components.hasNode(name)) {
-            JCRNodeWrapper n = components.addNode(name, "jnt:permission");
-//            n.addNode(name+"-create", "jnt:permission");
-//            n.addNode(name+"-edit", "jnt:permission");
+            components.addNode(name, "jnt:permission");
             updated = true;
         }
 
@@ -268,10 +264,6 @@ public class ComponentRegistry {
                 permissions.addNode("components", "jnt:permission");
             }
             JCRNodeWrapper components = permissions.getNode("components");
-//            if (!components.hasNode(pkg.getRootFolder())) {
-//                components.addNode("componentsFor" + StringUtils.capitalize(pkg.getRootFolder()), "jnt:permission");
-//            }
-//            components = components.getNode("componentsFor"+ StringUtils.capitalize(pkg.getRootFolder()));
 
             if (pkg.getRootFolder().equals("default")) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
@@ -300,10 +292,6 @@ public class ComponentRegistry {
         }
         session.save();
         return count;
-    }
-
-    public void setTemplatePackageRegistry(TemplatePackageRegistry tmplPackageRegistry) {
-        templatePackageRegistry = tmplPackageRegistry;
     }
 
 }

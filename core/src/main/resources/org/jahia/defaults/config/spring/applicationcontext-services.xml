@@ -174,9 +174,7 @@
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
     </bean>
     
-    <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry">
-        <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
-    </bean>
+    <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry"/>
 
 	<bean id="org.jahia.services.tasks.TaskService" class="org.jahia.services.tasks.TaskService">
 		<property name="groupManager" ref="JahiaGroupManagerService" />

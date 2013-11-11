@@ -369,10 +369,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         String msg;
         InputStream is = null;
         try {
-        	is = this.getClass().getResourceAsStream("/jahia-startup-intro.txt");
+            is = this.getClass().getResourceAsStream("/jahia-startup-intro.txt");
             msg = IOUtils.toString(is);
         } catch (Exception e) {
-        	logger.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
             msg =
                     "\n\n\n\n"
                             + "                                     ____.\n"
@@ -398,9 +398,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                             + " * contents of the software.                                                   *\n"
                             + " *******************************************************************************\n"
                             + "\n\n";
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
         msg = msg.replace("@BUILD_NUMBER@", buildBuffer.toString());
         msg = msg.replace("@VERSION@", versionBuffer.toString());
 

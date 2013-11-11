@@ -13,7 +13,7 @@
       . . . s t a r t i n g   j a h i a   b u i l d   @BUILD_NUMBER@ . . .
 
                   v e r s i o n   :   @VERSION@
-                 c o d e  n a m e :    E l e k t r a
+                c o d e  n a m e  :   @CODENAME@
 
 
    Copyright 2002-2013 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved

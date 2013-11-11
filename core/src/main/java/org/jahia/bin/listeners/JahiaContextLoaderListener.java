@@ -54,6 +54,7 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.pluto.driver.PortalStartupListener;
+import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -366,6 +367,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             versionBuffer.append(Constants.JAHIA_PROJECT_VERSION.substring(i, i + 1));
         }
 
+        StringBuilder codeNameBuffer = new StringBuilder();
+        for (int i = 0; i < Jahia.CODE_NAME.length(); i++) {
+            codeNameBuffer.append(" ");
+            codeNameBuffer.append(Jahia.CODE_NAME.substring(i, i + 1));
+        }
+
         String msg;
         InputStream is = null;
         try {
@@ -386,6 +393,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                             + "      . . . s t a r t i n g   j a h i a   b u i l d  @BUILD_NUMBER@ . . .\n"
                             + "\n"
                             + "                  v e r s i o n  :  @VERSION@\n"
+                            + "                c o d e  n a m e :  @CODENAME@\n"
                             + "\n\n"
                             + "   Copyright 2002-2013 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
                             + "\n\n"
@@ -401,8 +409,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         } finally {
             IOUtils.closeQuietly(is);
         }
-        msg = msg.replace("@BUILD_NUMBER@", buildBuffer.toString());
-        msg = msg.replace("@VERSION@", versionBuffer.toString());
+        msg = StringUtils.replace(msg, "@BUILD_NUMBER@", buildBuffer.toString());
+        msg = StringUtils.replace(msg, "@VERSION@", versionBuffer.toString());
+        msg = StringUtils.replace(msg, "@CODENAME@", codeNameBuffer.toString());
 
         System.out.println (msg);
         System.out.flush();

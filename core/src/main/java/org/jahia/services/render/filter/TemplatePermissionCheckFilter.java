@@ -50,12 +50,13 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -87,8 +88,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         public String getLocalizedMessage() {
             if (localizedMessage == null && locale != null) {
                 if (locale != null) {
-                    localizedMessage = JahiaResourceBundle.getJahiaInternalResource("message.requiredMode." + mode,
-                            locale, getMessage());
+                    localizedMessage = Messages.getInternal("message.requiredMode." + mode, locale, getMessage());
                 } else {
                     return super.getLocalizedMessage();
                 }

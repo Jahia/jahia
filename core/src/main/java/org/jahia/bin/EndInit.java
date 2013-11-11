@@ -95,7 +95,7 @@ public class EndInit extends HttpServlet {
         out.append("\n--------------------------------------------------------------------------------------------------\n");
         appendModulesInfo(out);
         out.append("\n--------------------------------------------------------------------------------------------------"+
-        "\n  Jahia is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
+        "\n  ").append(Jahia.getFullProductVersion()).append(" is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
         out.append("\n--------------------------------------------------------------------------------------------------");
         logger.info(out.toString());
         initialized = true;

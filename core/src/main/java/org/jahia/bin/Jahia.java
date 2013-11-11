@@ -91,14 +91,14 @@ public final class Jahia {
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
 
+    public static final String CODE_NAME = "Elektra";
+    
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2013  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
     public final static String COPYRIGHT_TXT = "2013 Jahia Solutions Group SA" ;
 
     static private boolean maintenance = false;
-
-    private static SettingsBean jSettings;
 
     static private String jahiaServletPath;
     static private String jahiaContextPath;
@@ -420,7 +420,7 @@ public final class Jahia {
     public static String getFullProductVersion() {
         StringBuilder version = new StringBuilder(32);
 
-        version.append("Jahia ").append(Jahia.VERSION).append(" r").append(Jahia.getBuildNumber());
+        version.append("Jahia ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] r").append(Jahia.getBuildNumber());
         if (isEnterpriseEdition()) {
             version.append(".").append(Jahia.getEEBuildNumber());
         }

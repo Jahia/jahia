@@ -41,8 +41,6 @@
 package org.jahia.services.templates;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.spi.Path;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

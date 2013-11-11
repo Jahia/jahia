@@ -40,6 +40,10 @@
 
 package org.jahia.services.usermanager.jcr;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -50,13 +54,11 @@ import org.springframework.context.ApplicationListener;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.cache.CacheService;
+import org.jahia.services.cache.CacheHelper;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.ClassLoaderUtils;
-import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
@@ -76,26 +78,23 @@ import java.util.*;
 public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implements ApplicationListener<ProviderEvent> {
     private transient static Logger logger = LoggerFactory.getLogger(JCRGroupManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
-    private static JCRGroupManagerProvider mGroupManagerProvider;
+    private static JCRGroupManagerProvider mGroupManagerProvider = new JCRGroupManagerProvider();
     private JCRUserManagerProvider userManagerProvider;
     private transient JahiaSitesService sitesService;
-    private transient CacheService cacheService;
-    private transient Cache<String, JCRGroup> cache;
-    private Cache<String, List<String>> membershipCache;
+    private transient Ehcache cache;
+    private Ehcache membershipCache;
     private ClassLoader chainedClassLoader;
     private boolean chainedClassLoaderInitialized;
+    private EhCacheProvider cacheProvider;
     public static final String JCR_GROUPMEMBERSHIP_CACHE = "JCRGroupMembershipCache";
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
      * exist, or return the existing instance.
      *
-     * @return Return the instance of the User Manager Service.
+     * @return the instance of the User Manager Service
      */
     public static JCRGroupManagerProvider getInstance() {
-        if (mGroupManagerProvider == null) {
-            mGroupManagerProvider = new JCRGroupManagerProvider();
-        }
         return mGroupManagerProvider;
     }
 
@@ -107,50 +106,41 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
         this.sitesService = sitesService;
     }
 
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
-
     /**
      * Create a new group in the system.
      *
      * @param hidden
      * @return a reference on a group object on success, or if the groupname
-     *         already exists or another error occured, null is returned.
+     *         already exists or another error occurred, null is returned.
      */
     public JCRGroup createGroup(final int siteID, final String name, final Properties properties,
                                 final boolean hidden) {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRGroup>() {
                 public JCRGroup doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        JCRNodeWrapper nodeWrapper;
-                        JCRNodeWrapper parentNodeWrapper;
-                        if (siteID == 0) {
-                            parentNodeWrapper = session.getNode("/groups");
-                        } else {
-                            String siteName = sitesService.getSite(siteID, session).getSiteKey();
-                            parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
-                        }
-                        nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
-                        nodeWrapper.setProperty(JCRGroup.J_HIDDEN, hidden);
-                        if (properties != null) {
-                            for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                                if (entry.getValue() instanceof Boolean) {
-                                    nodeWrapper.setProperty((String) entry.getKey(), (Boolean) entry.getValue());
-                                } else {
-                                    nodeWrapper.setProperty((String) entry.getKey(), (String) entry.getValue());
-                                }
+                    JCRNodeWrapper nodeWrapper;
+                    JCRNodeWrapper parentNodeWrapper;
+                    if (siteID == 0) {
+                        parentNodeWrapper = session.getNode("/groups");
+                    } else {
+                        String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                        parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
+                    }
+                    nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
+                    nodeWrapper.setProperty(JCRGroup.J_HIDDEN, hidden);
+                    if (properties != null) {
+                        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                            if (entry.getValue() instanceof Boolean) {
+                                nodeWrapper.setProperty((String) entry.getKey(), (Boolean) entry.getValue());
+                            } else {
+                                nodeWrapper.setProperty((String) entry.getKey(), (String) entry.getValue());
                             }
                         }
-                        session.save();
-                        JCRGroup jcrGroup = new JCRGroup(nodeWrapper, siteID);
-                        getCache().put(jcrGroup.getGroupKey(), jcrGroup);
-                        return jcrGroup;
-                    } catch (JahiaException e) {
-                        logger.error("Error while creating group", e);
                     }
-                    return null;
+                    session.save();
+                    JCRGroup jcrGroup = new JCRGroup(nodeWrapper, siteID);
+                    cachePut(jcrGroup.getGroupKey(), jcrGroup);
+                    return jcrGroup;
                 }
             });
         } catch (RepositoryException e) {
@@ -171,12 +161,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
             } catch (RepositoryException e) {
                 logger.error("Error while deleting group", e);
             } finally {
-                removeFromCache(group.getGroupKey());
-                try {
-                    getMembershipCache().flush();
-                } catch (JahiaInitializationException e) {
-                    logger.error(e.getMessage(), e);
-                }
+                cache.remove(group.getGroupKey());
+                membershipCache.removeAll();
                 invalidateCachesForMembership(membership);
             }
         }
@@ -430,13 +416,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
         if (uuid != null) {
             try {
                 final String principalId = uuid;
-                Cache<String, List<String>> membershipCache = getMembershipCache();
-
-                List<String> membership = membershipCache.get(uuid);
+                Element membershipElement = membershipCache.get(uuid);
+                @SuppressWarnings("unchecked")
+                List<String> membership = (List<String>) (membershipElement != null ? membershipElement.getObjectValue() : null);
                 if (membership != null) {
                     return membership;
                 }
-                final Cache<String, List<String>> finalObjectCache = membershipCache;
                 return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                     public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Set<String> groups = new LinkedHashSet<String>();
@@ -452,7 +437,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                             groups.add(JahiaGroupManagerService.GUEST_GROUPNAME);
                         }
                         List<String> result = new LinkedList<String>(groups);
-                        finalObjectCache.put(principalId, result);
+                        membershipCache.put(new Element(principalId, result));
                         return result;
                     }
 
@@ -490,8 +475,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
 
                 );
             } catch (RepositoryException e) {
-                logger.error("Error retrieving membership for user " + principal.getName() + ", will return empty list", e);
-            } catch (JahiaInitializationException e) {
                 logger.error("Error retrieving membership for user " + principal.getName() + ", will return empty list", e);
             }
         }
@@ -548,7 +531,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      *
      * @param groupKey Group's unique identification key.
      * @return Return a reference on a the specified group name. Return null
-     *         if the group doesn't exist or when any error occured.
+     *         if the group doesn't exist or when any error occurred.
      */
     public JahiaGroup lookupGroup(String groupKey) {
         int siteID = 0;
@@ -574,7 +557,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      * @param siteID the site id
      * @param name   Group's unique identification name.
      * @return Return a reference on a the specified group name. Return null
-     *         if the group doesn't exist or when any error occured.
+     *         if the group doesn't exist or when any error occurred.
      */
     public JCRGroup lookupGroup(int siteID, final String name) {
         return lookupGroup(siteID, name, false);
@@ -599,7 +582,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      * @param siteID the site id
      * @param name   Group's unique identification name.
      * @return Return a reference on a the specified group name. Return null
-     *         if the group doesn't exist or when any error occured.
+     *         if the group doesn't exist or when any error occurred.
      */
     private JCRGroup lookupGroup(int siteID, final String name, final boolean allowExternal) {
         try {
@@ -607,21 +590,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                 siteID = 0;
             }
             final String trueGroupKey = name + ":" + siteID;
-            final Cache<String, JCRGroup> cache = getCache();
-            CacheEntry<JCRGroup> cacheEntry = null;
-            final ClassLoader loader = getChainedClassloader();
-            if (loader != null) {
-                cacheEntry = ClassLoaderUtils.executeWith(loader, new Callback<CacheEntry<JCRGroup>>() {
-                    @Override
-                    public CacheEntry<JCRGroup> execute() {
-                        return cache.getCacheEntry(trueGroupKey);
-                    }
-                 });
-            } else {
-                cacheEntry = cache.getCacheEntry(trueGroupKey);
-            }
+            Element cacheEntry = cache.get(trueGroupKey);
             if (cacheEntry != null) {
-                JCRGroup group = cacheEntry.getObject();
+                JCRGroup group = (JCRGroup) CacheHelper.getObjectValue(cacheEntry);
                 if (group == null) {
                     return null;
                 }
@@ -645,35 +616,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                             groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                         }
                     } catch (PathNotFoundException e) {
-                        if (loader != null) {
-                            ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
-                                @Override
-                                public Boolean execute() {
-                                    cache.put(trueGroupKey, null);
-                                    return Boolean.TRUE;
-                                }
-                            });
-                        } else {
-                            cache.put(trueGroupKey, null);
-                        }
+                        cachePut(trueGroupKey, null);
                         return null;
                     }
                     JCRGroup group = null;
                     boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
                     if (allowExternal || !external) {
                         group = getGroup(groupNode, name, siteID1, external);
-                        if (loader != null) {
-                            final JCRGroup groupToCache = group;
-                            ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
-                                @Override
-                                public Boolean execute() {
-                                    cache.put(trueGroupKey, groupToCache);
-                                    return Boolean.TRUE;
-                                }
-                            });
-                        } else {
-                            cache.put(trueGroupKey, group);
-                        }
+                        cachePut(trueGroupKey, group);
                     }
                     return group;
                 }
@@ -683,8 +633,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
             logger.debug("Error while retrieving group " + name + " for site " + siteID, e);
         } catch (RepositoryException e) {
             logger.warn("Error while retrieving group " + name + " for site " + siteID, e);
-        } catch (JahiaInitializationException e) {
-            logger.error("Error while retrieving group " + name + " for site " + siteID, e);
         }
         return null;
     }
@@ -832,29 +780,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(final JahiaGroup jahiaGroup) {
-        removeFromCache(jahiaGroup.getGroupKey());
+        cache.remove(jahiaGroup.getGroupKey());
     }
     
-    private void removeFromCache(final String key) {
-        try {
-            final Cache<String, JCRGroup> cache = getCache();
-            final ClassLoader loader = getChainedClassloader();
-            if (loader != null) {
-                ClassLoaderUtils.executeWith(loader, new Callback<Boolean>() {
-                    @Override
-                    public Boolean execute() {
-                        cache.remove(key);
-                        return Boolean.TRUE;
-                    }
-                });
-            } else {
-                cache.remove(key);
-            }
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
     /**
      * Invalidates group caches recursively considering membership of the group in other groups.
      * 
@@ -880,7 +808,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
         for (String key : membership) {
-            removeFromCache(key);
+            cache.remove(key);
             JahiaGroup grp = groupService.lookupGroup(key);
             if (grp != null) {
                 invalidateCachesForMembership(getMembership(grp));
@@ -889,28 +817,24 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
     }
 
     public void start() throws JahiaInitializationException {
-        getCache();
+        cache = getCacheInternal("JCRGroupCache");
+        membershipCache = getCacheInternal(JCR_GROUPMEMBERSHIP_CACHE);
     }
 
-    private Cache<String, JCRGroup> getCache() throws JahiaInitializationException {
-        if (cache == null) {
-            if (cacheService != null) {
-                cache = cacheService.getCache("JCRGroupCache", true);
+    private Ehcache getCacheInternal(String cacheName) {
+        Ehcache cacheInstance = null;
+        if (cacheProvider != null) {
+            CacheManager cacheManager = cacheProvider.getCacheManager();
+            cacheInstance = cacheManager.getCache(cacheName);
+            if (cacheInstance == null) {
+                cacheManager.addCache(cacheName);
+                cacheInstance = cacheManager.getCache(cacheName);
             }
         }
 
-        return cache;
+        return cacheInstance;
     }
-
-    private Cache<String, List<String>> getMembershipCache() throws JahiaInitializationException {
-        if (membershipCache == null) {
-            if (cacheService != null) {
-                membershipCache = cacheService.getCache(JCR_GROUPMEMBERSHIP_CACHE, true);
-            }
-        }
-        return membershipCache;
-    }
-
+    
     public void stop() throws JahiaException {
         // do nothing
     }
@@ -923,22 +847,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
     }
 
     public void updateMembershipCache(String identifier) {
-        try {
-            getMembershipCache().remove(identifier);
-        } catch (JahiaInitializationException e) {
-            logger.error(e.getMessage(), e);
-        }
+        membershipCache.remove(identifier);
     }
 
     @Override
     public void flushCache() {
         super.flushCache();
-        try {
-            getCache().flush();
-            getMembershipCache().flush();
-        } catch (JahiaInitializationException e) {
-            throw new IllegalStateException(e);
-        }
+        cache.removeAll();
+        membershipCache.removeAll();
     }
 
     @Override
@@ -948,7 +864,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
         chainedClassLoaderInitialized = false;
     }
     
-    private ClassLoader getChainedClassloader() {
+    ClassLoader getChainedClassloader() {
         if (chainedClassLoader != null || chainedClassLoaderInitialized) {
             return chainedClassLoader;
         }
@@ -974,4 +890,15 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
 
         return chainedClassLoader;
     }
+    
+    private void cachePut(String key, JCRGroup group) {
+        cache.put(new Element(key,
+                group != null && getChainedClassloader() != null ? new ProviderClassLoaderAwareCacheEntry(group)
+                        : group));
+    }
+
+    public void setCacheProvider(EhCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
+    }
+
 }

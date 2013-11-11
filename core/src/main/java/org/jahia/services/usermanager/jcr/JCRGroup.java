@@ -42,6 +42,7 @@ package org.jahia.services.usermanager.jcr;
 
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -56,6 +57,7 @@ import org.jahia.utils.Patterns;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+
 import java.security.Principal;
 import java.util.*;
 
@@ -71,11 +73,12 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     public static final String J_DISPLAYABLE_NAME = "j:displayableName";
+    private static final String PROVIDER_NAME = "jcr";
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroup.class);
+    private transient static Logger logger = LoggerFactory.getLogger(JCRGroup.class);
+    
     private String nodeUuid;
     private boolean external;
-    private static final String PROVIDER_NAME = "jcr";
     private Properties properties = null;
 
     public JCRGroup(Node nodeWrapper, int siteID) {
@@ -90,7 +93,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             this.mGroupname = nodeWrapper.getName();
             this.mGroupKey = mGroupname + ":" + siteID;
             this.hidden = nodeWrapper.getProperty(J_HIDDEN).getBoolean();
-            this.mMembers = getMembersMap(nodeWrapper);
+            initMembersMap(nodeWrapper);
         } catch (RepositoryException e) {
             logger.error("Error while accessing repository", e);
         }
@@ -270,27 +273,6 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     }
 
     /**
-     * Returns the group's home page id.
-     * -1 : undefined
-     *
-     * @return int The group homepage id.
-     */
-    public int getHomepageID() {
-        return -1;
-    }
-
-    /**
-     * Set the home page id.
-     *
-     * @param id the group homepage id.
-     * @return false on error
-     */
-    public boolean setHomepageID(int id) {
-        // TODO we will need to implement this if we want to support group homepages again.
-        return false;
-    }
-
-    /**
      * Returns a hashcode for this principal.
      *
      * @return A hashcode for this principal.
@@ -307,23 +289,29 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     protected Set<Principal> getMembersMap() {
         if (mMembers == null) {
+            initMembers();
+        }
+        return new HashSet<Principal>(mMembers);
+    }
+
+    protected void initMembers() {
+        if (mMembers == null) {
             try {
-                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<Principal>>() {
-                    public Set<Principal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        final Node node = getNode(session);
-                        return getMembersMap(node);
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        initMembersMap(getNode(session));
+                        return Boolean.TRUE;
                     }
                 });
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving group member map", e);
             }
         }
-        return new HashSet<Principal>(mMembers);
     }
-
-    private Set<Principal> getMembersMap(Node node) throws RepositoryException {
+    
+    private void initMembersMap(Node node) throws RepositoryException {
         if (mMembers == null) {
-            Set<Principal> principalMap = new HashSet<Principal>();
+            Set<Principal> principals = new HashSet<Principal>();
             Node members = node.getNode("j:members");
             NodeIterator iterator = members.getNodes();
             while (iterator.hasNext()) {
@@ -344,7 +332,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
                             JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
                             if (jahiaUser != null) {
-                                principalMap.add(jahiaUser);
+                                principals.add(jahiaUser);
                             } else {
                                 logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
                                         + "'");
@@ -353,7 +341,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             String s = Patterns.TRIPPLE_UNDERSCORE.matcher(member.getName()).replaceAll(":");
                             JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
                             if (g != null) {
-                                principalMap.add(g);
+                                principals.add(g);
                             } else {
                                 logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
                                         + "'");
@@ -362,10 +350,9 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     }
                 }
             }
-            mMembers = principalMap;
+            mMembers = principals;
             preloadedGroups = true;
         }
-        return new HashSet<Principal>(mMembers);
     }
 
     /**
@@ -428,7 +415,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             }
             session.save();
             mMembers = null;
-            mMembers = getMembersMap();
+            initMembers();
             JCRGroupManagerProvider.getInstance().updateMembershipCache(memberIdentifier);
             JCRGroupManagerProvider.getInstance().invalidateCacheRecursively(this);
             return true;
@@ -443,7 +430,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      */
     @Override
     public String toString() {
-        StringBuffer output = new StringBuffer("Details of group [" + mGroupname + "] :\n");
+        StringBuilder output = new StringBuilder(128);
+        output.append("Details of group [").append(mGroupname).append("] :\n");
 
         output.append("  - ID : ").append(getIdentifier()).append("\n");
 

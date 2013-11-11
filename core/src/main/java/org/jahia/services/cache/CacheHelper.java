@@ -42,6 +42,8 @@ package org.jahia.services.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 import net.sf.ehcache.management.ManagementService;
 import net.sf.ehcache.statistics.StatisticsGateway;
 
@@ -69,7 +71,7 @@ public final class CacheHelper {
     private static final Logger logger = LoggerFactory.getLogger(CacheHelper.class);
 
     /**
-     * Flushes all back-end and front-end Jahia caches, including Hibernate second level cache, Ehcaches etc. on the current cluster node
+     * Flushes all back-end and front-end Jahia caches on the current cluster node
      * only.
      */
     public static void flushAllCaches() {
@@ -77,7 +79,7 @@ public final class CacheHelper {
     }
 
     /**
-     * Flushes all back-end and front-end Jahia caches, including Hibernate second level cache, Ehcaches etc. If
+     * Flushes all back-end and front-end Jahia caches. If
      * <code>propagateInCluster</code> is set to true also propagates the flush to other cluster nodes.
      *
      * @param propagateInCluster if set to true the flush is propagated to other cluster nodes
@@ -192,7 +194,8 @@ public final class CacheHelper {
             }
         }
     }
-
+    
+    @SuppressWarnings("deprecation")
     private static CacheInfo getCacheInfo(Cache cache, boolean withConfig, boolean withSizeInBytes) {
         CacheInfo info = new CacheInfo(cache);
         info.setName(cache.getName());
@@ -314,6 +317,38 @@ public final class CacheHelper {
     private static CacheManager getJahiaCacheManager() {
         return ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider"))
                 .getCacheManager();
+    }
+
+    /**
+     * Returns a value of the specified cache element (by key), considering also classloader-aware desirialization if required.
+     * 
+     * @param cache
+     *            the target cache
+     * @param key
+     *            the element key
+     * @return a value of the specified cache element (by key), considering also classloader-aware desirialization if required
+     */
+    public static Object getObjectValue(Ehcache cache, String key) {
+        return getObjectValue(cache.get(key));
+    }
+
+    /**
+     * Returns a value of the specified cache element, considering also classloader-aware deserialization if required.
+     * 
+     * @param cacheElement
+     *            the cache element
+     * @return a value of the specified cache element (by key), considering also classloader-aware deserialization if required
+     */
+    public static Object getObjectValue(Element cacheElement) {
+        Object value = null;
+        if (cacheElement != null) {
+            value = cacheElement.getObjectValue();
+            if (value != null && value instanceof ClassLoaderAwareCacheEntry) {
+                value = ((ClassLoaderAwareCacheEntry) value).getValue();
+            }
+        }
+
+        return value;
     }
 
     public static void registerMBeans(String cacheManagerName) {

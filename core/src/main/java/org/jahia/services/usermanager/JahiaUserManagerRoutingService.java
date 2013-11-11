@@ -38,14 +38,11 @@
  * please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.usermanager;
+package org.jahia.services.usermanager;
 
-import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.utils.ClassLoaderUtils;
-import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -55,34 +52,28 @@ import java.security.Principal;
 import java.util.*;
 
 /**
- * <p>Title: Manages routing of user management processes to the corresponding
- * provider.</p>
- * <p>Description: This service is the heart of the "routing" process of the
- * user manager. It is also a configurable system where regexps are using to
- * define the routing process. These regexps are taken in a specific order, as
- * to give priority to one provider or another, such as : </p>
- * <p>Copyright: Copyright (c) 2002</p>
- * <p>Company: Jahia Ltd</p>
- *
+ * Manages routing of user management processes to the corresponding provider.
+ * 
  * @author Serge Huber
- * @version 3.0
  */
-
 public class JahiaUserManagerRoutingService extends JahiaUserManagerService implements ApplicationEventPublisherAware {
 
-    interface Command<T> {
-        T execute(JahiaUserManagerProvider p);
-    }
+    private static final Comparator<JahiaUserManagerProvider> PROVIDER_COMPARATOR = new Comparator<JahiaUserManagerProvider>() {
+        public int compare(JahiaUserManagerProvider o1, JahiaUserManagerProvider o2) {
+            return o1.getPriority() - o2.getPriority() != 0 ? o1.getPriority() - o2.getPriority() : o1.getKey()
+                    .compareTo(o2.getKey());
+        }
+    };
 
-    private static transient Logger logger = LoggerFactory.getLogger(
-            JahiaUserManagerRoutingService.class);
+    private static transient Logger logger = LoggerFactory.getLogger(JahiaUserManagerRoutingService.class);
 
-    static private JahiaUserManagerRoutingService mInstance = null;
+    static private JahiaUserManagerRoutingService mInstance = new JahiaUserManagerRoutingService();
 
-    private Map<String, JahiaUserManagerProvider> providersTable = null;
-    private Set<JahiaUserManagerProvider> sortedProviders = null;
+    private Map<String, JahiaUserManagerProvider> providerMap = new HashMap<String, JahiaUserManagerProvider>(2);
+    
+    private List<JahiaUserManagerProvider> providers = Collections.emptyList();
 
-    private JahiaUserManagerProvider defaultProviderInstance;
+    private JahiaUserManagerProvider defaultProvider;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -90,31 +81,14 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      * Create an new instance of the User Manager Service if the instance do not
      * exist, or return the existing instance.
      *
-     * @return Return the instance of the User Manager Service.
+     * @return the instance of the User Manager Service
      */
     public static JahiaUserManagerRoutingService getInstance () {
-        if (mInstance == null) {
-            mInstance = new JahiaUserManagerRoutingService ();
-        }
         return mInstance;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected JahiaUserManagerRoutingService () {
-    	FastHashMap map = new FastHashMap(2);
-    	map.setFast(true);
-        providersTable = map;
-
-        sortedProviders = new TreeSet<JahiaUserManagerProvider>(new Comparator<JahiaUserManagerProvider>() {
-            public int compare (JahiaUserManagerProvider o1, JahiaUserManagerProvider o2) {
-                return o1.getPriority () - o2.getPriority () != 0 ? o1.getPriority () - o2.getPriority () : o1.getKey().compareTo(o2.getKey());
-            }
-        });
     }
 
     public void start() throws JahiaInitializationException {
     	// do nothing
-        logger.info("User manager routing service now started.");
     }
 
     public void stop() throws JahiaException {
@@ -125,28 +99,23 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
     public JahiaUser createUser(final String name,
                                 final String password,
                                 final Properties properties) {
-        return defaultProviderInstance != null ? defaultProviderInstance.createUser(name, password, properties) : null;
+        return defaultProvider != null ? defaultProvider.createUser(name, password, properties) : null;
     }
 
     public boolean deleteUser (final JahiaUser user) {
-        if (user == null || defaultProviderInstance == null) {
+        if (user == null || defaultProvider == null) {
             return false;
         }
-        return defaultProviderInstance.deleteUser(user);
+        return defaultProvider.deleteUser(user);
     }
 
     public int getNbUsers () throws JahiaException {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getNbUsers();
+            return defaultProvider.getNbUsers();
         }
-        List<Integer> resultList = routeCallAll(new Command<Integer>() {
-            public Integer execute(JahiaUserManagerProvider p) {
-                return p.getNbUsers();
-            }
-        });
         int nbUsers = 0;
-        for (Integer c : resultList) {
-            nbUsers += c;
+        for (JahiaUserManagerProvider p : providers) {
+            nbUsers += p.getNbUsers();
         }
         
         return nbUsers;
@@ -154,26 +123,20 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
 
     public List<String> getUserList () {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getUserList();
+            return defaultProvider.getUserList();
         }
         
         List<String> userList = new ArrayList<String>();
 
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaUserManagerProvider p) {
-                return p.getUserList();
-            }
-        });
-        
-        for (List<String> l : resultList) {
-            userList.addAll(l);
+        for (JahiaUserManagerProvider p : providers) {
+            userList.addAll(p.getUserList());
         }
 
         return userList;
     }
 
-    public List<String> getUserList (String provider) {
-        return new ArrayList<String>((providersTable.get(provider)).getUserList());
+    public List<String> getUserList(String provider) {
+        return providerMap.get(provider).getUserList();
     }
 
     /**
@@ -185,24 +148,18 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      *         are available.
      */
     public List<JahiaUserManagerProvider> getProviderList () {
-        return new ArrayList<JahiaUserManagerProvider>(sortedProviders);
+        return providers;
     }
 
     public List<String> getUsernameList() {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getUsernameList();
+            return defaultProvider.getUsernameList();
         }
         
         List<String> userNameList = new ArrayList<String>();
-
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaUserManagerProvider p) {
-                return p.getUsernameList();
-            }
-        });
         
-        for (List<String> l : resultList) {
-            userNameList.addAll(l);
+        for (JahiaUserManagerProvider p : providers) {
+            userNameList.addAll(p.getUsernameList());
         }
 
         return userNameList;
@@ -210,24 +167,32 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
 
     public JahiaUser lookupUserByKey(final String userKey) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.lookupUserByKey(userKey);
+            return defaultProvider.lookupUserByKey(userKey);
         }
-        return routeCallAllUntilSuccess(new Command<JahiaUser>() {
-            public JahiaUser execute(JahiaUserManagerProvider p) {
-                return p.lookupUserByKey(userKey);
+        JahiaUser user = null;
+        for (JahiaUserManagerProvider p : providers) {
+            user = p.lookupUserByKey(userKey);
+            if (user != null) {
+                break;
             }
-        });
+        }
+        
+        return user;
     }
 
     public JahiaUser lookupUser(final String name) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.lookupUser(name);
+            return defaultProvider.lookupUser(name);
         }
-        return routeCallAllUntilSuccess(new Command<JahiaUser>() {
-            public JahiaUser execute(JahiaUserManagerProvider p) {
-                return p.lookupUser(name);
+        JahiaUser user = null;
+        for (JahiaUserManagerProvider p : providers) {
+            user = p.lookupUser(name);
+            if (user != null) {
+                break;
             }
-        });
+        }
+        
+        return user;
     }
 
     /**
@@ -236,28 +201,21 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      * properties. ie *=test* will match every property that starts with "test"
      *
      * @param siteID          site identifier
-     * @param searchCriterias a Properties object that contains search criterias
+     * @param searchcriteria a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "username"="*test*")
      *
      * @return Set a set of JahiaUser elements that correspond to those
-     *         search criterias
+     *         search criteria
      */
-    public Set<Principal> searchUsers (final Properties searchCriterias) {
+    public Set<Principal> searchUsers (final Properties searchcriteria) {
         if (isSingleProvider()) {
-            return new LinkedHashSet<Principal>(defaultProviderInstance.searchUsers(searchCriterias));
+            return new LinkedHashSet<Principal>(defaultProvider.searchUsers(searchcriteria));
         }
            
         Set<Principal> userList = new LinkedHashSet<Principal>();
 
-        List<Set<JahiaUser>> resultList = routeCallAll(new Command<Set<JahiaUser>>() {
-            public Set<JahiaUser> execute(JahiaUserManagerProvider p) {
-                return p.searchUsers(searchCriterias);
-            }
-        });
-
-        Iterator<Set<JahiaUser>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            userList.addAll(resultEnum.next ());
+        for (JahiaUserManagerProvider p : providers) {
+            userList.addAll(p.searchUsers(searchcriteria));
         }
         return userList;
     }
@@ -270,33 +228,24 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      * @param providerKey     key of the provider in which to search, may be
      *                        obtained by calling getProviderList()
      * @param siteID          site identifier
-     * @param searchCriterias a Properties object that contains search criterias
+     * @param searchcriteria a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
-     *                        null to search without criterias
+     *                        null to search without criteria
      *
      * @return Set a set of JahiaUser elements that correspond to those
-     *         search criterias
+     *         search criteria
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Set searchUsers(String providerKey, final Properties searchCriterias) {
-        if (defaultProviderInstance == null) {
+    public Set searchUsers(String providerKey, final Properties searchcriteria) {
+        if (defaultProvider == null) {
             return Collections.emptySet();
         }
         final JahiaUserManagerProvider p;
-        if (isSingleProvider() || providerKey == null || (p = providersTable.get(providerKey)) == null) {
-            return defaultProviderInstance.searchUsers(searchCriterias);
+        if (isSingleProvider() || providerKey == null || (p = providerMap.get(providerKey)) == null) {
+            return defaultProvider.searchUsers(searchcriteria);
         }
 
-        if (useProviderClassLoader(p)) {
-            return ClassLoaderUtils.executeWith(p.getClass().getClassLoader(), new Callback<Set<JahiaUser>>() {
-                @Override
-                public Set<JahiaUser> execute() {
-                    return p.searchUsers(searchCriterias);
-                }
-            });
-        } else {
-            return p.searchUsers(searchCriterias);
-        }
+        return p.searchUsers(searchcriteria);
     }
 
     /**
@@ -306,99 +255,79 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      * @param jahiaUser JahiaUser the user to be updated in the cache.
      */
     public void updateCache(final JahiaUser jahiaUser) {
-        if (defaultProviderInstance != null) {
-            defaultProviderInstance.updateCache(jahiaUser);
+        if (defaultProvider != null) {
+            defaultProvider.updateCache(jahiaUser);
         }
     }
 
     public boolean userExists(final String name) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.userExists(name);
+            return defaultProvider.userExists(name);
         }
-        Boolean result = routeCallAllUntilSuccess(new Command<Boolean>() {
-            public Boolean execute(JahiaUserManagerProvider p) {
-                return p.userExists(name) ? Boolean.TRUE : null;
+        boolean result = false;
+        for (JahiaUserManagerProvider p : providers) {
+            result = p.userExists(name);
+            if (result) {
+                break;
             }
-        });
+        }
         
-        return result != null && result.booleanValue();
-    }
-
-    private <T> T routeCallAllUntilSuccess(final Command<T> v) {
-        // we're calling the providers in order, until one returns
-        // a success condition
-
-        T result = null;
-        for (final JahiaUserManagerProvider curProvider : providersTable.values()) {
-            if (useProviderClassLoader(curProvider)) {
-                result = ClassLoaderUtils.executeWith(curProvider.getClass().getClassLoader(), new Callback<T>() {
-                    @Override
-                    public T execute() {
-                        return v.execute(curProvider);
-                    }
-                });
-            } else {
-                result = v.execute(curProvider);
-            }
-            if (result != null) {
-                return result;
-            }
-        }
-
         return result;
     }
 
-    private <T> List<T> routeCallAll(final Command<T> v) {
-        // we're calling all the providers
-        List<T> results = new ArrayList<T> ();
-        
-        for (final JahiaUserManagerProvider curProvider : providersTable.values()) {
-            if (useProviderClassLoader(curProvider)) {
-                results.add(ClassLoaderUtils.executeWith(curProvider.getClass().getClassLoader(), new Callback<T>() {
-                    @Override
-                    public T execute() {
-                        return v.execute(curProvider);
-                    }
-                }));
-            } else {
-                results.add(v.execute(curProvider));
-            }
-        }
-
-        return results;
-    }
-
     public boolean isUsernameSyntaxCorrect(final String name) {
-        return defaultProviderInstance != null && defaultProviderInstance.isUsernameSyntaxCorrect(name);
+        return defaultProvider != null && defaultProvider.isUsernameSyntaxCorrect(name);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void registerProvider(JahiaUserManagerProvider provider) {
+    public synchronized void registerProvider(JahiaUserManagerProvider provider) {
         logger.info("Registering user provider {}", provider.getKey());
-        providersTable.put(provider.getKey(), provider);
-        sortedProviders.add(provider);
-        if (defaultProviderInstance == null || provider.isDefaultProvider()) {
-            defaultProviderInstance = provider;
+        
+        List<JahiaUserManagerProvider> newProviderList = null;
+        if (!providers.isEmpty()) {
+            Set<JahiaUserManagerProvider> newProviderSet = new TreeSet<JahiaUserManagerProvider>(PROVIDER_COMPARATOR);
+            newProviderSet.addAll(providers);
+            newProviderSet.add(provider);
+            newProviderList = new LinkedList<JahiaUserManagerProvider>(newProviderSet);
+        } else {
+            newProviderList = new LinkedList<JahiaUserManagerProvider>();
+            newProviderList.add(provider);
+        }
+        providers = UnmodifiableList.decorate(newProviderList);
+        providerMap.put(provider.getKey(), provider);
+        if (defaultProvider == null || provider.isDefaultProvider()) {
+            defaultProvider = provider;
         }
         if (applicationEventPublisher != null) {
             applicationEventPublisher.publishEvent(new ProviderEvent(provider.getKey()));
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void unregisterProvider(JahiaUserManagerProvider provider) {
+    public synchronized void unregisterProvider(JahiaUserManagerProvider provider) {
         logger.info("Unregistering user provider {}", provider.getKey());
-        providersTable.remove(provider.getKey());
-        sortedProviders.remove(provider);
-        if (provider.isDefaultProvider() && defaultProviderInstance == provider) {
-            for (JahiaUserManagerProvider p : sortedProviders) {
+        
+        if (providerMap.remove(provider.getKey()) != null) {
+            if (isSingleProvider()) {
+                providers = Collections.emptyList();
+            } else {
+                Set<JahiaUserManagerProvider> newProviderSet = new TreeSet<JahiaUserManagerProvider>(PROVIDER_COMPARATOR);
+                newProviderSet.addAll(providers);
+                newProviderSet.add(provider);
+                providers = UnmodifiableList.decorate(new LinkedList<JahiaUserManagerProvider>(newProviderSet));
+            }
+        }
+        if (provider.isDefaultProvider() && defaultProvider == provider) {
+            for (JahiaUserManagerProvider p : providers) {
                 if (p.isDefaultProvider()) {
-                    defaultProviderInstance = p;
+                    defaultProvider = p;
                     break;
                 }
             }
-            if (defaultProviderInstance == null && !sortedProviders.isEmpty()) {
-                defaultProviderInstance = sortedProviders.iterator().next();
+            if (defaultProvider == null && !providers.isEmpty()) {
+                defaultProvider = providers.iterator().next();
             }
         }
     }
@@ -410,24 +339,12 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
     }
 
     private boolean isSingleProvider() {
-        return providersTable.size() == 1;
+        return providers.size() == 1;
     }
 
     @Override
     public JahiaUserManagerProvider getProvider(String name) {
-        return providersTable.get(name);
-    }
-    
-    /**
-     * Returns <code>true</code> in case the calls to that provider should be executed using provider class loader.
-     * 
-     * @param p
-     *            the provider to check
-     * @return <code>true</code> in case the calls to that provider should be executed using provider class loader; <code>false</code> if
-     *         current (thread context) class loader should be used
-     */
-    private boolean useProviderClassLoader(final JahiaUserManagerProvider p) {
-        return !(p instanceof JCRUserManagerProvider);
+        return providerMap.get(name);
     }
 
     @Override

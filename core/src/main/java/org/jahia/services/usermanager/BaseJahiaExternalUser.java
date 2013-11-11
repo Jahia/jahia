@@ -52,7 +52,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.utils.ClassLoaderUtils;
 
 /**
  * Represent a base class for an external user.
@@ -205,8 +204,7 @@ public abstract class BaseJahiaExternalUser implements JahiaExternalUser {
         ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
         if (servicesRegistry != null) {
             // lookup the requested group
-            JahiaGroup group = servicesRegistry.getJahiaGroupManagerService().lookupGroup(siteID,
-                    name);
+            JahiaGroup group = servicesRegistry.getJahiaGroupManagerService().lookupGroup(siteID, name);
             if (group != null) {
                 return group.isMember(this);
             }
@@ -342,13 +340,8 @@ public abstract class BaseJahiaExternalUser implements JahiaExternalUser {
         return granted;
     }
 
-    protected boolean verifyPasswordExternal(final String password) {
-        return ClassLoaderUtils.executeWith(getProvider().getClass().getClassLoader(), new ClassLoaderUtils.Callback<Boolean>() {
-            @Override
-            public Boolean execute() {
-                return getProvider().login(getUserKey(), password);
-            }
-        });
+    protected boolean verifyPasswordExternal(String password) {
+        return getProvider().login(getUserKey(), password);
     }
 
     public boolean isAccountLocked() {

@@ -73,12 +73,12 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     private static final long serialVersionUID = 4032549320399420578L;
 	private transient static Logger logger = LoggerFactory.getLogger(JCRUser.class);
     protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
-    private static final String PROVIDER_NAME = "jcr";
+    protected static final String PROVIDER_NAME = "jcr";
     public static final String J_DISPLAYABLE_NAME = "j:displayableName";
-    private final String nodeUuid;
     static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
+    private final String nodeUuid;
     private String name;
     private Properties properties;
     private UserProperties userProperties;

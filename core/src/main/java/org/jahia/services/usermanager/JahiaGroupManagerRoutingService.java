@@ -38,23 +38,22 @@
  * please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.usermanager;
-
+package org.jahia.services.usermanager;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -63,9 +62,6 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
-import org.jahia.utils.ClassLoaderUtils;
-import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -74,24 +70,26 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import javax.jcr.RepositoryException;
 
 /**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2003</p>
- * <p>Company: </p>
- *
- * @author not attributable
- * @version 1.0
+ * Implementation of the group manager service which delegates the calls to multiple registered group providers. 
  */
-
 public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService implements ApplicationEventPublisherAware {
     
     private static final Logger logger = LoggerFactory.getLogger(JahiaGroupManagerRoutingService.class);
+    
+    static private JahiaGroupManagerRoutingService mInstance = new JahiaGroupManagerRoutingService();
 
-    static private JahiaGroupManagerRoutingService mInstance = null;
+    private static final Comparator<JahiaGroupManagerProvider> PROVIDER_COMPARATOR = new Comparator<JahiaGroupManagerProvider>() {
+        public int compare(JahiaGroupManagerProvider o1, JahiaGroupManagerProvider o2) {
+            return o1.getPriority() - o2.getPriority() != 0 ? o1.getPriority() - o2.getPriority() : o1.getKey()
+                    .compareTo(o2.getKey());
+        }
+    };
 
-    private Map<String, JahiaGroupManagerProvider> providersTable = null;
-    private SortedSet<JahiaGroupManagerProvider> sortedProviders = null;
-    private JahiaGroupManagerProvider defaultProviderInstance = null;
+    private static final Map<String, Integer> siteKeyIdMap = new HashMap<String, Integer>();
+
+    private Map<String, JahiaGroupManagerProvider> providerMap = new HashMap<String, JahiaGroupManagerProvider>();
+    private List<JahiaGroupManagerProvider> providers = Collections.emptyList();
+    private JahiaGroupManagerProvider defaultProvider = null;
     private List<String> jahiaJcrEnforcedGroups;
     private String jahiaJcrEnforcedGroupsProviderKey;
 
@@ -102,23 +100,10 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * Create an new instance of the Group Manager Service if the instance do not
      * exist, or return the existing instance.
      *
-     * @return Return the instance of the Group Manager Service.
+     * @return the instance of the Group Manager Service
      */
     public static JahiaGroupManagerRoutingService getInstance () {
-        if (mInstance == null) {
-            mInstance = new JahiaGroupManagerRoutingService();
-        }
         return mInstance;
-    }
-
-    protected JahiaGroupManagerRoutingService () {
-        providersTable = new HashMap<String, JahiaGroupManagerProvider>();
-
-        sortedProviders = new TreeSet<JahiaGroupManagerProvider> (new Comparator<JahiaGroupManagerProvider> () {
-            public int compare (JahiaGroupManagerProvider o1, JahiaGroupManagerProvider o2) {
-                return o1.getPriority () - o2.getPriority () != 0 ? o1.getPriority () - o2.getPriority () : o1.getKey().compareTo(o2.getKey());
-            }
-        });
     }
 
     public void start() throws JahiaInitializationException {
@@ -130,129 +115,97 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     }
 
     public JahiaGroup createGroup(final int siteID, final String name, final Properties properties, final boolean hidden) {
-        return defaultProviderInstance != null ? defaultProviderInstance.createGroup(siteID, name, properties, hidden) : null;
+        return defaultProvider != null ? defaultProvider.createGroup(siteID, name, properties, hidden) : null;
     }
 
     public boolean deleteGroup(final JahiaGroup group) {
-        return group != null && (defaultProviderInstance != null ? defaultProviderInstance.deleteGroup(group) : false);
+        return group != null && (defaultProvider != null ? defaultProvider.deleteGroup(group) : false);
     }
 
     public List<JahiaSite> getAdminGrantedSites(final JahiaUser user) throws JahiaException {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getAdminGrantedSites(user);
+            return defaultProvider.getAdminGrantedSites(user);
         }
-        List<List<JahiaSite>> resultList = routeCallAll(new Command<List<JahiaSite>>() {
-            public List<JahiaSite> execute(JahiaGroupManagerProvider p) {
-                return p.getAdminGrantedSites(user);
-            }
-        });
-        List<JahiaSite> sitesList = new ArrayList<JahiaSite>();
-        Iterator<List<JahiaSite>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            List<JahiaSite> curResult = resultEnum.next ();
-            if (curResult != null) {
-                for (int i = 0; i < curResult.size (); i++) {
-                    if (!sitesList.contains (curResult.get (i))) {
-                        sitesList.add (curResult.get (i));
-                    }
-                }
+        
+        Set<JahiaSite> sitesList = new LinkedHashSet<JahiaSite>();
+        for (JahiaGroupManagerProvider p : providers) {
+            List<JahiaSite> adminGrantedSites = p.getAdminGrantedSites(user);
+            if (adminGrantedSites != null) {
+                sitesList.addAll(adminGrantedSites);
             }
         }
-        return sitesList;
+
+        return new LinkedList<JahiaSite>(sitesList);
     }
 
     private boolean isSingleProvider() {
-        return providersTable.size() == 1;
+        return providers.size() == 1;
     }
 
     public JahiaGroup getAdministratorGroup (final int siteID) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getAdministratorGroup(siteID);
+            return defaultProvider.getAdministratorGroup(siteID);
         }
-        return routeCallAllUntilSuccess(new Command<JahiaGroup>() {
-            public JahiaGroup execute(JahiaGroupManagerProvider p) {
-                return p.getAdministratorGroup(siteID);
+        JahiaGroup group = null;
+        for (JahiaGroupManagerProvider p : providers) {
+            group = p.getAdministratorGroup(siteID);
+            if (group != null) {
+                break;
             }
-        });
+        }
+        
+        return group;
     }
 
     public List<String> getGroupList () {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getGroupList();
+            return defaultProvider.getGroupList();
         }
         List<String> groupList = new ArrayList<String>();
 
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaGroupManagerProvider p) {
-                return p.getGroupList();
-            }
-        });
-
-        Iterator<List<String>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            List<String> curResult = resultEnum.next ();
-            groupList.addAll (curResult);
+        for (JahiaGroupManagerProvider p : providers) {
+            groupList.addAll(p.getGroupList());
         }
+
         return groupList;
     }
 
     public List<String> getGroupList (final int siteID) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getGroupList(siteID);
+            return defaultProvider.getGroupList(siteID);
         }
         List<String> groupList = new ArrayList<String>();
-
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaGroupManagerProvider p) {
-                return p.getGroupList(siteID);
-            }
-        });
-        Iterator<List<String>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            List<String> curResult = resultEnum.next ();
+        for (JahiaGroupManagerProvider p : providers) {
+            List<String> curResult = p.getGroupList(siteID);
             if (curResult != null) {
-                groupList.addAll (curResult);
+                groupList.addAll(curResult);
             }
         }
+
         return groupList;
     }
 
     public List<String> getGroupnameList () {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getGroupnameList();
+            return defaultProvider.getGroupnameList();
         }
         List<String> groupNameList = new ArrayList<String>();
-
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaGroupManagerProvider p) {
-                return p.getGroupnameList();
-            }
-        });
-        Iterator<List<String>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            List<String> curResult = resultEnum.next ();
-            groupNameList.addAll (curResult);
+        for (JahiaGroupManagerProvider p : providers) {
+            groupNameList.addAll(p.getGroupnameList());
         }
+
         return groupNameList;
     }
 
     public List<String> getGroupnameList (final int siteID) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getGroupnameList(siteID);
+            return defaultProvider.getGroupnameList(siteID);
         }
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaGroupManagerProvider p) {
-                return p.getGroupnameList(siteID);
-            }
-        });
-
         List<String> groupNameList = new ArrayList<String>();
-
-        Iterator<List<String>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            Collection<String> curResult = resultEnum.next ();
-            groupNameList.addAll (curResult);
+        for (JahiaGroupManagerProvider p : providers) {
+            groupNameList.addAll (p.getGroupnameList(siteID));
         }
+
         return groupNameList;
     }
 
@@ -265,96 +218,88 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      *         are available.
      */
     public List<? extends JahiaGroupManagerProvider> getProviderList () {
-        return new ArrayList<JahiaGroupManagerProvider>(sortedProviders);
+        return providers;
     }
-
-    /*public TreeSet getServerList (String name) {
-        return (TreeSet)serversTable.get(name);
-    }*/
 
     public List<String> getUserMembership (final JahiaUser user) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.getUserMembership(user);
+            return defaultProvider.getUserMembership(user);
         }
-        List<List<String>> resultList = routeCallAll(new Command<List<String>>() {
-            public List<String> execute(JahiaGroupManagerProvider p) {
-                return p.getUserMembership(user);
-            }
-        });
+
         List<String> userMembership = new ArrayList<String>();
-        Iterator<List<String>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            List<String> curResult = resultEnum.next ();
+        for (JahiaGroupManagerProvider p : providers) {
+            List<String> curResult = p.getUserMembership(user);
             if (curResult != null) {
                 userMembership.addAll (curResult);
             }
         }
+
         return userMembership;
     }
 
     public boolean groupExists (final int siteID, final String name) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.groupExists(siteID, name);
+            return defaultProvider.groupExists(siteID, name);
         }
         if(getJahiaJcrEnforcedGroups().contains(name)) {
             return getProvider(jahiaJcrEnforcedGroupsProviderKey).groupExists(siteID, name)?Boolean.TRUE:Boolean.FALSE;
         }
-        Boolean result = routeCallAllUntilSuccess(new Command<Boolean>() {
-            public Boolean execute(JahiaGroupManagerProvider p) {
-                return p.groupExists(siteID, name) ? Boolean.TRUE : null;
+        boolean result = false;
+        for (JahiaGroupManagerProvider p : providers) {
+            result = p.groupExists(siteID, name);
+            if (result) {
+                break;
             }
-        });
+        }
         
-        return result != null && result.booleanValue();
+        return result;
     }
 
     public JahiaGroup lookupGroup (final String groupKey) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.lookupGroup(groupKey);
+            return defaultProvider.lookupGroup(groupKey);
         }
         if(getJahiaJcrEnforcedGroups().contains(StringUtils.substringBefore(groupKey,":"))) {
             return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(groupKey);
         }
-        return routeCallAllUntilSuccess(new Command<JahiaGroup>() {
-            public JahiaGroup execute(JahiaGroupManagerProvider p) {
-                return p.lookupGroup(groupKey);
+        JahiaGroup group = null;
+        for (JahiaGroupManagerProvider p : providers) {
+            group = p.lookupGroup(groupKey);
+            if (group != null) {
+                break;
             }
-        });
+        }
+        
+        return group;
     }
 
     public JahiaGroup lookupGroup (final int siteID, final String name) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.lookupGroup(siteID, name);
+            return defaultProvider.lookupGroup(siteID, name);
         }
         if(getJahiaJcrEnforcedGroups().contains(name)) {
             return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(siteID,name);
         }
-        return routeCallAllUntilSuccess(new Command<JahiaGroup>() {
-            public JahiaGroup execute(JahiaGroupManagerProvider p) {
-                return p.lookupGroup(siteID, name);
+        JahiaGroup group = null;
+        for (JahiaGroupManagerProvider p : providers) {
+            group = p.lookupGroup(siteID, name);
+            if (group != null) {
+                break;
             }
-        });
+        }
+        
+        return group;
     }
 
     public boolean removeUserFromAllGroups (final JahiaUser user) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.removeUserFromAllGroups(user);
+            return defaultProvider.removeUserFromAllGroups(user);
         }
-        List<Boolean> resultList = routeCallAll(new Command<Boolean>() {
-            public Boolean execute(JahiaGroupManagerProvider p) {
-                return p.removeUserFromAllGroups(user);
-            }
-        });
-
         boolean success = true;
-        Iterator<Boolean> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            Boolean resultBool = (Boolean) resultEnum.next ();
-            if (!resultBool.booleanValue ()) {
-                success = false;
-                break;
-            }
+        for (JahiaGroupManagerProvider p : providers) {
+            success = p.removeUserFromAllGroups(user) && success;
         }
+        
         return success;
     }
 
@@ -364,29 +309,22 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * properties. ie *=test* will match every property that starts with "test"
      *
      * @param siteID          site identifier
-     * @param searchCriterias a Properties object that contains search criterias
+     * @param searchCriterias a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*")
      *
      * @return Set a set of JahiaGroup elements that correspond to those
-     *         search criterias
+     *         search criteria
      */
     public Set<JahiaGroup> searchGroups (final int siteID, final Properties searchCriterias) {
         if (isSingleProvider()) {
-            return defaultProviderInstance.searchGroups(siteID, searchCriterias);
+            return defaultProvider.searchGroups(siteID, searchCriterias);
         }
         Set<JahiaGroup> groupList = new HashSet<JahiaGroup>();
 
-        List<Set<JahiaGroup>> resultList = routeCallAll(new Command<Set<JahiaGroup>>() {
-            public Set<JahiaGroup> execute(JahiaGroupManagerProvider p) {
-                return p.searchGroups(siteID, searchCriterias);
-            }
-        });
-        
-        Iterator<Set<JahiaGroup>> resultEnum = resultList.iterator();
-        while (resultEnum.hasNext ()) {
-            Set<JahiaGroup> curResult = resultEnum.next ();
-            groupList.addAll (curResult);
+        for (JahiaGroupManagerProvider p : providers) {
+            groupList.addAll (p.searchGroups(siteID, searchCriterias));
         }
+
         return groupList;
     }
 
@@ -398,43 +336,22 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * @param providerKey     key of the provider in which to search, may be
      *                        obtained by calling getProviderList()
      * @param siteID          site identifier
-     * @param searchCriterias a Properties object that contains search criterias
+     * @param searchCriterias a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
-     *                        null to search without criterias
+     *                        null to search without criteria
      *
      * @return Set a set of JahiaGroup elements that correspond to those
-     *         search criterias
+     *         search criteria
      */
     public Set<JahiaGroup> searchGroups (final String providerKey, final int siteID, final Properties searchCriterias) {
-        if (defaultProviderInstance == null) {
+        if (defaultProvider == null) {
             return Collections.emptySet();
         }
-        final JahiaGroupManagerProvider providerInstance;
-        if (isSingleProvider() || providerKey == null || (providerInstance = (JahiaGroupManagerProvider) providersTable.get(providerKey)) == null) {
-            return defaultProviderInstance.searchGroups(siteID, searchCriterias);
+        final JahiaGroupManagerProvider p;
+        if (isSingleProvider() || providerKey == null || (p = providerMap.get(providerKey)) == null) {
+            return defaultProvider.searchGroups(siteID, searchCriterias);
         }
-        if (useProviderClassLoader(providerInstance)) {
-            return ClassLoaderUtils.executeWith(providerInstance.getClass().getClassLoader(), new Callback<Set<JahiaGroup>>() {
-                @Override
-                public Set<JahiaGroup> execute() {
-                    return providerInstance.searchGroups(siteID, searchCriterias);
-                }
-            });
-        } else {
-            return providerInstance.searchGroups(siteID, searchCriterias);
-        }
-    }
-
-    /**
-     * Returns <code>true</code> in case the calls to that provider should be executed using provider class loader.
-     * 
-     * @param p
-     *            the provider to check
-     * @return <code>true</code> in case the calls to that provider should be executed using provider class loader; <code>false</code> if
-     *         current (thread context) class loader should be used
-     */
-    private boolean useProviderClassLoader(final JahiaGroupManagerProvider p) {
-        return !(p instanceof JCRGroupManagerProvider);
+        return p.searchGroups(siteID, searchCriterias);
     }
 
     /**
@@ -444,56 +361,13 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(final JahiaGroup jahiaGroup) {
-        if (defaultProviderInstance != null) {
-            defaultProviderInstance.updateCache(jahiaGroup);
+        if (defaultProvider != null) {
+            defaultProvider.updateCache(jahiaGroup);
         }
-    }
-
-    private <T> T routeCallAllUntilSuccess(final Command<T> v) {
-        // we're calling the providers in order, until one returns
-        // a success condition (to be defined)
-
-        T result = null;
-        for (final JahiaGroupManagerProvider p : providersTable.values()) {
-            if (useProviderClassLoader(p)) {
-                result = ClassLoaderUtils.executeWith(p.getClass().getClassLoader(), new Callback<T>() {
-                    @Override
-                    public T execute() {
-                        return v.execute(p);
-                    }
-                });
-            } else {
-                result = v.execute(p);
-            }
-            if (result != null) {
-                return result;
-            }
-        }
-        return result;
-    }
-
-    private <T> List<T> routeCallAll(final Command<T> v) {
-        // we're calling all the providers
-        List<T> results = new ArrayList<T>();
-
-        for (final JahiaGroupManagerProvider p : providersTable.values()) {
-            if (useProviderClassLoader(p)) {
-                results.add(ClassLoaderUtils.executeWith(p.getClass().getClassLoader(), new Callback<T>() {
-                    @Override
-                    public T execute() {
-                        return v.execute(p);
-                    }
-                }));
-            } else {
-                results.add(v.execute(p));
-            }
-        }
-
-        return results;
     }
 
     public boolean isGroupNameSyntaxCorrect(final String name) {
-        return defaultProviderInstance != null && defaultProviderInstance.isGroupNameSyntaxCorrect(name);
+        return defaultProvider != null && defaultProvider.isGroupNameSyntaxCorrect(name);
     }
 
     public void setJahiaJcrEnforcedGroups(List<String> jahiaJcrEnforcedGroups) {
@@ -512,37 +386,56 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return jahiaJcrEnforcedGroupsProviderKey;
     }
 
-    interface Command<T> {
-        T execute(JahiaGroupManagerProvider p);
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
-    public void registerProvider(JahiaGroupManagerProvider provider) {
+    public synchronized void registerProvider(JahiaGroupManagerProvider provider) {
         logger.info("Registered group provider {}", provider.getKey());
-        providersTable.put(provider.getKey(), provider);
-        sortedProviders.add(provider);
-        if (defaultProviderInstance == null || provider.isDefaultProvider()) {
-            defaultProviderInstance = provider;
+        
+        List<JahiaGroupManagerProvider> newProviderList = null;
+        if (!providers.isEmpty()) {
+            Set<JahiaGroupManagerProvider> newProviderSet = new TreeSet<JahiaGroupManagerProvider>(PROVIDER_COMPARATOR);
+            newProviderSet.addAll(providers);
+            newProviderSet.add(provider);
+            newProviderList = new LinkedList<JahiaGroupManagerProvider>(newProviderSet);
+        } else {
+            newProviderList = new LinkedList<JahiaGroupManagerProvider>();
+            newProviderList.add(provider);
+        }
+        providers = UnmodifiableList.decorate(newProviderList);
+        providerMap.put(provider.getKey(), provider);
+        
+        if (defaultProvider == null || provider.isDefaultProvider()) {
+            defaultProvider = provider;
         }
         if (applicationEventPublisher != null) {
             applicationEventPublisher.publishEvent(new ProviderEvent(provider.getKey()));
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void unregisterProvider(JahiaGroupManagerProvider provider) {
+    public synchronized void unregisterProvider(JahiaGroupManagerProvider provider) {
         logger.info("Unregistering group provider {}", provider.getKey());
-        providersTable.remove(provider.getKey());
-        sortedProviders.remove(provider);
-        if (provider.isDefaultProvider() && defaultProviderInstance == provider) {
-            for (JahiaGroupManagerProvider p : sortedProviders) {
+        
+        if (providerMap.remove(provider.getKey()) != null) {
+            if (isSingleProvider()) {
+                providers = Collections.emptyList();
+            } else {
+                Set<JahiaGroupManagerProvider> newProviderSet = new TreeSet<JahiaGroupManagerProvider>(PROVIDER_COMPARATOR);
+                newProviderSet.addAll(providers);
+                newProviderSet.add(provider);
+                providers = UnmodifiableList.decorate(new LinkedList<JahiaGroupManagerProvider>(newProviderSet));
+            }
+        }
+        if (provider.isDefaultProvider() && defaultProvider == provider) {
+            for (JahiaGroupManagerProvider p : providers) {
                 if (p.isDefaultProvider()) {
-                    defaultProviderInstance = p;
+                    defaultProvider = p;
                     break;
                 }
             }
-            if (defaultProviderInstance == null && !sortedProviders.isEmpty()) {
-                defaultProviderInstance = sortedProviders.iterator().next();
+            if (defaultProvider == null && !providers.isEmpty()) {
+                defaultProvider = providers.iterator().next();
             }
         }
     }
@@ -550,15 +443,12 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     @Override
     public void flushCache() {
         if (isSingleProvider()) {
-            defaultProviderInstance.flushCache();
+            defaultProvider.flushCache();
             return;
         }
-        routeCallAll(new Command<Boolean>() {
-            public Boolean execute(JahiaGroupManagerProvider p) {
-                p.flushCache();
-                return Boolean.TRUE;
-            }
-        });
+        for (JahiaGroupManagerProvider p : providers) {
+            p.flushCache();
+        }
     }
 
     public void setDefaultProvider(JahiaGroupManagerProvider defaultProvider) {
@@ -569,10 +459,9 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     
     @Override
     public JahiaGroupManagerProvider getProvider(String name) {
-        return providersTable.get(name);
+        return providerMap.get(name);
     }
 
-    private static final Map<String, Integer> siteKeyIdMap = new HashMap<String, Integer>();
     private int getSiteId(final String siteKey) {
         Integer id = siteKeyIdMap.get(siteKey);
 

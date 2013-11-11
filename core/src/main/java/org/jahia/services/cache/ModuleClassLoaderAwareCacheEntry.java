@@ -42,64 +42,40 @@ package org.jahia.services.cache;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
+
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 
 /**
  * Wrapper for the cache entry to use the classloader of the specified module.
  * 
  * @author Thomas Draier
  */
-public abstract class ClassLoaderAwareCacheEntry implements Serializable {
+public class ModuleClassLoaderAwareCacheEntry extends ClassLoaderAwareCacheEntry {
     private static final long serialVersionUID = -4281419239864698107L;
 
-    private Object value;
+    private transient String moduleName;
 
-    protected ClassLoaderAwareCacheEntry(Object value) {
-        super();
-        this.value = value;
+    public ModuleClassLoaderAwareCacheEntry(Object value, String moduleName) {
+        super(value);
+        this.moduleName = moduleName;
     }
 
-    protected abstract void beforeReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException;
-
-    protected abstract void beforeWriteObject(ObjectOutputStream out) throws IOException;
-
-    protected abstract ClassLoader getClassLoaderToUse();
-
-    public Object getValue() {
-        return value;
+    @Override
+    protected void beforeReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        moduleName = (String) in.readObject();
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        beforeReadObject(in);
-
-        ClassLoader cl = getClassLoaderToUse();
-        Thread currentThread = null;
-        ClassLoader tccl = null;
-        if (cl != null) {
-            currentThread = Thread.currentThread();
-            tccl = currentThread.getContextClassLoader();
-            currentThread.setContextClassLoader(cl);
-        }
-
-        try {
-            in.defaultReadObject();
-        } finally {
-            if (cl != null) {
-                currentThread.setContextClassLoader(tccl);
-            }
-        }
+    @Override
+    protected void beforeWriteObject(ObjectOutputStream out) throws IOException {
+        out.writeObject(moduleName);
     }
 
-    @SuppressWarnings("unused")
-    private void readObjectNoData() throws ObjectStreamException {
-        // do nothing
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        beforeWriteObject(out);
-
-        out.defaultWriteObject();
+    @Override
+    protected ClassLoader getClassLoaderToUse() {
+        JahiaTemplatesPackage module = moduleName != null ? ServicesRegistry.getInstance()
+                .getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName) : null;
+        return module != null ? module.getClassLoader() : null;
     }
 
 }

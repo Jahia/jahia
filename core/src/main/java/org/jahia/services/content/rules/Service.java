@@ -109,6 +109,7 @@ public class Service extends JahiaService {
     private SchedulerService schedulerService;
     private CacheService cacheService;
     private JahiaUserManagerService userManagerService;
+    private JahiaGroupManagerService groupManagerService;
     private JahiaPasswordPolicyService passwordPolicyService;
 
     public static Service getInstance() {
@@ -821,8 +822,7 @@ public class Service extends JahiaService {
     }
 
     public void flushGroupCaches() {
-        JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        groupService.flushCache();
+        groupManagerService.flushCache();
     }
 
     /**
@@ -896,6 +896,10 @@ public class Service extends JahiaService {
                 }
             }
         }
+    }
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
     }
 
 

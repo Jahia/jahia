@@ -73,9 +73,8 @@ import java.util.*;
  * JCR implementation of the user manager provider interface. This class stores and
  * retrieves users from a JCR backend.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 7 juil. 2009
  */
 public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, JahiaAfterInitializationService {
     private static final String ROOT_PWD_RESET_FILE = "root.pwd";
@@ -300,7 +299,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
             });
         } catch (RepositoryException e) {
             logger.error("Error while retrieving user list", e);
-            return new ArrayList<String>();
+            return Collections.emptyList();
         }
     }
 

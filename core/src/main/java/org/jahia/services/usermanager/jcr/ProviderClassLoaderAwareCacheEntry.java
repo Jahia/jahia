@@ -37,69 +37,39 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.cache;
+package org.jahia.services.usermanager.jcr;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
+
+import org.jahia.services.cache.ClassLoaderAwareCacheEntry;
 
 /**
- * Wrapper for the cache entry to use the classloader of the specified module.
+ * Wrapper for the cache entry to use the chained class loader of all registered user/group providers, if more than one is registered.
  * 
- * @author Thomas Draier
+ * @author Sergiy Shyrkov
  */
-public abstract class ClassLoaderAwareCacheEntry implements Serializable {
+public class ProviderClassLoaderAwareCacheEntry extends ClassLoaderAwareCacheEntry {
     private static final long serialVersionUID = -4281419239864698107L;
 
-    private Object value;
-
-    protected ClassLoaderAwareCacheEntry(Object value) {
-        super();
-        this.value = value;
+    public ProviderClassLoaderAwareCacheEntry(Object value) {
+        super(value);
     }
 
-    protected abstract void beforeReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException;
-
-    protected abstract void beforeWriteObject(ObjectOutputStream out) throws IOException;
-
-    protected abstract ClassLoader getClassLoaderToUse();
-
-    public Object getValue() {
-        return value;
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        beforeReadObject(in);
-
-        ClassLoader cl = getClassLoaderToUse();
-        Thread currentThread = null;
-        ClassLoader tccl = null;
-        if (cl != null) {
-            currentThread = Thread.currentThread();
-            tccl = currentThread.getContextClassLoader();
-            currentThread.setContextClassLoader(cl);
-        }
-
-        try {
-            in.defaultReadObject();
-        } finally {
-            if (cl != null) {
-                currentThread.setContextClassLoader(tccl);
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void readObjectNoData() throws ObjectStreamException {
+    @Override
+    protected void beforeReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         // do nothing
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        beforeWriteObject(out);
+    @Override
+    protected void beforeWriteObject(ObjectOutputStream out) throws IOException {
+        // do nothing
+    }
 
-        out.defaultWriteObject();
+    @Override
+    protected ClassLoader getClassLoaderToUse() {
+        return JCRGroupManagerProvider.getInstance().getChainedClassloader();
     }
 
 }

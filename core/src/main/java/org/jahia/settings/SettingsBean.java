@@ -443,7 +443,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 if (StringUtils.isNotEmpty(bindPort)) {
                     System.setProperty("cluster.tcp.bindPort", bindPort);
                 }
-                System.setProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp-nio.xml"));
+                System.setProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp.xml"));
             }
             System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
             System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));

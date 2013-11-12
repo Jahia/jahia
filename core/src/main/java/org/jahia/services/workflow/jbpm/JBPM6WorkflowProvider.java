@@ -54,7 +54,6 @@ import org.kie.spring.persistence.KieSpringJpaManager;
 import org.kie.spring.persistence.KieSpringTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 
@@ -68,9 +67,7 @@ import java.util.*;
 /**
  * jBPM 6 Workflow Provider implementation
  */
-public class JBPM6WorkflowProvider implements WorkflowProvider,
-        InitializingBean,
-        WorkflowObservationManagerAware {
+public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservationManagerAware {
 
     public static final List<Status> OPEN_STATUS_LIST = Arrays.asList(Status.Created, Status.InProgress, Status.Ready, Status.Reserved);
     private static final List<Status> OPEN_STATUS_LIST_NON_RESERVED = Arrays.asList(Status.Created, Status.InProgress, Status.Ready);
@@ -152,10 +149,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider,
 
     public void setEm(EntityManager em) {
         this.em = em;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
     }
 
     public void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {

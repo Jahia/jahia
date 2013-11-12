@@ -111,9 +111,9 @@ public class SourceControlFactory {
      * @throws IOException
      *             in case of I/O errors
      */
-    public SourceControlManagement getSourceControlManagement(File workingDir1) throws IOException {
+    public SourceControlManagement getSourceControlManagement(File workingDir) throws IOException {
         SourceControlManagement scm = null;
-        File dir = workingDir1;
+        File dir = workingDir;
         do {
             if (new File(dir, ".git").exists()) {
                 if (!sourceControlExecutables.containsKey("git")) {
@@ -133,7 +133,7 @@ public class SourceControlFactory {
         } while (scm == null && dir != null);
 
         if (scm != null) {
-            scm.initWithWorkingDirectory(dir);
+            scm.initWithWorkingDirectory(workingDir);
         }
         return scm;
     }

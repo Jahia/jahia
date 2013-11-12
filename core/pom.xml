@@ -263,6 +263,10 @@
                     <groupId>org.drools</groupId>
                     <artifactId>drools-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>javassist</artifactId>
+                    <groupId>org.javassist</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         
@@ -1032,6 +1036,10 @@
                     <groupId>org.jboss.seam.transaction</groupId>
                     <artifactId>seam-transaction</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>javassist</artifactId>
+                    <groupId>org.javassist</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1047,6 +1055,10 @@
                 <exclusion>
                     <groupId>org.drools</groupId>
                     <artifactId>drools-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>javassist</artifactId>
+                    <groupId>org.javassist</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

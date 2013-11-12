@@ -26,7 +26,7 @@
                 <property name="properties">
                     <map>
                         <entry key="hibernate.dialect" value="${hibernate.dialect}"/>
-                        <entry key="hibernate.hbm2ddl.auto" value="none"/>
+                        <entry key="hibernate.hbm2ddl.auto" value=""/>
                         <entry key="hibernate.show_sql" value="false"/>
                         <!-- put the batch size property to 0 if you need to debug -->
                         <entry key="hibernate.jdbc.batch_size" value="16"/>

@@ -38,7 +38,7 @@
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.CR2</jbpm.version>
         <drools.version>${jbpm.version}</drools.version>
-        <hibernate.version>4.2.6.Final</hibernate.version>
+        <hibernate.version>4.2.7.SP1</hibernate.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <camel.version>2.12.1</camel.version>
         <gwt.version>2.4.0</gwt.version>

@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.*;
 
@@ -215,10 +214,10 @@ public class ContentActions {
      * Create a node
      *
      * @param linker
-     * @param windowHeaer
+     * @param windowHeader
      * @param nodeType
      */
-    public static void createNode(final Linker linker, final String windowHeaer, final String nodeType, boolean useMainNode) {
+    public static void createNode(final Linker linker, final String windowHeader, final String nodeType, boolean useMainNode) {
         GWTJahiaNode parent;
         if (useMainNode) {
             parent = linker.getSelectionContext().getMainNode();
@@ -226,7 +225,7 @@ public class ContentActions {
             parent = linker.getSelectionContext().getSingleSelection();
         }
         if (parent != null) {
-            String nodeName = Window.prompt(windowHeaer, "untitled");
+            String nodeName = Window.prompt(windowHeader, "untitled");
             if (nodeName != null && nodeName.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, null, null, true, new BaseAsyncCallback<GWTJahiaNode>() {

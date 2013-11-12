@@ -873,17 +873,13 @@ extends = jnt:content
 
 [jnt:javascriptFile] > jnt:editableFile
 
+[jnt:javaPackageFolder] > jnt:folder
+
 [jnt:javaSourceFile] > jnt:editableFile
 
 [jnt:propertiesFile] > jnt:editableFile
 
 [jnt:xmlFile] > jnt:editableFile
-
-[jnt:mavenTargetFolder] > jnt:folder
-
-[jnt:subversionSystemFolder] > jnt:folder
-
-[jnt:gitSystemFolder] > jnt:folder
 
 [jnt:mavenTargetFolder] > jnt:folder
 

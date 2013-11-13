@@ -40,16 +40,9 @@
 
 package org.jahia.services.importexport;
 
-<<<<<<< .working
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import net.sf.saxon.TransformerFactoryImpl;
-
-=======
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
->>>>>>> .merge-right.r47877
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
@@ -73,21 +66,15 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
-<<<<<<< .working
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
-=======
-import org.jahia.services.content.nodetypes.JahiaCndReader;
->>>>>>> .merge-right.r47877
 import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
-<<<<<<< .working
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
@@ -98,31 +85,9 @@ import org.jahia.utils.Url;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipInputStream;
 import org.jahia.utils.zip.ZipOutputStream;
-=======
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
->>>>>>> .merge-right.r47877
-<<<<<<< .working
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-=======
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.Patterns;
-import org.jahia.utils.Url;
-import org.jahia.utils.zip.ZipEntry;
-import org.jahia.utils.zip.ZipInputStream;
-import org.jahia.utils.zip.ZipOutputStream;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.XSLTransformer;
->>>>>>> .merge-right.r47877
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -135,7 +100,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -184,7 +148,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     /**
      * Returns an singleton instance of this class.
-     * 
+     *
      * @return an singleton instance of this class
      */
     public static ImportExportBaseService getInstance() {
@@ -200,9 +164,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     /**
      * Helper method to determine which type of the import the uploaded file represents.
-     * 
-     * @param item
-     *            the uploaded file item
+     *
+     * @param item the uploaded file item
      * @return type of the import the uploaded file represents
      */
     public static String detectImportContentType(GWTFileManagerUploadServlet.Item item) {
@@ -252,7 +215,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     /**
      * Returns a list of configured attribute processors for the import.
-     * 
+     *
      * @return a list of configured attribute processors for the import
      */
     public List<AttributeProcessor> getAttributeProcessors() {
@@ -261,9 +224,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     /**
      * Sets a list of configured attribute processors for the import.
-     * 
-     * @param attributeProcessors
-     *            a list of configured attribute processors for the import
+     *
+     * @param attributeProcessors a list of configured attribute processors for the import
      */
     public void setAttributeProcessors(List<AttributeProcessor> attributeProcessors) {
         this.attributeProcessors = attributeProcessors;
@@ -684,7 +646,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     String serverName = (String) infos.get("siteservername");
                     serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
                 } catch (JahiaException e) {
-                    logger.error("Error when getting site",e);
+                    logger.error("Error when getting site", e);
                 }
 
                 if (!siteKeyEx && !serverNameEx) {
@@ -709,7 +671,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 }
                             }
                         }
-<<<<<<< .working
                         final Locale finalLocale = locale;
                         final String finalTpl = tpl;
                         try {
@@ -719,7 +680,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                         JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                                 "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                                 "description"), finalLocale, finalTpl, null, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
-                                                false, infos.getProperty("originatingJahiaRelease"), null,null, session);
+                                                false, infos.getProperty("originatingJahiaRelease"), null, null, session);
                                         importSiteProperties(site, infos, session);
                                     } catch (JahiaException e) {
                                         throw new RepositoryException(e);
@@ -735,13 +696,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 throw (Exception) e.getCause();
                             }
                         }
-=======
-                        JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
-                                "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
-                                "description"), locale, tpl, null, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
-                                false, infos.getProperty("originatingJahiaRelease"), null, null, session);
-                        importSiteProperties(site, infos, session);
->>>>>>> .merge-right.r47877
                     } catch (Exception e) {
                         logger.error("Cannot create site " + infos.get("sitetitle"), e);
                     }
@@ -757,24 +711,24 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     @Override
     public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
-        importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath,  jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null));
+        importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null));
     }
 
     /**
      * Import a full site zip into a newly created site.
-     *
+     * <p/>
      * zip file can contain all kind of legacy jahia import files or jcr import format.
      *
-     * @param file Zip file
-     * @param site The new site where to import
-     * @param infos site infos
-     * @param legacyMappingFilePath path to the legacy mappings
+     * @param file                      Zip file
+     * @param site                      The new site where to import
+     * @param infos                     site infos
+     * @param legacyMappingFilePath     path to the legacy mappings
      * @param legacyDefinitionsFilePath path for the legacy definitions
-     * @param session the current JCR session to use for the import
+     * @param session                   the current JCR session to use for the import
      * @throws RepositoryException
      * @throws IOException
      */
-    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath,JCRSessionWrapper session) throws RepositoryException, IOException {
+    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
 
@@ -1366,29 +1320,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sitesService.setDefaultSite(site);
             } else if (firstKey.equals("installedModules")) {
                 if (!installedModules.contains(value) && !templateSet.equals(value)) {
-<<<<<<< .working
                     JahiaTemplatesPackage pkg = templateManagerService.getAnyDeployedTemplatePackage(value);
                     if (pkg != null) {
                         modules.add(pkg);
                     } else {
-                        logger.info("unable to find module {} in deployed modules",value);
+                        logger.info("unable to find module {} in deployed modules", value);
                     }
-=======
-                    modules.add("/templateSets/" + value);
->>>>>>> .merge-right.r47877
                 }
             }
         }
 
-<<<<<<< .working
-=======
-        try {
-            templateManagerService.deployModules(modules, "/sites/" + site.getSiteKey(), session);
-        } catch (RepositoryException e) {
-            logger.error("Cannot deploy module " + modules, e);
-        }
-
->>>>>>> .merge-right.r47877
         @SuppressWarnings("unchecked")
         Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages));
         if (!siteLangs.isEmpty()) {
@@ -1428,7 +1369,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             session.save();
         } catch (RepositoryException e) {
-            logger.error("Cannot deploy module "+modules,e);
+            logger.error("Cannot deploy module " + modules, e);
         }
 
     }
@@ -1464,12 +1405,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return importHandler.getUuidProps();
     }
 
-<<<<<<< .working
     @Override
-    public List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException  {
-=======
     public List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException {
->>>>>>> .merge-right.r47877
         return importUsersFromZip(file, new UsersImportHandler(site));
     }
 
@@ -1525,9 +1462,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     /**
      * Detects the type of the import from the provided stream.
-     * 
-     * @param is
-     *            the input stream to read imported content from
+     *
+     * @param is the input stream to read imported content from
      * @return the type of the import from the provided stream
      * @see XMLFormatDetectionHandler
      */
@@ -1550,42 +1486,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return handler.getType();
     }
 
-<<<<<<< .working
     @Override
     public void importXML(final String parentNodePath, InputStream content, final int rootBehavior) throws IOException, RepositoryException, JahiaException {
-        importXML(parentNodePath, content, rootBehavior, null);
-=======
-    public void importXML(final String parentNodePath, final InputStream content, final int rootBehavior) throws IOException, RepositoryException, JahiaException {
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         final HashMap<String, List<String>> references = new HashMap<String, List<String>>();
         importXML(parentNodePath, content, rootBehavior, references, session);
         ReferencesHelper.resolveCrossReferences(session, references);
->>>>>>> .merge-right.r47877
     }
 
-<<<<<<< .working
     /**
      * Imports the provided content.
-     * 
-     * @param parentNodePath
-     *            the node to use as a parent for the import
-     * @param content
-     *            the input stream to read content from
-     * @param rootBehaviour
-     *            the root behaviour (see {@link DocumentViewImportHandler})
-     * @param session
-     *            current JCR session
-     * @throws IOException
-     *             in case of an I/O operation error
-     * @throws RepositoryException
-     *             in case of a JCR-related error
-     * @throws JahiaException
-     *             in case of a processing error
+     *
+     * @param parentNodePath the node to use as a parent for the import
+     * @param content        the input stream to read content from
+     * @param rootBehavior   the root behaviour (see {@link DocumentViewImportHandler})
+     * @param session        current JCR session
+     * @throws IOException         in case of an I/O operation error
+     * @throws RepositoryException in case of a JCR-related error
+     * @throws JahiaException      in case of a processing error
      */
-    public void importXML(final String parentNodePath, InputStream content, final int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException, JahiaException {
-=======
     public void importXML(final String parentNodePath, InputStream content, final int rootBehavior, final Map<String, List<String>> references, JCRSessionWrapper session) throws IOException, RepositoryException, JahiaException {
->>>>>>> .merge-right.r47877
         File tempFile = null;
 
         try {
@@ -1696,29 +1616,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         importZip(parentNodePath, file, rootBehaviour, session, null, true);
     }
 
-<<<<<<< .working
     /**
      * Imports the content of the specified resource.
-     * 
-     * @param parentNodePath
-     *            the node to use as a parent for the import
-     * @param file
-     *            the file with the content to be imported
-     * @param rootBehaviour
-     *            the root behaviour (see {@link DocumentViewImportHandler})
-     * @param session
-     *            current JCR session
-     * @param filesToIgnore
-     *            set of files to be skipped
-     * @throws IOException
-     *             in case of an I/O operation error
-     * @throws RepositoryException
-     *             in case of a JCR-related error
+     *
+     * @param parentNodePath the node to use as a parent for the import
+     * @param file           the file with the content to be imported
+     * @param rootBehaviour  the root behaviour (see {@link DocumentViewImportHandler})
+     * @param session        current JCR session
+     * @param filesToIgnore  set of files to be skipped
+     * @throws IOException         in case of an I/O operation error
+     * @throws RepositoryException in case of a JCR-related error
      */
-    public void importZip(String parentNodePath, Resource file, int rootBehaviour, JCRSessionWrapper session, Set<String> filesToIgnore)
-=======
-    public void importZip(String parentNodePath, File file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper)
->>>>>>> .merge-right.r47877
+    public void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper)
             throws IOException, RepositoryException {
         long timer = System.currentTimeMillis();
         if (filesToIgnore == null) {
@@ -1745,7 +1654,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     ZipEntry zipentry = zis.getNextEntry();
                     if (zipentry == null) break;
                     String name = zipentry.getName();
-                    if (name.equals(LIVE_REPOSITORY_XML)&& !filesToIgnore.contains(name)) {
+                    if (name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name)) {
                         long timerLive = System.currentTimeMillis();
                         logger.info("Start importing " + LIVE_REPOSITORY_XML);
 
@@ -1827,7 +1736,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 ZipEntry zipentry = zis.getNextEntry();
                 if (zipentry == null) break;
                 String name = zipentry.getName();
-                if (name.equals(REPOSITORY_XML)&& !filesToIgnore.contains(name)) {
+                if (name.equals(REPOSITORY_XML) && !filesToIgnore.contains(name)) {
                     long timerDefault = System.currentTimeMillis();
                     logger.info("Start importing " + REPOSITORY_XML);
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList);
@@ -1867,15 +1776,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     logger.info("Done importing {} in {}", name, DateUtils.formatDurationWords(System.currentTimeMillis() - timerOther));
                 }
                 zis.closeEntry();
+
+                ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper);
+                session.save(JCRObservationManager.IMPORT);
             }
-<<<<<<< .working
         } catch (RepositoryException e) {
             throw e;
-=======
-
-            ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper);
-            session.save(JCRObservationManager.IMPORT);
->>>>>>> .merge-right.r47877
         } catch (Exception e) {
             logger.error("Cannot import", e);
         } finally {
@@ -1979,9 +1885,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     /**
      * Injects an instance of the category service
-     * 
-     * @param categoryService
-     *            category service instance
+     *
+     * @param categoryService category service instance
      */
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -2004,13 +1909,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-<<<<<<< .working
-=======
-    private void setObserverInterval(long observerInterval) {
-        this.observerInterval = observerInterval;
-    }
-
->>>>>>> .merge-right.r47877
     private List<XMLContentTransformer> xmlContentTransformers;
 
     public void setXmlContentTransformers(final List<XMLContentTransformer> xmlContentTransformers) {

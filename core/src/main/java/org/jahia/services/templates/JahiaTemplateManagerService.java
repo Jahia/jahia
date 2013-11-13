@@ -658,16 +658,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             } else {
                 installedModules = Collections.emptyList();
             }
-<<<<<<< .working
-=======
-            String moduleName = originalNode.getName();
-
-            synchro(originalNode, destinationNode, session, moduleName, references);
-
-            ReferencesHelper.resolveCrossReferences(session, references, false);
-
-            addDependencyValue(originalNode, destinationNode, "j:installedModules");
->>>>>>> .merge-right.r47877
         }
 
         Set<String> modules = new TreeSet<String>();

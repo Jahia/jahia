@@ -50,16 +50,9 @@ import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-<<<<<<< .working
-=======
-import org.jahia.services.importexport.ReferencesHelper;
-import org.slf4j.Logger;
-import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.jahia.api.Constants;
-import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
->>>>>>> .merge-right.r47877
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;

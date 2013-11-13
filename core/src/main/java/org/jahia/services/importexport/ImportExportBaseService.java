@@ -1053,10 +1053,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         usersImportHandler.setUuidProps(userProps);
 
         // session.save();
+<<<<<<< .working
 
         long timerXR = System.currentTimeMillis();
         logger.info("Resolving cross references");
         logger.info("Done resolving cross references in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerXR));
+=======
+>>>>>>> .merge-right.r47880
         session.save(JCRObservationManager.IMPORT);
         cleanFilesList(fileList);
 

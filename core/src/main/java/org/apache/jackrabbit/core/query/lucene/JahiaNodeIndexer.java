@@ -484,15 +484,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     private String getPropertyNameFromFieldname(String fieldName) {
         String propertyName = fieldName;
-        if (fieldName.contains(":")) {
+        int pos = fieldName.indexOf(':');
+        if (pos > -1) {
             try {
-                String prefix = namespaceRegistry.getPrefix(mappings.getURI(fieldName.substring(0,
-                        fieldName.indexOf(':'))));
-                if (StringUtils.isEmpty(prefix)) {
-                    propertyName = fieldName.substring(fieldName.indexOf(':') + 1);
-                } else {
-                    propertyName = fieldName.replaceFirst("(\\d+)", prefix);
-                }
+                String prefix = namespaceRegistry.getPrefix(mappings.getURI(fieldName.substring(0, pos)));
+                propertyName = !StringUtils.isEmpty(prefix) ? (prefix + fieldName.substring(pos)) : fieldName
+                        .substring(pos + 1);
             } catch (RepositoryException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug(

@@ -4,6 +4,8 @@
         <%
             if (pageContext.getAttribute("node") instanceof JCRNodeWrapper) {
         %>
+        <c:set var="propertySize" value="${property.length}"/>
+        <c:set var="fileSize" value='<%= org.jahia.utils.FileUtils.humanReadableByteCount((Long) pageContext.getAttribute("propertySize"), true) %>'/>
         <c:if test="${property.name == 'jcr:data'}" var="jcrData">
             <c:set var="parentNode" value="${currentNode.parent}"/>
             <c:if test="${parentNode.file}">
@@ -14,10 +16,10 @@
                     <c:param name="t" value="${currentNode.name}"/>
                 </c:url>
             </c:if>
-            <a href="${binaryUrl}" target="_blank">&lt;binary&gt;</a>
+            <a href="${binaryUrl}" target="_blank">&lt;binary&gt;</a>&nbsp;[${fileSize}]
         </c:if>
         <c:if test="${not jcrData}">
-            &lt;binary&gt;
+            &lt;binary&gt;&nbsp;[${fileSize}]
         </c:if>
         <%
             }

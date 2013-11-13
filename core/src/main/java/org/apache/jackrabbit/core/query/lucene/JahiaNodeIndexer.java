@@ -464,16 +464,16 @@ public class JahiaNodeIndexer extends NodeIndexer {
             if (includeInNodeIndex && isSupportSpellchecking()) {
                 String site = resolveSite();
                 String language = resolveLanguage();
-                StringBuilder fulltextNameBuilder = new StringBuilder(FieldNames.FULLTEXT);
-                if (site != null) {
-                    fulltextNameBuilder.append("-").append(site);
-                }
-                if (language != null) {
-                    fulltextNameBuilder.append("-").append(language);
-                }
-                String fulltextName = fulltextNameBuilder.toString();
-                if (!FieldNames.FULLTEXT.equals(fulltextName)) {
-                    doc.add(createFulltextField(fulltextName, stringValue, false));
+                if (site != null || language != null) {
+                    StringBuilder fulltextNameBuilder = new StringBuilder(32);
+                    fulltextNameBuilder.append(FieldNames.FULLTEXT);
+                    if (site != null) {
+                        fulltextNameBuilder.append("-").append(site);
+                    }
+                    if (language != null) {
+                        fulltextNameBuilder.append("-").append(language);
+                    }
+                    doc.add(createFulltextField(fulltextNameBuilder.toString(), stringValue, false));
                 }
             }
         }

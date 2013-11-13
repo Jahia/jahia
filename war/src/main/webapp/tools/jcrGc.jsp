@@ -13,6 +13,9 @@
 </head>
 <body>
 <h1>JCR Data Store Garbage Collection</h1>
+<c:if test="${param.gc == 'true'}">
+<% System.gc(); %>
+</c:if>
 <c:if test="${param.action == 'gc'}">
 <%
 long timer = System.currentTimeMillis();
@@ -31,6 +34,7 @@ try {
 <p>Available actions:</p>
 <ul>
     <li><a href="?action=gc" onclick="return confirm('You are about to start the DataStore Garbage Collector. All unused files in the data store will be permanently deleted. Do you want to continue?');">Run JCR DataStore garbage collector now</a></li>
+    <li><a href="?action=gc&amp;gc=true" onclick="return confirm('You are about to start the DataStore Garbage Collector. All unused files in the data store will be permanently deleted. Do you want to continue?');">Run Java GC first and than run JCR DataStore garbage collector now</a></li>
 </ul>
 <%@ include file="gotoIndex.jspf" %>
 </body>

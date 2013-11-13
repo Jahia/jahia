@@ -1074,7 +1074,7 @@ public final class JCRContentUtils implements ServletContextAware {
             InputStream is = null;
             try {
                 is = resource.getInputStream();
-                session.importXML(targetPath, is, importUUIDBehavior, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, replacements);
+                session.importXML(targetPath, is, importUUIDBehavior, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, replacements, null);
             } finally {
                 IOUtils.closeQuietly(is);
             }

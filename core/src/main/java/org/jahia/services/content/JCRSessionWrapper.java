@@ -50,6 +50,14 @@ import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+<<<<<<< .working
+=======
+import org.jahia.services.importexport.ReferencesHelper;
+import org.slf4j.Logger;
+import org.apache.xerces.jaxp.SAXParserFactoryImpl;
+import org.jahia.api.Constants;
+import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
+>>>>>>> .merge-right.r47877
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
@@ -645,10 +653,12 @@ public class JCRSessionWrapper implements Session {
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior, int rootBehavior)
             throws IOException, InvalidSerializedDataException, RepositoryException {
-        importXML(path, inputStream, uuidBehavior, rootBehavior, null);
+        Map<String, List<String>> references = new HashMap<String, List<String>>();
+        importXML(path, inputStream, uuidBehavior, rootBehavior, null, references);
+        ReferencesHelper.resolveCrossReferences(this, references);
     }
 
-    public void importXML(String path, InputStream inputStream, int uuidBehavior, int rootBehavior, Map<String,String> replacements)
+    public void importXML(String path, InputStream inputStream, int uuidBehavior, int rootBehavior, Map<String, String> replacements, Map<String, List<String>> references)
             throws IOException, InvalidSerializedDataException, RepositoryException {
         JCRNodeWrapper node = getNode(path);
         try {
@@ -663,6 +673,9 @@ public class JCRSessionWrapper implements Session {
         documentViewImportHandler.setRootBehavior(rootBehavior);
         documentViewImportHandler.setUuidBehavior(uuidBehavior);
         documentViewImportHandler.setReplacements(replacements);
+        if (references != null) {
+            documentViewImportHandler.setReferences(references);
+        }
         try {
             SAXParserFactory factory;
 

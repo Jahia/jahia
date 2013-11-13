@@ -2445,7 +2445,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
         boolean copy = copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0));
-        ReferencesHelper.resolveCrossReferences(getSession(), references);
+        ReferencesHelper.resolveCrossReferences(getSession(), references, false);
         return copy;
     }
 
@@ -2462,7 +2462,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
         boolean copy = copy(dest,name,allowsExternalSharedNodes,references,ignoreNodeTypes,maxBatch,new MutableInt(0));
-        ReferencesHelper.resolveCrossReferences(getSession(), references);
+        ReferencesHelper.resolveCrossReferences(getSession(), references, false);
         return copy;
     }
 

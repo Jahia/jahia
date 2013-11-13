@@ -43,21 +43,19 @@ package org.jahia.services.importexport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.services.content.JCRContentUtils;
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.*;
 
 /**
- *
  * User: toto
  * Date: Dec 18, 2009
  * Time: 11:58:07 AM
- *
  */
 public class ReferencesHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ReferencesHelper.class);
@@ -65,46 +63,47 @@ public class ReferencesHelper {
     public static int maxBatch = 5000;
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
+        resolveCrossReferences(session, references, true);
+    }
+
+    public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper) throws RepositoryException {
         int batchCount = 0;
 
         Map<String, String> uuidMapping = session.getUuidMapping();
         JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
-        NodeIterator ni = refRoot.getNodes();
-        while (ni.hasNext()) {
+        if (useReferencesKeeper) {
+            NodeIterator ni = refRoot.getNodes();
+            while (ni.hasNext()) {
 
-            batchCount ++;
+                batchCount++;
 
-            if (batchCount > maxBatch) {
-                session.save();
-                batchCount = 0;
-            }
+                if (batchCount > maxBatch) {
+                    session.save();
+                    batchCount = 0;
+                }
 
-            Node refNode = ni.nextNode();
-            String uuid = refNode.getProperty("j:originalUuid").getString();
-            if (uuidMapping.containsKey(uuid)) {
-                String pName = refNode.getProperty("j:propertyName").getString();
+                Node refNode = ni.nextNode();
                 String refuuid = refNode.getProperty("j:node").getString();
+
                 try {
                     JCRNodeWrapper n = session.getNodeByUUID(refuuid);
-                    updateProperty(session, n, pName, uuidMapping.get(uuid));
+                    String uuid = refNode.getProperty("j:originalUuid").getString();
+                    if (uuidMapping.containsKey(uuid)) {
+                        String pName = refNode.getProperty("j:propertyName").getString();
+                        updateProperty(session, n, pName, uuidMapping.get(uuid));
+                        refNode.remove();
+                    } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
+                        String pName = refNode.getProperty("j:propertyName").getString();
+                        updateProperty(session, n, pName, session.getNode(uuid).getIdentifier());
+                        refNode.remove();
+                    }
                 } catch (ItemNotFoundException e) {
-                    logger.debug("Referred item not found:" + refuuid, e);
+                    refNode.remove();
                 }
-                refNode.remove();
-            } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
-                String pName = refNode.getProperty("j:propertyName").getString();
-                String refuuid = refNode.getProperty("j:node").getString();
-                try {
-                    JCRNodeWrapper n = session.getNodeByUUID(refuuid);
-                    updateProperty(session, n, pName, session.getNode(uuid).getIdentifier());
-                } catch (ItemNotFoundException e) {
-                    logger.debug("Referred item not found:" + refuuid, e);
-                }
-                refNode.remove();
             }
         }
         boolean resolved;
-        List<String> resolvedUUIDStringList= new LinkedList<String>();
+        List<String> resolvedUUIDStringList = new LinkedList<String>();
         for (String uuid : references.keySet()) {
             final List<String> paths = references.get(uuid);
             resolved = true;
@@ -128,32 +127,40 @@ public class ReferencesHelper {
                         update(paths, session, uuid);
                     }
                 } catch (PathNotFoundException e) {
-                    resolved = false;
-                    // store reference for later
-                    for (String path : paths) {
-                        JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
-                        String refuuid = path.substring(0, path.lastIndexOf("/"));
-                        String pName = path.substring(path.lastIndexOf("/") + 1);
-                        r.setProperty("j:node", refuuid);
-                        r.setProperty("j:propertyName", pName);
-                        r.setProperty("j:originalUuid", uuid);
+                    if (useReferencesKeeper) {
+                        // store reference for later
+                        for (String path : paths) {
+                            JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
+                            String refuuid = path.substring(0, path.lastIndexOf("/"));
+                            String pName = path.substring(path.lastIndexOf("/") + 1);
+                            r.setProperty("j:node", refuuid);
+                            r.setProperty("j:propertyName", pName);
+                            r.setProperty("j:originalUuid", uuid);
+                        }
+                        logger.warn("Reference to " + uuid +" cannot be resolved, store it in the reference keeper");
+                    } else {
+                        resolved = false;
                     }
                 } catch (ItemNotFoundException e) {
-                    resolved = false;
-                    // store reference for later
-                    for (String path : paths) {
-                        JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
-                        String refuuid = path.substring(0, path.lastIndexOf("/"));
-                        String pName = path.substring(path.lastIndexOf("/") + 1);
-                        r.setProperty("j:node", refuuid);
-                        r.setProperty("j:propertyName", pName);
-                        r.setProperty("j:originalUuid", uuid);
+                    if (useReferencesKeeper) {
+                        // store reference for later
+                        for (String path : paths) {
+                            JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
+                            String refuuid = path.substring(0, path.lastIndexOf("/"));
+                            String pName = path.substring(path.lastIndexOf("/") + 1);
+                            r.setProperty("j:node", refuuid);
+                            r.setProperty("j:propertyName", pName);
+                            r.setProperty("j:originalUuid", uuid);
+                        }
+                        logger.warn("Reference to " + uuid + " cannot be resolved, store it in the reference keeper");
+                    } else {
+                        resolved = false;
                     }
                 } catch (RepositoryException e) {
-                    logger.error("Repository exception",e);
+                    logger.error("Repository exception", e);
                 }
             }
-            if(resolved) {
+            if (resolved) {
                 resolvedUUIDStringList.add(uuid);
             }
         }
@@ -192,7 +199,7 @@ public class ReferencesHelper {
             throws RepositoryException {
         if (pName.startsWith("[")) {
             int id = Integer.parseInt(StringUtils.substringBetween(pName, "[", "]"));
-            pName = StringUtils.substringAfter(pName,"]");
+            pName = StringUtils.substringAfter(pName, "]");
             if (n.isNodeType("jnt:translation") && n.hasProperty("jcr:language")) {
                 pName += "_" + n.getProperty("jcr:language").getString();
                 n = n.getParent();
@@ -201,15 +208,15 @@ public class ReferencesHelper {
                 n.addMixin("jmix:referencesInField");
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("New references : "+value);
+                logger.debug("New references : " + value);
             }
-            JCRNodeWrapper ref = n.addNode("j:referenceInField_"+pName+"_"+id, "jnt:referenceInField");
-            ref.setProperty("j:fieldName",pName);
+            JCRNodeWrapper ref = n.addNode("j:referenceInField_" + pName + "_" + id, "jnt:referenceInField");
+            ref.setProperty("j:fieldName", pName);
             ref.setProperty("j:reference", value);
         } else {
             final ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
             if (propertyDefinition == null) {
-                throw new ConstraintViolationException("Couldn't find definition for property "+pName );
+                throw new ConstraintViolationException("Couldn't find definition for property " + pName);
             }
             String[] constraints = propertyDefinition.getValueConstraints();
             if (constraints != null && constraints.length > 0) {
@@ -220,7 +227,7 @@ public class ReferencesHelper {
                     b |= target.isNodeType(constraint);
                 }
                 if (!b) {
-                    logger.warn("Cannot set reference to " + target.getPath() + ", constraint on " + n.getPath() );
+                    logger.warn("Cannot set reference to " + target.getPath() + ", constraint on " + n.getPath());
                     return;
                 }
             }
@@ -228,7 +235,7 @@ public class ReferencesHelper {
                 Value[] newValues;
                 if (n.hasProperty(pName)) {
                     final Value[] oldValues = n.getProperty(pName).getValues();
-                    newValues = new Value[oldValues.length+1];
+                    newValues = new Value[oldValues.length + 1];
                     for (Value oldValue : oldValues) {
                         // value already set
                         if (oldValue.getString().equals(value)) {
@@ -239,7 +246,7 @@ public class ReferencesHelper {
                 } else {
                     newValues = new Value[1];
                 }
-                newValues[newValues.length-1] =  session.getValueFactory().createValue(value, propertyDefinition.getRequiredType() );
+                newValues[newValues.length - 1] = session.getValueFactory().createValue(value, propertyDefinition.getRequiredType());
                 if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
                     session.checkout(n);
                     n.setProperty(pName, newValues);

@@ -58,6 +58,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Jahia import/export service to manipulate different types of content.
@@ -202,6 +203,22 @@ public interface ImportExportService {
      * @throws JahiaException
      */
     void importZip(String parentNodePath, Resource file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
+
+    /**
+     * Performs an import of the ZIP file. The format of XML files will be detected, as if they were imported with
+     * importXML(String, InputStream) method. Binary content will be
+     *
+     * @param parentNodePath
+     * @param file
+     * @param rootBehaviour Ignore root xml element - can be used to import multiple nodes in the same node, using one single
+     *          import
+     * @param filesToIgnore Files to ignore
+     * @param references References map
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws JahiaException
+     */
+    void importZip(String parentNodePath, File file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
 
     /**
      * Validates a JCR content import file in document format and returns expected failures.

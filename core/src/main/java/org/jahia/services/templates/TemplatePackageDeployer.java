@@ -202,6 +202,7 @@ public class TemplatePackageDeployer {
         session.save();
     }
 
+<<<<<<< .working
     private synchronized void cloneModuleInLive(final JahiaTemplatesPackage pack) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -213,6 +214,48 @@ public class TemplatePackageDeployer {
                     if (session.itemExists("/modules/" + pack.getRootFolderWithVersion())) {
                         session.getNode("/modules/" + pack.getRootFolderWithVersion()).remove();
                         session.save();
+=======
+
+    public boolean performInitialImport(final JahiaTemplatesPackage pack, JCRSessionWrapper session) {
+        try {
+            initRepository(session, pack);
+            if (!pack.getInitialImports().isEmpty()) {
+                logger.info("Starting import for the module package '" + pack.getName() + "' including: "
+                        + pack.getInitialImports());
+                cleanTemplates(pack.getRootFolder(), session);
+                for (String imp : pack.getInitialImports()) {
+                    String targetPath = "/" + StringUtils.substringAfter(StringUtils.substringBeforeLast(imp, "."), "import-").replace('-', '/');
+                    File importFile = new File(pack.getFilePath(), imp);
+                    logger.info("... importing " + importFile + " into " + targetPath);
+                    try {
+                        if (imp.toLowerCase().endsWith(".xml")) {
+                            InputStream is = null;
+                            try {
+                                is = new BufferedInputStream(new FileInputStream(importFile));
+                                session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, null, null);
+                            } finally {
+                                IOUtils.closeQuietly(is);
+                            }
+                        } else if (imp.toLowerCase().contains("/importsite")) {
+                            JCRUser user = null;
+                            try {
+                                user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                                JCRSessionFactory.getInstance().setCurrentUser(user);
+                                importExportService.importSiteZip(importFile,session);
+                            } finally {
+                                JCRSessionFactory.getInstance().setCurrentUser(user);
+                            }
+
+                        } else {
+                            importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, null, false);
+                        }
+
+                        importFile.delete();
+                        session.save(JCRObservationManager.IMPORT);
+                    } catch (Exception e) {
+                        logger.error("Unable to import content for package '" + pack.getName() + "' from file " + imp
+                                + ". Cause: " + e.getMessage(), e);
+>>>>>>> .merge-right.r47877
                     }
                     session.getWorkspace().clone("default", "/modules/" + pack.getRootFolderWithVersion(), "/modules/" + pack.getRootFolderWithVersion(), true);
                 }

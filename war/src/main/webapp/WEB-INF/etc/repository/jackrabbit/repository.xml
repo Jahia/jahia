@@ -157,7 +157,7 @@
 
     <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
         <param name="path" value="${rep.home}/datastore"/>
-        <param name="minRecordLength" value="4096"/>
+        <param name="minRecordLength" value="1024"/>
     </DataStore>
 
     <DataStore class="org.apache.jackrabbit.core.data.db.DbDataStore">
@@ -165,6 +165,6 @@
         <param name="schemaObjectPrefix" value="JR_"/>
         <param name="schemaCheckEnabled" value="false"/>
         <param name="copyWhenReading" value="true"/>
-        <param name="minRecordLength" value="4096"/>
+        <param name="minRecordLength" value="1024"/>
     </DataStore>
 </Repository>

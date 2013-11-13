@@ -54,6 +54,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -136,13 +137,15 @@ public class TextExtractionListener extends DefaultEventListener {
                                 continue;
                             }
 
+                            String eventPath = event.getPath();
+                            
                             // skip /jcr:system path
-                            if (event.getPath().startsWith("/jcr:system")) {
+                            if (eventPath.startsWith("/jcr:system") || eventPath.endsWith("/j:extractedText")) {
                                 continue;
                             }
 
                             // is it a binary property?
-                            Property p = (Property) s.getItem(event.getPath());
+                            Property p = (Property) s.getItem(eventPath);
                             if (p.getType() != PropertyType.BINARY) {
                                 continue;
                             }

@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.rules;
 
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.apache.tika.io.IOUtils;
@@ -50,13 +51,14 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.textextraction.TextExtractionService;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.nodetype.ConstraintViolationException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
@@ -80,6 +82,30 @@ public class ExtractionService {
             instance = new ExtractionService();
         }
         return instance;
+    }
+
+    protected static void convertPropertyToBinary(JCRNodeWrapper fileNode, BinaryImpl contentValue,
+            JCRSessionWrapper session) throws RepositoryException {
+        if (session.hasPendingChanges()) {
+            session.save();
+        }
+        JCRNodeWrapper contentNodeCopy = null;
+        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        try {
+            JCRNodeWrapper contentNode = fileNode.getNode(Constants.JCR_CONTENT);
+            contentNode.copy(fileNode, Constants.JCR_CONTENT + "-temp", true);
+            contentNodeCopy = fileNode.getNode(Constants.JCR_CONTENT + "-temp");
+            contentNode.remove();
+            session.move(contentNodeCopy.getPath(), fileNode.getPath() + "/" + Constants.JCR_CONTENT);
+            session.save();
+        } finally {
+            JCRObservationManager.setEventsDisabled(null);
+        }
+
+        JCRNodeWrapper contentNode = fileNode.getNode(Constants.JCR_CONTENT);
+        contentNode.setProperty(Constants.EXTRACTED_TEXT, contentValue);
+        contentNode.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
+        session.save();
     }
 
     private JCRTemplate jcrTemplate;
@@ -240,10 +266,18 @@ public class ExtractionService {
                         } else {
                             session.checkout(n);
                         }
-                        n.setProperty(Constants.EXTRACTED_TEXT, new BinaryImpl(content.getBytes(SettingsBean
-                                .getInstance().getCharacterEncoding())));
-                        n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
-                        session.save();
+                        BinaryImpl contentValue = new BinaryImpl(content.getBytes(Charsets.UTF_8));
+                        try {
+                            n.setProperty(Constants.EXTRACTED_TEXT, contentValue);
+                            n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
+                            session.save();
+                        } catch (ConstraintViolationException cve) {
+                            if (n.hasProperty(Constants.EXTRACTED_TEXT)) {
+                                convertPropertyToBinary(file, contentValue, session);
+                            }
+                        } finally {
+                            contentValue.dispose();
+                        }
                     } catch (Exception e) {
                         if (logger.isDebugEnabled()) {
                             logger.warn("Cannot extract content for node " + sourcePath, e);

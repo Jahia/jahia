@@ -103,6 +103,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final Name J_ACL_INHERITED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "inherit");
 
     public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
+    
+    private static final Name J_EXTACTED_TEXT = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "extractedText");
+    
     public static final Name J_VISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "conditionalVisibility");
     
     public static final String PUBLISHED = "_:PUBLISHED".intern();
@@ -631,7 +634,27 @@ public class JahiaNodeIndexer extends NodeIndexer {
     
     @Override
     protected void addBinaryValue(Document doc, String fieldName, InternalValue internalValue) {
-        // we disable the binary indexing by Jackrabbit
+        // we disable the binary indexing by Jackrabbit and only index our j:extractedText property
+        try {
+            String propName = mappings.getPrefix(Constants.JAHIA_NS) + ":extractedText";
+            if (!propName.equals(fieldName)) {
+                return;
+            }
+            long timer = System.currentTimeMillis();
+            String value = internalValue.getString();
+            addStringValue(doc, fieldName, value, true, isIncludedInNodeIndex(J_EXTACTED_TEXT),
+                    getPropertyBoost(J_EXTACTED_TEXT), useInExcerpt(J_EXTACTED_TEXT));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Indexed j:extractedText of length {} in {} ms", value.length(), System.currentTimeMillis()
+                        - timer);
+            }
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Error indexing content of the j:extractedText property", e);
+            } else {
+                logger.warn("Error indexing content of the j:extractedText property. Cause: " + e.getMessage());
+            }
+        }        
     }
     
     @Override

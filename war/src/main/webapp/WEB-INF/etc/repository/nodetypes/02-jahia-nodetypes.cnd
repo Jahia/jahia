@@ -199,7 +199,7 @@
 //---------------------------------------------------------
 
 [jnt:resource] > nt:resource
- - j:extractedText (string) protected hidden
+ - j:extractedText (binary) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
 
 [jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list
@@ -219,7 +219,7 @@
  + * (jnt:textExtract)
 
 [jnt:textExtract] > nt:base
- - j:extractedText (string) protected hidden
+ - j:extractedText (binary) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
  - j:originalUuid (string) protected nofulltext hidden
 

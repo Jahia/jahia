@@ -172,6 +172,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                             if (isAclUuidInIndex()) {
                                 String[] acls = infos.getAclUuid() != null ? 
                                         Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
+                                ArrayUtils.reverse(acls);
                                 for (String acl : acls) {
                                     Boolean aclChecked = checkedAcls.get(acl);
                                     if (aclChecked == null) {
@@ -184,7 +185,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                     } else {
                                         canRead = aclChecked;
                                     }
-                                    if (canRead) {
+                                    if (!canRead) {
                                         break;
                                     }
                                 }
@@ -253,7 +254,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         //Added by Jahia
                                         //can be added to bitset when ACL checked and not in live mode or no visibility rule to check
                                       try {  
-                                        if (session.getNodeByUUID(infos.getMainNodeUuid()) != null && isAclUuidInIndex() && (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
+                                        if (isAclUuidInIndex() && (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
                                                 !"1".equals(infos.getCheckVisibility()))) { 
                                            bitset.set(infos.getDocNumber()); 
                                         } else { //try to load nodeWrapper to check the visibility rules

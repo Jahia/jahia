@@ -48,11 +48,7 @@ import javax.jcr.RepositoryException;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rincevent
- * Date: 11/10/11
- * Time: 10:05 AM
- * To change this template use File | Settings | File Templates.
  */
 public class LegacyPidMappingToolLogger implements LegacyPidMappingTool {
     private static Logger logger = LoggerFactory.getLogger(LegacyPidMappingToolLogger.class);

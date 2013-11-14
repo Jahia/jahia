@@ -55,12 +55,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* Created with IntelliJ IDEA.
-* User: toto
-* Date: 4/10/13
-* Time: 17:19
-* To change this template use File | Settings | File Templates.
-*/
+ * User: toto
+ */
 class SelectMainNodeTreeLoadListener extends LoadListener {
     protected transient Map<String,GWTJahiaNode> nodesByPath;
 

@@ -45,11 +45,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rincevent
- * Date: 11/10/11
- * Time: 9:57 AM
- * To change this template use File | Settings | File Templates.
  */
 public interface LegacyPidMappingTool {
     /**

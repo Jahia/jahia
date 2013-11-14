@@ -50,11 +50,7 @@ import javax.jcr.RepositoryException;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rincevent
- * Date: 11/10/11
- * Time: 12:08 PM
- * To change this template use File | Settings | File Templates.
  */
 public class LegacyPidToVanityUrlMappingToolImpl implements LegacyPidMappingTool {
     private static Logger logger = LoggerFactory.getLogger(LegacyPidToVanityUrlMappingToolImpl.class);

@@ -65,9 +65,6 @@ import java.util.Map;
 /**
  * Class for filtering the table view of a manager/picker based on its nodetype
  * User: rincevent
- * Date: 9/12/11
- * Time: 2:14 PM
- * To change this template use File | Settings | File Templates.
  */
 public class NodeTypeTableViewFiltering extends BaseActionItem {
     private static final long serialVersionUID = 6115660301140902069L;

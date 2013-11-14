@@ -1,11 +1,7 @@
 package org.jahia.services.workflow.jbpm.custom.email;
 
 /**
- * Created with IntelliJ IDEA.
  * User: loom
- * Date: 28.06.13
- * Time: 20:58
- * To change this template use File | Settings | File Templates.
  */
 public class AttachmentTemplate {
     private String name;

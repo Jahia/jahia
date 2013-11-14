@@ -55,11 +55,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Created by IntelliJ IDEA.
  * User: david
- * Date: 1/3/12
- * Time: 1:36 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ColorPickerField extends AdapterField {
 

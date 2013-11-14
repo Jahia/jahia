@@ -49,12 +49,8 @@ import org.springframework.webflow.execution.RequestContext;
 import org.springframework.webflow.mvc.view.FlowViewResolver;
 
 /**
-* Created by IntelliJ IDEA.
-*
-* @author : rincevent
-* @since : JAHIA 6.1
-*        Created : 08/03/13
-*/
+ * @author rincevent
+ */
 class BundleFlowViewResolver implements FlowViewResolver {
     @Override
     public View resolveView(String viewId, RequestContext context) {

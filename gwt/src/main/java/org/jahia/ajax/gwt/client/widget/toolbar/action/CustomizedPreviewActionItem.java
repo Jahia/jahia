@@ -78,11 +78,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 8/30/11
+ * @author rincevent
  */
 public class CustomizedPreviewActionItem extends BaseActionItem {
     private transient SearchField userSearchField;

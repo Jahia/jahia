@@ -40,7 +40,6 @@
 
 package org.jahia.bin;
 
-import org.apache.log4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.HistoryTrackerBean;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,14 +49,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 11/05/12
+ * @author rincevent
  */
 public class StoreHistory extends JahiaController {
-    private transient static Logger logger = Logger.getLogger(StoreHistory.class);
 
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet

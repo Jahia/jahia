@@ -222,34 +222,36 @@ public class StubHelper {
 
         if (ntName != null) {
             GWTJahiaNodeType nodeType = contentDefinition.getNodeType(ntName, uiLocale);
-            r.put("nodeType", nodeType);
-            List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
-            items.addAll(nodeType.getInheritedItems());
-            for (String snippetType : propertiesSnippetTypes) {
-                snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
-                for (Map.Entry<String, String> propertySnippetEntry : getCodeSnippets(fileType, snippetType, null)
-                        .entrySet()) {
-                    MessageFormat labelTemplate = null;
-                    for (GWTJahiaItemDefinition definition : items) {
-                        String defName = definition.getName();
-                        if (!"*".equals(defName) && !definition.isNode() && !definition.isHidden()) {
-                            String propertySnippet = StringUtils.replace(propertySnippetEntry.getValue(), "__value__",
-                                    defName);
-                            if (null == labelTemplate) {
-                                labelTemplate = new MessageFormat(getLabelTemplate(fileType, snippetType,
-                                        propertySnippetEntry.getKey(), uiLocale));
+            if (nodeType != null) {
+                r.put("nodeType", nodeType);
+                List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>(nodeType.getItems());
+                items.addAll(nodeType.getInheritedItems());
+                for (String snippetType : propertiesSnippetTypes) {
+                    snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
+                    for (Map.Entry<String, String> propertySnippetEntry : getCodeSnippets(fileType, snippetType, null)
+                            .entrySet()) {
+                        MessageFormat labelTemplate = null;
+                        for (GWTJahiaItemDefinition definition : items) {
+                            String defName = definition.getName();
+                            if (!"*".equals(defName) && !definition.isNode() && !definition.isHidden()) {
+                                String propertySnippet = StringUtils.replace(propertySnippetEntry.getValue(), "__value__",
+                                        defName);
+                                if (null == labelTemplate) {
+                                    labelTemplate = new MessageFormat(getLabelTemplate(fileType, snippetType,
+                                            propertySnippetEntry.getKey(), uiLocale));
+                                }
+                                GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet,
+                                        labelTemplate.format(new String[] { defName }));
+                                displayBean
+                                        .set("text", StringUtils.replace(StringUtils.replace(propertySnippet, "<", "&lt;"),
+                                                ">", "&gt;"));
+                                snippetsByType.add(displayBean);
                             }
-                            GWTJahiaValueDisplayBean displayBean = new GWTJahiaValueDisplayBean(propertySnippet,
-                                    labelTemplate.format(new String[] { defName }));
-                            displayBean
-                                    .set("text", StringUtils.replace(StringUtils.replace(propertySnippet, "<", "&lt;"),
-                                            ">", "&gt;"));
-                            snippetsByType.add(displayBean);
-                        }
 
+                        }
                     }
+                    snippets.put(snippetType, snippetsByType);
                 }
-                snippets.put(snippetType, snippetsByType);
             }
         }
 

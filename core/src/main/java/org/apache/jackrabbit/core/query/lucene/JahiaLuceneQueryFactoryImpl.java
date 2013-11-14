@@ -253,7 +253,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                                         //Added by Jahia
                                         //can be added to bitset when ACL checked and not in live mode or no visibility rule to check
-                                      try {  
                                         if (isAclUuidInIndex() && (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
                                                 !"1".equals(infos.getCheckVisibility()))) { 
                                            bitset.set(infos.getDocNumber()); 
@@ -264,10 +263,6 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                             }
                                             bitset.set(infos.getDocNumber());
                                         }
-                                      }catch(ItemNotFoundException ex) {
-                                          //User have no rights to get this item
-                                          logger.debug("Item " + infos.getMainNodeUuid() + " for facet is not found for user "  + session.getUserID(), ex);
-                                      }
                                       //!Added by Jahia
                                     }                                    
                                 } else {

@@ -81,7 +81,7 @@
 
     <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/"
                            flow-builder-services="jahiaFlowBuilderServices">
-        <webflow:flow-location-pattern value="**/*.flow/**/flow.xml"/>
+        <webflow:flow-location-pattern value="**/*.flow/flow.xml"/>
     </webflow:flow-registry>
 
     <bean id="moduleSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"

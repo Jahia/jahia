@@ -160,21 +160,21 @@ public class ChannelsTabItem extends SidePanelTabItem {
         tab.add(deviceDetailsPanel, firstBoxLayoutData);
 
         ContentPanel gridContentPanel = new ContentPanel(new FitLayout());
-        gridContentPanel.setHeading(Messages.get("label.capabilities", "Capabilities"));
+        gridContentPanel.setHeadingHtml(Messages.get("label.capabilities", "Capabilities"));
 
         ListStore<GWTJahiaBasicDataBean> capabilitiesStore = new ListStore<GWTJahiaBasicDataBean>();
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
         column.setId("displayName");
-        column.setHeader(Messages.get("label.name", "Name"));
+        column.setHeaderHtml(Messages.get("label.name", "Name"));
         column.setRowHeader(true);
         column.setWidth(100);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("value");
-        column.setHeader(Messages.get("label.value", "Value"));
+        column.setHeaderHtml(Messages.get("label.value", "Value"));
         column.setWidth(100);
         configs.add(column);
         ColumnModel cm = new ColumnModel(configs);
@@ -206,12 +206,12 @@ public class ChannelsTabItem extends SidePanelTabItem {
         int activeChannelIndex = 0;
 
         deviceImage.setUrl("");
-        deviceNameLabel.setText(Messages.get("label.default", "Default"));
+        deviceNameLabel.setHtml(Messages.get("label.default", "Default"));
         if (activeChannel != null) {
             if (activeChannel.getCapability("device-image") != null) {
                 deviceImage.setUrl(JahiaGWTParameters.getContextPath() + activeChannel.getCapability("device-image"));
             }
-            deviceNameLabel.setText(activeChannel.getDisplay());
+            deviceNameLabel.setHtml(activeChannel.getDisplay());
         }
 
         orientationComponent.getStore().removeAll();

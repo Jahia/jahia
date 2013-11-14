@@ -67,7 +67,7 @@ public class GWTAtmosphereHandler extends AtmosphereGwtHandler {
         }
         resource.getAtmosphereResource().setBroadcaster(broadcaster);
 
-        JahiaUser user = (JahiaUser) resource.getSession().getAttribute(Constants.SESSION_USER);
+        JahiaUser user = (JahiaUser) resource.getSession(true).getAttribute(Constants.SESSION_USER);
 
         if (user != null) {
             Broadcaster userBroadcaster = BroadcasterFactory.getDefault().lookup(Broadcaster.class, GWT_BROADCASTER_ID + user.getName());

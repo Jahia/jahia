@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.layout.ToolBarLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Document;
@@ -269,7 +270,7 @@ public class VersionViewer extends ContentPanel {
                     new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             currentFrame = setUrl(url);
-                            setHeading(url);
+                            setHeadingHtml(url);
                             unmask();
                             if(restoreButton!=null)
                             restoreButton.setEnabled(true);

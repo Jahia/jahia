@@ -168,7 +168,7 @@ public class ContentActions {
                 HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + SafeHtmlUtils.htmlEscape(selection.getName()) + "</a>");
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                 dl.setModal(true);
-                dl.setHeading(Messages.get("label.download"));
+                dl.setHeadingHtml(Messages.get("label.download"));
                 dl.setLayout(new FlowLayout());
                 dl.setScrollMode(Style.Scroll.AUTO);
                 dl.add(link);

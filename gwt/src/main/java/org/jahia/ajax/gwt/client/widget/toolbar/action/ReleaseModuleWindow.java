@@ -106,7 +106,7 @@ public class ReleaseModuleWindow extends Window {
         String versionInfo = JahiaGWTParameters.getSiteNode().get("j:versionInfo");
 
         setLayout(new FitLayout());
-        setHeading(Messages.get("label.releaseWar") + "&nbsp;" + versionInfo + "&nbsp;->&nbsp;"
+        setHeadingHtml(Messages.get("label.releaseWar") + "&nbsp;" + versionInfo + "&nbsp;->&nbsp;"
                 + versionInfo.replace("-SNAPSHOT", ""));
         setModal(true);
         setWidth(500);
@@ -144,7 +144,7 @@ public class ReleaseModuleWindow extends Window {
         setHeight(300);
 
         if (releaseInfo.getForgeUrl() != null) {
-            fs.setHeading(Messages.get("label.releaseModule.publishToModuleForge", "Publish to module forge"));
+            fs.setHeadingHtml(Messages.get("label.releaseModule.publishToModuleForge", "Publish to module forge"));
 
             LabelField lbCatalogUrl = new LabelField();
             lbCatalogUrl.setToolTip(releaseInfo.getForgeUrl());
@@ -157,7 +157,7 @@ public class ReleaseModuleWindow extends Window {
 
             formPanel.add(fs);
         } else if (releaseInfo.getRepositoryUrl() != null) {
-            fs.setHeading(Messages.get("label.releaseModule.publishToMaven", "Publish to Maven distribution server"));
+            fs.setHeadingHtml(Messages.get("label.releaseModule.publishToMaven", "Publish to Maven distribution server"));
 
             if (releaseInfo.getRepositoryId() != null) {
                 LabelField lbRepoId = new LabelField();

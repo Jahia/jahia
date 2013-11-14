@@ -94,7 +94,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                             saveInPortalNode(result.get(0));
                         } else {
                             final Window popup = new Window();
-                            popup.setHeading(Messages.get("label.saveAsPortalComponent.portalComponents.select", "Select a Portal Components folder"));
+                            popup.setHeadingHtml(Messages.get("label.saveAsPortalComponent.portalComponents.select", "Select a Portal Components folder"));
                             popup.setWidth(500);
                             popup.setAutoHeight(true);
                             popup.setModal(true);

@@ -146,7 +146,7 @@ public class LayoutTabItem extends PropertiesTabItem {
                 htmlPreview.setStyleAttribute("background-color", "white");
                 FieldSet f = new FieldSet();
                 f.addStyleName("x-panel");
-                f.setHeading(Messages.get("label.preview", "Preview"));
+                f.setHeadingHtml(Messages.get("label.preview", "Preview"));
                 f.setScrollMode(Style.Scroll.AUTO);
                 f.add(htmlPreview);
                 tab.add(f);

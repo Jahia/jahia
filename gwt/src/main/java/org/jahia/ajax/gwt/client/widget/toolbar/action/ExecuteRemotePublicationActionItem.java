@@ -88,7 +88,7 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
         wnd.setHeight(showOptions ? 220 : 120);
         wnd.setModal(true);
         wnd.setBlinkModal(true);
-        wnd.setHeading(titleKey != null ? Messages.get(titleKey) : Messages.get("label.information",
+        wnd.setHeadingHtml(titleKey != null ? Messages.get(titleKey) : Messages.get("label.information",
                 "Information"));
         wnd.setLayout(new FitLayout());
 
@@ -107,7 +107,7 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
         
         if (showOptions) {
             FieldSet fieldSet = new FieldSet();
-            fieldSet.setHeading(Messages.get("label.options", "Options"));
+            fieldSet.setHeadingHtml(Messages.get("label.options", "Options"));
             FormLayout layout = new FormLayout();
             layout.setLabelWidth(250);
             fieldSet.setLayout(layout);

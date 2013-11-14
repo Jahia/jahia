@@ -179,7 +179,7 @@ public class CreateButtonItem extends SaveButtonItem {
 
     protected void showNamePopup(final AbstractContentEngine engine, final boolean closeAfterSave) {
         final Window popup = new Window();
-        popup.setHeading(Messages.get("label.saveAs", "Save as ..."));
+        popup.setHeadingHtml(Messages.get("label.saveAs", "Save as ..."));
         popup.setHeight(120);
         popup.setWidth(350);
         popup.setModal(true);

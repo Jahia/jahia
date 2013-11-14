@@ -40,7 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
@@ -88,7 +91,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
     // my search
     private ContentPanel savedSearchPanel;
-    private DataList queryList;
+    private ListView<GWTJahiaNode> queryList;
     private GWTManagerConfiguration config;
 
     /**
@@ -116,37 +119,37 @@ public class ContentRepositoryTabs extends LeftComponent {
         savedSearchPanel.setBodyBorder(false);
         savedSearchPanel.setBorders(false);
         savedSearchPanel.setScrollMode(Style.Scroll.NONE);
-        savedSearchPanel.setHeading(Messages.get("repository.savedSearch.label"));
+        savedSearchPanel.setHeadingHtml(Messages.get("repository.savedSearch.label"));
         savedSearchPanel.getHeader().setIcon(StandardIconsProvider.STANDARD_ICONS.savedSearch());
         savedSearchPanel.getHeader().setBorders(false);
 
-        queryList = new DataList();
+        queryList = new ListView<GWTJahiaNode>();
         queryList.setBorders(false);
-        queryList.setFlatStyle(true);
-        queryList.setScrollMode(Style.Scroll.AUTO);
-        queryList.setSelectionMode(Style.SelectionMode.SINGLE);
-        savedSearchPanel.add(queryList);
-        queryList.addListener(Events.SelectionChange, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent event) {
-                if (queryList.getSelectedItems().size() == 1) {
-                    getLinker().getTopRightObject().setContent(queryList.getSelectedItem().getData("query"));
-                }
+        queryList.setHeight("92%");
+        queryList.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        queryList.setStore(new ListStore<GWTJahiaNode>());
+        queryList.setDisplayProperty("displayName");
+        savedSearchPanel.add(queryList,new VBoxLayoutData(new Margins(0, 0, 5, 0)));
+        queryList.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                getLinker().getTopRightObject().setContent(queryList.getSelectionModel().getSelectedItem());
             }
         });
         Menu queryMenu = new Menu();
         final MenuItem removeQuery = new MenuItem(Messages.get("label.remove"), new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent event) {
-                final DataListItem item = queryList.getSelectedItem();
+                final GWTJahiaNode item = queryList.getSelectionModel().getSelectedItem();
                 if (item != null) {
                     List<String> queryNode = new ArrayList<String>();
-                    queryNode.add(((GWTJahiaNode) item.getData("query")).getPath());
+                    queryNode.add(item.getPath());
                     service.deletePaths(queryNode, new BaseAsyncCallback() {
                         public void onApplicationFailure(Throwable throwable) {
                             Window.alert("Query deletion failed\n\n" + throwable.getLocalizedMessage());
                         }
 
                         public void onSuccess(Object o) {
-                            queryList.remove(item);
+                            queryList.getStore().remove(item);
                             retrieveSavedSearch();
                         }
                     });
@@ -156,16 +159,16 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         final MenuItem renameQuery = new MenuItem(Messages.get("label.rename"), new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent event) {
-                final DataListItem item = queryList.getSelectedItem();
+                final GWTJahiaNode item = queryList.getSelectionModel().getSelectedItem();
                 if (item != null) {
-                    renameSearch(((GWTJahiaNode) item.getData("query")));
+                    renameSearch(item);
                 }
             }
         });
 
         queryMenu.addListener(Events.BeforeShow, new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent baseEvent) {
-                removeQuery.setEnabled(queryList.getSelectedItem() != null);
+                removeQuery.setEnabled(queryList.getSelectionModel().getSelectedItem() != null);
             }
         });
         queryMenu.add(removeQuery);
@@ -195,8 +198,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseTabITem.add(browseComponent);
 
         m_component.add(browseTabITem);
-
-        createSearchPanel();
+        contentSearchForm = new ContentSearchForm(config);
         searchTabITem.setLayout(new FitLayout());
         searchTabITem.setIcon(ToolbarIconProvider.getInstance().getIcon("search"));
         searchTabITem.add(contentSearchForm);
@@ -257,7 +259,6 @@ public class ContentRepositoryTabs extends LeftComponent {
         for (RepositoryTab tab : repositories) {
             tab.init();
         }
-        retrieveSavedSearch();
         contentSearchForm.initWithLinker(linker);
     }
 
@@ -276,26 +277,17 @@ public class ContentRepositoryTabs extends LeftComponent {
     }
 
     private void retrieveSavedSearch() {
-        queryList.removeAll();
+        queryList.getStore().removeAll();
         service.getSavedSearch(new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                for (GWTJahiaNode query : gwtJahiaNodes) {
-                    addSavedSearch(query, false);
-                }
-                if (savedSearchPanel.isExpanded()) {
-                    getLinker().onTreeItemSelected();
-                }
+                queryList.getStore().add(gwtJahiaNodes);
             }
         });
     }
 
     public Object getSelectedItem() {
         if (savedSearchPanel.isExpanded()) {
-            if (queryList.getSelectedItems().size() == 1) {
-                return queryList.getSelectedItem().getData("query");
-            } else {
-                return null;
-            }
+                return queryList.getSelectionModel().getSelectedItem();
         } else {
             for (RepositoryTab tab : repositories) {
                 if (tab.isExpanded()) {
@@ -309,19 +301,4 @@ public class ContentRepositoryTabs extends LeftComponent {
     public Component getComponent() {
         return m_component;
     }
-
-    public void addSavedSearch(GWTJahiaNode query, boolean expandSearchPanel) {
-        DataListItem queryItem = new DataListItem();
-        queryItem.setData("query", query);
-        queryItem.setText(query.getName());
-        queryList.add(queryItem);
-        if (expandSearchPanel) {
-            savedSearchPanel.setExpanded(true);
-        }
-    }
-
-    public void createSearchPanel(){
-      contentSearchForm = new ContentSearchForm(config);
-    }
-
 }

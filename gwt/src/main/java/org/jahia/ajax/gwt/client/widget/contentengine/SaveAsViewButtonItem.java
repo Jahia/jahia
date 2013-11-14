@@ -120,7 +120,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 // Open popup to select module
 
                 final Window popup = new Window();
-                popup.setHeading(Messages.get("label.saveAsView", "Save as view"));
+                popup.setHeadingHtml(Messages.get("label.saveAsView", "Save as view"));
                 popup.setHeight(200);
                 popup.setWidth(350);
                 popup.setModal(true);

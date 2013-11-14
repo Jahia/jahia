@@ -154,7 +154,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                 new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
                                         config, multiple);
 
-                        w.setHeading(Messages.get("label." + config.getName(), config.getName()));
+                        w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
                         int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
 
                         w.setModal(true);

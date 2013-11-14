@@ -32,7 +32,7 @@ public class NamespaceTabItem extends ContentTabItem {
             final LayoutContainer panel = new LayoutContainer(hBoxLayout);
             if (nameText == null) {
                 nameFieldSet = new FieldSet();
-                nameFieldSet.setHeading(Messages.get("label.type.name", "Type name"));
+                nameFieldSet.setHeadingHtml(Messages.get("label.type.name", "Type name"));
                 nameFieldSet.setLayout(fl);
                 nameText = new NameField();
                 nameText.addStyleName("JahiaGxtField_systemName");

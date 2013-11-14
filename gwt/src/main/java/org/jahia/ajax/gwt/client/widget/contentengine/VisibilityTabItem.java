@@ -50,7 +50,6 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -62,6 +61,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -130,7 +130,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             top.add(addPanel);
         }
 
-        addPanel.add(new Text(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+": &nbsp;"));
+        addPanel.add(new HTML(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+": &nbsp;"));
         allConditionsMatch = new CheckBox();
         allConditionsMatch.setEnabled(editable);
         allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
@@ -139,8 +139,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             }
         });
         addPanel.add(allConditionsMatch);
-
-        addPanel.add(new Text("&nbsp; "+Messages.get("label.visibility.addCondition", "Add new condition")+": "));
+        addPanel.add(new HTML(""+Messages.get("label.visibility.addCondition", "Add new condition")+": "));
         final ListStore<GWTJahiaNodeType> typesStore = new ListStore<GWTJahiaNodeType>();
         final ComboBox<GWTJahiaNodeType> types = new ComboBox<GWTJahiaNodeType>();
         types.setDisplayField("label");
@@ -493,7 +492,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             this.node = node;
             this.statusPanel = statusPanel;
             this.editable = editable;
-            statusPanel.add(new Text(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + ": &nbsp;"));
+            statusPanel.add(new HTML(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + ": &nbsp;"));
         }
 
         private void initStatusBar(final GWTJahiaPublicationInfo info, final Boolean liveStatus) {
@@ -504,20 +503,20 @@ public class VisibilityTabItem extends EditEngineTabItem {
             } else if (Boolean.FALSE.equals(liveStatus)) {
                 statusPanel.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
             } else {
-                statusPanel.add(new Text("not published"));
+                statusPanel.add(new HTML("not published"));
             }
 
-            statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + ": &nbsp;"));
+            statusPanel.add(new HTML("" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + ": "));
             statusContainer = new LayoutContainer(new FitLayout());
             statusPanel.add(statusContainer);
 
             GWTJahiaPublicationInfo aggregatedPublicationInfo = node.getAggregatedPublicationInfo();
             if (aggregatedPublicationInfo!=null && aggregatedPublicationInfo.getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
-                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + ": &nbsp;"));
+                statusPanel.add(new HTML("" + Messages.get("label.visibility.publicationStatus", "Publication status") + ": "));
                 publicationInfoContainer = new LayoutContainer(new FitLayout());
                 statusPanel.add(publicationInfoContainer);
 
-                statusPanel.add(new Text("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + ": &nbsp;"));
+                statusPanel.add(new HTML("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + ": &nbsp;"));
 
                 checkbox = new CheckBox();
                 checkbox.setEnabled(editable);

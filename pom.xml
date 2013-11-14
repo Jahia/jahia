@@ -41,8 +41,8 @@
         <hibernate.version>4.2.7.SP1</hibernate.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <camel.version>2.12.1</camel.version>
-        <gwt.version>2.4.0</gwt.version>
-        <atmosphere.version>1.0.6</atmosphere.version>
+        <gwt.version>2.5.1</gwt.version>
+        <atmosphere.version>2.0.3</atmosphere.version>
         <ant.version>1.8.2</ant.version>
         <junit.version>4.8.1</junit.version>
         <junit.addons.version>1.4</junit.addons.version>

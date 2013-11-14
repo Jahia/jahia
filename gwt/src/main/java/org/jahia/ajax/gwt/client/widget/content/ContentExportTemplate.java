@@ -69,7 +69,7 @@ public class ContentExportTemplate extends Window {
     public ContentExportTemplate(final Linker linker, final String path, final String name) {
         super() ;
 
-        setHeading(Messages.get("label.export"));
+        setHeadingHtml(Messages.get("label.export"));
         setSize(500, 150);
         setResizable(false);
         setId("JahiaGxtContentExportTemplate");

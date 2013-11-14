@@ -314,7 +314,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                         button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
                         return button;
                     }
-                    return "";
+                    return new Label("");
                 }
             });
             config.add(column);

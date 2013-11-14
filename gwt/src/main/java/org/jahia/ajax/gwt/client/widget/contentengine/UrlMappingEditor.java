@@ -131,7 +131,7 @@ public class UrlMappingEditor extends LayoutContainer {
 
         ColumnConfig column = new ColumnConfig();
         column.setId("url");
-        column.setHeader(Messages.get("label_url", "URL"));
+        column.setHeaderHtml(Messages.get("label_url", "URL"));
         TextField<String> text = new TextField<String>();
         text.setAllowBlank(false);
         text.setRegex("^/?(?!.*/{2,})[a-zA-Z_0-9\\-\\./]+$");
@@ -257,7 +257,7 @@ public class UrlMappingEditor extends LayoutContainer {
         }
 
         ContentPanel cp = new ContentPanel(new FitLayout());
-        cp.setHeading(node.getUrl());
+        cp.setHeadingHtml(node.getUrl());
        // cp.setHeaderVisible(false);
         cp.setTopComponent(toolBar);
 
@@ -265,7 +265,7 @@ public class UrlMappingEditor extends LayoutContainer {
 
 //        FieldSet fs = new FieldSet();
         setLayout(new FitLayout());
-//        fs.setHeading(Messages.get("ece_seo_urlMapping", "URL mapping"));
+//        fs.setHeadingHtml(Messages.get("ece_seo_urlMapping", "URL mapping"));
 //        fs.setCollapsible(true);
 //
 //        fs.add(cp);

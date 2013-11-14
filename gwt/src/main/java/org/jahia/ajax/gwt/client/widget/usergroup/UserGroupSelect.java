@@ -224,7 +224,7 @@ public class UserGroupSelect extends Window {
 
         ContentPanel userPanel = new ContentPanel();
         userPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        userPanel.setHeading(Messages.get("label.userSelect", "Select users"));
+        userPanel.setHeadingHtml(Messages.get("label.userSelect", "Select users"));
         userPanel.setLayout(new FitLayout());
         userPanel.add(userGrid);
         userPanel.setSize(480, 350);
@@ -303,7 +303,7 @@ public class UserGroupSelect extends Window {
 
         ContentPanel groupsPanel = new ContentPanel();
         groupsPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        groupsPanel.setHeading(Messages.get("label.groupSelect", "Select groups"));
+        groupsPanel.setHeadingHtml(Messages.get("label.groupSelect", "Select groups"));
         groupsPanel.setLayout(new FitLayout());
         groupsPanel.add(groupGrid);
         groupsPanel.setSize(480, 350);

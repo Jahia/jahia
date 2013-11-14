@@ -186,7 +186,7 @@ public class PlaceholderModule extends Module {
             if (getWidth() >= MIN_WIDTH) {
                 pasteButton.add(pasteLabel);
             } else {
-            	pasteButton.setTitle(pasteLabel.getText());
+            	pasteButton.setTitle(pasteLabel.getTitle());
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -207,7 +207,7 @@ public class PlaceholderModule extends Module {
             if (getWidth() >= MIN_WIDTH) {
                 pasteAsReferenceButton.add(pasteReferenceLabel);
             } else {
-            	pasteAsReferenceButton.setTitle(pasteReferenceLabel.getText());
+            	pasteAsReferenceButton.setTitle(pasteReferenceLabel.getTitle());
             }
             pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
             pasteAsReferenceButton.addStyleName("button-placeholder");

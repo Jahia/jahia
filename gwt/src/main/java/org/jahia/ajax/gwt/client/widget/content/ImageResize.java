@@ -84,7 +84,7 @@ public class ImageResize extends Window {
         final int w = Integer.parseInt((String) n.get("j:width"));
         final int h = Integer.parseInt((String) n.get("j:height"));
 
-        setHeading(Messages.get("label.resize"));
+        setHeadingHtml(Messages.get("label.resize"));
         setSize(500, 250);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;

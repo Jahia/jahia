@@ -43,7 +43,7 @@ public abstract class DistributionServerWindow extends Window {
         super.onRender(parent, pos);
 
         setLayout(new FitLayout());
-        setHeading(Messages.get("label.releaseModule.distributionServer", "Distribution server (Maven)"));
+        setHeadingHtml(Messages.get("label.releaseModule.distributionServer", "Distribution server (Maven)"));
         setModal(true);
         setWidth(500);
         setHeight(380);

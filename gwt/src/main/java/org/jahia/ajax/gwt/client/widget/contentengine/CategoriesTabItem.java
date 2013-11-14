@@ -92,7 +92,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
             topPanel = new ContentPanel(new ColumnLayout());
             topPanel.removeAll();
             topPanel.setScrollMode(Style.Scroll.AUTOY);
-            topPanel.setHeading(Messages.get("label.selected.categories"));
+            topPanel.setHeadingHtml(Messages.get("label.selected.categories"));
             catStore = new ArrayList<GWTJahiaNode>();
             treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories/*"),
                     Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO,GWTJahiaNode.NAME,GWTJahiaNode.DISPLAY_NAME));
@@ -126,7 +126,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         final ColumnConfig name = new ColumnConfig();
         name.setId("displayName");
-        name.setHeader(Messages.get("label.title"));
+        name.setHeaderHtml(Messages.get("label.title"));
         name.setWidth(5000);
         name.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaNode>() {
             public String getId(TreeGrid<GWTJahiaNode> grid, GWTJahiaNode model, String property, int rowIndex, int colIndex) {

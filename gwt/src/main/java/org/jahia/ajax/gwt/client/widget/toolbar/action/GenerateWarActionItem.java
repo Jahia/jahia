@@ -62,7 +62,7 @@ public class GenerateWarActionItem extends BaseActionItem {
                 linker.loaded();
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                 dl.setModal(true);
-                dl.setHeading(Messages.get("label.export"));
+                dl.setHeadingHtml(Messages.get("label.export"));
                 dl.setLayout(new FlowLayout());
                 dl.setScrollMode(Style.Scroll.AUTO);
                 HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");

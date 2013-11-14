@@ -93,7 +93,7 @@ public class SettingsTabItem extends SidePanelTabItem {
         tab.setLayout(new FitLayout());
         settingsPanel = new ContentPanel();
         settingsPanel.setAnimCollapse(false);
-        settingsPanel.setHeading(Messages.get(label));
+        settingsPanel.setHeadingHtml(Messages.get(label));
         settingsPanel.setLayout(new FitLayout());
         tab.add(settingsPanel);
 

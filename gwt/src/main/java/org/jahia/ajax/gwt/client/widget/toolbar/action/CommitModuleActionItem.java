@@ -70,7 +70,7 @@ public class CommitModuleActionItem extends BaseActionItem {
         wnd.setHeight(300);
         wnd.setModal(true);
         wnd.setBlinkModal(true);
-        wnd.setHeading(Messages.get("label.commitModule", "Commit module"));
+        wnd.setHeadingHtml(Messages.get("label.commitModule", "Commit module"));
         wnd.setLayout(new FitLayout());
 
         final FormPanel form = new FormPanel();

@@ -126,7 +126,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
     private void refreshStatus() {
         Button b = (Button) getTextToolItem();
         if (statuses.isEmpty() && processes.isEmpty()) {
-            b.setText(getMenuItem().getText());
+            b.setText(getMenuItem().getHtml());
             b.setIcon(getMenuItem().getIcon());
             b.setEnabled(true);
         } else if (statuses.size() == 1) {

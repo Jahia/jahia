@@ -230,7 +230,7 @@ public class HistoryPanel extends LayoutContainer {
         detailPanel.setBorders(true);
         detailPanel.setBodyBorder(true);
         detailPanel.setHeaderVisible(true);
-        detailPanel.setHeading(Messages.get("label.detailed", "Details"));
+        detailPanel.setHeadingHtml(Messages.get("label.detailed", "Details"));
         detailPanel.setScrollMode(Style.Scroll.AUTOY);
         detailPanel.setLabelWidth(100);
         detailsPanel = detailPanel;

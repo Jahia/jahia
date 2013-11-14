@@ -74,7 +74,7 @@ public class PasswordPrompt extends Window {
 
         m_linker = linker ;
 
-        setHeading(Messages.get("label.password"));
+        setHeadingHtml(Messages.get("label.password"));
         setSize(500, 200);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;

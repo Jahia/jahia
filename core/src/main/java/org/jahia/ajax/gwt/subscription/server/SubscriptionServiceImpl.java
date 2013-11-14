@@ -40,7 +40,6 @@
 
 package org.jahia.ajax.gwt.subscription.server;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -85,10 +84,7 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements Subsc
     public PagingLoadResult<GWTSubscription> getSubscriptions(String uuid, final PagingLoadConfig pagingConfig)
             throws GWTJahiaServiceException {
 
-        PaginatedList<Subscription> subscriptions = subscriptionService.getSubscriptions(uuid,
-                pagingConfig.getSortInfo() != null ? FIELD_MAPPING.get(pagingConfig.getSortInfo().getSortField()) :
-                        null,
-                pagingConfig.getSortInfo() != null ? pagingConfig.getSortInfo().getSortDir() == SortDir.ASC : false,
+        PaginatedList<Subscription> subscriptions = subscriptionService.getSubscriptions(uuid,null,false,
                 pagingConfig.getOffset(), pagingConfig.getLimit(), retrieveCurrentSession("live", getLocale(), true));
 
         final List<GWTSubscription> gwtSubscriptions = new LinkedList<GWTSubscription>();

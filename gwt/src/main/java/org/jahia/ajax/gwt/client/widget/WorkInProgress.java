@@ -72,7 +72,7 @@ public class WorkInProgress {
             box.setType(MessageBoxType.WAIT);
 
             box.setMessage(Messages.get("org_jahia_admin_workInProgressTitle", "Work in progress, please wait..."));
-            box.setProgressText(Messages.get("org_jahia_admin_workInProgressProgressText", "Loading..."));
+            box.setProgressHtml(Messages.get("org_jahia_admin_workInProgressProgressText", "Loading..."));
 
             box.setButtons("");
             box.setClosable(false);

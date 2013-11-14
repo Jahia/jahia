@@ -166,7 +166,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         i = list.getStore().indexOf(list.getSelectionModel().getSelectedItem());
 
         ((CardLayout)cardsContainer.getLayout()).setActiveItem(components.get(i));
-        mainContainer.getPanel().setHeading(headers.get(i));
+        mainContainer.getPanel().setHeadingHtml(headers.get(i));
         bar.removeAll();
         List<Component> items = barItems.get(i);
         for (Component component : items) {

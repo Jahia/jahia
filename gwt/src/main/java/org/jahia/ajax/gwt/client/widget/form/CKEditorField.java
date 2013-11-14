@@ -372,7 +372,7 @@ public class CKEditorField extends Field<String> {
             parent.remove(wcagPanel);
         }
         wcagPanel = new ContentPanel(new FitLayout());
-        wcagPanel.setHeading(Messages.getWithArgs("label.wcag.report.title", "WCAG Compliance ({0} errors / {1} warnings / {2} infos)", new String[] {String.valueOf(wcagResult.getErrors().size()), String.valueOf(wcagResult.getWarnings().size()), String.valueOf(wcagResult.getInfos().size())}));
+        wcagPanel.setHeadingHtml(Messages.getWithArgs("label.wcag.report.title", "WCAG Compliance ({0} errors / {1} warnings / {2} infos)", new String[] {String.valueOf(wcagResult.getErrors().size()), String.valueOf(wcagResult.getWarnings().size()), String.valueOf(wcagResult.getInfos().size())}));
         wcagPanel.getHeader().setIcon(GXT.IMAGES.field_invalid());
         final CheckMenuItem ignore = new CheckMenuItem(userTriggered ? Messages.get("label.close", "Close") : Messages.get("label.wcag.ignore", "Ignore errors"));
         ignore.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -424,19 +424,19 @@ public class CKEditorField extends Field<String> {
 
         column = new ColumnConfig();
         column.setId("line");
-        column.setHeader(Messages.get("label.line", "Line"));
+        column.setHeaderHtml(Messages.get("label.line", "Line"));
         column.setWidth(50);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("column");
-        column.setHeader(Messages.get("label.column", "Column"));
+        column.setHeaderHtml(Messages.get("label.column", "Column"));
         column.setWidth(50);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("message");
-        column.setHeader(Messages.get("label.description", "Description"));
+        column.setHeaderHtml(Messages.get("label.description", "Description"));
         column.setRenderer(new GridCellRenderer<WCAGViolation>() {
             public Object render(WCAGViolation model, String property, ColumnData config,
                                  int rowIndex, int colIndex, ListStore<WCAGViolation> store,
@@ -451,7 +451,7 @@ public class CKEditorField extends Field<String> {
 
         column = new ColumnConfig();
         column.setId("context");
-        column.setHeader(Messages.get("label.context", "Context"));
+        column.setHeaderHtml(Messages.get("label.context", "Context"));
         column.setWidth(60);
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setRenderer(new GridCellRenderer<WCAGViolation>() {
@@ -475,7 +475,7 @@ public class CKEditorField extends Field<String> {
 
         column = new ColumnConfig();
         column.setId("code");
-        column.setHeader(Messages.get("label.code", "Code"));
+        column.setHeaderHtml(Messages.get("label.code", "Code"));
         column.setWidth(60);
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setRenderer(new GridCellRenderer<WCAGViolation>() {
@@ -499,7 +499,7 @@ public class CKEditorField extends Field<String> {
 
         column = new ColumnConfig();
         column.setId("example");
-        column.setHeader(Messages.get("label.example", "Example"));
+        column.setHeaderHtml(Messages.get("label.example", "Example"));
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setWidth(80);
         configs.add(column);

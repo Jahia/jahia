@@ -71,7 +71,7 @@ import com.google.gwt.user.client.Element;
  * cards.add(wc);</br> </br> // 2nd or more cards...</br> // wc = new
  * WizardCard("More cards...");</br> // cards.add(wc);</br> // ...</br> </br>
  * WizardWindow wizwin = new WizardWindow(cards);</br>
- * wizwin.setHeading("A simple example for a wizard");</br>
+ * wizwin.setHeadingHtml("A simple example for a wizard");</br>
  * wizwin.setHeaderTitle("Simple Wizard Example");</br> </br>
  * wizwin.show();</br>
  */
@@ -111,7 +111,7 @@ public class WizardWindow extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setHeading(getHeaderTitle());
+        setHeadingHtml(getHeaderTitle());
     }
 
     protected void onButtonPressed(Button button) {

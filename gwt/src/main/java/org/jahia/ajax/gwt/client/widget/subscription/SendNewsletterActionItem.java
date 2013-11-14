@@ -87,7 +87,7 @@ public class SendNewsletterActionItem extends BaseActionItem {
 
             m_linker = linker;
 
-            setHeading(Messages.get("label.sendNewsletter", "Send newsletter issue"));
+            setHeadingHtml(Messages.get("label.sendNewsletter", "Send newsletter issue"));
             setSize(500, 120);
             setResizable(false);
             setModal(true);

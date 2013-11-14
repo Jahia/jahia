@@ -74,7 +74,7 @@ public class WebfolderActionItem extends BaseActionItem {
                         HTML link = new HTML(Messages.get("webFolderMessage.label") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
                         final Dialog dl = new Dialog();
                         dl.setModal(true);
-                        dl.setHeading(Messages.get("label.openIEFolder"));
+                        dl.setHeadingHtml(Messages.get("label.openIEFolder"));
                         dl.setHideOnButtonClick(true);
                         dl.setLayout(new FlowLayout());
                         dl.setScrollMode(Style.Scroll.AUTO);

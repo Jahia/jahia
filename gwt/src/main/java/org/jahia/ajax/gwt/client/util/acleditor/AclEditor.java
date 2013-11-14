@@ -325,7 +325,7 @@ public class AclEditor {
 
         for (final String displayedRole : displayedRoles) {
             FieldSet fs = new FieldSet();
-            fs.setHeading(acl.getRolesLabels().get(displayedRole));
+            fs.setHeadingHtml(acl.getRolesLabels().get(displayedRole));
 
             List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 

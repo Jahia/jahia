@@ -155,7 +155,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
 
     public void clear() {
-        m_component.setHeading("&nbsp;");
+        m_component.setHeadingHtml("&nbsp;");
         selectedNodes = null;
         for (TabItem item : tabs.getItems()) {
             ((AsyncTabItem) item).setProcessed(false);
@@ -205,7 +205,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             if (selectedNodes.size() > 0) {
                 heading = heading.substring(0, heading.length() - 1);
             }
-            m_component.setHeading(heading);
+            m_component.setHeadingHtml(heading);
             if (selectedNodes.size() == 1) {
                 final GWTJahiaNode node = selectedNodes.get(0);
                 service.initializeEditEngine(node.getPath(), false,

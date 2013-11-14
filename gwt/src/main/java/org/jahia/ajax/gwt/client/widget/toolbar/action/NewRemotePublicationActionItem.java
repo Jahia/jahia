@@ -63,7 +63,7 @@ public class NewRemotePublicationActionItem extends BaseActionItem  {
         GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
         if (parent != null) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.get("label.createRemotePublication", "New Remote Publication"));
+            w.setHeadingHtml(Messages.get("label.createRemotePublication", "New Remote Publication"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

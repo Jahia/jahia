@@ -98,4 +98,12 @@ public class EventsLogger implements WebSocketEventListener {
     public void onConnect(WebSocketEvent event) {
         logger.info("onConnect(): {}", event);
     }
+
+    public void onPreSuspend(AtmosphereResourceEvent event) {
+        logger.info("onPreSuspend(): {}", event);
+    }
+
+    public void onClose(AtmosphereResourceEvent event) {
+        logger.info("onClose(): {}", event);
+    }
 }

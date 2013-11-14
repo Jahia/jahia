@@ -103,6 +103,7 @@ public class SidePanel extends ContentPanel {
         tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
+        tabPanel.setHeight(800);
         // this id is for the container, each tab has its own ID concatenated with this one
         tabPanel.setId("JahiaGxtSidePanelTabs");
 

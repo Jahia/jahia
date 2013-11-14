@@ -172,11 +172,11 @@ public class ContentTabItem extends PropertiesTabItem {
                     }
                     autoUpdateName.setValue(autoUpdate);
                     autoUpdateName.setVisible(true);
-                    autoUpdateLabel.setText("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
+                    autoUpdateLabel.setHtml("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
                 } else {
                     autoUpdate = false;
                     if (autoUpdateLabel != null) {
-                        autoUpdateLabel.setText("");
+                        autoUpdateLabel.setHtml("");
                     }
                 }
 
@@ -217,7 +217,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 if (autoUpdateName != null) {
                     autoUpdateName.setVisible(false);
                 }
-                autoUpdateLabel.setText("");
+                autoUpdateLabel.setHtml("");
                 nameText.setValue("");
                 nameText.setEnabled(false);
             }
@@ -240,7 +240,7 @@ public class ContentTabItem extends PropertiesTabItem {
         final FormLayout fl = new FormLayout();
         fl.setLabelWidth(0);
         fieldSet.setLayout(fl);
-        fieldSet.setHeading(Messages.get("label.information", "Information"));
+        fieldSet.setHeadingHtml(Messages.get("label.information", "Information"));
         FormData fd = new FormData("98%");
         fd.setMargins(new Margins(0));
         final GWTJahiaNode selectedNode = engine.getNode();
@@ -375,7 +375,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
             }
             invalidLanguagesFieldSet = new FieldSet();
-            invalidLanguagesFieldSet.setHeading(Messages.get("label.validLanguages", "Valid display languages"));
+            invalidLanguagesFieldSet.setHeadingHtml(Messages.get("label.validLanguages", "Valid display languages"));
             invalidLanguagesFieldSet.setLayout(fl);
 
             invalidLanguagesFieldSet.add(layoutContainer1, fd);
@@ -393,7 +393,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
             if (nameText == null) {
                 nameFieldSet = new FieldSet();
-                nameFieldSet.setHeading(Messages.get("label.systemName", "System name"));
+                nameFieldSet.setHeadingHtml(Messages.get("label.systemName", "System name"));
                 nameFieldSet.setLayout(fl);
 
                 nameText = new TextField<String>();

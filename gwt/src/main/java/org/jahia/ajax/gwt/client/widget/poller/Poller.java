@@ -143,15 +143,19 @@ public class Poller {
         }
 
         public void onHeartbeat() {
-            Log.info("comet.heartbeat [" + client.getConnectionID() + "]");
+            Log.info("comet.heartbeat [" + client.getConnectionUUID() + "]");
         }
 
         public void onRefresh() {
-            Log.info("comet.refresh [" + client.getConnectionID() + "]");
+            Log.info("comet.refresh [" + client.getConnectionUUID() + "]");
         }
 
-        public void onAfterRefresh() {
-            Log.info("comet.refresh [" + client.getConnectionID() + "]");
+        public void onConnected(int heartbeat, String connectionUUID) {
+            Log.info("comet.connected [" + connectionUUID + "]");
+        }
+
+        public void onAfterRefresh(String connectionUUID) {
+            Log.info("comet.afterRefresh [" + connectionUUID + "]");
         }
 
         public void onMessage(List<?> messages) {

@@ -136,7 +136,7 @@ public class FileUploader extends Window {
 
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
-        setHeading(Messages.get("uploadFile.label"));
+        setHeadingHtml(Messages.get("uploadFile.label"));
         setSize(500, 500);
         setResizable(false);
 
@@ -187,7 +187,7 @@ public class FileUploader extends Window {
                     unmask();
                     final Dialog dl = new Dialog();
                     dl.setModal(true);
-                    dl.setHeading(Messages.get("label.error"));
+                    dl.setHeadingHtml(Messages.get("label.error"));
                     dl.setHideOnButtonClick(true);
                     dl.setLayout(new FlowLayout());
                     dl.setWidth(300);

@@ -81,7 +81,7 @@ public class LoginBox extends Window {
         //this.setPlain(true);
         this.setModal(true);
         this.setBlinkModal(true);
-        this.setHeading(Messages.get("label.login", "Login"));
+        this.setHeadingHtml(Messages.get("label.login", "Login"));
         this.setLayout(new FitLayout());
 
         final FormPanel form = new FormPanel();

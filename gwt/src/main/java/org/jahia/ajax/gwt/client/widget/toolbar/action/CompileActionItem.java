@@ -82,7 +82,7 @@ public class CompileActionItem extends BaseActionItem {
                 }
                 final Dialog dl = new Dialog();
                 dl.setModal(true);
-                dl.setHeading(Messages.get("label.error", "Error"));
+                dl.setHeadingHtml(Messages.get("label.error", "Error"));
                 dl.setHideOnButtonClick(true);
                 dl.setLayout(new FlowLayout());
                 dl.setWidth(500);

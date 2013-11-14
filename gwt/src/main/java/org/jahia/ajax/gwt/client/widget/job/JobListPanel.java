@@ -230,7 +230,7 @@ public class JobListPanel extends LayoutContainer {
         view.setForceFit(true);
         view.setGroupRenderer(new GridGroupRenderer() {
             public String render(GroupColumnData data) {
-                String f = cm.getColumnById(data.field).getHeader();
+                String f = cm.getColumnById(data.field).getHeaderHtml();
                 String l = data.models.size() == 1 ? Messages.get("label.item", "Item") : Messages.get("label.items", "Items");
                 return f + ": " + Messages.get("label.job.status." + data.group) + " (" + data.models.size() + " " + l + ")";
             }
@@ -398,7 +398,7 @@ public class JobListPanel extends LayoutContainer {
         listPanel.setCollapsible(false);
         listPanel.setAnimCollapse(false);
         // panel.setIcon(Resources.ICONS.table());
-        // panel.setHeading("");
+        // panel.setHeadingHtml("");
         listPanel.setHeaderVisible(false);
         listPanel.setLayout(new FitLayout());
         listPanel.add(grid);
@@ -415,7 +415,7 @@ public class JobListPanel extends LayoutContainer {
         detailPanel.setBorders(true);
         detailPanel.setBodyBorder(true);
         detailPanel.setHeaderVisible(true);
-        detailPanel.setHeading(Messages.get("label.detailed", "Details"));
+        detailPanel.setHeadingHtml(Messages.get("label.detailed", "Details"));
         detailPanel.setScrollMode(Style.Scroll.AUTOY);
         detailPanel.setLabelWidth(100);
         detailsPanel = detailPanel;
@@ -455,7 +455,7 @@ public class JobListPanel extends LayoutContainer {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
         final Dialog dialog = new Dialog();
         dialog.setModal(true);
-        dialog.setHeading(Messages.get("label.delete", "Delete"));
+        dialog.setHeadingHtml(Messages.get("label.delete", "Delete"));
         dialog.setButtons(Dialog.YESNO);
         dialog.addText(deleteAllCompleted ? Messages.get("label.deleteCompletedJobs.confirm", "Do you really want to delete all completed jobs?") : Messages.get("label.delete.confirm", "Do you really want to delete the current selection?"));
         dialog.setHideOnButtonClick(true);

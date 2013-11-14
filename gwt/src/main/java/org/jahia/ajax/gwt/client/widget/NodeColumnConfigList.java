@@ -329,7 +329,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             } else if ("jcr:lastModified".equals(column.getKey())) {
                 col.setRenderer(DATE_RENDERER);
             } else if ("index".equals(column.getKey())) {
-                col.setHeader("");
+                col.setHeaderHtml("");
                 col.setResizable(false);
                 col.setFixed(true);
                 col.setId("numberer");

@@ -89,7 +89,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                     ColumnConfig column = new ColumnConfig();
                     column.setId("label");
                     column.setSortable(false);
-                    column.setHeader("Name");
+                    column.setHeaderHtml("Name");
                     column.setWidth(100);
                     column.setRenderer(new GridCellRenderer() {
                         public Object render(ModelData model, String property, ColumnData config, int rowIndex,
@@ -122,7 +122,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                     if (PermissionsUtils.isPermitted("jcr:write", engine.getNode()) && !engine.getNode().isLocked()) {
                         column = new ColumnConfig();
                         column.setSortable(false);
-                        column.setHeader("Action");
+                        column.setHeaderHtml("Action");
                         column.setWidth(200);
                         column.setRenderer(new GridCellRenderer() {
                             public Object render(ModelData model, String property, ColumnData config, int rowIndex,

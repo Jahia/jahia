@@ -96,7 +96,7 @@ public class PublicationManagerEngine extends Window {
      * init
      */
     private void init() {
-        setHeading(Messages.get("label.publicationmanager", "Publication Manager"));
+        setHeadingHtml(Messages.get("label.publicationmanager", "Publication Manager"));
         setLayout(new FitLayout());
         setSize(800, 600);
         setBorders(false);

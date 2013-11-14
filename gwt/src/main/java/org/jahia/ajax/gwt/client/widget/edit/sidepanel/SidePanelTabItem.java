@@ -86,7 +86,8 @@ public class SidePanelTabItem implements Serializable {
     public TabItem create(GWTSidePanelTab sidePanelTab) {
         this.config = sidePanelTab;
 
-        tab = new TabItem("&nbsp;");
+        tab = new TabItem();
+        tab.setHtml("&nbsp;");
         tab.setIcon(ToolbarIconProvider.getInstance().getIcon(config.getIcon()));
         tab.getHeader().setToolTip(config.getTooltip());
         tab.getHeader().addStyleName("x-tab-strip-iconOnly");

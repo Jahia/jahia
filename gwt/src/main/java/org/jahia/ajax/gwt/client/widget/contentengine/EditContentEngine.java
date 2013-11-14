@@ -203,7 +203,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 } else {
                     heading = Messages.getWithArgs("label.edit.engine.heading.edit", "Edit {0} ({1})", new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 }
-                container.getPanel().setHeading(heading);
+                container.getPanel().setHeadingHtml(heading);
                 if (node.isLocked()) {
                     String infos = "";
                     if (node.getLockInfos().containsKey(null) && node.getLockInfos().size() == 1) {
@@ -229,10 +229,10 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     }
                     heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by", "[ locked by {0} ]", new String[]{infos});
-                    container.getPanel().setHeading(heading);
+                    container.getPanel().setHeadingHtml(heading);
                 } else if (node.getLockInfos() != null) {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
-                    container.getPanel().setHeading(heading);
+                    container.getPanel().setHeadingHtml(heading);
                 }
 
                 setAvailableLanguages(result.getAvailabledLanguages());

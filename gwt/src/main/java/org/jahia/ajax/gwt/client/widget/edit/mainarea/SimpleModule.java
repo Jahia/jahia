@@ -222,7 +222,7 @@ public class SimpleModule extends Module {
                         }
                     } else {
                         bound = Boolean.FALSE;
-                        setHeaderText(head.getText() + " - Linked to: main resource");
+                        setHeaderText(head.getHtml() + " - Linked to: main resource");
                     }
                 }
             });

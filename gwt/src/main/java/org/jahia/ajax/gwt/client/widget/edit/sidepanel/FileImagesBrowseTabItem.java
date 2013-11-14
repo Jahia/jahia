@@ -153,7 +153,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
                 GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
 
                 final String text = "Preview of " + node.getDisplayName();
-                w.setHeading(text);
+                w.setHeadingHtml(text);
                 w.setScrollMode(Style.Scroll.AUTO);
                 w.setModal(true);
                 w.setClosable(true);

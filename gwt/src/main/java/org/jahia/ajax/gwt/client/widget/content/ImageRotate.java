@@ -74,7 +74,7 @@ public class ImageRotate extends Window {
 
         m_linker = linker ;
 
-        setHeading(Messages.get("label.rotate"));
+        setHeadingHtml(Messages.get("label.rotate"));
         setSize(500, 150);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;

@@ -137,7 +137,7 @@ class DependenciesTabItem extends SidePanelTabItem {
 
         ColumnConfig columnConfig = new ColumnConfig();
         columnConfig.setId("displayName");
-        columnConfig.setHeader(Messages.get("label.module", "Module"));
+        columnConfig.setHeaderHtml(Messages.get("label.module", "Module"));
         availableModules = new Grid<GWTJahiaNode>(modulesStore, new ColumnModel(Arrays.asList(columnConfig)));
         availableModules.setAutoExpandColumn("displayName");
         new GridDragSource(availableModules);
@@ -180,7 +180,7 @@ class DependenciesTabItem extends SidePanelTabItem {
 
         columnConfig = new ColumnConfig();
         columnConfig.setId("displayName");
-        columnConfig.setHeader(Messages.get("label.dependency", "Dependency"));
+        columnConfig.setHeaderHtml(Messages.get("label.dependency", "Dependency"));
         dependencyModules = new Grid<GWTJahiaNode>(dependenciesStore, new ColumnModel(Arrays.asList(columnConfig)));
         dependencyModules.setAutoExpandColumn("displayName");
         new GridDragSource(dependencyModules);

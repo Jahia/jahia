@@ -77,7 +77,7 @@ public class Mounter extends Window {
      */
     public Mounter(final Linker linker) {
         super() ;
-        setHeading(Messages.get("label.mount"));
+        setHeadingHtml(Messages.get("label.mount"));
         setSize(500, 250);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;

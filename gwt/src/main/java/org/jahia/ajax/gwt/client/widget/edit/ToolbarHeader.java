@@ -120,7 +120,7 @@ public class ToolbarHeader extends Header {
             menuToolItem.setBorders(false);
             String minIconStyle = gwtToolbarMenu.getIcon();
             if (minIconStyle != null) {
-                menuToolItem.setIcon(ToolbarIconProvider.getInstance().getIcon(gwtToolbarMenu.getIcon()));
+                menuToolItem.setIcon(ToolbarIconProvider.getInstance().getIcon(minIconStyle));
             }
             menuToolItem.setMenu(menu);
             addTool(menuToolItem);

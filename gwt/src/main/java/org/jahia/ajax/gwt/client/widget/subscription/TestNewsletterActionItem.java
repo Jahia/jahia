@@ -82,7 +82,7 @@ public class TestNewsletterActionItem extends BaseLanguageAwareActionItem {
             super();
             setLayout(new FitLayout());
 
-            setHeading(Messages.get("label.testNewsletter", "Test newsletter issue"));
+            setHeadingHtml(Messages.get("label.testNewsletter", "Test newsletter issue"));
             setSize(500, 170);
             setResizable(false);
             setModal(true);

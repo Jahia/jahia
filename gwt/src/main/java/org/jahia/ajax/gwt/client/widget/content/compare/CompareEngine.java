@@ -122,9 +122,9 @@ public class CompareEngine extends Window {
         setMaximizable(true);
         String title = Messages.get("label.compare","Compare ");
         if (node != null) {
-            setHeading(title + node.getPath());
+            setHeadingHtml(title + node.getPath());
         } else {
-            setHeading(title + path);
+            setHeadingHtml(title + path);
         }
         //live version
         if (node != null) {

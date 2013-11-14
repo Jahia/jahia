@@ -66,7 +66,7 @@ public class WebdavUrlCopyActionItem extends NodeTypeAwareBaseActionItem {
 
             public void onSuccess(String s) {
                 final Dialog dl = new Dialog();
-                dl.setHeading(Messages.get("label.webdav.url"));
+                dl.setHeadingHtml(Messages.get("label.webdav.url"));
                 dl.setModal(true);
                 dl.setHideOnButtonClick(true);
                 dl.setLayout(new HBoxLayout());

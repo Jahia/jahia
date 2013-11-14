@@ -70,7 +70,7 @@ public class NewModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
         final Dialog dialog = new Dialog();
-        dialog.setHeading("Create module");
+        dialog.setHeadingHtml("Create module");
         dialog.setButtons(Dialog.OKCANCEL);
         dialog.setModal(true);
         dialog.setHideOnButtonClick(true);

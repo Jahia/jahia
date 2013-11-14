@@ -148,7 +148,7 @@ public class RepositoryTab extends ContentPanel {
         });
 
         setScrollMode(Style.Scroll.NONE);
-        setHeading(repo.getTitle());
+        setHeadingHtml(repo.getTitle());
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 Map<String, Object> data = new HashMap<String, Object>();

@@ -40,7 +40,7 @@
 
 package org.jahia.ajax.gwt.client.data.node;
 
-import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -132,7 +132,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private String url;
     private boolean hasChildren = false;
     private boolean versioned = false;
-    private SortInfo sortInfo = new SortInfo(null, Style.SortDir.ASC);
+    private SortInfo sortInfo = new SortInfo(DISPLAY_NAME,SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
     private String languageCode;
@@ -427,7 +427,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
 
-    public Style.SortDir getSortDir() {
+    public SortDir getSortDir() {
         return sortInfo.getSortDir();
     }
 
@@ -439,7 +439,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return sortInfo;
     }
 
-    public void setSortDir(Style.SortDir sortDir) {
+    public void setSortDir(SortDir sortDir) {
         sortInfo.setSortDir(sortDir);
     }
 

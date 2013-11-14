@@ -80,7 +80,7 @@ public class ContentImport extends Window {
         m_linker = linker;
         this.replaceContent = replaceContent;
 
-        setHeading(Messages.get("label.import"));
+        setHeadingHtml(Messages.get("label.import"));
         setSize(500, 150);
         setResizable(false);
         setModal(true);

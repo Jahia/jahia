@@ -69,7 +69,6 @@ import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
-import org.jahia.ajax.gwt.client.widget.contentengine.UrlMappingEditor;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         window.setModal(true);
         window.setBlinkModal(true);
         window.setBorders(false);
-        window.setHeading(Messages.get("label.preview.window.title", "Customized preview"));
+        window.setHeadingHtml(Messages.get("label.preview.window.title", "Customized preview"));
         window.setLayout(new FitLayout());
         window.setButtonAlign(Style.HorizontalAlignment.CENTER);
         window.setBodyBorder(false);

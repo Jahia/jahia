@@ -48,12 +48,12 @@ public class DeleteItemWindow extends Window {
 		super();
 
 		setSize(windowWidth, windowHeight);
-		setHeading("Informations");
+		setHeadingHtml("Informations");
 		setResizable(false);
 		
 		/* Information message */
 		formPanel = new FormPanel();
-		formPanel.setHeading(Messages.get("label.information"));
+		formPanel.setHeadingHtml(Messages.get("label.information"));
 		formPanel.setHeaderVisible(false);
 		formPanel.setBorders(false);
 		formPanel.setId("JahiaGxtDeleteItem");

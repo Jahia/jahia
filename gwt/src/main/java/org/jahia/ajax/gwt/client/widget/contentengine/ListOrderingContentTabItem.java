@@ -93,7 +93,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         // create a field set for the manual ranking
         final FieldSet fieldSet = new FieldSet();
         fieldSet.setCollapsible(true);
-        fieldSet.setHeading(Messages.get("label.manualRanking", "Manual ranking"));
+        fieldSet.setHeadingHtml(Messages.get("label.manualRanking", "Manual ranking"));
         useManualRanking.setBoxLabel(Messages.get("label.useManualRanking", "Use manual ranking"));
 
         useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {

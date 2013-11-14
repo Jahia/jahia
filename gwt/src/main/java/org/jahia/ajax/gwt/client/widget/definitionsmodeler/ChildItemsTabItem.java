@@ -387,9 +387,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                         autoExpandColumn = config[0];
                     }
                     if (config.length > 2) {
-                        colConfig.setHeader(Messages.get(config[2], config[2]));
+                        colConfig.setHeaderHtml(Messages.get(config[2], config[2]));
                     } else {
-                        colConfig.setHeader(labels.get(config[0]));
+                        colConfig.setHeaderHtml(labels.get(config[0]));
                     }
                     columns.add(colConfig);
                     colConfig.setRenderer(new GridCellRenderer<GWTJahiaNode>() {

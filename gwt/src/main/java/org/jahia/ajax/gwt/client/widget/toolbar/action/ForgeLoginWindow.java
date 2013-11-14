@@ -38,7 +38,7 @@ public class ForgeLoginWindow extends Window {
         String versionInfo = JahiaGWTParameters.getSiteNode().get("j:versionInfo");
 
         setLayout(new FitLayout());
-        setHeading(Messages.get("label.login", "Login"));
+        setHeadingHtml(Messages.get("label.login", "Login"));
         setModal(true);
         setWidth(500);
         setHeight(150);

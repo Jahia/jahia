@@ -114,7 +114,7 @@ public class PickedContentView extends BottomRightComponent {
                 }
             }
         });
-        column.setHeader(Messages.get("displayName"));
+        column.setHeaderHtml(Messages.get("displayName"));
         configs.add(column);
 
         //name
@@ -137,20 +137,20 @@ public class PickedContentView extends BottomRightComponent {
             }
         });
         column.setId("name");
-        column.setHeader(Messages.get("name"));
+        column.setHeaderHtml(Messages.get("name"));
         configs.add(column);
 
         // displaName
         column = new ColumnConfig();
         column.setId("displayName");
         column.setHidden(true);
-        column.setHeader(Messages.get("displayName"));
+        column.setHeaderHtml(Messages.get("displayName"));
         configs.add(column);
 
         // path
         column = new ColumnConfig();
         column.setId("path");
-        column.setHeader(Messages.get("path"));
+        column.setHeaderHtml(Messages.get("path"));
         configs.add(column);
 
         // remvove
@@ -158,7 +158,7 @@ public class PickedContentView extends BottomRightComponent {
         column.setWidth(100);
         column.setAlignment(Style.HorizontalAlignment.RIGHT);
         column.setId("remove");
-        column.setHeader("");
+        column.setHeaderHtml("");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                 final Button pickContentButton = new Button(Messages.get("label.remove"));

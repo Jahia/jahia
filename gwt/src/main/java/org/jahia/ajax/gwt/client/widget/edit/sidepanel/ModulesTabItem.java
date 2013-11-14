@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -78,7 +79,6 @@ public class ModulesTabItem extends BrowseTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-
         VBoxLayoutData treeVBoxData = new VBoxLayoutData();
         treeVBoxData.setFlex(0);
         layoutContainer = new LayoutContainer();

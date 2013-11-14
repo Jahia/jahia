@@ -143,7 +143,7 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
 
         // advanced part
         FieldSet fieldSet = new FieldSet();
-        fieldSet.setHeading(Messages.get("label.detailed", "Advanced"));
+        fieldSet.setHeadingHtml(Messages.get("label.detailed", "Advanced"));
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(70);
 

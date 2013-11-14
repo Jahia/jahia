@@ -99,7 +99,7 @@ public class ImageCrop extends Window {
         setSize(712, 550);
 
         this.linker = linker;
-        setHeading(Messages.get("label.crop"));
+        setHeadingHtml(Messages.get("label.crop"));
         setId("JahiaGxtImageCrop");
 
         FormData formData = new FormData("100%");

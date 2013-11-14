@@ -207,11 +207,11 @@ public class ResourceBundleEditor extends LayoutContainer {
         Menu contextMenu = new Menu();
 
         MenuItem newItem = new MenuItem();
-        newItem.setText(Messages.get("label.new", "New"));
+        newItem.setHtml(Messages.get("label.new", "New"));
         newItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 MessageBox box = new MessageBox();
-                box.setTitle(Messages.get("label.new", "New"));
+                box.setTitleHtml(Messages.get("label.new", "New"));
                 box.setMessage(Messages.get("label.resourceBundle.new",
                         "Please provide a key for the new resource bundle entry"));
                 box.setType(MessageBoxType.PROMPT);
@@ -219,7 +219,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                 box.setType(MessageBoxType.PROMPT);
                 box.addCallback(new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
-                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getHtml())) {
                             if (be.getValue() == null || be.getValue().trim().length() == 0) {
                                 return;
                             }
@@ -250,14 +250,14 @@ public class ResourceBundleEditor extends LayoutContainer {
         contextMenu.add(newItem);
 
         MenuItem renameItem = new MenuItem();
-        renameItem.setText(Messages.get("label.rename", "Rename"));
+        renameItem.setHtml(Messages.get("label.rename", "Rename"));
         renameItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 final GWTResourceBundleEntry selectedItem = bundleView.getSelectionModel()
                         .getSelectedItem();
 
                 MessageBox box = new MessageBox();
-                box.setTitle(Messages.get("label.rename", "Rename"));
+                box.setTitleHtml(Messages.get("label.rename", "Rename"));
                 box.setMessage(Messages.getWithArgs("label.resourceBundle.rename",
                         "Rename \"{0}\" to", new String[] { selectedItem.getKey() }));
                 box.setType(MessageBoxType.PROMPT);
@@ -265,7 +265,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                 box.setType(MessageBoxType.PROMPT);
                 box.addCallback(new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
-                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getHtml())) {
                             if (be.getValue() == null || be.getValue().trim().length() == 0
                                     || be.getValue().equals(selectedItem.getKey())) {
                                 return;
@@ -294,7 +294,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         contextMenu.add(renameItem);
 
         MenuItem deleteItem = new MenuItem();
-        deleteItem.setText(Messages.get("label.delete", "Delete"));
+        deleteItem.setHtml(Messages.get("label.delete", "Delete"));
         deleteItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 final GWTResourceBundleEntry selectedItem = bundleView.getSelectionModel()
@@ -314,14 +314,14 @@ public class ResourceBundleEditor extends LayoutContainer {
         contextMenu.add(deleteItem);
 
         MenuItem duplicateItem = new MenuItem();
-        duplicateItem.setText(Messages.get("label.duplicate", "Duplicate"));
+        duplicateItem.setHtml(Messages.get("label.duplicate", "Duplicate"));
         duplicateItem.addSelectionListener(new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
                 final GWTResourceBundleEntry selectedItem = bundleView.getSelectionModel()
                         .getSelectedItem();
 
                 MessageBox box = new MessageBox();
-                box.setTitle(Messages.get("label.duplicate", "Duplicate"));
+                box.setTitleHtml(Messages.get("label.duplicate", "Duplicate"));
                 box.setMessage(Messages.getWithArgs("label.resourceBundle.duplicate",
                         "Duplicate \"{0}\" to", new String[] { selectedItem.getKey() }));
                 box.setType(MessageBoxType.PROMPT);
@@ -329,7 +329,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                 box.setType(MessageBoxType.PROMPT);
                 box.addCallback(new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
-                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getText())) {
+                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getHtml())) {
                             if (be.getValue() == null || be.getValue().trim().length() == 0
                                     || be.getValue().equals(selectedItem.getKey())) {
                                 return;
@@ -717,7 +717,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         formPanel.setFrame(true);
         formPanel.setBorders(true);
         formPanel.setButtonAlign(HorizontalAlignment.CENTER);
-        formPanel.setHeading(Messages.get("label.resourceBundle.addLanguage",
+        formPanel.setHeadingHtml(Messages.get("label.resourceBundle.addLanguage",
                 "Add new language to the resource bundle") + ":");
 
         final ComboBox<GWTJahiaValueDisplayBean> languageSelector = new ComboBox<GWTJahiaValueDisplayBean>();

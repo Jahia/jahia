@@ -65,7 +65,7 @@ public class SourceControlDialog extends Dialog {
     private SourceControlDialog sourceControlDialog;
 
     public SourceControlDialog(String heading, boolean viewModuleName, boolean viewBranchOrTag) {
-        setHeading(heading);
+        setHeadingHtml(heading);
         setButtons(Dialog.OKCANCEL);
         setModal(true);
         setHideOnButtonClick(true);

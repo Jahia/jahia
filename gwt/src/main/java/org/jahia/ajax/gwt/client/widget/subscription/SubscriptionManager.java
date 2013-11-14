@@ -89,7 +89,7 @@ public class SubscriptionManager extends LayoutContainer {
 	private class ImportWindow extends Window {
 		public ImportWindow() {
 			super();
-			setHeading(Messages.get("label.import", "Import"));
+			setHeadingHtml(Messages.get("label.import", "Import"));
 			setSize(400, 150);
 			setResizable(true);
 			setModal(true);

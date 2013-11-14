@@ -79,7 +79,7 @@ public class EngineWindow extends Window implements EngineContainer {
     public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker) {
         removeAll();
         add(component);
-        setHeading(header);
+        setHeadingHtml(header);
         if (buttonsBar != null) {
             setBottomComponent(buttonsBar);
         }

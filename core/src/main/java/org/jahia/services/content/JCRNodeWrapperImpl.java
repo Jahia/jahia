@@ -2403,6 +2403,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         getSession().move(getPath(), parent.getPath() + "/" + newName);
+        i18NobjectNodes.clear();
         this.localPathInProvider = parent.getPath() + "/" + newName;
         String mountPoint = getProvider().getMountPoint();
         if (mountPoint.length() > 1 && localPathInProvider.startsWith(mountPoint)) {

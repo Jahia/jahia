@@ -114,7 +114,7 @@ public class JahiaTemplatesPackage {
 
     private String description;
 
-    private List<JahiaTemplatesPackage> dependencies = new ArrayList<JahiaTemplatesPackage>();
+    private List<JahiaTemplatesPackage> dependencies = Collections.emptyList();
 
     private String moduleType;
 
@@ -501,7 +501,7 @@ public class JahiaTemplatesPackage {
      * @return a list of modules which this module depends on
      */
     public List<JahiaTemplatesPackage> getDependencies() {
-        return Collections.unmodifiableList(dependencies);
+        return dependencies;
     }
 
     /**
@@ -512,7 +512,9 @@ public class JahiaTemplatesPackage {
      */
     public void addDependency(JahiaTemplatesPackage dep) {
         if (!dependencies.contains(dep)) {
-            dependencies.add(dep);
+            List<JahiaTemplatesPackage> newList = new LinkedList<JahiaTemplatesPackage>(dependencies);
+            newList.add(dep);
+            dependencies = Collections.unmodifiableList(newList); 
         }
     }
 
@@ -520,7 +522,7 @@ public class JahiaTemplatesPackage {
      * Reset the module dependencies.
      */
     public void resetDependencies() {
-        dependencies.clear();
+        dependencies = Collections.emptyList();
     }
 
     /**

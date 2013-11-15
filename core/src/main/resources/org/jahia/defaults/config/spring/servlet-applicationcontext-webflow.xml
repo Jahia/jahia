@@ -9,10 +9,7 @@
     <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true" />
 
     <webflow:flow-registry id="jahiaFlowRegistry" base-path="/modules" parent="jahiaBundleFlowRegistry" flow-builder-services="jahiaFlowBuilderServices">
-        <!--<webflow:flow-location-pattern value="/**/*.flow/**/flow.xml" />-->
     </webflow:flow-registry>
-
-    <!--<webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry" />-->
 
     <webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry"  >
         <webflow:flow-execution-repository conversation-manager="jahiaConversationManager" />

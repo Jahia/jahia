@@ -805,12 +805,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
 
-
-        // save acl
-        if (acl != null) {
-            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
-        }
-
         if (node.get("vanityMappings") != null) {
             saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
         }
@@ -854,7 +848,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 =======
         closeEditEngine(node.getPath());
+<<<<<<< .working
 >>>>>>> .merge-right.r47910
+=======
+        //Have to unlock before saving acls has they might be saved in live
+        // save acl
+        if (acl != null) {
+            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
+        }
+>>>>>>> .merge-right.r47914
     }
 
 

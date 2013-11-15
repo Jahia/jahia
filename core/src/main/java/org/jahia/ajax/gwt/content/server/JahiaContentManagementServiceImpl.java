@@ -723,8 +723,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
-        closeEditEngine(node.getPath());
-
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
 
         try {
@@ -837,6 +835,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
+<<<<<<< .working
 
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
@@ -853,6 +852,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
+=======
+        closeEditEngine(node.getPath());
+>>>>>>> .merge-right.r47910
     }
 
 

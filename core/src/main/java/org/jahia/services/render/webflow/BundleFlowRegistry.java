@@ -80,7 +80,7 @@ public class BundleFlowRegistry extends FlowDefinitionRegistryImpl {
         for (FlowDefinitionRegistry flowDefinitionRegistry : l) {
             c += flowDefinitionRegistry.getFlowDefinitionCount();
         }
-        return c + super.getFlowDefinitionCount();    //To change body of overridden methods use File | Settings | File Templates.
+        return c + super.getFlowDefinitionCount();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class BundleFlowRegistry extends FlowDefinitionRegistryImpl {
 
     public void addFlowRegistry(FlowDefinitionRegistry r) {
         if (r.getFlowDefinitionCount() > 0) {
-        l.add(r);
+            l.add(r);
         }
     }
 

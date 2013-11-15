@@ -50,7 +50,6 @@ public class WebflowDispatcherScriptFactory implements ScriptFactory {
     }
 
     public void initView(View view) {
-//        view.getProperties().put("cache.requestParameters", "webflow-execution-*");
         view.getProperties().put("cache.expiration", "0");
     }
 }

@@ -115,6 +115,7 @@ public class SelectorType {
         defaultSelectors.put(PropertyType.BOOLEAN, CHECKBOX);
         defaultSelectors.put(PropertyType.NAME, SMALLTEXT);
         defaultSelectors.put(PropertyType.PATH, SMALLTEXT);
+        defaultSelectors.put(PropertyType.WEAKREFERENCE, CONTENTPICKER);
     }
 
     public static String nameFromValue(int i) {

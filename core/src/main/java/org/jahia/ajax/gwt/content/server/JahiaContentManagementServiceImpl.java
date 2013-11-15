@@ -737,7 +737,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 node.setPath(nodeWrapper.getPath());
             }
         } catch (RepositoryException e) {
+<<<<<<< .working
             throw new GWTJahiaServiceException(e.getMessage());
+=======
+            logger.error("Error while saving node "+node.getPath(),e);
+            throw new GWTJahiaServiceException(e);
+>>>>>>> .merge-right.r47908
         }
 
 //        setLock(Arrays.asList(node.getPath()), false);
@@ -824,6 +829,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath()+"/" + VisibilityService.NODE_NAME).getIdentifier()));
                 }
             } catch (RepositoryException e) {
+                logger.error("Error while saving visibility conditions for node "+node.getPath(),e);
                 throw new GWTJahiaServiceException(e);
             }
         }
@@ -1802,8 +1808,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing if lock is not supported
         } catch (RepositoryException e) {
+<<<<<<< .working
             logger.warn("Unable to unlock node " + nodepath, e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.unlock.node", getUILocale()));
+=======
+            logger.error("Error while closing edit engine for node "+nodepath,e);
+            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.unlock.node", getUILocale()));
+>>>>>>> .merge-right.r47908
         }
     }
 

@@ -950,8 +950,13 @@ public class ContentManagerHelper {
             node.setAclInheritanceBreak(acl.isBreakAllInheritance());
             currentUserSession.save();
         } catch (RepositoryException e) {
+<<<<<<< .working
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not save file " + node.getName());
+=======
+            logger.error("Error while saving acl on node "+node.getPath(), e);
+            throw new GWTJahiaServiceException("Could not save acl on node " + node.getPath());
+>>>>>>> .merge-right.r47908
         }
     }
 

@@ -39,7 +39,7 @@
     </c:if>
     <c:if test="${not empty time and time eq true}">
     $(document).ready(function() {
-        $('\#${fieldId}').datetime(${options});
+        $('\#${fieldId}').datetimepicker(${options});
     });
     </c:if>
     /* ]]> */

@@ -93,7 +93,7 @@
                 <property name="properties">
                     <map>
                         <entry key="hibernate.dialect" value="${hibernate.dialect}"/>
-                        <entry key="hibernate.hbm2ddl.auto" value="none"/>
+                        <entry key="hibernate.hbm2ddl.auto" value=""/>
                         <entry key="hibernate.show_sql" value="false"/>
                         <entry key="hibernate.jdbc.batch_size" value="16"/>
                         <entry key="hibernate.default_batch_fetch_size" value="16"/>

@@ -19,6 +19,10 @@
         <property name="macrosRegexp"><value>##([a-zA-Z0-9_]*)(\(([^"#]*)(\s*,\s*[^"#]*)*\))?##</value></property>
         <property name="macroLookupPath" value="modules-macros,WEB-INF/modules-macros"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
-        <property name="replaceByErrorMessageOnMissingMacros" value="false"/>
+        <property name="replaceByErrorMessageOnMissingMacros" value="true"/>
+    </bean>
+    <bean id="choiceListMacrosInitializer" class="org.jahia.modules.macros.initializers.MacrosChoiceListInitializer">
+        <property name="key" value="choicelistmacros"/>
+        <property name="macroLookupPath" value="macros,WEB-INF/macros,modules-macros,WEB-INF/modules-macros"></property>
     </bean>
 </beans>

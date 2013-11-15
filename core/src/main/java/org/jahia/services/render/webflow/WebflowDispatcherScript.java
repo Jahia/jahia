@@ -60,6 +60,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -154,6 +155,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                         return "GET";
                     }
 
+                    @SuppressWarnings("rawtypes")
                     @Override
                     public Map getParameterMap() {
                         return params;
@@ -179,7 +181,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                         if (WebUtils.FORWARD_QUERY_STRING_ATTRIBUTE.equals(name)) {
                             return qs;
                         }
-                        return super.getAttribute(name);    //To change body of overridden methods use File | Settings | File Templates.
+                        return super.getAttribute(name);
                     }
 
                     @Override

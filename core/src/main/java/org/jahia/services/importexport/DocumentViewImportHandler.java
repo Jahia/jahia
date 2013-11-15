@@ -456,6 +456,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             currentFilePath = child.getPath();
                         }
 //                    }
+                    } else {
+                        throw new AccessDeniedException("Missing jcr:addChildNodes permission for user "+session.getUser().getUsername());
                     }
                 } else {
                     if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {

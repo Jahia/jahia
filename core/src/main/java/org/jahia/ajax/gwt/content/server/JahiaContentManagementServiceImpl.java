@@ -723,6 +723,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
+        closeEditEngine(node.getPath());
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
 
         try {
@@ -800,7 +801,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new GWTJahiaServiceException(e);
             }
         }
-
+        // save acl
+        if (acl != null) {
+            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
+        }
         if (node.get("vanityMappings") != null) {
             saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
         }
@@ -824,6 +828,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
+<<<<<<< .working
 
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
@@ -845,6 +850,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (acl != null) {
             contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
         }
+=======
+>>>>>>> .merge-right.r47921
 
 
         closeEditEngine(node.getPath());

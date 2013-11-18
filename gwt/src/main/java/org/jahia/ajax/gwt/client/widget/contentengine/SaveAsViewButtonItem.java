@@ -72,9 +72,9 @@ import java.util.*;
 public class SaveAsViewButtonItem extends SaveButtonItem {
 
     public static final int INDEX_OF_MODULE_NAME = 2;
-    public static final int INDEX_OF_FILE_TYPE = 5;
-    public static final int INDEX_OF_FILE_NAME = 7;
-    public static final int INDEX_OF_TEMPLATE_TYPE = 6;
+    public static final int INDEX_OF_FILE_TYPE = 8;
+    public static final int INDEX_OF_FILE_NAME = 10;
+    public static final int INDEX_OF_TEMPLATE_TYPE = 9;
     public static final String VIEWS_SOURCE_PATH="/sources/src/main/resources";
 
     public Button create(final AbstractContentEngine engine) {
@@ -135,6 +135,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
                         dependenciesCombo.add(n.getName());
                     }
+                    dependenciesCombo.getStore().sort("value",Style.SortDir.ASC);
                     dependenciesCombo.setSimpleValue(moduleName);
                     f.add(dependenciesCombo);
                 }

@@ -165,6 +165,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     null, columnsKeys, false, -1, 0, false, null, null, false, false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                 public void onSuccess(PagingLoadResult<GWTJahiaNode> result) {
                     for (GWTJahiaNode itemDefinition : result.getData()) {
+                        if (!engine.getNode().getChildren().contains(itemDefinition)) {
+                            engine.getNode().getChildren().add(itemDefinition);
+                        }
                         children.add(itemDefinition);
                         store.add(itemDefinition);
                     }
@@ -680,7 +683,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     node.remove(child);
                 }
                 for (GWTJahiaNode child : this.children) {
-                    node.add(child);
+                    if (!node.getChildren().contains(child)) {
+                        node.add(child);
+                    }
                 }
                 this.children.clear();
                 node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);

@@ -735,12 +735,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 node.setPath(nodeWrapper.getPath());
             }
         } catch (RepositoryException e) {
-<<<<<<< .working
-            throw new GWTJahiaServiceException(e.getMessage());
-=======
             logger.error("Error while saving node "+node.getPath(),e);
-            throw new GWTJahiaServiceException(e);
->>>>>>> .merge-right.r47908
+            throw new GWTJahiaServiceException(e.getMessage());
         }
 
 //        setLock(Arrays.asList(node.getPath()), false);
@@ -821,7 +817,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath()+"/" + VisibilityService.NODE_NAME).getIdentifier()));
                 }
             } catch (RepositoryException e) {
-                logger.error("Error while saving visibility conditions for node "+node.getPath(),e);
                 throw new GWTJahiaServiceException(e);
             }
         }
@@ -829,7 +824,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
-<<<<<<< .working
 
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
@@ -846,17 +840,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
-=======
-        closeEditEngine(node.getPath());
-<<<<<<< .working
->>>>>>> .merge-right.r47910
-=======
-        //Have to unlock before saving acls has they might be saved in live
+
         // save acl
         if (acl != null) {
             contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
         }
->>>>>>> .merge-right.r47914
+
+
+        closeEditEngine(node.getPath());
+
     }
 
 
@@ -1570,7 +1562,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * This will release the module. This means we will compile, update the version number of the module and package it as war file and then
      * deploy the newly created version in Jahia.
-     * 
+     *
      * @param moduleName
      *            The module to be released.
      * @param releaseInfo
@@ -1812,13 +1804,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing if lock is not supported
         } catch (RepositoryException e) {
-<<<<<<< .working
             logger.warn("Unable to unlock node " + nodepath, e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.unlock.node", getUILocale()));
-=======
-            logger.error("Error while closing edit engine for node "+nodepath,e);
-            throw new GWTJahiaServiceException(JahiaResourceBundle.getJahiaInternalResource("label.gwt.error.cannot.unlock.node", getUILocale()));
->>>>>>> .merge-right.r47908
         }
     }
 
@@ -2439,7 +2426,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Initialize a map with all data needed to render the code editor.
-     * 
+     *
      * @param path
      *            path from where we are trying to open the code editor
      * @param isNew

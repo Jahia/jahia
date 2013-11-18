@@ -46,7 +46,6 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.templates.TemplateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,9 +126,9 @@ public class FileSystemView implements Comparable<View>, View {
             }
             // add thumbnail to properties
 
-            if (TemplateUtils.isResourceAvailable(thumbnail)) {
-                properties.put(THUMBNAIL, Jahia.getContextPath() + thumbnail);
-            }
+//            if (TemplateUtils.isResourceAvailable(thumbnail)) {
+//                properties.put(THUMBNAIL, Jahia.getContextPath() + thumbnail);
+//            }
             
             propCache.put(propName, properties);
         }

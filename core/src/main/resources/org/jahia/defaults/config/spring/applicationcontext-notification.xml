@@ -9,6 +9,7 @@
     <bean id="MailService" class="org.jahia.services.mail.MailServiceImpl" parent="jahiaServiceTemplate">
         <property name="mailEndpointUri" value="seda:mailUsers?multipleConsumers=true"/>
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
     </bean>
 
     <bean id="HttpClientService" class="org.jahia.services.notification.HttpClientService" destroy-method="shutdown">

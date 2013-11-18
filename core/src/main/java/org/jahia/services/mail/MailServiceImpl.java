@@ -40,11 +40,7 @@
 
 package org.jahia.services.mail;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -57,6 +53,8 @@ import javax.script.*;
 import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.slf4j.Logger;
@@ -66,15 +64,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.jahia.api.Constants;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.templates.TemplateUtils;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.springframework.core.io.Resource;
 
 /**
  * This service define method to send e-mails.
@@ -103,7 +100,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     
     private ProducerTemplate template;
     private ScriptEngineUtils scriptEngineUtils;
-
+    private JahiaTemplateManagerService templateManagerService;
     /**
      * Validates entered values for mail settings.
      * 
@@ -330,12 +327,17 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     	//try if it is multilingual 
         String suffix = StringUtils.substringAfterLast(template, ".");
     	String languageMailConfTemplate = template.substring(0, template.length() - (suffix.length()+1)) + "_" + locale.toString() + "." + suffix;
-        String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, languageMailConfTemplate);
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(templatePackageName);
+        Resource templateRealPath = templatePackage.getResource(languageMailConfTemplate);
     	if(templateRealPath == null) {
-          templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);
+          templateRealPath = templatePackage.getResource(template);
     	}  
-        InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
-                templateRealPath);
+        InputStream scriptInputStream = null;
+        try {
+            scriptInputStream = templateRealPath.getInputStream();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
         if (scriptInputStream != null) {
             ResourceBundle resourceBundle;
             if (templatePackageName == null) {
@@ -354,16 +356,15 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             // Subject
             String subject;
             try {
-                String subjectTemplatePath = StringUtils.substringBeforeLast(templateRealPath, ".") + ".subject."
-                        + StringUtils.substringAfterLast(templateRealPath, ".");
-                InputStream stream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
-                        subjectTemplatePath);
+                String subjectTemplatePath = StringUtils.substringBeforeLast(templateRealPath.getFilename(), ".") + ".subject."
+                        + StringUtils.substringAfterLast(templateRealPath.getFilename(), ".");
+                InputStream stream = templatePackage.getResource(subjectTemplatePath).getInputStream();
                 scriptContent = new InputStreamReader(stream);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
                 scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());
                 scriptEngine.eval(scriptContent, scriptContext);
-                subject = ((StringWriter) scriptContext.getWriter()).toString().trim();
+                subject = scriptContext.getWriter().toString().trim();
             } catch (Exception e) {
                 subject = resourceBundle.getString(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(template, "/"), ".") + ".subject");
             } finally {
@@ -372,6 +373,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             try {
                 scriptContent = new InputStreamReader(scriptInputStream);
                 scriptContext.setWriter(new StringWriter());
+                scriptContext.setErrorWriter(new StringWriter());
                 // The following binding is necessary for JavaScript, which
                 // doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
@@ -511,4 +513,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         this.charset = charset;
     }
 
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
+    }
 }

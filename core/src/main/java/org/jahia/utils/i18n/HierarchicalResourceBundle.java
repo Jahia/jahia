@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author Sergiy Shyrkov
  */
-class HierarchicalResourceBundle extends ResourceBundle {
+public class HierarchicalResourceBundle extends ResourceBundle {
 
     private static final ResourceBundle NONEXISTENT_BUNDLE = new ResourceBundle() {
         public Enumeration<String> getKeys() {
@@ -158,4 +158,35 @@ class HierarchicalResourceBundle extends ResourceBundle {
         // on parent support
         super.setParent(null);
     }
+
+    /**
+     * Get formatted message
+     *
+     * @param key
+     * @param defaultValue
+     * @param arguments
+     * @return
+     */
+    public String getFormatted(String key, String defaultValue, Object... arguments) {
+        return Messages.format(getString(key, defaultValue), arguments);
+    }
+
+    /**
+     * Get message depending on a key. If not found, return the default value
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public String getString(String key, String defaultValue) {
+        String message;
+        try {
+            message = getString(key);
+        } catch (MissingResourceException e) {
+            message = defaultValue;
+        }
+        return message;
+    }
+
+
 }

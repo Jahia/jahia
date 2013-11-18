@@ -828,7 +828,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             workflow.updateWorkflowRules(node,
                     (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
-<<<<<<< .working
 
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
@@ -845,17 +844,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
-
-        // save acl
-        if (acl != null) {
-            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
-        }
-=======
->>>>>>> .merge-right.r47921
-
-
-        closeEditEngine(node.getPath());
-
     }
 
 

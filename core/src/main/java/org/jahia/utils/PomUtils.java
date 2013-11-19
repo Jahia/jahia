@@ -70,6 +70,24 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 public final class PomUtils {
 
     /**
+     * Gets the artifact group ID from the provided model. If the artifact group ID is not specified, takes the group ID of the parent, if
+     * present. Otherwise returns <code>null</code>.
+     * 
+     * @param model
+     *            the Maven project model
+     * @return the artifact group ID from the provided model. If the artifact group ID is not specified, takes the group ID of the parent,
+     *         if present. Otherwise returns <code>null</code>
+     */
+    public static String getGroupId(Model model) {
+        String groupId = model.getGroupId();
+        if (groupId == null && model.getParent() != null) {
+            groupId = model.getParent().getGroupId();
+        }
+
+        return groupId;
+    }
+
+    /**
      * Reads the artifact version from the provided pom.xml file. If the artifact version is not specified, takes the version of the parent,
      * if present. Otherwise returns <code>null</code>.
      * 

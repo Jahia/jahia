@@ -241,7 +241,7 @@ public class ModuleBuildHelper {
         return node;
     }
 
-    public void deployToMaven(ModuleReleaseInfo releaseInfo, File generatedWar) throws IOException {
+    public void deployToMaven(String groupId, String artifactId, ModuleReleaseInfo releaseInfo, File generatedJar) throws IOException {
         File settings = null;
         File pomFile = null;
         try {
@@ -255,8 +255,8 @@ public class ModuleBuildHelper {
                 w.write("</password></server></servers></settings>");
                 w.close();
             }
-            JarFile jar = new JarFile(generatedWar);
-            pomFile = extractPomFromJar(jar);
+            JarFile jar = new JarFile(generatedJar);
+            pomFile = extractPomFromJar(jar, groupId, artifactId);
             jar.close();
 
             Model pom;
@@ -266,11 +266,11 @@ public class ModuleBuildHelper {
                 throw new IOException(e);
             }
 
-            String[] deployParams = { "deploy:deploy-file", "-Dfile=" + generatedWar,
+            String[] deployParams = { "deploy:deploy-file", "-Dfile=" + generatedJar,
                     "-DrepositoryId=" + releaseInfo.getRepositoryId(), "-Durl=" + releaseInfo.getRepositoryUrl(),
                     "-DpomFile=" + pomFile.getPath(),
-                    "-Dpackaging=" + StringUtils.substringAfterLast(generatedWar.getName(), "."),
-                    "-DgroupId=" + pom.getGroupId(), "-DartifactId=" + pom.getArtifactId(),
+                    "-Dpackaging=" + StringUtils.substringAfterLast(generatedJar.getName(), "."),
+                    "-DgroupId=" + PomUtils.getGroupId(pom), "-DartifactId=" + pom.getArtifactId(),
                     "-Dversion=" + pom.getVersion() };
             if (settings != null) {
                 deployParams = (String[]) ArrayUtils.addAll(deployParams,
@@ -278,7 +278,7 @@ public class ModuleBuildHelper {
             }
             StringBuilder out = new StringBuilder();
             int ret = ProcessHelper.execute(mavenExecutable, deployParams, null,
-                    generatedWar.getParentFile(), out, out);
+                    generatedJar.getParentFile(), out, out);
 
             if (ret > 0) {
                 logger.error("Maven archetype call returned " + ret);
@@ -291,28 +291,32 @@ public class ModuleBuildHelper {
         }
     }
 
-    private File extractPomFromJar(JarFile jar) throws IOException {
+    private File extractPomFromJar(JarFile jar, String groupId, String artifactId) throws IOException {
         // deploy artifacts to Maven distribution server
         Enumeration<JarEntry> jarEntries = jar.entries();
         JarEntry jarEntry = null;
         boolean found = false;
-        String moduleName = jar.getManifest().getMainAttributes().getValue("Jahia-Root-Folder");
-        if (StringUtils.isEmpty(moduleName)) {
-            moduleName = jar.getManifest().getMainAttributes().getValue("root-folder");
+        String moduleName = artifactId;
+        if (moduleName == null) {
+            moduleName = jar.getManifest().getMainAttributes().getValue("Jahia-Root-Folder");
+            if (StringUtils.isEmpty(moduleName)) {
+                moduleName = jar.getManifest().getMainAttributes().getValue("root-folder");
+            }
         }
         while (jarEntries.hasMoreElements()) {
             jarEntry = jarEntries.nextElement();
             String name = jarEntry.getName();
-            if (StringUtils.startsWith(name, "META-INF/maven/") && StringUtils.endsWith(name, moduleName + "/pom.xml")) {
+            if (StringUtils.startsWith(name, groupId != null ? ("META-INF/maven/" + groupId + "/") : "META-INF/maven/")
+                    && StringUtils.endsWith(name, moduleName + "/pom.xml")) {
                 found = true;
                 break;
             }
         }
         if (!found) {
-            throw new IOException("unable to find pom.xml file within while looking for " + moduleName);
+            throw  new IOException("unable to find pom.xml file within while looking for " + moduleName);
         }
         InputStream is = jar.getInputStream(jarEntry);
-        File pomFile = File.createTempFile("pom", ".xml");
+        File pomFile = File.createTempFile("pom",".xml");
         FileUtils.copyInputStreamToFile(is, pomFile);
         return pomFile;
     }

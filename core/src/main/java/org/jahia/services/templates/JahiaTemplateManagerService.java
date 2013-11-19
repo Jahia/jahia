@@ -100,8 +100,6 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -379,48 +377,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 String forgeModuleUrl = forgeHelper.createForgeModule(releaseInfo, generatedWar);
                 releaseInfo.setForgeModulePageUrl(forgeModuleUrl);
             } else if (releaseInfo.isPublishToMaven() && releaseInfo.getRepositoryUrl() != null) {
-                deployToMaven(releaseInfo, generatedWar);
+                deployToMaven(PomUtils.getGroupId(model), model.getArtifactId(), releaseInfo, generatedWar);
             }
         }
 
         return generatedWar;
     }
 
-    public void deployToMaven(ModuleReleaseInfo releaseInfo, File generatedWar) throws IOException {
-        moduleBuildHelper.deployToMaven(releaseInfo, generatedWar);
+    public void deployToMaven(String groupId, String artifactId, ModuleReleaseInfo releaseInfo, File generatedWar) throws IOException {
+        moduleBuildHelper.deployToMaven(groupId, artifactId, releaseInfo, generatedWar);
     }
-
-    public File extractPomFromJar(JarFile jar) throws IOException {
-        return extractPomFromJar(jar,null);
-    }
-
-    public File extractPomFromJar(JarFile jar, String groupId) throws IOException {
-        // deploy artifacts to Maven distribution server
-        Enumeration<JarEntry> jarEntries = jar.entries();
-        JarEntry jarEntry = null;
-        boolean found = false;
-        String moduleName = jar.getManifest().getMainAttributes().getValue("Jahia-Root-Folder");
-        if (StringUtils.isEmpty(moduleName)) {
-            moduleName = jar.getManifest().getMainAttributes().getValue("root-folder");
-        }
-        while (jarEntries.hasMoreElements()) {
-            jarEntry = jarEntries.nextElement();
-            String name = jarEntry.getName();
-            String path = groupId!=null?groupId:"";
-            if (StringUtils.startsWith(name, "META-INF/maven/" + path) && StringUtils.endsWith(name, moduleName + "/pom.xml")) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            throw  new IOException("unable to find pom.xml file within while looking for " + moduleName);
-        }
-        InputStream is = jar.getInputStream(jarEntry);
-        File pomFile = File.createTempFile("pom",".xml");
-        FileUtils.copyInputStreamToFile(is, pomFile);
-        return pomFile;
-    }
-
 
     public List<File> regenerateImportFile(String moduleName, File sources, JCRSessionWrapper session) throws RepositoryException {
         logger.info("Re-generating initial import file for module {} in source folder {}", moduleName, sources);

@@ -44,7 +44,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,9 +175,9 @@ public final class ProcessHelper {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Execuiting command: {}", cmd.toString());
+            logger.debug("Executing command: {}", cmd.toString());
         } else if (redirectOutputs) {
-            logger.info("Execuiting command: ");
+            logger.info("Executing command: ");
             logger.info(cmd.toString());
         }
 

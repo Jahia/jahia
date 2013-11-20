@@ -67,10 +67,11 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
         if (StringUtils.isEmpty(param)) {
             param = "jmix:editorialContent";
         }
+        boolean useName = StringUtils.contains(param,";useName");
         NodeTypeIterator nti;
         try {
             List<String> systemIds = null;
-            if (param.indexOf(";fromDependencies") > -1) {
+            if (StringUtils.contains(param,";fromDependencies")) {
                 systemIds = new ArrayList<String>();
                 JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
                 if (node == null) {
@@ -103,7 +104,7 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
             }
             while (nti.hasNext()) {
                 ExtendedNodeType type = (ExtendedNodeType) nti.next();
-                listValues.add(new ChoiceListValue(type.getLabel(locale), type.getName()));
+                listValues.add(new ChoiceListValue(useName?type.getName():type.getLabel(locale), type.getName()));
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get type",e);

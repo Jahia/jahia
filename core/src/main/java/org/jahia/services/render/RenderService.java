@@ -476,7 +476,8 @@ public class RenderService {
     private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
         boolean invert = templateNode.hasProperty("j:invertCondition") && templateNode.getProperty("j:invertCondition").getBoolean();
 
-        if (templateNode.hasProperty("j:requiredMode")) {
+        // renderContext.getMode() can be null when we display nodes from the repository explorer
+        if (templateNode.hasProperty("j:requiredMode") && renderContext.getMode() != null) {
             String req = templateNode.getProperty("j:requiredMode").getString();
             if (!renderContext.getMode().equals(req)) {
                 return invert;

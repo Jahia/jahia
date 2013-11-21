@@ -62,7 +62,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         JCRNodeWrapper n = (JCRNodeWrapper) request.getAttribute("currentNode");
         if (n != null) {
             try {
-                return request.getParameter( "webflowexecution" + n.getIdentifier().replaceAll("-",""));
+                return request.getParameter( "webflowexecution" + StringUtils.remove(n.getIdentifier(), '-'));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 return super.getFlowExecutionKey(request);
@@ -91,7 +91,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
             path.append('?');
             Map<String,String> params = new HashMap<String, String>();
             try {
-                params.put("webflowexecution" + n.getIdentifier().replaceAll("-",""), flowExecutionKey);
+                params.put("webflowexecution" + StringUtils.remove(n.getIdentifier(), '-'), flowExecutionKey);
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

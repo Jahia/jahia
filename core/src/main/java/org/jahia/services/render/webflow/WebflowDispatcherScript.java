@@ -146,7 +146,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                 final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                 final Map<String,String[]> params = new HashMap<String,String[]>();
                 if (!StringUtils.isEmpty(qs)) {
-                    String identifierNoDashes = StringUtils.replace(identifier, "-", "");
+                    String identifierNoDashes = StringUtils.remove(identifier, '-');
                     params.put("webflowexecution"+ identifierNoDashes,new String[] {StringUtils.substringAfterLast(qs, "webflowexecution" + identifierNoDashes+"=")});
                 }
                 HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {

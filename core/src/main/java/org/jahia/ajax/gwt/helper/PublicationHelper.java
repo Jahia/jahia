@@ -68,8 +68,8 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -127,8 +127,9 @@ public class PublicationHelper {
                     final JCRSessionWrapper unlocalizedSession = JCRSessionFactory.getInstance().getCurrentUserSession();
 
                     final JCRNodeWrapper nodeByIdentifier = unlocalizedSession.getNodeByIdentifier(node.getIdentifier());
-                    if (nodeByIdentifier.hasNode("j:translation_" + language)) {
-                        JCRNodeWrapper next = nodeByIdentifier.getNode("j:translation_" + language);
+                    String langNodeName = "j:translation_" + language;
+                    if (nodeByIdentifier.hasNode(langNodeName)) {
+                        JCRNodeWrapper next = nodeByIdentifier.getNode(langNodeName);
                         PublicationInfo translationInfo = publicationService.getPublicationInfo(next.getIdentifier(), Collections.singleton(language), includesReferences, false, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                         pubInfo.getRoot().addChild(translationInfo.getRoot());
                     }

@@ -43,19 +43,23 @@ package org.jahia.services.render.webflow;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.templates.JahiaModuleAware;
 import org.springframework.binding.convert.ConversionService;
-import org.springframework.binding.convert.service.GenericConversionService;
+import org.springframework.binding.convert.service.DefaultConversionService;
 
-public class JahiaFlowConversionService extends GenericConversionService implements ConversionService, JahiaModuleAware {
+public class JahiaFlowConversionService extends DefaultConversionService implements ConversionService, JahiaModuleAware {
     private JahiaTemplatesPackage module;
 
-    @Override
-    public void setJahiaModule(JahiaTemplatesPackage module) {
-        this.module = module;
+    public JahiaFlowConversionService() {
+        super();
     }
 
+    public JahiaFlowConversionService(org.springframework.core.convert.ConversionService delegateConversionService) {
+        super(delegateConversionService);
+    }
+
+    @SuppressWarnings("rawtypes")
     @Override
     public Class getClassForAlias(String alias) {
-        // Get the class from the module classloader
+        // Get the class from the module class loader
         try {
             Class c = module.getChainedClassLoader().loadClass(alias);
             if (c != null) {
@@ -65,5 +69,10 @@ public class JahiaFlowConversionService extends GenericConversionService impleme
         }
 
         return super.getClassForAlias(alias);
+    }
+
+    @Override
+    public void setJahiaModule(JahiaTemplatesPackage module) {
+        this.module = module;
     }
 }

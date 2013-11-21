@@ -79,7 +79,8 @@
 
     <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true"
                                    conversion-service="JahiaFlowConversionService"
-                                   view-factory-creator="JahiaViewFactoryCreator"/>
+                                   view-factory-creator="JahiaViewFactoryCreator"
+                                   validator="validatorFactoryBean"/>
 
     <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/"
                            flow-builder-services="jahiaFlowBuilderServices">

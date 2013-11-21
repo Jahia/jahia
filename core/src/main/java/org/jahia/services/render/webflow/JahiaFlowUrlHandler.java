@@ -42,15 +42,20 @@ package org.jahia.services.render.webflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.webflow.context.servlet.DefaultFlowUrlHandler;
 import org.springframework.webflow.core.collection.AttributeMap;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JahiaFlowUrlHandler.class);
 
     @Override
     public String getFlowExecutionKey(HttpServletRequest request) {
@@ -59,7 +64,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
             try {
                 return request.getParameter( "webflowexecution" + n.getIdentifier().replaceAll("-",""));
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 return super.getFlowExecutionKey(request);
             }
         }
@@ -89,7 +94,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
                 params.put("webflowexecution" + n.getIdentifier().replaceAll("-",""), flowExecutionKey);
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 return super.createFlowExecutionUrl(flowId, flowExecutionKey, request);
             }
             return path.toString();

@@ -8,6 +8,8 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 
+    config.allowedContent = true;
+
     config.contextPath = (typeof contextJsParameters != 'undefined') ? contextJsParameters.contextPath : '';
     config.language = (typeof contextJsParameters != 'undefined') ? contextJsParameters.uilang : 'en';
     config.contentlanguage = (typeof contextJsParameters != 'undefined') ? contextJsParameters.lang : 'en';
@@ -37,7 +39,7 @@ CKEDITOR.editorConfig = function( config ) {
         ['Link','Unlink','Anchor'],
         ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
         '/',
-        ['Styles','Format','Font','FontSize'],
+        ['Macros','Styles','Format','Font','FontSize'],
         ['TextColor','BGColor'],
         ['Maximize', 'ShowBlocks','-','About']
     ];
@@ -82,6 +84,6 @@ CKEDITOR.editorConfig = function( config ) {
         ['Maximize', 'ShowBlocks']
     ];
 
-    config.extraPlugins = 'acheck,wsc,scayt';
+    config.extraPlugins = 'acheck,wsc,scayt,macrosdropdown';
 };
 

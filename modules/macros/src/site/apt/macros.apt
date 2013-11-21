@@ -46,6 +46,83 @@ if (currentUser.username.trim().equals("guest")) {
         print(currentUser.getUsername().capitalize())
 }
 
++------------------------------------------------
+<modules>WEB-INF/modules-macros/authorname.groovy
++------------------------------------------------
+
+  This macro will display the author name.
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##authorname##. Macros does not take any parameters.
+
++--------------------------------------------------
+<modules>WEB-INF/modules-macros/creationdate.groovy
++--------------------------------------------------
+
+  This macro will display the content creation date.
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##creationdate##. Macros does not take any parameters.
+
++----------------------------------------------
+<modules>WEB-INF/modules-macros/keywords.groovy
++----------------------------------------------
+
+  This macro will display the keywords for the current node.
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##keywords##. Macros does not take any parameters.
+
+  e.g.: Keyword(s) = ##keywords## will render something like, with only one keyword "Keyword(s) = blabla" and
+  with multiple keywords "Keyword(s) = blabla, bloblo, blibli".
+
++---------------------------------------------
+<modules>WEB-INF/modules-macros/devmode.groovy
++---------------------------------------------
+
+  This macro will display one or two information about the current content, the content id and/or the content path.
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##devmode(parameter)##. Parameter could be: contentPath,
+  contentId or full.
+
+  e.g.: ##devmode(full)## will render something like, "Content path : /blabla/blabla"
+                                                      "Content id : balblablabla"
+
++----------------------------------------------------
+<modules>WEB-INF/modules-macros/linktohomepage.groovy
++----------------------------------------------------
+
+  This macro will display a link to home page.
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##linktohomepage##. Macros does not take any parameters.
+
+  e.g.: ##linktohomepage## will render something like, "http://www.site.com/index.htlm", but you can also make a link
+  like this <a href="##linktohomepage##" title="Home Page">Home Page</a> and he will render like nice link, "Home Page".
+
++-----------------------------------------------------
+<modules>WEB-INF/modules-macros/userprofiledata.groovy
++-----------------------------------------------------
+
+  This macro will display some information about the current profile.
+
+* How to use a macro
+
+  It is as simple as putting in your text a call like this ##userprofiledata(parameter1,parameter2)##.
+  Parameter 1 should be a node name like "contents".
+  Parameter 2 should be a properties name like "jcr:created".
+  You can also use only one parameter in your text call like this ##userprofiledata(parameter)##.
+  In this case parameter should be a properties of the current user like "j:firstName".
+
+  e.g.: ##userprofiledata(contents,jcd:created)## will render something like, "2013-11-05T18:26:10.357+01:00".
+        ##userprofiledata(j:firstName)## will render something like, "Damien".
+
 +---------------------
 
 * Default bindings available in your macros

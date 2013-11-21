@@ -122,6 +122,9 @@ public class Initializers extends JahiaController {
             } else if (request.getParameter("nodeuuid") != null) {
                 node = session.getNodeByUUID(request.getParameter("nodeuuid"));
                 type = node.getPrimaryNodeType();
+            } else if (request.getParameter("ctxnodeuuid") != null && request.getParameter("type") != null){
+                node = session.getNodeByUUID(request.getParameter("ctxnodeuuid"));
+                type = NodeTypeRegistry.getInstance().getNodeType(request.getParameter("type"));
             } else {
                 node = null;
                 type = NodeTypeRegistry.getInstance().getNodeType(request.getParameter("type"));

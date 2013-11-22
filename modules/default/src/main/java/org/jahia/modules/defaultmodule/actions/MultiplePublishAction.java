@@ -96,7 +96,7 @@ public class MultiplePublishAction extends Action {
             final HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("customWorkflowInfo", entry.getKey());
 
-            String title = Messages.format(Messages.getInternal("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved"),
+            String title = Messages.getInternalWithArguments("label.workflow.start.message", session.getLocale(), "{0} started by {1} on {2} - {3} content items involved",
                     entry.getValue().getDisplayName(), session.getUser().getName(), DateFormat.getDateInstance(DateFormat.SHORT, session.getLocale()).format(new Date()), pubInfos.size());
 
             WorkflowVariable var = new WorkflowVariable(title, PropertyType.STRING);

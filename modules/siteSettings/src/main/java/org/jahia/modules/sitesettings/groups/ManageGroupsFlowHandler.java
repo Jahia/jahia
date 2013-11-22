@@ -108,8 +108,8 @@ public class ManageGroupsFlowHandler implements Serializable {
             context.addMessage(new MessageBuilder()
                     .error()
                     .defaultText(
-                            Messages.format(Messages.get("resources.JahiaSiteSettings",
-                                    "siteSettings.groups.errors.create.failed", locale), group.getGroupname())).build());
+                            Messages.getWithArgs("resources.JahiaSiteSettings",
+                                    "siteSettings.groups.errors.create.failed", locale, group.getGroupname())).build());
             return false;
         }
     }
@@ -174,8 +174,8 @@ public class ManageGroupsFlowHandler implements Serializable {
             context.addMessage(new MessageBuilder()
                     .error()
                     .defaultText(
-                            Messages.format(Messages.get("resources.JahiaSiteSettings",
-                                    "siteSettings.groups.errors.create.failed", locale), newGroup.getGroupname()))
+                            Messages.getWithArgs("resources.JahiaSiteSettings",
+                                    "siteSettings.groups.errors.create.failed", locale, newGroup.getGroupname()))
                     .build());
             return;
         }
@@ -186,8 +186,8 @@ public class ManageGroupsFlowHandler implements Serializable {
             context.addMessage(new MessageBuilder()
                     .error()
                     .defaultText(
-                            Messages.format(Messages.get("resources.JahiaSiteSettings",
-                                    "siteSettings.groups.errors.create.failed", locale), newGroup.getGroupname()))
+                            Messages.getWithArgs("resources.JahiaSiteSettings",
+                                    "siteSettings.groups.errors.create.failed", locale, newGroup.getGroupname()))
                     .build());
         } else {
             context.addMessage(new MessageBuilder()
@@ -335,8 +335,8 @@ public class ManageGroupsFlowHandler implements Serializable {
                 context.addMessage(new MessageBuilder()
                         .error()
                         .defaultText(
-                                Messages.format(Messages.get("resources.JahiaSiteSettings",
-                                        "siteSettings.groups.errors.remove.failed", locale), grp.getGroupname()))
+                                Messages.getWithArgs("resources.JahiaSiteSettings",
+                                        "siteSettings.groups.errors.remove.failed", locale, grp.getGroupname()))
                         .build());
             }
         }

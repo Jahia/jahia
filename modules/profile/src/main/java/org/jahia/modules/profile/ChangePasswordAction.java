@@ -90,7 +90,7 @@ public class ChangePasswordAction extends Action {
                     EngineMessages policyMsgs = evalResult.getEngineMessages();
                     String res = "";
                     for (EngineMessage message : policyMsgs.getMessages()) {
-                        res += (message.isResource() ? Messages.format(Messages.getInternal(message.getKey(), renderContext.getUILocale()), message.getValues()) : message.getKey())+"\n";
+                        res += (message.isResource() ? Messages.getInternalWithArguments(message.getKey(), renderContext.getUILocale(), message.getValues()) : message.getKey())+"\n";
                     }
                     json.put("errorMessage", res);
                 } else {

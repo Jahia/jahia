@@ -72,10 +72,26 @@ public final class Messages {
      * @return the formatted messages with placeholders substituted by argument values
      */
     public static String format(String text, Object... arguments) {
-        if (text == null || arguments.length == 0) {
+        return format(text, null, arguments);
+    }
+
+    /**
+     * Returns the formatted messages with placeholders substituted by argument values.
+     * 
+     * @param text
+     *            the message text with placeholders
+     * @param locale
+     *            the current locale
+     * @param arguments
+     *            an array of arguments to be used for substitution
+     * @return the formatted messages with placeholders substituted by argument values
+     */
+    public static String format(String text, Locale locale, Object... arguments) {
+        if (text == null || arguments == null || arguments.length == 0) {
             return text;
         }
-        return MessageFormat.format(StringUtils.replace(text, "'", "''"), arguments);
+        return locale != null ? new MessageFormat(StringUtils.replace(text, "'", "''"), locale).format(arguments)
+                : MessageFormat.format(StringUtils.replace(text, "'", "''"), arguments);
     }
 
     /**
@@ -265,7 +281,25 @@ public final class Messages {
      * @return the label for the requested key
      */
     public static String getInternalWithArguments(String key, Locale locale, Object... args) {
-        return format(get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale), args);
+        return format(get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale), locale, args);
+    }
+
+    /**
+     * Looks up the resource bundle key in the {@link ResourceBundles#JAHIA_INTERNAL_RESOURCES} bundle, considering locale. Additionally
+     * placeholders are replaced with the provided arguments.
+     * 
+     * @param key
+     *            the key to perform lookup for
+     * @param locale
+     *            current locale
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @param args
+     *            the arguments to replace placeholders with
+     * @return the label for the requested key
+     */
+    public static String getInternalWithArguments(String key, Locale locale, String defaultValue, Object... args) {
+        return format(get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale, defaultValue), locale, args);
     }
 
     /**
@@ -302,6 +336,40 @@ public final class Messages {
     }
 
     /**
+     * Looks up the resource bundle key in the specified bundle. Additionally placeholders are replaced with the provided arguments.
+     * 
+     * @param bundle
+     *            the bundle to perform the lookup in
+     * @param key
+     *            the key to perform lookup for
+     * @param args
+     *            the arguments to replace placeholders with
+     * @return the label for the requested key
+     */
+    public static String getWithArgs(ResourceBundle bundle, String key, Object... arguments)
+            throws MissingResourceException {
+        return format(bundle.getString(key), bundle.getLocale(), arguments);
+    }
+
+    /**
+     * Looks up the resource bundle key in the specified bundle. Additionally placeholders are replaced with the provided arguments.
+     * 
+     * @param bundle
+     *            the bundle to perform the lookup in
+     * @param key
+     *            the key to perform lookup for
+     * @param defaultValue
+     *            the default value to return if the lookup has not found anything
+     * @param args
+     *            the arguments to replace placeholders with
+     * @return the label for the requested key
+     */
+    public static String getWithArgs(ResourceBundle bundle, String key, String defaultValue, Object... arguments)
+            throws MissingResourceException {
+        return format(get(bundle, key, defaultValue), bundle.getLocale(), arguments);
+    }
+
+    /**
      * Looks up the resource bundle key in the specified bundle, considering locale. Additionally placeholders are replaced with the
      * provided arguments.
      * 
@@ -317,7 +385,7 @@ public final class Messages {
      */
     public static String getWithArgs(String bundle, String key, Locale locale, Object... arguments)
             throws MissingResourceException {
-        return format(ResourceBundles.get(bundle, locale).getString(key), arguments);
+        return getWithArgs(ResourceBundles.get(bundle, locale), key, arguments);
     }
 
     /**

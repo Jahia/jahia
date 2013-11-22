@@ -935,7 +935,7 @@ public class WAIValidator {
     }
     
     private String getFormatted(String key, String defaultValue, Object[] args) {
-        return Messages.format(getMessage(key, defaultValue), args);
+        return Messages.format(getMessage(key, defaultValue), uiLocale, args);
     }
 
     private String getMessage(String key, String defaultValue) {

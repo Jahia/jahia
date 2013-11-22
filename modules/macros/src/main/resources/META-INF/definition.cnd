@@ -1,4 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-[jnt:macroList] > jnt:content
-- macros (string, choicelist[choicelistmacros])

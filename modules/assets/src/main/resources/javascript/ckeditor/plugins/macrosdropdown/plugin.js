@@ -13,7 +13,7 @@ CKEDITOR.plugins.add( 'macrosdropdown',
             var tags = [];
             var path = contextJsParameters.siteUuid;
 
-            $.get('http://localhost:8080/cms/initializers', {name: 'macros', ctxnodeuuid: path, type:'jnt:macroList'}, function(result) {
+            $.get('http://localhost:8080/cms/initializers', {name: 'macros', nodeuuid: path, initializers:'choicelistmacros'}, function(result) {
                 $.each(result, function(key, value){
                     tags.push([value['name'][0], value['name'][0], value['name'][0]]);
                 });

@@ -73,16 +73,12 @@ public class UserProperties implements Serializable {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("username")
-                    .defaultText(
-                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.username.mandatory",
-                                    LocaleContextHolder.getLocale())).build());
+                    .code("serverSettings.user.errors.username.mandatory").build());
         } else if (!ServicesRegistry.getInstance().getJahiaUserManagerService().isUsernameSyntaxCorrect(username)) {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("username")
-                    .defaultText(
-                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.username.syntax",
-                                    LocaleContextHolder.getLocale())).build());
+                    .code("serverSettings.user.errors.username.syntax").build());
         } else if (ServicesRegistry.getInstance().getJahiaUserManagerService().userExists(username)) {
             messages.addMessage(new MessageBuilder()
                     .error()
@@ -101,9 +97,7 @@ public class UserProperties implements Serializable {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("email")
-                    .defaultText(
-                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.email",
-                                    LocaleContextHolder.getLocale())).build());
+                    .code("serverSettings.user.errors.email").build());
         }
     }
 
@@ -114,17 +108,13 @@ public class UserProperties implements Serializable {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("password")
-                    .defaultText(
-                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.password.mandatory",
-                                    LocaleContextHolder.getLocale())).build());
+                    .code("serverSettings.user.errors.password.mandatory").build());
         } else {
             if (!passwordConfirm.equals(password)) {
                 messages.addMessage(new MessageBuilder()
                         .error()
                         .source("passwordConfirm")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.user.errors.password.not.matching", LocaleContextHolder.getLocale()))
+                        .code("serverSettings.user.errors.password.not.matching")
                         .build());
             } else {
                 PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, password);
@@ -147,9 +137,7 @@ public class UserProperties implements Serializable {
                 messages.addMessage(new MessageBuilder()
                         .error()
                         .source("passwordConfirm")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.user.errors.password.not.matching", LocaleContextHolder.getLocale()))
+                        .code("serverSettings.user.errors.password.not.matching")
                         .build());
             } else {
                 JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService()

@@ -71,7 +71,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -124,7 +123,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             installModule(file, context);
         } catch (Exception e) {
             context.addMessage(new MessageBuilder().source("moduleFile")
-                    .defaultText(getMessage("serverSettings.manageModules.install.failed"))
+                    .code("serverSettings.manageModules.install.failed")
                     .arg(e.getMessage())
                     .error()
                     .build());
@@ -137,7 +136,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         String originalFilename = moduleFile.getModuleFile().getOriginalFilename();
         if (!FilenameUtils.isExtension(originalFilename, Arrays.<String>asList("war","jar","WAR","JAR"))) {
             context.addMessage(new MessageBuilder().error().source("moduleFile")
-                    .defaultText(getMessage("serverSettings.manageModules.install.wrongFormat")).build());
+                    .code("serverSettings.manageModules.install.wrongFormat").build());
             return false;
         }
         try {
@@ -146,7 +145,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             installModule(file, context);
         } catch (Exception e) {
             context.addMessage(new MessageBuilder().source("moduleFile")
-                    .defaultText(getMessage("serverSettings.manageModules.install.failed"))
+                    .code("serverSettings.manageModules.install.failed")
                     .arg(e.getMessage())
                     .error()
                     .build());
@@ -193,7 +192,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
         if (!missingDeps.isEmpty()) {
             context.addMessage(new MessageBuilder().source("moduleFile")
-                    .defaultText(getMessage("serverSettings.manageModules.install.missingDependencies"))
+                    .code("serverSettings.manageModules.install.missingDependencies")
                     .arg(StringUtils.join(missingDeps, ","))
                     .error()
                     .build());
@@ -202,11 +201,11 @@ public class ModuleManagementFlowHandler implements Serializable {
             if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
                 bundle.start();
                 context.addMessage(new MessageBuilder().source("moduleFile")
-                        .defaultText(getMessage("serverSettings.manageModules.install.uploadedAndStarted"))
+                        .code("serverSettings.manageModules.install.uploadedAndStarted")
                         .build());
             } else {
                 context.addMessage(new MessageBuilder().source("moduleFile")
-                        .defaultText(getMessage("serverSettings.manageModules.install.uploaded"))
+                        .code("serverSettings.manageModules.install.uploaded")
                         .build());
             }
         }
@@ -435,10 +434,6 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("activeVersionDate",new Date(value.getBundle().getLastModified()));
 
         context.getRequestScope().put("dependantModules", templateManagerService.getTemplatePackageRegistry().getDependantModules(value));
-    }
-
-    private String getMessage(String key) {
-        return Messages.get("resources.JahiaServerSettings", key, LocaleContextHolder.getLocale());
     }
 
     private Set<String> getSystemSiteRequiredModules() {

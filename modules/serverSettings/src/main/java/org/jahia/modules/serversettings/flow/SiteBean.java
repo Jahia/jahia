@@ -217,42 +217,29 @@ public class SiteBean implements Serializable {
             if (title != null && (title.length() > 0) && serverName != null && (serverName.length() > 0)
                     && siteKey != null && (siteKey.length() > 0)) {
                 if (!sitesService.isSiteKeyValid(siteKey)) {
-                    messages.addMessage(new MessageBuilder()
-                            .error()
-                            .source("siteKey")
-                            .defaultText(
-                                    Messages.get("resources.JahiaServerSettings",
-                                            "serverSettings.manageWebProjects.warningMsg.onlyLettersDigitsUnderscore",
-                                            LocaleContextHolder.getLocale())).build());
+                    messages.addMessage(new MessageBuilder().error().source("siteKey")
+                            .code("serverSettings.manageWebProjects.warningMsg.onlyLettersDigitsUnderscore").build());
                 } else if (!sitesService.isServerNameValid(serverName)) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
-                            .defaultText(
-                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.invalidServerName",
-                                            LocaleContextHolder.getLocale())).build());
+                            .code("serverSettings.manageWebProjects.warningMsg.invalidServerName").build());
                 } else if (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName) != null) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
-                            .defaultText(
-                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName",
-                                            LocaleContextHolder.getLocale())).build());
+                            .code("serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName").build());
                 } else if (sitesService.getSiteByKey(siteKey) != null) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("siteKey")
-                            .defaultText(
-                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey",
-                                            LocaleContextHolder.getLocale())).build());
+                            .code("serverSettings.manageWebProjects.warningMsg.chooseAnotherSiteKey").build());
                 }
             } else {
                 messages.addMessage(new MessageBuilder()
                         .error()
                         .source("siteKey")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.completeRequestInfo",
-                                        LocaleContextHolder.getLocale())).build());
+                        .code("serverSettings.manageWebProjects.warningMsg.completeRequestInfo").build());
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
@@ -274,24 +261,18 @@ public class SiteBean implements Serializable {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
-                            .defaultText(
-                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.invalidServerName",
-                                            LocaleContextHolder.getLocale())).build());
+                            .code("serverSettings.manageWebProjects.warningMsg.invalidServerName").build());
                 } else if (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName) != null && !sitesService.getSiteByServerName(serverName).getSiteKey().equals(siteKey)) {
                     messages.addMessage(new MessageBuilder()
                             .error()
                             .source("serverName")
-                            .defaultText(
-                                    Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName",
-                                            LocaleContextHolder.getLocale())).build());
+                            .code("serverSettings.manageWebProjects.warningMsg.chooseAnotherServerName").build());
                 }
             } else {
                 messages.addMessage(new MessageBuilder()
                         .error()
                         .source("siteKey")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings","serverSettings.manageWebProjects.warningMsg.completeRequestInfo",
-                                        LocaleContextHolder.getLocale())).build());
+                        .code("serverSettings.manageWebProjects.warningMsg.completeRequestInfo").build());
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

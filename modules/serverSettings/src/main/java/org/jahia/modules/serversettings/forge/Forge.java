@@ -4,10 +4,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.impl.dv.util.Base64;
-import org.jahia.utils.i18n.Messages;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.validation.ValidationContext;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.io.Serializable;
 
@@ -63,18 +61,14 @@ public class Forge implements Serializable {
                     context.getMessageContext().addMessage(new MessageBuilder()
                             .error()
                             .source("testUrl")
-                            .defaultText(
-                                    Messages.getWithArgs("resources.JahiaServerSettings",
-                                            "serverSettings.manageForges.error.cannotVerify", LocaleContextHolder.getLocale(),i))
+                            .code("serverSettings.manageForges.error.cannotVerify").arg(i)
                             .build());
                 }
             } catch (Exception e) {
                 context.getMessageContext().addMessage(new MessageBuilder()
                         .error()
                         .source("testUrl")
-                        .defaultText(
-                                Messages.getWithArgs("resources.JahiaServerSettings",
-                                        "serverSettings.manageForges.error.httpError", LocaleContextHolder.getLocale(), e.getMessage()))
+                        .code("serverSettings.manageForges.error.httpError").arg(e.getMessage())
                         .build());
                 e.printStackTrace();
             }

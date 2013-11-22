@@ -50,11 +50,8 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.taglibs.user.User;
-import org.jahia.utils.i18n.Messages;
-import org.jahia.utils.i18n.ResourceBundles;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 public class AdminPropertiesHandler implements Serializable {
     private static final long serialVersionUID = -1665000223980422529L;
@@ -104,11 +101,7 @@ public class AdminPropertiesHandler implements Serializable {
             rootNode.setProperty("preferredLanguage", lang);
         }
 
-        messages.addMessage(new MessageBuilder()
-                .info()
-                .defaultText(
-                        Messages.get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, "label.changeSaved",
-                                LocaleContextHolder.getLocale())).build());
+        messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
     }
     public List<JahiaGroup> getUserMembership() {
         return new LinkedList<JahiaGroup>(User.getUserMembership(JCRUserManagerProvider.getInstance().lookupRootUser().getUsername()).values());

@@ -5,6 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+    <bean id="messageSource" class="org.jahia.utils.i18n.ModuleMessageSource"/>
+
     <bean name="mailSettingsValidator" class="org.jahia.modules.serversettings.flow.validator.MailSettingsValidator"/>
     
     <bean class="org.jahia.modules.serversettings.portlets.ManagePortletsAction" />

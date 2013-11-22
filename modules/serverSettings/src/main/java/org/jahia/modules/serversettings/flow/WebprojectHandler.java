@@ -94,7 +94,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
-import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -854,11 +853,10 @@ public class WebprojectHandler implements Serializable {
                 sitesService.setDefaultSite(site);
             }
             session.save();
-            messages.addMessage(new MessageBuilder().info()
-                    .defaultText(Messages.getInternal("label.changeSaved", LocaleContextHolder.getLocale())).build());
+            messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
         } catch (Exception e) {
             messages.addMessage(new MessageBuilder().error()
-                    .defaultText(Messages.getInternal("serverSettings.manageWebProjects.webProject.error", LocaleContextHolder.getLocale()))
+                    .code("serverSettings.manageWebProjects.webProject.error")
                     .arg(e.getMessage()).build());
             logger.error(e.getMessage(), e);
         }
@@ -890,19 +888,13 @@ public class WebprojectHandler implements Serializable {
                 messageContext.addMessage(new MessageBuilder()
                         .error()
                         .source("siteKey")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.manageWebProjects.invalidSiteKey",
-                                        LocaleContextHolder.getLocale())).build());
+                        .code("serverSettings.manageWebProjects.invalidSiteKey").build());
             }
             if (valid && sitesService.getSiteByKey(siteKey) != null) {
                 messageContext.addMessage(new MessageBuilder()
                         .error()
                         .source("siteKey")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.manageWebProjects.siteKeyExists",
-                                        LocaleContextHolder.getLocale())).build());
+                        .code("serverSettings.manageWebProjects.siteKeyExists").build());
             }
 
             String serverName = (String) infos.getSiteServername();
@@ -911,20 +903,14 @@ public class WebprojectHandler implements Serializable {
                 messageContext.addMessage(new MessageBuilder()
                         .error()
                         .source("siteKey")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.manageWebProjects.invalidServerName",
-                                        LocaleContextHolder.getLocale())).build());
+                        .code("serverSettings.manageWebProjects.invalidServerName").build());
             }
 
             if (valid && !Url.isLocalhost(serverName) && sitesService.getSite(serverName) != null) {
                 messageContext.addMessage(new MessageBuilder()
                         .error()
                         .source("siteKey")
-                        .defaultText(
-                                Messages.get("resources.JahiaServerSettings",
-                                        "serverSettings.manageWebProjects.serverNameExists",
-                                        LocaleContextHolder.getLocale())).build());
+                        .code("serverSettings.manageWebProjects.serverNameExists").build());
             }
             }
         } catch (JahiaException e) {

@@ -139,8 +139,8 @@ public class UsersFlowHandler implements Serializable {
                     "message.successfully.created", locale)).build());
             return true;
         } else {
-            context.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "serverSettings.user.create.unsuccessful", LocaleContextHolder.getLocale())).build());
+            context.addMessage(new MessageBuilder().error().code(
+                    "serverSettings.user.create.unsuccessful").build());
             return false;
         }
     }
@@ -172,8 +172,8 @@ public class UsersFlowHandler implements Serializable {
             int userNamePos = headerElementList.indexOf("j:nodename");
             int passwordPos = headerElementList.indexOf("j:password");
             if ((userNamePos < 0) || (passwordPos < 0)) {
-                context.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                        "serverSettings.users.bulk.errors.missing.mandatory", LocaleContextHolder.getLocale(),"j:nodename","j:password")).build());
+                context.addMessage(new MessageBuilder().error().code(
+                        "serverSettings.users.bulk.errors.missing.mandatory").args(new String[] {"j:nodename","j:password"}).build());
                 return false;
             }
             String[] lineElements = null;
@@ -188,11 +188,11 @@ public class UsersFlowHandler implements Serializable {
                     if (evalResult.isSuccess()) {
                         JahiaUser jahiaUser = userManagerService.createUser(userName, password, properties);
                         if (jahiaUser != null) {
-                            context.addMessage(new MessageBuilder().info().defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                                    "serverSettings.users.bulk.user.creation.successful", LocaleContextHolder.getLocale(),userName)).build());
+                            context.addMessage(new MessageBuilder().info().code(
+                                    "serverSettings.users.bulk.user.creation.successful").arg(userName).build());
                         } else {
-                            context.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                                    "serverSettings.users.bulk.errors.user.creation.failed", LocaleContextHolder.getLocale(),userName)).build());
+                            context.addMessage(new MessageBuilder().error().code(
+                                    "serverSettings.users.bulk.errors.user.creation.failed").arg(userName).build());
                             hasErrors = true;
                         }
                     } else {
@@ -201,13 +201,13 @@ public class UsersFlowHandler implements Serializable {
                             result.append("<li>").append(msg).append("</li>");
                         }
                         result.append("</ul>");
-                        context.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                                "serverSettings.users.bulk.errors.user.skipped.password", LocaleContextHolder.getLocale(),userName,result.toString())).build());
+                        context.addMessage(new MessageBuilder().error().code(
+                                "serverSettings.users.bulk.errors.user.skipped.password").args(new String[] {userName, result.toString()}).build());
                         hasErrors = true;
                     }
                 } else {
-                    context.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaServerSettings",
-                            "serverSettings.users.bulk.errors.user.skipped", LocaleContextHolder.getLocale(),userName)).build());
+                    context.addMessage(new MessageBuilder().error().code(
+                            "serverSettings.users.bulk.errors.user.skipped").arg(userName).build());
                     hasErrors=true;
                 }
             }
@@ -255,12 +255,12 @@ public class UsersFlowHandler implements Serializable {
     public boolean removeUser(String userKey, MessageContext context) {
         JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
         if(userManagerService.deleteUser(jahiaUser)) {
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "serverSettings.user.remove.successful", LocaleContextHolder.getLocale())).build());
+            context.addMessage(new MessageBuilder().info().code(
+                    "serverSettings.user.remove.successful").build());
             return true;
         } else {
-            context.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "serverSettings.user.remove.unsuccessful", LocaleContextHolder.getLocale())).build());
+            context.addMessage(new MessageBuilder().error().code(
+                    "serverSettings.user.remove.unsuccessful").build());
             return false;
         }
     }
@@ -287,9 +287,7 @@ public class UsersFlowHandler implements Serializable {
         String oldPropertyValue = jahiaUser.getProperty(propertyName);
         if (oldPropertyValue == null && StringUtils.isNotEmpty(propertyValue) || oldPropertyValue != null && !StringUtils.equals(oldPropertyValue, propertyValue)) {
             if(!jahiaUser.setProperty(propertyName, propertyValue)){
-                context.addMessage(new MessageBuilder().error().source(source).defaultText(Messages.getWithArgs(
-                        "resources.JahiaServerSettings", "serverSettings.user.edit.errors.property",
-                        LocaleContextHolder.getLocale(),source)).build());
+                context.addMessage(new MessageBuilder().error().source(source).code("serverSettings.user.edit.errors.property").arg(source).build());
                 return true;
             }
             return false;
@@ -340,19 +338,16 @@ public class UsersFlowHandler implements Serializable {
             }
             if (!userProperties.isReadOnly() && StringUtils.isNotBlank(userProperties.getPassword())) {
                 if(jahiaUser.setPassword(userProperties.getPassword())) {
-                    context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                            "serverSettings.user.edit.password.changed", LocaleContextHolder.getLocale())).build());
+                    context.addMessage(new MessageBuilder().info().code(
+                            "serverSettings.user.edit.password.changed").build());
                 } else {
-                    context.addMessage(new MessageBuilder().error().source("password").defaultText(Messages.get(
-                            "resources.JahiaServerSettings", "serverSettings.user.edit.errors.password",
-                            LocaleContextHolder.getLocale())).build());
+                    context.addMessage(new MessageBuilder().error().source("password").code("serverSettings.user.edit.errors.password").build());
                     hasErrors = true;
                 }
             }
         }
         if(!hasErrors) {
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.get("resources.JahiaServerSettings",
-                    "serverSettings.user.edit.successful", LocaleContextHolder.getLocale())).build());
+            context.addMessage(new MessageBuilder().info().code("serverSettings.user.edit.successful").build());
         }
         return !hasErrors;
     }

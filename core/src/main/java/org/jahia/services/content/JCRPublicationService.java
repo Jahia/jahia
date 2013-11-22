@@ -645,6 +645,9 @@ public class JCRPublicationService extends JahiaService {
             destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
         } catch (ItemNotFoundException e) {
             CloneResult parentCloneResult = cloneParents(sourceNode.getParent(), sourceSession, destinationSession, toCheckpoint);
+            if (!parentCloneResult.includedUuids.contains(sourceNode.getParent().getIdentifier())) {
+                return cloneResult;
+            }
             cloneResult.includedUuids.addAll(parentCloneResult.includedUuids);
             destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
         }

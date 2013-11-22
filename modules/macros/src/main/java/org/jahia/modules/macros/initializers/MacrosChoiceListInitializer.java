@@ -23,6 +23,7 @@ public class MacrosChoiceListInitializer implements ModuleChoiceListInitializer 
     private String key;
 
     private String[] macroLookupPath;
+    private List ignoreMacros;
 
     @Override
     public void setKey(String key) {
@@ -61,8 +62,11 @@ public class MacrosChoiceListInitializer implements ModuleChoiceListInitializer 
                     for (String path : macroLookupPath){
                         org.springframework.core.io.Resource[] resources = aPackage.getResources(path);
                         for (org.springframework.core.io.Resource resource : resources){
-                            String macroNameSplit = "##" + StringUtils.substringBefore(resource.getFilename(), ".") + "##";
-                            macrosNames.add(new ChoiceListValue(macroNameSplit, macroNameSplit));
+                            String macroName = StringUtils.substringBefore(resource.getFilename(), ".");
+                            if(ignoreMacros != null && !ignoreMacros.contains(macroName)) {
+                                macroName = "##" + macroName + "##";
+                                macrosNames.add(new ChoiceListValue(macroName, macroName));
+                            }
                         }
                     }
                 }
@@ -75,5 +79,9 @@ public class MacrosChoiceListInitializer implements ModuleChoiceListInitializer 
 
     public void setMacroLookupPath(String macroLookupPath) {
         this.macroLookupPath = macroLookupPath.split(",");
+    }
+
+    public void setIgnoreMacros(List ignoreMacros) {
+        this.ignoreMacros = ignoreMacros;
     }
 }

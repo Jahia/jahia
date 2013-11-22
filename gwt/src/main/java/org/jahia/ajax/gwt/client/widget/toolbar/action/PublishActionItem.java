@@ -210,7 +210,7 @@ public class PublishActionItem extends BaseActionItem {
                     if (!unpublishableMap.containsKey(status)) {
                         unpublishableMap.put(status, new ArrayList<String>());
                     }
-                    unpublishableMap.get(status).add(info.getTitle());
+                    unpublishableMap.get(status).add(info.getTitle() + " ("+info.getPath()+")");
                 }
 
                 for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {

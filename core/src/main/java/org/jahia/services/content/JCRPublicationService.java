@@ -1112,16 +1112,9 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         } else if (!node.hasProperty("j:published")) {
-            try {
-                try {
-                    destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
-                } catch (UnsupportedRepositoryOperationException e) {
-                }
-                // Conflict , a node exists in live !
-                status = PublicationInfo.CONFLICT;
-                return status;
-            } catch (ItemNotFoundException e) {
-            } catch (PathNotFoundException e) {
+            // Node has never been published, check for potential conflict in live
+            if (checkConflict(node, destinationSession) == PublicationInfo.CONFLICT) {
+                return PublicationInfo.CONFLICT;
             }
 
             status = PublicationInfo.NOT_PUBLISHED;
@@ -1160,12 +1153,43 @@ public class JCRPublicationService extends JahiaService {
                                         + " Considering node as modified.", node.getPath());
                         status = PublicationInfo.NOT_PUBLISHED;
                     } else {
+<<<<<<< .working
                         status = modProp.after(pubProp) ? PublicationInfo.MODIFIED : PublicationInfo.PUBLISHED;
+=======
+                        long mod = modProp.getTime();
+                        long pub = pubProp.getTime();
+                        if (mod > pub) {
+                            if (node.hasProperty(FULLPATH) && !node.getCanonicalPath().equals(node.getProperty(FULLPATH).getString())) {
+                                // Check conflict in case of renamed / moved node
+                                if (checkConflict(node, destinationSession) == PublicationInfo.CONFLICT) {
+                                    return PublicationInfo.CONFLICT;
+                                }
+                            }
+                            status = PublicationInfo.MODIFIED;
+                        } else {
+                            status = PublicationInfo.PUBLISHED;
+                        }
+>>>>>>> .merge-right.r47952
                     }
                 }
             }
         }
         return status;
+    }
+
+    private int checkConflict(JCRNodeWrapper node, JCRSessionWrapper destinationSession) throws RepositoryException {
+        try {
+            try {
+                destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+            } catch (UnsupportedRepositoryOperationException e) {
+            }
+            // Conflict , a node exists in live !
+            return PublicationInfo.CONFLICT;
+
+        } catch (ItemNotFoundException e) {
+        } catch (PathNotFoundException e) {
+        }
+        return 0;
     }
 
     private void getReferences(JCRNodeWrapper node, Set<String> languages, boolean includesReferences,

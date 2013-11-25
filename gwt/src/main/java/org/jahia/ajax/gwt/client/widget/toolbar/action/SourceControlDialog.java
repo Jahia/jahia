@@ -71,7 +71,7 @@ public class SourceControlDialog extends Dialog {
         setModal(true);
         setHideOnButtonClick(true);
         setWidth(500);
-        setHeight(200);
+        setHeight(300);
 
         setLayout(new FitLayout());
 

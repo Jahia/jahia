@@ -106,7 +106,7 @@ public final class WebUtils {
         String content = null;
         InputStream is = null;
         try {
-            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
+            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path.startsWith("/") ? path : "/" + path);
             if (is != null) {
                 content = IOUtils.toString(is);
             }

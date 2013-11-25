@@ -41,6 +41,7 @@
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>
         <li><a href="groovyConsole.jsp">Groovy console</a></li>
+        <li><a href="workflows.jsp">Workflow monitoring</a></li>
     </ul>
 </fieldset>
 <% if (Jahia.isEnterpriseEdition()) { %>

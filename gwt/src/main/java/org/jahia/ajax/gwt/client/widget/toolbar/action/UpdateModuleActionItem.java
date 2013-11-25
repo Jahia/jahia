@@ -126,7 +126,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                 public void handleEvent(WindowEvent be) {
                     linker.loading(Messages.get("label.sourceControl.getting.sources", "Getting sources..."));
 
-                    JahiaContentManagementService.App.getInstance().checkoutModule(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), new BaseAsyncCallback<GWTJahiaNode>() {
+                    JahiaContentManagementService.App.getInstance().checkoutModule(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), null, new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);

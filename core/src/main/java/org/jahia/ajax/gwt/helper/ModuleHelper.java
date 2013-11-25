@@ -123,11 +123,11 @@ public class ModuleHelper {
     }
 
     public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag,
-            JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+                                       String sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         GWTJahiaNode node = null;
 
         String fullUri = "scm:" + scmType + ":" + scmURI;
-        JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(null, fullUri, branchOrTag, moduleName,
+        JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, fullUri, branchOrTag, moduleName,
                 null, session);
         if (nodeWrapper != null) {
             node = navigation.getGWTJahiaNode(nodeWrapper.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS);

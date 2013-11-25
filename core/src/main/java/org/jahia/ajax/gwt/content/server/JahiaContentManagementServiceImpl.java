@@ -1467,9 +1467,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag) throws GWTJahiaServiceException {
+    public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException {
         try {
-            return moduleHelper.checkoutModule(moduleName, scmURI, scmType, branchOrTag, retrieveCurrentSession());
+            return moduleHelper.checkoutModule(moduleName, scmURI, scmType, branchOrTag, sources, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("Cannot checkout module", e);
             throw new GWTJahiaServiceException(e.getMessage());

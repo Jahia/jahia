@@ -59,6 +59,7 @@ public class SourceControlDialog extends Dialog {
     private RadioGroup scmType;
     private TextField<String> uri;
     private TextField<String> moduleName;
+    private TextField<String> sources;
     private TextField<String> branchOrTag;
     private Map<String,Radio> radios;
     private final FormPanel form;
@@ -108,6 +109,11 @@ public class SourceControlDialog extends Dialog {
             moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml )"));
             moduleName.setAllowBlank(true);
             form.add(moduleName);
+            sources = new TextField<String>();
+            sources.setName("sources");
+            sources.setFieldLabel(Messages.get("label.sources.folder", "Sources folder (optional - will be created with new sources)"));
+            form.add(sources);
+
         }
 
         if (viewBranchOrTag) {
@@ -116,7 +122,6 @@ public class SourceControlDialog extends Dialog {
             branchOrTag.setFieldLabel(Messages.get("label.branchOrTag", "Branch or tag"));
             form.add(branchOrTag);
         }
-
         add(form);
         sourceControlDialog = this;
     }
@@ -144,6 +149,14 @@ public class SourceControlDialog extends Dialog {
 
     public void setModuleName(String moduleName) {
         this.moduleName.setValue(moduleName);
+    }
+
+    public String getSources() {
+        return sources.getValue();
+    }
+
+    public void setSources(String sources) {
+        this.sources.setValue(sources);
     }
 
     public String getBranchOrTag() {

@@ -114,7 +114,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void createModule(String key, String baseSet, String siteType, String sources, AsyncCallback<GWTJahiaNode> asyncCallback);
 
-    void checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, String sources, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
 

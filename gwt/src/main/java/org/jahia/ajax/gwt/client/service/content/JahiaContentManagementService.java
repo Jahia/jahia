@@ -120,7 +120,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode createModule(String key, String baseSet, String siteType, String source) throws GWTJahiaServiceException;
 
-    GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag) throws GWTJahiaServiceException;
+    GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException;
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException;
 

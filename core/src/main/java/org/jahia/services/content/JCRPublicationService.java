@@ -1149,16 +1149,14 @@ public class JCRPublicationService extends JahiaService {
                         destinationSession.getNodeByUUID(node.getIdentifier()).getLastModifiedAsDate();
                     }
                     Date modProp = pubProp != null ? node.getLastModifiedAsDate() : null;
-                    if (modProp == null || pubProp == null) {
+                    if (modProp == null) {
                         logger.debug(
                                 "Unable to check publication status for node {}."
                                         + " One of properties [last published or last modified (live) / last modified] is null."
                                         + " Considering node as modified.", node.getPath());
                         status = PublicationInfo.NOT_PUBLISHED;
                     } else {
-                        long mod = modProp.getTime();
-                        long pub = pubProp.getTime();
-                        if (mod > pub) {
+                        if (modProp.after(pubProp)) {
                             if (node.hasProperty(FULLPATH) && !node.getCanonicalPath().equals(node.getProperty(FULLPATH).getString())) {
                                 // Check conflict in case of renamed / moved node
                                 if (checkConflict(node, destinationSession) == PublicationInfo.CONFLICT) {

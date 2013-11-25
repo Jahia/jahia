@@ -1156,9 +1156,6 @@ public class JCRPublicationService extends JahiaService {
                                         + " Considering node as modified.", node.getPath());
                         status = PublicationInfo.NOT_PUBLISHED;
                     } else {
-<<<<<<< .working
-                        status = modProp.after(pubProp) ? PublicationInfo.MODIFIED : PublicationInfo.PUBLISHED;
-=======
                         long mod = modProp.getTime();
                         long pub = pubProp.getTime();
                         if (mod > pub) {
@@ -1172,7 +1169,6 @@ public class JCRPublicationService extends JahiaService {
                         } else {
                             status = PublicationInfo.PUBLISHED;
                         }
->>>>>>> .merge-right.r47952
                     }
                 }
             }

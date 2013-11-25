@@ -6,14 +6,14 @@ function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nod
         width: 350,
         hideOnOverlayClick: false,
         hideOnContentClick: false,
-        onClosed : function() {
+        afterClose : function() {
             $("#" + fieldId + "-treeItemSelectorTree").empty();
 
             if (onClose && (typeof onClose == 'function')) {
                 onClose();
             }
         },
-        onComplete: function () {
+        afterLoad: function () {
             var queryString = (nodeTypes.length > 0 ? "nodeTypes=" + encodeURIComponent(nodeTypes) : "") + (
                     selectableNodeTypes.length > 0 ? "&selectableNodeTypes=" + encodeURIComponent(selectableNodeTypes) :
                             "");

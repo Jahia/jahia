@@ -412,13 +412,8 @@ public class WorkflowHelper {
                     gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
                     gwtWorkflowsMap.put(task.getProcessId(), gwtWfHistory);
 
-<<<<<<< .working
-                    final Workflow wf = service.getWorkflow(gwtWfHistory.getProvider(), gwtWfHistory.getProcessId(), uiLocale);
-=======
                     List<String> nodeIds;
-
-                    final Workflow wf = WorkflowService.getInstance().getWorkflow(gwtWfHistory.getProvider(), gwtWfHistory.getProcessId(), locale);
->>>>>>> .merge-right.r47962
+                    final Workflow wf = service.getWorkflow(gwtWfHistory.getProvider(), gwtWfHistory.getProcessId(), uiLocale);
                     if (wf != null) {
                         gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
                         nodeIds = (List<String>) wf.getVariables().get("nodeIds");
@@ -605,30 +600,15 @@ public class WorkflowHelper {
         int total = 0;
         List<WorkflowTask> tasks = service.getTasksForUser(user, null);
         for (WorkflowTask task : tasks) {
-<<<<<<< .working
-            HistoryWorkflow historyWorkflow = service.getHistoryWorkflow(
-                    task.getProcessId(), task.getProvider(), null);
-            if (historyWorkflow != null) {
-                GWTJahiaWorkflowHistoryProcess gwtWfHistory = getGWTJahiaHistoryProcess(historyWorkflow);
-                try {
-                    JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null,
-                            null).getNodeByIdentifier(gwtWfHistory.getNodeId());
-                } catch (ItemNotFoundException e) {
-                    continue;
-                } catch (RepositoryException e) {
-                    logger.warn(e.getMessage(), e);
-                    continue;
-=======
-            Workflow workflow = service.getWorkflow(task.getProvider(), task.getProcessId(), locale);
+            Workflow workflow = service.getWorkflow(task.getProvider(), task.getProcessId(), null);
             if (workflow != null) {
                 List<String> uuids = (List<String>) workflow.getVariables().get("nodeIds");
                 if (uuids == null) {
                     uuids = Collections.singletonList((String) workflow.getVariables().get("nodeId"));
->>>>>>> .merge-right.r47962
                 }
                 for (String uuid : uuids) {
                     try {
-                        JCRSessionFactory.getInstance().getCurrentUserSession(null,locale).getNodeByIdentifier(uuid);
+                        JCRSessionFactory.getInstance().getCurrentUserSession(null,null).getNodeByIdentifier(uuid);
                         total++;
                         break;
                     } catch (ItemNotFoundException e) {

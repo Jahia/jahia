@@ -42,17 +42,12 @@ package org.jahia.tools.files;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AgeFileFilter;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.comparator.PathFileComparator;
+import org.apache.commons.io.filefilter.*;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -112,22 +107,34 @@ public class FileWatcherJob implements StatefulJob {
      * @return a list of files and folders matching the provided criteria
      */
     protected List<File> checkFiles(File folder, boolean fileOnly, boolean recursive, boolean checkDate,
-            long lastCheckTime) {
+            long lastCheckTime, IOFileFilter ignoreFilter) {
         if (!folder.isDirectory()) {
             return Collections.emptyList();
         }
         List<File> files = null;
         if (fileOnly || !checkDate) {
-            IOFileFilter fileFilter = checkDate ? new AgeFileFilter(lastCheckTime, false) : TrueFileFilter.INSTANCE;
-            IOFileFilter dirFilter = recursive ? TrueFileFilter.INSTANCE : FalseFileFilter.INSTANCE;
+            IOFileFilter fileFilter;
+            IOFileFilter dirFilter;
+            if (ignoreFilter != null) {
+                fileFilter = checkDate ? new AndFileFilter(new AgeFileFilter(lastCheckTime, false), ignoreFilter) : ignoreFilter;
+                dirFilter = recursive ? ignoreFilter : FalseFileFilter.INSTANCE;
+            } else {
+                fileFilter = checkDate ? new AgeFileFilter(lastCheckTime, false) : TrueFileFilter.INSTANCE;
+                dirFilter = recursive ? TrueFileFilter.INSTANCE : FalseFileFilter.INSTANCE;
+            }
             Collection<File> foundFiles = fileOnly ? FileUtils.listFiles(folder, fileFilter, dirFilter) : FileUtils
                     .listFilesAndDirs(folder, fileFilter, dirFilter);
             files = (foundFiles instanceof List<?>) ? (List<File>) foundFiles : new LinkedList<File>(foundFiles);
         } else {
-            try {
-                files = new Walker(lastCheckTime).execute(folder);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+            if (recursive) {
+                try {
+                    files = new Walker(lastCheckTime).execute(folder);
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            } else {
+                Collection<File> foundFiles = FileUtils.listFilesAndDirs(folder, ignoreFilter != null ? new AndFileFilter(new AgeFileFilter(lastCheckTime, false), ignoreFilter) : ignoreFilter, FalseFileFilter.INSTANCE);
+                files = (foundFiles instanceof List<?>) ? (List<File>) foundFiles : new LinkedList<File>(foundFiles);
             }
         }
 
@@ -139,13 +146,32 @@ public class FileWatcherJob implements StatefulJob {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         FileWatcher fileWatcher = (FileWatcher) jobDataMap.get("fileWatcher");
         if (fileWatcher != null) {
-            List<File> newFiles = checkFiles(fileWatcher.getFolder(), fileWatcher.getFileOnly(),
-                    fileWatcher.isRecursive(), fileWatcher.getCheckDate(), fileWatcher.getLastCheckTime());
+            File folder = fileWatcher.getFolder();
+            boolean fileOnly = fileWatcher.getFileOnly();
+            boolean recursive = fileWatcher.isRecursive();
+            IOFileFilter ignoreFilter = fileWatcher.getIgnoreFilter();
+            List<File> changedFiles = checkFiles(folder, fileOnly, recursive, fileWatcher.getCheckDate(),
+                    fileWatcher.getLastCheckTime(), ignoreFilter);
             fileWatcher.setLastCheckTime(System.currentTimeMillis());
+            if (fileWatcher.getRemovedFiles()) {
+                Collection<File> currentFiles;
+                IOFileFilter filter = ignoreFilter != null ? ignoreFilter : TrueFileFilter.INSTANCE;
+                if (fileOnly) {
+                    currentFiles = FileUtils.listFiles(folder, filter, recursive ? filter : FalseFileFilter.INSTANCE);
+                } else {
+                    currentFiles = FileUtils.listFilesAndDirs(folder, filter, recursive ? filter : FalseFileFilter.INSTANCE);
+                }
+                Set<File> deletedFiles = new TreeSet<File>(new PathFileComparator());
+                deletedFiles.addAll(fileWatcher.getPreviousFiles());
+                deletedFiles.removeAll(currentFiles);
+                changedFiles.addAll(deletedFiles);
+                fileWatcher.setPreviousFiles(currentFiles);
+            }
+
             // Notify Observers if number of files > 0
-            if (newFiles.size() > 0) {
+            if (changedFiles.size() > 0) {
                 fileWatcher.externalSetChanged(); // Alert the Observable Object That there are change in the folder
-                fileWatcher.notifyObservers(newFiles);
+                fileWatcher.notifyObservers(changedFiles);
             }
         }
     }

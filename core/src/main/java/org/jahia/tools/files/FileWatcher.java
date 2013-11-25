@@ -49,6 +49,8 @@
 
 package org.jahia.tools.files;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.*;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.scheduler.SchedulerService;
 import org.quartz.*;
@@ -58,6 +60,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -109,6 +113,14 @@ public class FileWatcher extends Observable implements Serializable {
 
     /** the Last Time the Folder was checked **/
     private long lastCheckTime;
+
+    private boolean removedFiles = false;
+
+    private Collection<File> previousFiles;
+
+    private List<String> ignoreFiles;
+
+    private IOFileFilter ignoreFilter;
 
     /**
      * Constructor
@@ -395,6 +407,40 @@ public class FileWatcher extends Observable implements Serializable {
         this.maxJobNameLength = maxJobNameLength;
     }
 
+    public boolean getRemovedFiles() {
+        return removedFiles;
+    }
+
+    public void setRemovedFiles(boolean removedFiles) {
+        this.removedFiles = removedFiles;
+    }
+
+    public Collection<File> getPreviousFiles() {
+        return previousFiles;
+    }
+
+    public void setPreviousFiles(Collection<File> previousFiles) {
+        this.previousFiles = previousFiles;
+    }
+
+    public void setIgnoreFiles(List<String> ignoreFiles) {
+        this.ignoreFiles = ignoreFiles;
+    }
+
+    public IOFileFilter getIgnoreFilter() {
+        if (ignoreFilter == null && ignoreFiles != null) {
+            for (String fileName : ignoreFiles) {
+                NotFileFilter f = new NotFileFilter(new NameFileFilter(fileName));
+                if (ignoreFilter == null) {
+                    ignoreFilter = f;
+                } else {
+                    ignoreFilter = new AndFileFilter(ignoreFilter, f);
+                }
+            }
+        }
+        return ignoreFilter;
+    }
+
     /**
      * Verify if the Folder to watch exists.
      * Create the Archive Folder if not exist.
@@ -424,6 +470,17 @@ public class FileWatcher extends Observable implements Serializable {
                     " created successfully.");
         }
         m_Folder = tmpFile;
+        if (removedFiles) {
+            IOFileFilter filter = getIgnoreFilter();
+            if (filter == null) {
+                filter = TrueFileFilter.INSTANCE;
+            }
+            if (m_FileOnly) {
+                previousFiles = FileUtils.listFiles(m_Folder, filter, recursive ? filter : FalseFileFilter.INSTANCE);
+            } else {
+                previousFiles = FileUtils.listFilesAndDirs(m_Folder, filter, recursive ? filter : FalseFileFilter.INSTANCE);
+            }
+        }
     }
 
 }

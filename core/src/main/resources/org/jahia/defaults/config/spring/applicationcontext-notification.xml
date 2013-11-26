@@ -105,10 +105,6 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
-    <bean id="subscriptionService" class="org.jahia.services.notification.SubscriptionService">
-        <property name="userManagerService" ref="JahiaUserManagerService"/>
-    </bean>
-
     <bean id="scriptEngineUtils" class="org.jahia.utils.ScriptEngineUtils" factory-method="getInstance"/>
 
     <bean id="sitePublisherSubscriber" class="org.jahia.services.atmosphere.service.PublisherSubscriberService"/>

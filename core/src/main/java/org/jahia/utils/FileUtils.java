@@ -264,10 +264,26 @@ public final class FileUtils {
         return list;
     }
     
+    /**
+     * Returns a human-readable representation of the file size (number of bytes).
+     * 
+     * @param bytes
+     *            the file size in bytes
+     * @return a human-readable representation of the file size (number of bytes)
+     */
     public static String humanReadableByteCount(long bytes) {
         return humanReadableByteCount(bytes, false);
     }
 
+    /**
+     * Returns a human-readable representation of the file size (number of bytes).
+     * 
+     * @param bytes
+     *            the file size in bytes
+     * @param withDetails
+     *            if true the full display view is used, which also includes the byte count
+     * @return a human-readable representation of the file size (number of bytes)
+     */
     public static String humanReadableByteCount(long bytes, boolean withDetails) {
         if (bytes < org.apache.commons.io.FileUtils.ONE_KB) {
             return bytes + " bytes";

@@ -563,4 +563,14 @@
         <function-signature>java.lang.String join(java.lang.Object, java.lang.String)</function-signature>
         <example>${functions:join(dependentModuleList, ', ')}</example>
     </function>
+    
+    <function>
+        <description>
+            Returns a human-readable representation of the file size (number of bytes).
+        </description>
+        <name>humanReadableByteCount</name>
+        <function-class>org.jahia.utils.FileUtils</function-class>
+        <function-signature>java.lang.String humanReadableByteCount(long)</function-signature>
+        <example>${functions:humanReadableByteCount(node.fileContent.contentLength)}</example>
+    </function>
 </taglib>

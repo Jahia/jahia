@@ -753,7 +753,7 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator it = sourceNode.getNodes();
         while (it.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-            if (nodeWrapper.isVersioned() || nodeWrapper.isNodeType("jmix:nolive")) {
+            if (nodeWrapper.isVersioned() || nodeWrapper.isNodeType("jmix:nolive") || sourceNode.getProvider() != nodeWrapper.getProvider() ) {
                 deniedPaths.add(nodeWrapper.getPath());
             } else {
                 getDeniedPath(nodeWrapper, deniedPaths, includedUuids);

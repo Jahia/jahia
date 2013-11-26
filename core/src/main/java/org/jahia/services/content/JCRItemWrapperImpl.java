@@ -81,7 +81,9 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
         } else if ("/".equals(localPath)) {
             return provider.getMountPoint();
         }
-
+        if (localPath.contains("@/")) {
+            return localPath;
+        }
         return provider.getMountPoint() + localPath.substring(provider.getRelativeRoot().length());
     }
 

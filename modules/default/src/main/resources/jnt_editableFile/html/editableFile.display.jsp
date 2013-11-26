@@ -6,7 +6,6 @@
 <template:addResources type="css" resources="01web.css,codemirror/codemirror.css"/>
 <c:url var="postURL" value="${url.base}${currentNode.path}"/>
 <template:tokenizedForm disableXSSFiltering="true" allowsMultipleSubmits="true">
-    <button name="save" id="saveButton" onclick="saveSourceCode()" disabled>save</button>
     <form name="sourceForm" id="sourceForm" method="POST" action="${postURL}">
 <textarea id="sourceCode" name="sourceCode" editable="false"><c:out value="${currentNode.properties.sourceCode.string}" escapeXml="true"/></textarea>
     </form>
@@ -31,10 +30,11 @@
         <c:set var="mode" value="jsp"/>
     </c:otherwise>
 </c:choose>
+<button name="save" id="saveButton" onclick="saveSourceCode();" disabled><fmt:message key="label.save"/></button>
+
 <script type="text/javascript">
     var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${mode}",lineNumbers:true, matchBrackets:true});
     myCodeMirror.setSize("100%","100%");
-    myCodeMirror.on("blur", saveSourceCode);
     myCodeMirror.on("change", function() {
         $('#saveButton').prop('disabled', false);
     });
@@ -54,4 +54,18 @@
             dataType: 'json'
         });
     }
+    $(window).blur(function() {
+        saveSourceCode();
+    });
+
+    $(window).bind('keydown', function(event) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+                case 's':
+                    event.preventDefault();
+                    saveSourceCode();
+                    break;
+            }
+        }
+    });
 </script>

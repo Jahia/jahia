@@ -40,8 +40,12 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
@@ -68,15 +72,22 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
             if (node == null) {
                 node = (JCRNodeWrapper) context.get("contextParent");
             }
-            JCRNodeWrapper site = node.getResolveSite();
+            JCRSiteNode site = node.getResolveSite();
 
-            QueryResult result = qm.createQuery(
-                    "select * from [" + nodetype + "] as n where isdescendantnode(n,['" +site.getPath()+"'])", Query.JCR_SQL2).execute();
-            final NodeIterator ni = result.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();
-                String displayName = nodeWrapper.getDisplayableName();
-                set.add(new ChoiceListValue(displayName, nodeWrapper.getIdentifier()));
+            final JahiaTemplateManagerService service = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+
+            for (String s : site.getAllInstalledModules()) {
+                JahiaTemplatesPackage module = service.getTemplatePackageByFileName(s);
+                if (module != null) {
+                    QueryResult result = qm.createQuery(
+                            "select * from [" + nodetype + "] as n where isdescendantnode(n,['/modules/" + module.getRootFolderWithVersion() + "'])", Query.JCR_SQL2).execute();
+                    final NodeIterator ni = result.getNodes();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();
+                        String displayName = nodeWrapper.getDisplayableName();
+                        set.add(new ChoiceListValue(displayName, nodeWrapper.getIdentifier()));
+                    }
+                }
             }
 
         } catch (Exception e) {

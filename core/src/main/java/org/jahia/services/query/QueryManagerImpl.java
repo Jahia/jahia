@@ -172,6 +172,15 @@ public class QueryManagerImpl implements QueryManagerWrapper {
         return queryWrapper;
     }
 
+    public QueryWrapper createDualQuery(String statement, String language, String sqlFallbackStatement) throws InvalidQueryException, RepositoryException {
+        QueryWrapper queryWrapper = new QueryWrapper(statement, language, sqlFallbackStatement, session, sessionFactory);
+        if (queryWrapper.getQueries().isEmpty()) {
+            throw new InvalidQueryException(sessionFactory.getProviders().isEmpty() ? "Query could not be created. Store provider is not initialized yet" : "No query could be created for the unknown query language '" + language + "'");
+        }
+        return queryWrapper;
+    }
+
+
     public QueryObjectModelFactory getQOMFactory() {
         try {
             final JCRStoreProvider provider = sessionFactory.getProvider("/");

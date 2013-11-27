@@ -40,21 +40,7 @@
 
 package org.jahia.services.search.jcr;
 
-import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
-import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
-
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import javax.jcr.*;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,26 +49,13 @@ import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.search.FileHit;
-import org.jahia.services.search.Hit;
-import org.jahia.services.search.JCRNodeHit;
-import org.jahia.services.search.SearchCriteria;
-import org.jahia.services.search.SearchProvider;
-import org.jahia.services.search.SearchResponse;
-import org.jahia.services.search.SearchServiceImpl;
-import org.jahia.services.search.Suggestion;
+import org.jahia.services.search.*;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.Term;
@@ -91,25 +64,33 @@ import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
+import javax.jcr.*;
+import javax.jcr.query.*;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
+import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
 /**
  * This is the default search provider used by Jahia and used the index created by Jahia's main
- * repository, which is based on Apache Jackrabbit. The search request is also done on mounted 
+ * repository, which is based on Apache Jackrabbit. The search request is also done on mounted
  * external repositories.
- *
+ * <p/>
  * For now the search criteria is converted to XPATH queries, which is despite of the deprecation
  * still the most stable and performance means to use search in Jackrabbit.
- *
+ * <p/>
  * For future versions we may change to either SQL-2 or directly the QueryObejctModel specified
  * in JSR-283.
  *
  * @author Benjamin Papez
- *
  */
 public class JahiaJCRSearchProvider implements SearchProvider {
-    
+
     private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
 
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("\\s{2,}");
@@ -129,7 +110,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         List<Hit<?>> results = new LinkedList<Hit<?>>();
         response.setResults(results);
 
-        Map<String, JCRNodeHit> addedHits = new HashMap<String,JCRNodeHit>();
+        Map<String, JCRNodeHit> addedHits = new HashMap<String, JCRNodeHit>();
         Set<String> addedNodes = new HashSet<String>();
 
         try {
@@ -145,7 +126,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             response.setOffset(offset);
             response.setLimit(limit);
             int index = 0;
-            int count = 0;            
+            int count = 0;
             if (query != null) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Executing search query [{}]", query.getStatement());
@@ -166,7 +147,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         }
                     }
                 }
-                
+
                 Set<String> usageFilterSites = !criteria.getSites().isEmpty() && !criteria.getSites().getValue().equals("-all-")
                         && !criteria.getSitesForReferences().isEmpty() ? Sets.newHashSet(criteria.getSites().getValues()) : null;
 
@@ -183,7 +164,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
 
                             JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
-                            
+
                             if (!skipNode && usageFilterSites != null
                                     && !usageFilterSites.contains(node.getResolveSite().getName())) {
                                 skipNode = hit.getUsages().isEmpty();
@@ -194,14 +175,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 if (!addedHits.containsKey(hit.getLink())) {
                                     addedHits.put(hit.getLink(), hit);
                                     if (index >= offset) {
-                                        if (index>=limit+offset) {
+                                        if (index >= limit + offset) {
                                             response.setHasMore(true);
                                             if (it.getSize() > 0) {
-                                            	int approxCount = ((int)it.getSize() * addedHits.size() / count);
-                                            	approxCount = (int) Math.ceil(MathUtils.round(approxCount,
-                                            	                            approxCount < 1000 ? -1 : (approxCount < 10000 ? -2
-                                            	                                    : -3), BigDecimal.ROUND_UP));
-                                            	response.setApproxCount(approxCount);
+                                                int approxCount = ((int) it.getSize() * addedHits.size() / count);
+                                                approxCount = (int) Math.ceil(MathUtils.round(approxCount,
+                                                        approxCount < 1000 ? -1 : (approxCount < 10000 ? -2
+                                                                : -3), BigDecimal.ROUND_UP));
+                                                response.setApproxCount(approxCount);
                                             }
                                             return response;
                                         }
@@ -256,7 +237,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 // if just site-search and no file-search, then skip the node unless it is referred
                 // by a node in the wanted language - unreferenced files are skipped
                 skipNode = !isFileSearch(criteria) ? true : skipNode;
-                for (PropertyIterator it = node.getWeakReferences(); it.hasNext();) {
+                for (PropertyIterator it = node.getWeakReferences(); it.hasNext(); ) {
                     // if site-search and file-search, then skip the node unless it is referred
                     // by a node in the wanted language - unreferenced files are not skipped
                     skipNode = isFileSearch(criteria) ? true : skipNode;
@@ -293,12 +274,67 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         try {
             searchHit.setUsageFilterSites(usageFilterSites);
             searchHit.setScore((float) (row.getScore() / 1000.));
-            
+
             searchHit.addRow(row);
         } catch (Exception e) {
             logger.warn("Search details cannot be retrieved", e);
         }
         return searchHit;
+    }
+
+    private String buildSQLQuery(SearchCriteria params, JCRSessionWrapper session) {
+        StringBuilder query = new StringBuilder("select * from ");
+        query.append("[");
+        query.append(getNodeType(params));
+        query.append("] as n ");
+
+        String path = null;
+        boolean includeChildren = false;
+        if (!params.getFilePath().isEmpty()) {
+            path = params.getFilePath().getValue().trim();
+            includeChildren = params.getFilePath().isIncludeChildren();
+        } else if (!params.getPagePath().isEmpty()) {
+            path = params.getPagePath().getValue().trim();
+            includeChildren = params.getPagePath().isIncludeChildren();
+        }
+        if (path != null) {
+            query.append("where (");
+            if (includeChildren) {
+                query.append("isdescendantnode(n,'");
+            } else {
+                query.append("ischildnode(n,'");
+            }
+            query.append(path).append("')");
+            query.append(")");
+        } else if (!params.getSites().isEmpty()) {
+            query.append("where (");
+            if ("-all-".equals(params.getSites().getValue())) {
+                //
+            } else {
+                Set<String> sites = new LinkedHashSet<String>();
+                for (String site : params.getSites().getValues()) {
+                    sites.add(site);
+                }
+                if (!params.getSitesForReferences().isEmpty()) {
+                    for (String site : params.getSitesForReferences().getValues()) {
+                        sites.add(site);
+                    }
+                }
+                for (String site : sites) {
+                    query.append("isdescendantnode(n,'/sites/").append(site).append("') or ");
+                }
+                query.delete(query.length() - 4, query.length());
+            }
+            if (isSiteSearch(params)) {
+//                query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
+            }
+            query.append(")");
+        }
+
+        query = appendConstraints(params, query, false, session);
+
+        query.append(" order by score() desc");
+        return query.toString();
     }
 
     private String buildXpathQuery(SearchCriteria params, JCRSessionWrapper session) {
@@ -383,7 +419,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     getNodeType(params)).append(")");
         }
 
-        query = appendConstraints(params, query, session);
+        query = appendConstraints(params, query, true, session);
         query.append(" order by jcr:score() descending");
         xpathQuery = query.toString();
 
@@ -398,15 +434,15 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         for (Term term : params.getTerms()) {
             if (term.getFields() != null
                     && (term.getFields().isSiteContent() || (!term.getFields().isDescription() && !term.getFields().isFileContent()
-                            && !term.getFields().isFilename() && !term.getFields().isKeywords() && !term.getFields().isTitle()))
+                    && !term.getFields().isFilename() && !term.getFields().isKeywords() && !term.getFields().isTitle()))
                     && !(term.getFields().isDescription() && term.getFields().isFileContent() && term.getFields().isFilename()
-                            && term.getFields().isKeywords() && term.getFields().isTitle())) {
+                    && term.getFields().isKeywords() && term.getFields().isTitle())) {
                 return false;
             }
         }
         return true;
     }
-    
+
     private boolean isSiteSearch(SearchCriteria params) {
         for (Term term : params.getTerms()) {
             if (term.getFields() != null
@@ -424,24 +460,33 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
-                                            StringBuilder query, JCRSessionWrapper session) {
+                                            StringBuilder query, boolean xpath, JCRSessionWrapper session) {
         StringBuilder constraints = new StringBuilder(64);
 
-        addTermConstraints(params, constraints, session);
+        addTermConstraints(params, constraints, session, xpath);
 
-        addDateAndAuthorConstraints(params, constraints);
+        addDateAndAuthorConstraints(params, constraints, xpath);
 
-        addFileTypeConstraints(params, constraints);
+        addFileTypeConstraints(params, constraints, xpath);
 
-        addLanguageConstraints(params, constraints);
+        addLanguageConstraints(params, constraints, xpath);
 
         List<NodeProperty> props = params.getPropertiesAll();
         if (!props.isEmpty()) {
-            addPropertyConstraints(constraints, props);
+            addPropertyConstraints(constraints, props, xpath);
         }
 
         if (constraints.length() > 0) {
-            query.append("[").append(constraints).append("]");
+            if (xpath) {
+                query.append("[").append(constraints).append("]");
+            } else {
+                if (query.indexOf("where") > -1) {
+                    query.append(" and ");
+                } else {
+                    query.append(" where ");
+                }
+                query.append("(").append(constraints).append(")");
+            }
         }
 
         return query;
@@ -456,36 +501,31 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addDateAndAuthorConstraints(SearchCriteria params,
-                                             StringBuilder constraints) {
+                                             StringBuilder constraints, boolean xpath) {
 
         if (params.getCreatedBy() != null && params.getCreatedBy().length() > 0) {
-            addConstraint(constraints, "and", "jcr:contains(@jcr:createdBy, "
-                    + stringToJCRSearchExp(params.getCreatedBy().trim()) + ")");
+            addConstraint(constraints, "and", getContainsExpr("jcr:createdBy", stringToJCRSearchExp(params.getCreatedBy().trim()), xpath));
         }
 
         if (params.getLastModifiedBy() != null
                 && params.getLastModifiedBy().length() > 0) {
-            addConstraint(constraints, "and",
-                    "jcr:contains(@jcr:lastModifiedBy, "
-                            + stringToJCRSearchExp(params.getLastModifiedBy()
-                            .trim()) + ")");
+            addConstraint(constraints, "and", getContainsExpr("jcr:lastModifiedBy", stringToJCRSearchExp(params.getLastModifiedBy().trim()), xpath));
         }
 
         if (!params.getCreated().isEmpty()
                 && DateValue.Type.ANYTIME != params.getCreated().getType()) {
-            addDateConstraint(constraints, params.getCreated(), "@jcr:created");
+            addDateConstraint(constraints, params.getCreated(), "jcr:created", xpath);
         }
 
         if (!params.getLastModified().isEmpty()
                 && DateValue.Type.ANYTIME != params.getLastModified().getType()) {
-            addDateConstraint(constraints, params.getLastModified(),
-                    "@jcr:lastModified");
+            addDateConstraint(constraints, params.getLastModified(), "jcr:lastModified", xpath);
         }
 
     }
 
     private void addDateConstraint(StringBuilder constraints,
-                                   SearchCriteria.DateValue dateValue, String paramName) {
+                                   SearchCriteria.DateValue dateValue, String paramName, boolean xpath) {
         Calendar greaterThanDate = Calendar.getInstance();
         Calendar smallerThanDate = null;
 
@@ -517,16 +557,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         try {
             if (greaterThanDate != null) {
-                addConstraint(constraints, "and", paramName
-                        + " >= xs:dateTime('"
-                        + ISO8601.format(DateUtils.dayStart(greaterThanDate))
-                        + "')");
+                addConstraint(constraints, "and", getPropertyName(paramName, xpath)
+                        + " >= " + getDateLiteral(DateUtils.dayStart(greaterThanDate), xpath));
             }
             if (smallerThanDate != null) {
-                addConstraint(constraints, "and", paramName
-                        + " <= xs:dateTime('"
-                        + ISO8601.format(DateUtils.dayEnd(smallerThanDate))
-                        + "')");
+                addConstraint(constraints, "and", getPropertyName(paramName, xpath)
+                        + " <= " + getDateLiteral(DateUtils.dayEnd(smallerThanDate), xpath));
             }
         } catch (IllegalStateException e) {
             logger.warn(e.getMessage(), e);
@@ -534,7 +570,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addFileTypeConstraints(SearchCriteria params,
-                                        StringBuilder constraints) {
+                                        StringBuilder constraints, boolean xpath) {
 
         if (StringUtils.isNotEmpty(params.getFileType())) {
             List<String> mimeTypes = JCRContentUtils.getInstance()
@@ -544,13 +580,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     StringBuilder fileTypeConstraints = new StringBuilder(128);
                     for (String mimeType : mimeTypes) {
                         addConstraint(fileTypeConstraints, "or",
-                                getMimeTypeConstraint(mimeType));
+                                getMimeTypeConstraint(mimeType, xpath));
                     }
                     addConstraint(constraints, "and", fileTypeConstraints
                             .insert(0, "(").append(")").toString());
                 } else {
                     addConstraint(constraints, "and",
-                            getMimeTypeConstraint(mimeTypes.get(0)));
+                            getMimeTypeConstraint(mimeTypes.get(0), xpath));
                 }
             } else {
                 logger.warn("Unsupported file type '" + params.getFileType()
@@ -562,39 +598,37 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private void addPropertyConstraintCategory(
             StringBuilder categoryConstraints, String name, String value,
-            boolean includeChildren) {
+            boolean includeChildren, boolean xpath) {
         try {
-        	Category cat = Category.getCategoryByPath(value, JCRSessionFactory.getInstance().getCurrentUser());
-        	if(cat == null) {
-        		logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
-        		return;
-        	}
-            addConstraint(categoryConstraints, "or", "@" + name + "="
-                    + stringToJCRSearchExp(cat.getID()));
+            Category cat = Category.getCategoryByPath(value, JCRSessionFactory.getInstance().getCurrentUser());
+            if (cat == null) {
+                logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
+                return;
+            }
+            addConstraint(categoryConstraints, "or", getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
             if (includeChildren) {
-            	addSubCategoriesConstraints(categoryConstraints, cat, name)	;
+                addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
         } catch (JahiaException e) {
             logger.warn("Category: " + value + " could not be retrieved", e);
         }
     }
-    
+
     private void addSubCategoriesConstraints(
-            StringBuilder categoryConstraints, Category category, String name) throws JahiaException {
-    	
-    	List<Category> childs = category.getChildCategories();
-    	if(childs != null && childs.size() > 0) { 
-    	   for(Category cat : childs) {
-    		   addConstraint(categoryConstraints, "or", "@" + name + "="
-    	                + stringToJCRSearchExp(cat.getID()));
-    		   addSubCategoriesConstraints(categoryConstraints, cat, name);
-    	   }
-    	}
+            StringBuilder categoryConstraints, Category category, String name, boolean xpath) throws JahiaException {
+
+        List<Category> childs = category.getChildCategories();
+        if (childs != null && childs.size() > 0) {
+            for (Category cat : childs) {
+                addConstraint(categoryConstraints, "or", getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
+                addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
+            }
+        }
     }
 
 
     private void addPropertyConstraints(StringBuilder constraints,
-                                        List<NodeProperty> properties) {
+                                        List<NodeProperty> properties, boolean xpath) {
         for (NodeProperty property : properties) {
             if (!property.isEmpty()) {
                 if (NodeProperty.Type.CATEGORY == property.getType()) {
@@ -602,34 +636,25 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     for (String value : property.getCategoryValue().getValues()) {
                         addPropertyConstraintCategory(categoryConstraints,
                                 property.getName(), value, property
-                                .getCategoryValue().isIncludeChildren());
+                                .getCategoryValue().isIncludeChildren(), xpath);
                     }
-                    if(categoryConstraints.length() > 0) {
-                       addConstraint(constraints, "and", categoryConstraints
-                            .insert(0, "(").append(")").toString());
+                    if (categoryConstraints.length() > 0) {
+                        addConstraint(constraints, "and", categoryConstraints
+                                .insert(0, "(").append(")").toString());
                     }
                 } else if (NodeProperty.Type.DATE == property.getType()) {
-                    addDateConstraint(constraints, property.getDateValue(), "@"
-                            + property.getName());
+                    addDateConstraint(constraints, property.getDateValue(), property.getName(), xpath);
                 } else if (NodeProperty.Type.TEXT == property.getType()) {
                     StringBuilder propertyConstraints = new StringBuilder(64);
                     for (String value : property.getValues()) {
                         if (property.isConstrained()) {
                             String matchType = "=";
-                            if(property.getMatch()==MatchType.WITHOUT_WORDS) {
+                            if (property.getMatch() == MatchType.WITHOUT_WORDS) {
                                 matchType = "!=";
                             }
-                            addConstraint(propertyConstraints, "or", "@"
-                                    + property.getName() + matchType
-                                    + stringToJCRSearchExp(value));
+                            addConstraint(propertyConstraints, "or", getPropertyName(property.getName(), xpath) + matchType + stringToJCRSearchExp(value));
                         } else {
-                            addConstraint(propertyConstraints, "or",
-                                    "jcr:contains(@"
-                                            + property.getName()
-                                            + ","
-                                            + getSearchExpressionForMatchType(
-                                            value, property.getMatch(), false)
-                                            + ")");
+                            addConstraint(propertyConstraints, "or", getContainsExpr(property.getName(), getSearchExpressionForMatchType(value, property.getMatch(), false), xpath));
                         }
                     }
                     if (propertyConstraints.length() > 0) {
@@ -644,8 +669,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 } else if (NodeProperty.Type.BOOLEAN == property.getType()) {
                     // only handle 'true' case
                     if (Boolean.parseBoolean(property.getValue())) {
-                        addConstraint(constraints, "and", "@"
-                                + property.getName() + "='true'");
+                        addConstraint(constraints, "and", getPropertyName(property.getName(), xpath) + "='true'");
                     }
                 } else {
                     throw new IllegalArgumentException(
@@ -657,7 +681,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addTermConstraints(SearchCriteria params,
-                                    StringBuilder constraints, JCRSessionWrapper session) {
+                                    StringBuilder constraints, JCRSessionWrapper session, boolean xpath) {
 
         for (Term textSearch : params.getTerms()) {
 
@@ -669,24 +693,23 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 StringBuilder textSearchConstraints = new StringBuilder(256);
                 boolean titleConstraintAdded = false;
                 if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(., " + searchExpression + ")");
+                    addConstraint(textSearchConstraints, "or", xpath ? ("jcr:contains(., " + searchExpression + ")") : ("contains(n, " + searchExpression + ")"));
                     if (MatchType.WITHOUT_WORDS != textSearch.getMatch()) {
-                        addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
+                        addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:title", searchExpression, xpath));
                         titleConstraintAdded = true;
                     }
                 }
                 if (searchFields.isFileContent()) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content, " + searchExpression + ")");
+                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:content", searchExpression, xpath));
                 }
                 if (searchFields.isDescription()) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:description, " + searchExpression
-                            + ")");
+                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:description", searchExpression, xpath));
                 }
                 if (searchFields.isTitle() && !titleConstraintAdded) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(@jcr:title, " + searchExpression + ")");
+                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:title", searchExpression, xpath));
                 }
                 if (searchFields.isKeywords()) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(@j:keywords, " + searchExpression + ")");
+                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:keywords", searchExpression, xpath));
                 }
                 if (searchFields.isFilename()) {
                     String[] terms = null;
@@ -701,11 +724,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     }
                     StringBuilder nameSearchConstraints = new StringBuilder(256);
                     for (String term : terms) {
-                        String termConstraint = "jcr:like(fn:name(), "
-                                + (term.contains("*") ? stringToQueryLiteral(StringUtils
-                                        .replaceChars(term, '*', '%'))
-                                        : stringToQueryLiteral("%" + term + "%"))
-                                                + ")";
+                        final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils
+                                .replaceChars(term, '*', '%'))
+                                : stringToQueryLiteral("%" + term + "%");
+                        String termConstraint = xpath ? ("jcr:like(fn:name(), " + likeTerm + ")") : ("localname(n) like " + likeTerm);
                         if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
                             termConstraint = "not(" + termConstraint + ")";
                         }
@@ -719,10 +741,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
                         && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
                     try {
-                        JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(),  params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
+                        JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(), params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
                         if (tag != null) {
-                            addConstraint(textSearchConstraints, "or", "@" + Constants.TAGS + "="
-                                    + stringToJCRSearchExp(tag.getIdentifier()));
+                            addConstraint(textSearchConstraints, "or", getPropertyName(Constants.TAGS, xpath) + "=" + stringToJCRSearchExp(tag.getIdentifier()));
                         }
                     } catch (RepositoryException e) {
                         logger.warn("Error resolving tag for search", e);
@@ -737,14 +758,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addLanguageConstraints(SearchCriteria params,
-                                        StringBuilder constraints) {
+                                        StringBuilder constraints, boolean xpath) {
         StringBuilder languageSearchConstraints = new StringBuilder(256);
         if (!params.getLanguages().isEmpty()) {
             for (String languageCode : params.getLanguages().getValues()) {
                 if (languageCode != null && languageCode.length() != 0) {
                     addConstraint(languageSearchConstraints, "or",
-                            "@jcr:language = "
-                                    + stringToJCRSearchExp(languageCode.trim()));
+                            getPropertyName("jcr:language",xpath) + "=" + stringToJCRSearchExp(languageCode.trim()));
                 }
             }
         } else {
@@ -755,28 +775,49 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         .getCurrentUserSession();
                 if (session.getLocale() != null) {
                     addConstraint(languageSearchConstraints, "or",
-                            "@jcr:language = "
-                                    + stringToJCRSearchExp(session.getLocale()
-                                    .toString()));
+                            getPropertyName("jcr:language",xpath) + "=" + stringToJCRSearchExp(session.getLocale().toString()));
                 }
             } catch (RepositoryException e) {
             }
         }
         if (languageSearchConstraints.length() > 0) {
             addConstraint(languageSearchConstraints, "or",
-                    "not(@jcr:language)");
+                    xpath ? "not(@jcr:language)" : "[jcr:language] is null");
             addConstraint(constraints, "and", "(" + languageSearchConstraints
-                    .toString()+ ")");
+                    .toString() + ")");
         }
     }
 
-    private String getMimeTypeConstraint(String mimeType) {
+    private String getMimeTypeConstraint(String mimeType, boolean xpath) {
+        if (xpath) {
+            return mimeType.contains("*") ? "jcr:like(jcr:content/@jcr:mimeType,"
+                    + stringToQueryLiteral(StringUtils.replaceChars(mimeType, '*',
+                    '%')) + ")" : "jcr:content/@jcr:mimeType="
+                    + stringToQueryLiteral(mimeType);
+        } else {
+            return "n.[jcr:mimetype]="+stringToQueryLiteral(mimeType);
+        }
 
-        return mimeType.contains("*") ? "jcr:like(jcr:content/@jcr:mimeType,"
-                + stringToQueryLiteral(StringUtils.replaceChars(mimeType, '*',
-                '%')) + ")" : "jcr:content/@jcr:mimeType="
-                + stringToQueryLiteral(mimeType);
     }
+
+    private String getDateLiteral(Calendar date, boolean xpath) {
+        return xpath ? ("xs:dateTime('"
+                + ISO8601.format(date)
+                + "')") : ("'" + ISO8601.format(date) + "'");
+    }
+
+    private String getPropertyName(String paramName, boolean xpath) {
+        return xpath ? ("@" + paramName) : ("n.[" + paramName + "]");
+    }
+
+    private String getContainsExpr(String paramName, String expr, boolean xpath) {
+        if (xpath) {
+            return "jcr:contains(" + getPropertyName(paramName, xpath) + "," + expr + ")";
+        } else {
+            return "contains(" + getPropertyName(paramName,xpath) + "," + expr + ")";
+        }
+    }
+
 
     private String getSearchExpressionForMatchType(String term,
                                                    MatchType matchType, boolean applyFilter) {
@@ -790,7 +831,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (applyFilter && StringUtils.containsAny(term, "?*")) {
             term = removeAccents(term);
         }
-            
+
         if (Term.MatchType.AS_IS != matchType) {
             term = QueryParser.escape(NOT_PATTERN.matcher(OR_PATTERN.matcher(AND_PATTERN.matcher(term).replaceAll(" and ")).replaceAll(
                     " or ")).replaceAll(" not "));
@@ -799,7 +840,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (MatchType.ANY_WORD == matchType) {
             term = StringUtils.replace(cleanMultipleWhiteSpaces(term), " ",
                     " OR ");
-            
+
         } else if (MatchType.EXACT_PHRASE == matchType) {
             term = "\"" + term.trim() + "\"";
         } else if (MatchType.WITHOUT_WORDS == matchType) {
@@ -812,183 +853,183 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         return stringToJCRSearchExp(postfix != null ? term + postfix : term);
     }
-    
+
     /**
      * To replace accented characters in a String by unaccented equivalents.
      */
     private String removeAccents(String term) {
-      int length = term.length(); 
-      char[] input = new char[length];
-      term.getChars(0, length, input, 0);
-      
-      
-      char[] output = new char[length];
-      // Worst-case length required:
-      final int maxSizeNeeded = 2*length;
+        int length = term.length();
+        char[] input = new char[length];
+        term.getChars(0, length, input, 0);
 
-      int size = output.length;
-      while (size < maxSizeNeeded)
-        size *= 2;
 
-      if (size != output.length)
-        output = new char[size];
+        char[] output = new char[length];
+        // Worst-case length required:
+        final int maxSizeNeeded = 2 * length;
 
-      int outputPos = 0;
+        int size = output.length;
+        while (size < maxSizeNeeded)
+            size *= 2;
 
-      int pos = 0;
+        if (size != output.length)
+            output = new char[size];
 
-      for (int i=0; i<length; i++, pos++) {
-        final char c = input[pos];
+        int outputPos = 0;
 
-        // Quick test: if it's not in range then just keep
-        // current character
-        if (c < '\u00c0' || c > '\uFB06')
-          output[outputPos++] = c;
-        else {
-          switch (c) {
-          case '\u00C0' : // Ã€
-          case '\u00C1' : // Ã�
-          case '\u00C2' : // Ã‚
-          case '\u00C3' : // Ãƒ
-          case '\u00C4' : // Ã„
-          case '\u00C5' : // Ã…
-            output[outputPos++] = 'A';
-            break;
-          case '\u00C6' : // Ã†
-            output[outputPos++] = 'A';
-            output[outputPos++] = 'E';
-            break;
-          case '\u00C7' : // Ã‡
-            output[outputPos++] = 'C';
-            break;
-          case '\u00C8' : // Ãˆ
-          case '\u00C9' : // Ã‰
-          case '\u00CA' : // ÃŠ
-          case '\u00CB' : // Ã‹
-            output[outputPos++] = 'E';
-            break;
-          case '\u00CC' : // ÃŒ
-          case '\u00CD' : // Ã�
-          case '\u00CE' : // ÃŽ
-          case '\u00CF' : // Ã�
-            output[outputPos++] = 'I';
-            break;
-          case '\u0132' : // Ä²
-              output[outputPos++] = 'I';
-              output[outputPos++] = 'J';
-              break;
-          case '\u00D0' : // Ã�
-            output[outputPos++] = 'D';
-            break;
-          case '\u00D1' : // Ã‘
-            output[outputPos++] = 'N';
-            break;
-          case '\u00D2' : // Ã’
-          case '\u00D3' : // Ã“
-          case '\u00D4' : // Ã”
-          case '\u00D5' : // Ã•
-          case '\u00D6' : // Ã–
-          case '\u00D8' : // Ã˜
-            output[outputPos++] = 'O';
-            break;
-          case '\u0152' : // Å’
-            output[outputPos++] = 'O';
-            output[outputPos++] = 'E';
-            break;
-          case '\u00DE' : // Ãž
-            output[outputPos++] = 'T';
-            output[outputPos++] = 'H';
-            break;
-          case '\u00D9' : // Ã™
-          case '\u00DA' : // Ãš
-          case '\u00DB' : // Ã›
-          case '\u00DC' : // Ãœ
-            output[outputPos++] = 'U';
-            break;
-          case '\u00DD' : // Ã�
-          case '\u0178' : // Å¸
-            output[outputPos++] = 'Y';
-            break;
-          case '\u00E0' : // Ã 
-          case '\u00E1' : // Ã¡
-          case '\u00E2' : // Ã¢
-          case '\u00E3' : // Ã£
-          case '\u00E4' : // Ã¤
-          case '\u00E5' : // Ã¥
-            output[outputPos++] = 'a';
-            break;
-          case '\u00E6' : // Ã¦
-            output[outputPos++] = 'a';
-            output[outputPos++] = 'e';
-            break;
-          case '\u00E7' : // Ã§
-            output[outputPos++] = 'c';
-            break;
-          case '\u00E8' : // Ã¨
-          case '\u00E9' : // Ã©
-          case '\u00EA' : // Ãª
-          case '\u00EB' : // Ã«
-            output[outputPos++] = 'e';
-            break;
-          case '\u00EC' : // Ã¬
-          case '\u00ED' : // Ã­
-          case '\u00EE' : // Ã®
-          case '\u00EF' : // Ã¯
-            output[outputPos++] = 'i';
-            break;
-          case '\u0133' : // Ä³
-              output[outputPos++] = 'i';
-              output[outputPos++] = 'j';
-              break;
-          case '\u00F0' : // Ã°
-            output[outputPos++] = 'd';
-            break;
-          case '\u00F1' : // Ã±
-            output[outputPos++] = 'n';
-            break;
-          case '\u00F2' : // Ã²
-          case '\u00F3' : // Ã³
-          case '\u00F4' : // Ã´
-          case '\u00F5' : // Ãµ
-          case '\u00F6' : // Ã¶
-          case '\u00F8' : // Ã¸
-            output[outputPos++] = 'o';
-            break;
-          case '\u0153' : // Å“
-            output[outputPos++] = 'o';
-            output[outputPos++] = 'e';
-            break;
-          case '\u00DF' : // ÃŸ
-            output[outputPos++] = 's';
-            output[outputPos++] = 's';
-            break;
-          case '\u00FE' : // Ã¾
-            output[outputPos++] = 't';
-            output[outputPos++] = 'h';
-            break;
-          case '\u00F9' : // Ã¹
-          case '\u00FA' : // Ãº
-          case '\u00FB' : // Ã»
-          case '\u00FC' : // Ã¼
-            output[outputPos++] = 'u';
-            break;
-          case '\u00FD' : // Ã½
-          case '\u00FF' : // Ã¿
-            output[outputPos++] = 'y';
-            break;
-          case '\uFB00': // ï¬€
-              output[outputPos++] = 'f';
-              output[outputPos++] = 'f';
-              break;
-          case '\uFB01': // ï¬�
-              output[outputPos++] = 'f';
-              output[outputPos++] = 'i';
-              break;
-          case '\uFB02': // ï¬‚
-              output[outputPos++] = 'f';
-              output[outputPos++] = 'l';
-              break;
-          // following 2 are commented as they can break the maxSizeNeeded (and doing *3 could be expensive)
+        int pos = 0;
+
+        for (int i = 0; i < length; i++, pos++) {
+            final char c = input[pos];
+
+            // Quick test: if it's not in range then just keep
+            // current character
+            if (c < '\u00c0' || c > '\uFB06')
+                output[outputPos++] = c;
+            else {
+                switch (c) {
+                    case '\u00C0': // Ã€
+                    case '\u00C1': // Ã�
+                    case '\u00C2': // Ã‚
+                    case '\u00C3': // Ãƒ
+                    case '\u00C4': // Ã„
+                    case '\u00C5': // Ã…
+                        output[outputPos++] = 'A';
+                        break;
+                    case '\u00C6': // Ã†
+                        output[outputPos++] = 'A';
+                        output[outputPos++] = 'E';
+                        break;
+                    case '\u00C7': // Ã‡
+                        output[outputPos++] = 'C';
+                        break;
+                    case '\u00C8': // Ãˆ
+                    case '\u00C9': // Ã‰
+                    case '\u00CA': // ÃŠ
+                    case '\u00CB': // Ã‹
+                        output[outputPos++] = 'E';
+                        break;
+                    case '\u00CC': // ÃŒ
+                    case '\u00CD': // Ã�
+                    case '\u00CE': // ÃŽ
+                    case '\u00CF': // Ã�
+                        output[outputPos++] = 'I';
+                        break;
+                    case '\u0132': // Ä²
+                        output[outputPos++] = 'I';
+                        output[outputPos++] = 'J';
+                        break;
+                    case '\u00D0': // Ã�
+                        output[outputPos++] = 'D';
+                        break;
+                    case '\u00D1': // Ã‘
+                        output[outputPos++] = 'N';
+                        break;
+                    case '\u00D2': // Ã’
+                    case '\u00D3': // Ã“
+                    case '\u00D4': // Ã”
+                    case '\u00D5': // Ã•
+                    case '\u00D6': // Ã–
+                    case '\u00D8': // Ã˜
+                        output[outputPos++] = 'O';
+                        break;
+                    case '\u0152': // Å’
+                        output[outputPos++] = 'O';
+                        output[outputPos++] = 'E';
+                        break;
+                    case '\u00DE': // Ãž
+                        output[outputPos++] = 'T';
+                        output[outputPos++] = 'H';
+                        break;
+                    case '\u00D9': // Ã™
+                    case '\u00DA': // Ãš
+                    case '\u00DB': // Ã›
+                    case '\u00DC': // Ãœ
+                        output[outputPos++] = 'U';
+                        break;
+                    case '\u00DD': // Ã�
+                    case '\u0178': // Å¸
+                        output[outputPos++] = 'Y';
+                        break;
+                    case '\u00E0': // Ã 
+                    case '\u00E1': // Ã¡
+                    case '\u00E2': // Ã¢
+                    case '\u00E3': // Ã£
+                    case '\u00E4': // Ã¤
+                    case '\u00E5': // Ã¥
+                        output[outputPos++] = 'a';
+                        break;
+                    case '\u00E6': // Ã¦
+                        output[outputPos++] = 'a';
+                        output[outputPos++] = 'e';
+                        break;
+                    case '\u00E7': // Ã§
+                        output[outputPos++] = 'c';
+                        break;
+                    case '\u00E8': // Ã¨
+                    case '\u00E9': // Ã©
+                    case '\u00EA': // Ãª
+                    case '\u00EB': // Ã«
+                        output[outputPos++] = 'e';
+                        break;
+                    case '\u00EC': // Ã¬
+                    case '\u00ED': // Ã­
+                    case '\u00EE': // Ã®
+                    case '\u00EF': // Ã¯
+                        output[outputPos++] = 'i';
+                        break;
+                    case '\u0133': // Ä³
+                        output[outputPos++] = 'i';
+                        output[outputPos++] = 'j';
+                        break;
+                    case '\u00F0': // Ã°
+                        output[outputPos++] = 'd';
+                        break;
+                    case '\u00F1': // Ã±
+                        output[outputPos++] = 'n';
+                        break;
+                    case '\u00F2': // Ã²
+                    case '\u00F3': // Ã³
+                    case '\u00F4': // Ã´
+                    case '\u00F5': // Ãµ
+                    case '\u00F6': // Ã¶
+                    case '\u00F8': // Ã¸
+                        output[outputPos++] = 'o';
+                        break;
+                    case '\u0153': // Å“
+                        output[outputPos++] = 'o';
+                        output[outputPos++] = 'e';
+                        break;
+                    case '\u00DF': // ÃŸ
+                        output[outputPos++] = 's';
+                        output[outputPos++] = 's';
+                        break;
+                    case '\u00FE': // Ã¾
+                        output[outputPos++] = 't';
+                        output[outputPos++] = 'h';
+                        break;
+                    case '\u00F9': // Ã¹
+                    case '\u00FA': // Ãº
+                    case '\u00FB': // Ã»
+                    case '\u00FC': // Ã¼
+                        output[outputPos++] = 'u';
+                        break;
+                    case '\u00FD': // Ã½
+                    case '\u00FF': // Ã¿
+                        output[outputPos++] = 'y';
+                        break;
+                    case '\uFB00': // ï¬€
+                        output[outputPos++] = 'f';
+                        output[outputPos++] = 'f';
+                        break;
+                    case '\uFB01': // ï¬�
+                        output[outputPos++] = 'f';
+                        output[outputPos++] = 'i';
+                        break;
+                    case '\uFB02': // ï¬‚
+                        output[outputPos++] = 'f';
+                        output[outputPos++] = 'l';
+                        break;
+                    // following 2 are commented as they can break the maxSizeNeeded (and doing *3 could be expensive)
 //          case '\uFB03': // ï¬ƒ
 //              output[outputPos++] = 'f';
 //              output[outputPos++] = 'f';
@@ -999,23 +1040,23 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 //              output[outputPos++] = 'f';
 //              output[outputPos++] = 'l';
 //              break;
-          case '\uFB05': // ï¬…
-              output[outputPos++] = 'f';
-              output[outputPos++] = 't';
-              break;
-          case '\uFB06': // ï¬†
-              output[outputPos++] = 's';
-              output[outputPos++] = 't';
-                  break;
-          default :
-            output[outputPos++] = c;
-            break;
-          }
+                    case '\uFB05': // ï¬…
+                        output[outputPos++] = 'f';
+                        output[outputPos++] = 't';
+                        break;
+                    case '\uFB06': // ï¬†
+                        output[outputPos++] = 's';
+                        output[outputPos++] = 't';
+                        break;
+                    default:
+                        output[outputPos++] = c;
+                        break;
+                }
+            }
         }
-      }
-      return (new String(output)).trim();
+        return (new String(output)).trim();
     }
-    
+
 
     private String cleanMultipleWhiteSpaces(String term) {
         return MULTIPLE_SPACES_PATTERN.matcher(term).replaceAll(" ");
@@ -1038,7 +1079,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             StringBuilder xpath = new StringBuilder(64);
             xpath.append("/jcr:root[rep:spellcheck(").append(stringToJCRSearchExp(originalQuery)).append(")");
             if (locale != null) {
-                xpath.append(" or @jcr:language='" + locale + "'");
+                xpath.append(" or @jcr:language='").append(locale).append("'");
             }
             xpath.append("]");
             if (siteKey != null) {
@@ -1072,7 +1113,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
      * {@link SearchCriteria} bean into XPath query.
      *
      * @param criteria the search criteria to use for the query
-     * @param session current JCR session
+     * @param session  current JCR session
      * @return the {@link Query} instance created by converting the provided
      *         {@link SearchCriteria} bean into XPath query or <code>null</code>
      *         if the query cannot be created
@@ -1083,9 +1124,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             RepositoryException {
         Query query = null;
         String xpathQuery = buildXpathQuery(criteria, session);
+        String sql = buildSQLQuery(criteria, session);
         if (!StringUtils.isEmpty(xpathQuery)) {
-            QueryManager qm = session.getWorkspace().getQueryManager();
-            query = qm.createQuery(xpathQuery, Query.XPATH);
+            QueryManagerWrapper qm = session.getWorkspace().getQueryManager();
+            query = qm.createDualQuery(xpathQuery, Query.XPATH, sql);
         }
 
         return query;

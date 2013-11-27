@@ -29,6 +29,23 @@ public interface QueryManagerWrapper extends QueryManager {
     public QueryWrapper createQuery(String statement, String language) throws InvalidQueryException, RepositoryException;
 
     /**
+     * Creates a new query by specifying the query <code>statement</code> in xpath and
+     * in SQL2. XPath will be used against jackrabbit where SQL2 can be used as a fallback statement
+     * in other providers, which may not support xpath.
+     *
+     * QueryManager.getSupportedQueryLanguages().
+     *
+     * @param statement a <code>String</code>
+     * @param language  a <code>String</code>
+     * @param sqlFallbackStatement  a <code>String</code>
+     * @return a <code>Query</code> object
+     * @throws javax.jcr.query.InvalidQueryException if the query statement is syntactically
+     *                               invalid or the specified language is not supported.
+     * @throws javax.jcr.RepositoryException   if another error occurs.
+     */
+    public QueryWrapper createDualQuery(String statement, String language, String sqlFallbackStatement) throws InvalidQueryException, RepositoryException;
+
+    /**
      * Returns a <code>QueryObjectModelFactory</code> with which a JCR-JQOM
      * query can be built programmatically.
      *

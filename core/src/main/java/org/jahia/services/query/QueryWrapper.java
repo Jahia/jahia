@@ -72,6 +72,7 @@ public class QueryWrapper implements Query {
 
     private String statement;
     private QueryObjectModel jrQOM;
+    private String sqlStatement;
     private String language;
     private long limit = -1;
     private long offset = 0;
@@ -84,6 +85,16 @@ public class QueryWrapper implements Query {
     public QueryWrapper(String statement, String language, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException {
         this.statement = statement;
         this.language = language;
+        this.vars = new HashMap<String, Value>();
+        this.session = session;
+        this.service = service;
+        init();
+    }
+
+    public QueryWrapper(String statement, String language, String sqlStatement, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException {
+        this.statement = statement;
+        this.language = language;
+        this.sqlStatement = sqlStatement;
         this.vars = new HashMap<String, Value>();
         this.session = session;
         this.service = service;
@@ -111,10 +122,10 @@ public class QueryWrapper implements Query {
         Collection<JCRStoreProvider> providers = service.getProviders().values();
 
         if (language.equals(Query.XPATH)) {
-            if (!statement.startsWith("//")) {
-                JCRStoreProvider p = service.getProvider("/" + statement);
-                providers = Collections.singletonList(p);
-            }
+//            if (!statement.startsWith("//")) {
+//                JCRStoreProvider p = service.getProvider("/" + statement);
+//                providers = Collections.singletonList(p);
+//            }
         }
         for (JCRStoreProvider jcrStoreProvider : providers) {
             Query query = getQuery(jcrStoreProvider);
@@ -127,7 +138,19 @@ public class QueryWrapper implements Query {
     protected Query getQuery(JCRStoreProvider jcrStoreProvider) throws RepositoryException {
         Query query = null;
         QueryManager qm = jcrStoreProvider.getQueryManager(session);
-        if (qm != null && ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
+
+        String statement = null;
+        String language = this.language;
+
+        if (qm != null) {
+            if (ArrayUtils.contains(qm.getSupportedQueryLanguages(), language)) {
+                statement = this.statement;
+            } else if (sqlStatement != null && ArrayUtils.contains(qm.getSupportedQueryLanguages(), Query.JCR_SQL2)) {
+                statement = this.sqlStatement;
+                language = Query.JCR_SQL2;
+            }
+        }
+        if (statement != null) {
             if (jcrStoreProvider.isDefault() && jrQOM != null) {
                 query = jrQOM;
             } else {

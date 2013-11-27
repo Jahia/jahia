@@ -241,6 +241,12 @@
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>jahia-version</id>
+                        <goals>
+                            <goal>jahia-version</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>native2ascii</id>
                         <goals>
                             <goal>native2ascii</goal>
@@ -295,6 +301,7 @@
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
                         <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}
                         </Jahia-Source-Control-DeveloperConnection>
+                        <Jahia-Required-Version>${jahia.version}</Jahia-Required-Version>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
                         <Jahia-Forge>${jahia-forge}</Jahia-Forge>
 

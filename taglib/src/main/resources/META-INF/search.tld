@@ -227,6 +227,20 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>The maximum number of terms to be suggested (default: 1)</description>
+            <name>maxTermsToSuggest</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Run query with best suggested term (default: true)</description>
+            <name>runQuery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>        
     </tag>
 
     <tag-file>

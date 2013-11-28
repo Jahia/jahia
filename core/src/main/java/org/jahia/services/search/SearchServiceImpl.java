@@ -105,8 +105,8 @@ public class SearchServiceImpl extends SearchService {
     }
 
     @Override
-    public Suggestion suggest(String originalQuery, String siteKey, Locale locale) {
-        return getProvider().suggest(originalQuery, siteKey, locale);
+    public Suggestion suggest(String originalQuery, String siteKey, Locale locale, int maxTermsToSuggest) {
+        return getProvider().suggest(originalQuery, siteKey, locale, maxTermsToSuggest);
     }
     
     /**

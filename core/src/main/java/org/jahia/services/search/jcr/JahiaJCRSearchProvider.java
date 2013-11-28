@@ -61,6 +61,7 @@ import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
+import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.Patterns;
@@ -98,7 +99,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
 
     private static final Pattern OR_PATTERN = Pattern.compile(" OR ");
-
+    
     private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
     private TaggingService taggingService = null;
@@ -1065,7 +1066,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     /* (non-Javadoc)
     * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
     */
-    public Suggestion suggest(String originalQuery, String siteKey, Locale locale) {
+    public Suggestion suggest(String originalQuery, String siteKey, Locale locale, int maxTerms) {
         if (StringUtils.isBlank(originalQuery)) {
             return null;
         }
@@ -1074,10 +1075,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         JCRSessionWrapper session;
         try {
             session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession(
-                    null, locale);
+                    Constants.LIVE_WORKSPACE, locale);
             QueryManager qm = session.getWorkspace().getQueryManager();
             StringBuilder xpath = new StringBuilder(64);
-            xpath.append("/jcr:root[rep:spellcheck(").append(stringToJCRSearchExp(originalQuery)).append(")");
+            xpath.append("/jcr:root[rep:spellcheck(")
+                    .append(stringToJCRSearchExp(originalQuery
+                            + CompositeSpellChecker.SEPARATOR_IN_SUGGESTION
+                            + CompositeSpellChecker.MAX_TERMS_PARAM + "="
+                            + maxTerms)).append(")");
             if (locale != null) {
                 xpath.append(" or @jcr:language='").append(locale).append("'");
             }
@@ -1093,7 +1098,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 Row r = rows.nextRow();
                 Value v = r.getValue("rep:spellcheck()");
                 if (v != null) {
-                    suggestion = new Suggestion(originalQuery, v.getString());
+                    String[] suggestions = StringUtils.splitByWholeSeparator(v.getString(), CompositeSpellChecker.SEPARATOR_IN_SUGGESTION);
+                    suggestion = new Suggestion(originalQuery, suggestions[0], Arrays.asList(suggestions));
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug("Making spell check suggestion for '" + originalQuery + "' site '"

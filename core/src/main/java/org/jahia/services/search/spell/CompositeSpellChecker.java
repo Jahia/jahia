@@ -40,7 +40,11 @@
 
 package org.jahia.services.search.spell;
 
+<<<<<<< .working
 import org.apache.commons.lang.time.DurationFormatUtils;
+=======
+import org.apache.commons.lang.StringUtils;
+>>>>>>> .merge-right.r47990
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.QueryHandler;
@@ -93,6 +97,9 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
      * Logger instance for this class.
      */
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CompositeSpellChecker.class);
+    
+    public static final String SEPARATOR_IN_SUGGESTION = "#!#";
+    public static final String MAX_TERMS_PARAM = "maxTerms";    
 
     public static final class FiveSecondsRefreshInterval extends CompositeSpellChecker {
         public FiveSecondsRefreshInterval() {
@@ -202,7 +209,9 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 public Object visit(RelationQueryNode node, Object data) throws RepositoryException {
                     if (!spellcheckInfo.containsKey("statement")
                             && node.getOperation() == RelationQueryNode.OPERATION_SPELLCHECK) {
-                        spellcheckInfo.put("statement", node.getStringValue());
+                        String spellCheckParams = node.getStringValue();
+                        spellcheckInfo.put("statement", StringUtils.substringBefore(spellCheckParams, SEPARATOR_IN_SUGGESTION));
+                        spellcheckInfo.put("maxTermCount", StringUtils.substringAfter(spellCheckParams, SEPARATOR_IN_SUGGESTION + MAX_TERMS_PARAM + "="));
                     } else if (!spellcheckInfo.containsKey("language") && node.getRelativePath() != null
                             && node.getRelativePath().getNumOperands() > 0) {
                         Name propertyName = ((LocationStepQueryNode) node.getRelativePath().getOperands()[0])
@@ -237,9 +246,18 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         } catch (RepositoryException e) {
             logger.debug("issue while checking "+aqt,e.getMessage());
         }
-
+        
+        int maxTermCount = 1;
+        String maxTermCountStr = spellcheckInfo.get("maxTermCount");
+        if (!StringUtils.isEmpty(maxTermCountStr) && StringUtils.isNumeric(maxTermCountStr)) {
+            int parsedMaxTermCount = Integer.parseInt(maxTermCountStr);
+            if (parsedMaxTermCount > 1) {
+                maxTermCount = parsedMaxTermCount;
+            }
+        }
+        
         return spellChecker.suggest(spellcheckInfo.get("statement"), spellcheckInfo
-                .get("site"), spellcheckInfo.get("language"));
+                .get("site"), spellcheckInfo.get("language"), maxTermCount);
     }
 
     public void close() {
@@ -304,26 +322,67 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
          * 
          * @param statement
          *            the fulltext query statement.
+         * @param site
+         *            the site being searched
+         * @param language
+         *            the language being searched
+         * @param maxSuggestions
+         *            maximum number of suggestions to return                                    
          * @return a suggestion or <code>null</code>.
          */
-        String suggest(String statement, String site, String language) throws IOException {
+        String suggest(String statement, String site, String language, int maxSuggestions) throws IOException {
             // tokenize the statement (field name doesn't matter actually...)
             List<String> words = new ArrayList<String>();
             List<Token> tokens = new ArrayList<Token>();
             tokenize(statement, words, tokens, site, language);
 
+<<<<<<< .working
             String[] suggestions = check(words.toArray(new String[words.size()]), site, language);
+=======
+            String[][] suggestions = check((String[]) words.toArray(new String[words.size()]), site, language, maxSuggestions);
+>>>>>>> .merge-right.r47990
             if (suggestions != null) {
+                int possibleSuggestionsCount = 1;
+                for (String[] suggestionsPerWord : suggestions) {
+                   if (suggestionsPerWord.length > 1) {
+                       if (possibleSuggestionsCount > 1) {
+                           possibleSuggestionsCount = 1;
+                           break;
+                       } else {
+                           possibleSuggestionsCount = suggestionsPerWord.length;
+                       }
+                   }
+                }
+                
                 // replace words in statement in reverse order because length
                 // of statement will change
+<<<<<<< .working
                 StringBuilder sb = new StringBuilder(statement);
                 for (int i = suggestions.length - 1; i >= 0; i--) {
                     Token t = tokens.get(i);
                     // only replace if word actually changed
                     if (!t.term().equalsIgnoreCase(suggestions[i])) {
                         sb.replace(t.startOffset(), t.endOffset(), suggestions[i]);
+=======
+                StringBuilder sb = new StringBuilder();
+                int loopCount = 0;
+                do {
+                    if (loopCount > 0) {
+                        sb.append(SEPARATOR_IN_SUGGESTION);
+>>>>>>> .merge-right.r47990
                     }
-                }
+                    StringBuilder stmt = new StringBuilder(statement);
+                    for (int i = suggestions.length - 1; i >= 0; i--) {
+                        Token t = (Token) tokens.get(i);
+                        int pos = suggestions[i].length > 1 ? loopCount : 0; 
+                        // only replace if word actually changed
+                        if (!t.termText().equalsIgnoreCase(suggestions[i][pos])) {
+                            stmt.replace(t.startOffset(), t.endOffset(),
+                                    suggestions[i][pos]);
+                        }
+                    }
+                    sb.append(stmt);
+                } while (++loopCount < possibleSuggestionsCount);
                 return sb.toString();
             } else {
                 return null;
@@ -411,7 +470,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
          * @throws IOException
          *             if an error occurs while spell checking.
          */
-        private String[] check(String words[], String site, String language) throws IOException {
+        private String[][] check(String words[], String site, String language, int maxSuggestionCount) throws IOException {
             refreshSpellChecker();
             boolean hasSuggestion = false;
             IndexReader reader = handler.getIndexReader();
@@ -426,15 +485,15 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             try {
                 for (int retries = 0; retries < 100; retries++) {
                     try {
-                        String[] suggestion = new String[words.length];
+                        String[][] suggestion = new String[words.length][];
                         for (int i = 0; i < words.length; i++) {
-                            String[] similar = spellChecker.suggestSimilar(words[i], 5, reader, fullTextNameStr,
+                            String[] similar = spellChecker.suggestSimilar(words[i], maxSuggestionCount, reader, fullTextNameStr,
                                     true, site, language);
                             if (similar.length > 0) {
-                                suggestion[i] = similar[0];
+                                suggestion[i] = similar;
                                 hasSuggestion = true;
                             } else {
-                                suggestion[i] = words[i];
+                                suggestion[i] = new String[]{words[i]};
                             }
                         }
                         if (hasSuggestion) {

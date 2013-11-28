@@ -53,64 +53,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class Suggestion {
 
-    /**
-     * Represents a single term of the search query with the information about
-     * suggested replacement.
-     * 
-     * @author Sergiy Shyrkov
-     */
-    public static class Term {
-
-        private boolean modified;
-
-        private String term;
-
-        /**
-         * Initializes an instance of this class.
-         * 
-         * @param newTerm the query term string
-         * @param modified <code>true</code> if the original term was modified by
-         *            the suggestion engine
-         */
-        public Term(String newTerm, boolean modified) {
-            super();
-            this.modified = modified;
-            this.term = newTerm;
-        }
-
-        /**
-         * Returns a query term either the original one or the suggested (in
-         * this case the {@link #isModified()} returns true).
-         * 
-         * @return a query term either the original one or the suggested (in
-         *         this case the {@link #isModified()} returns true)
-         */
-        public String getTerm() {
-            return term;
-        }
-
-        /**
-         * Returns <code>true</code> if this term was modified by a spell
-         * checker and represent a suggestion
-         * 
-         * @return <code>true</code> if this term was modified by a spell
-         *         checker and represent a suggestion
-         */
-        public boolean isModified() {
-            return modified;
-        }
-
-        @Override
-        public String toString() {
-            return ToStringBuilder.reflectionToString(this);
-        }
-    }
-
     private String originalQuery;
 
     private String suggestedQuery;
 
-    private List<Term> terms;
+    private List<String> allSuggestions;
 
     /**
      * Initializes an instance of this class.
@@ -129,13 +76,13 @@ public class Suggestion {
      * 
      * @param originalQuery
      * @param suggestedQuery
-     * @param terms
+     * @param allSuggestions
      */
-    public Suggestion(String originalQuery, String suggestedQuery, List<Term> terms) {
+    public Suggestion(String originalQuery, String suggestedQuery, List<String> allSuggestions) {
         super();
         this.originalQuery = originalQuery;
         this.suggestedQuery = suggestedQuery;
-        this.terms = terms;
+        this.allSuggestions = allSuggestions;
     }
 
     /**
@@ -161,12 +108,16 @@ public class Suggestion {
      * 
      * @return a list of suggested query terms
      */
-    public List<Term> getTerms() {
-        return terms;
+    public List<String> getAllSuggestions() {
+        return allSuggestions;
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public void setSuggestedQuery(String suggestedQuery) {
+        this.suggestedQuery = suggestedQuery;
     }
 }

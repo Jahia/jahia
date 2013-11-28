@@ -71,10 +71,11 @@ public interface SearchProvider {
      * @param originalQuery original query string
      * @param siteKey current site key
      * @param locale current locale
+     * @param maxTermsToSuggest the maximum number of terms to suggest 
      * @return a modified suggestion for the original query based on the spell
      *         checker dictionary. If the spelling is correct or the spell
      *         checker does not know how to correct the query <code>null</code>
      *         is returned.
      */
-    public abstract Suggestion suggest(String originalQuery, String siteKey, Locale locale);
+    public abstract Suggestion suggest(String originalQuery, String siteKey, Locale locale, int maxTermsToSuggest);
 }

@@ -105,6 +105,12 @@ public class ResultsTag extends AbstractJahiaTag {
             return SKIP_BODY;
         }
 
+        searchAndSetAttributes(criteria, renderContext);
+        
+        return EVAL_BODY_INCLUDE;
+    }
+    
+    protected int searchAndSetAttributes(SearchCriteria criteria, RenderContext renderContext) {
         criteria.setLimit(limit);
         criteria.setOffset(offset);
 
@@ -126,10 +132,9 @@ public class ResultsTag extends AbstractJahiaTag {
         pageContext.setAttribute(getApproxCountVar(), searchResponse.getApproxCount());
         pageContext.setAttribute(getSearchCriteriaVar(), criteria);
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
-        	pageContext.setAttribute(getTermVar(), criteria.getTerms().get(0).getTerm());
+            pageContext.setAttribute(getTermVar(), criteria.getTerms().get(0).getTerm());
         }
-
-        return EVAL_BODY_INCLUDE;
+        return count;
     }
 
     /**
@@ -139,7 +144,7 @@ public class ResultsTag extends AbstractJahiaTag {
      * @return the default name of the <code>countVar</code> variable if not
      *         provided
      */
-    private String getCountVar() {
+    protected String getCountVar() {
         return countVar != null ? countVar : getDefaultCountVarName();
     }
 
@@ -200,7 +205,7 @@ public class ResultsTag extends AbstractJahiaTag {
                 : SearchCriteriaFactory.getInstance(ctx);
     }
 
-    private String getSearchCriteriaVar() {
+    protected String getSearchCriteriaVar() {
     	return searchCriteriaVar != null ? searchCriteriaVar : getDefaultSearchCriteriaVarName();
     }
 

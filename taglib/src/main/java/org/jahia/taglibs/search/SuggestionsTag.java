@@ -40,6 +40,8 @@
 
 package org.jahia.taglibs.search;
 
+import java.util.List;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -64,6 +66,10 @@ public class SuggestionsTag extends ResultsTag {
     private Suggestion suggestion;
 
     private String suggestionVar = "suggestion";
+    
+    private boolean runQuery = true;
+    
+    private int maxTermsToSuggest = 1;
 
     @Override
     public int doEndTag() throws JspException {
@@ -106,6 +112,34 @@ public class SuggestionsTag extends ResultsTag {
         return criteria != null ? suggest(criteria) : null;
     }
 
+    @Override
+    public int doStartTag() throws JspException {
+        int retVal = super.doStartTag();
+        
+        if (retVal == SKIP_BODY && !runQuery) {
+            retVal = EVAL_BODY_INCLUDE;
+        } else if (retVal == EVAL_BODY_INCLUDE) {
+            int count = ((Integer)pageContext.getAttribute(getCountVar())).intValue();
+            List<String> allSuggestions = suggestion.getAllSuggestions();
+            int iterationCount = 1;
+            while (count == 0 && iterationCount < allSuggestions.size()) {
+                SearchCriteria criteria = (SearchCriteria)pageContext.getAttribute(getSearchCriteriaVar());
+                SearchCriteria suggestedCriteria = (SearchCriteria) SerializationUtils.clone(criteria);
+                suggestedCriteria.getTerms().get(0).setTerm(allSuggestions.get(iterationCount));
+                
+                count = searchAndSetAttributes(suggestedCriteria, getRenderContext());
+                if (count > 0) {
+                    suggestion.setSuggestedQuery(allSuggestions.get(iterationCount));
+                }
+                
+                iterationCount++;
+            }
+        }
+        
+        return retVal;
+    }
+    
+    
     /**
      * @return the suggestion
      */
@@ -129,7 +163,7 @@ public class SuggestionsTag extends ResultsTag {
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
             suggestion = ServicesRegistry.getInstance().getSearchService().suggest(
                     criteria.getTerms().get(0).getTerm(), getRenderContext().getSite().getSiteKey(),
-                    getRenderContext().getMainResourceLocale());
+                    getRenderContext().getMainResourceLocale(), maxTermsToSuggest);
             if (logger.isDebugEnabled()) {
                 logger.debug("Suggestion for search query '" + criteria.getTerms().get(0).getTerm() + "' site '"
                         + getRenderContext().getSite().getSiteKey() + "' and locale "
@@ -139,12 +173,22 @@ public class SuggestionsTag extends ResultsTag {
                 if (suggestionVar != null) {
                     pageContext.setAttribute(suggestionVar, suggestion);
                 }
-                // we've found a suggestion
-                suggestedCriteria = (SearchCriteria) SerializationUtils.clone(criteria);
-                suggestedCriteria.getTerms().get(0).setTerm(suggestion.getSuggestedQuery());
+                if (runQuery) {
+                    // we've found a suggestion
+                    suggestedCriteria = (SearchCriteria) SerializationUtils.clone(criteria);
+                    suggestedCriteria.getTerms().get(0).setTerm(suggestion.getSuggestedQuery());
+                }    
             }
         }
 
         return suggestedCriteria;
+    }
+
+    public void setRunQuery(boolean runQuery) {
+        this.runQuery = runQuery;
+    }
+
+    public void setMaxTermsToSuggest(int maxTermsToSuggest) {
+        this.maxTermsToSuggest = maxTermsToSuggest;
     }
 }

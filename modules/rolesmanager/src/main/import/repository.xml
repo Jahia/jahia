@@ -21,7 +21,7 @@
                     </permissions.png>
                 </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                <serverSettingsBase j:view="serverSettings"
+                <server-settings-base j:view="serverSettings"
                                     jcr:mixinTypes="jmix:useUILocale"
                                     jcr:primaryType="jnt:template">
                     <users-and-roles j:titleKey="serverSettings.usersAndRoles"
@@ -40,7 +40,7 @@
                             </pagecontent>
                         </rolesAndPermissions>
                     </users-and-roles>
-                </serverSettingsBase>
+                </server-settings-base>
             </templates>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>

@@ -48,9 +48,13 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
+import org.springframework.core.io.Resource;
 
 /**
  * Miscellaneous request/response handling methods.
@@ -87,15 +91,30 @@ public final class WebUtils {
      */
     public static String getResourceAsString(String path) throws IOException {
         path = path.length() > 0 && path.charAt(0) != '/' ? "/" + path : path;
-        String content = null;
         InputStream is = null;
-        try {
-            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
-            if (is != null) {
-                content = IOUtils.toString(is);
+        if (path.startsWith("/modules/")) {
+            String module = StringUtils.substringAfter(path, "/modules/");
+            String remainingPath = StringUtils.substringAfter(module, "/");
+            module = StringUtils.substringBefore(module, "/");
+            JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                    .getTemplatePackageByFileName(module);
+            if (pack != null) {
+                Resource r = pack.getResource(remainingPath);
+                if (r != null) {
+                    is = r.getInputStream();
+                }
             }
-        } finally {
-            IOUtils.closeQuietly(is);
+        } else {
+            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
+        }
+
+        String content = null;
+        if (is != null) {
+            try {
+                content = IOUtils.toString(is);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
 
         return content;

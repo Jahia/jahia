@@ -95,6 +95,7 @@ public class JSR223Script implements Script {
                     bindings.put(currentAttributeName, context.getRequest().getAttribute(currentAttributeName));
                 }
             }
+            bindings.put("params", context.getRequest().getParameterMap());
             Reader scriptContent = null;
             try {
                 InputStream scriptInputStream = getViewInputStream();

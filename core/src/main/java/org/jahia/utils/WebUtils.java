@@ -48,11 +48,8 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 
 /**
@@ -89,24 +86,11 @@ public final class WebUtils {
      *             in case of a problem reading resource content
      */
     public static String getResourceAsString(String path) throws IOException {
-        if (path.startsWith("/modules/")) {
-            String module = StringUtils.substringAfter(path, "/modules/");
-            String remainingPath = StringUtils.substringAfter(module, "/");
-            module = StringUtils.substringBefore(module,"/");
-            JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module);
-            if (pack != null) {
-                String version = pack.getVersion().toString();
-                String prefixWithVersion = "/modules/" + module + "/" + version;
-                if (!path.startsWith(prefixWithVersion)) {
-                    path = prefixWithVersion + "/" + remainingPath;
-                }
-            }
-        }
-
+        path = path.length() > 0 && path.charAt(0) != '/' ? "/" + path : path;
         String content = null;
         InputStream is = null;
         try {
-            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path.startsWith("/") ? path : "/" + path);
+            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
             if (is != null) {
                 content = IOUtils.toString(is);
             }

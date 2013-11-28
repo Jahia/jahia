@@ -40,11 +40,8 @@
 
 package org.jahia.services.search.spell;
 
-<<<<<<< .working
 import org.apache.commons.lang.time.DurationFormatUtils;
-=======
 import org.apache.commons.lang.StringUtils;
->>>>>>> .merge-right.r47990
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.QueryHandler;
@@ -336,11 +333,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             List<Token> tokens = new ArrayList<Token>();
             tokenize(statement, words, tokens, site, language);
 
-<<<<<<< .working
-            String[] suggestions = check(words.toArray(new String[words.size()]), site, language);
-=======
             String[][] suggestions = check((String[]) words.toArray(new String[words.size()]), site, language, maxSuggestions);
->>>>>>> .merge-right.r47990
             if (suggestions != null) {
                 int possibleSuggestionsCount = 1;
                 for (String[] suggestionsPerWord : suggestions) {
@@ -356,27 +349,18 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 
                 // replace words in statement in reverse order because length
                 // of statement will change
-<<<<<<< .working
-                StringBuilder sb = new StringBuilder(statement);
-                for (int i = suggestions.length - 1; i >= 0; i--) {
-                    Token t = tokens.get(i);
-                    // only replace if word actually changed
-                    if (!t.term().equalsIgnoreCase(suggestions[i])) {
-                        sb.replace(t.startOffset(), t.endOffset(), suggestions[i]);
-=======
                 StringBuilder sb = new StringBuilder();
                 int loopCount = 0;
                 do {
                     if (loopCount > 0) {
                         sb.append(SEPARATOR_IN_SUGGESTION);
->>>>>>> .merge-right.r47990
                     }
                     StringBuilder stmt = new StringBuilder(statement);
                     for (int i = suggestions.length - 1; i >= 0; i--) {
                         Token t = (Token) tokens.get(i);
                         int pos = suggestions[i].length > 1 ? loopCount : 0; 
                         // only replace if word actually changed
-                        if (!t.termText().equalsIgnoreCase(suggestions[i][pos])) {
+                        if (!t.term().equalsIgnoreCase(suggestions[i][pos])) {
                             stmt.replace(t.startOffset(), t.endOffset(),
                                     suggestions[i][pos]);
                         }

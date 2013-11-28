@@ -53,15 +53,20 @@
    	<%-- spelling auto suggestions are enabled --%>
         <jcr:nodeProperty name="autoSuggestMinimumHitCount" node="${currentNode}" var="autoSuggestMinimumHitCount"/>
         <jcr:nodeProperty name="autoSuggestHitCount" node="${currentNode}" var="autoSuggestHitCount"/>
+        <jcr:nodeProperty name="autoSuggestMaxTermCount" node="${currentNode}" var="autoSuggestMaxTermCount"/>        
         <c:if test="${moduleMap['listTotalSize'] <= functions:default(autoSuggestMinimumHitCount.long, 2)}">
             <%-- the number of original results is less than the configured threshold, we can start auto-suggest  --%>
-	        <s:suggestions>
+	        <s:suggestions runQuery="${autoSuggestHitCount.long > 0}" maxTermsToSuggest="${autoSuggestMaxTermCount.long}">
 	        	<%-- we have a suggestion --%>
-		        <c:if test="${suggestedCount > moduleMap['listTotalSize']}">
+		        <c:if test="${autoSuggestHitCount.long > 0 && suggestedCount > moduleMap['listTotalSize']}">
 		            <%-- found more hits for the suggestion than the original query brings --%>
 					<h4>
-						<fmt:message key="search.results.didYouMean" />:&nbsp;<a href="<s:suggestedSearchUrl/>"><em>${fn:escapeXml(suggestion.suggestedQuery)}</em></a>.&nbsp;
-						<fmt:message key="search.results.didYouMean.topResults"><fmt:param value="${functions:min(functions:default(autoSuggestHitCount.long, 2), suggestedCount)}" /></fmt:message>
+						<fmt:message key="search.results.didYouMean" />:&nbsp;
+                        <c:forEach var="suggestion" items="${suggestion.allSuggestions}" varStatus="status">
+                            <a href="<s:suggestedSearchUrl suggestion="${suggestion}"/>"><em>${fn:escapeXml(suggestion)}</em></a>
+                            <c:if test="${not status.last}">, </c:if>                            
+                        </c:forEach>                        
+                        <br/><fmt:message key="search.results.didYouMean.topResults"><fmt:param value="${functions:min(functions:default(autoSuggestHitCount.long, 2), suggestedCount)}" /></fmt:message>
 					</h4>
 					<ol>
 						<s:resultIterator begin="0" end="${functions:default(autoSuggestHitCount.long, 2) - 1}">
@@ -71,6 +76,15 @@
 					<hr/>
 					<h4><fmt:message key="search.results.didYouMean.resultsFor"/>:&nbsp;<strong>${fn:escapeXml(suggestion.originalQuery)}</strong></h4>
 		        </c:if>
+                <c:if test="${autoSuggestHitCount.long == 0}">
+                    <h4>
+                        <fmt:message key="search.results.didYouMean" />:&nbsp;
+                        <c:forEach var="suggestion" items="${suggestion.allSuggestions}" varStatus="status">
+                            <a href="<s:suggestedSearchUrl suggestion="${suggestion}"/>"><em>${fn:escapeXml(suggestion)}</em></a>
+                            <c:if test="${not status.last}">, </c:if>                            
+                        </c:forEach>
+                    </h4>                    
+                </c:if>		        
         	</s:suggestions>
        	</c:if>
     </c:if>

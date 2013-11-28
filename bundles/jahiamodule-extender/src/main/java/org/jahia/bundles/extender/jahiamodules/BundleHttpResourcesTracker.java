@@ -98,15 +98,15 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
         return resources == null || resources.isEmpty() ? Collections.<String, String> emptyMap() : resources;
     }
 
-    protected final Bundle bundle;
+    private final Bundle bundle;
 
-    protected String bundleName;
+    private String bundleName;
 
     private String jspServletAlias;
 
     private Map<String, String> staticResources = Collections.emptyMap();
 
-    public BundleHttpResourcesTracker(Bundle bundle) {
+    BundleHttpResourcesTracker(Bundle bundle) {
         super(bundle.getBundleContext(), HttpService.class.getName(), null);
         this.bundle = bundle;
         this.bundleName = BundleUtils.getDisplayName(bundle);
@@ -141,7 +141,7 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
         }
         String bundleJspPathPrefix = "/" + bundle.getSymbolicName();
         jspServletAlias = bundleJspPathPrefix + "/*.jsp";
-        registerJspServlet(httpService, httpContext, jspServletAlias, null, bundleJspPathPrefix);
+        registerJspServlet(httpService, httpContext, bundle, bundleName, jspServletAlias, null, bundleJspPathPrefix);
         if (logger.isDebugEnabled()) {
             for (URL jsp : jsps) {
                 logger.debug("Found JSP {} in bundle {}", jsp.getPath(), bundleName);
@@ -150,7 +150,20 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
         return jsps.size();
     }
 
-    protected void registerJspServlet(HttpService httpService, HttpContext httpContext, String jspServletAlias, String jspFile, String jspFilePrefix) {
+
+    /**
+     * Utility method to register a JSP servlet
+     *
+     * @param httpService
+     * @param httpContext
+     * @param bundle
+     * @param bundleName
+     * @param jspServletAlias
+     * @param jspFile
+     * @param jspFilePrefix
+     */
+    public static void registerJspServlet(HttpService httpService, HttpContext httpContext, Bundle bundle, String bundleName,
+                                      String jspServletAlias, String jspFile, String jspFilePrefix) {
         @SuppressWarnings("unchecked")
         Map<String, String> jspConfig = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
         Map<String, String> cfg = new HashMap<String, String>(jspConfig.size() + 2);

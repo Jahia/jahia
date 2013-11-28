@@ -108,32 +108,40 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     public void addBundleScripts(Bundle bundle, List<URL> scripts) {
         // TODO consider versions of modules/bundles
         for (URL script : scripts) {
-            String path = script.getPath();
-            if (path.split("/").length == 4) {
-                ViewResourceInfo scriptResource = new ViewResourceInfo(path);
-                Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
-                if (existingBundleScripts == null) {
-                    existingBundleScripts = new HashSet<ViewResourceInfo>();
-                    availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
-                    existingBundleScripts.add(scriptResource);
-                } else if (!existingBundleScripts.contains(scriptResource)) {
-                    existingBundleScripts.add(scriptResource);
-                }
-                String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
-                final URL propertiesResource = bundle.getResource(properties);
-                if (propertiesResource != null) {
-                    Properties p = new Properties();
-                    try {
-                        p.load(propertiesResource.openStream());
-                    } catch (IOException e) {
-                        logger.error("Cannot read properties", e);
-                    }
-                    scriptResource.setProperties(p);
-                } else {
-                    scriptResource.setProperties(new Properties());
-                }
+            addBundleScript(bundle, script.getPath());
+        }
+    }
 
+    /**
+     * Method for registering a new resource view for a bundle.
+     * @param bundle the bundle to register views for
+     * @param path the path of the view to register
+     */
+    public void addBundleScript(Bundle bundle, String path) {
+        if (path.split("/").length != 4) {
+            return;
+        }
+        ViewResourceInfo scriptResource = new ViewResourceInfo(path);
+        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        if (existingBundleScripts == null) {
+            existingBundleScripts = new HashSet<ViewResourceInfo>();
+            availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
+            existingBundleScripts.add(scriptResource);
+        } else if (!existingBundleScripts.contains(scriptResource)) {
+            existingBundleScripts.add(scriptResource);
+        }
+        String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
+        final URL propertiesResource = bundle.getResource(properties);
+        if (propertiesResource != null) {
+            Properties p = new Properties();
+            try {
+                p.load(propertiesResource.openStream());
+            } catch (IOException e) {
+                logger.error("Cannot read properties", e);
             }
+            scriptResource.setProperties(p);
+        } else {
+            scriptResource.setProperties(new Properties());
         }
         clearCaches();
     }
@@ -151,6 +159,20 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         for (URL script : scripts) {
             existingBundleScripts.remove(new ViewResourceInfo(script.getPath()));
         }
+        clearCaches();
+    }
+
+    /**
+     * Method for unregistering a resource view for a bundle.
+     * @param bundle the bundle to unregister views for
+     * @param path the path of the view to unregister
+     */
+    public void removeBundleScript(Bundle bundle, String path) {
+        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        if (existingBundleScripts == null) {
+            return;
+        }
+        existingBundleScripts.remove(new ViewResourceInfo(path));
         clearCaches();
     }
 

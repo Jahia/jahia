@@ -40,12 +40,6 @@
 
 package org.jahia.bundles.extender.jahiamodules;
 
-import java.io.File;
-import java.net.URL;
-import java.util.*;
-
-import javax.servlet.ServletException;
-
 import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.framework.util.MapToDictionary;
@@ -63,13 +57,18 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import java.io.File;
+import java.net.URL;
+import java.util.*;
+
 /**
  * Service tracker instance to listen for {@link HttpService} service add/remove events in order to register/unregister servlets for module
  * JSPs and static resources.
  * 
  * @author Sergiy Shyrkov
  */
-class BundleHttpResourcesTracker extends ServiceTracker {
+public class BundleHttpResourcesTracker extends ServiceTracker {
 
     private static Logger logger = LoggerFactory.getLogger(BundleHttpResourcesTracker.class);
 
@@ -99,15 +98,15 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         return resources == null || resources.isEmpty() ? Collections.<String, String> emptyMap() : resources;
     }
 
-    private final Bundle bundle;
+    protected final Bundle bundle;
 
-    private String bundleName;
+    protected String bundleName;
 
     private String jspServletAlias;
 
     private Map<String, String> staticResources = Collections.emptyMap();
 
-    BundleHttpResourcesTracker(Bundle bundle) {
+    public BundleHttpResourcesTracker(Bundle bundle) {
         super(bundle.getBundleContext(), HttpService.class.getName(), null);
         this.bundle = bundle;
         this.bundleName = BundleUtils.getDisplayName(bundle);
@@ -135,14 +134,23 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         return httpService;
     }
 
-    private int registerJsps(HttpService httpService, HttpContext httpContext) {
+    protected int registerJsps(HttpService httpService, HttpContext httpContext) {
         List<URL> jsps = getJsps(bundle);
         if (jsps.isEmpty()) {
             return 0;
         }
         String bundleJspPathPrefix = "/" + bundle.getSymbolicName();
         jspServletAlias = bundleJspPathPrefix + "/*.jsp";
+        registerJspServlet(httpService, httpContext, jspServletAlias, null, bundleJspPathPrefix);
+        if (logger.isDebugEnabled()) {
+            for (URL jsp : jsps) {
+                logger.debug("Found JSP {} in bundle {}", jsp.getPath(), bundleName);
+            }
+        }
+        return jsps.size();
+    }
 
+    protected void registerJspServlet(HttpService httpService, HttpContext httpContext, String jspServletAlias, String jspFile, String jspFilePrefix) {
         @SuppressWarnings("unchecked")
         Map<String, String> jspConfig = (Map<String, String>) SpringContextSingleton.getBean("jspConfig");
         Map<String, String> cfg = new HashMap<String, String>(jspConfig.size() + 2);
@@ -159,12 +167,7 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         cfg.put("alias", jspServletAlias);
 
         JspServletWrapper jspServletWrapper = new JspServletWrapper(new JspServlet(), new JasperClassLoader(bundle,
-                JasperClassLoader.class.getClassLoader()), null, bundleJspPathPrefix, true);
-        if (logger.isDebugEnabled()) {
-            for (URL jsp : jsps) {
-                logger.debug("Found JSP {} in bundle {}", jsp.getPath(), bundleName);
-            }
-        }
+                JasperClassLoader.class.getClassLoader()), jspFile, jspFilePrefix, true);
         try {
             httpService.registerServlet(jspServletAlias, jspServletWrapper, new MapToDictionary(cfg), httpContext);
         } catch (ServletException e) {
@@ -172,8 +175,6 @@ class BundleHttpResourcesTracker extends ServiceTracker {
         } catch (NamespaceException e) {
             logger.error("Error registering JSPs for bundle " + bundleName, e);
         }
-
-        return jsps.size();
     }
 
     private int registerStaticResources(HttpService httpService, HttpContext httpContext) {

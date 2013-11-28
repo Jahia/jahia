@@ -161,6 +161,27 @@ public class TemplatePackageRegistry {
         return modulesWithViewsPerComponents;
     }
 
+    public void addModuleWithViewsForComponent(String component, JahiaTemplatesPackage module) {
+        Set<JahiaTemplatesPackage> jahiaTemplatesPackages;
+        if (modulesWithViewsPerComponents.containsKey(component)) {
+            jahiaTemplatesPackages = modulesWithViewsPerComponents.get(component);
+        } else {
+            jahiaTemplatesPackages = new HashSet<JahiaTemplatesPackage>();
+            modulesWithViewsPerComponents.put(component, jahiaTemplatesPackages);
+        }
+        jahiaTemplatesPackages.add(module);
+    }
+
+    public void removeModuleWithViewsForComponent(String component, JahiaTemplatesPackage module) {
+        if (modulesWithViewsPerComponents.containsKey(component)) {
+            Set<JahiaTemplatesPackage> jahiaTemplatesPackages = modulesWithViewsPerComponents.get(component);
+            jahiaTemplatesPackages.remove(module);
+            if (jahiaTemplatesPackages.isEmpty()) {
+                modulesWithViewsPerComponents.remove(component);
+            }
+        }
+    }
+
     public void setJcrStoreService(JCRStoreService jcrStoreService) {
         this.jcrStoreService = jcrStoreService;
     }

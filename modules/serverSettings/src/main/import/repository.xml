@@ -194,7 +194,7 @@
                         </serveradmin>
                     </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                    <serverSettingsBase j:view="serverSettings"
+                    <server-settings-base j:view="serverSettings"
                                 jcr:mixinTypes="jmix:useUILocale"
                                 jcr:primaryType="jnt:template">
                         <aboutJahia j:applyOn="jnt:globalSettings"
@@ -400,7 +400,7 @@
                                 </pagecontent>
                             </reportAnIssue>
                         </system-health>
-                </serverSettingsBase>
+                </server-settings-base>
             </templates>
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>

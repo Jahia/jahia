@@ -111,7 +111,7 @@
               </urlmapping.png>
           </files>
                     <contents jcr:primaryType="jnt:contentFolder"/>
-                    <siteSettingsBase j:view="siteSettings"
+                    <site-settings-base j:view="siteSettings"
                               jcr:mixinTypes="jmix:useUILocale"
                               jcr:primaryType="jnt:template">
                         <manageLanguages j:applyOn="jnt:virtualsite"
@@ -166,7 +166,7 @@
                                 <pager displayNbOfItemsPerPage="true"
                             displayNbOfItemsPerPageValues="5,10,25,50,100"
                              displayPager="true"
-                             j:bindedComponent="/modules/siteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
+                             j:bindedComponent="/modules/siteSettings/templates/site-settings-base/vanityURLSetting/pagecontent/vanityurlslist"
                             jcr:mixinTypes="jmix:accessControlled"
                             jcr:primaryType="jnt:pager"
                             nbOfPages="10"
@@ -180,7 +180,7 @@
                                 <pager-1 displayNbOfItemsPerPage="true"
                               displayNbOfItemsPerPageValues="5,10,25,50,100"
                                displayPager="true"
-                               j:bindedComponent="/modules/siteSettings/templates/siteSettingsBase/vanityURLSetting/pagecontent/vanityurlslist"
+                               j:bindedComponent="/modules/siteSettings/templates/site-settings-base/vanityURLSetting/pagecontent/vanityurlslist"
                               jcr:mixinTypes="jmix:accessControlled"
                               jcr:primaryType="jnt:pager"
                               nbOfPages="10"
@@ -228,11 +228,10 @@
                     <manage-site-roles jcr:primaryType="jnt:manageRoles" roleGroup="site-role"/>
                 </pagecontent>
             </manageSiteRoles>
-        </siteSettingsBase>
+        </site-settings-base>
       </templates>
                 
                 
     </siteSettings>
   </modules>
-    
 </content>

@@ -848,6 +848,40 @@
                                         <property name="titleKey" value="label.newTemplate"/>
                                         <property name="icon" value="newTemplate"/>
                                     </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="newNodeName" value="server-settings-base"/>
+                                                <property name="nodeTypes" value="jnt:template"/>
+                                                <property name="mixins">
+                                                    <list>
+                                                        <value type="java.lang.String">jmix:useUILocale</value>
+                                                    </list>
+                                                </property>
+                                                <property name="parentTypes" value="jnt:templatesFolder"/>
+                                                <property name="useEngine" value="false"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newServerSettingsBaseTemplate"/>
+                                        <property name="icon" value="serverSettings"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="newNodeName" value="site-settings-base"/>
+                                                <property name="nodeTypes" value="jnt:template"/>
+                                                <property name="mixins">
+                                                    <list>
+                                                        <value type="java.lang.String">jmix:useUILocale</value>
+                                                    </list>
+                                                </property>
+                                                <property name="parentTypes" value="jnt:templatesFolder"/>
+                                                <property name="useEngine" value="false"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newSiteSettingsBaseTemplate"/>
+                                        <property name="icon" value="siteSettings"/>
+                                    </bean>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Separator"/>

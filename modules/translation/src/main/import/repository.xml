@@ -11,7 +11,7 @@
                    jcr:primaryType="jnt:module">
                 
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
-                    <siteSettingsBase j:view="siteSettings"
+                    <site-settings-base j:view="siteSettings"
                               jcr:mixinTypes="jmix:useUILocale"
                               jcr:primaryType="jnt:template">
                         <translationSettings j:applyOn="jnt:virtualsite"
@@ -26,7 +26,7 @@
                             <editMicrosoftTranslatorSettings jcr:primaryType="jnt:editMicrosoftTranslatorSettings"/>
                         </pagecontent>
                     </translationSettings>
-                </siteSettingsBase>
+                </site-settings-base>
             </templates>
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>

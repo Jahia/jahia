@@ -40,7 +40,6 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.google.gwt.core.client.impl.StringBufferImplConcat;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
@@ -54,7 +53,6 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 
@@ -63,14 +61,16 @@ import java.util.Set;
 * Time: 6:58:38 PM
 * 
 */
+@SuppressWarnings("serial")
 public class NewContentActionItem extends BaseActionItem  {
     private String nodeTypes = "";
+    private List<String> mixins;
     protected String parentTypes = "jnt:contentList jnt:contentFolder jmix:editorialContent";
     protected List<String> parentTypesAsList;
     private boolean useEngine = true;
-    private String label;
     private boolean useMainNode = false;
     private boolean includeSubTypes = true;
+    private String newNodeName;
 
     public void setNodeTypes(String nodeTypes) {
         this.nodeTypes = nodeTypes;
@@ -116,7 +116,7 @@ public class NewContentActionItem extends BaseActionItem  {
                 ContentActions.showContentWizard(linker, parent.getChildConstraints(), parent, includeSubTypes);
             }
         } else {
-            ContentActions.createNode(linker,getGwtToolbarItem().getTitle(),nodeTypes, useMainNode);
+            ContentActions.createNode(newNodeName, linker,getGwtToolbarItem().getTitle(),nodeTypes, mixins, useMainNode);
         }
     }
 
@@ -151,5 +151,13 @@ public class NewContentActionItem extends BaseActionItem  {
 
     public void setUseMainNode(boolean useMainNode) {
         this.useMainNode = useMainNode;
+    }
+
+    public void setNewNodeName(String newNodeName) {
+        this.newNodeName = newNodeName;
+    }
+
+    public void setMixins(List<String> mixins) {
+        this.mixins = mixins;
     }
 }

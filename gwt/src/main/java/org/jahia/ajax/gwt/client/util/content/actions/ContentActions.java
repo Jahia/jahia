@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -211,13 +212,16 @@ public class ContentActions {
     }
 
     /**
-     * Create a node
+     * Create a node.
      *
+     * @param nodeName the name of the node to be created
      * @param linker
      * @param windowHeader
      * @param nodeType
+     * @param mixins
+     * @param useMainNode
      */
-    public static void createNode(final Linker linker, final String windowHeader, final String nodeType, boolean useMainNode) {
+    public static void createNode(final String nodeName, final Linker linker, final String windowHeader, final String nodeType, List<String> mixins, boolean useMainNode) {
         GWTJahiaNode parent;
         if (useMainNode) {
             parent = linker.getSelectionContext().getMainNode();
@@ -225,10 +229,12 @@ public class ContentActions {
             parent = linker.getSelectionContext().getSingleSelection();
         }
         if (parent != null) {
-            String nodeName = Window.prompt(windowHeader, "untitled");
-            if (nodeName != null && nodeName.length() > 0) {
+            // if node name is provided, use it; otherwise prompt for it
+            boolean isNodeNameProvided = nodeName != null && nodeName.length() > 0;
+            String name = isNodeNameProvided ? nodeName : Window.prompt(windowHeader, "untitled");
+            if (name != null && name.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, null, null, true, new BaseAsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), name, nodeType, mixins, null, null, null, null, null, !isNodeNameProvided, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode node) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();

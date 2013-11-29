@@ -5,12 +5,8 @@ import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.slf4j.Logger
-<<<<<<< .working
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
-=======
-import org.apache.jackrabbit.core.security.JahiaAccessManager;
->>>>>>> .merge-right.r48008
 
 
 expander rules.dsl
@@ -228,8 +224,6 @@ rule "Ensure only one home page is set"
     then
         Check home page uniqueness for node
 end
-<<<<<<< .working
-=======
 
 rule "Flush privileges in role cache"
     when
@@ -239,4 +233,3 @@ rule "Flush privileges in role cache"
 >       JahiaAccessManager.flushPrivilegesInRoles();
 end
 
->>>>>>> .merge-right.r48008

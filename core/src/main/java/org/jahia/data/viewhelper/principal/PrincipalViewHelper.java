@@ -595,6 +595,10 @@ public class PrincipalViewHelper implements Serializable {
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
+            if(SettingsBean.getInstance().getJahiaJCRUserCountLimit() > 0) {
+               logger.info("Just first " + SettingsBean.getInstance().getJahiaJCRUserCountLimit() + " users are returned from Jahia JCR repository...");
+               searchParameters.setProperty(JahiaUserManagerService.COUNT_LIMIT, String.valueOf(SettingsBean.getInstance().getJahiaJCRUserCountLimit()));
+            }
             searchResults.addAll(jahiaUserManagerService.
                     searchUsers(searchParameters));
         } else {

@@ -171,8 +171,19 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     // Default language code for multi-language system
     private String defaultLanguageCode;
+    
+    //limit for reading JCR users (in administration)
+    private long jahiaJCRUserCountLimit = -1; 
 
-    // this is the list of jahia.properties mail settings values...
+    public long getJahiaJCRUserCountLimit() {
+		return jahiaJCRUserCountLimit;
+	}
+
+	public void setJahiaJCRUserCountLimit(long jahiaJCRUserCountLimit) {
+		this.jahiaJCRUserCountLimit = jahiaJCRUserCountLimit;
+	}
+
+	// this is the list of jahia.properties mail settings values...
     private int mail_maxRegroupingOfPreviousException = 500;
 
     private String characterEncoding;
@@ -354,6 +365,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
+            
+            jahiaJCRUserCountLimit = getLong ("jahiaJCRUserCountLimit", -1);
 
             // base URL (schema, host, port) to call the web apps deployer service.
             jahiaWebAppsDeployerBaseURL = getString ("jahiaWebAppsDeployerBaseURL", "http://127.0.0.1:8080/manager");

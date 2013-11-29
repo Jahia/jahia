@@ -1,8 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -10,7 +12,6 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.*;
-import java.util.regex.Matcher;
 
 public class NewPackageActionItem extends NodeTypeAwareBaseActionItem {
 
@@ -22,34 +23,37 @@ public class NewPackageActionItem extends NodeTypeAwareBaseActionItem {
         GWTJahiaNode newNode = null;
         if (parent != null) {
             final String nodeName = Window.prompt(Messages.get("label.newJavaPackage"), "untitled");
-            if (nodeName != null && nodeName.length() > 0 && !nodeName.matches("[A-Z]*")) {
-                linker.loading("");
-                List<String> packages = Arrays.asList(nodeName.split("\\."));
-                Collections.reverse(packages);
-                for (String packageName : packages) {
-                    GWTJahiaNode parentNode = new GWTJahiaNode();
-                    parentNode.setName(packageName);
-                    parentNode.setNodeTypes(Arrays.asList("jnt:folder"));
-                    if (newNode != null) {
-                        parentNode.add(newNode);
-                    }
-                    newNode = parentNode;
-                }
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), newNode, new BaseAsyncCallback<GWTJahiaNode>() {
-                    public void onSuccess(GWTJahiaNode node) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
-                        linker.loaded();
-                        Map<String, Object> data = new HashMap<String, Object>();
-                        data.put("node", node);
-                        linker.refresh(data);
-                    }
-
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("Unable to create [" + nodeName + "]", throwable);
-                        linker.loaded();
-                    }
-                });
+            if (nodeName == null || nodeName.length() == 0 || !nodeName.matches("^([a-z0-9-_]+\\.)*[a-z0-9-_]+$")) {
+                Info.display(Messages.get("label.error", "Error"), Messages.getWithArgs("label.newJavaPackage.wrong", "Wrong package name {0}", new Object[] {nodeName}));
+                return;
             }
+            linker.loading("");
+            String parentPath = parent.getPath();
+            Map<String, String> parentNodesType = new HashMap<String, String>();
+            List<String> packages = new ArrayList<String>(Arrays.asList(nodeName.split("\\.")));
+            String newNodeName = packages.remove(packages.size() - 1);
+            String nodeType = "jnt:folder";
+            for (String packageName : packages) {
+                if (!parentPath.endsWith("/")) {
+                     parentPath += "/";
+                }
+                parentPath += packageName;
+                parentNodesType.put(parentPath, nodeType);
+            }
+            JahiaContentManagementService.App.getInstance().createNode(parentPath, newNodeName, nodeType, null, null, null, null, null, parentNodesType, false, new BaseAsyncCallback<GWTJahiaNode>() {
+                public void onSuccess(GWTJahiaNode node) {
+                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                    linker.loaded();
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("node", node);
+                    linker.refresh(data);
+                }
+
+                public void onApplicationFailure(Throwable throwable) {
+                    linker.loaded();
+                    Info.display(Messages.get("label.error", "Error"), Messages.getWithArgs("label.newJavaPackage.failed", "Failed to create package {0}", new Object[]{nodeName}));
+                }
+            });
         }
     }
 

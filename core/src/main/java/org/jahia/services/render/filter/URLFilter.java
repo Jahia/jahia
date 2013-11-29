@@ -71,6 +71,7 @@ public class URLFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         if (handlers != null && handlers.length > 0) {
+<<<<<<< .working
 
             final String thisuuid = StringUtils.leftPad(Integer.toHexString(resource.hashCode()),8,"0");
 
@@ -95,6 +96,32 @@ public class URLFilter extends AbstractFilter {
                 replaced.replace(i, i+str2.length()+ 8 + 3, m.get(uuid));
             }
             return replaced.toString();
+=======
+
+            final String thisuuid = StringUtils.leftPad(Integer.toHexString(resource.hashCode()), 8, "0");
+
+            Map<String, String> m = new HashMap<String, String>();
+
+            StringBuilder sb = new StringBuilder(previousOut);
+            int i;
+            final String startTag = "<!-- jahia:temp value=\"URLParserStart";
+            while ((i = sb.indexOf(startTag)) > -1) {
+                String uuid = sb.substring(i+ startTag.length(), i+ startTag.length() +8);
+                final String endTag = "<!-- jahia:temp value=\"URLParserEnd" + uuid + "\" -->";
+                int j = sb.indexOf(endTag);
+                m.put(uuid, sb.substring(i, j + endTag.length()));
+                sb.replace(i, j + endTag.length(), "<jahia:URLParserParsedReplaced id=\"" + uuid + "\"/>");
+            }
+
+            StringBuilder replaced = new StringBuilder("<!-- jahia:temp value=\"URLParserStart" + thisuuid + "\" -->" + urlTraverser.traverse(sb.toString(), renderContext, resource, handlers) + "<!-- jahia:temp value=\"URLParserEnd" + thisuuid + "\" -->");
+
+            final String str2 = "<jahia:URLParserParsedReplaced id=\"";
+            while ((i = replaced.indexOf(str2)) > -1) {
+                String uuid = replaced.substring(i+str2.length(), i+str2.length() + 8);
+                replaced.replace(i, i+str2.length()+ 8 + 3, m.get(uuid));
+            }
+            return replaced.toString();
+>>>>>>> .merge-right.r47998
         }
 
         return previousOut;

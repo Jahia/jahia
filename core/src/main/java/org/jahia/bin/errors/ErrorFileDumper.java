@@ -42,6 +42,7 @@ package org.jahia.bin.errors;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.statistics.StatisticsGateway;
+
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -56,10 +57,16 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.MemoryType;
+import java.lang.management.MemoryUsage;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.*;
@@ -490,22 +497,20 @@ public class ErrorFileDumper {
         }
 
         if (memory) {
-            long free = Runtime.getRuntime().freeMemory();
-            long total = Runtime.getRuntime().totalMemory();
-            long max = Runtime.getRuntime().maxMemory();
-            strOut.println();
-            strOut.print("Memory status: ");
-            strOut.print(100 - Math.round((float) free / (float) max * 100f));
-            strOut.println("% used");
-            strOut.println("---------------");
-            strOut.print("Used memory  : ");
-            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(max - free, true));
-            strOut.print("Free memory  : ");
-            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(free, true));
-            strOut.print("Total memory : ");
-            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(total, true));
-            strOut.print("Max memory   : ");
-            strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(max, true));
+            MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+            MemoryUsage memoryUsage = memoryMXBean.getHeapMemoryUsage();
+            printMemoryUsage(MemoryType.HEAP.toString(), memoryUsage, strOut);
+            memoryUsage = memoryMXBean.getNonHeapMemoryUsage();
+            printMemoryUsage(MemoryType.NON_HEAP.toString(), memoryUsage, strOut);
+
+            strOut.println("--------------");
+            strOut.println("Memory pool details");
+            strOut.println("--------------");
+            List<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
+            for (MemoryPoolMXBean bean : memoryPoolMXBeans) {
+                printMemoryUsage("Memory Pool \"" + bean.getName() + "\" (" + bean.getType().toString() + ")",
+                        bean.getUsage(), strOut);
+            }
         }
 
         if (caches) {
@@ -590,6 +595,21 @@ public class ErrorFileDumper {
         }
 
         strOut.flush();
+    }
+
+    private static void printMemoryUsage(String type, MemoryUsage usage, PrintWriter strOut) {
+        strOut.println();
+        strOut.print(type);
+        strOut.print(" : ");
+        strOut.print(Math.round((float) usage.getUsed() / (float) usage.getMax() * 100f));
+        strOut.println("% used");
+        strOut.println("---------------");
+        strOut.print("Used      : ");
+        strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(usage.getUsed(), true));
+        strOut.print("Committed : ");
+        strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(usage.getCommitted(), true));
+        strOut.print("Max       : ");
+        strOut.println(org.jahia.utils.FileUtils.humanReadableByteCount(usage.getMax(), true));
     }
 
     /**

@@ -28,9 +28,11 @@
         <div id="collapseOne" class="accordion-body collapse${memoryInfo.mode == 'memory' ? ' in' : ''}">
             <div class="accordion-inner">
                 <table class="table table-striped table-bordered table-hover">
+                    <c:url value="/engines/images/about.gif" var="infoIcon"/>
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.used"/></strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.used"/></strong>
+                            <img src="${infoIcon}" alt="(i)" width="16" height="16" title="<fmt:message key='serverSettings.manageMemory.memory.used.tooltip'/>">
                         </td>
                         <td>
                             ${memoryInfo.usedMemory}
@@ -38,23 +40,17 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.free"/></strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.committed"/></strong>
+                            <img src="${infoIcon}" alt="(i)" width="16" height="16" title="<fmt:message key='serverSettings.manageMemory.memory.committed.tooltip'/>">
                         </td>
                         <td>
-                            ${memoryInfo.freeMemory}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.total"/></strong><br>
-                        </td>
-                        <td>
-                            ${memoryInfo.totalMemory}
+                            ${memoryInfo.committedMemory}
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <strong><fmt:message key="serverSettings.manageMemory.memory.max"/></strong><br>
+                            <strong><fmt:message key="serverSettings.manageMemory.memory.max"/></strong>
+                            <img src="${infoIcon}" alt="(i)" width="16" height="16" title="<fmt:message key='serverSettings.manageMemory.memory.max.tooltip'/>">
                         </td>
                         <td>
                             ${memoryInfo.maxMemory}

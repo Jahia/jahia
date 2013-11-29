@@ -47,17 +47,18 @@ import org.jahia.utils.FileUtils;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 
 /**
  * @author rincevent
  */
 public class MemoryThreadInformationManagement implements Serializable {
     private static final long serialVersionUID = 9142360328755986891L;
-    private  String freeMemory;
+    private  String committedMemory;
     private  String maxMemory;
     private long memoryUsage;
     private String mode = "memory";
-    private  String totalMemory;
     private String usedMemory;
 
     public MemoryThreadInformationManagement() {
@@ -74,8 +75,8 @@ public class MemoryThreadInformationManagement implements Serializable {
         return stringBuilder.toString();
     }
 
-    public String getFreeMemory() {
-        return freeMemory;
+    public String getCommittedMemory() {
+        return committedMemory;
     }
 
     public String getMaxMemory() {
@@ -88,10 +89,6 @@ public class MemoryThreadInformationManagement implements Serializable {
 
     public String getMode() {
         return mode;
-    }
-
-    public String getTotalMemory() {
-        return totalMemory;
     }
 
     public String getUsedMemory() {
@@ -111,13 +108,11 @@ public class MemoryThreadInformationManagement implements Serializable {
     }
 
     public MemoryThreadInformationManagement refresh() {
-        long freeMem = Runtime.getRuntime().freeMemory();
-        freeMemory = FileUtils.humanReadableByteCount(freeMem, true);
-        totalMemory = FileUtils.humanReadableByteCount(Runtime.getRuntime().totalMemory(), true);
-        long maxMem = Runtime.getRuntime().maxMemory();
-        maxMemory = FileUtils.humanReadableByteCount(maxMem, true);
-        usedMemory = FileUtils.humanReadableByteCount(maxMem - freeMem, true);
-        memoryUsage = 100 - Math.round((double) freeMem / (double) maxMem * 100d);
+        MemoryUsage usage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        committedMemory = FileUtils.humanReadableByteCount(usage.getCommitted(), true);
+        maxMemory = FileUtils.humanReadableByteCount(usage.getMax(), true);
+        usedMemory = FileUtils.humanReadableByteCount(usage.getUsed(), true);
+        memoryUsage = Math.round((double) usage.getUsed() / (double) usage.getMax() * 100d);
         return this;
     }
 

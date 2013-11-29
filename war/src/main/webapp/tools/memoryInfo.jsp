@@ -22,11 +22,13 @@ StringWriter s = new StringWriter();
 ErrorFileDumper.outputSystemInfo(new PrintWriter(s), false, false, true, false, false, false, false);
 pageContext.setAttribute("info", s.toString().replace("\n", "<br/>"));
 %>
-<p>${info}</p>
 <p>
 <a href="?refresh=true"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
 &nbsp;
-<a href="?action=gc"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a></p>
+<a href="?action=gc"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a>
+<br/>
+${info}
+</p>
 <br/>
 <%@ include file="gotoIndex.jspf" %>
 </body>

@@ -219,9 +219,10 @@ public class ContentActions {
      * @param windowHeader
      * @param nodeType
      * @param mixins
+     * @param nodeProperties 
      * @param useMainNode
      */
-    public static void createNode(final String nodeName, final Linker linker, final String windowHeader, final String nodeType, List<String> mixins, boolean useMainNode) {
+    public static void createNode(final String nodeName, final Linker linker, final String windowHeader, final String nodeType, List<String> mixins, List<GWTJahiaNodeProperty> nodeProperties, boolean useMainNode) {
         GWTJahiaNode parent;
         if (useMainNode) {
             parent = linker.getSelectionContext().getMainNode();
@@ -234,7 +235,7 @@ public class ContentActions {
             String name = isNodeNameProvided ? nodeName : Window.prompt(windowHeader, "untitled");
             if (name != null && name.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), name, nodeType, mixins, null, null, null, null, null, !isNodeNameProvided, new BaseAsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), name, nodeType, mixins, null, nodeProperties, null, null, null, !isNodeNameProvided, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode node) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();

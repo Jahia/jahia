@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
@@ -51,8 +52,10 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ListModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -65,6 +68,7 @@ import java.util.List;
 public class NewContentActionItem extends BaseActionItem  {
     private String nodeTypes = "";
     private List<String> mixins;
+    private List<GWTJahiaNodeProperty> nodeProperties;
     protected String parentTypes = "jnt:contentList jnt:contentFolder jmix:editorialContent";
     protected List<String> parentTypesAsList;
     private boolean useEngine = true;
@@ -116,7 +120,7 @@ public class NewContentActionItem extends BaseActionItem  {
                 ContentActions.showContentWizard(linker, parent.getChildConstraints(), parent, includeSubTypes);
             }
         } else {
-            ContentActions.createNode(newNodeName, linker,getGwtToolbarItem().getTitle(),nodeTypes, mixins, useMainNode);
+            ContentActions.createNode(newNodeName, linker,getGwtToolbarItem().getTitle(),nodeTypes, mixins, nodeProperties, useMainNode);
         }
     }
 
@@ -160,4 +164,20 @@ public class NewContentActionItem extends BaseActionItem  {
     public void setMixins(List<String> mixins) {
         this.mixins = mixins;
     }
+
+    public void setNodeProperties(Map<String, String> properties) {
+        if (properties == null) {
+            this.nodeProperties = null;
+            return;
+        }
+        this.nodeProperties = new ArrayList<GWTJahiaNodeProperty>(properties.size());
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            this.nodeProperties.add(new GWTJahiaNodeProperty(entry.getKey(), entry.getValue()));
+        }
+    }
+
+    public void setNodePropertyList(List<GWTJahiaNodeProperty> nodeProperties) {
+        this.nodeProperties = nodeProperties;
+    }
+
 }

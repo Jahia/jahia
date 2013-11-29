@@ -459,6 +459,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (itemExists == null) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
             }
+<<<<<<< .working
 
             if (!itemExists) {
                 pathPermissionCache.put(cacheKey, true);
@@ -466,6 +467,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             while (!itemExists) {
+=======
+            while (!itemExists) {
+>>>>>>> .merge-right.r48005
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
                 itemExists = getSecuritySession().itemExists(jcrPath);
             }

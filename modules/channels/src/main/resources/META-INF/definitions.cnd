@@ -8,5 +8,5 @@
 [jmix:channelSelection] mixin
  extends = jnt:content, jnt:area
  itemtype = channels
- - j:channelSelection (string,choicelist[channels]) multiple
+ - j:channelSelection (string,choicelist[channels]) multiple multiple
  - j:channelIncludeOrExclude (string,choicelist[resourceBundle]) = exclude autocreated < 'exclude','include'

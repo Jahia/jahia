@@ -854,7 +854,7 @@
                                     <version>${gemini.blueprint.version}</version>
                                 </artifactItem>
 
-                                <artifactItem>
+                                <!--<artifactItem>
                                     <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.ipojo</artifactId>
                                     <version>1.11.0</version>
@@ -863,7 +863,7 @@
                                     <groupId>org.barjo.atmosgi</groupId>
                                     <artifactId>atmosgi-component</artifactId>
                                     <version>0.1.1-SNAPSHOT</version>
-                                </artifactItem>
+                                </artifactItem>-->
 
 
                                 <artifactItem>

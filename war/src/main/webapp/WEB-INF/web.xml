@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5" id="WebApp_Jahia">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0" id="WebApp_Jahia">
 
     <display-name>Jahia</display-name>
 
@@ -53,16 +53,19 @@
     	</description>
         <filter-name>SpnegoHttpFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter>
         <filter-name>JcrSessionFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter>
     	<filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>renderApplicationContextAttribute</param-name>
             <param-value>org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet</param-value>
@@ -77,12 +80,14 @@
         <description>Error logging and e-mail alert filter</description>
         <filter-name>ErrorLoggingFilter</filter-name>
         <filter-class>org.jahia.bin.errors.ErrorLoggingFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter>
         <description>Fires Jahia errorOccurred event</description>
         <filter-name>ErrorEventFilter</filter-name>
         <filter-class>org.jahia.bin.errors.ErrorEventFilter</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <description>
                 The minimal error response code to fire an event.
@@ -98,6 +103,7 @@
     	<description>Sets request character encoding if it is not set already</description>
     	<filter-name>CharacterEncodingFilter</filter-name>
     	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
     	<init-param>
     		<description>Which encoding should we set?</description>
     		<param-name>encoding</param-name>
@@ -108,6 +114,7 @@
     <filter>
         <filter-name>ShindigAuthFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>targetFilterLifecycle</param-name>
             <param-value>true</param-value>
@@ -121,6 +128,7 @@
     <filter>
         <filter-name>shiroFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>targetFilterLifecycle</param-name>
             <param-value>true</param-value>
@@ -131,11 +139,13 @@
     	<description>Allows temporary disabling request serving and switching to a maintenance mode.</description>
         <filter-name>MaintenanceFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter>
         <filter-name>LicenseFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>targetFilterLifecycle</param-name>
             <param-value>true</param-value>
@@ -146,12 +156,16 @@
         <description>Protects access to the content manager and content picker by enforcing permission checks and validating parameters.</description>
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
     </filter>
+
     <filter>
         <description>transform css3 stylesheet to emulate mobile device stylesheet</description>
         <filter-name>CSSChannelFilter</filter-name>
         <filter-class>org.jahia.bin.filters.CSSChannelFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
+
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -544,6 +558,7 @@
             <param-name>publishEvents</param-name>
             <param-value>false</param-value>
         </init-param>
+        <async-supported>true </async-supported>
     </servlet>
     
     <servlet>
@@ -571,6 +586,7 @@
         <servlet-name>osgiProxy</servlet-name>
         <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>    
 
     <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have
@@ -604,6 +620,7 @@
         </init-param>
         <!-- shared thread pool across Broadcaster -->
         <load-on-startup>800</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
 
     <servlet>

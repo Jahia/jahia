@@ -465,7 +465,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -853,6 +853,18 @@
                                     <artifactId>gemini-blueprint-io</artifactId>
                                     <version>${gemini.blueprint.version}</version>
                                 </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.ipojo</artifactId>
+                                    <version>1.11.0</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.barjo.atmosgi</groupId>
+                                    <artifactId>atmosgi-component</artifactId>
+                                    <version>0.1.1-SNAPSHOT</version>
+                                </artifactItem>
+
 
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>

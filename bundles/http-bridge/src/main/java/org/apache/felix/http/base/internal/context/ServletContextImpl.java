@@ -19,19 +19,11 @@ package org.apache.felix.http.base.internal.context;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextAttributeEvent;
-import javax.servlet.ServletContextAttributeListener;
-import javax.servlet.ServletException;
+import javax.servlet.*;
+import javax.servlet.descriptor.JspConfigDescriptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -77,6 +69,16 @@ public final class ServletContextImpl
     public int getMinorVersion()
     {
         return this.context.getMinorVersion();
+    }
+
+    @Override
+    public int getEffectiveMajorVersion() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public int getEffectiveMinorVersion() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Set getResourcePaths(String path)
@@ -145,6 +147,11 @@ public final class ServletContextImpl
     public Enumeration getInitParameterNames()
     {
         return context.getInitParameterNames();
+    }
+
+    @Override
+    public boolean setInitParameter(String s, String s2) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Object getAttribute(String name)
@@ -244,6 +251,121 @@ public final class ServletContextImpl
     public String getServletContextName()
     {
         return this.context.getServletContextName();
+    }
+
+    @Override
+    public ServletRegistration.Dynamic addServlet(String s, String s2) {
+        return this.context.addServlet(s, s2);
+    }
+
+    @Override
+    public ServletRegistration.Dynamic addServlet(String s, Servlet servlet) {
+        return this.context.addServlet(s, servlet);
+    }
+
+    @Override
+    public ServletRegistration.Dynamic addServlet(String s, Class<? extends Servlet> aClass) {
+        return this.context.addServlet(s, aClass);
+    }
+
+    @Override
+    public <T extends Servlet> T createServlet(Class<T> tClass) throws ServletException {
+        return this.context.createServlet(tClass);
+    }
+
+    @Override
+    public ServletRegistration getServletRegistration(String s) {
+        return this.context.getServletRegistration(s);
+    }
+
+    @Override
+    public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+        return this.context.getServletRegistrations();
+    }
+
+    @Override
+    public FilterRegistration.Dynamic addFilter(String s, String s2) {
+        return this.context.addFilter(s, s2);
+    }
+
+    @Override
+    public FilterRegistration.Dynamic addFilter(String s, Filter filter) {
+        return this.context.addFilter(s, filter);
+    }
+
+    @Override
+    public FilterRegistration.Dynamic addFilter(String s, Class<? extends Filter> aClass) {
+        return this.context.addFilter(s, aClass);
+    }
+
+    @Override
+    public <T extends Filter> T createFilter(Class<T> tClass) throws ServletException {
+        return this.context.createFilter(tClass);
+    }
+
+    @Override
+    public FilterRegistration getFilterRegistration(String s) {
+        return this.context.getFilterRegistration(s);
+    }
+
+    @Override
+    public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+        return this.context.getFilterRegistrations();
+    }
+
+    @Override
+    public SessionCookieConfig getSessionCookieConfig() {
+        return this.context.getSessionCookieConfig();
+    }
+
+    @Override
+    public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes) {
+        this.context.setSessionTrackingModes(sessionTrackingModes);
+    }
+
+    @Override
+    public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+        return this.context.getDefaultSessionTrackingModes();
+    }
+
+    @Override
+    public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+        return this.context.getEffectiveSessionTrackingModes();
+    }
+
+    @Override
+    public void addListener(String s) {
+        this.context.addListener(s);
+    }
+
+    @Override
+    public <T extends EventListener> void addListener(T t) {
+        this.context.addListener(t);
+    }
+
+    @Override
+    public void addListener(Class<? extends EventListener> aClass) {
+        this.context.addListener(aClass);
+    }
+
+    @Override
+    public <T extends EventListener> T createListener(Class<T> tClass) throws ServletException {
+        return this.context.createListener(tClass);
+    }
+
+    @Override
+    public JspConfigDescriptor getJspConfigDescriptor() {
+        return this.context.getJspConfigDescriptor();
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.context.getClassLoader();
+    }
+
+    @Override
+    public void declareRoles(String... strings) {
+        this.context.declareRoles(strings);
     }
 
     public String getRealPath(String name)

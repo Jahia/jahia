@@ -82,7 +82,7 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
                                 if(s.contains("*")){
                                     if(value.startsWith(renderContext.getURLGenerator().getContext()) &&
                                        !value.matches(s.replace("*",".*="))){
-                                        final Map<String,Object> parameterMap = (Map<String, Object>) renderContext.getRequest().getParameterMap();
+                                        final Map<String, String[]> parameterMap = renderContext.getRequest().getParameterMap();
                                         for (String paramName : parameterMap.keySet()) {
                                             if(paramName.matches(s.replace("*",".*"))) {
                                                 String parameter = renderContext.getRequest().getParameter(paramName);

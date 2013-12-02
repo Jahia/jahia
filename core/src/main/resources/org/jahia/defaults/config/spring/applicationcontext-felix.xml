@@ -26,6 +26,7 @@
                 <prop key="org.osgi.framework.startlevel.beginning">2</prop>
                 <prop key="org.osgi.framework.storage">${jahiaWebAppRoot}/WEB-INF/var/bundles-deployed</prop>
                 <prop key="org.osgi.framework.storage.clean">none</prop>
+                <prop key="org.apache.felix.http.shared_servlet_context_attributes">true</prop>
                 
                 <prop key="felix.webconsole.manager.root">/console</prop>
                 

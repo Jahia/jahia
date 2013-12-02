@@ -72,7 +72,7 @@ import java.util.*;
  */
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
     
-	private Map<String, String> ignoreForViews = null;
+	private Set<String> ignoreForViews = null;
 	
     /**
      * We use this View wrapper because for filtering common views we just want to compare the keys, not all the attributes like in
@@ -251,7 +251,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             Set<ViewWrapper> wrappedViewsSet = new HashSet<ViewWrapper>();
             for (String s : nodeTypeList) {
             	//check if for views are ignored types
-            	if(declaringPropertyDefinition.getName().equals("j:view") && ignoreForViews != null && ignoreForViews.containsKey(s)) {
+            	if(declaringPropertyDefinition.getName().equals("j:view") && ignoreForViews != null && ignoreForViews.contains(s)) {
             		continue;
             	}
                 SortedSet<View> viewsSet = RenderService.getInstance().getViewsSet(
@@ -322,7 +322,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
     }
     
-    public void setIgnoreForViews(Map<String, String> ignoreForViews) {
+    public void setIgnoreForViews(Set<String> ignoreForViews) {
         this.ignoreForViews = ignoreForViews;
     }
 }

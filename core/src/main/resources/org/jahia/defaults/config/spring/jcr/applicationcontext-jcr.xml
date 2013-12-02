@@ -358,9 +358,9 @@
     <bean id="templatesInitializer"
           class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl">
         <property name="ignoreForViews">
-            <map>
-                <entry key="jmix:skinnable" value="jmix:skinnable"/>
-            </map>
+            <set>
+                <value>jmix:skinnable</value>
+            </set>        
 		</property>
     </bean>
     <bean id="templatesNodeInitializer"

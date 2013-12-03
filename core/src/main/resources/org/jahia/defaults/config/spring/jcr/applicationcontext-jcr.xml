@@ -356,13 +356,7 @@
     <bean id="countryFlagInitializer"
           class="org.jahia.services.content.nodetypes.initializers.CountryFlagChoiceListInitializerAndRendererImpl"/>
     <bean id="templatesInitializer"
-          class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl">
-        <property name="ignoreForViews">
-            <set>
-                <value>jmix:skinnable</value>
-            </set>        
-		</property>
-    </bean>
+          class="org.jahia.services.content.nodetypes.initializers.TemplatesChoiceListInitializerImpl"/>
     <bean id="templatesNodeInitializer"
           class="org.jahia.services.content.nodetypes.initializers.TemplatesNodeChoiceListInitializer"/>
     <bean id="renderModesInitializer"

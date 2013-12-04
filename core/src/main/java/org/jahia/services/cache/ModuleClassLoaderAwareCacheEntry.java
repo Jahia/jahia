@@ -74,7 +74,7 @@ public class ModuleClassLoaderAwareCacheEntry extends ClassLoaderAwareCacheEntry
     @Override
     protected ClassLoader getClassLoaderToUse() {
         JahiaTemplatesPackage module = moduleName != null ? ServicesRegistry.getInstance()
-                .getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName) : null;
+                .getJahiaTemplateManagerService().getTemplatePackageById(moduleName) : null;
         return module != null ? module.getClassLoader() : null;
     }
 

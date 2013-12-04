@@ -5,5 +5,5 @@
         <c:set var="defaultVersion" value="${v.value}"/>
     </c:forEach>
 </c:if>
-<c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, currentModule != null ? currentModule.rootFolder : defaultVersion.rootFolder)}" var="isMandatoryDependency"/>
+<c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, currentModule != null ? currentModule.id : defaultVersion.id)}" var="isMandatoryDependency"/>
 <c:set value="${currentModule != null ? currentModule.sourcesDownloadable : defaultVersion.sourcesDownloadable}" var="sourcesDownloadable"/>

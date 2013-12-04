@@ -157,7 +157,7 @@ public class HtmlExternalizationService {
                         String after = StringUtils.substringAfter(href, "/modules/");
                         String module = StringUtils.substringBefore(after, "/");
                         JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                                .getTemplatePackageByFileName(module);
+                                .getTemplatePackageById(module);
                         if (pack != null) {
                             String prefix = "/modules/" + module ;
                             if (!href.startsWith(prefix)) {

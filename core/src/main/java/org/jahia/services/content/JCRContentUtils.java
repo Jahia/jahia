@@ -163,10 +163,10 @@ public final class JCRContentUtils implements ServletContextAware {
     public static boolean check(String icon) {
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
-            String moduleName = StringUtils.substringBefore(icon, "/");
+            String moduleId = StringUtils.substringBefore(icon, "/");
             String pathAfter = StringUtils.substringAfter(icon, "/");
-            JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
-            icon = module.getRootFolder() + "/" + module.getVersion() + "/" + pathAfter;
+            JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
+            icon = module.getId() + "/" + module.getVersion() + "/" + pathAfter;
             Resource r = module.getResource(pathAfter + ".png");
             present = r != null && r.exists();
             iconsPresence.put(icon, present);
@@ -745,9 +745,9 @@ public final class JCRContentUtils implements ServletContextAware {
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String systemId = primaryNodeType.getSystemId();
         JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") && !"default".equals(systemId) ? ServicesRegistry
-                .getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(systemId) : null;
+                .getInstance().getJahiaTemplateManagerService().getTemplatePackageById(systemId) : null;
 
-        return aPackage != null ? aPackage.getRootFolder() + "/icons/" : "assets/icons/";
+        return aPackage != null ? aPackage.getId() + "/icons/" : "assets/icons/";
     }
 
     public static JCRContentUtils getInstance() {

@@ -81,7 +81,7 @@ public class BundleMvcViewFactory extends AbstractMvcViewFactory {
             ((JstlView)view).setServletContext(JahiaContextLoaderListener.getServletContext());
         }
         if (view instanceof InternalResourceView) {
-            ((InternalResourceView) view).setUrl("/modules/" + module.getRootFolder()
+            ((InternalResourceView) view).setUrl("/modules/" + module.getId()
                     + ((InternalResourceView) view).getUrl());
         }
 

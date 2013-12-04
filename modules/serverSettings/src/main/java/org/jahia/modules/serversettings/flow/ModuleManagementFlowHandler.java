@@ -186,7 +186,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         List<String> deps = BundleUtils.getModule(bundle).getDepends();
         List<String> missingDeps = new ArrayList<String>();
         for (String dep : deps) {
-            if (templateManagerService.getTemplatePackageByFileName(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
+            if (templateManagerService.getTemplatePackageById(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
                 missingDeps.add(dep);
             }
         }
@@ -262,24 +262,24 @@ public class ModuleManagementFlowHandler implements Serializable {
                 List<JahiaTemplatesPackage> directDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), false, true, false);
                 for (JahiaTemplatesPackage directDependency : directDependencies) {
-                    if(!directSiteDep.containsKey(directDependency.getRootFolder())) {
-                        directSiteDep.put(directDependency.getRootFolder(), new ArrayList<String>());
+                    if(!directSiteDep.containsKey(directDependency.getId())) {
+                        directSiteDep.put(directDependency.getId(), new ArrayList<String>());
                     }
-                    directSiteDep.get(directDependency.getRootFolder()).add(site.getSiteKey());
+                    directSiteDep.get(directDependency.getId()).add(site.getSiteKey());
                 }
                 if (site.getTemplatePackage() != null) {
-                    if(!templateSiteDep.containsKey(site.getTemplatePackage().getRootFolder())) {
-                        templateSiteDep.put(site.getTemplatePackage().getRootFolder(), new ArrayList<String>());
+                    if(!templateSiteDep.containsKey(site.getTemplatePackage().getId())) {
+                        templateSiteDep.put(site.getTemplatePackage().getId(), new ArrayList<String>());
                     }
-                    templateSiteDep.get(site.getTemplatePackage().getRootFolder()).add(site.getSiteKey());
+                    templateSiteDep.get(site.getTemplatePackage().getId()).add(site.getSiteKey());
                 }
                 List<JahiaTemplatesPackage> transitiveDependencies = templateManagerService.getInstalledModulesForSite(
                         site.getSiteKey(), true, false, true);
                 for (JahiaTemplatesPackage transitiveDependency : transitiveDependencies) {
-                    if(!transitiveSiteDep.containsKey(transitiveDependency.getRootFolder())) {
-                        transitiveSiteDep.put(transitiveDependency.getRootFolder(), new ArrayList<String>());
+                    if(!transitiveSiteDep.containsKey(transitiveDependency.getId())) {
+                        transitiveSiteDep.put(transitiveDependency.getId(), new ArrayList<String>());
                     }
-                    transitiveSiteDep.get(transitiveDependency.getRootFolder()).add(site.getSiteKey());
+                    transitiveSiteDep.get(transitiveDependency.getId()).add(site.getSiteKey());
                 }
             }
         } catch (JahiaException e) {
@@ -310,10 +310,10 @@ public class ModuleManagementFlowHandler implements Serializable {
         result.putAll(allModuleVersions);
         for (Bundle bundle : moduleStates.keySet()) {
             JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
-            if(!allModuleVersions.containsKey(module.getRootFolder())) {
+            if(!allModuleVersions.containsKey(module.getId())) {
                 TreeMap<ModuleVersion, JahiaTemplatesPackage> map = new TreeMap<ModuleVersion, JahiaTemplatesPackage>();
                 map.put(module.getVersion(),module);
-                result.put(module.getRootFolder(),map);
+                result.put(module.getId(),map);
             }
         }
         return result;
@@ -373,7 +373,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         ModuleVersionState state = new ModuleVersionState();
         Map<String, JahiaTemplatesPackage> registeredModules = templateManagerService.getTemplatePackageRegistry()
                 .getRegisteredModules();
-        String rootFolder = pkg.getRootFolder();
+        String moduleId = pkg.getId();
 
         // check for unresolved dependencies
         if (!pkg.getDepends().isEmpty()) {
@@ -386,23 +386,23 @@ public class ModuleManagementFlowHandler implements Serializable {
         List<JahiaTemplatesPackage> dependantModules = templateManagerService.getTemplatePackageRegistry()
                 .getDependantModules(pkg);
         for (JahiaTemplatesPackage dependant : dependantModules) {
-            state.getDependencies().add(dependant.getRootFolder());
+            state.getDependencies().add(dependant.getId());
         }
 
         // check site usage and system dependency
-        if (templateSiteDep.containsKey(rootFolder)) {
-            state.getUsedInSites().addAll(templateSiteDep.get(rootFolder));
+        if (templateSiteDep.containsKey(moduleId)) {
+            state.getUsedInSites().addAll(templateSiteDep.get(moduleId));
         }
-        if (directSiteDep.containsKey(rootFolder)) {
-            state.getUsedInSites().addAll(directSiteDep.get(rootFolder));
+        if (directSiteDep.containsKey(moduleId)) {
+            state.getUsedInSites().addAll(directSiteDep.get(moduleId));
         }
-        if (transitiveSiteDep.containsKey(rootFolder)) {
-            state.getUsedInSites().addAll(transitiveSiteDep.get(rootFolder));
+        if (transitiveSiteDep.containsKey(moduleId)) {
+            state.getUsedInSites().addAll(transitiveSiteDep.get(moduleId));
         }
-        state.setSystemDependency(systemSiteRequiredModules.contains(rootFolder));
+        state.setSystemDependency(systemSiteRequiredModules.contains(moduleId));
 
-        if (registeredModules.containsKey(rootFolder)
-                && registeredModules.get(rootFolder).getVersion().equals(moduleVersion)) {
+        if (registeredModules.containsKey(moduleId)
+                && registeredModules.get(moduleId).getVersion().equals(moduleVersion)) {
             // this is the currently active version of a module
             state.setCanBeStopped(!state.isSystemDependency());
         } else {
@@ -441,9 +441,9 @@ public class ModuleManagementFlowHandler implements Serializable {
         try {
             JahiaTemplatesPackage pkg = templateManagerService.getTemplatePackage(sitesService.getSiteByKey(
                     JahiaSitesService.SYSTEM_SITE_KEY).getTemplatePackageName());
-            modules.add(pkg.getRootFolder());
+            modules.add(pkg.getId());
             for (JahiaTemplatesPackage dep : pkg.getDependencies()) {
-                modules.add(dep.getRootFolder());
+                modules.add(dep.getId());
             }
         } catch (JahiaException e) {
             throw new JahiaRuntimeException(e);

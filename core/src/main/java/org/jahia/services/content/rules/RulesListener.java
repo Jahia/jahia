@@ -191,7 +191,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         try {
             File compiledRulesDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/compiledRules");
             if (aPackage != null) {
-                compiledRulesDir = new File(compiledRulesDir, aPackage.getRootFolderWithVersion());
+                compiledRulesDir = new File(compiledRulesDir, aPackage.getIdWithVersion());
             } else {
                 compiledRulesDir = new File(compiledRulesDir, "system");
             }

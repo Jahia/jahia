@@ -53,9 +53,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import java.util.*;
 
 /**
@@ -115,7 +112,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 logger.warn("A default template has been set on site '" + site.getName() + "' but the template has been deleted");
             }
             for (String installedModule : installedModules) {
-                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(installedModule);
+                JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(installedModule);
                 if (aPackage != null) {
                     addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd, locale, context);
                 }

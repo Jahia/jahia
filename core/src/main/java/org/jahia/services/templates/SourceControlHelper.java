@@ -91,7 +91,7 @@ public class SourceControlHelper {
     private TemplatePackageRegistry templatePackageRegistry;
 
     public JCRNodeWrapper checkoutModule(final File moduleSources, final String scmURI, final String branchOrTag,
-            final String moduleName, final String version, final JCRSessionWrapper session) throws IOException,
+            final String moduleId, final String version, final JCRSessionWrapper session) throws IOException,
             RepositoryException, BundleException {
         boolean newModule = moduleSources == null;
         File sources = ensureModuleSourceFolder(moduleSources);
@@ -101,7 +101,7 @@ public class SourceControlHelper {
             SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, scmURI, branchOrTag);
 
             // verify the sources and found out module information
-            ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleName, version, branchOrTag);
+            ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
 
             if (newModule) {
                 File newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.name + "_" + moduleInfo.version);
@@ -125,7 +125,7 @@ public class SourceControlHelper {
             JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                     .compileAndDeploy(moduleInfo.name, moduleInfo.path, session);
             if (pack != null) {
-                JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+                JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());
                 pack.setSourceControl(scm);
                 setSourcesFolderInPackageAndNode(pack, moduleInfo.path, node);
                 session.save();
@@ -210,22 +210,22 @@ public class SourceControlHelper {
         return sources;
     }
 
-    private ModuleInfo getModuleInfo(final File sources, final String scmURI, final String moduleName,
+    private ModuleInfo getModuleInfo(final File sources, final String scmURI, final String moduleId,
             final String version, final String branchOrTag) throws IOException, DocumentException,
             XmlPullParserException {
         ModuleInfo info = new ModuleInfo();
-        info.name = moduleName;
+        info.name = moduleId;
         info.path = sources;
         info.version = version;
 
         Model pom = null;
 
-        if (!StringUtils.isEmpty(moduleName)) {
+        if (!StringUtils.isEmpty(moduleId)) {
             // Find the root folder of the module inside the repository, if in a subfolder
             Collection<File> files = FileUtils.listFiles(sources, POM_XML_FILE_FILTER, TrueFileFilter.INSTANCE);
             for (File file : files) {
                 Model modulePom = PomUtils.read(file);
-                if (moduleName.equals(modulePom.getArtifactId())) {
+                if (moduleId.equals(modulePom.getArtifactId())) {
                     // we've found our candidate
                     pom = modulePom;
                     info.path = file.getParentFile();
@@ -243,11 +243,11 @@ public class SourceControlHelper {
                 if (info.version == null) {
                     info.version = v;
                 }
-                ensureMinimalRequiredJahiaVersion(v, info.path, scmURI, moduleName, version, branchOrTag);
+                ensureMinimalRequiredJahiaVersion(v, info.path, scmURI, moduleId, version, branchOrTag);
             }
         } else {
             FileUtils.deleteQuietly(sources);
-            String msg = "Sources were not found for " + moduleName + "  " + StringUtils.defaultIfEmpty(version, "")
+            String msg = "Sources were not found for " + moduleId + "  " + StringUtils.defaultIfEmpty(version, "")
                     + " in " + scmURI + " " + StringUtils.defaultIfEmpty(branchOrTag, "");
             logger.error(msg);
             throw new IOException(msg);
@@ -264,7 +264,7 @@ public class SourceControlHelper {
         if (pack.getSourcesFolder() != null) {
             return pack.getSourcesFolder();
         }
-        JCRNodeWrapper n = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+        JCRNodeWrapper n = session.getNode("/modules/" + pack.getIdWithVersion());
         if (n.hasNode("j:versionInfo")) {
             JCRNodeWrapper vi = n.getNode("j:versionInfo");
             if (vi.hasProperty("j:sourcesFolder")) {
@@ -280,9 +280,9 @@ public class SourceControlHelper {
         return null;
     }
 
-    public void sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session)
+    public void sendToSourceControl(String moduleId, String scmURI, String scmType, JCRSessionWrapper session)
             throws RepositoryException, IOException {
-        JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileName(moduleName);
+        JahiaTemplatesPackage pack = templatePackageRegistry.lookupById(moduleId);
         String fullUri = "scm:" + scmType + ":" + scmURI;
         final File sources = getSources(pack, session);
 
@@ -315,7 +315,7 @@ public class SourceControlHelper {
 
         pack.setSourceControl(scm);
         setSCMConfigInPom(sources, fullUri);
-        JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+        JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());
         setSourcesFolderInPackageAndNode(pack, sources, node);
         session.save();
         scm.commit("Initial commit");

@@ -142,7 +142,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                             }
                         } else if (definition instanceof ExtendedPropertyDefinition) {
                             JahiaTemplatesPackage pkg = ((ExtendedPropertyDefinition) definition).getDeclaringNodeType().getTemplatePackage();
-                            ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default"), getRenderContext().getMainResourceLocale());
+                            ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("default"), getRenderContext().getMainResourceLocale());
                             final ExtendedPropertyDefinition propertyDefinition = (ExtendedPropertyDefinition) definition;
                             List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
                             String resourceBundleKey = definition.getResourceBundleKey();

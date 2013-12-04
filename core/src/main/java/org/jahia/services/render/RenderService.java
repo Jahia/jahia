@@ -311,8 +311,8 @@ public class RenderService {
                     }
                     Set<String> installed = new LinkedHashSet<String>();
                     installed.add(packageName);
-                    for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageByFileName(packageName).getDependencies()) {
-                        installed.add(aPackage.getRootFolder());
+                    for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageById(packageName).getDependencies()) {
+                        installed.add(aPackage.getId());
                     }
                     template = addContextualTemplates(resource, renderContext, template, parent, installed);
                 }
@@ -392,7 +392,7 @@ public class RenderService {
     private Template addTemplate(Resource resource, RenderContext renderContext, String templateName, Set<String> installedModules, String type) throws RepositoryException {
         SortedSet<Template> templates = new TreeSet<Template>(TEMPLATE_PRIORITY_COMPARATOR);
         for (String s : installedModules) {
-            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(s);
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(s);
             if (pack != null) {
                 JCRNodeWrapper templateNode = resource.getNode().getSession().getNode("/modules/" + s + "/" + pack.getVersion());
                 templates.addAll(addTemplates(resource, renderContext, templateName, templateNode, type));

@@ -96,9 +96,9 @@ public class JahiaTemplatesPackage {
      */
     private List<String> depends = new LinkedList<String>();
     /**
-     * The Folder Name where to extract package contents
+     * The module id (= artifactId)
      */
-    private String m_RootFolder;
+    private String id;
     /**
      * The initial import file
      */
@@ -218,31 +218,65 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Return the Root Folder.
+     * Return the module Id.
      *
-     * @return (String) the Root Folder of the templates
+     * @return (String) the module Id
+     * @deprecated use {@link #getId()} instead
      */
     public String getRootFolder() {
-        return m_RootFolder;
+        return getId();
     }
-    
-    public String getRootFolderWithVersion() {
-        return m_RootFolder + "/" + version.toString();
-    }
-
 
     /**
-     * Set the Root Folder.
+     * Return the module Id.
      *
-     * @param folder the Root Folder of the templates
+     * @return (String) the module Id
      */
-    public void setRootFolder(String folder) {
-        if (StringUtils.isNotEmpty(folder)) {
-            m_RootFolder = folder;
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Return the module Id concatenated with it version
+     *
+     * @return the module Id concatenated with it version
+     * @deprecated use {@link #getIdWithVersion()} instead
+     */
+    public String getRootFolderWithVersion() {
+        return getIdWithVersion();
+    }
+
+    /**
+     * Return the module Id concatenated with it version
+     *
+     * @return the module Id concatenated with it version
+     */
+    public String getIdWithVersion() {
+        return id + "/" + version.toString();
+    }
+
+    /**
+     * Set the module Id.
+     *
+     * @param moduleId the module Id
+     * @deprecated use {@link #setId(String)} instead
+     */
+    public void setRootFolder(String moduleId) {
+        setId(moduleId);
+    }
+
+    /**
+     * Set the module Id.
+     *
+     * @param moduleId the module Id
+     */
+    public void setId(String moduleId) {
+        if (StringUtils.isNotEmpty(moduleId)) {
+            id = moduleId;
             SettingsBean conf = SettingsBean.getInstance();
-            rootFolderPath = conf.getTemplatesContext() + (conf.getTemplatesContext().endsWith("/") ? "" : "/") + folder;
+            rootFolderPath = conf.getTemplatesContext() + (conf.getTemplatesContext().endsWith("/") ? "" : "/") + moduleId;
         } else {
-            m_RootFolder = "";
+            id = "";
             rootFolderPath = SettingsBean.getInstance().getTemplatesContext();
         }
     }
@@ -311,7 +345,7 @@ public class JahiaTemplatesPackage {
      * @return <code>true</code> if this package is the default template set
      */
     public boolean isDefault() {
-        return getRootFolder() != null && "default".equals(getRootFolder());
+        return getId() != null && "default".equals(getId());
     }
 
     public List<String> getInitialImports() {
@@ -342,7 +376,7 @@ public class JahiaTemplatesPackage {
 
     @Override
     public String toString() {
-        return getRootFolder();
+        return getId();
     }
 
     /**
@@ -458,7 +492,7 @@ public class JahiaTemplatesPackage {
 
         JahiaTemplatesPackage that = (JahiaTemplatesPackage) o;
 
-        if (m_RootFolder != null ? !m_RootFolder.equals(that.m_RootFolder) : that.m_RootFolder != null) {
+        if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
         if (version != null ? !version.equals(that.version) : that.version != null) {
@@ -471,7 +505,7 @@ public class JahiaTemplatesPackage {
     @Override
     public int hashCode() {
         int result = version != null ? version.hashCode() : 0;
-        result = 31 * result + (m_RootFolder != null ? m_RootFolder.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
 

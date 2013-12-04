@@ -121,10 +121,10 @@ public class ComponentRegistry {
         if (resolvedSite != null && resolvedSite.hasNode("components")) {
             components.add(resolvedSite.getNode("components"));
         }
-        if (resolvedSite != null && ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(resolvedSite.getName()) != null) {
+        if (resolvedSite != null && ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(resolvedSite.getName()) != null) {
 
-            for (JahiaTemplatesPackage dep : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(resolvedSite.getName()).getDependencies()) {
-                String version = dep.getRootFolderWithVersion();
+            for (JahiaTemplatesPackage dep : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(resolvedSite.getName()).getDependencies()) {
+                String version = dep.getIdWithVersion();
                 String path = "/modules/" + version + "/components";
 
                 if (resolvedSite.getSession().nodeExists(path)) {
@@ -243,7 +243,7 @@ public class ComponentRegistry {
         for (String s : pkg.getDefinitionsFiles()) {
             try {
                 if (pkg.getResource(s) != null) {
-                    types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(pkg.getResource(s), pkg.getRootFolder()));
+                    types.addAll(NodeTypeRegistry.getInstance().getDefinitionsFromFile(pkg.getResource(s), pkg.getId()));
                 }
             } catch (ParseException e) {
                 logger.error("Cannot parse definitions file "+s,e);
@@ -252,8 +252,8 @@ public class ComponentRegistry {
             }
         }
 
-        if (modules.hasNode(pkg.getRootFolderWithVersion())) {
-            JCRNodeWrapper module = modules.getNode(pkg.getRootFolderWithVersion());
+        if (modules.hasNode(pkg.getIdWithVersion())) {
+            JCRNodeWrapper module = modules.getNode(pkg.getIdWithVersion());
             boolean emptyPermissions = false;
             if (!module.hasNode("permissions")) {
                 emptyPermissions = true;
@@ -265,7 +265,7 @@ public class ComponentRegistry {
             }
             JCRNodeWrapper components = permissions.getNode("components");
 
-            if (pkg.getRootFolder().equals("default")) {
+            if (pkg.getId().equals("default")) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
                     if (registerComponent(components, (ExtendedNodeType) nti.nextNodeType())) {
                         count++;
@@ -288,7 +288,7 @@ public class ComponentRegistry {
         } else {
             logger.warn("Unable to find module node for path {}."
                     + " Skip registering components for module {}.",
-                    modules.getPath() + "/" + pkg.getRootFolder(), pkg.getName());
+                    modules.getPath() + "/" + pkg.getId(), pkg.getName());
         }
         session.save();
         return count;

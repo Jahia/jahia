@@ -135,7 +135,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${not empty activeVersion.sourcesFolder}">
-                            <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${activeVersion.rootFolder}.html"/>
+                            <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${activeVersion.id}.html"/>
                             <button class="btn" type="button" onclick='window.parent.location.assign("${urlToStudio}")'>
                                 <i class="icon-circle-arrow-right"></i>
                                 &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
@@ -147,7 +147,7 @@
                         <c:when test="${not empty activeVersion.scmURI}">
                             <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                    <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                    <input type="hidden" name="module" value="${activeVersion.id}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
                                     <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
                                     <button class="btn button-download" type="submit" name="_eventId_downloadSources" onclick="">
@@ -160,7 +160,7 @@
 
                         <c:otherwise>
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                <input type="hidden" name="module" value="${activeVersion.id}"/>
                                 <input type="hidden" name="scmUri" value="scm:git:"/>
                                 <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
                                 <button class="btn" type="submit" name="_eventId_viewDownloadForm" onclick="">
@@ -225,14 +225,14 @@
             <td>${site}</td>
             <td>
                 <c:choose>
-                    <c:when test="${not empty sitesDirect[activeVersion.rootFolder] and functions:contains(sitesDirect[activeVersion.rootFolder],site)}">
+                    <c:when test="${not empty sitesDirect[activeVersion.id] and functions:contains(sitesDirect[activeVersion.id],site)}">
                         <fmt:message key="serverSettings.manageModules.usedInSites.direct"/>
                     </c:when>
-                    <c:when test="${not empty sitesTemplates[activeVersion.rootFolder] and functions:contains(sitesTemplates[activeVersion.rootFolder],site)}">
+                    <c:when test="${not empty sitesTemplates[activeVersion.id] and functions:contains(sitesTemplates[activeVersion.id],site)}">
                         <fmt:message
                                 key="serverSettings.manageModules.usedInSites.templates"/>
                     </c:when>
-                    <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
+                    <c:when test="${not empty sitesTransitive[activeVersion.id] and functions:contains(sitesTransitive[activeVersion.id],site)}">
                         <fmt:message
                                 key="serverSettings.manageModules.usedInSites.transitive"/>
                     </c:when>
@@ -245,9 +245,9 @@
                 <c:set var="cellEmpty" value="true"/>
                 <c:if test="${activeVersion.moduleType ne 'templatesSet'}">
                     <c:choose>
-                        <c:when test="${not empty sitesDirect[activeVersion.rootFolder] and functions:contains(sitesDirect[activeVersion.rootFolder],site)}">
+                        <c:when test="${not empty sitesDirect[activeVersion.id] and functions:contains(sitesDirect[activeVersion.id],site)}">
                             <form id="disable${status.index}" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                <input type="hidden" name="module" value="${activeVersion.id}"/>
                                 <input type="hidden" name="disableFrom" value="/sites/${site}"/>
                                 <input type="hidden" name="purge" value="false"/>
                                 <input type="hidden" name="_eventId_disable" value="true"/>
@@ -260,11 +260,11 @@
                             </form>
                             <c:set var="cellEmpty" value="false"/>
                         </c:when>
-                        <c:when test="${not empty sitesTransitive[activeVersion.rootFolder] and functions:contains(sitesTransitive[activeVersion.rootFolder],site)}">
+                        <c:when test="${not empty sitesTransitive[activeVersion.id] and functions:contains(sitesTransitive[activeVersion.id],site)}">
                         </c:when>
                         <c:otherwise>
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                                <input type="hidden" name="module" value="${activeVersion.id}"/>
                                 <input type="hidden" name="enableOn" value="/sites/${site}"/>
                                 <fmt:message var="label"
                                              key='serverSettings.manageModules.module.enable'/>
@@ -285,7 +285,7 @@
         <tr>
             <td align="right" colspan="3">
                 <form id="disableAll" style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                    <input type="hidden" name="module" value="${activeVersion.rootFolder}"/>
+                    <input type="hidden" name="module" value="${activeVersion.id}"/>
                     <input type="hidden" name="purge" value="false"/>
                     <input type="hidden" name="_eventId_disableAll" value="true"/>
                     <fmt:message var="label"
@@ -348,7 +348,7 @@
                 <td><span style="font: bold">${dependency.name}</span></td>
                 <td>
                     <c:if test="${isStudio and not empty dependency.sourcesFolder}">
-                        <c:set var="urlDependencyDetails" value="${url.base}/modules/${dependency.rootFolder}.html"/>
+                        <c:set var="urlDependencyDetails" value="${url.base}/modules/${dependency.id}.html"/>
                         <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDependencyDetails}")'>
                             <i class="icon-zoom-in icon-white"></i>
                             &nbsp;<fmt:message key='serverSettings.manageModules.details' />
@@ -356,7 +356,7 @@
                     </c:if>
                     <c:if test="${not isStudio}">
                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                            <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
+                            <input type="hidden" name="selectedModule" value="${dependency.id}"/>
                             <button class="btn btn-info" type="submit" name="_eventId_viewDetails" onclick="">
                                 <i class="icon-zoom-in icon-white"></i>
                                 &nbsp;<fmt:message key='serverSettings.manageModules.details' />
@@ -387,7 +387,7 @@
                     <c:if test="${isStudio}">
                         <c:choose>
                             <c:when test="${not empty dependency.sourcesFolder}">
-                                <c:url var="urlDependencyDetails" value="${url.base}/modules/${dependency.rootFolder}.html"/>
+                                <c:url var="urlDependencyDetails" value="${url.base}/modules/${dependency.id}.html"/>
                                 <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDependencyDetails}")'>
                                     <i class="icon-zoom-in icon-white"></i>
                                     &nbsp;<fmt:message key='serverSettings.manageModules.details' />
@@ -398,7 +398,7 @@
                     </c:if>
                     <c:if test="${not isStudio}">
                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                            <input type="hidden" name="selectedModule" value="${dependency.rootFolder}"/>
+                            <input type="hidden" name="selectedModule" value="${dependency.id}"/>
                             <button class="btn btn-info" type="submit" name="_eventId_viewDetails" onclick="">
                                 <i class="icon-zoom-in icon-white"></i>
                                 &nbsp;<fmt:message key='serverSettings.manageModules.details' />

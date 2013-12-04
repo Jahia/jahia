@@ -102,16 +102,16 @@ public final class BundleUtils {
     /**
      * Find the bundle that is represented by the specified module and version.
      * 
-     * @param moduleName
-     *            the module name
+     * @param moduleId
+     *            the module Id
      * @param version
      *            the module version
      * @return the bundle for the specified module and version or <code>null</code> if the corresponding bundle is not present
      */
-    public static Bundle getBundle(String moduleName, String version) {
+    public static Bundle getBundle(String moduleId, String version) {
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-            String n = getModuleName(bundle);
-            if (StringUtils.equals(n, moduleName)) {
+            String n = getModuleId(bundle);
+            if (StringUtils.equals(n, moduleId)) {
                 String v = getModuleVersion(bundle);
                 if (StringUtils.equals(v, version)) {
                     return bundle;
@@ -129,7 +129,7 @@ public final class BundleUtils {
      * @return the bundle display name containing module name (ID) and the version
      */
     public static String getDisplayName(Bundle bundle) {
-        return getModuleName(bundle) + " v" + getModuleVersion(bundle);
+        return getModuleId(bundle) + " v" + getModuleVersion(bundle);
     }
     
     /**
@@ -143,19 +143,19 @@ public final class BundleUtils {
     public static JahiaTemplatesPackage getModule(Bundle bundle) {
         JahiaTemplatesPackage pkg = null;
 
-        String moduleName = getModuleName(bundle);
+        String moduleId = getModuleId(bundle);
         String version = getModuleVersion(bundle);
 
-        Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleName);
+        Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions == null) {
             moduleVersions = new ConcurrentHashMap<String, JahiaTemplatesPackage>(1);
-            modules.put(moduleName, moduleVersions);
+            modules.put(moduleId, moduleVersions);
         } else {
             pkg = moduleVersions.get(version);
         }
 
         if (pkg == null) {
-            logger.info("Building module instance for bundle {} v{}", moduleName, version);
+            logger.info("Building module instance for bundle {} v{}", moduleId, version);
             pkg = JahiaBundleTemplatesPackageHandler.build(bundle);
             if (pkg != null) {
                 moduleVersions.put(version, pkg);
@@ -179,9 +179,8 @@ public final class BundleUtils {
      *            the bundle to read module name from
      * @return the module name read from the provided bundle
      */
-    public static String getModuleName(Bundle bundle) {
-        return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Jahia-Root-Folder"),
-                bundle.getSymbolicName());
+    public static String getModuleId(Bundle bundle) {
+        return bundle.getSymbolicName();
     }
 
     /**
@@ -222,7 +221,7 @@ public final class BundleUtils {
 
     public static Class<?> loadModuleClass(String className) throws ClassNotFoundException {
         Class<?> clazz = null;
-        String[] moduleKey = moduleForClass.get(className); // [moduleName, moduleVersion]
+        String[] moduleKey = moduleForClass.get(className); // [moduleId, moduleVersion]
         if (moduleKey != null) {
             ClassLoader cl = null;
             Map<String, JahiaTemplatesPackage> versions = modules.get(moduleKey[0]);
@@ -245,7 +244,7 @@ public final class BundleUtils {
                     try {
                         clazz = pkg.getClassLoader().loadClass(className);
                         moduleForClass
-                                .put(className, new String[] { pkg.getRootFolder(), pkg.getVersion().toString() });
+                                .put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
                         return clazz;
                     } catch (ClassNotFoundException e) {
                         // continue searching class in other modules
@@ -264,10 +263,10 @@ public final class BundleUtils {
      *            the corresponding OSGi bundle
      */
     public static void unregisterModule(Bundle bundle) {
-        String moduleName = getModuleName(bundle);
+        String moduleId = getModuleId(bundle);
         String version = getModuleVersion(bundle);
 
-        Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleName);
+        Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions != null) {
             JahiaTemplatesPackage pkg = moduleVersions.remove(version);
             pkg.setClassLoader(null);

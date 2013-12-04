@@ -77,7 +77,7 @@ class JahiaBundleTemplatesPackageHandler {
         pkg.setVersion(new ModuleVersion(StringUtils.defaultIfBlank(getHeader(bundle, "Implementation-Version"), bundle
                 .getVersion().toString())));
 
-        pkg.setRootFolder(StringUtils.defaultString(getHeader(bundle, "Jahia-Root-Folder"), bundle.getSymbolicName()));
+        pkg.setId(bundle.getSymbolicName());
         pkg.setDescription(getHeader(bundle, "Bundle-Description"));
         detectResourceBundle(bundle, pkg);
 
@@ -132,7 +132,7 @@ class JahiaBundleTemplatesPackageHandler {
             return;
         }
 
-        String rbName = pkg.getRootFolder();
+        String rbName = pkg.getId();
         if (hasResourceBundle(bundle, rbName)) {
             pkg.setResourceBundleName("resources." + rbName);
             return;

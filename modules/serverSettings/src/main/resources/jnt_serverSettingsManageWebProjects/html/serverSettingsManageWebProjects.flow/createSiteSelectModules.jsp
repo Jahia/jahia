@@ -25,8 +25,8 @@
 
                     <select class="span6" name="templateSet" id="templateSet">
                         <c:forEach items="${allModules}" var="module">
-                            <c:if test="${module.moduleType eq 'templatesSet' && module.rootFolder != 'templates-system'}">
-                            <option value="${module.rootFolder}" ${siteBean.templateSet eq module.rootFolder ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.rootFolder})</option>
+                            <c:if test="${module.moduleType eq 'templatesSet' && module.id != 'templates-system'}">
+                            <option value="${module.id}" ${siteBean.templateSet eq module.id ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.id})</option>
                             </c:if>
                         </c:forEach>
                     </select>
@@ -40,8 +40,8 @@
                         <c:forEach items="${allModules}" var="module">
                             <c:if test="${module.moduleType ne 'templatesSet' && module.moduleType ne 'system'}">
                                             <div class="moduleListItem" >
-                                                <label style="padding: 5px;" for="${module.rootFolder}" title="${module.description}">
-                                                    <input type="checkbox" name="modules" id="${module.rootFolder}" value="${module.rootFolder}" ${functions:contains(siteBean.modules,module.rootFolder) ? 'checked="true"' : ''} /> ${module.name} (${module.rootFolder})
+                                                <label style="padding: 5px;" for="${module.id}" title="${module.description}">
+                                                    <input type="checkbox" name="modules" id="${module.id}" value="${module.id}" ${functions:contains(siteBean.modules,module.id) ? 'checked="true"' : ''} /> ${module.name} (${module.id})
                                                 </label>
                                             </div>
                                         </c:if>

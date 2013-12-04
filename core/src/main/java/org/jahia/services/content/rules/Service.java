@@ -661,12 +661,12 @@ public class Service extends JahiaService {
         }
     }
 
-    public void deployModule(String moduleName, AddedNodeFact site, KnowledgeHelper drools) {
+    public void deployModule(String moduleId, AddedNodeFact site, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         try {
 
             JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-            ((JahiaTemplateManagerService) managerService).installModule(moduleName, site.getPath(), user.getName());
+            ((JahiaTemplateManagerService) managerService).installModule(moduleId, site.getPath(), user.getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -721,7 +721,7 @@ public class Service extends JahiaService {
     }
 
     public void updateDependencies(AddedNodeFact node) throws RepositoryException {
-        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().lookupByFileNameAndVersion(node.getNode().getParent().getName(), new ModuleVersion(node.getName()));
+        JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().lookupByIdAndVersion(node.getNode().getParent().getName(), new ModuleVersion(node.getName()));
         if (pack != null) {
             Value[] dependencies = node.getNode().getProperty("j:dependencies").getValues();
             List<String> depends = new ArrayList<String>();

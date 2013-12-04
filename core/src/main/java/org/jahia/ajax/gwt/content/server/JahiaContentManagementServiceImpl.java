@@ -1458,45 +1458,45 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.info("...template deployment done.");
     }
 
-    public GWTJahiaNode createModule(String key, String baseSet, String siteType, String sources) throws GWTJahiaServiceException {
+    public GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String sources) throws GWTJahiaServiceException {
         try {
-            return moduleHelper.createModule(key, baseSet, siteType, sources, retrieveCurrentSession());
+            return moduleHelper.createModule(moduleName, artifactId, groupId, siteType, sources, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException {
+    public GWTJahiaNode checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException {
         try {
-            return moduleHelper.checkoutModule(moduleName, scmURI, scmType, branchOrTag, sources, retrieveCurrentSession());
+            return moduleHelper.checkoutModule(moduleId, scmURI, scmType, branchOrTag, sources, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("Cannot checkout module", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException {
+    public GWTJahiaNode sendToSourceControl(String moduleId, String scmURI, String scmType) throws GWTJahiaServiceException {
         try {
-            return contentManager.sendToSourceControl(moduleName, scmURI, scmType, retrieveCurrentSession());
+            return contentManager.sendToSourceControl(moduleId, scmURI, scmType, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("Cannot init remote repository", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void saveModule(String moduleName, String message) throws GWTJahiaServiceException {
+    public void saveModule(String moduleId, String message) throws GWTJahiaServiceException {
         try {
-            moduleHelper.saveAndCommitModule(moduleName, message, retrieveCurrentSession(null));
+            moduleHelper.saveAndCommitModule(moduleId, message, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot synchronize module into sources", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void updateModule(String moduleName) throws GWTJahiaServiceException {
+    public void updateModule(String moduleId) throws GWTJahiaServiceException {
         try {
-            moduleHelper.updateModule(moduleName, retrieveCurrentSession(null));
+            moduleHelper.updateModule(moduleId, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1506,31 +1506,31 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Add file to source control.
      *
-     * @param moduleName Module name
+     * @param moduleId Module name
      * @param node Node denoting a file from the sources folder of the module
      * @throws GWTJahiaServiceException
      */
-    public void addToSourceControl(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException {
+    public void addToSourceControl(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException {
         try {
-            moduleHelper.addToSourceControl(moduleName, node, retrieveCurrentSession(null));
+            moduleHelper.addToSourceControl(moduleId, node, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot add to source control", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void markConflictAsResolved(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException {
+    public void markConflictAsResolved(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException {
         try {
-            contentManager.markConflictAsResolved(moduleName, node, retrieveCurrentSession(null));
+            contentManager.markConflictAsResolved(moduleId, node, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot add to source control", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void compileAndDeploy(String moduleName) throws GWTJahiaServiceException {
+    public void compileAndDeploy(String moduleId) throws GWTJahiaServiceException {
         try {
-            moduleHelper.compileAndDeploy(moduleName, retrieveCurrentSession(null));
+            moduleHelper.compileAndDeploy(moduleId, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -1541,15 +1541,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * Call to generate the war of the specified module and release it in Jahia.
      * This will create a war from the current sources associated with the module.
      * And upload it in Jahia and return the file to the caller.
-     * @param moduleName The module to compile and package as war file.
+     * @param moduleId The module to compile and package as war file.
      * @return The war file generated.
      * @throws GWTJahiaServiceException if something bad happened (like impossible to compile the module)
      */
-    public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
+    public GWTJahiaNode generateWar(String moduleId) throws GWTJahiaServiceException {
         try {
-            return moduleHelper.releaseModule(moduleName, null, retrieveCurrentSession(null));
+            return moduleHelper.releaseModule(moduleId, null, retrieveCurrentSession(null));
         } catch (Exception e) {
-            logger.error("Error during generation of a package for module " + moduleName, e);
+            logger.error("Error during generation of a package for module " + moduleId, e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -1558,7 +1558,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * This will release the module. This means we will compile, update the version number of the module and package it as war file and then
      * deploy the newly created version in Jahia.
      *
-     * @param moduleName
+     * @param moduleId
      *            The module to be released.
      * @param releaseInfo
      *            the release data, like next version, should we publish to Maven distribution server andJahia module catalog etc.
@@ -1566,11 +1566,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      *             if something happened during compile/deploy of the module
      */
-    public RpcMap releaseModule(String moduleName, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException {
+    public RpcMap releaseModule(String moduleId, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException {
         try {
-            GWTJahiaNode node = moduleHelper.releaseModule(moduleName, releaseInfo, retrieveCurrentSession(null));
+            GWTJahiaNode node = moduleHelper.releaseModule(moduleId, releaseInfo, retrieveCurrentSession(null));
             RpcMap r = new RpcMap();
-            r.put("newModule",navigation.getNode("/modules/"+moduleName, GWTJahiaNode.DEFAULT_SITE_FIELDS, retrieveCurrentSession(), getUILocale()));
+            r.put("newModule",navigation.getNode("/modules/"+ moduleId, GWTJahiaNode.DEFAULT_SITE_FIELDS, retrieveCurrentSession(), getUILocale()));
             r.put("artifactUrl", releaseInfo.getArtifactUrl());
             r.put("catalogModulePageUrl", releaseInfo.getForgeModulePageUrl());
             if (node != null) {
@@ -1580,7 +1580,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             return r;
         } catch (Exception e) {
-            logger.error("Error during releasing version " + releaseInfo.getNextVersion() + " of module "+moduleName, e);
+            logger.error("Error during releasing version " + releaseInfo.getNextVersion() + " of module "+ moduleId, e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -2442,10 +2442,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     @Override
-    public GWTModuleReleaseInfo getInfoForModuleRelease(String moduleName) throws GWTJahiaServiceException {
+    public GWTModuleReleaseInfo getInfoForModuleRelease(String moduleId) throws GWTJahiaServiceException {
         GWTModuleReleaseInfo result = null;
         try {
-            result = moduleHelper.getModuleDistributionInfo(moduleName, retrieveCurrentSession());
+            result = moduleHelper.getModuleDistributionInfo(moduleId, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;

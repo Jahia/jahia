@@ -58,7 +58,7 @@ public class SourceControlDialog extends Dialog {
 
     private RadioGroup scmType;
     private TextField<String> uri;
-    private TextField<String> moduleName;
+    private TextField<String> moduleId;
     private TextField<String> sources;
     private TextField<String> branchOrTag;
     private Map<String,Radio> radios;
@@ -104,11 +104,11 @@ public class SourceControlDialog extends Dialog {
         form.add(uri);
 
         if (viewModuleName) {
-            moduleName = new TextField<String>();
-            moduleName.setName("moduleName");
-            moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name ( must match artifactID of the pom.xml )"));
-            moduleName.setAllowBlank(true);
-            form.add(moduleName);
+            moduleId = new TextField<String>();
+            moduleId.setName("moduleId");
+            moduleId.setFieldLabel(Messages.get("label.moduleId", "Module ID (artifactId)"));
+            moduleId.setAllowBlank(true);
+            form.add(moduleId);
             sources = new TextField<String>();
             sources.setName("sources");
             sources.setFieldLabel(Messages.get("label.sources.folder", "Sources folder (optional - will be created with new sources)"));
@@ -143,12 +143,12 @@ public class SourceControlDialog extends Dialog {
         this.uri.setValue(value);
     }
 
-    public String getModuleName() {
-        return moduleName.getValue();
+    public String getModuleId() {
+        return moduleId.getValue();
     }
 
-    public void setModuleName(String moduleName) {
-        this.moduleName.setValue(moduleName);
+    public void setModuleId(String moduleId) {
+        this.moduleId.setValue(moduleId);
     }
 
     public String getSources() {

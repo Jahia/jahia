@@ -564,13 +564,13 @@ public class WebprojectHandler implements Serializable {
 
                         importInfos.setTemplates("");
                         if (p.containsKey("templatePackageName")) {
-                            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName((String) p
+                            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById((String) p
                                     .get("templatePackageName"));
                             if (pack == null) {
                                 pack = templateManagerService.getTemplatePackage((String) p.get("templatePackageName"));
                             }
                             if (pack != null) {
-                                importInfos.setTemplates(pack.getRootFolder());
+                                importInfos.setTemplates(pack.getId());
                             }
                         }
                         importInfos.setOldSiteKey(importInfos.getSiteKey());

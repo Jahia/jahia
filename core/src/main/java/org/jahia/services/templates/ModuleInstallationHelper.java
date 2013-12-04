@@ -96,7 +96,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
 
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName)
             throws RepositoryException {
-        // Version v = templatePackageRegistry.lookupByFileName(originalNode.getName()).getLastVersion();
+        // Version v = templatePackageRegistry.lookupById(originalNode.getName()).getLastVersion();
         String newStringValue = originalNode.getName();
         if (destinationNode.hasProperty(propertyName)) {
             JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
@@ -142,7 +142,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             if (next.hasProperty("j:installedModules")) {
                 Value[] v = next.getProperty("j:installedModules").getValues();
                 for (Value value : v) {
-                    if (value.getString().equals(module.getRootFolder())) {
+                    if (value.getString().equals(module.getId())) {
                         sites.add(next);
                     }
                 }
@@ -158,10 +158,10 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         installModules(Arrays.asList(module), sitePath, session);
     }
 
-    public void installModule(final String module, final String sitePath, String username) throws RepositoryException {
+    public void installModule(final String moduleId, final String sitePath, String username) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(username, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                installModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
+                installModules(Arrays.asList(templatePackageRegistry.lookupById(moduleId)), sitePath, session);
                 session.save();
                 return null;
             }
@@ -182,7 +182,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             }
         }
 
-        JCRNodeWrapper tpl = sessionWrapper.getNode("/modules/" + module.getRootFolderWithVersion());
+        JCRNodeWrapper tpl = sessionWrapper.getNode("/modules/" + module.getIdWithVersion());
         for (JCRNodeWrapper site : sites) {
             if(!site.isNodeType("jnt:virtualsite")) {
             	continue;
@@ -211,7 +211,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             logger.info("Installing " + module.getName() + " on " + sitePath);
             JCRNodeWrapper moduleNode = null;
             try {
-                moduleNode = session.getNode("/modules/" + module.getRootFolder());
+                moduleNode = session.getNode("/modules/" + module.getId());
 
                 String moduleName = moduleNode.getName();
 
@@ -247,7 +247,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             final JCRSessionWrapper session) throws RepositoryException {
         QueryManager manager = session.getWorkspace().getQueryManager();
         for (JahiaTemplatesPackage module : modules) {
-            NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(module.getRootFolder());
+            NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(module.getId());
             while (nti.hasNext()) {
                 ExtendedNodeType next = (ExtendedNodeType) nti.next();
                 Query q = manager.createQuery("select * from ['" + next.getName()
@@ -461,7 +461,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             Value toBeRemoved = null;
             Value[] values = installedModules.getValues();
             for (Value value : values) {
-                if (value.getString().equals(module.getRootFolder())) {
+                if (value.getString().equals(module.getId())) {
                     toBeRemoved = value;
                     break;
                 }
@@ -479,9 +479,9 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             final boolean purgeAllContent) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(username, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                uninstallModules(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath, session);
+                uninstallModules(Arrays.asList(templatePackageRegistry.lookupById(module)), sitePath, session);
                 if (purgeAllContent) {
-                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath,
+                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), sitePath,
                             session);
                 }
                 session.save();
@@ -491,7 +491,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         if (purgeAllContent) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), sitePath,
+                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), sitePath,
                             session);
                     session.save();
                     return null;
@@ -540,9 +540,9 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(username, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                uninstallModulesFromAllSites(templatePackageRegistry.lookupByFileName(module), session);
+                uninstallModulesFromAllSites(templatePackageRegistry.lookupById(module), session);
                 if (purgeAllContent) {
-                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), "/", session);
+                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), "/", session);
                 }
                 session.save();
                 return null;
@@ -551,7 +551,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         if (purgeAllContent) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupByFileName(module)), "/", session);
+                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), "/", session);
                     session.save();
                     return null;
                 }

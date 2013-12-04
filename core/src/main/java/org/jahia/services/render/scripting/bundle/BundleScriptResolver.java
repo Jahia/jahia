@@ -336,7 +336,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                 Set<JahiaTemplatesPackage> packages = templateManagerService
                         .getModulesWithViewsForComponent(JCRContentUtils.replaceColon(type.getName()));
                 for (JahiaTemplatesPackage aPackage : packages) {
-                    String packageName = aPackage.getRootFolder();
+                    String packageName = aPackage.getId();
                     if (installedModules == null || installedModules.contains(packageName)) {
                         if (aPackage.isDefault()) {
                             defaultModuleProcessed = true;
@@ -352,7 +352,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                     }
                 }
                 if (!defaultModuleProcessed) {
-                    JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageByFileName("default");
+                    JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageById("default");
                     if (defaultModule != null) {
                         for (String templateType : templateTypes) {
                             getViewsSet(type, views, templateType, defaultModule);
@@ -375,13 +375,13 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         if (sitePath.startsWith("/sites/")) {
             installedModules = site.getInstalledModulesWithAllDependencies();
         } else if (sitePath.startsWith("/modules/")) {
-            JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageByFileName(site.getName());
+            JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageById(site.getName());
             if (aPackage != null) {
                 installedModules = new LinkedHashSet<String>();
-                installedModules.add(aPackage.getRootFolder());
+                installedModules.add(aPackage.getId());
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!installedModules.contains(depend.getRootFolder())) {
-                        installedModules.add(depend.getRootFolder());
+                    if (!installedModules.contains(depend.getId())) {
+                        installedModules.add(depend.getId());
                     }
                 }
             }
@@ -405,16 +405,16 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                 .append(".");
 
         // find scripts in the module bundle, matching that path prefix
-        Set<ViewResourceInfo> sortedScripts = findBundleScripts(tplPackage.getRootFolder(), pathBuilder.toString());
+        Set<ViewResourceInfo> sortedScripts = findBundleScripts(tplPackage.getId(), pathBuilder.toString());
         Properties defaultProperties = null;
         if (!sortedScripts.isEmpty()) {
             defaultProperties = new Properties();
             JahiaTemplatesPackage aPackage = nt.getTemplatePackage();
             if (aPackage == null) {
-                aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("default");
+                aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("default");
             }
-            if (!aPackage.getRootFolder().equals(tplPackage.getRootFolder())) {
-                Set<ViewResourceInfo> defaultScripts = findBundleScripts(aPackage.getRootFolder(), pathBuilder.toString());
+            if (!aPackage.getId().equals(tplPackage.getId())) {
+                Set<ViewResourceInfo> defaultScripts = findBundleScripts(aPackage.getId(), pathBuilder.toString());
                 for (ViewResourceInfo defaultScript : defaultScripts) {
                     if (defaultScript.viewKey.equals("default")) {
                         defaultProperties.putAll(defaultScript.getProperties());

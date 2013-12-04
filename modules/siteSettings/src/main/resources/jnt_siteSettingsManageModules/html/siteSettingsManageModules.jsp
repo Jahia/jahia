@@ -44,7 +44,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
         <tr>
             <td>${status.index + 1}</td>
             <td><strong>${pkg.name}</strong></td>
-            <td>${pkg.rootFolder}</td>
+            <td>${pkg.id}</td>
             <td>${pkg.lastVersion}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>
@@ -58,7 +58,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
         <tr>
             <td>${status.index + 1}</td>
             <td><strong>${pkg.name}</strong></td>
-            <td>${pkg.rootFolder}</td>
+            <td>${pkg.id}</td>
             <td>${pkg.lastVersion}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>

@@ -62,7 +62,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.notification.HttpClientService;
@@ -106,9 +105,9 @@ public class ModuleHelper {
 
     private JahiaTemplateManagerService templateManagerService;
 
-    public void addToSourceControl(String moduleName, GWTJahiaNode node, JCRSessionWrapper session) throws IOException,
+    public void addToSourceControl(String moduleId, GWTJahiaNode node, JCRSessionWrapper session) throws IOException,
             RepositoryException, BundleException {
-        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(moduleName);
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageById(moduleId);
         SourceControlManagement sourceControl = templatePackage.getSourceControl();
         if (sourceControl != null) {
             String path = node.getPath();
@@ -122,12 +121,12 @@ public class ModuleHelper {
         }
     }
 
-    public GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag,
+    public GWTJahiaNode checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag,
                                        String sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         GWTJahiaNode node = null;
 
         String fullUri = "scm:" + scmType + ":" + scmURI;
-        JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, fullUri, branchOrTag, moduleName,
+        JCRNodeWrapper nodeWrapper = templateManagerService.checkoutModule(sources != null ? new File(sources) : null, fullUri, branchOrTag, moduleId,
                 null, session);
         if (nodeWrapper != null) {
             node = navigation.getGWTJahiaNode(nodeWrapper.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS);
@@ -135,30 +134,25 @@ public class ModuleHelper {
         return node;
     }
 
-    public void compileAndDeploy(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException,
+    public void compileAndDeploy(String moduleId, JCRSessionWrapper session) throws IOException, RepositoryException,
             BundleException {
-        File sources = getSources(moduleName, session);
+        File sources = getSources(moduleId, session);
 
-        templateManagerService.regenerateImportFile(moduleName, sources, session);
-        templateManagerService.compileAndDeploy(moduleName, sources, session);
+        templateManagerService.regenerateImportFile(moduleId, sources, session);
+        templateManagerService.compileAndDeploy(moduleId, sources, session);
     }
 
-    public GWTJahiaNode createModule(String key, String baseSet, final String siteType, String sources,
+    public GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, final String siteType, String sources,
             JCRSessionWrapper session) throws GWTJahiaServiceException {
-        String shortName = JCRContentUtils.generateNodeName(key);
-        if (baseSet == null) {
-            try {
-                JCRNodeWrapper node = templateManagerService.createModule(key, shortName, siteType,
-                        sources != null ? new File(sources) : null, session);
-                return node != null ? navigation.getGWTJahiaNode(node.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS)
-                        : null;
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else {
-            // todo : add support for duplicate sources
+        try {
+            JCRNodeWrapper node = templateManagerService.createModule(moduleName, artifactId, groupId, siteType,
+                    sources != null ? new File(sources) : null, session);
+            return node != null ? navigation.getGWTJahiaNode(node.getParent(), GWTJahiaNode.DEFAULT_SITE_FIELDS)
+                    : null;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
         }
-        return null;
     }
 
     public void deployModule(final String moduleName, final String sitePath, JCRSessionWrapper currentUserSession)
@@ -206,9 +200,9 @@ public class ModuleHelper {
         return null;
     }
 
-    public GWTModuleReleaseInfo getModuleDistributionInfo(String moduleName, JCRSessionWrapper session)
+    public GWTModuleReleaseInfo getModuleDistributionInfo(String moduleId, JCRSessionWrapper session)
             throws RepositoryException, IOException, XmlPullParserException {
-        JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(moduleName);
+        JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(moduleId);
         if (pack == null || !pack.getVersion().isSnapshot()) {
             return null;
         }
@@ -233,28 +227,28 @@ public class ModuleHelper {
         if (pom.getProperties().containsKey("jahia-forge")) {
             final String property = pom.getProperties().getProperty("jahia-forge");
             info.setForgeUrl(property);
-            info.setForgeModulePageUrl(property + "/contents/forge-modules-repository/" + moduleName + ".html");
+            info.setForgeModulePageUrl(property + "/contents/forge-modules-repository/" + moduleId + ".html");
         }
 
         return info;
     }
 
-    private File getSources(String moduleName, JCRSessionWrapper session) throws RepositoryException {
-        return templateManagerService.getSources(templateManagerService.getTemplatePackageByFileName(moduleName),
+    private File getSources(String moduleId, JCRSessionWrapper session) throws RepositoryException {
+        return templateManagerService.getSources(templateManagerService.getTemplatePackageById(moduleId),
                 session);
     }
 
-    public GWTJahiaNode releaseModule(String moduleName, GWTModuleReleaseInfo gwtReleaseInfo, JCRSessionWrapper session)
+    public GWTJahiaNode releaseModule(String moduleId, GWTModuleReleaseInfo gwtReleaseInfo, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
         String nextVersion = gwtReleaseInfo != null ? gwtReleaseInfo.getNextVersion() : null;
         File f;
         if (nextVersion != null) {
             ModuleReleaseInfo releaseInfo = toModuleReleaseInfo(gwtReleaseInfo);
-            f = templateManagerService.releaseModule(moduleName, releaseInfo, session);
+            f = templateManagerService.releaseModule(moduleId, releaseInfo, session);
             gwtReleaseInfo.setForgeModulePageUrl(releaseInfo.getForgeModulePageUrl());
             gwtReleaseInfo.setArtifactUrl(releaseInfo.getArtifactUrl());
         } else {
-            JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageByFileName(moduleName);
+            JahiaTemplatesPackage previous = templateManagerService.getTemplatePackageById(moduleId);
             f = templateManagerService.compileModule(previous.getSourcesFolder());
         }
         if (f == null) {
@@ -285,10 +279,10 @@ public class ModuleHelper {
         }
     }
 
-    public void saveAndCommitModule(String moduleName, String message, JCRSessionWrapper session)
+    public void saveAndCommitModule(String moduleId, String message, JCRSessionWrapper session)
             throws RepositoryException, IOException {
         SourceControlManagement scm = null;
-        File sources = getSources(moduleName, session);
+        File sources = getSources(moduleId, session);
         try {
             scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(sources);
         } catch (Exception e) {
@@ -297,7 +291,7 @@ public class ModuleHelper {
 
         if (scm != null) {
             scm.update();
-            templateManagerService.regenerateImportFile(moduleName, sources, session);
+            templateManagerService.regenerateImportFile(moduleId, sources, session);
             scm.commit(message);
         } else {
             throw new IOException("No SCM configured");
@@ -345,7 +339,7 @@ public class ModuleHelper {
                                         JCRSessionWrapper session, String username, String password) throws IOException, XmlPullParserException, RepositoryException {
         File sources = getSources(module, session);
         if (sources != null) {
-            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(module);
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(module);
             if (pack != null && templateManagerService.checkValidSources(pack, sources)) {
                 File pomFile = new File(sources, "pom.xml");
 
@@ -386,7 +380,7 @@ public class ModuleHelper {
             JCRSessionWrapper session) throws IOException, XmlPullParserException, RepositoryException {
         File sources = getSources(module, session);
         if (sources != null) {
-            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(module);
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(module);
             if (pack != null && templateManagerService.checkValidSources(pack, sources)) {
                 File pomFile = new File(sources, "pom.xml");
                 PomUtils.updateDistributionManagement(pomFile, repositoryId, repositoryUrl);
@@ -400,16 +394,16 @@ public class ModuleHelper {
         }
     }
 
-    public void updateModule(String moduleName, JCRSessionWrapper session) throws IOException, RepositoryException,
+    public void updateModule(String moduleId, JCRSessionWrapper session) throws IOException, RepositoryException,
             BundleException {
-        File sources = getSources(moduleName, session);
+        File sources = getSources(moduleId, session);
 
         SourceControlManagement scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(
                 sources);
         if (scm != null) {
-            templateManagerService.regenerateImportFile(moduleName, sources, session);
+            templateManagerService.regenerateImportFile(moduleId, sources, session);
             scm.update();
-            templateManagerService.compileAndDeploy(moduleName, sources, session);
+            templateManagerService.compileAndDeploy(moduleId, sources, session);
         } else {
             throw new IOException("No SCM configured");
         }

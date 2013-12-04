@@ -53,13 +53,11 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.Url;
-import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.binding.validation.ValidationContext;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 public class SiteBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(SiteBean.class);
@@ -104,7 +102,7 @@ public class SiteBean implements Serializable {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance()
                 .getJahiaTemplateManagerService();
         for (String module : modules) {
-            packs.add(templateManagerService.getTemplatePackageByFileName(module));
+            packs.add(templateManagerService.getTemplatePackageById(module));
         }
 
         return packs;
@@ -128,7 +126,7 @@ public class SiteBean implements Serializable {
 
     public JahiaTemplatesPackage getTemplateSetPackage() {
         return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName(templateSet);
+                .getTemplatePackageById(templateSet);
     }
 
     public String getTitle() {

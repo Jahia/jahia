@@ -97,7 +97,7 @@ public final class WebUtils {
             String remainingPath = StringUtils.substringAfter(module, "/");
             module = StringUtils.substringBefore(module, "/");
             JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                    .getTemplatePackageByFileName(module);
+                    .getTemplatePackageById(module);
             if (pack != null) {
                 Resource r = pack.getResource(remainingPath);
                 if (r != null) {

@@ -525,7 +525,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         buffer.append((script != null && script.getView().getInfo() != null) ? " scriptInfo=\"" + script.getView().getInfo() + "\"" : "");
 
         if (script != null && script.getView().getModule().getSourcesFolder() != null) {
-            String version = script.getView().getModule().getRootFolderWithVersion();
+            String version = script.getView().getModule().getIdWithVersion();
             buffer.append(" sourceInfo=\"/modules/" + version + "/sources" + StringUtils.substringAfter(script.getView().getPath(), version) + "\"");
         }
 

@@ -365,7 +365,7 @@ class NodeHelper {
                     } else if (isModuleNode != null ? isModuleNode.booleanValue()
                             : (isModuleNode = node.isNodeType("jnt:module"))) {
                         JahiaTemplatesPackage templatePackageByFileName = templateManagerService
-                                .getTemplatePackageByFileName(node.getName());
+                                .getTemplatePackageById(node.getName());
                         if (templatePackageByFileName != null) {
                             JCRNodeWrapper versionNode = node.getNode(templatePackageByFileName
                                     .getVersion().toString());
@@ -507,11 +507,11 @@ class NodeHelper {
         List<String> dependencies = new ArrayList<String>();
         List<JahiaTemplatesPackage> s = null;
         try {
-            JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(node.getResolveSite().getTemplateFolder());
+            JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(node.getResolveSite().getTemplateFolder());
             if (templatePackageByFileName != null) {
                 s = templatePackageByFileName.getDependencies();
                 for (JahiaTemplatesPackage aPackage : s) {
-                    dependencies.add(aPackage.getRootFolder());
+                    dependencies.add(aPackage.getId());
                 }
                 n.set("j:resolvedDependencies",dependencies);
             }
@@ -885,7 +885,7 @@ class NodeHelper {
                     .getJahiaTemplateManagerService();
 
             JahiaTemplatesPackage packageByFileName = templateManagerService
-                    .getTemplatePackageByFileName(node.getName());
+                    .getTemplatePackageById(node.getName());
             if (packageByFileName != null) {
                 JCRNodeWrapper versionInfo = node.getNode(packageByFileName.getVersion().toString()
                         + "/j:versionInfo");

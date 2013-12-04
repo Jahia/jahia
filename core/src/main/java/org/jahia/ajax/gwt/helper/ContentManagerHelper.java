@@ -1123,8 +1123,8 @@ public class ContentManagerHelper {
         }
     }
 
-    public void markConflictAsResolved(String moduleName, GWTJahiaNode node, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
-        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(moduleName);
+    public void markConflictAsResolved(String moduleId, GWTJahiaNode node, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageById(moduleId);
         SourceControlManagement sourceControl = templatePackage.getSourceControl();
         if (sourceControl != null) {
             String path = node.getPath();
@@ -1138,9 +1138,9 @@ public class ContentManagerHelper {
         }
     }
 
-    public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
-        templateManagerService.sendToSourceControl(moduleName, scmURI, scmType, session);
-        return navigation.getGWTJahiaNode(session.getNode("/modules/" + moduleName), GWTJahiaNode.DEFAULT_SITE_FIELDS);
+    public GWTJahiaNode sendToSourceControl(String moduleId, String scmURI, String scmType, JCRSessionWrapper session) throws IOException, RepositoryException {
+        templateManagerService.sendToSourceControl(moduleId, scmURI, scmType, session);
+        return navigation.getGWTJahiaNode(session.getNode("/modules/" + moduleId), GWTJahiaNode.DEFAULT_SITE_FIELDS);
     }
 
     public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {

@@ -296,7 +296,6 @@
                         <!-- Jahia manifest attributes -->
                         <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Module-Type>module</Jahia-Module-Type>
-                        <Jahia-Root-Folder>${project.artifactId}</Jahia-Root-Folder>
                         <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>

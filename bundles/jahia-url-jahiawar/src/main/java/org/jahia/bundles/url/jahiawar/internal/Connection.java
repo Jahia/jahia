@@ -477,7 +477,7 @@ public class Connection extends URLConnection {
                 JahiaTemplateManagerService templateService = ServicesRegistry.getInstance()
                         .getJahiaTemplateManagerService();
                 for (String dependency : StringUtils.split(depends, ", ")) {
-                    JahiaTemplatesPackage pkg = templateService.getTemplatePackageByFileName(dependency);
+                    JahiaTemplatesPackage pkg = templateService.getTemplatePackageById(dependency);
                     if (pkg == null) {
                         pkg = templateService.getTemplatePackage(dependency);
                     }
@@ -551,10 +551,6 @@ public class Connection extends URLConnection {
         String value = attrs.getValue("module-type");
         bndProperties.put("Jahia-Module-Type", value != null ? value : "system");
         
-        value = attrs.getValue("root-folder");
-        if (value != null) {
-            bndProperties.put("Jahia-Root-Folder", value);
-        }
         value = attrs.getValue("definitions");
         if (value != null) {
             bndProperties.put("Jahia-Definitions", value);

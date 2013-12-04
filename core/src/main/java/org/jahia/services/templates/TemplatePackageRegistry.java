@@ -90,7 +90,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -111,11 +110,11 @@ public class TemplatePackageRegistry {
         }
     };
 
-    private Map<String, JahiaTemplatesPackage> registry = new TreeMap<String, JahiaTemplatesPackage>();
-    private Map<String, JahiaTemplatesPackage> fileNameRegistry = new TreeMap<String, JahiaTemplatesPackage>();
+    private Map<String, JahiaTemplatesPackage> packagesByName = new TreeMap<String, JahiaTemplatesPackage>();
+    private Map<String, JahiaTemplatesPackage> packagesById = new TreeMap<String, JahiaTemplatesPackage>();
     private List<JahiaTemplatesPackage> templatePackages;
-    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersion = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
-    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByFilename = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionByName = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
+    private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionById = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
@@ -188,9 +187,9 @@ public class TemplatePackageRegistry {
 
     private boolean computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
         for (String depends : currentPack.getDepends()) {
-            JahiaTemplatesPackage dependentPack = registry.get(depends);
+            JahiaTemplatesPackage dependentPack = packagesByName.get(depends);
             if (dependentPack == null) {
-                dependentPack = fileNameRegistry.get(depends);
+                dependentPack = packagesById.get(depends);
             }
             if (dependentPack == null) {
                 return false;
@@ -206,7 +205,7 @@ public class TemplatePackageRegistry {
     }
 
     public void afterInitializationForModules() {
-        for (JahiaTemplatesPackage pack : registry.values()) {
+        for (JahiaTemplatesPackage pack : packagesByName.values()) {
             afterInitializationForModule(pack);
         }
         afterInitializeDone = true;
@@ -230,7 +229,7 @@ public class TemplatePackageRegistry {
             }
             if (count > 0) {
                 logger.info("Post-initialized {} beans implementing JahiaAfterInitializationService for module {}",
-                        count, pack.getRootFolder());
+                        count, pack.getId());
             }
             pack.setServiceInitialized(true);
         }
@@ -240,27 +239,27 @@ public class TemplatePackageRegistry {
     /**
      * Checks if the specified template set is present in the repository.
      *
-     * @param packageName the template package name to check for
+     * @param moduleName the template package name to check for
      * @return <code>true</code>, if the specified template package already
      *         exists in the repository
      */
-    public boolean contains(String packageName) {
-        return registry.containsKey(packageName);
+    public boolean contains(String moduleName) {
+        return packagesByName.containsKey(moduleName);
     }
 
     /**
      * Checks if specified template sets are all present in the repository.
      *
-     * @param packageNames the list of template package names to check for
+     * @param moduleNames the list of template package names to check for
      * @return <code>true</code>, if specified template packages are all present
      *         in the repository
      */
-    public boolean containsAll(List<String> packageNames) {
-        return registry.keySet().containsAll(packageNames);
+    public boolean containsAll(List<String> moduleNames) {
+        return packagesByName.keySet().containsAll(moduleNames);
     }
 
-    public boolean containsFileName(String fileName) {
-        return fileNameRegistry.containsKey(fileName);
+    public boolean containsId(String moduleId) {
+        return packagesById.containsKey(moduleId);
     }
 
     /**
@@ -272,7 +271,7 @@ public class TemplatePackageRegistry {
         if (null == templatePackages) {
             templatePackages = Collections
                     .unmodifiableList(new LinkedList<JahiaTemplatesPackage>(
-                            registry.values()));
+                            packagesByName.values()));
         }
         return templatePackages;
     }
@@ -283,45 +282,45 @@ public class TemplatePackageRegistry {
      * @return the number of available template packages in the registry
      */
     public int getAvailablePackagesCount() {
-        return registry.size();
+        return packagesByName.size();
     }
 
-    public Set<ModuleVersion> getAvailableVersionsForModule(String rootFolder) {
-        if (packagesWithVersionByFilename.containsKey(rootFolder)) {
-            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionByFilename.get(rootFolder).keySet());
+    public Set<ModuleVersion> getAvailableVersionsForModule(String moduleNameOrId) {
+        if (packagesWithVersionById.containsKey(moduleNameOrId)) {
+            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionById.get(moduleNameOrId).keySet());
         }
-        if (packagesWithVersion.containsKey(rootFolder)) {
-            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersion.get(rootFolder).keySet());
+        if (packagesWithVersionByName.containsKey(moduleNameOrId)) {
+            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionByName.get(moduleNameOrId).keySet());
         }
         return Collections.emptySet();
     }
 
     public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
-        return packagesWithVersionByFilename;
+        return packagesWithVersionById;
     }
 
-    public String getRootFolderName(String moduleName) {
-        if (packagesWithVersionByFilename.containsKey(moduleName)) {
-            return moduleName;
+    public String getModuleId(String moduleNameOrId) {
+        if (packagesWithVersionById.containsKey(moduleNameOrId)) {
+            return moduleNameOrId;
         }
-        if (packagesWithVersion.containsKey(moduleName)) {
-            for (JahiaTemplatesPackage aPackage : packagesWithVersion.get(moduleName).values()) {
-                return aPackage.getRootFolder();
+        if (packagesWithVersionByName.containsKey(moduleNameOrId)) {
+            for (JahiaTemplatesPackage aPackage : packagesWithVersionByName.get(moduleNameOrId).values()) {
+                return aPackage.getId();
             }
         }
         return null;
     }
 
-    public Set<String> getPackageFileNames() {
-        return fileNameRegistry.keySet();
+    public Set<String> getModuleIds() {
+        return packagesById.keySet();
     }
 
-    public Set<String> getPackageNames() {
-        return registry.keySet();
+    public Set<String> getModuleNames() {
+        return packagesByName.keySet();
     }
 
     public Map<String, JahiaTemplatesPackage> getRegisteredModules() {
-        return fileNameRegistry;
+        return packagesById;
     }
 
     /**
@@ -354,8 +353,8 @@ public class TemplatePackageRegistry {
      *         repository
      */
     public JahiaTemplatesPackage lookup(String packageName) {
-        if (packageName == null || registry == null) return null;
-        return registry.get(packageName);
+        if (packageName == null || packagesByName == null) return null;
+        return packagesByName.get(packageName);
     }
 
     /**
@@ -365,39 +364,51 @@ public class TemplatePackageRegistry {
      * @return the template package that corresponds to the provided OSGi bundle or <code>null</code> if the package is not registered
      */
     public JahiaTemplatesPackage lookupByBundle(Bundle osgiBundle) {
-        if (registry == null) {
+        if (packagesByName == null) {
             return null;
         }
         if (osgiBundle == null) {
             throw new IllegalArgumentException("OSGi bundle is null");
         }
 
-        String module = StringUtils.defaultIfEmpty((String) osgiBundle.getHeaders().get("Jahia-Root-Folder"),
-                osgiBundle.getSymbolicName());
+        String moduleId = osgiBundle.getSymbolicName();
         String version = StringUtils.defaultIfEmpty((String) osgiBundle.getHeaders().get("Implementation-Version"),
                 osgiBundle.getVersion().toString());
 
-        return lookupByFileNameAndVersion(module, new ModuleVersion(version));
+        return lookupByIdAndVersion(moduleId, new ModuleVersion(version));
     }
-
     /**
      * Returns the requested template package or <code>null</code> if the
      * package with the specified file name is not registered in the repository.
      *
-     * @param fileName the template package fileName to search for
+     * @param fileName the template package Id to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified name is not registered in the
+     *         package with the specified file name is not registered in the
      *         repository
+     * @deprecated use {@link #lookupById(String)} instead
      */
     public JahiaTemplatesPackage lookupByFileName(String fileName) {
-        if (fileName == null || registry == null) return null;
-        return fileNameRegistry.containsKey(fileName) ? fileNameRegistry.get(fileName)
+        return lookupById(fileName);
+    }
+
+    /**
+     * Returns the requested template package or <code>null</code> if the
+     * package with the specified Id is not registered in the repository.
+     *
+     * @param moduleId the template package Id to search for
+     * @return the requested template package or <code>null</code> if the
+     *         package with the specified Id is not registered in the
+     *         repository
+     */
+    public JahiaTemplatesPackage lookupById(String moduleId) {
+        if (moduleId == null || packagesByName == null) return null;
+        return packagesById.containsKey(moduleId) ? packagesById.get(moduleId)
                 : null;
     }
 
-    public JahiaTemplatesPackage lookupByNameAndVersion(String fileName, ModuleVersion moduleVersion) {
-        if (fileName == null || registry == null) return null;
-        Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersion.get(fileName);
+    public JahiaTemplatesPackage lookupByNameAndVersion(String moduleName, ModuleVersion moduleVersion) {
+        if (moduleName == null || packagesByName == null) return null;
+        Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersionByName.get(moduleName);
         if (packageVersions != null) {
             return packageVersions.get(moduleVersion);
         } else {
@@ -405,9 +416,16 @@ public class TemplatePackageRegistry {
         }
     }
 
+    /**
+     * @deprecated use {@link #lookupByIdAndVersion(String, ModuleVersion)} instead
+     */
     public JahiaTemplatesPackage lookupByFileNameAndVersion(String fileName, ModuleVersion moduleVersion) {
-        if (fileName == null || registry == null) return null;
-        Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersionByFilename.get(fileName);
+        return lookupByIdAndVersion(fileName, moduleVersion);
+    }
+
+    public JahiaTemplatesPackage lookupByIdAndVersion(String moduleId, ModuleVersion moduleVersion) {
+        if (moduleId == null || packagesByName == null) return null;
+        Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersionById.get(moduleId);
         if (packageVersions != null) {
             return packageVersions.get(moduleVersion);
         } else {
@@ -416,12 +434,12 @@ public class TemplatePackageRegistry {
     }
 
     public void registerPackageVersion(JahiaTemplatesPackage pack) {
-        if (!packagesWithVersionByFilename.containsKey(pack.getRootFolder())) {
-            packagesWithVersionByFilename.put(pack.getRootFolder(), new TreeMap<ModuleVersion, JahiaTemplatesPackage>());
+        if (!packagesWithVersionById.containsKey(pack.getId())) {
+            packagesWithVersionById.put(pack.getId(), new TreeMap<ModuleVersion, JahiaTemplatesPackage>());
         }
-        SortedMap<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
-        if (!packagesWithVersion.containsKey(pack.getName())) {
-            packagesWithVersion.put(pack.getName(), map);
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionById.get(pack.getId());
+        if (!packagesWithVersionByName.containsKey(pack.getName())) {
+            packagesWithVersionByName.put(pack.getName(), map);
         }
         JahiaTemplatesPackage jahiaTemplatesPackage = map.get(pack.getVersion());
         if (jahiaTemplatesPackage == null || jahiaTemplatesPackage.getClass().equals(pack.getClass()) || !(pack.getClass().equals(JahiaTemplatesPackage.class))) {
@@ -430,10 +448,10 @@ public class TemplatePackageRegistry {
     }
 
     public void unregisterPackageVersion(JahiaTemplatesPackage pack) {
-        Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionByFilename.get(pack.getRootFolder());
+        Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionById.get(pack.getId());
         if (map.isEmpty()) {
-            packagesWithVersionByFilename.remove(pack.getRootFolder());
-            packagesWithVersion.remove(pack.getName());
+            packagesWithVersionById.remove(pack.getId());
+            packagesWithVersionByName.remove(pack.getName());
         }
     }
 
@@ -444,13 +462,13 @@ public class TemplatePackageRegistry {
      */
     public void register(final JahiaTemplatesPackage templatePackage) {
         templatePackages = null;
-        if (registry.get(templatePackage.getName()) != null) {
-            JahiaTemplatesPackage previousPack = registry.get(templatePackage.getName());
+        if (packagesByName.get(templatePackage.getName()) != null) {
+            JahiaTemplatesPackage previousPack = packagesByName.get(templatePackage.getName());
             previousPack.setActiveVersion(false);
         }
 
-        registry.put(templatePackage.getName(), templatePackage);
-        fileNameRegistry.put(templatePackage.getRootFolder(), templatePackage);
+        packagesByName.put(templatePackage.getName(), templatePackage);
+        packagesById.put(templatePackage.getId(), templatePackage);
 
         // handle dependencies
         computeDependencies(templatePackage);
@@ -464,8 +482,8 @@ public class TemplatePackageRegistry {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    if (session.itemExists("/modules/" + templatePackage.getRootFolderWithVersion()+"/permissions")) {
-                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + templatePackage.getRootFolderWithVersion());
+                    if (session.itemExists("/modules/" + templatePackage.getIdWithVersion()+"/permissions")) {
+                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + templatePackage.getIdWithVersion());
                     }
                     return null;
                 }
@@ -487,7 +505,7 @@ public class TemplatePackageRegistry {
         }
 
         logger.info("Registered '{}' [{}] version {}", new Object[]{templatePackage.getName(),
-                templatePackage.getRootFolder(), templatePackage.getVersion()});
+                templatePackage.getId(), templatePackage.getVersion()});
     }
 
 
@@ -509,8 +527,8 @@ public class TemplatePackageRegistry {
                 templatePackage.getResourceBundleHierarchy().add(dependency.getResourceBundleName());
             }
         }
-        if (!templatePackage.isDefault() && fileNameRegistry.containsKey("default")) {
-            templatePackage.getResourceBundleHierarchy().add(fileNameRegistry.get("default").getResourceBundleName());
+        if (!templatePackage.isDefault() && packagesById.containsKey("default")) {
+            templatePackage.getResourceBundleHierarchy().add(packagesById.get("default").getResourceBundleName());
             templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_TYPES_RESOURCES);
             templatePackage.getResourceBundleHierarchy().add(ResourceBundles.JAHIA_INTERNAL_RESOURCES);
         } else {
@@ -533,62 +551,16 @@ public class TemplatePackageRegistry {
 
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module) {
         List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
-        for (JahiaTemplatesPackage aPackage : registry.values()) {
-            if (aPackage.getDepends().contains(module.getRootFolder()) || aPackage.getDepends().contains(module.getName())) {
+        for (JahiaTemplatesPackage aPackage : packagesByName.values()) {
+            if (aPackage.getDepends().contains(module.getId()) || aPackage.getDepends().contains(module.getName())) {
                 modules.add(aPackage);
             }
         }
         return modules;
     }
 
-    public void registerDefinitions(JahiaTemplatesPackage templatePackage) {
-        File rootFolder = new File(templatePackage.getFilePath());
-        if (!templatePackage.getDefinitionsFiles().isEmpty()) {
-            try {
-                final NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
-                for (String name : templatePackage.getDefinitionsFiles()) {
-                    nodeTypeRegistry.addDefinitionsFile(
-                            new File(rootFolder, name),
-                            templatePackage.getRootFolder(), templatePackage.getVersion());
-                }
-                hasEncounteredIssuesWithDefinitions |= nodeTypeRegistry.hasEncounteredIssuesWithDefinitions();
-                jcrStoreService.deployDefinitions(templatePackage.getRootFolder());
-            } catch (Exception e) {
-                hasEncounteredIssuesWithDefinitions = true;
-                logger.warn("Cannot parse definitions for " + templatePackage.getName(), e);
-            }
-        }
-        // add rules descriptor
-        if (!templatePackage.getRulesDescriptorFiles().isEmpty()) {
-            try {
-                for (String name : templatePackage.getRulesDescriptorFiles()) {
-                    for (RulesListener listener : RulesListener.getInstances()) {
-                        listener.addRulesDescriptor(new File(rootFolder, name));
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn("Cannot parse rules for " + templatePackage.getName(), e);
-            }
-        }
-        // add rules
-        if (!templatePackage.getRulesFiles().isEmpty()) {
-            try {
-                for (String name : templatePackage.getRulesFiles()) {
-                    for (RulesListener listener : RulesListener.getInstances()) {
-                        List<String> filesAccepted = listener.getFilesAccepted();
-                        if (filesAccepted.contains(StringUtils.substringAfterLast(name, "/"))) {
-                            listener.addRules(new File(rootFolder, name));
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn("Cannot parse rules for " + templatePackage.getName(), e);
-            }
-        }
-    }
-
     public void reset() {
-        for (JahiaTemplatesPackage pkg : new HashSet<JahiaTemplatesPackage>(registry.values())) {
+        for (JahiaTemplatesPackage pkg : new HashSet<JahiaTemplatesPackage>(packagesByName.values())) {
             unregister(pkg);
         }
         templatePackages = null;
@@ -596,17 +568,13 @@ public class TemplatePackageRegistry {
 
     public void unregister(JahiaTemplatesPackage templatePackage) {
         if (templatePackage.isActiveVersion()) {
-            registry.remove(templatePackage.getName());
-            fileNameRegistry.remove(templatePackage.getRootFolder());
+            packagesByName.remove(templatePackage.getName());
+            packagesById.remove(templatePackage.getId());
             templatePackages = null;
         }
         if (templatePackage.isLastVersion()) {
-            NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getRootFolder());
+            NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getId());
         }
-
-//        if (packagesWithVersion.containsKey(templatePackage.getRootFolder())) {
-//            packagesWithVersion.get(templatePackage.getRootFolder()).remove(templatePackage.getVersion());
-//        }
 
         for (Set<JahiaTemplatesPackage> packages : modulesWithViewsPerComponents.values()) {
             packages.remove(templatePackage);

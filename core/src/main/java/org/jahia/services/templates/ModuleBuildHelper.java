@@ -46,7 +46,9 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -64,6 +66,7 @@ import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.settings.SettingsBean;
@@ -117,10 +120,10 @@ public class ModuleBuildHelper {
 
     private TemplatePackageRegistry templatePackageRegistry;
 
-    public JahiaTemplatesPackage compileAndDeploy(final String moduleName, File sources, JCRSessionWrapper session)
+    public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
         CompiledModuleInfo moduleInfo = compileModule(sources);
-        Bundle bundle = BundleUtils.getBundle(moduleName, moduleInfo.getVersion());
+        Bundle bundle = BundleUtils.getBundle(moduleId, moduleInfo.getVersion());
         if (bundle != null) {
             FileInputStream is = new FileInputStream(moduleInfo.getFile());
             try {
@@ -128,7 +131,7 @@ public class ModuleBuildHelper {
             } finally {
                 IOUtils.closeQuietly(is);
             }
-            return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
+            return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                     moduleInfo.getVersion()));
         }
         // No existing module found, deploy new one
@@ -139,7 +142,7 @@ public class ModuleBuildHelper {
             IOUtils.closeQuietly(is);
         }
         bundle.start();
-        return templatePackageRegistry.lookupByFileNameAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
+        return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                 moduleInfo.getVersion()));
     }
 
@@ -183,8 +186,18 @@ public class ModuleBuildHelper {
         }
     }
 
-    public JCRNodeWrapper createModule(final String moduleName, final String artifactId, final String moduleType, final File moduleSources,
+    public JCRNodeWrapper createModule(final String moduleName, String artifactId, final String groupId, final String moduleType, final File moduleSources,
             final JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        if (StringUtils.isBlank(moduleName)) {
+            throw new RepositoryException("Cannot create module because no module name has been specified");
+        }
+        if (StringUtils.isBlank(artifactId)) {
+            artifactId = JCRContentUtils.generateNodeName(moduleName);
+        }
+        if (templatePackageRegistry.containsId(artifactId)) {
+            throw new RepositoryException("Cannot create module " + artifactId + " because another module with the same artifactId exists");
+        }
+
         File sources = moduleSources; 
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
@@ -206,13 +219,23 @@ public class ModuleBuildHelper {
             }
         }
 
-        String[] archetypeParams = { "archetype:generate", "-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local",
-                "-DarchetypeGroupId=org.jahia.archetypes", "-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype",
-                "-Dversion=1.0-SNAPSHOT", "\"-DmoduleName=" + moduleName+ "\"", "-DartifactId=" + artifactId,
-                "-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION, "-DinteractiveMode=false" };
+        List<String> archetypeParams = new ArrayList<String>();
+        archetypeParams.add("archetype:generate");
+        archetypeParams.add("-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local");
+        archetypeParams.add("-DarchetypeGroupId=org.jahia.archetypes");
+        archetypeParams.add("-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype");
+        archetypeParams.add("-Dversion=1.0-SNAPSHOT");
+        archetypeParams.add("\"-DmoduleName=" + moduleName+ "\"");
+        archetypeParams.add("-DartifactId=" + artifactId);
+        if (StringUtils.isNotBlank(groupId)) {
+            archetypeParams.add("-DgroupId=" + groupId);
+        }
+        archetypeParams.add("-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION);
+        archetypeParams.add("-DinteractiveMode=false");
+
 
         StringBuilder out = new StringBuilder();
-        int ret = ProcessHelper.execute(mavenExecutable, archetypeParams, null, sources, out,
+        int ret = ProcessHelper.execute(mavenExecutable, archetypeParams.toArray(new String[archetypeParams.size()]), null, sources, out,
                 out);
 
         if (ret > 0) {
@@ -234,7 +257,7 @@ public class ModuleBuildHelper {
 
         JahiaTemplatesPackage pack = compileAndDeploy(artifactId, path, session);
 
-        JCRNodeWrapper node = session.getNode("/modules/" + pack.getRootFolderWithVersion());
+        JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());
         scmHelper.setSourcesFolderInPackageAndNode(pack, path, node);
         session.save();
 
@@ -296,24 +319,17 @@ public class ModuleBuildHelper {
         Enumeration<JarEntry> jarEntries = jar.entries();
         JarEntry jarEntry = null;
         boolean found = false;
-        String moduleName = artifactId;
-        if (moduleName == null) {
-            moduleName = jar.getManifest().getMainAttributes().getValue("Jahia-Root-Folder");
-            if (StringUtils.isEmpty(moduleName)) {
-                moduleName = jar.getManifest().getMainAttributes().getValue("root-folder");
-            }
-        }
         while (jarEntries.hasMoreElements()) {
             jarEntry = jarEntries.nextElement();
             String name = jarEntry.getName();
             if (StringUtils.startsWith(name, groupId != null ? ("META-INF/maven/" + groupId + "/") : "META-INF/maven/")
-                    && StringUtils.endsWith(name, moduleName + "/pom.xml")) {
+                    && StringUtils.endsWith(name, artifactId + "/pom.xml")) {
                 found = true;
                 break;
             }
         }
         if (!found) {
-            throw  new IOException("unable to find pom.xml file within while looking for " + moduleName);
+            throw  new IOException("unable to find pom.xml file within while looking for " + artifactId);
         }
         InputStream is = jar.getInputStream(jarEntry);
         File pomFile = File.createTempFile("pom",".xml");

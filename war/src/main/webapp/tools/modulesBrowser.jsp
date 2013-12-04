@@ -81,7 +81,7 @@
         final JahiaTemplatesPackage pack = jahiaTemplateManagerService.getTemplatePackage(packName);
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pack.getRootFolder());
+                NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pack.getId());
                 while (nti.hasNext()) {
                     ExtendedNodeType next = (ExtendedNodeType) nti.next();
                     System.out.println(next.getName());
@@ -105,7 +105,7 @@
                     ExtendedNodeType next = (ExtendedNodeType) nti.next();
                     ntm.unregisterNodeType(next.getName());
                 }
-                session.getNode("/modules/"+pack.getRootFolder()).remove();
+                session.getNode("/modules/"+pack.getId()).remove();
                 session.save();
                 return null;
             }

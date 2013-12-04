@@ -356,7 +356,7 @@ public class NavigationHelper {
                         path = StringUtils.replace(path, "$site", sitePath
                                 + "/"
                                 + ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                                        .getTemplatePackageByFileName(moduleName).getVersion().toString());
+                                        .getTemplatePackageById(moduleName).getVersion().toString());
                     } else {
                         path = StringUtils.replace(path, "$site", sitePath);
                     }
@@ -367,8 +367,8 @@ public class NavigationHelper {
             }
             if (path.contains("$moduleversion")) {
                 String moduleName = StringUtils.split(path, '/')[1];
-                if (ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName) != null) {
-                    path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName).getVersion().toString());
+                if (ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleName) != null) {
+                    path = path.replace("$moduleversion", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleName).getVersion().toString());
                 }  else {
                     logger.warn("read version - Unable to get bundle " + moduleName + " from registry");
                     continue;

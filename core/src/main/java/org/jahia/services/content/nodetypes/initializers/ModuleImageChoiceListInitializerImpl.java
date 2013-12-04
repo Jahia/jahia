@@ -81,7 +81,7 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         if (values != null && values.size() > 0) {
-            final JahiaTemplatesPackage template = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
+            final JahiaTemplatesPackage template = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
                     epd.getDeclaringNodeType().getSystemId());
             for (ChoiceListValue value : values) {
                 try {

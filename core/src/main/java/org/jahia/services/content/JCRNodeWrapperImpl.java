@@ -4011,7 +4011,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 try {
                     return Messages.interpolateResourceBundleMacro(title,
                             locale != null ? locale : session.getFallbackLocale(),
-                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
+                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
                                     module));
                 } catch (Exception e) {
                     // ignore
@@ -4033,7 +4033,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             for (String module : site.getInstalledModules()) {
                 try {
                     return Messages.get(null,
-                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module),
+                            ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(module),
                             title, locale != null ? locale : session.getFallbackLocale(), title);
                 } catch (Exception e) {
                     // ignore

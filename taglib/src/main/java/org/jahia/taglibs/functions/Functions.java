@@ -353,8 +353,8 @@ public class Functions {
         return JCRContentUtils.stringToJCRPathExp(s);
     }    
     
-    public static String modulePath(HttpServletRequest req, String moduleName) {
-        return req.getContextPath() + "/modules/" + moduleName;
+    public static String modulePath(HttpServletRequest req, String moduleId) {
+        return req.getContextPath() + "/modules/" + moduleId;
     }
     
     /**

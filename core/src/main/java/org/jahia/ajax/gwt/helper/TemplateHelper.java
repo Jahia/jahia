@@ -262,7 +262,7 @@ public class TemplateHelper {
     public Set<String> getAvailableResources(String moduleName, String type, String ext) {
         Set<String> resources = new HashSet<String>();
 
-        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(moduleName);
+        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleName);
 
         Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
         packages.add(aPackage);

@@ -246,7 +246,7 @@ public class RulesNotificationService {
                     final Value[] values = node.getResolveSite().getProperty("j:installedModules").getValues();
                     for (Value value : values) {
                         try {
-                            ResourceBundle resourceBundle = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(value.getString()).getName(), locale);
+                            ResourceBundle resourceBundle = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(value.getString()).getName(), locale);
                             subject = resourceBundle.getString(drools.getRule().getName().toLowerCase().replaceAll(" ", ".") + ".subject");
                             bindings.put("bundle", resourceBundle);
                         } catch (MissingResourceException ee) {

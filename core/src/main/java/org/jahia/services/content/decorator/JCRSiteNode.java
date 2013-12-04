@@ -389,12 +389,12 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 .getTemplatePackageRegistry();
         for (int i = 0; i < keys.size(); i++) {
             String key = keys.get(i);
-            JahiaTemplatesPackage aPackage = reg.lookupByFileName(key);
+            JahiaTemplatesPackage aPackage = reg.lookupById(key);
             if (aPackage != null) {
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!modules.contains(depend.getRootFolder())) {
-                        modules.add(depend.getRootFolder());
-                        keys.add(depend.getRootFolder());
+                    if (!modules.contains(depend.getId())) {
+                        modules.add(depend.getId());
+                        keys.add(depend.getId());
                     }
                 }
             } else {
@@ -420,13 +420,13 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 }
             }
             if (hasProperty("j:templatesSet")) {
-                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(
+                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
                         getProperty("j:templatesSet").getString());
                 if (templatePackage != null) {
                 final List<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
                 for (JahiaTemplatesPackage dependency : dependencies) {
-                    if(!modules.contains(dependency.getRootFolder())) {
-                        modules.add(dependency.getRootFolder());
+                    if(!modules.contains(dependency.getId())) {
+                        modules.add(dependency.getId());
                     }
                 }
             }
@@ -473,7 +473,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     public JahiaTemplatesPackage getTemplatePackage() {
         if (templatePackage == null) {
             templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                    .getTemplatePackageByFileName(getTemplateFolder());
+                    .getTemplatePackageById(getTemplateFolder());
         }
 
         return templatePackage;

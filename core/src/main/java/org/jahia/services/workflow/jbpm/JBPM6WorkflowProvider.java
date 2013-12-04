@@ -609,7 +609,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
                 String module = workflowService.getModuleForWorkflow(task.getTaskData().getProcessId());
                 if (module != null) {
                     l = Thread.currentThread().getContextClassLoader();
-                    Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(module).getChainedClassLoader());
+                    Thread.currentThread().setContextClassLoader(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(module).getChainedClassLoader());
                 }
                 if (args == null) {
                     args = new HashMap<String, Object>();
@@ -960,7 +960,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     private ResourceBundle getResourceBundle(Locale uiLocale, String packageName, final String definitionKey) {
         try {
             if (workflowService.getModuleForWorkflow(definitionKey) != null) {
-                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(workflowService.getModuleForWorkflow(definitionKey));
+                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(workflowService.getModuleForWorkflow(definitionKey));
                 return ResourceBundles
                         .get(packageName + "." + StringUtils.replace(definitionKey, " ", ""), module, uiLocale);
             }

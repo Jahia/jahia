@@ -538,7 +538,7 @@ public class ContentDefinitionHelper {
 //                        ctx.put("contextType", realType);
                     if (installedModules == null || extension.getTemplatePackage() == null ||
                             extension.getTemplatePackage().getModuleType().equalsIgnoreCase("system") ||
-                            installedModules.contains(extension.getTemplatePackage().getRootFolder())) {
+                            installedModules.contains(extension.getTemplatePackage().getId())) {
                         res.add(extension);
                         foundTypes.add(extension.getName());
                     }
@@ -828,7 +828,7 @@ public class ContentDefinitionHelper {
                 packages.add(site.getTemplatePackage());
             } else {
                 for (String s : site.getInstalledModules()) {
-                    JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s);
+                    JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
                     packages.add(aPackage);
                 }
             }
@@ -847,13 +847,13 @@ public class ContentDefinitionHelper {
             List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
             for (JahiaTemplatesPackage pkg : packages) {
                 if  (pkg != null) {
-                    for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getRootFolder()); nti.hasNext(); ) {
+                    for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getId()); nti.hasNext(); ) {
                         ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
                         if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {
                             types.add(extendedNodeType);
                         }
                     }
-                    if (pkg.getRootFolder().equals("default")) {
+                    if (pkg.getId().equals("default")) {
                         for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
                             ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
                             if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {

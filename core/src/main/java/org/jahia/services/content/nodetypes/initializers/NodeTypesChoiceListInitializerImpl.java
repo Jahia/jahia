@@ -81,9 +81,9 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
                     JCRSiteNode site = node.getResolveSite();
                     if (site != null) {
                         JahiaTemplatesPackage templatePackage = site.getTemplatePackage();
-                        systemIds.add(templatePackage.getRootFolder());
+                        systemIds.add(templatePackage.getId());
                         for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
-                            systemIds.add(dependency.getRootFolder());
+                            systemIds.add(dependency.getId());
                         }
                         systemIds.add("system-extension");
                         systemIds.add("system-standard");

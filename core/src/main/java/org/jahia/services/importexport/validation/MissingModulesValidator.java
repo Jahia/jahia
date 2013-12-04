@@ -96,12 +96,12 @@ public class MissingModulesValidator implements ImportValidator, ModuleDependenc
 
             // validate if we have the template set deployed
             targetTemplateSetPresent = templateManagerService
-                    .getTemplatePackageByFileName(targetTemplateSet) != null;
+                    .getTemplatePackageById(targetTemplateSet) != null;
 
             // validate modules
             if (modules != null) {
                 for (String module : modules) {
-                    if (templateManagerService.getTemplatePackageByFileName(module) == null) {
+                    if (templateManagerService.getTemplatePackageById(module) == null) {
                         missingModules.add(module);
                     }
                 }

@@ -9,7 +9,7 @@
         <td>${entry.key}</td>
         <td>
             <c:if test="${isStudio}">
-                <c:url var="urlDetails" value="${url.base}/modules/${currentModule.rootFolder}.html"/>
+                <c:url var="urlDetails" value="${url.base}/modules/${currentModule.id}.html"/>
                 <button class="btn btn-info" type="button" onclick='window.location.assign("${urlDetails}")'>
                     <i class="icon-zoom-in icon-white"></i>
                     &nbsp;${i18nModuleDetails}
@@ -25,7 +25,7 @@
                 </form>
             </c:if>
             <c:if test="${not isStudio && not empty currentModule.forgeUrl}">
-            <button class="btn btn-info" type="submit" onclick="window.location.assign('${currentModule.forgeUrl}/contents/forge-modules-repository/${currentModule.rootFolder}.html')">
+            <button class="btn btn-info" type="submit" onclick="window.location.assign('${currentModule.forgeUrl}/contents/forge-modules-repository/${currentModule.id}.html')">
                 <i class="icon-zoom-in icon-white"></i>
                 &nbsp;${i18nModuleForge}
             </button>
@@ -78,7 +78,7 @@
             <td>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
-                        <c:url var="urlToStudio" value="/cms/studio/default/${currentResource.locale}/modules/${currentModule.rootFolder}.html"/>
+                        <c:url var="urlToStudio" value="/cms/studio/default/${currentResource.locale}/modules/${currentModule.id}.html"/>
                         <button class="btn btn-block" type="button" onclick='window.parent.location.assign("${urlToStudio}")'>
                             <i class="icon-circle-arrow-right"></i>
                             &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />

@@ -75,7 +75,7 @@ public class NewModuleActionItem extends BaseActionItem {
         dialog.setModal(true);
         dialog.setHideOnButtonClick(true);
         dialog.setWidth(500);
-        dialog.setHeight(200);
+        dialog.setHeight(300);
 
         dialog.setLayout(new FitLayout());
 
@@ -99,11 +99,21 @@ public class NewModuleActionItem extends BaseActionItem {
             form.add(moduleTypeCombo);
         }
 
-        final TextField<String> name = new TextField<String>();
-        name.setName("name");
-        name.setAllowBlank(false);
-        name.setFieldLabel(Messages.get("newPackageName.label", "New package name"));
-        form.add(name);
+        final TextField<String> moduleName = new TextField<String>();
+        moduleName.setName("moduleName");
+        moduleName.setAllowBlank(false);
+        moduleName.setFieldLabel(Messages.get("label.moduleName", "Module name"));
+        form.add(moduleName);
+        final TextField<String> artifactId = new TextField<String>();
+        artifactId.setName("artifactId");
+        artifactId.setFieldLabel(Messages.get("label.moduleId", "Module ID (artifactId)"));
+        artifactId.setEmptyText(Messages.get("label.moduleId.empty", "Generated from module name"));
+        form.add(artifactId);
+        final TextField<String> groupId = new TextField<String>();
+        groupId.setName("groupId");
+        groupId.setFieldLabel(Messages.get("label.groupId", "groupId"));
+        groupId.setEmptyText(Messages.get("label.moduleId.empty", "org.jahia.modules"));
+        form.add(groupId);
 
         final TextField<String> sources = new TextField<String>();
         sources.setName("sources");
@@ -115,27 +125,31 @@ public class NewModuleActionItem extends BaseActionItem {
             @Override
             public void handleEvent(WindowEvent be) {
                 if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.OK)) {
-                    linker.loading(Messages.get("statusbar.creatingModule.label", "Creating module..."));
-                    JahiaContentManagementService.App.getInstance().createModule(name.getValue(), null, siteType != null ? siteType : moduleTypeCombo.getSimpleValue() , sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode result) {
-                            linker.loaded();
-                            Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleCreated", "Module successfully created"));
-                            JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
-                            JahiaGWTParameters.setSiteNode(result);
-                            if (((EditLinker) linker).getSidePanel() != null) {
-                                Map<String, Object> data = new HashMap<String, Object>();
-                                data.put(Linker.REFRESH_ALL, true);
-                                ((EditLinker) linker).getSidePanel().refresh(data);
+                    if (form.isValid()) {
+                        linker.loading(Messages.get("statusbar.creatingModule.label", "Creating module..."));
+                        JahiaContentManagementService.App.getInstance().createModule(moduleName.getValue(), artifactId.getValue(), groupId.getValue(), siteType != null ? siteType : moduleTypeCombo.getSimpleValue(), sources.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
+                            public void onSuccess(GWTJahiaNode result) {
+                                linker.loaded();
+                                Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleCreated", "Module successfully created"));
+                                JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
+                                JahiaGWTParameters.setSiteNode(result);
+                                if (((EditLinker) linker).getSidePanel() != null) {
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_ALL, true);
+                                    ((EditLinker) linker).getSidePanel().refresh(data);
+                                }
+                                MainModule.staticGoTo(result.getPath(), null);
+                                SiteSwitcherActionItem.refreshAllSitesList(linker);
                             }
-                            MainModule.staticGoTo(result.getPath(), null);
-                            SiteSwitcherActionItem.refreshAllSitesList(linker);
-                        }
 
-                        public void onApplicationFailure(Throwable caught) {
-                            linker.loaded();
-                            Info.display(Messages.get("label.error", "Error"), Messages.get("message.moduleCreationFailed", "Module creation failed"));
-                        }
-                    });
+                            public void onApplicationFailure(Throwable caught) {
+                                linker.loaded();
+                                Info.display(Messages.get("label.error", "Error"), caught.getLocalizedMessage());
+                            }
+                        });
+                    } else {
+                        dialog.show();
+                    }
                 }
             }
         });

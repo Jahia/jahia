@@ -135,13 +135,13 @@ public class JahiaTemplateManagerServiceTest {
         assertFalse(availableTemplatePackages.isEmpty());
         JahiaTemplatesPackage articlePackage = null;
         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-            if (availableTemplatePackage.getRootFolder().equals(moduleToBeDeployed)) {
+            if (availableTemplatePackage.getId().equals(moduleToBeDeployed)) {
                 articlePackage = availableTemplatePackage;
             }
         }
         assertNotNull(articlePackage);
-        String modulePath = "/modules/" + articlePackage.getRootFolderWithVersion();
-        templateManagerService.installModule(articlePackage.getRootFolder(), SITE_CONTENT_ROOT_NODE, "root");
+        String modulePath = "/modules/" + articlePackage.getIdWithVersion();
+        templateManagerService.installModule(articlePackage.getId(), SITE_CONTENT_ROOT_NODE, "root");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITE_CONTENT_ROOT_NODE);

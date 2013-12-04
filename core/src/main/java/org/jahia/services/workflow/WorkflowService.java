@@ -125,7 +125,7 @@ public class WorkflowService implements BeanPostProcessor {
         if (type != null && !workflowRegistrationByDefinition.containsKey(type.getDefinition())) {
             workflowRegistrationByDefinition.put(type.getDefinition(), type);
             if (type.getModule() != null) {
-                modulesForWorkflowDefinition.put(type.getDefinition(), type.getModule().getRootFolder());
+                modulesForWorkflowDefinition.put(type.getDefinition(), type.getModule().getId());
                 for (WorkflowProvider provider : providers.values()) {
                     final WorkflowDefinition def = provider.getWorkflowDefinitionByKey(type.getDefinition(), null);
                     if (def != null) {
@@ -136,7 +136,7 @@ public class WorkflowService implements BeanPostProcessor {
                                     boolean updated = initializePermission(session, def, type.getModule());
                                     if (updated) {
                                         session.save();
-                                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + type.getModule().getRootFolderWithVersion());
+                                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + type.getModule().getIdWithVersion());
                                     }
                                     return null;
                                 }
@@ -210,7 +210,7 @@ public class WorkflowService implements BeanPostProcessor {
         }
         Set<String> tasks = definition.getTasks();
 
-        final String permissionPath = "/modules/" + module.getRootFolderWithVersion() + "/permissions";
+        final String permissionPath = "/modules/" + module.getIdWithVersion() + "/permissions";
 
         for (String task : tasks) {
             if (!map.containsKey(task)) {

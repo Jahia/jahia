@@ -50,10 +50,10 @@ public class MacrosChoiceListInitializer implements ModuleChoiceListInitializer 
             try{
                 Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
 
-                packages.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("macros"));
+                packages.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("macros"));
 
                 for (String s : node.getResolveSite().getInstalledModules()){
-                    JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s);
+                    JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
                     packages.add(pack);
                     packages.addAll(pack.getDependencies());
                 }

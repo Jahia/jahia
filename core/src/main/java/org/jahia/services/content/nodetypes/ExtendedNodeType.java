@@ -876,7 +876,7 @@ public class ExtendedNodeType implements NodeType {
         if (!systemType && templatesPackage == null) {
             try {
                 templatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                        .getTemplatePackageByFileName(getSystemId());
+                        .getTemplatePackageById(getSystemId());
             } catch (Exception e) {
                 logger.warn(
                         "Unable to get the template package for the node with system id '"

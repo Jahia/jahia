@@ -135,7 +135,7 @@ public class TemplatePackageDeployer {
             Resource importFile = aPackage.getResource(imp);
             logger.info("... importing " + importFile + " into " + targetPath);
             session.getPathMapping().put("/templateSets/", "/modules/");
-            session.getPathMapping().put("/modules/" + aPackage.getRootFolder() + "/", "/modules/" + aPackage.getRootFolder() + "/" + aPackage.getVersion() + "/");
+            session.getPathMapping().put("/modules/" + aPackage.getId() + "/", "/modules/" + aPackage.getId() + "/" + aPackage.getVersion() + "/");
 
             try {
                 if (imp.toLowerCase().endsWith(".xml")) {
@@ -165,15 +165,15 @@ public class TemplatePackageDeployer {
                         if (sizes.containsKey("permissions.xml")) {
                             Set<String> s = new HashSet<String>(sizes.keySet());
                             s.remove("permissions.xml");
-                            if (!session.itemExists("/modules/" + aPackage.getRootFolderWithVersion()+"/permissions")) {
-                                session.getNode("/modules/" + aPackage.getRootFolderWithVersion()).addNode("permissions","jnt:permission");
+                            if (!session.itemExists("/modules/" + aPackage.getIdWithVersion()+"/permissions")) {
+                                session.getNode("/modules/" + aPackage.getIdWithVersion()).addNode("permissions","jnt:permission");
                             }
-                            importExportService.importZip("/modules/" + aPackage.getRootFolderWithVersion(), importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
+                            importExportService.importZip("/modules/" + aPackage.getIdWithVersion(), importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
                         }
                         if (sizes.containsKey("roles.xml")) {
                             Set<String> s = new HashSet<String>(sizes.keySet());
                             s.remove("roles.xml");
-                            session.getPathMapping().put("/permissions", "/modules/" + aPackage.getRootFolderWithVersion() + "/permissions");
+                            session.getPathMapping().put("/permissions", "/modules/" + aPackage.getIdWithVersion() + "/permissions");
                             importExportService.importZip("/", importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, s, false);
                             session.getPathMapping().remove("/permissions");
                         }
@@ -207,14 +207,14 @@ public class TemplatePackageDeployer {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 if (!session.itemExists("/modules")) {
                     session.getWorkspace().clone("default", "/modules", "/modules", true);
-                } else if (!session.itemExists("/modules/" + pack.getRootFolder())) {
-                    session.getWorkspace().clone("default", "/modules/" + pack.getRootFolder(), "/modules/" + pack.getRootFolder(), true);
+                } else if (!session.itemExists("/modules/" + pack.getId())) {
+                    session.getWorkspace().clone("default", "/modules/" + pack.getId(), "/modules/" + pack.getId(), true);
                 } else {
-                    if (session.itemExists("/modules/" + pack.getRootFolderWithVersion())) {
-                        session.getNode("/modules/" + pack.getRootFolderWithVersion()).remove();
+                    if (session.itemExists("/modules/" + pack.getIdWithVersion())) {
+                        session.getNode("/modules/" + pack.getIdWithVersion()).remove();
                         session.save();
                     }
-                    session.getWorkspace().clone("default", "/modules/" + pack.getRootFolderWithVersion(), "/modules/" + pack.getRootFolderWithVersion(), true);
+                    session.getWorkspace().clone("default", "/modules/" + pack.getIdWithVersion(), "/modules/" + pack.getIdWithVersion(), true);
                 }
                 return null;
             }
@@ -230,7 +230,7 @@ public class TemplatePackageDeployer {
     }
 
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
-        String modulePath = "/modules/" + pkg.getRootFolder() + "/" + pkg.getVersion();
+        String modulePath = "/modules/" + pkg.getId() + "/" + pkg.getVersion();
         if (session.nodeExists(modulePath)) {
             JCRNodeWrapper moduleNode = session.getNode(modulePath);
             NodeIterator nodeIterator = moduleNode.getNodes();
@@ -253,11 +253,11 @@ public class TemplatePackageDeployer {
         }
         JCRNodeWrapper modules = session.getNode("/modules");
         JCRNodeWrapper m;
-        if (!modules.hasNode(pack.getRootFolder())) {
+        if (!modules.hasNode(pack.getId())) {
             modified = true;
-            m = modules.addNode(pack.getRootFolder(), "jnt:module");
+            m = modules.addNode(pack.getId(), "jnt:module");
         } else {
-            m = modules.getNode(pack.getRootFolder());
+            m = modules.getNode(pack.getId());
         }
 
         if (!m.hasNode(pack.getVersion().toString())) {
@@ -306,7 +306,7 @@ public class TemplatePackageDeployer {
 
     private void resetModuleAttributes(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
         JCRNodeWrapper modules = session.getNode("/modules");
-        JCRNodeWrapper m = modules.getNode(pack.getRootFolderWithVersion());
+        JCRNodeWrapper m = modules.getNode(pack.getIdWithVersion());
 
         m.setProperty("j:title", pack.getName());
         if (pack.getModuleType() != null) {
@@ -314,7 +314,7 @@ public class TemplatePackageDeployer {
         }
         List<Value> l = new ArrayList<Value>();
         for (String d : pack.getDepends()) {
-            String v = templatePackageRegistry.getRootFolderName(d);
+            String v = templatePackageRegistry.getModuleId(d);
             if (v != null) {
                 l.add(session.getValueFactory().createValue(v));
             } else {
@@ -379,8 +379,8 @@ public class TemplatePackageDeployer {
 
     private String guessModuleType(JCRSessionWrapper session, JahiaTemplatesPackage pack) throws RepositoryException {
         String moduleType = JahiaTemplateManagerService.MODULE_TYPE_MODULE;
-        if (session.itemExists("/modules/" + pack.getRootFolderWithVersion() + "/j:moduleType")) {
-            moduleType = session.getNode("/modules/" + pack.getRootFolderWithVersion()).getProperty("j:moduleType").getValue().getString();
+        if (session.itemExists("/modules/" + pack.getIdWithVersion() + "/j:moduleType")) {
+            moduleType = session.getNode("/modules/" + pack.getIdWithVersion()).getProperty("j:moduleType").getValue().getString();
         } else {
             List<String> files = new ArrayList<String>(Arrays.asList(new File(pack.getFilePath()).list()));
             files.removeAll(Arrays.asList("META-INF", "WEB-INF", "resources"));
@@ -400,9 +400,9 @@ public class TemplatePackageDeployer {
             Bundle bundle = ProvisionActivator.getInstance().getBundleContext().installBundle(location);
             bundle.update();
             bundle.start();
-            String moduleName = BundleUtils.getModuleName(bundle);
+            String moduleId = BundleUtils.getModuleId(bundle);
             String version = BundleUtils.getModuleVersion(bundle);
-            return service.getTemplatePackageRegistry().lookupByFileNameAndVersion(moduleName, new ModuleVersion(version));
+            return service.getTemplatePackageRegistry().lookupByIdAndVersion(moduleId, new ModuleVersion(version));
         } catch (BundleException e) {
             logger.error("Cannot deploy module",e);
         }
@@ -413,16 +413,14 @@ public class TemplatePackageDeployer {
     public void undeployModule(JahiaTemplatesPackage pack) throws RepositoryException {
         Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
-            if (bundle.getHeaders().get("Jahia-Root-Folder") != null) {
-                String moduleName = BundleUtils.getModuleName(bundle);
-                String version = BundleUtils.getModuleVersion(bundle);
-                if (moduleName.equals(pack.getRootFolder()) && version.equals(pack.getVersion().toString())) {
-                    try {
-                        bundle.uninstall();
-                        return;
-                    } catch (BundleException e) {
-                        logger.error("Cannot undeploy module", e);
-                    }
+            String moduleId = BundleUtils.getModuleId(bundle);
+            String version = BundleUtils.getModuleVersion(bundle);
+            if (moduleId.equals(pack.getId()) && version.equals(pack.getVersion().toString())) {
+                try {
+                    bundle.uninstall();
+                    return;
+                } catch (BundleException e) {
+                    logger.error("Cannot undeploy module", e);
                 }
             }
         }

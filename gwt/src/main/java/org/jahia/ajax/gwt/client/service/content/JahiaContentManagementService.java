@@ -118,9 +118,9 @@ public interface JahiaContentManagementService extends RemoteService {
     
     boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createModule(String key, String baseSet, String siteType, String source) throws GWTJahiaServiceException;
+    GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String source) throws GWTJahiaServiceException;
 
-    GWTJahiaNode checkoutModule(String moduleName, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException;
+    GWTJahiaNode checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException;
 
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException;
 
@@ -154,20 +154,19 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void flushSite(String siteUUID) throws GWTJahiaServiceException;
 
-    GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
+    GWTJahiaNode generateWar(String moduleId) throws GWTJahiaServiceException;
 
-    RpcMap releaseModule(String moduleName, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException;
+    RpcMap releaseModule(String moduleId, GWTModuleReleaseInfo releaseInfo) throws GWTJahiaServiceException;
 
     /**
      * Returns the information, required for performing a release of the module: distribution server, Jahia forge etc.
      * 
-     * @param moduleName
-     *            the name of the module which will be released
+     * @param moduleId the Id of the module which will be released
      * @return a map with the release info: distribution server, Jahia forge etc
      * @throws GWTJahiaServiceException
      *             in case of an error
      */
-    GWTModuleReleaseInfo getInfoForModuleRelease(String moduleName) throws GWTJahiaServiceException;
+    GWTModuleReleaseInfo getInfoForModuleRelease(String moduleId) throws GWTJahiaServiceException;
 
     String getAbsolutePath(String path) throws GWTJahiaServiceException;
 
@@ -364,9 +363,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException;
 
-    GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType) throws GWTJahiaServiceException;
+    GWTJahiaNode sendToSourceControl(String moduleId, String scmURI, String scmType) throws GWTJahiaServiceException;
 
-    void saveModule(String moduleName, String message) throws GWTJahiaServiceException;
+    void saveModule(String moduleId, String message) throws GWTJahiaServiceException;
 
     void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException;
 
@@ -420,13 +419,13 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void unzip(List<String> paths) throws GWTJahiaServiceException;
 
-    void updateModule(String moduleName) throws GWTJahiaServiceException;
+    void updateModule(String moduleId) throws GWTJahiaServiceException;
 
-    void addToSourceControl(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException;
+    void addToSourceControl(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException;
 
-    void markConflictAsResolved(String moduleName, GWTJahiaNode node) throws GWTJahiaServiceException;
+    void markConflictAsResolved(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException;
 
-    void compileAndDeploy(String moduleName) throws GWTJahiaServiceException;
+    void compileAndDeploy(String moduleId) throws GWTJahiaServiceException;
 
     void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
     

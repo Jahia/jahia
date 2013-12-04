@@ -323,7 +323,7 @@ public class JahiaSitesService extends JahiaService {
         try {
 
             if (getSiteByKey(siteKey) == null) {
-                final String templatePackage = templateService.getAnyDeployedTemplatePackage(selectTmplSet).getRootFolder();
+                final String templatePackage = templateService.getAnyDeployedTemplatePackage(selectTmplSet).getId();
 
                 int id = 1;
                 List<JCRSiteNode> sites = getSitesNodeList();
@@ -400,7 +400,7 @@ public class JahiaSitesService extends JahiaService {
                             String autoDeployOnSite = availableTemplatePackage.getAutoDeployOnSite();
                             if (autoDeployOnSite != null
                                     && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite))) {
-                                String source = "/modules/" + availableTemplatePackage.getRootFolder();
+                                String source = "/modules/" + availableTemplatePackage.getId();
                                 try {
                                     logger.info("Deploying module {} to {}", source, target);
                                     templateService.installModule(availableTemplatePackage, target, session);

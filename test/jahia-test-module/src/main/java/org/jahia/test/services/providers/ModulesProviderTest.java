@@ -92,7 +92,7 @@ public class ModulesProviderTest {
     @After
     public void tearDown() {
         try {
-            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName("dummy1");
+            JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById("dummy1");
             if (pack != null) {
                 templateManagerService.undeployModule(pack);
             }
@@ -149,8 +149,8 @@ public class ModulesProviderTest {
             // read properties
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            dummyPackage = templateManagerService.getTemplatePackageById("dummy1");
+            root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources");
             viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
             assertTrue("testComponent1 source not match", viewNode.getProperty("sourceCode").getString().endsWith(testString));
             assertTrue("cache.perUser not set to true",viewNode.getProperty("cache.perUser").getBoolean());
@@ -299,7 +299,7 @@ public class ModulesProviderTest {
             s.save();
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
+            dummyPackage = templateManagerService.getTemplatePackageById("dummy1");
             String cndPath = dummyPackage.getSourcesFolder().getAbsolutePath() + "/src/main/resources/META-INF/definitions.cnd";
             BufferedReader input =  new BufferedReader(new FileReader(cndPath));
             try {
@@ -318,7 +318,7 @@ public class ModulesProviderTest {
             } finally {
                 input.close();
             }
-            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources");
             nodeType = root.getNode("META-INF/definitions.cnd/jnt:testComponent4");
             assertEquals("jnt:primaryNodeType", nodeType.getPrimaryNodeType().getName());
             assertEquals("jnt:content", nodeType.getProperty("j:supertype").getString());
@@ -364,8 +364,8 @@ public class ModulesProviderTest {
 
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
 
-            s.move("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testComponent4",
-                   "/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
+            s.move("/modules/" + dummyPackage.getIdWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testComponent4",
+                   "/modules/" + dummyPackage.getIdWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
             s.save();
             s.logout();
             input =  new BufferedReader(new FileReader(cndPath));
@@ -381,7 +381,7 @@ public class ModulesProviderTest {
             } finally {
                 input.close();
             }
-            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources");
             assertTrue(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
             s.save();
             s.logout();
@@ -391,7 +391,7 @@ public class ModulesProviderTest {
              */
 
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
+            root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/META-INF/definitions.cnd/jnt:testRenamedComponent");
             root.orderBefore("property2","property1");
             s.save();
             s.logout();
@@ -417,14 +417,14 @@ public class ModulesProviderTest {
              */
 
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources");
             nodeType = root.getNode("META-INF/definitions.cnd/jnt:testRenamedComponent");
             nodeType.remove();
             s.save();
             s.logout();
             s = JCRSessionFactory.getInstance().getCurrentUserSession();
-            dummyPackage = templateManagerService.getTemplatePackageByFileName("dummy1");
-            root = s.getNode("/modules/" + dummyPackage.getRootFolderWithVersion() + "/sources");
+            dummyPackage = templateManagerService.getTemplatePackageById("dummy1");
+            root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources");
             assertFalse(root.hasNode("META-INF/definitions.cnd/jnt:testRenamedComponent"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -71,7 +71,7 @@ public class ResourceBundleTest {
     @Test
     public void lookupBundleTest() {
         JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageByFileName("templates-web-space");
+                .getTemplatePackageById("templates-web-space");
         String primary = pkg.getResourceBundleName();
         // Lookup a key that is present directly in the JahiaWebTemplatesSpace.properties
         testResource(primary, pkg, "jmix_skinnable.j_skin.skins.acmebox3", Locale.ENGLISH, "ACME Box 3 Plain ");
@@ -92,9 +92,9 @@ public class ResourceBundleTest {
                 "Avec cadre, fond de titre clair, fond du corps clair");
         // test resource overriding from a templatesSet (dummy3 is the templatesSet)
         testResource(
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName("dummy3")
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("dummy3")
                         .getResourceBundleName(), ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                        .getTemplatePackageByFileName("dummy2"), "test", Locale.ENGLISH, "test from dummy3");
+                        .getTemplatePackageById("dummy2"), "test", Locale.ENGLISH, "test from dummy3");
 
     }
 

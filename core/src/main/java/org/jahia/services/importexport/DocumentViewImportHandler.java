@@ -513,21 +513,21 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     dependencies = new ArrayList<String>();
                     dependencies.add(site.getName());
                     for (int i = 0; i < dependencies.size(); i++) {
-                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(dependencies.get(i));
+                        JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(dependencies.get(i));
                         if (aPackage == null) {
                             continue;
                         }
                         for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                            if (!dependencies.contains(depend.getRootFolder())) {
-                                dependencies.add(depend.getRootFolder());
+                            if (!dependencies.contains(depend.getId())) {
+                                dependencies.add(depend.getId());
                             }
                         }
                     }
                 }
             }
             for (ExtendedNodeType type : nodeTypes) {
-                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getRootFolder())) {
-                    String fileName = type.getTemplatePackage().getRootFolder();
+                if (type.getTemplatePackage() != null && dependencies != null && !dependencies.contains(type.getTemplatePackage().getId())) {
+                    String fileName = type.getTemplatePackage().getId();
                     logger.debug("Missing dependency : " + path + " (" + type.getName() + ") requires " + fileName + getLocation());
                     if (!missingDependencies.contains(fileName)) {
                         missingDependencies.add(fileName);

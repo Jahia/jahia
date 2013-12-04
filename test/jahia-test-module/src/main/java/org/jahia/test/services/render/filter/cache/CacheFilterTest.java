@@ -68,7 +68,6 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.utils.Patterns;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -196,7 +195,7 @@ public class CacheFilterTest extends JahiaTestCase {
                         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
                         JCRNodeWrapper pageContentNode = session
                                 .getNode("/modules/"
-                                        + node.getResolveSite().getTemplatePackage().getRootFolderWithVersion()
+                                        + node.getResolveSite().getTemplatePackage().getIdWithVersion()
                                         + "/templates/base/simple/pagecontent");
                         Resource resource = new Resource(pageContentNode,
                                 "html", null,

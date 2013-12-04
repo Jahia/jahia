@@ -30,10 +30,10 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     List<String> correctInstalledModules = new ArrayList<String>();
                     for (Value v : installedModules) {
                         String folderName = v.getString();
-                        if (templateManagerService.getTemplatePackageByFileName(folderName) == null) {
+                        if (templateManagerService.getTemplatePackageById(folderName) == null) {
                             JahiaTemplatesPackage templatesPackage = templateManagerService.getTemplatePackage(folderName);
                             if (templatesPackage != null) {
-                                folderName = templatesPackage.getRootFolder();
+                                folderName = templatesPackage.getId();
                             }
                         }
                         correctInstalledModules.add(folderName);

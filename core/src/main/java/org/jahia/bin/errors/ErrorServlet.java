@@ -144,9 +144,9 @@ public class ErrorServlet extends HttpServlet {
                                             .getTemplatePackageName());
                             if (pkg != null) {
                                 if (pkg.getResource("/errors/" + page) != null) {
-                                    path = "/modules/" + pkg.getRootFolder() + "/errors/" + page;
+                                    path = "/modules/" + pkg.getId() + "/errors/" + page;
                                 } else if (pkg.getResource("/errors/error.jsp") != null) {
-                                    path = "/modules/" + pkg.getRootFolder() + "/errors/error.jsp";
+                                    path = "/modules/" + pkg.getId() + "/errors/error.jsp";
                                 }
                             }
                         }

@@ -371,7 +371,7 @@ public class Activator implements BundleActivator {
 
         List<String> dependsList = pkg.getDepends();
         if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates")
-                && !"assets".equals(pkg.getRootFolder()) && !"default".equals(pkg.getRootFolder()) && !"jquery".equals(pkg.getRootFolder())) {
+                && !"assets".equals(pkg.getId()) && !"default".equals(pkg.getId()) && !"jquery".equals(pkg.getId())) {
             dependsList.add("default");
         }
 
@@ -385,14 +385,14 @@ public class Activator implements BundleActivator {
                         bundle.getSymbolicName(), depend);
                 setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED, depend);
                 toBeParsed.get(depend).add(bundle);
-                if (templatePackageRegistry.lookupByFileNameAndVersion(pkg.getName(), pkg.getVersion()) != null) {
+                if (templatePackageRegistry.lookupByIdAndVersion(pkg.getId(), pkg.getVersion()) != null) {
                     templatePackageRegistry.unregisterPackageVersion(pkg);
                 }
                 return;
             }
         }
 
-        logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
+        logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
         registeredBundles.put(bundle, pkg);
         boolean newModuleDeployment = templatePackageRegistry.getAvailableVersionsForModule(bundle.getSymbolicName()).isEmpty();
@@ -406,12 +406,12 @@ public class Activator implements BundleActivator {
             }
         }
 
-        logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
+        logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
         setModuleState(bundle, ModuleState.State.PARSED, null);
 
         if (installedBundles.remove(bundle)) {
-            logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
+            logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
             scanForImportFiles(bundle, pkg);
 
@@ -428,7 +428,7 @@ public class Activator implements BundleActivator {
                 }
                 initializedBundles.add(bundle);
             }
-            logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getRootFolder(), pkg.getVersion());
+            logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
             if (shouldAutoStart && newModuleDeployment) {
                 bundleStarter.startBundle(bundle);
@@ -436,7 +436,7 @@ public class Activator implements BundleActivator {
         }
 
         if (latestDefinitions) {
-            parseDependantBundles(pkg.getRootFolder(), shouldAutoStart);
+            parseDependantBundles(pkg.getId(), shouldAutoStart);
             parseDependantBundles(pkg.getName(), shouldAutoStart);
         }
     }
@@ -462,7 +462,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void starting(Bundle bundle) {
-        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByFileName(bundle.getSymbolicName());
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupById(bundle.getSymbolicName());
         if (jahiaTemplatesPackage != null) {
             try {
                 logger.info("Stopping module {} before activating new version...", getDisplayName(bundle));
@@ -495,7 +495,7 @@ public class Activator implements BundleActivator {
         }
 
         for (String depend : dependsList) {
-            JahiaTemplatesPackage pack = templatePackageRegistry.lookupByFileName(depend);
+            JahiaTemplatesPackage pack = templatePackageRegistry.lookupById(depend);
             if (pack == null) {
                 pack = templatePackageRegistry.lookup(depend);
             }
@@ -513,7 +513,7 @@ public class Activator implements BundleActivator {
         try {
             boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return session.itemExists("/modules/" + jahiaTemplatesPackage.getRootFolder() + "/" + jahiaTemplatesPackage.getVersion());
+                    return session.itemExists("/modules/" + jahiaTemplatesPackage.getId() + "/" + jahiaTemplatesPackage.getVersion());
                 }
             });
             if (!imported) {
@@ -562,7 +562,7 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         setModuleState(bundle, ModuleState.State.STARTED, null);
         
-        startDependantBundles(jahiaTemplatesPackage.getRootFolder());
+        startDependantBundles(jahiaTemplatesPackage.getId());
         startDependantBundles(jahiaTemplatesPackage.getName());
     }
 

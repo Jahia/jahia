@@ -39,7 +39,7 @@ public class JCRModuleListener  extends DefaultEventListener implements External
                 Event e = events.nextEvent();
                 String path = e.getPath();
                 String[] splitpath = path.split("/");
-                JahiaTemplatesPackage p = packageRegistry.lookupByFileNameAndVersion(splitpath[2], new ModuleVersion(splitpath[3]));
+                JahiaTemplatesPackage p = packageRegistry.lookupByIdAndVersion(splitpath[2], new ModuleVersion(splitpath[3]));
                 if (listener != null && p != null) {
                     listener.onModuleImported(p);
                 }

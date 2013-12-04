@@ -565,7 +565,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         String title = StringUtils.capitalize(localName.replaceAll("([A-Z])", " $0").replaceAll("[_-]", " ").toLowerCase());
         final String rbName = localName.replaceAll("-", "_");
         if (module != null) {
-            bean.setTitle(Messages.get(templateManagerService.getTemplatePackageByFileName(module), "label.permission." + rbName, LocaleContextHolder.getLocale(), title));
+            bean.setTitle(Messages.get(templateManagerService.getTemplatePackageById(module), "label.permission." + rbName, LocaleContextHolder.getLocale(), title));
         } else {
             bean.setTitle(Messages.getInternal("label.permission." + rbName, LocaleContextHolder.getLocale(), title));
         }
@@ -762,7 +762,7 @@ public class RolesAndPermissionsHandler implements Serializable {
             int depth = 2;
             if (((JCRNodeWrapper) next.getAncestor(1)).isNodeType("jnt:modules")) {
                 depth = 5;
-                JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageByFileName(next.getAncestor(2).getName());
+                JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(next.getAncestor(2).getName());
                 if (pack == null || !pack.getVersion().toString().equals(next.getAncestor(3).getName())) {
                     continue;
                 }

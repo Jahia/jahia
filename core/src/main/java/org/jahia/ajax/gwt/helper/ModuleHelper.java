@@ -113,11 +113,7 @@ public class ModuleHelper {
             String path = node.getPath();
             path = path.substring(path.indexOf("/sources/") + 8);
             String sourcesFolderPath = templatePackage.getSourcesFolder().getAbsolutePath();
-            File file = new File(sourcesFolderPath + "/src/main/resources" + path);
-            if (!file.exists()) {
-                file = new File(sourcesFolderPath + "/src/main/webapp" + path);
-            }
-            sourceControl.add(file);
+            sourceControl.add(new File(sourcesFolderPath + path));
         }
     }
 

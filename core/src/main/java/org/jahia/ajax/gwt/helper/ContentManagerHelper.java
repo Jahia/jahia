@@ -1130,11 +1130,7 @@ public class ContentManagerHelper {
             String path = node.getPath();
             path = path.substring(path.indexOf("/sources/") + "/sources".length());
             String sourcesFolderPath = templatePackage.getSourcesFolder().getAbsolutePath();
-            File file = new File(sourcesFolderPath + "/src/main/resources" + path);
-            if (!file.exists()) {
-                file = new File(sourcesFolderPath + "/src/main/webapp" + path);
-            }
-            sourceControl.markConflictAsResolved(file);
+            sourceControl.markConflictAsResolved(new File(sourcesFolderPath + path));
         }
     }
 

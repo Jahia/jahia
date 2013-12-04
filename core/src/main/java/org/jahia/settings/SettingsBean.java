@@ -176,12 +176,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private long jahiaJCRUserCountLimit = -1; 
 
     public long getJahiaJCRUserCountLimit() {
-		return jahiaJCRUserCountLimit;
-	}
+        return jahiaJCRUserCountLimit;
+    }
 
-	public void setJahiaJCRUserCountLimit(long jahiaJCRUserCountLimit) {
-		this.jahiaJCRUserCountLimit = jahiaJCRUserCountLimit;
-	}
+    public void setJahiaJCRUserCountLimit(long jahiaJCRUserCountLimit) {
+        this.jahiaJCRUserCountLimit = jahiaJCRUserCountLimit;
+    }
 
 	// this is the list of jahia.properties mail settings values...
     private int mail_maxRegroupingOfPreviousException = 500;

@@ -5,8 +5,7 @@ import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.slf4j.Logger
-import org.apache.jackrabbit.core.security.JahiaAccessManager
-import org.hibernate.annotations.Check;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
 
 
@@ -228,7 +227,7 @@ end
 
 rule "Flush privileges in role cache"
     when
-        A property j:permissions has been set on a node
+        A property j:permissionNames has been set on a node
             - the node has the type jnt:role
     then
 >       JahiaAccessManager.flushPrivilegesInRoles();

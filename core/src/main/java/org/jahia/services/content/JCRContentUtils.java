@@ -1204,8 +1204,8 @@ public final class JCRContentUtils implements ServletContextAware {
         String lockOwner = node.getLockOwner();
         boolean isLocked = node.isLocked() && (lockOwner == null || !lockOwner.equals(username));
         try {
-            if (!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
-                Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+            if (!isLocked && node.hasProperty("j:lockTypes")) {
+                Value[] values = node.getProperty("j:lockTypes").getValues();
                 for (Value value : values) {
                     if (!value.getString().startsWith(username)) {
                         isLocked = true;

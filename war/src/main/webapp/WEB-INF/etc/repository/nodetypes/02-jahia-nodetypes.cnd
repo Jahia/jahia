@@ -535,9 +535,10 @@
 
 // Mixin for extension nodes.
 
-[jmix:externalProviderExtension] mixin
+[jnt:externalProviderExtension] > nt:unstructured, jmix:lockable
  - j:isExternalProviderRoot (boolean)
  - j:externalNodeIdentifier (string)
+ - j:extendedType (string)
 
 //---------------------------------------------------------
 // Definition Content

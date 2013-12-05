@@ -1046,8 +1046,8 @@ public class JCRPublicationService extends JahiaService {
             if (info.getStatus() == PublicationInfo.CONFLICT) {
                 return info;
             }
-            if (node.hasProperty(JAHIA_LOCKTYPES)) {
-                Value[] lockTypes = node.getProperty(JAHIA_LOCKTYPES).getValues();
+            if (node.hasProperty("j:lockTypes")) {
+                Value[] lockTypes = node.getProperty("j:lockTypes").getValues();
                 for (Value lockType : lockTypes) {
                     if (lockType.getString().endsWith(":validation")) {
                         info.setLocked(true);

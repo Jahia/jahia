@@ -224,8 +224,6 @@ public class Constants {
     public static final String NODE = "j:node";
     public static final String ALT = "j:alt";
     public static final String TARGET = "j:target";
-    public static final String LOCKTOKEN = "j:locktoken";
-    public static final String LOCKTYPES = "j:lockTypes";
     public static final String AREA_NAME = "j:areaName";
     public static final String SITEID = "j:siteId";
     public static final String SITETYPE = "j:moduleType";
@@ -271,9 +269,6 @@ public class Constants {
 
     public static final String JAHIAMIX_WORKFLOW = "jmix:workflow";
 
-    public static final String JAHIA_LOCKTYPES = "j:lockTypes";
-    public static final String JAHIA_LOCKTOKEN = "j:locktoken";
-
     public static final String JAHIA_SOURCE_TEMPLATE = "j:sourceTemplate";
     public static final String JAHIA_MODULE_TEMPLATE = "j:moduleTemplate";
 
@@ -289,8 +284,8 @@ public class Constants {
 
     public static final Set<String> forbiddenPropertiesToCopy = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
-            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, JAHIA_LOCKTYPES,
-            JAHIA_LOCKTOKEN, JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
+            JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, "j:lockTypes",
+            "j:locktoken", JCR_LOCKOWNER, JCR_LOCKISDEEP, JAHIA_SOURCE_TEMPLATE, PUBLISHED, MARKED_FOR_DELETION_DATE,
             MARKED_FOR_DELETION_MESSAGE, MARKED_FOR_DELETION_USER, ORIGIN_WORKSPACE));
 
     public static final Set<String> forbiddenMixinToCopy = new HashSet<String>(Arrays.asList(JAHIAMIX_WORKFLOW, JAHIAMIX_MARKED_FOR_DELETION, JAHIAMIX_MARKED_FOR_DELETION_ROOT));

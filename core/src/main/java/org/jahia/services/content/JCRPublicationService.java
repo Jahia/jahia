@@ -230,6 +230,11 @@ public class JCRPublicationService extends JahiaService {
 
     public void publish(final List<String> uuids, final String sourceWorkspace,
                         final String destinationWorkspace, boolean checkPermissions, final List<String> comments) throws RepositoryException {
+        publish(uuids, sourceWorkspace, destinationWorkspace, checkPermissions, true, comments);
+    }
+
+    public void publish(final List<String> uuids, final String sourceWorkspace,
+                        final String destinationWorkspace, boolean checkPermissions, final boolean updateMetadata, final List<String> comments) throws RepositoryException {
         if (uuids.isEmpty())
             return;
 
@@ -253,7 +258,7 @@ public class JCRPublicationService extends JahiaService {
                 public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                     JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {
                         public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                            publish(checkedUuids, sourceSession, destinationSession, comments);
+                            publish(checkedUuids, sourceSession, destinationSession, updateMetadata, comments);
                             return null;
                         }
                     });
@@ -265,7 +270,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void publish(final List<String> uuidsToPublish, JCRSessionWrapper sourceSession,
-                         JCRSessionWrapper destinationSession, final List<String> comments)
+                         JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
             throws RepositoryException {
         final Calendar calendar = new GregorianCalendar();
 //        uuids.add(publicationInfo.getRoot().getUuid());
@@ -291,7 +296,7 @@ public class JCRPublicationService extends JahiaService {
 
         VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
-        if (destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
+        if (updateMetadata &&  destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Publishing node {}", jcrNodeWrapper.getPath());

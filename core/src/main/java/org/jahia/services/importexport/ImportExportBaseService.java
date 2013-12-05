@@ -1661,6 +1661,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setBaseFilesPath("/live-content");
                         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
 
+                        Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
+                        props.remove("j:lastPublished");
+                        props.remove("j:lastPublishedBy");
+                        props.remove("j:published");
+                        documentViewImportHandler.setPropertiesToSkip(props);
+
                         handleImport(zis, documentViewImportHandler);
 
                         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
@@ -1699,7 +1705,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                publicationService.publish(toPublish, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, null);
+                                publicationService.publish(toPublish, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, false, false, null);
                                 return null;
                             }
                         });

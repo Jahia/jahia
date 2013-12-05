@@ -557,8 +557,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             lang = atts.getValue(Constants.JCR_LANGUAGE);
             child.setProperty(Constants.JCR_LANGUAGE, lang);
         }
-        Map<String,String> lastModifiedProperties = new HashMap<String,String>();
-        Map<String,String> lastPublishedProperties = new HashMap<String,String>();
+
         for (int i = 0; i < atts.getLength(); i++) {
             if (atts.getURI(i).equals("http://www.w3.org/2000/xmlns/")) {
                 continue;
@@ -639,10 +638,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             }
                         }
                     }
-                } else if (propDef.getDeclaringNodeType().getName().equals(Constants.JAHIAMIX_LASTPUBLISHED)) {
-                    lastPublishedProperties.put(attrName, attrValue);
-                } else if (propDef.getDeclaringNodeType().getName().equals(Constants.MIX_LAST_MODIFIED)) {
-                    lastModifiedProperties.put(attrName, attrValue);
                 } else {
                     if (propDef.isMultiple()) {
                         if (replaceMultipleValues) {
@@ -680,18 +675,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     } else {
                         child.getRealNode().setProperty(attrName, attrValue);
                     }
-                }
-            }
-        }
-        setPropertiesIfNewer(child, lastModifiedProperties, Constants.JCR_LASTMODIFIED);
-        setPropertiesIfNewer(child, lastPublishedProperties, Constants.JAHIAMIX_LASTPUBLISHED);
-    }
-
-    private void setPropertiesIfNewer(JCRNodeWrapper child, Map<String, String> lastModifiedProperties, String propertyName) throws RepositoryException {
-        if (lastModifiedProperties.containsKey(propertyName)) {
-            if (!child.hasProperty(propertyName) || child.getProperty(propertyName).getDate().before(ISO8601.parse(lastModifiedProperties.get(propertyName)))) {
-                for (Map.Entry<String, String> entry : lastModifiedProperties.entrySet()) {
-                    child.setProperty(entry.getKey(), entry.getValue());
                 }
             }
         }

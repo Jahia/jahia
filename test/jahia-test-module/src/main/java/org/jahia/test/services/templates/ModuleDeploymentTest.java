@@ -113,8 +113,8 @@ public class ModuleDeploymentTest {
                 }
 
                 SettingsBean settingsBean = SettingsBean.getInstance();
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.0" + ".war"));
-                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.1" + ".war"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.0" + ".jar"));
+                FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.1" + ".jar"));
 
                 Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
                 for (Bundle bundle : bundles) {

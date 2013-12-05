@@ -43,11 +43,7 @@ package org.jahia.services.workflow;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
-<<<<<<< .working
 import org.jahia.data.templates.JahiaTemplatesPackage;
-=======
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
->>>>>>> .merge-right.r48056
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -71,12 +67,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.*;
-<<<<<<< .working
 import javax.jcr.query.Query;
 
-=======
-
->>>>>>> .merge-right.r48056
 import java.util.*;
 
 /**
@@ -570,24 +562,15 @@ public class WorkflowService implements BeanPostProcessor {
         } catch (ItemNotFoundException e) {
             // Node not found
         }
-<<<<<<< .working
         newArgs.put("nodeIds", nodeIds);
         newArgs.put("workspace", session.getWorkspace().getName());
         newArgs.put("locale", session.getLocale());
-        newArgs.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey, session.getLocale()));
+        newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
         newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
-        final String processId = lookupProvider(provider).startProcess(processKey, newArgs);
-=======
-        args.put("nodeIds", nodeIds);
-        args.put("workspace", session.getWorkspace().getName());
-        args.put("locale", session.getLocale());
-        args.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
-        args.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
         if (comments != null && comments.size() > 0) {
             addCommentsToVriables(args, comments, session.getUser().getUserKey());
         }
-        final String processId = providerImpl.startProcess(processKey, args);
->>>>>>> .merge-right.r48056
+        final String processId = providerImpl.startProcess(processKey, newArgs);
         if (logger.isDebugEnabled()) {
             logger.debug("A workflow " + processKey + " from " + provider + " has been started on nodes: " + nodeIds +
                     " from workspace " + newArgs.get("workspace") + " in locale " + newArgs.get("locale") + " with id " +
@@ -609,7 +592,7 @@ public class WorkflowService implements BeanPostProcessor {
             wfComments.add(new WorkflowComment(comment, timestamp, userKey));
         }
     }
-
+    
     public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId)
             throws RepositoryException {
         stageNode.checkout();

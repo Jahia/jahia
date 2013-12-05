@@ -1182,7 +1182,10 @@ public class JCRPublicationService extends JahiaService {
     private int checkConflict(JCRNodeWrapper node, JCRSessionWrapper destinationSession) throws RepositoryException {
         try {
             try {
-                destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                JCRNodeWrapper n = destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                if (n.getIdentifier().equals(node.getIdentifier())) {
+                    return 0;
+                }
             } catch (UnsupportedRepositoryOperationException e) {
             }
             // Conflict , a node exists in live !

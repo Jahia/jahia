@@ -49,9 +49,11 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.Window;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.workflow.*;
@@ -69,12 +71,10 @@ import java.util.*;
 /**
  * Represent the workflow action dialog widget.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 28 avr. 2010
  */
 public class WorkflowActionDialog extends LayoutContainer {
-// ------------------------------ FIELDS ------------------------------
 
     private JahiaContentManagementServiceAsync contentManagement;
     private WorkflowDashboardEngine workflowDashboard;
@@ -83,23 +83,18 @@ public class WorkflowActionDialog extends LayoutContainer {
     private TabItem commentsTab;
     private EngineContainer container;
     private String title;
-    private List<String> comments;
+    private List<GWTJahiaWorkflowComment> comments;
 
     private String nodePath;
     private GWTJahiaWorkflow workflow;
-
-    private CustomWorkflow custom;
 
     private Linker linker;
     private PropertiesEditor propertiesEditor;
     private ButtonBar buttonsBar;
 
-// --------------------------- CONSTRUCTORS ---------------------------
-
-
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition workflow,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(linker, custom, container, title);
+        this(linker, container, title);
         this.nodePath = nodePath;
         initStartWorkflowDialog(workflow);
         if (custom != null) {
@@ -109,7 +104,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(linker, custom, container, (workflow.getVariables().get("jcr:title") != null && workflow.getVariables().get("jcr:title").getValues().size() == 1) ? workflow.getVariables().get("jcr:title").getValues().get(0).getString() : null);
+        this(linker, container, (workflow.getVariables().get("jcr:title") != null && workflow.getVariables().get("jcr:title").getValues().size() == 1) ? workflow.getVariables().get("jcr:title").getValues().get(0).getString() : null);
         this.workflow = workflow;
         initExecuteActionDialog(task);
         if (custom != null) {
@@ -117,11 +112,10 @@ public class WorkflowActionDialog extends LayoutContainer {
         }
     }
 
-    private WorkflowActionDialog(Linker linker, CustomWorkflow custom, EngineContainer container, String title) {
+    private WorkflowActionDialog(Linker linker, EngineContainer container, String title) {
         super();
         contentManagement = JahiaContentManagementService.App.getInstance();
         this.linker = linker;
-        this.custom = custom;
         this.title = title;
         tabPanel = new TabPanel();
         setLayout(new FitLayout());
@@ -132,18 +126,12 @@ public class WorkflowActionDialog extends LayoutContainer {
 
         actionTab = new TabItem();
 
-        comments = new ArrayList<String>();
-
         this.container = container;
         container.setEngine(this, title, buttonsBar, this.linker);
     }
 
     public EngineContainer getContainer() {
         return container;
-    }
-
-    public void setCustom(CustomWorkflow custom) {
-        this.custom = custom;
     }
 
     public Linker getLinker() {
@@ -276,9 +264,16 @@ public class WorkflowActionDialog extends LayoutContainer {
                                 }
                             });
                 } else {
-                    comments.add(textArea.getValue());
+                    GWTJahiaWorkflowComment wfComment = new GWTJahiaWorkflowComment();
+                    wfComment.setComment(textArea.getValue());
+                    wfComment.setUser(JahiaGWTParameters.getCurrentUser());
+                    wfComment.setTime(new Date());
+                    if (comments == null) {
+                        comments = new ArrayList<GWTJahiaWorkflowComment>();
+                    }
+                    comments.add(wfComment);
                     commentsContainer.removeAll();
-                    displayStringComments(comments, commentsContainer);
+                    displayComments(comments, commentsContainer);
                 }
             }
         });
@@ -291,37 +286,14 @@ public class WorkflowActionDialog extends LayoutContainer {
         return commentsTab;
     }
 
-    private void displayStringComments(List<String> comments, final LayoutContainer commentsPanel) {
-        int i = 0;
-        for (String comment : comments) {
-            Text text = new Text(comment);
-            text.setWidth(450);
-            HorizontalPanel commentPanel = new HorizontalPanel();
-            commentPanel.setBorders(false);
-            commentPanel.setWidth("100%");
-            TableData data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
-            data.setPadding(5);
-            commentPanel.add(text, data);
-            commentPanel.setScrollMode(Style.Scroll.NONE);
-            commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
-            VerticalPanel verticalPanel = new VerticalPanel();
-            verticalPanel.setWidth(250);
-            verticalPanel.setBorders(false);
-            commentPanel.add(verticalPanel);
-            commentsPanel.add(commentPanel);
-            i++;
-        }
-        commentsPanel.layout();
-    }
-
     private void displayComments(List<GWTJahiaWorkflowComment> comments, final LayoutContainer commentsPanel) {
         int i = 0;
         for (GWTJahiaWorkflowComment comment : comments) {
             Text text = new Text(comment.getComment());
             text.setWidth(450);
-            Text time = new Text(Messages.get("label.at", "at") + " " + DateTimeFormat.getMediumDateTimeFormat().format(
+            Text time = new Text(Messages.get("label.at", "at") + " " + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM).format(
                     comment.getTime()));
-            Text user = new Text("by " + comment.getUser());
+            Text user = new Text(Messages.get("label.by", "by") + " " + comment.getUser());
             HorizontalPanel commentPanel = new HorizontalPanel();
             commentPanel.setBorders(false);
             commentPanel.setWidth("100%");
@@ -381,7 +353,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
-                contentManagement.startWorkflow(nodePath, wf, nodeProperties, comments, new BaseAsyncCallback() {
+                contentManagement.startWorkflow(nodePath, wf, nodeProperties, getComments(), new BaseAsyncCallback<Object>() {
                     public void onSuccess(Object result) {
                         Info.display(status, Messages.get("message.workflow.task.success", "Workflow task executed successfully"));
                         WorkInProgressActionItem.removeStatus(status);
@@ -426,7 +398,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                     final String status = Messages.get("label.workflow.task", "Executing workflow task");
                     Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
-                    contentManagement.assignAndCompleteTask(task, outcome, nodeProperties, new BaseAsyncCallback() {
+                    contentManagement.assignAndCompleteTask(task, outcome, nodeProperties, new BaseAsyncCallback<Object>() {
                         public void onSuccess(Object result) {
                             WorkInProgressActionItem.removeStatus(status);
                             Info.display(Messages.get("label.information", "Information"), Messages.get("label.workflow.finished", "Workflow executed"));
@@ -449,14 +421,19 @@ public class WorkflowActionDialog extends LayoutContainer {
         return allButtons;
     }
 
-// --------------------- GETTER / SETTER METHODS ---------------------
-
     public void setWorkflowDashboard(WorkflowDashboardEngine workflowDashboard) {
         this.workflowDashboard = workflowDashboard;
     }
 
     public List<String> getComments() {
-        return comments;
+        List<String> result = new ArrayList<String>();
+        if (comments != null && comments.size() > 0) {
+            for (GWTJahiaWorkflowComment c : comments) {
+                result.add(c.getComment());
+            }
+        }
+
+        return result;
     }
 
     public TabPanel getTabPanel() {
@@ -466,8 +443,6 @@ public class WorkflowActionDialog extends LayoutContainer {
     public ButtonBar getButtonsBar() {
         return buttonsBar;
     }
-
-    // -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void onHide() {

@@ -52,34 +52,54 @@ import java.util.Date;
  */
 public class WorkflowComment implements Serializable {
     private static final long serialVersionUID = 1342490305138328122L;
-	private String user;
-    private Date time;
+
     private String comment;
-
+    
+    private Date time;
+    
+    private String user;
+    
+    /**
+     * Initializes an instance of this class.
+     */
     public WorkflowComment() {
+        super();
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
+    /**
+     * Initializes an instance of this class.
+     * @param comment the comment text
+     * @param time the comment creation time
+     * @param user the key of the user, who created this comment
+     */
+    public WorkflowComment(String comment, Date time, String user) {
+        this();
+        this.comment = comment;
         this.time = time;
+        this.user = user;
     }
 
     public String getComment() {
         return comment;
     }
 
+    public Date getTime() {
+        return time;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

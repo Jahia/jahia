@@ -7,6 +7,7 @@
             </c:if>
         </td>
         <td>${entry.key}</td>
+        <td>${currentModule.groupId}</td>
         <td>
             <c:if test="${isStudio}">
                 <c:url var="urlDetails" value="${url.base}/modules/${currentModule.id}.html"/>

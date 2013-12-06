@@ -8,22 +8,23 @@ import java.io.Serializable;
 public class Module implements Serializable, Comparable<Module> {
 
     private static final long serialVersionUID = 5507292105100115258L;
-    private String name;
+    private String id;
     private String version;
     private String downloadUrl;
     private String remotePath;
     private String remoteUrl;
-    private String title;
+    private String name;
     private String groupId;
     private String forgeId;
     private String icon;
+    private boolean installable;
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getVersion() {
@@ -42,12 +43,12 @@ public class Module implements Serializable, Comparable<Module> {
         this.downloadUrl = downloadUrl;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGroupId() {
@@ -90,9 +91,17 @@ public class Module implements Serializable, Comparable<Module> {
         this.icon = icon;
     }
 
+    public boolean isInstallable() {
+        return installable;
+    }
+
+    public void setInstallable(boolean installable) {
+        this.installable = installable;
+    }
+
     @Override
     public int compareTo(Module o) {
-        return name.compareTo(o.name);
+        return id.compareTo(o.id);
     }
 }
 

@@ -78,7 +78,8 @@
     <thead>
     <tr>
         <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
-        <th></th>
+        <th><fmt:message key='serverSettings.manageModules.moduleId'/></th>
+        <th><fmt:message key='serverSettings.manageModules.groupId'/></th>
         <th class="{sorter: false}">${i18nModuleDetails}</th>
         <th><fmt:message key='serverSettings.manageModules.versions'/></th>
         <c:if test="${not isStudio}">

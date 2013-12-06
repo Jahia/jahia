@@ -120,7 +120,7 @@ public class ModuleManagementFlowHandler implements Serializable {
     public boolean installModule(String forgeId, String url, MessageContext context) {
         try {
             File file = forgeService.downloadModuleFromForge(forgeId, url);
-            installModule(file, context);
+            return installModule(file, context);
         } catch (Exception e) {
             context.addMessage(new MessageBuilder().source("moduleFile")
                     .code("serverSettings.manageModules.install.failed")
@@ -129,7 +129,7 @@ public class ModuleManagementFlowHandler implements Serializable {
                     .build());
             logger.error(e.getMessage(), e);
         }
-        return true;
+        return false;
     }
 
     public boolean uploadModule(ModuleFile moduleFile, MessageContext context) {
@@ -142,7 +142,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         try {
             final File file = File.createTempFile("module-", "."+StringUtils.substringAfterLast(originalFilename,"."));
             moduleFile.getModuleFile().transferTo(file);
-            installModule(file, context);
+            return installModule(file, context);
         } catch (Exception e) {
             context.addMessage(new MessageBuilder().source("moduleFile")
                     .code("serverSettings.manageModules.install.failed")
@@ -151,16 +151,27 @@ public class ModuleManagementFlowHandler implements Serializable {
                     .build());
             logger.error(e.getMessage(), e);
         }
-        return true;
+        return false;
     }
 
-    private void installModule(File file, MessageContext context) throws IOException, BundleException {
+    private boolean installModule(File file, MessageContext context) throws IOException, BundleException {
         Manifest manifest = new JarFile(file).getManifest();
         String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
         if (symbolicName == null) {
             symbolicName = manifest.getMainAttributes().getValue("root-folder");
         }
         String version = manifest.getMainAttributes().getValue("Implementation-Version");
+        String groupId = manifest.getMainAttributes().getValue("Jahia-GroupId");
+        if (templateManagerService.differentModuleWithSameIdExists(symbolicName, groupId)) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.moduleWithSameIdExists")
+                    .arg(symbolicName)
+                    .error()
+                    .build());
+            return false;
+        }
+
+
         Bundle bundle = BundleUtils.getBundle(symbolicName, version);
 
         String location = file.toURI().toString();
@@ -209,6 +220,8 @@ public class ModuleManagementFlowHandler implements Serializable {
                         .build());
             }
         }
+
+        return true;
     }
 
     public void loadModuleInformation(RequestContext context) {
@@ -340,7 +353,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             }
         }
         for (Module module : forgeModules) {
-            availableUpdate.put(module.getName(),module);
+            availableUpdate.put(module.getId(),module);
         }
         return availableUpdate;
     }
@@ -460,7 +473,9 @@ public class ModuleManagementFlowHandler implements Serializable {
         List<Module> installedModule = new ArrayList<Module>();
         List<Module> newModules = new ArrayList<Module>();
         for (Module module : forgeService.getModules()) {
-            if (templateManagerService.getTemplatePackageRegistry().contains(module.getName())) {
+            module.setInstallable(!templateManagerService.differentModuleWithSameIdExists(module.getId(), module.getGroupId()));
+            JahiaTemplatesPackage pkg = templateManagerService.getTemplatePackageRegistry().lookupById(module.getId());
+            if (pkg != null && pkg.getGroupId().equals(module.getGroupId())) {
                 installedModule.add(module);
             } else {
                 newModules.add(module);

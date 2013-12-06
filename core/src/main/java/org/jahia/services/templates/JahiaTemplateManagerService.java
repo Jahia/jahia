@@ -1052,6 +1052,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         this.moduleStates = moduleStates;
     }
 
+    public boolean differentModuleWithSameIdExists(String symbolicName, String groupId) {
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> moduleVersions = templatePackageRegistry.getAllModuleVersions().get(symbolicName);
+        return moduleVersions != null && !moduleVersions.isEmpty() && !moduleVersions.get(moduleVersions.firstKey()).getGroupId().equals(groupId);
+    }
+
     /**
      * This event is fired when a template module is re-deployed (in runtime, not on the server startup).
      *

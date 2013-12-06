@@ -122,6 +122,8 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setForgeUrl(getHeader(bundle, "Jahia-Forge"));
 
+        pkg.setGroupId(getHeader(bundle, "Jahia-GroupId"));
+
         return pkg;
     }
 

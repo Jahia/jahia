@@ -34,6 +34,7 @@
 
                         <!-- Jahia manifest attributes -->
                         <Jahia-Module-Type>module</Jahia-Module-Type>
+                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css</Jahia-Static-Resources>
 

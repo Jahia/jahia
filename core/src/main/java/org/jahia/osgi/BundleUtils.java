@@ -269,6 +269,9 @@ public final class BundleUtils {
         Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions != null) {
             JahiaTemplatesPackage pkg = moduleVersions.remove(version);
+            if (moduleVersions.isEmpty()) {
+                modules.remove(moduleId);
+            }
             pkg.setClassLoader(null);
         }
     }

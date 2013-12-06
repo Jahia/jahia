@@ -99,6 +99,8 @@ public class JahiaTemplatesPackage {
      * The module id (= artifactId)
      */
     private String id;
+
+    private String groupId;
     /**
      * The initial import file
      */
@@ -279,6 +281,14 @@ public class JahiaTemplatesPackage {
             id = "";
             rootFolderPath = SettingsBean.getInstance().getTemplatesContext();
         }
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     /**

@@ -449,6 +449,7 @@ public class TemplatePackageRegistry {
 
     public void unregisterPackageVersion(JahiaTemplatesPackage pack) {
         Map<ModuleVersion, JahiaTemplatesPackage> map = packagesWithVersionById.get(pack.getId());
+        map.remove(pack.getVersion());
         if (map.isEmpty()) {
             packagesWithVersionById.remove(pack.getId());
             packagesWithVersionByName.remove(pack.getName());

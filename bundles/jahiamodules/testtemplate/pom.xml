@@ -35,6 +35,7 @@
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
+                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Static-Resources>/css</Jahia-Static-Resources>

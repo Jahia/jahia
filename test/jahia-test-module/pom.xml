@@ -488,6 +488,7 @@
                         <Jahia-Depends>default</Jahia-Depends>
                         <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
+                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
 

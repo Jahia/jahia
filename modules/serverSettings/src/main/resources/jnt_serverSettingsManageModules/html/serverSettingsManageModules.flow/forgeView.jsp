@@ -43,7 +43,8 @@
     <thead>
     <tr>
         <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
-        <th></th>
+        <th><fmt:message key='serverSettings.manageModules.moduleId'/></th>
+        <th><fmt:message key='serverSettings.manageModules.groupId'/></th>
         <th>
             <fmt:message key="serverSettings.manageModules.version"/>
         </th>
@@ -59,8 +60,9 @@
     <tbody>
     <c:forEach items="${requestScope.modules}" var="module">
         <tr>
-            <td><c:if test="${not empty module.icon}"><img width="100" height="100" src="${module.icon}"/></c:if>${module.title}</td>
-            <td> ${module.name}</td>
+            <td><c:if test="${not empty module.icon}"><img width="100" height="100" src="${module.icon}"/></c:if>${module.name}</td>
+            <td> ${module.id}</td>
+            <td> ${module.groupId}</td>
             <td> ${module.version}</td>
             <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>
             <td>
@@ -72,13 +74,13 @@
 
             <c:choose>
 
-            <c:when test="${not empty allModuleVersions[module.name] and functions:contains(allModuleVersions[module.name],module.version)}">
+            <c:when test="${not empty allModuleVersions[module.id] and functions:contains(allModuleVersions[module.id],module.version)}">
                 Already installed
             </c:when>
-            <%--<c:when test="${not empty allModuleVersions[module.name]}">--%>
+            <%--<c:when test="${not empty allModuleVersions[module.id]}">--%>
                 <%--Other versions installed--%>
             <%--</c:when>--%>
-            <c:otherwise>
+            <c:when test="${module.installable}">
                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                     <input type="hidden" name="forgeId" value="${module.forgeId}"/>
                     <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
@@ -87,7 +89,7 @@
                         &nbsp;<fmt:message key="serverSettings.manageModules.download"/>
                     </button>
                 </form>
-            </c:otherwise>
+            </c:when>
             </c:choose>
 
             </td>

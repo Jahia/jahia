@@ -146,7 +146,7 @@ public class ForgeService {
 
     public Module findModule(String name, String groupId) {
         for (Module m : modules) {
-            if (StringUtils.equals(name, m.getName())) {
+            if (StringUtils.equals(name, m.getId())) {
                 return m;
             }
         }
@@ -172,8 +172,7 @@ public class ForgeService {
 
                     final JSONObject moduleObject = moduleList.getJSONObject(i);
                     for (Module m : modules) {
-                        // todo add also groupId
-                        if (StringUtils.equals(m.getName(), moduleObject.getString("name"))) {
+                        if (StringUtils.equals(m.getId(), moduleObject.getString("name"))) {
                             add = false;
                             break;
                         }
@@ -202,8 +201,9 @@ public class ForgeService {
                                 module.setIcon(moduleObject.getString("icon"));
                             }
                             module.setVersion(versionObject.getString("version"));
-                            module.setTitle(moduleObject.getString("title"));
-                            module.setName(moduleObject.getString("name"));
+                            module.setName(moduleObject.getString("title"));
+                            module.setId(moduleObject.getString("name"));
+                            module.setGroupId(moduleObject.getString("groupId"));
                             module.setDownloadUrl(versionObject.getString("downloadUrl"));
                             module.setForgeId(forge.getId());
                             modules.add(module);

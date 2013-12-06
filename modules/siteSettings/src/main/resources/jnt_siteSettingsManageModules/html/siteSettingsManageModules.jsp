@@ -31,6 +31,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
             <th width="4%">#</th>
             <th><fmt:message key="siteSettings.label.modules.name"/></th>
             <th><fmt:message key="siteSettings.label.modules.id"/></th>
+            <th><fmt:message key="siteSettings.label.modules.groupId"/></th>
             <th><fmt:message key="siteSettings.label.modules.version"/></th>
             <th><fmt:message key="siteSettings.label.modules.type"/></th>
             <th><fmt:message key="siteSettings.label.modules.source"/></th>
@@ -38,13 +39,14 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
     </thead>
     <tbody>
     <tr class="info" >
-            <td colspan="6"><h3><fmt:message key="label.modules"/></h3></td>
+            <td colspan="7"><h3><fmt:message key="label.modules"/></h3></td>
         </tr>
         <c:forEach var="pkg" items="${modules}" varStatus="status">
         <tr>
             <td>${status.index + 1}</td>
             <td><strong>${pkg.name}</strong></td>
             <td>${pkg.id}</td>
+            <td>${pkg.groupId}</td>
             <td>${pkg.lastVersion}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>
@@ -52,13 +54,14 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
         </c:forEach>
         <c:if test="${not empty requiredModules}">
         <tr class="warning" >
-            <td colspan="6"><h3><fmt:message key="siteSettings.requiredModules"/></h3></td>
+            <td colspan="7"><h3><fmt:message key="siteSettings.requiredModules"/></h3></td>
         </tr>
         <c:forEach var="pkg" items="${requiredModules}" varStatus="status">
         <tr>
             <td>${status.index + 1}</td>
             <td><strong>${pkg.name}</strong></td>
             <td>${pkg.id}</td>
+            <td>${pkg.groupId}</td>
             <td>${pkg.lastVersion}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>

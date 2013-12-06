@@ -164,8 +164,7 @@ public class SuggestionsTag extends ResultsTag {
         SearchCriteria suggestedCriteria = null;
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
             suggestion = ServicesRegistry.getInstance().getSearchService().suggest(
-                    criteria.getTerms().get(0).getTerm(), getRenderContext().getSite().getSiteKey(),
-                    getRenderContext().getMainResourceLocale(), maxTermsToSuggest);
+                    criteria.getTerms().get(0).getTerm(), getRenderContext(), maxTermsToSuggest);
             if (logger.isDebugEnabled()) {
                 logger.debug("Suggestion for search query '" + criteria.getTerms().get(0).getTerm() + "' site '"
                         + getRenderContext().getSite().getSiteKey() + "' and locale "

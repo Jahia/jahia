@@ -1066,16 +1066,19 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     /* (non-Javadoc)
     * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
     */
-    public Suggestion suggest(String originalQuery, String siteKey, Locale locale, int maxTerms) {
+    public Suggestion suggest(String originalQuery, RenderContext context, int maxTerms) {
         if (StringUtils.isBlank(originalQuery)) {
             return null;
         }
 
+        String siteKey = context.getSite().getSiteKey();
+        Locale locale = context.getMainResourceLocale();
+        
         Suggestion suggestion = null;
         JCRSessionWrapper session;
         try {
             session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession(
-                    Constants.LIVE_WORKSPACE, locale);
+                    context.getWorkspace(), locale);
             QueryManager qm = session.getWorkspace().getQueryManager();
             StringBuilder xpath = new StringBuilder(64);
             xpath.append("/jcr:root[rep:spellcheck(")

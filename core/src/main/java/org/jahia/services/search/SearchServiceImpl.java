@@ -41,7 +41,6 @@
 package org.jahia.services.search;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.jahia.exceptions.JahiaException;
@@ -105,8 +104,8 @@ public class SearchServiceImpl extends SearchService {
     }
 
     @Override
-    public Suggestion suggest(String originalQuery, String siteKey, Locale locale, int maxTermsToSuggest) {
-        return getProvider().suggest(originalQuery, siteKey, locale, maxTermsToSuggest);
+    public Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest) {
+        return getProvider().suggest(originalQuery, context, maxTermsToSuggest);
     }
     
     /**

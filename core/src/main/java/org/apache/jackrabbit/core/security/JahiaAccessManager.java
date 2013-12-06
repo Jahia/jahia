@@ -83,7 +83,6 @@ import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Current ACL policy :
@@ -132,7 +131,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
+<<<<<<< .working
     private static final ConcurrentMap<String, Set<Privilege>> privilegesInRole = new ConcurrentHashMap<String, Set<Privilege>>();
+=======
+    private Map<String, Set<Privilege>> privilegesInRole = new HashMap<String, Set<Privilege>>();
+>>>>>>> .merge-right.r48062
     private LRUMap pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;
@@ -217,6 +220,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (initialized) {
             throw new IllegalStateException("already initialized");
         }
+//        super.init(context, acProvider, wspAccessManager);
 
         pathPermissionCache = new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize());
         globalGroupMembershipCheckActivated = SettingsBean.getInstance().isGlobalGroupMembershipCheckActivated();
@@ -230,7 +234,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         Set<JahiaPrincipal> principals = subject.getPrincipals(JahiaPrincipal.class);
         if (!principals.isEmpty()) {
-            jahiaPrincipal = principals.iterator().next();
+            jahiaPrincipal = (JahiaPrincipal) principals.iterator().next();
         }
 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
@@ -342,7 +346,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public AccessControlPolicy[] getEffectivePolicies(Set<Principal> principals)
             throws AccessDeniedException, AccessControlException, UnsupportedRepositoryOperationException,
-            RepositoryException {
+                   RepositoryException {
         return new AccessControlPolicy[0];
     }
 
@@ -434,8 +438,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Always deny write access on system folders
             if (permissions.contains(getPrivilegeName(Privilege.JCR_WRITE, workspaceName)) ||
-                    permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
-                    permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
+                permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
+                permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
                 if (itemExists) {
                     i = getSecuritySession().getItem(jcrPath);
@@ -460,6 +464,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (itemExists == null) {
                 itemExists = getSecuritySession().itemExists(jcrPath);
             }
+<<<<<<< .working
 
             if (!itemExists) {
                 pathPermissionCache.put(cacheKey, true);
@@ -467,6 +472,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             while (!itemExists) {
+=======
+            while (!itemExists.booleanValue()) {
+>>>>>>> .merge-right.r48062
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
                 itemExists = getSecuritySession().itemExists(jcrPath);
             }
@@ -517,13 +525,23 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             // Todo : optimize site resolution
+//            int siteId = 0;
             String site = null;
             if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH)) {
                 if (jcrPath.length() > JahiaSitesService.SITES_JCR_PATH.length() + 1) {
                     site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
                 }
             } else {
-                site = resolveSite(n);
+                Node s = n;
+                try {
+                    while (!s.isNodeType("jnt:virtualsite")) {
+                        s = s.getParent();
+                    }
+                    site = s.getName();
+                    //                siteId = (int) s.getProperty("j:siteId").getLong();
+                } catch (ItemNotFoundException e) {
+                } catch (PathNotFoundException e) {
+                }
             }
 
 //            if (jahiaPrincipal != null) {
@@ -540,16 +558,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
         pathPermissionCache.put(absPathStr + " : " + permissions, res);
         return res;
-    }
-
-    private String resolveSite(Node node) throws RepositoryException {
-        while (!node.isNodeType("jnt:virtualsite")) {
-            if (node.isNodeType("rep:root")) {
-                return null;
-            }
-            node = node.getParent();
-        }
-        return node.getName();
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
@@ -656,6 +664,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
+<<<<<<< .working
         Set<Privilege> privileges = privilegesInRole.get(role);
         if (privileges == null) {
             String externalPermission = null;
@@ -730,8 +739,20 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 try {
                     Node p = s.getNodeByIdentifier(value.getString());
                     try {
+=======
+        if (privilegesInRole.containsKey(role)) {
+            return privilegesInRole.get(role);
+        } else {
+            Set<Privilege> list = new HashSet<Privilege>();
+            try {
+                Node roleNode = securitySession.getNode("/roles/" + role);
+                if (roleNode.hasProperty("j:permissions")) {
+                    Value[] perms = roleNode.getProperty("j:permissions").getValues();
+                    for (Value value : perms) {
+                        Node p = s.getNodeByIdentifier(value.getString());
+>>>>>>> .merge-right.r48062
                         Privilege privilege = privilegeRegistry.getPrivilege(p);
-                        privileges.add(privilege);
+                        list.add(privilege);
                     } catch (AccessControlException e) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Permission not available : " + p, e);
@@ -742,9 +763,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 } catch (IllegalStateException e) {
 
                 }
+<<<<<<< .working
+=======
+                privilegesInRole.put(roleNode.getName(), list);
+            } catch (PathNotFoundException e) {
+>>>>>>> .merge-right.r48062
             }
+            return list;
         }
-        return privileges;
     }
 
     public boolean matchPermission(Set<String> permissions, String role) throws RepositoryException {
@@ -794,7 +820,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
         } else if (principal.charAt(0) == 'g') {
             if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() &&
-                    (isUserMemberOf(principalName, site) || (globalGroupMembershipCheckActivated && isUserMemberOf(principalName, null))))) {
+                                                  (isUserMemberOf(principalName, site) || (globalGroupMembershipCheckActivated && isUserMemberOf(principalName, null))))) {
                 return true;
             }
         }
@@ -834,11 +860,35 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Set<Privilege> results = new HashSet<Privilege>();
         
         for (String role : grantedRoles) {
+<<<<<<< .working
             Set<Privilege> permissionsInRole = getPermissionsInRole(role);
             if (!permissionsInRole.isEmpty()) {
                 results.addAll(permissionsInRole);
             } else {
                 logger.warn("Role " + role + " is missing despite still being in use in path " + absPath + " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
+=======
+            Node node = null;
+            try {
+                node = securitySession.getNode("/roles/" + role);
+            } catch (PathNotFoundException pnfe) {
+                logger.warn("Role " + role + " is missing despite still being in use in path "+absPath+ " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
+                continue;
+>>>>>>> .merge-right.r48062
+            }
+            if (node.hasProperty("j:permissions")) {
+                Value[] perms = node.getProperty("j:permissions").getValues();
+
+                for (Value value : perms) {
+                    Node p = s.getNodeByIdentifier(value.getString());
+                    try {
+                        Privilege privilege = privilegeRegistry.getPrivilege(p);
+                        results.add(privilege);
+                    } catch (AccessControlException e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Permission not available : " + p, e);
+                        }
+                    }
+                }
             }
         }
 
@@ -890,7 +940,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Session s = getDefaultWorkspaceSecuritySession();
         Node n = s.getNode(absPath);
 
-        String site = resolveSite(n);
+        String site = null;
+        Node c = n;
+        try {
+            while (!c.isNodeType("jnt:virtualsite")) {
+                c = c.getParent();
+            }
+            site = c.getName();
+        } catch (ItemNotFoundException e) {
+        } catch (PathNotFoundException e) {
+        }
 
         try {
             while (true) {
@@ -948,8 +1007,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Set<String> roles = new HashSet<String>();
         boolean granted;
     }
+<<<<<<< .working
 
     public static void flushPrivilegesInRoles() {
             privilegesInRole.clear();
     }
+=======
+>>>>>>> .merge-right.r48062
 }

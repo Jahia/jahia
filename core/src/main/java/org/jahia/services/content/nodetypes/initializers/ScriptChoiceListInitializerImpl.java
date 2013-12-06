@@ -92,7 +92,7 @@ public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
                 bindings.put("values", values);
                 for (JahiaTemplatesPackage template : forModule) {
                     final Resource scriptPath = template.getResource(File.separator + "scripts" + File.separator + param);
-                    if (scriptPath.exists()) {
+                    if (scriptPath != null && scriptPath.exists()) {
                         Reader scriptContent = null;
                         try {
                             scriptContent = new InputStreamReader(scriptPath.getInputStream());

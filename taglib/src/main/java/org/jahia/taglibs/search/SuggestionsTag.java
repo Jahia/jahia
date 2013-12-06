@@ -151,6 +151,8 @@ public class SuggestionsTag extends ResultsTag {
     protected void resetState() {
         suggestionVar = "suggestion";
         suggestion = null;
+        runQuery = true;
+        maxTermsToSuggest = 1;
         super.resetState();
     }
 

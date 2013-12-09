@@ -319,11 +319,27 @@ public class ModuleHelper {
         for (Element element : el) {
             String link = DOM.getElementAttribute(element, "href");
             if (link.startsWith(baseUrl)) {
+<<<<<<< .working
                 if (link.contains("?")) {
                     link += "&inframe=true";
+=======
+                String path = link.substring(baseUrl.length());
+                String params = "";
+                if (path.indexOf('?') > 0) {
+                    params = path.substring(path.indexOf('?') + 1);
+                    path = path.substring(0, path.indexOf('?'));
+                }
+                int lastSegmentIndex = path.lastIndexOf("/") + 1;
+                String lastSegment = path.substring(lastSegmentIndex);
+                int pointIndex = lastSegment.indexOf('.');
+                String template = lastSegment.substring(pointIndex + 1);
+                if (template.contains(".")) {
+                    template = template.substring(0, template.lastIndexOf('.'));
+>>>>>>> .merge-right.r48085
                 } else {
                     link += "?inframe=true";
                 }
+<<<<<<< .working
                 DOM.setElementAttribute(element, "href", link);
 //                String path = link.substring(baseUrl.length());
 //                String params = "";
@@ -347,6 +363,18 @@ public class ModuleHelper {
 //                    DOM.setElementAttribute(element, "onclick",
 //                            "window.goTo('" + path + "','" + template + "','" + params + "')");
 //                }
+=======
+                if (pointIndex > -1) {
+                    path = path.substring(0, lastSegmentIndex + pointIndex);
+                }
+                DOM.setElementAttribute(element, "href", "#" + path + ":" + (template != null ? template : "") + ":" + params);
+                if (template == null) {
+                    DOM.setElementAttribute(element, "onclick", "window.goTo('" + path + "',null,'" + params + "')");
+                } else {
+                    DOM.setElementAttribute(element, "onclick",
+                            "window.goTo('" + path + "','" + template + "','" + params + "')");
+                }
+>>>>>>> .merge-right.r48085
             }
         }
         GWT.log("Transform links : " + (System.currentTimeMillis() - start) + " ms");

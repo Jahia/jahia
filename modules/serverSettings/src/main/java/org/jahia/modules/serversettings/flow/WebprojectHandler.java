@@ -617,6 +617,7 @@ public class WebprojectHandler implements Serializable {
             // todo import ga parameters
             if (isSite || isLegacySite) {
                 importInfos.setType("site");
+                importInfos.setLegacyImport(isLegacySite);
                 if (importInfos.getSiteKey() == null) {
                     importInfos.setSiteKey("");
                     importInfos.setSiteServername("");
@@ -627,7 +628,6 @@ public class WebprojectHandler implements Serializable {
                 } else {
                     validateSite(messageContext, importInfos);
                 }
-                importInfos.setLegacyImport(isLegacySite);
             } else {
                 importInfos.setType("files");
             }
@@ -884,35 +884,39 @@ public class WebprojectHandler implements Serializable {
 
             String siteKey = (String) infos.getSiteKey();
             if (infos.isSite()) {
-            boolean valid = sitesService.isSiteKeyValid(siteKey);
-            if (!valid) {
-                messageContext.addMessage(new MessageBuilder()
-                        .error()
-                        .source("siteKey")
-                        .code("serverSettings.manageWebProjects.invalidSiteKey").build());
-            }
-            if (valid && sitesService.getSiteByKey(siteKey) != null) {
-                messageContext.addMessage(new MessageBuilder()
-                        .error()
-                        .source("siteKey")
-                        .code("serverSettings.manageWebProjects.siteKeyExists").build());
-            }
+                boolean valid = sitesService.isSiteKeyValid(siteKey);
+                if (!valid) {
+                    messageContext.addMessage(new MessageBuilder()
+                            .error()
+                            .source("siteKey")
+                            .code("serverSettings.manageWebProjects.invalidSiteKey").build());
+                }
+                if (valid && sitesService.getSiteByKey(siteKey) != null) {
+                    messageContext.addMessage(new MessageBuilder()
+                            .error()
+                            .source("siteKey")
+                            .code("serverSettings.manageWebProjects.siteKeyExists").build());
+                }
 
-            String serverName = (String) infos.getSiteServername();
-            valid = sitesService.isServerNameValid(serverName);
-            if (!valid) {
-                messageContext.addMessage(new MessageBuilder()
-                        .error()
-                        .source("siteKey")
-                        .code("serverSettings.manageWebProjects.invalidServerName").build());
-            }
+                String serverName = infos.getSiteServername();
+                if (infos.isLegacyImport() && (StringUtils.startsWithIgnoreCase(serverName, "http://") || StringUtils.startsWithIgnoreCase(serverName, "https://"))) {
+                    serverName = StringUtils.substringAfter(serverName, "://");
+                    infos.setSiteServername(serverName);
+                }
+                valid = sitesService.isServerNameValid(serverName);
+                if (!valid) {
+                    messageContext.addMessage(new MessageBuilder()
+                            .error()
+                            .source("siteKey")
+                            .code("serverSettings.manageWebProjects.invalidServerName").build());
+                }
 
-            if (valid && !Url.isLocalhost(serverName) && sitesService.getSite(serverName) != null) {
-                messageContext.addMessage(new MessageBuilder()
-                        .error()
-                        .source("siteKey")
-                        .code("serverSettings.manageWebProjects.serverNameExists").build());
-            }
+                if (valid && !Url.isLocalhost(serverName) && sitesService.getSite(serverName) != null) {
+                    messageContext.addMessage(new MessageBuilder()
+                            .error()
+                            .source("siteKey")
+                            .code("serverSettings.manageWebProjects.serverNameExists").build());
+                }
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

@@ -233,8 +233,8 @@ public class LegacyImportHandler extends DefaultHandler {
                         try {
                             createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
                             if (currentCtx.peek().ctx.peek() != CTX_DIRECTSUBNODES) {
-                            setMetadata(attributes);
-                            setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
+                                setMetadata(attributes);
+                                setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                             }
                         } catch (ConstraintViolationException cve) {
                             logger.error("Error when creating contentList with def={} (localname={} , uuid={} , currentContentType={})",
@@ -292,7 +292,8 @@ public class LegacyImportHandler extends DefaultHandler {
                         pt = qName;
                     }
 
-                    createContent(pt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"), getMetadataForNodeCreation(attributes));
+                    createContent(pt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"), getMetadataForNodeCreation(attributes),
+                            attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                     setMetadata(attributes);
                     setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                     break;
@@ -350,7 +351,8 @@ public class LegacyImportHandler extends DefaultHandler {
                         ctnPt = qName;
                     }
 
-                    createContent(ctnPt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"), getMetadataForNodeCreation(attributes));
+                    createContent(ctnPt, uuid, attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"), getMetadataForNodeCreation(attributes),
+                            attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                     setMetadata(attributes);
                     setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
 
@@ -728,7 +730,8 @@ public class LegacyImportHandler extends DefaultHandler {
         currentCtx.peek().pushSkip();
     }
 
-    private void createContent(String primaryType, String uuid, String pickerRelationshipUuid, Map<String, String> creationMetadata)
+    private void createContent(String primaryType, String uuid, String pickerRelationshipUuid, Map<String, String> creationMetadata,
+                               String mixinsToAdd, JSONObject propertiesToSet)
             throws RepositoryException {
         ExtendedNodeType t = registry.getNodeType(primaryType);
         String nodeType = mapping.getMappedType(t);
@@ -740,8 +743,9 @@ public class LegacyImportHandler extends DefaultHandler {
         } else if (nodeType.equals("#shareable")) {
             currentCtx.peek().pushShareable(t);
         } else {
+            JCRNodeWrapper node = null;
             if (uuidMapping.containsKey(uuid)) {
-                JCRNodeWrapper node = session.getNodeByIdentifier(uuidMapping.get(uuid));
+                node = session.getNodeByIdentifier(uuidMapping.get(uuid));
                 currentCtx.peek().pushContainer(node, t);
             } else if (pickerRelationshipUuid != null) {
                 if (!references.containsKey(pickerRelationshipUuid)) {
@@ -762,12 +766,46 @@ public class LegacyImportHandler extends DefaultHandler {
                     currentCtx.peek().pushSkip();
                     return;
                 }
-                JCRNodeWrapper node = addOrCheckoutNode(getCurrentContentNode(),
+                node = addOrCheckoutNode(getCurrentContentNode(),
                         StringUtils.substringAfter(nodeType, ":") + "_" + (ctnId++), nodeType, null, creationMetadata);
                 uuidMapping.put(uuid, node.getIdentifier());
                 performActions(mapping.getActions(t), node);
                 currentCtx.peek().pushContainer(node, t);
 
+            }
+
+            assert node != null;
+            if (StringUtils.isNotBlank(mixinsToAdd)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(MessageFormat.format("Adding mixins [{0}] to the node {1} in language {2}",
+                            mixinsToAdd, node.getPath(), this.locale.toString()));
+                }
+                for (final String mixin : Arrays.asList(StringUtils.split(mixinsToAdd))) {
+                    try {
+                        if (StringUtils.isNotBlank(mixin) && !node.isNodeType(mixin)) node.addMixin(mixin);
+                    } catch (RepositoryException re) {
+                        logger.error(MessageFormat.format("Imposible to apply mixin {0} to the node {1}", mixin, node.getPath()), re);
+                    }
+                }
+            }
+
+            if (propertiesToSet != null) {
+                final Iterator<String> properties = propertiesToSet.keys();
+                while (properties.hasNext()) {
+                    final String propName = properties.next();
+                    try {
+                        final String propValue = String.valueOf(propertiesToSet.get(propName));
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(MessageFormat.format("Setting the property {0} with value [{1}] on the node {2} in language {3}",
+                                    propName, propValue, node.getPath(), this.locale.toString()));
+                        }
+                        setPropertyField(null, null, node, propName, propValue);
+                    } catch (Exception e) {
+                        logger.error(MessageFormat.format("Error while setting additional property {0} on the node {1} for locale {2}",
+                                propName, node.getPath(), this.locale.toString()), e);
+
+                    }
+                }
             }
 
             if (currentCtx.peek().properties.peek() != null) {

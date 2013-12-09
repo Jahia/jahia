@@ -25,48 +25,38 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
 
 public final class ServletPipeline
 {
-    private final TreeMap<String, ServletHandler> handlerMap;
+    private final ServletHandler[] handlers;
 
     public ServletPipeline(ServletHandler[] handlers)
     {
-        this.handlerMap = new TreeMap<String, ServletHandler>();
-        for (ServletHandler handler : handlers) {
-            handlerMap.put(handler.getAlias(), handler);
-        }
+        this.handlers = handlers;
     }
 
     public boolean handle(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
-        final ServletHandler candidate = getCandidateHandlerOrNull(req.getPathInfo());
+        for (ServletHandler handler : this.handlers) {
+            if (handler.handle(req, res)) {
+                return true;
+            }
+        }
 
-        return candidate != null && candidate.handle(req, res);
-    }
-
-    private ServletHandler getCandidateHandlerOrNull(String path) {
-        // lower entry should match beginning of path
-        final Map.Entry<String, ServletHandler> candidateEntry = handlerMap.lowerEntry(path);
-
-        return candidateEntry == null ? null : candidateEntry.getValue();
+        return false;
     }
 
     public boolean hasServletsMapped()
     {
-        return !handlerMap.isEmpty();
+        return this.handlers.length > 0;
     }
 
     public RequestDispatcher getRequestDispatcher(String path)
     {
-        final ServletHandler candidate = getCandidateHandlerOrNull(path);
-
-        if (candidate != null) {
-            if (candidate.matches(path)) {
-                return new Dispatcher(path, candidate);
+        for (ServletHandler handler : this.handlers) {
+            if (handler.matches(path)) {
+                return new Dispatcher(path, handler);
             }
         }
 

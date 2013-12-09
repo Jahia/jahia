@@ -72,10 +72,11 @@
     </function>
 
     <function>
-        <description>
+        <description><![CDATA[
             Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
             of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
-            escaped).         
+            escaped).
+            ]]>         
         </description>
         <name>escapePath</name>
         <function-class>org.jahia.utils.WebUtils</function-class>

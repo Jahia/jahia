@@ -16,46 +16,57 @@
  */
 package org.apache.felix.http.base.internal.dispatch;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletException;
+import org.apache.felix.http.base.internal.handler.ServletHandler;
+
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.apache.felix.http.base.internal.handler.ServletHandler;
+import java.util.Map;
+import java.util.TreeMap;
 
 public final class ServletPipeline
 {
-    private final ServletHandler[] handlers;
-    
+    private final TreeMap<String, ServletHandler> handlerMap;
+
     public ServletPipeline(ServletHandler[] handlers)
     {
-        this.handlers = handlers;
+        this.handlerMap = new TreeMap<String, ServletHandler>();
+        for (ServletHandler handler : handlers) {
+            handlerMap.put(handler.getAlias(), handler);
+        }
     }
 
     public boolean handle(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
-        for (ServletHandler handler : this.handlers) {
-            if (handler.handle(req, res)) {
-                return true;
-            }
-        }
+        final ServletHandler candidate = getCandidateHandlerOrNull(req.getPathInfo());
 
-        return false;
+        return candidate != null && candidate.handle(req, res);
+    }
+
+    private ServletHandler getCandidateHandlerOrNull(String path) {
+        // lower entry should match beginning of path
+        final Map.Entry<String, ServletHandler> candidateEntry = handlerMap.lowerEntry(path);
+
+        return candidateEntry == null ? null : candidateEntry.getValue();
     }
 
     public boolean hasServletsMapped()
     {
-        return this.handlers.length > 0;
+        return !handlerMap.isEmpty();
     }
 
     public RequestDispatcher getRequestDispatcher(String path)
     {
-        for (ServletHandler handler : this.handlers) {
-            if (handler.matches(path)) {
-                return new Dispatcher(path, handler);
+        final ServletHandler candidate = getCandidateHandlerOrNull(path);
+
+        if (candidate != null) {
+            if (candidate.matches(path)) {
+                return new Dispatcher(path, candidate);
             }
         }
 

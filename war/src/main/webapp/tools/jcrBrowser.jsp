@@ -295,9 +295,9 @@
         </c:when>
         <c:when test="${param.action == 'lock'}">
             <%
-                if (node instanceof JCRNodeWrapperImpl && jcrSession instanceof JCRSessionWrapper) {
+                if (node instanceof JCRNodeWrapper && jcrSession instanceof JCRSessionWrapper) {
                     JCRSessionWrapper jahiaSession = (JCRSessionWrapper) jcrSession;
-                    JCRNodeWrapperImpl jahiaNode = (JCRNodeWrapperImpl) node;
+                    JCRNodeWrapper jahiaNode = (JCRNodeWrapper) node;
                     jahiaNode.lockAndStoreToken("user");
                     jcrSession.save();
             %>
@@ -308,9 +308,9 @@
         </c:when>
         <c:when test="${param.action == 'unlock'}">
             <%
-                if (node instanceof JCRNodeWrapperImpl && jcrSession instanceof JCRSessionWrapper) {
+                if (node instanceof JCRNodeWrapper && jcrSession instanceof JCRSessionWrapper) {
                     JCRSessionWrapper jahiaSession = (JCRSessionWrapper) jcrSession;
-                    JCRNodeWrapperImpl jahiaNode = (JCRNodeWrapperImpl) node;
+                    JCRNodeWrapper jahiaNode = (JCRNodeWrapper) node;
                     JCRContentUtils.clearAllLocks(node.getPath(), false, jahiaSession.getWorkspace().getName());
                     jcrSession.save();
             %>
@@ -321,9 +321,9 @@
         </c:when>
         <c:when test="${param.action == 'unlockTree'}">
             <%
-                if (node instanceof JCRNodeWrapperImpl && jcrSession instanceof JCRSessionWrapper) {
+                if (node instanceof JCRNodeWrapper && jcrSession instanceof JCRSessionWrapper) {
                     JCRSessionWrapper jahiaSession = (JCRSessionWrapper) jcrSession;
-                    JCRNodeWrapperImpl jahiaNode = (JCRNodeWrapperImpl) node;
+                    JCRNodeWrapper jahiaNode = (JCRNodeWrapper) node;
                     JCRContentUtils.clearAllLocks(node.getPath(), true, jahiaSession.getWorkspace().getName());
                     jcrSession.save();
             %>

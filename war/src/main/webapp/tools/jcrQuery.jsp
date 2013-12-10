@@ -17,11 +17,34 @@
 <%@page import="javax.jcr.query.Query" %>
 <%@page import="javax.jcr.query.QueryResult" %>
 <%@page import="javax.jcr.query.Row"%>
+<<<<<<< .working
 <%@page import="java.io.PrintWriter" %>
 <%@page import="java.io.StringWriter" %>
 <%@page import="java.util.Locale" %>
 <%@ page import="org.apache.jackrabbit.core.query.lucene.join.JoinRow" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+=======
+<%@page contentType="text/html;charset=UTF-8" language="java"%>
+<%@page import="java.io.PrintWriter"%>
+<%@page import="java.io.StringWriter"%>
+<%@page import="java.util.Locale"%>
+<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="javax.jcr.Node"%>
+<%@page import="javax.jcr.ItemNotFoundException"%>
+<%@page import="javax.jcr.Value"%>
+<%@page import="javax.jcr.NodeIterator"%>
+<%@page import="javax.jcr.query.Query"%>
+<%@page import="javax.jcr.query.QueryManager"%>
+<%@page import="javax.jcr.query.QueryResult"%>
+<%@page import="javax.jcr.query.Row"%>
+<%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
+<%@page import="org.jahia.services.content.JCRContentUtils"%>
+<%@page import="org.jahia.services.content.JCRNodeWrapper"%>
+<%@page import="org.jahia.services.content.JCRSessionFactory"%>
+<%@page import="org.jahia.services.content.JCRSessionWrapper"%>
+<%@page import="org.jahia.utils.LanguageCodeConverters"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+>>>>>>> .merge-right.r48102
 <%@taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -461,7 +484,54 @@
         <c:if test="${displayLimit == 0}">
             <br/><br/>
         </c:if>
+<<<<<<< .working
     </fieldset>
+=======
+    </li>
+</c:forEach>
+</c:when>
+<c:otherwise>
+<c:forEach var="row" items="${rows}" varStatus="status" end="${displayLimit != 0 ? displayLimit - 1 : maxIntValue}">
+    <li>
+      <c:forEach var="selectorName" items="${selectorNames}" varStatus="nodestatus">
+        <c:choose>
+        <c:when test="${selectorName == spellCheckColumnName}">
+            <% Value value = ((Row) pageContext.getAttribute("row")).getValue((String)pageContext.getAttribute("spellCheckColumnName")); %>
+            <strong>Suggestion: </strong><%=value != null ? value.getString() : "No suggestions" %>
+            <br/>
+        </c:when>
+        <c:otherwise>
+        <c:set var="node" value="${row.nodes[selectorName]}"/>
+        <a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>" target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
+        <a title="Open in Repository Explorer" href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt="open" title="Open in Repository Explorer"></a>
+        <c:if test="${showActions}">
+        	&nbsp;<a href="#delete" onclick='var nodeName="${node.name}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0"/></a>
+        </c:if>
+        <br/>
+        <strong>Path: </strong>${fn:escapeXml(node.path)}<br/>
+        <strong>ID: </strong>${fn:escapeXml(node.identifier)}<br/>
+		<jcr:nodeProperty node="${node}" name="jcr:created" var="created"/>
+		<jcr:nodeProperty node="${node}" name="jcr:createdBy" var="createdBy"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModified" var="lastModified"/>
+		<jcr:nodeProperty node="${node}" name="jcr:lastModifiedBy" var="lastModifiedBy"/>
+        <c:if test="${not empty created}">
+        <strong>created on </strong><fmt:formatDate value="${created.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty createdBy.string ? fn:escapeXml(createdBy.string) : 'n.a.'},
+        </c:if>
+        <c:if test="${not empty lastModified}">
+        <strong> last modified on </strong><fmt:formatDate value="${lastModified.time}" pattern="yyyy-MM-dd HH:mm" /><strong> by </strong>${not empty lastModifiedBy.string ? fn:escapeXml(lastModifiedBy.string) : 'n.a.'}
+        </c:if>
+        <c:if test="${not nodestatus.last}">
+          <br/>
+        </c:if>
+        </c:otherwise>
+        </c:choose>
+      </c:forEach>
+    </li>
+</c:forEach>
+</c:otherwise>
+</c:choose>
+</ol>
+>>>>>>> .merge-right.r48102
 </c:if>
 <%
 } catch (Exception e) {

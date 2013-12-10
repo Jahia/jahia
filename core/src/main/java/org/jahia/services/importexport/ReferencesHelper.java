@@ -74,7 +74,7 @@ public class ReferencesHelper {
         if (useReferencesKeeper) {
             NodeIterator ni = refRoot.getNodes();
             if (ni.getSize() > 5000) {
-                logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to cleaning them. Parsing them may take a while.");
+                logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to clean them. Parsing them may take a while.");
             }
             while (ni.hasNext()) {
 

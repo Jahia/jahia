@@ -26,7 +26,6 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
 
             if (batchCount % maxBatch == 0) {
                 session.save();
-                batchCount = 0;
                 log.info("Checked "+batchCount + " entries, keep on reading nodes ..")
             }
 
@@ -42,6 +41,9 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
         }
         session.save();
         log.info("Checked "+batchCount + " entries, removed " + removed + ".");
+        if (batchCount > 5000) {
+            log.warn("You still have "+ (batchCount-removed) +" nodes under /referencesKeeper, please consider checking and cleaning them.");
+        }
     }
 })
 

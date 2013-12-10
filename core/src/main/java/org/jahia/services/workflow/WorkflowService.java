@@ -568,7 +568,7 @@ public class WorkflowService implements BeanPostProcessor {
         newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
         newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
         if (comments != null && comments.size() > 0) {
-            addCommentsToVriables(args, comments, session.getUser().getUserKey());
+            addCommentsToVariables(args, comments, session.getUser().getUserKey());
         }
         final String processId = providerImpl.startProcess(processKey, newArgs);
         if (logger.isDebugEnabled()) {
@@ -580,7 +580,7 @@ public class WorkflowService implements BeanPostProcessor {
         return processId;
     }
 
-    private void addCommentsToVriables(Map<String, Object> args, List<String> comments, String userKey) {
+    private void addCommentsToVariables(Map<String, Object> args, List<String> comments, String userKey) {
         @SuppressWarnings("unchecked")
         List<WorkflowComment> wfComments = (List<WorkflowComment>) args.get("comments");
         if (wfComments == null) {

@@ -58,6 +58,7 @@ create unique index JR_J_JOURNAL_IDX on JR_J_JOURNAL (REVISION_ID);
 create table JR_J_GLOBAL_REVISION (REVISION_ID BIGINT NOT NULL) ENGINE=InnoDB;
 create unique index JR_J_GLOBAL_REVISION_IDX on JR_J_GLOBAL_REVISION (REVISION_ID);
 create table JR_J_LOCAL_REVISIONS (JOURNAL_ID varchar(255) NOT NULL, REVISION_ID BIGINT NOT NULL) ENGINE=InnoDB;
+create table JR_J_LOCKS (NODE_ID CHAR(40) NOT NULL, JOURNAL_ID VARCHAR(255) NOT NULL, PRIMARY KEY (NODE_ID)) ENGINE=InnoDB;
 -- Inserting the one and only revision counter record now helps avoiding race conditions
 insert into JR_J_GLOBAL_REVISION VALUES(0);
 

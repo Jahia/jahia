@@ -40,6 +40,8 @@
 
 package org.apache.jackrabbit.core;
 
+import org.apache.jackrabbit.core.cluster.ClusterNode;
+import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
@@ -83,5 +85,15 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
 
     public RepositoryContext getContext() {
         return context;
+    }
+
+    protected ClusterNode createClusterNode() throws RepositoryException {
+        try {
+            ClusterNode clusterNode = new JahiaClusterNode();
+            clusterNode.init(new ExternalEventListener());
+            return clusterNode;
+        } catch (Exception e) {
+            throw new RepositoryException(e);
+        }
     }
 }

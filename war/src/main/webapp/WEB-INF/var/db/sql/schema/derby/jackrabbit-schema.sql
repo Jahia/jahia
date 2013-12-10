@@ -19,6 +19,7 @@ drop table JR_V_NAMES;
 drop table JR_J_JOURNAL;
 drop table JR_J_GLOBAL_REVISION;
 drop table JR_J_LOCAL_REVISIONS;
+drop table JR_J_LOCKS;
 
 -- DbDataStore
 drop table JR_DATASTORE;

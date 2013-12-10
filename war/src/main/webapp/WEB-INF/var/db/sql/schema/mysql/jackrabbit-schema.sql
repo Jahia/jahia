@@ -19,6 +19,7 @@ drop table if exists JR_V_NAMES;
 drop table if exists JR_J_JOURNAL;
 drop table if exists JR_J_GLOBAL_REVISION;
 drop table if exists JR_J_LOCAL_REVISIONS;
+drop table if exists JR_J_LOCKS;
 
 -- DbDataStore
 drop table if exists JR_DATASTORE;

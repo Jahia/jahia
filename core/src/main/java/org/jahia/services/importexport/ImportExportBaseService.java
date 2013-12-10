@@ -1691,17 +1691,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         logger.debug("Publishing...");
 
                         final JCRPublicationService publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
-                        final List<String> toPublish = JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<List<String>>() {
-                            public List<String> doInJCR(JCRSessionWrapper liveSession) throws RepositoryException {
-                                List<String> toPublish = new ArrayList<String>();
-                                for (String uuid : documentViewImportHandler.getUuids()) {
-                                    if (publicationService.getStatus(session.getNodeByIdentifier(uuid), liveSession, null) != PublicationInfo.PUBLISHED) {
-                                        toPublish.add(uuid);
-                                    }
-                                }
-                                return toPublish;
-                            }
-                        });
+                        final List<String> toPublish = documentViewImportHandler.getUuids();
 
                         JCRObservationManager.doWithOperationType(null, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

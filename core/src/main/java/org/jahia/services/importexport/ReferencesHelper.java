@@ -61,7 +61,7 @@ import java.util.*;
 public class ReferencesHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ReferencesHelper.class);
 
-    public static int maxBatch = 5000;
+    public static int maxBatch = 1000;
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
         resolveCrossReferences(session, references, true);
@@ -74,7 +74,7 @@ public class ReferencesHelper {
         if (useReferencesKeeper) {
             NodeIterator ni = refRoot.getNodes();
             if (ni.getSize() > 5000) {
-                logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking and cleaning them. Parsing them may take a while.");
+                logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to cleaning them. Parsing them may take a while.");
             }
             while (ni.hasNext()) {
 

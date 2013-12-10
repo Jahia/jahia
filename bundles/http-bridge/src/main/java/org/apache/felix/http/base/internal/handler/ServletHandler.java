@@ -16,14 +16,14 @@
  */
 package org.apache.felix.http.base.internal.handler;
 
+import org.apache.felix.http.base.internal.context.ExtServletContext;
+
 import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-
-import org.apache.felix.http.base.internal.context.ExtServletContext;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -34,21 +34,38 @@ public final class ServletHandler
     private final String alias;
     private String aliasWithSlash;
     private String jspPathPrefix;
+    private final boolean isRESTCall;
     private final Servlet servlet;
 
     public ServletHandler(ExtServletContext context, Servlet servlet, String alias)
     {
         super(context);
-        this.alias = alias;
         this.servlet = servlet;
+
+        // process alias before recording it if needed
         if (alias != null) {
             if (alias.endsWith("*.jsp") && alias.length() > "*.jsp".length()) {
                 // special case of a handler for all JSPs of a bundle
                 jspPathPrefix = alias.substring(0, alias.lastIndexOf("*.jsp"));
+
+                isRESTCall = false;
             } else {
+
+                // check whether we have a JAX-RS servlet.
+                final int jaxrsIndex = alias.indexOf(".jaxrs");
+                if (jaxrsIndex > 0) {
+                    alias = alias.substring(0, jaxrsIndex);
+                    isRESTCall = true;
+                } else {
+                    isRESTCall = false;
+                }
                 this.aliasWithSlash = alias + "/";
             }
+        } else {
+            isRESTCall = false;
         }
+
+        this.alias = alias;
     }
 
     public String getAlias()
@@ -81,8 +98,10 @@ public final class ServletHandler
         } else if (this.alias.equals("/")) {
             return uri.startsWith(this.alias);
         } else {
-            return uri.equals(this.alias) || jspPathPrefix == null && uri.startsWith(aliasWithSlash)
-                    || jspPathPrefix != null && uri.startsWith(jspPathPrefix) && uri.endsWith(".jsp");
+            return (isRESTCall && uri.startsWith(this.alias))
+                    || uri.equals(this.alias)
+                    || (jspPathPrefix == null && uri.startsWith(aliasWithSlash))
+                    || (jspPathPrefix != null && uri.startsWith(jspPathPrefix) && uri.endsWith(".jsp"));
         }
     }
 
@@ -114,8 +133,8 @@ public final class ServletHandler
             // reset status to OK for further processing
             res.setStatus(HttpServletResponse.SC_OK);
 
-            // in case of a JSP alias (*.jsp) we do not wrap the request
-            this.servlet.service(jspPathPrefix == null ? new ServletHandlerRequest(req, this.alias) : req, res);
+            // in case of a JSP alias (*.jsp) or if we are trying to access a JAX-RS servlet we do not wrap the request
+            this.servlet.service(jspPathPrefix == null && !isRESTCall ? new ServletHandlerRequest(req, this.alias) : req, res);
         }
     }
 

@@ -42,6 +42,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+import org.bouncycastle.jce.provider.JDKDSASigner;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -68,11 +69,13 @@ public class ReferencesHelper {
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper) throws RepositoryException {
         int batchCount = 0;
-
         Map<String, String> uuidMapping = session.getUuidMapping();
         JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
         if (useReferencesKeeper) {
             NodeIterator ni = refRoot.getNodes();
+            if (ni.getSize() > 5000) {
+                logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking and cleaning them. Parsing them may take a while.");
+            }
             while (ni.hasNext()) {
 
                 batchCount++;

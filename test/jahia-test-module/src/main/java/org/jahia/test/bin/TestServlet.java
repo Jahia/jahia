@@ -41,9 +41,10 @@
 package org.jahia.test.bin;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.test.SurefireTestNGXMLResultFormatter;
+import org.jahia.utils.ClassLoaderUtils;
+import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
@@ -51,7 +52,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
-import org.springframework.core.io.Resource;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -66,8 +66,10 @@ import org.testng.xml.XmlTest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+
 import java.io.*;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -89,45 +91,47 @@ public class TestServlet extends BaseTestController {
             String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
             String xmlTest = httpServletRequest.getParameter("xmlTest");
             if (pathInfo.contains("selenium") || !StringUtils.isEmpty(xmlTest)) {
+                JahiaTemplatesPackage seleniumModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("selenium");
+                if (seleniumModule == null) {
+                    throw new ServletException("Selenium module not found (or not started)");
+                }
                 TestNG myTestNG = new TestNG();
                 SurefireTestNGXMLResultFormatter xmlResultFormatter = new SurefireTestNGXMLResultFormatter(
                         httpServletResponse.getOutputStream());
                 myTestNG.addListener((ISuiteListener) xmlResultFormatter);                
                 myTestNG.addListener((ITestListener) xmlResultFormatter);
                
-                Resource[] resources = null;
-                if (!StringUtils.isEmpty(xmlTest)) {
-                    resources = SpringContextSingleton
-                            .getInstance()
-                            .getResources(
-                                    "classpath*:"
-                                            + xmlTest
-                                            + ";classpath*:testng/"
-                                                    + xmlTest);
-                }
-                if (resources != null) {
-                    List<XmlSuite> allSuites = new ArrayList<XmlSuite>();
-                    for (Resource re : resources) {
-                        InputStream is = re.getInputStream();
-                        try {
-                            Parser parser = new Parser(is);
-                            List<XmlSuite> suites = parser.parseToList();
+                final Enumeration<URL> resources = seleniumModule.getBundle().findEntries("testng", StringUtils.defaultIfBlank(xmlTest, "*.xml"), false);
+                if (resources != null && resources.hasMoreElements()) {
+                    final List<XmlSuite> allSuites = new ArrayList<XmlSuite>();
+                    ClassLoaderUtils.executeWith(seleniumModule.getClassLoader(), new Callback<Boolean>() {
+                        @Override
+                        public Boolean execute() {
+                            while (resources.hasMoreElements()) {
+                                InputStream is = null;
+                                try {
+                                    is = resources.nextElement().openStream();
+                                    Parser parser = new Parser(is);
+                                    List<XmlSuite> suites = parser.parseToList();
 
-                            for (XmlSuite suite : suites) {
-                                suite.setPreserveOrder("true");
-                                suite.setConfigFailurePolicy("continue");
-                                for (XmlTest test : suite.getTests()) {
-                                    test.setPreserveOrder("true");
+                                    for (XmlSuite suite : suites) {
+                                        suite.setPreserveOrder("true");
+                                        suite.setConfigFailurePolicy("continue");
+                                        for (XmlTest test : suite.getTests()) {
+                                            test.setPreserveOrder("true");
+                                        }
+                                    }
+
+                                    allSuites.addAll(suites);
+                                } catch (Exception e) {
+                                    logger.error("Error executing test", e);
+                                } finally {
+                                    IOUtils.closeQuietly(is);
                                 }
                             }
-
-                            allSuites.addAll(suites);
-                        } catch (Exception e) {
-                            logger.error("Error executing test", e);
-                        } finally {
-                            IOUtils.closeQuietly(is);
+                            return Boolean.TRUE;
                         }
-                    }
+                    });
                     myTestNG.setXmlSuites(allSuites);
                 } else {
                     String className = pathInfo.substring(pathInfo

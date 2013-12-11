@@ -16,8 +16,9 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
-<template:addResources type="css" resources="admin-bootstrap.css,tablecloth.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
 
 <template:addResources>
     <script type="text/javascript">
@@ -25,11 +26,12 @@
             $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
         });
     </script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-            $("table").tablecloth({
-                theme: "default",
-                sortable: true
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#module_table').dataTable({
+                "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+                "iDisplayLength":25,
+                "sPaginationType": "bootstrap"
             });
         });
     </script>
@@ -74,7 +76,7 @@
     </form:form>
 </c:if>
 <%@include file="moduleLabels.jspf" %>
-<table class="table table-bordered table-striped table-hover">
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="module_table">
     <thead>
     <tr>
         <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>

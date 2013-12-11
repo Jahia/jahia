@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:j="http://www.jahia.org/jahia/1.0"
-         xmlns:jcr="http://www.jcp.org/jcr/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
         <serverSettings j:dependencies="default tabularList"
                       j:installedModules="serverSettings"
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <serveradmin jcr:primaryType="jnt:folder">
@@ -255,7 +255,7 @@
                                 j:titleKey="serverSettings.systemComponents"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:template">
-                            <manageModules j:applyOn="jnt:globalSettings jnt:modules"
+                            <manageModules j:applyOn="jnt:globalSettings"
                                  j:defaultTemplate="false"
                                  j:hiddenTemplate="false"
                                  j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/modules/modules.png"
@@ -289,6 +289,11 @@
                                        jcr:title="Forges"/>
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <serversettingsmanageforges jcr:primaryType="jnt:serverSettingsManageForges"/>
+                                    <rich-text jcr:primaryType="jnt:bigText">
+                                        <j:translation_fr jcr:language="fr"
+                                             jcr:primaryType="jnt:translation"
+                                             text="&lt;p&gt;mon texte riche&lt;/p&gt;&#xA;"/>
+                                    </rich-text>
                                 </pagecontent>
                             </forges>
                         </system-components>
@@ -306,7 +311,9 @@
                                          jcr:mixinTypes="jmix:rbTitle"
                                          jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
-                                    <manage-server-roles jcr:primaryType="jnt:manageRoles" roleGroup="server-role" contextNodePath="/" />
+                                    <manage-server-roles contextNodePath="/"
+                                             jcr:primaryType="jnt:manageRoles"
+                                             roleGroup="server-role"/>
                                 </pagecontent>
                             </manageServerRoles>
                             <manageUsers j:applyOn="jnt:globalSettings"
@@ -402,11 +409,8 @@
                         </system-health>
                 </server-settings-base>
             </templates>
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
                 
         </serverSettings>
     </modules>
-    
 </content>

@@ -23,10 +23,9 @@
 </head>
 <body onload="document.loginForm.username.focus()" class="login">
 <div class="row-fluid login-wrapper">
-    <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo-white.png">
-
     <div class="span4 box">
         <div class="content-wrap">
+            <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo.png">
             <ui:loginArea>
                 <script type="text/javascript">
                     function doSubmit() {
@@ -40,9 +39,9 @@
                     <div class="alert alert-error"><fmt:message
                             key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
                 </ui:isLoginError>
-                <input class="span12" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
+                <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
                        maxlength="250" name="username"/>
-                <input class="span12" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
+                <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
                        maxlength="250" name="password"/>
                 <c:if test="${not fn:contains(param.redirect, '/administration')}">
                     <div class="remember">
@@ -50,7 +49,7 @@
                         <label for="rememberme"><fmt:message key="label.rememberme"/></label>
                     </div>
                 </c:if>
-                <a class="btn btn-block btn-primary" href="#login"
+                <a class="btn  btn-large btn-large btn-block btn-primary" href="#login"
                    onClick="document.forms.loginForm.submit(); return false;" tabindex="5"
                    title="<fmt:message key='label.login'/>">
                     <i class="icon-ok icon-white"></i>

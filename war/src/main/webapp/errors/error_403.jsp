@@ -15,13 +15,13 @@
 </head>
 <body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
     <div class="row-fluid login-wrapper">
-        <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo-white.png">
         <div class="span4 box error-box">
             <div class="content-wrap">
+                <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo.png">
                 <h1 class="message-big"><fmt:message key="label.error.403.title"/></h1>
                 <p><fmt:message key="label.error.403.description"/></p>
                 <p id="backLink" style="display:none">
-                    <a class="btn btn-block" href="javascript:history.back()">
+                    <a class="btn btn-large btn-block" href="javascript:history.back()">
                         <i class="icon-chevron-left"></i>
                         &nbsp;<fmt:message key="label.error.backLink.1"/>
                         &nbsp;<fmt:message key="label.error.backLink.2"/>
@@ -29,7 +29,7 @@
                     </a>
                 </p>
                 <p><fmt:message key="label.error.homeLink"/></p>
-                <a class="btn btn-block btn-primary" href="<c:url value='/'/>">
+                <a class="btn btn-large btn-block btn-primary" href="<c:url value='/'/>">
                     <i class="icon-home icon-white"></i>
                     &nbsp;<fmt:message key="label.homepage"/>
                 </a>

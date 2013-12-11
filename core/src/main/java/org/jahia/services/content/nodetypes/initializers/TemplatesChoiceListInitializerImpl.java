@@ -120,6 +120,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         SortedSet<View> views = new TreeSet<View>();
 
+        boolean subViews = false;
+
         try {
             if (node != null) {
                 site = node.getResolveSite();
@@ -135,6 +137,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 param =  StringUtils.substringBefore(param, ",");
             }
             if ("subnodes".equals(param)) {
+                subViews = true;
                 if (propertyName == null) {
                     propertyName = "j:allowedTypes";
                 }
@@ -257,10 +260,10 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         wrappedViewsSet.add(new ViewWrapper(iterator.next()));
                     }
 
-                    if (wrappedViews.isEmpty()) {
-                        wrappedViews.addAll(wrappedViewsSet);
-                    } else {
+                    if (subViews && !wrappedViews.isEmpty()) {
                         wrappedViews.retainAll(wrappedViewsSet);
+                    } else {
+                        wrappedViews.addAll(wrappedViewsSet);
                     }
                 }
                 wrappedViewsSet.clear();

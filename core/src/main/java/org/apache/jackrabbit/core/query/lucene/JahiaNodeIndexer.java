@@ -40,14 +40,6 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
-import java.io.ByteArrayInputStream;
-import java.util.*;
-import java.util.concurrent.Executor;
-
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.HierarchyManager;
@@ -55,12 +47,7 @@ import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
-import org.apache.jackrabbit.core.state.ChildNodeEntry;
-import org.apache.jackrabbit.core.state.ItemStateException;
-import org.apache.jackrabbit.core.state.ItemStateManager;
-import org.apache.jackrabbit.core.state.NoSuchItemStateException;
-import org.apache.jackrabbit.core.state.NodeState;
-import org.apache.jackrabbit.core.state.PropertyState;
+import org.apache.jackrabbit.core.state.*;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.core.value.InternalValueFactory;
 import org.apache.jackrabbit.spi.Name;
@@ -78,8 +65,16 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.textextraction.TextExtractionService;
+import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.NamespaceRegistry;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.io.ByteArrayInputStream;
+import java.util.*;
+import java.util.concurrent.Executor;
 
 /**
  * Creates a lucene <code>Document</code> object from a {@link javax.jcr.Node} and use Jahia sepecific definitions for index creation.
@@ -435,7 +430,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
     protected void addStringValue(Document doc, String fieldName, String internalValue,
             boolean tokenized, boolean includeInNodeIndex, float boost, boolean useInExcerpt) {
 
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        final String propertyName = getPropertyNameFromFieldname(fieldName);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, propertyName);
 
         if (definition != null && SelectorType.RICHTEXT == definition.getSelector()) {
             try {
@@ -444,10 +440,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 metadata.set(Metadata.CONTENT_ENCODING, InternalValueFactory.DEFAULT_ENCODING);
 
                 TextExtractionService textExtractor = (TextExtractionService) SpringContextSingleton.getBean("org.jahia.services.textextraction.TextExtractionService");
-                internalValue = textExtractor.parse(new ByteArrayInputStream(((String) internalValue)
+                internalValue = textExtractor.parse(new ByteArrayInputStream(internalValue
                         .getBytes(InternalValueFactory.DEFAULT_ENCODING)), metadata);
             } catch (Exception e) {
-                internalValue = StringEscapeUtils.unescapeHtml((String) internalValue);
+                internalValue = StringEscapeUtils.unescapeHtml(internalValue);
             }
         }
         if (internalValue == null) {
@@ -456,24 +452,18 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addStringValue(doc, fieldName, internalValue, tokenized, includeInNodeIndex, boost,
                 useInExcerpt);
         if (tokenized) {
-            String stringValue = (String) internalValue;
+            String stringValue = internalValue;
             if (stringValue.length() == 0) {
                 return;
             }
 
             if (includeInNodeIndex && isSupportSpellchecking()) {
-                String site = resolveSite();
-                String language = resolveLanguage();
-                if (site != null || language != null) {
-                    StringBuilder fulltextNameBuilder = new StringBuilder(32);
-                    fulltextNameBuilder.append(FieldNames.FULLTEXT);
-                    if (site != null) {
-                        fulltextNameBuilder.append("-").append(site);
+                if (getIndexingConfig().shouldPropertyBeSpellchecked(propertyName)) {
+                    String site = resolveSite();
+                    String language = resolveLanguage();
+                    if (site != null || language != null) {
+                        doc.add(createFulltextField(LuceneUtils.getFullTextFieldName(site, language), stringValue, false));
                     }
-                    if (language != null) {
-                        fulltextNameBuilder.append("-").append(language);
-                    }
-                    doc.add(createFulltextField(fulltextNameBuilder.toString(), stringValue, false));
                 }
             }
         }
@@ -736,8 +726,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 localNames.remove(PRIMARY_TYPE);
                 localNames.remove(MIXIN_TYPES);
                 parentNodePropertyNames.removeAll(localNames);
-                parentNodePropertyNames.removeAll(((JahiaIndexingConfigurationImpl)indexingConfig).getExcludesFromI18NCopy());
-                
+                parentNodePropertyNames.removeAll(getIndexingConfig().getExcludesFromI18NCopy());
+
                 for (Name propName : parentNodePropertyNames) {
                     try {
                         PropertyId id = new PropertyId(parentNode.getNodeId(), propName);
@@ -800,7 +790,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         return doc;
     }
-    
+
+    private JahiaIndexingConfigurationImpl getIndexingConfig() {
+        return (JahiaIndexingConfigurationImpl) indexingConfig;
+    }
+
     protected void addAclUuid(Document doc) throws RepositoryException {
         List<String> acls = new ArrayList<String>();
         try {

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.2.dtd">
-<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0' xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
+<configuration xmlns:j="http://www.jahia.org/jahia/1.0"
+               xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'
+               xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
 
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
 
@@ -12,27 +14,27 @@ The following example creates an index aggregate on jnt:file that includes the c
     <aggregate primaryType="jnt:file">
         <include primaryType="jnt:resource">jcr:content</include>
     </aggregate>
-    
+
     <index-rule nodeType="jnt:page">
         <property boost="3.0">jcr:title</property>
         <property isRegexp="true">.*:.*</property>
     </index-rule>
 
-	<index-rule nodeType="mix:title">
-        <property boost="2.0">jcr:title</property>
+    <index-rule nodeType="mix:title">
+    <property boost="2.0">jcr:title</property>
         <property isRegexp="true">.*:.*</property>
     </index-rule>
 
     <i18ncopy>
         <exclude-property>j:locktoken</exclude-property>
-        <exclude-property>jcr:language</exclude-property>        
+        <exclude-property>jcr:language</exclude-property>
         <exclude-property>jcr:lastModified</exclude-property>
         <exclude-property>jcr:lastModifiedBy</exclude-property>
         <exclude-property>j:lastPublished</exclude-property>
-        <exclude-property>j:lastPublishedBy</exclude-property>        
-        <exclude-property>j:published</exclude-property>        
+        <exclude-property>j:lastPublishedBy</exclude-property>
+        <exclude-property>j:published</exclude-property>
     </i18ncopy>
-    <analyzers> 
+    <analyzers>
         <analyzer class="org.apache.lucene.analysis.KeywordAnalyzer">
             <property>jcr:primaryType</property>
             <property>jcr:mixinTypes</property>
@@ -187,8 +189,17 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>date</property>
             <property>changefreq</property>
         </analyzer>
+        <!--
+        This shouldn't be needed anymore
         <analyzer class="org.apache.lucene.analysis.standard.StandardAnalyzer">
             <property>SPELLCHECK</property>
-        </analyzer>        
-    </analyzers>            
+        </analyzer>
+        -->
+    </analyzers>
+    <!-- Example on how to include only jcr:title in spellchecker. -->
+    <!--
+    <spellchecker>
+        <include-property>jcr:title</include-property>
+    </spellchecker>
+    -->
 </configuration>

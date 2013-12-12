@@ -40,13 +40,6 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.jcr.NamespaceException;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.NamespaceRegistryImpl;
 import org.apache.jackrabbit.core.nodetype.xml.AdditionalNamespaceResolver;
@@ -61,42 +54,86 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.analysis.ar.ArabicAnalyzer;
+import org.apache.lucene.analysis.br.BrazilianAnalyzer;
+import org.apache.lucene.analysis.cjk.CJKAnalyzer;
+import org.apache.lucene.analysis.cn.ChineseAnalyzer;
+import org.apache.lucene.analysis.cz.CzechAnalyzer;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
+import org.apache.lucene.analysis.el.GreekAnalyzer;
+import org.apache.lucene.analysis.fa.PersianAnalyzer;
+import org.apache.lucene.analysis.fr.FrenchAnalyzer;
+import org.apache.lucene.analysis.nl.DutchAnalyzer;
+import org.apache.lucene.analysis.ru.RussianAnalyzer;
+import org.apache.lucene.analysis.th.ThaiAnalyzer;
+import org.apache.lucene.util.Version;
 import org.jahia.api.Constants;
+import org.jahia.services.search.analyzer.ASCIIFoldingAnalyzerWrapper;
+import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
+import org.w3c.dom.*;
 import org.w3c.dom.CharacterData;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+import javax.jcr.NamespaceException;
+import javax.jcr.RepositoryException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Jahia specific {@link IndexingConfiguration} implementation. 
+ * Jahia specific {@link IndexingConfiguration} implementation.
  */
 public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
-    private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;   
-    
-    private static final String SPELLCHECK_EXPRESSION = FieldNames.FULLTEXT + "-";
-    
+    private static final String FACET_EXPRESSION = ":" + JahiaNodeIndexer.FACET_PREFIX;
+
+    private static final String SPELLCHECK_EXPRESSION = FieldNames.FULLTEXT + LuceneUtils.DASH;
+
     private static final Name TRANSLATION_TYPE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "translation");
-    
+
     /**
      * The logger instance for this class.
      */
     private static final Logger logger = LoggerFactory.getLogger(JahiaIndexingConfigurationImpl.class);
-    
+
+    /**
+     * Should match value used in indexing_configuration.xml
+     */
+    public static final String FULL_SPELLCHECK_FIELD_NAME = "0:FULL:SPELLCHECK";
+
     /**
      * The item state manager to retrieve additional item states.
      */
     private ItemStateManager ism;
-    
+
+    /**
+     * Language to Analyzer map.
+     */
+    private static final Map<String, Analyzer> languageToAnalyzer = new ConcurrentHashMap<String, Analyzer>();
+
+    static {
+        languageToAnalyzer.put("ar", new ASCIIFoldingAnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("br", new ASCIIFoldingAnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("cjk", new ASCIIFoldingAnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("cn", new ASCIIFoldingAnalyzerWrapper(new ChineseAnalyzer()));
+        languageToAnalyzer.put("cz", new ASCIIFoldingAnalyzerWrapper(new CzechAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("de", new ASCIIFoldingAnalyzerWrapper(new GermanAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("el", new ASCIIFoldingAnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("en", new ASCIIFoldingAnalyzerWrapper(new org.apache.lucene.analysis.standard.StandardAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("fa", new ASCIIFoldingAnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("fr", new ASCIIFoldingAnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("nl", new ASCIIFoldingAnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("ru", new ASCIIFoldingAnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("th", new ASCIIFoldingAnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
+    }
+
+    private Set<String> includedInSpellchecking = null;
+
     /**
      * @param node a node.
      * @return the text content of the <code>node</code>.
      */
     private static String getTextContent(Node node) {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         NodeList nodes = node.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);
@@ -106,11 +143,11 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
         }
         return content.toString();
     }
-    
-    private Set<Name> excludesFromI18NCopy = new HashSet<Name>();
-    
+
+    private Set<Name> excludesFromI18NCopy = Collections.emptySet();
+
     private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
-    
+
     public JahiaIndexingConfigurationImpl() {
         super();
     }
@@ -147,47 +184,77 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * is used.
      *
      * @param fieldName the string representation ,JCR-style name, of the given <code>Name</code>
-     * prefixed with <code>FieldNames.FULLTEXT_PREFIX</code>))
+     *                  prefixed with <code>FieldNames.FULLTEXT_PREFIX</code>))
      * @return the <code>analyzer</code> to use for indexing this property
      */
     public Analyzer getPropertyAnalyzer(String fieldName) {
-        Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
-                : super.getPropertyAnalyzer(StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION) ? "0:FULL:SPELLCHECK" : fieldName);
-        return analyzer;
+        if (StringUtils.contains(fieldName, FACET_EXPRESSION)) {
+            return keywordAnalyzer;
+        } else {
+            Analyzer analyzer = null;
+
+            // first attempt to find a language specific analyzer
+            final String language = LuceneUtils.extractLanguageOrNullFrom(fieldName);
+            if (language != null) {
+                analyzer = languageToAnalyzer.get(language);
+            }
+
+            // if we didn't find an analyzer yet, get one from super
+            if (analyzer == null) {
+                analyzer = super.getPropertyAnalyzer(fieldName);
+            }
+
+            return analyzer;
+        }
     }
-    
+
     @Override
     public void init(Element config, QueryHandlerContext context, NamespaceMappings nsMappings) throws Exception {
         ism = context.getItemStateManager();
         Properties customNamespaces = getNamespaces(config);
         registerCustomNamespaces(context.getNamespaceRegistry(), customNamespaces);
         super.init(config, context, nsMappings);
-        NamespaceResolver nsResolver = new AdditionalNamespaceResolver(customNamespaces);        
+        NamespaceResolver nsResolver = new AdditionalNamespaceResolver(customNamespaces);
         NameResolver resolver = new ParsingNameResolver(NameFactoryImpl.getInstance(), nsResolver);
-        
+
         NodeList indexingConfigs = config.getChildNodes();
         for (int i = 0; i < indexingConfigs.getLength(); i++) {
             Node configNode = indexingConfigs.item(i);
-            if (configNode.getNodeName().equals("i18ncopy")) {
-                NodeList childNodes = configNode.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    Node excludePropNode = childNodes.item(j);
-                    if (excludePropNode.getNodeName().equals("exclude-property")) {
-                        String propertyName = getTextContent(excludePropNode);
-                        try {
-                            getExcludesFromI18NCopy().add(resolver.getQName(propertyName));
-                        } catch (Exception e) {
-                            logger.warn("Cannot resolve configured property name to be excluded from i18ncopy: "
-                                    + propertyName, e);
-                        }
-                    }
-                }
+            final String nodeName = configNode.getNodeName();
+            if (nodeName.equals("i18ncopy")) {
+                excludesFromI18NCopy = initPropertyCollectionFrom(configNode, "exclude-property", resolver);
+            } else if (nodeName.equals("spellchecker")) {
+                includedInSpellchecking = initPropertyCollectionFrom(configNode, "include-property", null);
             }
         }
     }
-    
+
+    private Set initPropertyCollectionFrom(Node configNode, String childNameToAdd, NameResolver resolver) {
+        final NodeList childNodes = configNode.getChildNodes();
+        final int length = childNodes.getLength();
+
+        // init collection if needed
+        Set configurationCollection = new HashSet(length);
+
+        for (int j = 0; j < length; j++) {
+            final Node childNode = childNodes.item(j);
+            if (childNode.getNodeName().equals(childNameToAdd)) {
+                String propertyName = getTextContent(childNode);
+                try {
+                    // if we didn't pass a resolver, add the property name as-is, otherwise convert it to a proper QName
+                    final Object name = resolver != null ? resolver.getQName(propertyName) : propertyName;
+                    configurationCollection.add(name);
+                } catch (Exception e) {
+                    logger.warn("Cannot resolve configured property name : " + propertyName, e);
+                }
+            }
+        }
+
+        return configurationCollection;
+    }
+
     private void registerCustomNamespaces(NamespaceRegistryImpl namespaceRegistry,
-            Properties customNamespaces) {
+                                          Properties customNamespaces) {
         for (Object key : customNamespaces.keySet()) {
             String prefix = (String) key;
             try {
@@ -229,8 +296,8 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     @Override
     public boolean useInExcerpt(NodeState state, Name propertyName) {
         return super.useInExcerpt(getUntranslatedNode(state), propertyName);
-    }    
-    
+    }
+
     private NodeState getUntranslatedNode(NodeState state) {
         if (TRANSLATION_TYPE.equals(state.getNodeTypeName())) {
             try {
@@ -239,5 +306,11 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             }
         }
         return state;
+    }
+
+    public boolean shouldPropertyBeSpellchecked(String propertyName) {
+        // if includedInSpellchecking is null, we consider that no setup of spellchecking has been done and all
+        // properties should therefore be included
+        return includedInSpellchecking == null || includedInSpellchecking.contains(propertyName);
     }
 }

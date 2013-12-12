@@ -40,63 +40,57 @@
 
 package org.jahia.services.search.spell;
 
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.QueryHandler;
+import org.apache.jackrabbit.core.query.lucene.FieldNames;
+import org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl;
+import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.commons.query.LocationStepQueryNode;
-import org.apache.jackrabbit.spi.commons.query.PathQueryNode;
-import org.apache.jackrabbit.spi.commons.query.QueryRootNode;
-import org.apache.jackrabbit.spi.commons.query.RelationQueryNode;
-import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
+import org.apache.jackrabbit.spi.commons.query.*;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSitesService;
-import org.slf4j.Logger;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
 import org.apache.lucene.search.spell.LuceneDictionary;
+import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NativeFSLockFactory;
-import org.apache.lucene.store.AlreadyClosedException;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Token;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.DateUtils;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import org.jahia.utils.LuceneUtils;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>LuceneSpellChecker</code> implements a spell checker based on the terms
  * present in a lucene index.
  */
 public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.lucene.SpellChecker {
-    
+
     /**
      * Logger instance for this class.
      */
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CompositeSpellChecker.class);
-    
+
     public static final String SEPARATOR_IN_SUGGESTION = "#!#";
-    public static final String MAX_TERMS_PARAM = "maxTerms";    
+    public static final String MAX_TERMS_PARAM = "maxTerms";
 
     public static final class FiveSecondsRefreshInterval extends CompositeSpellChecker {
         public FiveSecondsRefreshInterval() {
@@ -147,7 +141,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
     }
 
     private static Map<String, InternalSpellChecker> spellCheckers = new ConcurrentHashMap<String, InternalSpellChecker>(2);
-    
+
     /**
      * Triggers update of the spell checker dictionary index.
      */
@@ -157,7 +151,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             checker.refreshSpellChecker();
         }
     }
-    
+
     /**
      * The internal spell checker.
      */
@@ -181,11 +175,9 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
 
     /**
      * Initializes this spell checker.
-     * 
-     * @param handler
-     *            the query handler that created this spell checker.
-     * @throws IOException
-     *             if <code>handler</code> is not of type {@link SearchIndex}.
+     *
+     * @param handler the query handler that created this spell checker.
+     * @throws IOException if <code>handler</code> is not of type {@link SearchIndex}.
      */
     public void init(QueryHandler handler) throws IOException {
         if (handler instanceof SearchIndex) {
@@ -221,7 +213,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 }
 
                 public Object visit(PathQueryNode node, Object data) throws RepositoryException {
-                    for (int i : new int[] { 0, 1 }) {
+                    for (int i : new int[]{0, 1}) {
                         if (node.getPathSteps().length > i + 1
                                 && "sites".equals(node.getPathSteps()[i].getNameTest().getLocalName())) {
                             spellcheckInfo.put("site", node.getPathSteps()[++i].getNameTest().getLocalName());
@@ -239,11 +231,11 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 if (locale != null) {
                     spellcheckInfo.put("language", locale.toString());
                 }
-            }       
+            }
         } catch (RepositoryException e) {
-            logger.debug("issue while checking "+aqt,e.getMessage());
+            logger.debug("issue while checking " + aqt, e.getMessage());
         }
-        
+
         int maxTermCount = 1;
         String maxTermCountStr = spellcheckInfo.get("maxTermCount");
         if (!StringUtils.isEmpty(maxTermCountStr) && StringUtils.isNumeric(maxTermCountStr)) {
@@ -252,7 +244,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 maxTermCount = parsedMaxTermCount;
             }
         }
-        
+
         return spellChecker.suggest(spellcheckInfo.get("statement"), spellcheckInfo
                 .get("site"), spellcheckInfo.get("language"), maxTermCount);
     }
@@ -297,9 +289,8 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
 
         /**
          * Creates a new internal spell checker.
-         * 
-         * @param handler
-         *            the associated query handler.
+         *
+         * @param handler the associated query handler.
          */
         InternalSpellChecker(SearchIndex handler) throws IOException {
             this.handler = handler;
@@ -316,15 +307,11 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
          * Checks a fulltext query statement and suggests a spell checked
          * version of the statement. If the spell checker thinks the spelling is
          * correct <code>null</code> is returned.
-         * 
-         * @param statement
-         *            the fulltext query statement.
-         * @param site
-         *            the site being searched
-         * @param language
-         *            the language being searched
-         * @param maxSuggestions
-         *            maximum number of suggestions to return                                    
+         *
+         * @param statement      the fulltext query statement.
+         * @param site           the site being searched
+         * @param language       the language being searched
+         * @param maxSuggestions maximum number of suggestions to return
          * @return a suggestion or <code>null</code>.
          */
         String suggest(String statement, String site, String language, int maxSuggestions) throws IOException {
@@ -337,16 +324,16 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             if (suggestions != null) {
                 int possibleSuggestionsCount = 1;
                 for (String[] suggestionsPerWord : suggestions) {
-                   if (suggestionsPerWord.length > 1) {
-                       if (possibleSuggestionsCount > 1) {
-                           possibleSuggestionsCount = 1;
-                           break;
-                       } else {
-                           possibleSuggestionsCount = suggestionsPerWord.length;
-                       }
-                   }
+                    if (suggestionsPerWord.length > 1) {
+                        if (possibleSuggestionsCount > 1) {
+                            possibleSuggestionsCount = 1;
+                            break;
+                        } else {
+                            possibleSuggestionsCount = suggestionsPerWord.length;
+                        }
+                    }
                 }
-                
+
                 // replace words in statement in reverse order because length
                 // of statement will change
                 StringBuilder sb = new StringBuilder();
@@ -358,7 +345,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                     StringBuilder stmt = new StringBuilder(statement);
                     for (int i = suggestions.length - 1; i >= 0; i--) {
                         Token t = (Token) tokens.get(i);
-                        int pos = suggestions[i].length > 1 ? loopCount : 0; 
+                        int pos = suggestions[i].length > 1 ? loopCount : 0;
                         // only replace if word actually changed
                         if (!t.term().equalsIgnoreCase(suggestions[i][pos])) {
                             stmt.replace(t.startOffset(), t.endOffset(),
@@ -379,43 +366,32 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             } catch (IOException e) {
                 // ignore
             }
-            
+
             try {
                 spellChecker.close();
             } catch (IOException e) {
                 // ignore
             }
-            
+
             spellChecker = null;
         }
 
         /**
          * Tokenizes the statement into words and tokens.
-         * 
-         * @param statement
-         *            the fulltext query statement.
-         * @param words
-         *            this list will be filled with the original words extracted
-         *            from the statement.
-         * @param tokens
-         *            this list will be filled with the tokens parsed from the
-         *            statement.
-         * @throws IOException
-         *             if an error occurs while parsing the statement.
+         *
+         * @param statement the fulltext query statement.
+         * @param words     this list will be filled with the original words extracted
+         *                  from the statement.
+         * @param tokens    this list will be filled with the tokens parsed from the
+         *                  statement.
+         * @throws IOException if an error occurs while parsing the statement.
          */
         private void tokenize(String statement, List<String> words, List<Token> tokens, String site, String language) throws IOException {
-        	StringBuilder fullTextName = new StringBuilder(FieldNames.FULLTEXT);
-            if (site != null) {
-                fullTextName.append("-").append(site);
+            Analyzer analyzer = handler.getIndexingConfig().getPropertyAnalyzer(JahiaIndexingConfigurationImpl.FULL_SPELLCHECK_FIELD_NAME);
+            if (analyzer == null) {
+                analyzer = handler.getTextAnalyzer();
             }
-            if (language != null) {
-                fullTextName.append("-").append(language);
-            }
-            Analyzer analyzer = handler.getIndexingConfig().getPropertyAnalyzer("0:FULL:SPELLCHECK");
-            if(analyzer == null) {
-            	analyzer = handler.getTextAnalyzer();
-            }
-            TokenStream ts = analyzer.tokenStream(fullTextName.toString(), new StringReader(statement));
+            TokenStream ts = analyzer.tokenStream(LuceneUtils.getFullTextFieldName(site, language), new StringReader(statement));
             try {
                 OffsetAttribute offsetAttribute = ts.getAttribute(OffsetAttribute.class);
                 TermAttribute termAttribute = ts.getAttribute(TermAttribute.class);
@@ -445,34 +421,24 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         /**
          * Checks the spelling of the passed <code>words</code> and returns a
          * suggestion.
-         * 
-         * @param words
-         *            the words to check.
+         *
+         * @param words the words to check.
          * @return a suggestion of correctly spelled <code>words</code> or
-         *         <code>null</code> if this spell checker thinks
-         *         <code>words</code> are spelled correctly.
-         * @throws IOException
-         *             if an error occurs while spell checking.
+         * <code>null</code> if this spell checker thinks
+         * <code>words</code> are spelled correctly.
+         * @throws IOException if an error occurs while spell checking.
          */
         private String[][] check(String words[], String site, String language, int maxSuggestionCount) throws IOException {
             refreshSpellChecker();
             boolean hasSuggestion = false;
             IndexReader reader = handler.getIndexReader();
-            StringBuilder fullTextName = new StringBuilder(FieldNames.FULLTEXT);
-            if (site != null) {
-                fullTextName.append("-").append(site);
-            }
-            if (language != null) {
-                fullTextName.append("-").append(language);
-            }
-            String fullTextNameStr = fullTextName.toString();
             try {
                 for (int retries = 0; retries < 100; retries++) {
                     try {
                         String[][] suggestion = new String[words.length][];
                         for (int i = 0; i < words.length; i++) {
-                            String[] similar = spellChecker.suggestSimilar(words[i], maxSuggestionCount, reader, fullTextNameStr,
-                                    true, site, language);
+                            String[] similar = spellChecker.suggestSimilar(words[i], maxSuggestionCount, reader,
+                                    LuceneUtils.getFullTextFieldName(site, language), true, site, language);
                             if (similar.length > 0) {
                                 suggestion[i] = similar;
                                 hasSuggestion = true;

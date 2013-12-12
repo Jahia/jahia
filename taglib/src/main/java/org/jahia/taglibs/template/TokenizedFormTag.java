@@ -44,7 +44,11 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
 import org.apache.noggit.JSONUtil;
+=======
+import org.jahia.services.render.RenderContext;
+>>>>>>> .merge-right.r48115
 import org.jahia.services.render.Resource;
 
 
@@ -88,6 +92,7 @@ public class TokenizedFormTag extends BodyTagSupport {
             String id = (String) pageContext.findAttribute("currentFormId");
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
                                                                            PageContext.REQUEST_SCOPE);
+            RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
             JspWriter out = pageContext.getOut();
 
             String bodyContent = getBodyContent().getString();
@@ -102,7 +107,11 @@ public class TokenizedFormTag extends BodyTagSupport {
             String action = formTag.getAttributeValue("action");
 
             if (!action.startsWith("/") && !action.contains("://")) {
-                action = StringUtils.substringBeforeLast(((HttpServletRequest)pageContext.getRequest()).getRequestURI(), "/")+ "/" +action;
+                String requestURI = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
+                if (requestURI.startsWith("/gwt/")) {
+                    requestURI = renderContext.getURLGenerator().buildURL(renderContext.getMainResource().getNode(), renderContext.getMainResourceLocale().toString(), renderContext.getMainResource().getTemplate(), renderContext.getMainResource().getTemplateType());
+                }
+                action = StringUtils.substringBeforeLast(requestURI, "/")+ "/" +action;
             }
             hiddenInputs.put("form-action",Arrays.asList(StringUtils.substringBeforeLast(action,";")));
             hiddenInputs.put("form-method", Arrays.asList(StringUtils.capitalize(formTag.getAttributeValue("method"))));

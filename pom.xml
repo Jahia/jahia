@@ -26,6 +26,9 @@
     <!--logo>/images/jahia.gif</logo-->
     <description>Jahia Base Package</description>
     <url>http://www.jahia.com</url>
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
     <properties>
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

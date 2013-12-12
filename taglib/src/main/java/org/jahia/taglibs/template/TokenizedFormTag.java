@@ -44,11 +44,8 @@ import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringUtils;
-<<<<<<< .working
 import org.apache.noggit.JSONUtil;
-=======
 import org.jahia.services.render.RenderContext;
->>>>>>> .merge-right.r48115
 import org.jahia.services.render.Resource;
 
 

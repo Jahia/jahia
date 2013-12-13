@@ -89,7 +89,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * Prefix for all field names that are facet indexed by property name.
      */
     public static final String FACET_PREFIX = "FACET:";
-    
+
     public static final String TRANSLATED_NODE_PARENT = "_:TRANSLATED_PARENT".intern();
     public static final String TRANSLATION_LANGUAGE = "_:TRANSLATION_LANGUAGE".intern();
 
@@ -98,14 +98,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final Name J_ACL_INHERITED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "inherit");
 
     public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
-    
+
     private static final Name J_EXTACTED_TEXT = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "extractedText");
-    
+
     public static final Name J_VISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "conditionalVisibility");
-    
+
     public static final String PUBLISHED = "_:PUBLISHED".intern();
     public static final Name J_PUBLISHED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "published");
-    
+
     public static final String FACET_HIERARCHY = "_:FACET_HIERARCHY".intern();
 
     /**
@@ -117,11 +117,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * The persistent namespace registry
      */
     protected final NamespaceRegistry namespaceRegistry;
-    
+
     /**
      * The hierarchy manager
      */
-    protected final HierarchyManager hierarchyMgr;    
+    protected final HierarchyManager hierarchyMgr;
 
     /**
      * The <code>ExtendedNodeType</code> of the node to index
@@ -141,25 +141,25 @@ public class JahiaNodeIndexer extends NodeIndexer {
     private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
     private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
-    private boolean addAclUuidInIndex = true;    
-    
+    private boolean addAclUuidInIndex = true;
+
+    private transient String site;
+    private transient String language;
+    private transient Map<String, ExtendedPropertyDefinition> fieldNameToPropDef = new HashMap<String, ExtendedPropertyDefinition>(17);
+
     /**
      * Creates a new node indexer.
-     * 
-     * @param node
-     *            the node state to index.
-     * @param stateProvider
-     *            the persistent item state manager to retrieve properties.
-     * @param mappings
-     *            internal namespace mappings.
+     *
+     * @param node          the node state to index.
+     * @param stateProvider the persistent item state manager to retrieve properties.
+     * @param mappings      internal namespace mappings.
      * @param executor
      * @param parser
-     * @param context
-     *            the query handler context (for getting other services and registries)
+     * @param context       the query handler context (for getting other services and registries)
      */
     public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
-            NamespaceMappings mappings, Executor executor, Parser parser,
-            QueryHandlerContext context) {
+                            NamespaceMappings mappings, Executor executor, Parser parser,
+                            QueryHandlerContext context) {
         super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = NodeTypeRegistry.getInstance();
         this.namespaceRegistry = context.getNamespaceRegistry();
@@ -189,17 +189,46 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
     }
 
+
+    protected JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
+                               NamespaceMappings mappings, Executor executor, Parser parser, QueryHandlerContext context,
+                               NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry, ExtendedNodeType nodeType) {
+        super(node, stateProvider, mappings, executor, parser);
+        this.nodeTypeRegistry = typeRegistry;
+        this.namespaceRegistry = nameRegistry;
+        this.hierarchyMgr = context.getHierarchyManager();
+        try {
+            this.nodeType = nodeType;
+            if (siteTypeName == null && nodeTypeRegistry != null) {
+                ExtendedNodeType siteNodeType = nodeTypeRegistry.getNodeType(Constants.JAHIANT_VIRTUALSITE);
+                if (siteNodeType != null) {
+                    siteTypeName = NameFactoryImpl.getInstance().create(siteNodeType.getNameObject().getUri(), siteNodeType.getLocalName());
+                    siteNodeType = nodeTypeRegistry.getNodeType(Constants.JAHIANT_VIRTUALSITES_FOLDER);
+                    siteFolderTypeName = NameFactoryImpl.getInstance().create(siteNodeType.getNameObject().getUri(), siteNodeType.getLocalName());
+                }
+            }
+        } catch (NoSuchNodeTypeException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
+        }
+    }
+
+    private static ExtendedNodeType getNodeType(NodeState node, NodeTypeRegistry typeRegistry, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        Name nodeTypeName = node.getNodeTypeName();
+        return typeRegistry.getNodeType(namespaceRegistry.getPrefix(nodeTypeName.getNamespaceURI()) + ":" + nodeTypeName.getLocalName());
+    }
+
     /**
      * Returns <code>true</code> if the content of the property with the given name should the used to create an excerpt.
-     * 
-     * @param propertyName
-     *            the name of a property.
+     *
+     * @param propertyName the name of a property.
      * @return <code>true</code> if it should be used to create an excerpt; <code>false</code> otherwise.
      */
     protected boolean useInExcerpt(Name propertyName) {
         boolean useInExcerpt = super.useInExcerpt(propertyName);
         if (useInExcerpt) {
-            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node, getPropertyName(propertyName));
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(getPropertyName(propertyName));
             useInExcerpt = propDef == null || propDef.isFullTextSearchable();
         }
         return useInExcerpt;
@@ -224,28 +253,30 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     protected String resolveSite() {
-        String site = null;
-        try {
-            NodeState current = node;
-            do {
-                if (isNodeType(current, siteTypeName)) {
-                    NodeState siteParent = (NodeState) stateProvider.getItemState(current
-                            .getParentId());
-                    if (isNodeType(siteParent, siteFolderTypeName)) {
-                        return siteParent.getChildNodeEntry(current.getNodeId()).getName()
-                                .getLocalName();
+        if (site == null) {
+            try {
+                NodeState current = node;
+                do {
+                    if (isNodeType(current, siteTypeName)) {
+                        NodeState siteParent = (NodeState) stateProvider.getItemState(current
+                                .getParentId());
+                        if (isNodeType(siteParent, siteFolderTypeName)) {
+                            site = siteParent.getChildNodeEntry(current.getNodeId()).getName()
+                                    .getLocalName();
+                            break;
+                        }
                     }
-                }
-                NodeId id = current.getParentId();
-                if (id != null) {
-                    current = (NodeState) stateProvider.getItemState(id);
-                } else {
-                    current = null;
-                }
-            } while (current != null);
-        } catch (RepositoryException e) {
-        } catch (NoSuchItemStateException e) {
-        } catch (ItemStateException e) {
+                    NodeId id = current.getParentId();
+                    if (id != null) {
+                        current = (NodeState) stateProvider.getItemState(id);
+                    } else {
+                        current = null;
+                    }
+                } while (current != null);
+            } catch (RepositoryException e) {
+            } catch (NoSuchItemStateException e) {
+            } catch (ItemStateException e) {
+            }
         }
 
         return site;
@@ -266,21 +297,22 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     protected String resolveLanguage() {
-        String language = null;
-        if (nodeType != null && Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-            try {
-                for (Name propName : node.getPropertyNames()) {
-                    if ("language".equals(propName.getLocalName())
-                            && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
-                        PropertyId id = new PropertyId(node.getNodeId(), propName);
-                        PropertyState propState = (PropertyState) stateProvider.getItemState(id);
-                        language = propState.getValues()[0].getString();
-                        break;
+        if (language == null) {
+            if (nodeType != null && Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
+                try {
+                    for (Name propName : node.getPropertyNames()) {
+                        if ("language".equals(propName.getLocalName())
+                                && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
+                            PropertyId id = new PropertyId(node.getNodeId(), propName);
+                            PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+                            language = propState.getValues()[0].getString();
+                            break;
+                        }
                     }
-                }
-            } catch (Exception e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Error finding language property", e);
+                } catch (Exception e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Error finding language property", e);
+                    }
                 }
             }
         }
@@ -288,7 +320,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     protected ExtendedPropertyDefinition findDefinitionForPropertyInNode(ExtendedNodeType nodeType,
-            NodeState givenNode, String fieldName) throws RepositoryException {
+                                                                         NodeState givenNode, String fieldName) throws RepositoryException {
         ExtendedPropertyDefinition propDef = null;
         if (givenNode == null && nodeType != null) {
             propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
@@ -327,9 +359,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return propDef;
     }
 
-    protected ExtendedPropertyDefinition getExtendedPropertyDefinition(ExtendedNodeType nodeType, NodeState node, String fieldName) {
-        ExtendedPropertyDefinition propDef = null;
-        if (nodeType != null) {
+    protected ExtendedPropertyDefinition getExtendedPropertyDefinition(String fieldName) {
+        ExtendedPropertyDefinition propDef = fieldNameToPropDef.get(fieldName);
+        if (propDef == null && nodeType != null) {
             try {
                 String language = resolveLanguage();
                 if (language != null) {
@@ -348,21 +380,24 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     logger.debug("Error finding language property", e);
                 }
             }
+
+            if (propDef != null) {
+                fieldNameToPropDef.put(fieldName, propDef);
+            }
         }
         return propDef;
     }
 
     /**
      * Returns the boost value for the given property name.
-     * 
-     * @param propertyName
-     *            the name of a property.
+     *
+     * @param propertyName the name of a property.
      * @return the boost value for the given property name.
      */
     protected float getPropertyBoost(Name propertyName) {
         float scoreBoost = super.getPropertyBoost(propertyName);
         if (Float.compare(scoreBoost, 1.0F) == 0) {
-            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node, getPropertyName(propertyName));
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(getPropertyName(propertyName));
             if (propDef != null) {
                 scoreBoost = (float) propDef.getScoreboost();
             }
@@ -372,15 +407,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     /**
      * Returns <code>true</code> if the property with the given name should also be added to the node scope index.
-     * 
-     * @param propertyName
-     *            the name of a property.
+     *
+     * @param propertyName the name of a property.
      * @return <code>true</code> if it should be added to the node scope index; <code>false</code> otherwise.
      */
     protected boolean isIncludedInNodeIndex(Name propertyName) {
         boolean isIncludedInNodeIndex = super.isIncludedInNodeIndex(propertyName);
         if (isIncludedInNodeIndex) {
-            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node,
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(
                     getPropertyName(propertyName));
             isIncludedInNodeIndex = propDef == null || propDef.isFullTextSearchable();
         }
@@ -389,15 +423,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     /**
      * Returns <code>true</code> if the property with the given name should be indexed.
-     * 
-     * @param propertyName
-     *            name of a property.
+     *
+     * @param propertyName name of a property.
      * @return <code>true</code> if the property should be fulltext indexed; <code>false</code> otherwise.
      */
     protected boolean isIndexed(Name propertyName) {
         boolean isIndexed = super.isIndexed(propertyName);
         if (isIndexed) {
-            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(nodeType, node,
+            ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(
                     getPropertyName(propertyName));
             isIndexed = propDef == null
                     || propDef.getIndex() != ExtendedPropertyDefinition.INDEXED_NO;
@@ -408,30 +441,23 @@ public class JahiaNodeIndexer extends NodeIndexer {
     /**
      * Adds the string value to the document both as the named field and optionally for full text indexing if <code>tokenized</code> is
      * <code>true</code>.
-     * 
+     * <p/>
      * The Jahia specific functionality is to strip off HTML markup from richtext fields.
-     * 
-     * @param doc
-     *            The document to which to add the field
-     * @param fieldName
-     *            The name of the field to add
-     * @param internalValue
-     *            The value for the field to add to the document.
-     * @param tokenized
-     *            If <code>true</code> the string is also tokenized and fulltext indexed.
-     * @param includeInNodeIndex
-     *            If <code>true</code> the string is also tokenized and added to the node scope fulltext index.
-     * @param boost
-     *            the boost value for this string field.
-     * @param useInExcerpt
-     *            If <code>true</code> the string may show up in an excerpt.
+     *
+     * @param doc                The document to which to add the field
+     * @param fieldName          The name of the field to add
+     * @param internalValue      The value for the field to add to the document.
+     * @param tokenized          If <code>true</code> the string is also tokenized and fulltext indexed.
+     * @param includeInNodeIndex If <code>true</code> the string is also tokenized and added to the node scope fulltext index.
+     * @param boost              the boost value for this string field.
+     * @param useInExcerpt       If <code>true</code> the string may show up in an excerpt.
      */
     @Override
     protected void addStringValue(Document doc, String fieldName, String internalValue,
-            boolean tokenized, boolean includeInNodeIndex, float boost, boolean useInExcerpt) {
+                                  boolean tokenized, boolean includeInNodeIndex, float boost, boolean useInExcerpt) {
 
         final String propertyName = getPropertyNameFromFieldname(fieldName);
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, propertyName);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(propertyName);
 
         if (definition != null && SelectorType.RICHTEXT == definition.getSelector()) {
             try {
@@ -483,7 +509,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             } catch (RepositoryException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug(
-                        "Cannot convert Lucene fieldName '" + fieldName + "' to property name", e);
+                            "Cannot convert Lucene fieldName '" + fieldName + "' to property name", e);
                 }
             }
         }
@@ -492,13 +518,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     /**
      * Adds the value to the document both as faceted field which will be indexed with a keyword analyzer which does not modify the term.
-     * 
-     * @param doc
-     *            The document to which to add the field
-     * @param fieldName
-     *            The name of the field to add
-     * @param internalValue
-     *            The value for the field to add to the document.
+     *
+     * @param doc           The document to which to add the field
+     * @param fieldName     The name of the field to add
+     * @param internalValue The value for the field to add to the document.
      */
     protected void addFacetValue(Document doc, String fieldName, Object internalValue) {
         // simple String
@@ -509,7 +532,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         // create facet index on property
         int idx = fieldName.indexOf(':');
         fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
-        Field f = new Field(fieldName,true, stringValue, Field.Store.NO, Field.Index.ANALYZED,
+        Field f = new Field(fieldName, true, stringValue, Field.Store.NO, Field.Index.ANALYZED,
                 Field.TermVector.NO);
         doc.add(f);
 
@@ -518,24 +541,21 @@ public class JahiaNodeIndexer extends NodeIndexer {
     /**
      * Adds the value to the document both as faceted field which will be indexed with a keyword analyzer which does not modify the term.
      *
-     * @param doc
-     *            The document to which to add the field
-     * @param fieldName
-     *            The name of the field to add
-     * @param internalValue
-     *            The value for the field to add to the document.
+     * @param doc           The document to which to add the field
+     * @param fieldName     The name of the field to add
+     * @param internalValue The value for the field to add to the document.
      */
     protected void addHierarchicalFacetValue(Document doc, String fieldName, Object internalValue) {
         final String stringValue = (String) internalValue.toString();
         if (stringValue.length() == 0) {
             return;
         }
-        ItemId itemId = (ItemId)internalValue;
+        ItemId itemId = (ItemId) internalValue;
         int idx = fieldName.indexOf(':');
         fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
 
         final List<String> hierarchyPaths = new ArrayList<String>();
-        final List<String> parentIds = new ArrayList<String>(); 
+        final List<String> parentIds = new ArrayList<String>();
         try {
             NodeState node = (NodeState) stateProvider.getItemState(itemId);
             Name typeName = node.getNodeTypeName();
@@ -581,11 +601,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     /**
      * Creates a fulltext field for the string <code>value</code>.
-     * 
-     * @param value
-     *            the string value.
-     * @param store
-     *            if the value of the field should be stored.
+     *
+     * @param value the string value.
+     * @param store if the value of the field should be stored.
      * @return a lucene field.
      */
     protected Field createFulltextField(String fieldName, String value, boolean store) {
@@ -613,12 +631,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
     protected void addCalendarValue(Document doc, String fieldName, Calendar internalValue) {
         super.addCalendarValue(doc, fieldName, internalValue);
         Calendar value = (Calendar) internalValue;
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             addFacetValue(doc, fieldName, dateType.toInternal(new Date(value.getTimeInMillis())));
         }
-    }    
-    
+    }
+
     @Override
     protected void addBinaryValue(Document doc, String fieldName, InternalValue internalValue) {
         // we disable the binary indexing by Jackrabbit and only index our j:extractedText property
@@ -641,57 +659,57 @@ public class JahiaNodeIndexer extends NodeIndexer {
             } else {
                 logger.warn("Error indexing content of the j:extractedText property. Cause: " + e.getMessage());
             }
-        }        
+        }
     }
-    
+
     @Override
     protected void addBooleanValue(Document doc, String fieldName, Object internalValue) {
         super.addBooleanValue(doc, fieldName, internalValue);
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             addFacetValue(doc, fieldName, internalValue.toString());
-        }        
+        }
     }
 
     @Override
     protected void addDoubleValue(Document doc, String fieldName, double internalValue) {
         super.addDoubleValue(doc, fieldName, internalValue);
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             addFacetValue(doc, fieldName, DoubleField.doubleToString(internalValue));
-        }                        
+        }
     }
 
     @Override
     protected void addLongValue(Document doc, String fieldName, long internalValue) {
         super.addLongValue(doc, fieldName, internalValue);
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             addFacetValue(doc, fieldName, LongField.longToString(internalValue));
-        }                                
+        }
     }
 
     @Override
     protected void addReferenceValue(Document doc, String fieldName, NodeId internalValue,
-            boolean weak) {
+                                     boolean weak) {
         super.addReferenceValue(doc, fieldName, internalValue, weak);
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
             if (definition.isHierarchical()) {
                 addHierarchicalFacetValue(doc, fieldName, internalValue);
             } else {
                 addFacetValue(doc, fieldName, internalValue);
             }
-        }                                
+        }
     }
 
     @Override
     protected void addNameValue(Document doc, String fieldName, Name internalValue) {
         super.addNameValue(doc, fieldName, internalValue);
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(nodeType, node, getPropertyNameFromFieldname(fieldName));
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, ((Name)internalValue).getNamespaceURI());
-        }                                        
+            addFacetValue(doc, fieldName, ((Name) internalValue).getNamespaceURI());
+        }
     }
 
     @Override
@@ -753,7 +771,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                         throwRepositoryException(e);
                     }
                 }
-                
+
                 if (isIndexed(J_VISIBILITY) && parentNode.hasChildNodeEntry(J_VISIBILITY)) {
                     doc.add(new Field(CHECK_VISIBILITY, false, "1",
                             Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
@@ -780,7 +798,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             PropertyId id = new PropertyId(node.getNodeId(), J_PUBLISHED);
             try {
                 PropertyState propState = (PropertyState) stateProvider.getItemState(id);
-                
+
                 doc.add(new Field(PUBLISHED, false, propState.getValues()[0].getString(),
                         Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                         Field.TermVector.NO));
@@ -802,7 +820,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             while (currentNode != null) {
                 ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
                 if (aclChildNode != null) {
-                    acls.add(0,currentNode.getId().toString());
+                    acls.add(0, currentNode.getId().toString());
                     PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
                     try {
                         PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
@@ -830,21 +848,40 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
                 Field.TermVector.NO));
     }
-    
+
     /**
      * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
      * This can have a negative effect on performance, when setting rights on a node,
      * which has a large subtree using the same rights, as all these nodes will need
      * to be reindexed. On the other side the advantage is that the queries are faster,
      * as the user rights are resolved faster.
-     * 
+     *
      * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
-     */    
+     */
     public boolean isAddAclUuidInIndex() {
         return addAclUuidInIndex;
-    }    
-    
+    }
+
     public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
         this.addAclUuidInIndex = addAclUuidInIndex;
-    }    
+    }
+
+    /*public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,
+                                                     NamespaceMappings nsMappings, ScheduledExecutorService executor,
+                                                     Parser parser, QueryHandlerContext context) {
+        final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
+        final NamespaceRegistry namespaceRegistry = context.getNamespaceRegistry();
+        final ExtendedNodeType nodeType;
+        try {
+            nodeType = getNodeType(node, typeRegistry, namespaceRegistry);
+            if(Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
+                return new JahiaTranslationNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry, nodeType);
+            }
+            else {
+                return new JahiaNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry, nodeType);
+            }
+        } catch (RepositoryException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
 }

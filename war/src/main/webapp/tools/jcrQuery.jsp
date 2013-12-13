@@ -171,32 +171,6 @@
 </c:if>
 <c:if test="${param.action == 'deleteAll' && not empty param.query}">
     <%
-<<<<<<< .working
-        try {
-            Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
-            long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
-            if (limit >= 0) {
-                q.setLimit(limit);
-            }
-            q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
-            QueryResult result = q.execute();
-            int count = 0;
-            for (NodeIterator it = result.getNodes(); it.hasNext(); ) {
-                Node target = it.nextNode();
-                try {
-                    jcrSession.checkout(target.getParent());
-                    target.remove();
-                    count++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            jcrSession.save();
-            pageContext.setAttribute("deletedCount", Integer.valueOf(count));
-        } catch (ItemNotFoundException e) {
-            // not found
-        }
-=======
        try {
            Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
            q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
@@ -225,7 +199,6 @@
        } catch (ItemNotFoundException e) {
            // not found
        }
->>>>>>> .merge-right.r48121
     %>
     <p style="color: blue">${deletedCount} nodes were deleted</p>
 </c:if>

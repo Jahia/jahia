@@ -54,7 +54,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Fieldable;
 import org.apache.solr.schema.DateField;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
@@ -83,7 +82,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     /**
      * The logger instance for this class.
      */
-    private static final Logger logger = LoggerFactory.getLogger(JahiaNodeIndexer.class);
+    protected static final Logger logger = LoggerFactory.getLogger(JahiaNodeIndexer.class);
 
     /**
      * Prefix for all field names that are facet indexed by property name.
@@ -138,57 +137,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
     private static Name siteFolderTypeName = null;
 
     private static final DateField dateType = new DateField();
-    private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
-    private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
     private boolean addAclUuidInIndex = true;
 
     private transient String site;
-    private transient String language;
+
     private transient Map<String, ExtendedPropertyDefinition> fieldNameToPropDef = new HashMap<String, ExtendedPropertyDefinition>(17);
-
-    /**
-     * Creates a new node indexer.
-     *
-     * @param node          the node state to index.
-     * @param stateProvider the persistent item state manager to retrieve properties.
-     * @param mappings      internal namespace mappings.
-     * @param executor
-     * @param parser
-     * @param context       the query handler context (for getting other services and registries)
-     */
-    public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
-                            NamespaceMappings mappings, Executor executor, Parser parser,
-                            QueryHandlerContext context) {
-        super(node, stateProvider, mappings, executor, parser);
-        this.nodeTypeRegistry = NodeTypeRegistry.getInstance();
-        this.namespaceRegistry = context.getNamespaceRegistry();
-        this.hierarchyMgr = context.getHierarchyManager();
-        try {
-            Name nodeTypeName = node.getNodeTypeName();
-            nodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry
-                    .getPrefix(nodeTypeName.getNamespaceURI())
-                    + ":" + nodeTypeName.getLocalName()) : null;
-            if (siteTypeName == null && nodeTypeRegistry != null) {
-                ExtendedNodeType nodeType = nodeTypeRegistry
-                        .getNodeType(Constants.JAHIANT_VIRTUALSITE);
-                if (nodeType != null) {
-                    siteTypeName = NameFactoryImpl.getInstance().create(
-                            nodeType.getNameObject().getUri(), nodeType.getLocalName());
-                    nodeType = nodeTypeRegistry.getNodeType(Constants.JAHIANT_VIRTUALSITES_FOLDER);
-                    siteFolderTypeName = NameFactoryImpl.getInstance().create(
-                            nodeType.getNameObject().getUri(), nodeType.getLocalName());
-                }
-            }
-        } catch (NoSuchNodeTypeException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(e.getMessage(), e);
-            }
-        } catch (RepositoryException e) {
-            logger.warn(e.getMessage(), e);
-        }
-    }
-
 
     protected JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
                                NamespaceMappings mappings, Executor executor, Parser parser, QueryHandlerContext context,
@@ -296,85 +250,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return false;
     }
 
-    protected String resolveLanguage() {
-        if (language == null) {
-            if (nodeType != null && Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-                try {
-                    for (Name propName : node.getPropertyNames()) {
-                        if ("language".equals(propName.getLocalName())
-                                && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
-                            PropertyId id = new PropertyId(node.getNodeId(), propName);
-                            PropertyState propState = (PropertyState) stateProvider.getItemState(id);
-                            language = propState.getValues()[0].getString();
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Error finding language property", e);
-                    }
-                }
-            }
-        }
-        return language;
-    }
-
-    protected ExtendedPropertyDefinition findDefinitionForPropertyInNode(ExtendedNodeType nodeType,
-                                                                         NodeState givenNode, String fieldName) throws RepositoryException {
-        ExtendedPropertyDefinition propDef = null;
-        if (givenNode == null && nodeType != null) {
-            propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
-            if (propDef == null) {
-                for (Name mixinTypeName : node.getMixinTypeNames()) {
-                    ExtendedNodeType mixinType = nodeTypeRegistry != null ? nodeTypeRegistry
-                            .getNodeType(namespaceRegistry.getPrefix(mixinTypeName
-                                    .getNamespaceURI())
-                                    + ":" + mixinTypeName.getLocalName()) : null;
-                    propDef = mixinType.getPropertyDefinitionsAsMap().get(fieldName);
-                    if (propDef != null) {
-                        break;
-                    }
-                }
-            }
-        } else if (givenNode != null) {
-            nodeType = nodeTypeRegistry != null ? nodeTypeRegistry
-                    .getNodeType(namespaceRegistry.getPrefix(givenNode.getNodeTypeName()
-                            .getNamespaceURI())
-                            + ":" + givenNode.getNodeTypeName().getLocalName()) : null;
-            propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
-            if (propDef == null) {
-                for (Name mixinTypeName : givenNode.getMixinTypeNames()) {
-                    ExtendedNodeType mixinType = nodeTypeRegistry != null ? nodeTypeRegistry
-                            .getNodeType(namespaceRegistry.getPrefix(mixinTypeName
-                                    .getNamespaceURI())
-                                    + ":" + mixinTypeName.getLocalName()) : null;
-                    propDef = mixinType.getPropertyDefinitionsAsMap().get(fieldName);
-                    if (propDef != null) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return propDef;
-    }
-
     protected ExtendedPropertyDefinition getExtendedPropertyDefinition(String fieldName) {
         ExtendedPropertyDefinition propDef = fieldNameToPropDef.get(fieldName);
         if (propDef == null && nodeType != null) {
             try {
-                String language = resolveLanguage();
-                if (language != null) {
-                    propDef = findDefinitionForPropertyInNode(nodeType,
-                            (NodeState) stateProvider.getItemState(node.getParentId()),
-                            fieldName.endsWith("_" + language) ? fieldName.substring(0, fieldName
-                                    .lastIndexOf("_" + language)) : fieldName);
-                    if (propDef == null) {
-                        propDef = findDefinitionForPropertyInNode(nodeType, null, fieldName);
-                    }
-                } else {
-                    propDef = findDefinitionForPropertyInNode(nodeType, null, fieldName);
-                }
+                propDef = getPropertyDefinition(fieldName);
             } catch (Exception e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Error finding language property", e);
@@ -387,6 +267,26 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         return propDef;
     }
+
+    protected ExtendedPropertyDefinition getPropertyDefinition(String fieldName) throws RepositoryException, ItemStateException {
+        return getPropertyDefinitionFor(fieldName, nodeType, node);
+    }
+
+    protected ExtendedPropertyDefinition getPropertyDefinitionFor(String fieldName, ExtendedNodeType nodeType, NodeState node) throws RepositoryException {
+        ExtendedPropertyDefinition propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
+        if (propDef == null) {
+            for (Name mixinTypeName : node.getMixinTypeNames()) {
+                ExtendedNodeType mixinType = nodeTypeRegistry.getNodeType(namespaceRegistry.getPrefix(mixinTypeName.getNamespaceURI())
+                        + ":" + mixinTypeName.getLocalName());
+                propDef = mixinType.getPropertyDefinitionsAsMap().get(fieldName);
+                if (propDef != null) {
+                    break;
+                }
+            }
+        }
+        return propDef;
+    }
+
 
     /**
      * Returns the boost value for the given property name.
@@ -486,9 +386,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
             if (includeInNodeIndex && isSupportSpellchecking()) {
                 if (getIndexingConfig().shouldPropertyBeSpellchecked(propertyName)) {
                     String site = resolveSite();
-                    String language = resolveLanguage();
-                    if (site != null || language != null) {
-                        doc.add(createFulltextField(LuceneUtils.getFullTextFieldName(site, language), stringValue, false));
+                    if (site != null) {
+                        doc.add(createFulltextField(getFullTextFieldName(site), stringValue, false));
                     }
                 }
             }
@@ -496,6 +395,10 @@ public class JahiaNodeIndexer extends NodeIndexer {
         if (definition != null && definition.isFacetable()) {
             addFacetValue(doc, fieldName, internalValue);
         }
+    }
+
+    protected String getFullTextFieldName(String site) {
+        return LuceneUtils.getFullTextFieldName(site, null);
     }
 
     private String getPropertyNameFromFieldname(String fieldName) {
@@ -715,77 +618,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
     @Override
     public Document createDoc() throws RepositoryException {
         Document doc = super.createDoc();
-        if (nodeType != null && Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-            doNotUseInExcerpt.clear();
-            try {
-                NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
-
-                NodeId parentId = parentNode.getParentId();
-                if (parentId == null) {
-                    logger.warn("The node " + parentNode.getId().toString() + " is in 'free floating' state. You should run a consistency check/fix on the repository.");
-                } else {
-                    doc.add(new Field(
-                            TRANSLATED_NODE_PARENT, false, parentId.toString(),
-                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
-                }
-
-                String language = resolveLanguage();
-                if (language == null) {
-                    logger.warn("The node " + node.getId().toString() + " which is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property !");
-                } else {
-                    doc.add(new Field(
-                            TRANSLATION_LANGUAGE, language,
-                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
-                }
-
-                // copy properties from parent into translation node, including node types
-                Set<Name> parentNodePropertyNames = new HashSet<Name>(parentNode.getPropertyNames());
-                final Set<Name> localNames = new HashSet<Name>(node.getPropertyNames());
-                localNames.remove(PRIMARY_TYPE);
-                localNames.remove(MIXIN_TYPES);
-                parentNodePropertyNames.removeAll(localNames);
-                parentNodePropertyNames.removeAll(getIndexingConfig().getExcludesFromI18NCopy());
-
-                for (Name propName : parentNodePropertyNames) {
-                    try {
-                        PropertyId id = new PropertyId(parentNode.getNodeId(), propName);
-                        PropertyState propState = (PropertyState) stateProvider.getItemState(id);
-
-                        // add each property to the _PROPERTIES_SET for searching
-                        // beginning with V2
-                        if (indexFormatVersion.getVersion() >= IndexFormatVersion.V2.getVersion()) {
-                            addPropertyName(doc, propState.getName());
-                        }
-
-                        InternalValue[] values = propState.getValues();
-                        for (InternalValue value : values) {
-                            addValue(doc, value, propState.getName());
-                        }
-                        if (values.length > 1) {
-                            // real multi-valued
-                            addMVPName(doc, propState.getName());
-                        }
-                    } catch (NoSuchItemStateException e) {
-                        throwRepositoryException(e);
-                    } catch (ItemStateException e) {
-                        throwRepositoryException(e);
-                    }
-                }
-
-                if (isIndexed(J_VISIBILITY) && parentNode.hasChildNodeEntry(J_VISIBILITY)) {
-                    doc.add(new Field(CHECK_VISIBILITY, false, "1",
-                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
-                            Field.TermVector.NO));
-                }
-
-                // now add fields that are not used in excerpt (must go at the end)
-                for (Fieldable field : doNotUseInExcerpt) {
-                    doc.add(field);
-                }
-            } catch (ItemStateException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
         if (isAddAclUuidInIndex() && isIndexed(J_ACL)) {
             addAclUuid(doc);
         }
@@ -809,7 +641,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return doc;
     }
 
-    private JahiaIndexingConfigurationImpl getIndexingConfig() {
+    protected JahiaIndexingConfigurationImpl getIndexingConfig() {
         return (JahiaIndexingConfigurationImpl) indexingConfig;
     }
 
@@ -866,8 +698,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
         this.addAclUuidInIndex = addAclUuidInIndex;
     }
 
-    /*public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,
-                                                     NamespaceMappings nsMappings, ScheduledExecutorService executor,
+    public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,
+                                                     NamespaceMappings nsMappings, Executor executor,
                                                      Parser parser, QueryHandlerContext context) {
         final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
         final NamespaceRegistry namespaceRegistry = context.getNamespaceRegistry();
@@ -883,5 +715,5 @@ public class JahiaNodeIndexer extends NodeIndexer {
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }
-    }*/
+    }
 }

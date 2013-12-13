@@ -63,7 +63,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -283,9 +282,8 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     protected Document createDocument(final NodeState node, NamespaceMappings nsMappings,
                                       IndexFormatVersion indexFormatVersion) throws RepositoryException {
-        JahiaNodeIndexer indexer = new JahiaNodeIndexer(node, getContext().getItemStateManager(),
-                nsMappings, getContext().getExecutor(), getParser(),
-                getContext());
+        JahiaNodeIndexer indexer = JahiaNodeIndexer.createNodeIndexer(node, getContext().getItemStateManager(),
+                nsMappings, getContext().getExecutor(), getParser(), getContext());
         indexer.setSupportHighlighting(getSupportHighlighting());
         indexer.setIndexingConfiguration(getIndexingConfig());
         indexer.setIndexFormatVersion(indexFormatVersion);

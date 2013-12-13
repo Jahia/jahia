@@ -171,6 +171,7 @@
 </c:if>
 <c:if test="${param.action == 'deleteAll' && not empty param.query}">
     <%
+<<<<<<< .working
         try {
             Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
             long limit = Long.valueOf((String) pageContext.getAttribute("limit"));
@@ -195,6 +196,36 @@
         } catch (ItemNotFoundException e) {
             // not found
         }
+=======
+       try {
+           Query q = jcrSession.getWorkspace().getQueryManager().createQuery(request.getParameter("query"), (String) pageContext.getAttribute("lang"));
+           q.setLimit(Long.valueOf((String) pageContext.getAttribute("limit")));
+           q.setOffset(Long.valueOf((String) pageContext.getAttribute("offset")));
+           QueryResult result = q.execute();
+           int count = 0;
+           int maxBatch = 1000;
+           for (NodeIterator it = result.getNodes(); it.hasNext();) {
+               Node target = it.nextNode();
+               try {
+                   jcrSession.checkout(target.getParent());
+                   target.remove();
+                  
+                   count++;
+                   if (count % maxBatch == 0 && it.hasNext()) {
+                       jcrSession.save();
+                       System.out.println(count + " nodes deleted. Continuing deletion...");
+                   }                   
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+           jcrSession.save();
+           System.out.println(count + " nodes deleted. Finished deletion.");           
+           pageContext.setAttribute("deletedCount", Integer.valueOf(count));
+       } catch (ItemNotFoundException e) {
+           // not found
+       }
+>>>>>>> .merge-right.r48121
     %>
     <p style="color: blue">${deletedCount} nodes were deleted</p>
 </c:if>

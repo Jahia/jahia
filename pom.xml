@@ -605,7 +605,6 @@
                     <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production</releaseProfiles>
                 </configuration>
             </plugin>
-<<<<<<< .working
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
@@ -616,9 +615,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-=======
-            
+            </plugin>     
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -630,7 +627,6 @@
                     <stagingProfileId>64277f72646358</stagingProfileId>
                 </configuration>
             </plugin>
->>>>>>> .merge-right.r48125
         </plugins>
     </build>
     <reporting>

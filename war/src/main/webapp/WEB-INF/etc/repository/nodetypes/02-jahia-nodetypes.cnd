@@ -533,13 +533,6 @@
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (jnt:mountPoint)
 
-// Mixin for extension nodes.
-
-[jnt:externalProviderExtension] > nt:unstructured, jmix:lockable
- - j:isExternalProviderRoot (boolean)
- - j:externalNodeIdentifier (string)
- - j:extendedType (string)
-
 //---------------------------------------------------------
 // Definition Content
 //---------------------------------------------------------

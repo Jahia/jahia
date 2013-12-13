@@ -48,26 +48,26 @@ import java.util.Locale;
  */
 public class NodeConstraintViolationException extends ConstraintViolationException {
     private static final long serialVersionUID = -410596679515088779L;
-    private JCRNodeWrapper node;
+    private String path;
     private String constraintMessage;
     private Locale locale;
 
     public NodeConstraintViolationException(JCRNodeWrapper node, String constraintMessage, Locale locale) {
         super(constraintMessage);
-        this.node = node;
+        this.path = node.getPath();
         this.constraintMessage = constraintMessage;
         this.locale = locale;
     }
 
     public NodeConstraintViolationException(String message, JCRNodeWrapper node, String constraintMessage, Locale locale) {
         super(message);
-        this.node = node;
+        this.path = node.getPath();
         this.constraintMessage = constraintMessage;
         this.locale = locale;
     }
 
-    public JCRNodeWrapper getNode() {
-        return node;
+    public String getPath() {
+        return path;
     }
 
     public String getConstraintMessage() {

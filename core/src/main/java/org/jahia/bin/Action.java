@@ -215,11 +215,12 @@ public abstract class Action {
             if (locale != null) {
                 m.put("locale", locale.toString());
             }
-            m.put("uuid",((NodeConstraintViolationException)e).getNode().getIdentifier());
+            m.put("path",((NodeConstraintViolationException)e).getPath());
         }
         if (e instanceof PropertyConstraintViolationException) {
-            m.put("propertyName",((PropertyConstraintViolationException)e).getDefinition().getName());
-            m.put("propertyLabel",((PropertyConstraintViolationException)e).getDefinition().getLabel(LocaleContextHolder.getLocale(), ((NodeConstraintViolationException)e).getNode().getPrimaryNodeType()));
+            ExtendedPropertyDefinition definition = ((PropertyConstraintViolationException) e).getDefinition();
+            m.put("propertyName", definition.getName());
+            m.put("propertyLabel", definition.getLabel(LocaleContextHolder.getLocale(), definition.getDeclaringNodeType()));
         }
         return new JSONObject(m);
     }

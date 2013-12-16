@@ -71,12 +71,8 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
         List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
-
-        try {
-            userKey = StringUtils.defaultIfEmpty(((JBPM6WorkflowProvider) workflowProvider)
-                    .getWorkflowCurrentUser(String.valueOf(workItem.getProcessInstanceId())), null);
-        } catch (Exception e) {
-            logger.error("Cannot get current workflow user", e);
+        if (workItem.getParameter("currentUser") != null) {
+            userKey = (String) workItem.getParameter("currentUser");
         }
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);

@@ -82,38 +82,63 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
     private static final long serialVersionUID = 4434614988996316632L;
 
     @Override
+    public void afterTaskReleasedEvent(Task ti) {
+
+    }
+
+    @Override
+    public void afterTaskResumedEvent(Task ti) {
+
+    }
+
+    @Override
+    public void afterTaskSuspendedEvent(Task ti) {
+
+    }
+
+    @Override
+    public void afterTaskForwardedEvent(Task ti) {
+
+    }
+
+    @Override
+    public void afterTaskDelegatedEvent(Task ti) {
+
+    }
+
+    @Override
     public void afterTaskActivatedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void afterTaskClaimedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void afterTaskSkippedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void afterTaskStartedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void afterTaskStoppedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void afterTaskCompletedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void afterTaskFailedEvent(Task ti) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override

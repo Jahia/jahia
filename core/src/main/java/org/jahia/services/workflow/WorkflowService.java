@@ -568,7 +568,7 @@ public class WorkflowService implements BeanPostProcessor {
         newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
         newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
         if (comments != null && comments.size() > 0) {
-            addCommentsToVariables(args, comments, session.getUser().getUserKey());
+            addCommentsToVariables(newArgs, comments, session.getUser().getUserKey());
         }
         final String processId = providerImpl.startProcess(processKey, newArgs);
         if (logger.isDebugEnabled()) {

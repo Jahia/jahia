@@ -31,7 +31,9 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
 
         JahiaLocalHTWorkItemHandler.PeopleAssignmentContext peopleAssignmentContext = (JahiaLocalHTWorkItemHandler.PeopleAssignmentContext) context;
         Task task = peopleAssignmentContext.getTask();
-        WorkflowDefinition def = provider.getWorkflowDefinitionById(task.getTaskData().getProcessId(), null);
+        org.kie.api.definition.process.Process process = peopleAssignmentContext.getKieSession().getKieBase().getProcess(task.getTaskData().getProcessId());
+
+        WorkflowDefinition def = new WorkflowDefinition(process.getName(), process.getName(), provider.getKey());
         try {
             String name = task.getNames().get(0).getText();
 

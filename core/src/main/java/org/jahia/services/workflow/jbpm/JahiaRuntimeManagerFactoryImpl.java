@@ -16,7 +16,8 @@ public class JahiaRuntimeManagerFactoryImpl extends RuntimeManagerFactoryImpl {
     }
 
     @Override
-    protected TaskServiceFactory getTaskServiceFactory(RuntimeEnvironment environment) {
+    protected TaskServiceFactory getTaskServiceFactory(org.kie.api.runtime.manager.RuntimeEnvironment environment) {
         return new JahiaLocalTaskServiceFactory(environment);
     }
+
 }

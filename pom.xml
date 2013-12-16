@@ -39,7 +39,7 @@
         <springwebflow-version>2.3.2.RELEASE</springwebflow-version>
         <jackrabbit.version>2.4.4-patch1-SNAPSHOT</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
-        <jbpm.version>6.0.0.CR2</jbpm.version>
+        <jbpm.version>6.0.0.Final</jbpm.version>
         <drools.version>${jbpm.version}</drools.version>
         <hibernate.version>4.2.7.SP1</hibernate.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>

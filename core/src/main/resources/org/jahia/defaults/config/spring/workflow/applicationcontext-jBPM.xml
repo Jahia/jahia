@@ -40,6 +40,13 @@
         <property name="entityManagerFactory" ref="jbpmEmf"/>
     </bean>
 
+    <bean id="jbpmLocalTransactionManager" class="org.jbpm.shared.services.impl.JbpmLocalTransactionManager"/>
+
+    <bean id="jbpmServicesPersistenceManager" class="org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl">
+        <property name="emf" ref="jbpmEmf"/>
+        <property name="transactionManager" ref="jbpmLocalTransactionManager"/>
+    </bean>
+
     <bean id="peopleAssignmentPipeline" class="org.jahia.pipelines.impl.GenericPipeline" init-method="initialize">
         <property name="name" value="peopleAssignmentPipeline"/>
         <property name="valves">
@@ -54,8 +61,9 @@
         <property name="key" value="jBPM"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="platformTransactionManager" ref="jbpmTxManager"/>
-        <property name="emf" ref="jbpmEmf"/>
-        <property name="em" ref="jbpmEm"/>
+        <property name="entityManagerFactory" ref="jbpmEmf"/>
+        <property name="sharedEntityManager" ref="jbpmEm"/>
+        <property name="jbpmServicesPersistenceManager" ref="jbpmServicesPersistenceManager"/>
         <property name="userManager" ref="JahiaUserManagerService"/>
         <property name="groupManager" ref="JahiaGroupManagerService"/>
         <property name="peopleAssignmentPipeline" ref="peopleAssignmentPipeline"/>

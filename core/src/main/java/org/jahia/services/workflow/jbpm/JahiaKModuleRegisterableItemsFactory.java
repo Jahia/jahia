@@ -2,16 +2,22 @@ package org.jahia.services.workflow.jbpm;
 
 import org.jahia.pipelines.Pipeline;
 import org.jahia.services.workflow.jbpm.custom.JahiaLocalHTWorkItemHandler;
+import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.task.api.EventService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Custom version of the KModuleRegisterableItemsFactory that enables us to register our own
@@ -64,5 +70,24 @@ public class JahiaKModuleRegisterableItemsFactory extends KModuleRegisterableIte
             });
         }
         return humanTaskHandler;
+    }
+
+    @Override
+    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+        List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
+        defaultListeners.addAll(super.getProcessEventListeners(runtime));
+        for (ProcessEventListener defaultListener : defaultListeners) {
+            if (defaultListener instanceof AbstractAuditLogger) {
+                defaultListeners.remove(defaultListener);
+                break;
+            }
+        }
+        // register JPAWorkingMemoryDBLogger
+        runtime.getKieSession().getEnvironment().set("IS_JTA_TRANSACTION", false);
+        AbstractAuditLogger logger = new JPAWorkingMemoryDbLogger(runtime.getKieSession());
+        logger.setBuilder(getAuditBuilder());
+        defaultListeners.add(logger);
+        // add any custom listeners
+        return defaultListeners;
     }
 }

@@ -5,6 +5,14 @@
 <template:addResources type="javascript" resources="jquery.js, codemirror/lib/codemirror.js,codemirror/mode/xml/xml.js,codemirror/mode/htmlmixed/htmlmixed.js,codemirror/mode/javascript/javascript.js,codemirror/mode/clike/clike.js,codemirror/mode/css/css.js,codemirror/mode/htmlembedded/htmlembedded.js,codemirror.mode.jsp.js"/>
 <template:addResources type="css" resources="01web.css,codemirror/codemirror.css"/>
 <c:url var="postURL" value="${url.base}${currentNode.path}"/>
+<c:choose>
+    <c:when test="${currentNode.locked}">
+        <span class="text"><fmt:message key="label.edit.engine.heading.locked.by"></span>
+            <fmt:param value="${currentNode.lock.lockOwner}"/>
+        </fmt:message>
+    </c:when>
+</c:choose>
+
 <template:tokenizedForm disableXSSFiltering="true" allowsMultipleSubmits="true">
     <form name="sourceForm" id="sourceForm" method="POST" action="${postURL}">
 <textarea id="sourceCode" name="sourceCode" editable="false"><c:out value="${currentNode.properties.sourceCode.string}" escapeXml="true"/></textarea>
@@ -33,10 +41,11 @@
 <button name="save" id="saveButton" onclick="saveSourceCode();" disabled><fmt:message key="label.save"/></button>
 
 <script type="text/javascript">
-    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${mode}",lineNumbers:true, matchBrackets:true});
+    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${mode}",lineNumbers:true, matchBrackets:true, readOnly:${currentNode.locked}});
     myCodeMirror.setSize("100%","100%");
     myCodeMirror.on("change", function() {
         $('#saveButton').prop('disabled', false);
+        $.get("<c:url value="${url.base}${currentNode.path}.lock.do?type=editSource"/>");
     });
 
 
@@ -50,6 +59,7 @@
             data: data,
             success: function() {
                 $('#saveButton').prop('disabled', true);
+                $.get("<c:url value="${url.base}${currentNode.path}.unlock.do?type=editSource"/>");
             },
             dataType: 'json'
         });
@@ -57,7 +67,9 @@
     $(window).blur(function() {
         saveSourceCode();
     });
-
+    $(window).onUnload(function() {
+        $.get("<c:url value="${url.base}${currentNode.path}.unLock.do?type=editSource"/>");
+    });
     $(window).bind('keydown', function(event) {
         if (event.ctrlKey || event.metaKey) {
             switch (String.fromCharCode(event.which).toLowerCase()) {

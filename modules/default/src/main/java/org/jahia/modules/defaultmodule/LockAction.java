@@ -40,6 +40,7 @@
 
 package org.jahia.modules.defaultmodule;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -49,6 +50,7 @@ import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -68,6 +70,17 @@ public class LockAction extends Action {
         String type = req.getParameter("type");
         Map<String,String> res = new HashMap<String,String>();
         try {
+            // avoid to lock multiple times the same lock
+            if (resource.getNode().hasProperty("j:locktoken")) {
+                for (Value v : resource.getNode().getProperty("j:locktoken").getValues()) {
+                    String owner = StringUtils.substringBefore(v.getString(), ":");
+                    String currentType = StringUtils.substringAfter(v.getString(), ":");
+                    if (StringUtils.equals(owner,session.getUserID()) && StringUtils.equals(currentType,type)) {
+                        // lock already set on this node
+                        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(res));
+                    }
+                }
+            }
             resource.getNode().lockAndStoreToken(type);
         } catch (RepositoryException e) {
             res.put("error", e.getMessage());

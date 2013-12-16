@@ -48,6 +48,7 @@ public class CodeMirrorField extends TextArea {
 
     private Object codeMirror;
     private String mode = "jsp";
+    private boolean readOnly = false;
 
     public void setMode(String mode) {
         this.mode = mode;
@@ -58,7 +59,7 @@ public class CodeMirrorField extends TextArea {
         super.onRender(target, index);
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
-                codeMirror = initEditor(getInputEl().dom, mode);
+                codeMirror = initEditor(getInputEl().dom, mode, readOnly);
                 updateSize();
             }
         });
@@ -70,8 +71,8 @@ public class CodeMirrorField extends TextArea {
         updateSize();
     }
 
-    private native Object initEditor(Element textArea, String mode)/*-{
-        var myCodeMirror = $wnd.CodeMirror.fromTextArea(textArea, {mode:mode, lineNumbers:true, matchBrackets:true});
+    private native Object initEditor(Element textArea, String mode, boolean readOnly)/*-{
+        var myCodeMirror = $wnd.CodeMirror.fromTextArea(textArea, {mode:mode, lineNumbers:true, matchBrackets:true, readOnly:readOnly});
         return myCodeMirror;
     }-*/;
 
@@ -81,6 +82,16 @@ public class CodeMirrorField extends TextArea {
             return super.getRawValue();
         }
         return getCodeMirrorValue();
+    }
+
+    @Override
+    public boolean isDirty() {
+        return isCodeMirrorDirty();
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     private native String getCodeMirrorValue()/*-{
@@ -117,4 +128,10 @@ public class CodeMirrorField extends TextArea {
             for (var i = 0; i < last; ++i) myCodeMirror.indentLine(i);
         });
     }-*/;
+
+    private native boolean isCodeMirrorDirty()/*-{
+        var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
+        return myCodeMirror.isClean();
+    }-*/;
+
 }

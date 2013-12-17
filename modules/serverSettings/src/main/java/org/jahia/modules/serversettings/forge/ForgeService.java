@@ -37,7 +37,7 @@ public class ForgeService {
 
     private HttpClientService httpClientService;
     private Set<Forge> forges = new HashSet<Forge>();
-    private Set<Module> modules = new TreeSet<Module>();
+    private List<Module> modules = new ArrayList<Module>();
 
     public ForgeService() {
         loadForges();
@@ -47,7 +47,7 @@ public class ForgeService {
         return forges;
     }
 
-    public Set<Module> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 
@@ -154,7 +154,7 @@ public class ForgeService {
     }
 
 
-    public Set<Module> loadModules() {
+    public List<Module> loadModules() {
         modules.clear();
         for (Forge forge : forges) {
             String url = forge.getUrl() + "/contents/forge-modules-repository.forgeModuleList.json";
@@ -172,7 +172,7 @@ public class ForgeService {
 
                     final JSONObject moduleObject = moduleList.getJSONObject(i);
                     for (Module m : modules) {
-                        if (StringUtils.equals(m.getId(), moduleObject.getString("name"))) {
+                        if (StringUtils.equals(m.getId(), moduleObject.getString("name")) && StringUtils.equals(m.getGroupId(), moduleObject.getString("groupId"))) {
                             add = false;
                             break;
                         }
@@ -214,6 +214,7 @@ public class ForgeService {
                 logger.error("unable to parse JSON return string for " + url);
             }
         }
+        Collections.sort(modules);
         return modules;
     }
 

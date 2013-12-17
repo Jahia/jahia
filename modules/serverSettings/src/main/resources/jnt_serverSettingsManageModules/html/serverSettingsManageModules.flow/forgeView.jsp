@@ -74,13 +74,17 @@
 
             <c:choose>
 
+            <c:when test="${!module.installable}">
+                <fmt:message key="serverSettings.manageModules.module.canNotInstall" />
+            </c:when>
+
             <c:when test="${not empty allModuleVersions[module.id] and functions:contains(allModuleVersions[module.id],module.version)}">
-                Already installed
+                <fmt:message key="serverSettings.manageModules.module.alreadyInstalled" />
             </c:when>
             <%--<c:when test="${not empty allModuleVersions[module.id]}">--%>
                 <%--Other versions installed--%>
             <%--</c:when>--%>
-            <c:when test="${module.installable}">
+            <c:otherwise>
                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                     <input type="hidden" name="forgeId" value="${module.forgeId}"/>
                     <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
@@ -89,7 +93,7 @@
                         &nbsp;<fmt:message key="serverSettings.manageModules.download"/>
                     </button>
                 </form>
-            </c:when>
+            </c:otherwise>
             </c:choose>
 
             </td>

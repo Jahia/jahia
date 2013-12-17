@@ -1,5 +1,7 @@
 package org.jahia.modules.serversettings.forge;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
+
 import java.io.Serializable;
 
 /**
@@ -101,7 +103,7 @@ public class Module implements Serializable, Comparable<Module> {
 
     @Override
     public int compareTo(Module o) {
-        return id.compareTo(o.id);
+        return new CompareToBuilder().append(id, o.id).append(groupId, o.groupId).toComparison();
     }
 }
 

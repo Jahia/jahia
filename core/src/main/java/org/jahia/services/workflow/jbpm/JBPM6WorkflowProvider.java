@@ -25,7 +25,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.task.model.*;
+import org.kie.api.task.model.Status;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.EventService;
@@ -49,7 +49,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     public static final List<Status> OPEN_STATUS_LIST = Arrays.asList(Status.Created, Status.InProgress, Status.Ready, Status.Reserved);
     public static final List<Status> OPEN_STATUS_LIST_NON_RESERVED = Arrays.asList(Status.Created, Status.InProgress, Status.Ready);
     public static final List<Status> RESERVED_STATUS_LIST = Arrays.asList(Status.Reserved);
-    
+
     private transient static Logger logger = LoggerFactory.getLogger(JBPM6WorkflowProvider.class);
     private transient static JBPM6WorkflowProvider instance = new JBPM6WorkflowProvider();
 
@@ -134,18 +134,22 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         this.jbpmServicesPersistenceManager = jbpmServicesPersistenceManager;
     }
 
-    public void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {
-        workItemHandlers.put(name, workItemHandler);
-        if (runtimeEngine != null) {
-            runtimeEngine.getKieSession().getWorkItemManager().registerWorkItemHandler(name,workItemHandler);
+    public synchronized void registerWorkItemHandler(String name, WorkItemHandler workItemHandler) {
+        synchronized (workflowService) {
+            workItemHandlers.put(name, workItemHandler);
+            if (runtimeEngine != null) {
+                runtimeEngine.getKieSession().getWorkItemManager().registerWorkItemHandler(name, workItemHandler);
+            }
         }
     }
 
     public WorkItemHandler unregisterWorkItemHandler(String name) {
-        if (runtimeEngine != null) {
-            runtimeEngine.getKieSession().getWorkItemManager().registerWorkItemHandler(name, null);
+        synchronized (workflowService) {
+            if (runtimeEngine != null) {
+                runtimeEngine.getKieSession().getWorkItemManager().registerWorkItemHandler(name, null);
+            }
+            return workItemHandlers.remove(name);
         }
-        return workItemHandlers.remove(name);
     }
 
     public void registerTaskLifeCycleEventListener(String name, AbstractTaskLifeCycleEventListener taskAssignmentListener) {
@@ -198,7 +202,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     }
 
     @Override
-    public String startProcess(final String processKey, final  Map<String, Object> args) {
+    public String startProcess(final String processKey, final Map<String, Object> args) {
         return executeCommand(new StartProcessCommand(processKey, args));
     }
 
@@ -323,67 +327,73 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     }
 
 
-    public synchronized void addResource(Resource kieResource) throws IOException {
-        kieFileSystem.write(kieServices.getResources().newUrlResource(kieResource.getURL()));
+    public void addResource(Resource kieResource) throws IOException {
+        synchronized (workflowService) {
+            kieFileSystem.write(kieServices.getResources().newUrlResource(kieResource.getURL()));
+        }
     }
 
-    public synchronized void removeResource(Resource kieResource) throws IOException {
-        kieFileSystem.delete(kieResource.getURL().getPath());
+    public void removeResource(Resource kieResource) throws IOException {
+        synchronized (workflowService) {
+            kieFileSystem.delete(kieResource.getURL().getPath());
+        }
     }
 
-    public synchronized void recompilePackages() {
-        long timer = System.currentTimeMillis();
-        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-        kieBuilder.buildAll();
+    public void recompilePackages() {
+        synchronized (workflowService) {
+            long timer = System.currentTimeMillis();
+            KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+            kieBuilder.buildAll();
 
-        kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+            kieContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
 
-        transactionManager = new KieSpringTransactionManager(platformTransactionManager);
+            transactionManager = new KieSpringTransactionManager(platformTransactionManager);
 
-        PersistenceContextManager persistenceContextManager = createKieSpringContextManager(transactionManager);
-        RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
-                .entityManagerFactory(emf)
-                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
-                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
-                .knowledgeBase(kieContainer.getKieBase())
-                .classLoader(kieContainer.getClassLoader())
-                .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
-                .userGroupCallback(jahiaUserGroupCallback)
-                .get();
-        if (runtimeManager != null) {
-            runtimeManager.close();
-        }
-
-        final JahiaRuntimeManagerFactoryImpl runtimeFactory = JahiaRuntimeManagerFactoryImpl.getInstance();
-        runtimeFactory.setJbpmServicesPersistenceManager(jbpmServicesPersistenceManager);
-
-        // Use singleton runtime manager - one manager/session/taskservice for all requests
-        runtimeManager = runtimeFactory.newSingletonRuntimeManager(runtimeEnvironment);
-        runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
-
-        KieSession kieSession = runtimeEngine.getKieSession();
-
-        for (Map.Entry<String, WorkItemHandler> workItemHandlerEntry : workItemHandlers.entrySet()) {
-            kieSession.getWorkItemManager().registerWorkItemHandler(workItemHandlerEntry.getKey(), workItemHandlerEntry.getValue());
-        }
-
-        for (Map.Entry<String, AbstractTaskLifeCycleEventListener> taskLifeCycleEventListenerEntry : taskLifeCycleEventListeners.entrySet()) {
-            AbstractTaskLifeCycleEventListener taskLifeCycleEventListener = taskLifeCycleEventListenerEntry.getValue();
-            taskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
-            taskLifeCycleEventListener.setObservationManager(observationManager);
-            taskLifeCycleEventListener.setTaskService(runtimeEngine.getTaskService());
-            if (runtimeEngine.getTaskService() instanceof EventService) {
-                ((EventService) runtimeEngine.getTaskService()).registerTaskLifecycleEventListener(taskLifeCycleEventListener);
+            PersistenceContextManager persistenceContextManager = createKieSpringContextManager(transactionManager);
+            RuntimeEnvironment runtimeEnvironment = RuntimeEnvironmentBuilder.getDefault()
+                    .entityManagerFactory(emf)
+                    .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, transactionManager)
+                    .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, persistenceContextManager)
+                    .knowledgeBase(kieContainer.getKieBase())
+                    .classLoader(kieContainer.getClassLoader())
+                    .registerableItemsFactory(new JahiaKModuleRegisterableItemsFactory(kieContainer, null, peopleAssignmentPipeline))
+                    .userGroupCallback(jahiaUserGroupCallback)
+                    .get();
+            if (runtimeManager != null) {
+                runtimeManager.close();
             }
+
+            final JahiaRuntimeManagerFactoryImpl runtimeFactory = JahiaRuntimeManagerFactoryImpl.getInstance();
+            runtimeFactory.setJbpmServicesPersistenceManager(jbpmServicesPersistenceManager);
+
+            // Use singleton runtime manager - one manager/session/taskservice for all requests
+            runtimeManager = runtimeFactory.newSingletonRuntimeManager(runtimeEnvironment);
+            runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
+
+            KieSession kieSession = runtimeEngine.getKieSession();
+
+            for (Map.Entry<String, WorkItemHandler> workItemHandlerEntry : workItemHandlers.entrySet()) {
+                kieSession.getWorkItemManager().registerWorkItemHandler(workItemHandlerEntry.getKey(), workItemHandlerEntry.getValue());
+            }
+
+            for (Map.Entry<String, AbstractTaskLifeCycleEventListener> taskLifeCycleEventListenerEntry : taskLifeCycleEventListeners.entrySet()) {
+                AbstractTaskLifeCycleEventListener taskLifeCycleEventListener = taskLifeCycleEventListenerEntry.getValue();
+                taskLifeCycleEventListener.setEnvironment(kieSession.getEnvironment());
+                taskLifeCycleEventListener.setObservationManager(observationManager);
+                taskLifeCycleEventListener.setTaskService(runtimeEngine.getTaskService());
+                if (runtimeEngine.getTaskService() instanceof EventService) {
+                    ((EventService) runtimeEngine.getTaskService()).registerTaskLifecycleEventListener(taskLifeCycleEventListener);
+                }
+            }
+
+            Map<String, Object> pipelineEnvironment = new HashMap<String, Object>();
+            pipelineEnvironment.put(AbstractPeopleAssignmentValve.ENV_JBPM_WORKFLOW_PROVIDER, this);
+            peopleAssignmentPipeline.setEnvironment(pipelineEnvironment);
+
+            kieSession.addEventListener(new JBPMListener(this));
+
+            logger.info("Rebuilding KIE base took {} ms", System.currentTimeMillis() - timer);
         }
-
-        Map<String, Object> pipelineEnvironment = new HashMap<String, Object>();
-        pipelineEnvironment.put(AbstractPeopleAssignmentValve.ENV_JBPM_WORKFLOW_PROVIDER, this);
-        peopleAssignmentPipeline.setEnvironment(pipelineEnvironment);
-
-        kieSession.addEventListener(new JBPMListener(this));
-        
-        logger.info("Rebuilding KIE base took {} ms", System.currentTimeMillis() - timer);
     }
 
     private PersistenceContextManager createKieSpringContextManager(TransactionManager transactionManager) {

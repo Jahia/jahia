@@ -66,12 +66,17 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
     private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
     private String key;
+    private boolean localTransactionOwner = false;
 
     public KieSession getKieSession() {
         return ksession;
     }
 
     public TaskService getTaskService() {
+        if (taskService == null) {
+            taskService = runtimeEngine.getTaskService();
+            localTransactionOwner = persistenceManager.beginTransaction();
+        }
         return taskService;
     }
 
@@ -140,7 +145,6 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         this.context = realContext;
 
         ksession = realContext.getKieSession();
-        taskService = runtimeEngine.getTaskService();
 
         final Environment environment = realContext.getKieSession().getEnvironment();
 //            environment.set("IS_SHARED_ENTITY_MANAGER", true);
@@ -158,7 +162,6 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         em = jbpmEm;
 
         final JbpmServicesPersistenceManager persistenceManager = (JbpmServicesPersistenceManager) SpringContextSingleton.getBean("jbpmServicesPersistenceManager");
-        boolean owner = persistenceManager.beginTransaction();
 
         boolean success = false;
         try {
@@ -166,18 +169,14 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
             success = true;
             return r;
         } finally {
-            if (success) {
-                persistenceManager.endTransaction(owner);
-            } else {
-                persistenceManager.rollBackTransaction(owner);
+            if (taskService != null) {
+                if (success) {
+                    persistenceManager.endTransaction(localTransactionOwner);
+                } else {
+                    persistenceManager.rollBackTransaction(localTransactionOwner);
+                }
             }
         }
-    }
-
-    public T executeReadOnly() {
-        ksession = runtimeEngine.getKieSession();
-        taskService = runtimeEngine.getTaskService();
-        return execute();
     }
 
     public abstract T execute();

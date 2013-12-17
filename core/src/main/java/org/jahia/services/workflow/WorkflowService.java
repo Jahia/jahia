@@ -121,7 +121,7 @@ public class WorkflowService implements BeanPostProcessor {
      *
      * @param type the helper object instance for registerng a new workflow type
      */
-    public void registerWorkflowType(final WorklowTypeRegistration type) {
+    public synchronized void registerWorkflowType(final WorklowTypeRegistration type) {
         if (type != null && !workflowRegistrationByDefinition.containsKey(type.getDefinition())) {
             workflowRegistrationByDefinition.put(type.getDefinition(), type);
             if (type.getModule() != null) {
@@ -164,7 +164,7 @@ public class WorkflowService implements BeanPostProcessor {
      *
      * @param type the helper object instance for unregisterng a workflow type
      */
-    public void unregisterWorkflowType(WorklowTypeRegistration type) {
+    public synchronized void unregisterWorkflowType(WorklowTypeRegistration type) {
         if (workflowRegistrationByDefinition.get(type.getDefinition()) == type) {
             workflowRegistrationByDefinition.remove(type.getDefinition());
             modulesForWorkflowDefinition.remove(type.getDefinition());
@@ -185,7 +185,7 @@ public class WorkflowService implements BeanPostProcessor {
      *
      * @param provider a workflow provider to be registered
      */
-    public void addProvider(final WorkflowProvider provider) {
+    public synchronized void addProvider(final WorkflowProvider provider) {
         providers.put(provider.getKey(), provider);
         if (provider instanceof WorkflowObservationManagerAware) {
             ((WorkflowObservationManagerAware) provider).setWorkflowObservationManager(observationManager);
@@ -197,11 +197,11 @@ public class WorkflowService implements BeanPostProcessor {
      *
      * @param provider the provider to be removed
      */
-    public void removeProvider(final WorkflowProvider provider) {
+    public synchronized void removeProvider(final WorkflowProvider provider) {
         providers.remove(provider.getKey());
     }
 
-    private boolean initializePermission(JCRSessionWrapper session, WorkflowDefinition definition, JahiaTemplatesPackage module) throws RepositoryException {
+    private synchronized boolean initializePermission(JCRSessionWrapper session, WorkflowDefinition definition, JahiaTemplatesPackage module) throws RepositoryException {
         boolean updated = false;
         Map<String, String> map = workflowRegistrationByDefinition.get(definition.getKey()).getPermissions();
         if (map == null) {

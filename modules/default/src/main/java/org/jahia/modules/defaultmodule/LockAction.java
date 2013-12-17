@@ -71,8 +71,8 @@ public class LockAction extends Action {
         Map<String,String> res = new HashMap<String,String>();
         try {
             // avoid to lock multiple times the same lock
-            if (resource.getNode().hasProperty("j:locktoken")) {
-                for (Value v : resource.getNode().getProperty("j:locktoken").getValues()) {
+            if (resource.getNode().hasProperty("j:lockTypes")) {
+                for (Value v : resource.getNode().getProperty("j:lockTypes").getValues()) {
                     String owner = StringUtils.substringBefore(v.getString(), ":");
                     String currentType = StringUtils.substringAfter(v.getString(), ":");
                     if (StringUtils.equals(owner,session.getUserID()) && StringUtils.equals(currentType,type)) {

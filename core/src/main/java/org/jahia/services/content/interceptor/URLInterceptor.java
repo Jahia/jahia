@@ -509,6 +509,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     String ext = matcher.group(2);
                     String uuid = refs.get(new Long(id));
                     String nodePath = null;
+<<<<<<< .working
                     JCRNodeWrapper node = null;
                     if (uuid == null) {
                                 logger.warn(
@@ -521,6 +522,19 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     } catch (ItemNotFoundException infe) {
                         logger.warn("Cannot find referenced item : "+uuid);
                         return "#";
+=======
+                    JCRNodeWrapper node = null;
+                    if (!StringUtils.isEmpty(uuid)) {
+                        try {
+                            node = session.getNodeByUUID(uuid);
+                        } catch (ItemNotFoundException infe) {
+                            // Warning is logged below (also if uuid is empty)
+                        }
+>>>>>>> .merge-right.r48145
+                    }
+                    if (node == null) {
+                        logger.warn("Cannot find referenced item : " + parent.getPath() + " -> " + path + " -> " + uuid);
+                        return "#";                        
                     }
                     nodePath = node.getPath();
                     value = originalValue.replace(path, nodePath + ext);
@@ -549,7 +563,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                         logger.debug("After replacePlaceholdersByRefs : "+value);
                     }
                 } catch (Exception e) {
-                    logger.error("Exception when transforming placeholder for" + path,e);
+                    logger.error("Exception when transforming placeholder for " + parent.getPath() + " -> " + path, e);
                 }
                 return value;
             }

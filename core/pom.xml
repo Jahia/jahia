@@ -1092,6 +1092,12 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-shared-services</artifactId>
             <version>${jbpm.version}-jahia</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.seam.transaction</groupId>
+                    <artifactId>seam-transaction</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>org.jbpm</groupId>-->
@@ -1106,6 +1112,10 @@
                 <exclusion>
                     <groupId>org.jbpm</groupId>
                     <artifactId>jbpm-kie-services</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.seam.transaction</groupId>
+                    <artifactId>seam-transaction</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

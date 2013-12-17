@@ -21,7 +21,7 @@ The following example creates an index aggregate on jnt:file that includes the c
     </index-rule>
 
     <index-rule nodeType="mix:title">
-    <property boost="2.0">jcr:title</property>
+        <property boost="2.0">jcr:title</property>
         <property isRegexp="true">.*:.*</property>
     </index-rule>
 
@@ -189,12 +189,9 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>date</property>
             <property>changefreq</property>
         </analyzer>
-        <!--
-        This shouldn't be needed anymore
         <analyzer class="org.apache.lucene.analysis.standard.StandardAnalyzer">
             <property>SPELLCHECK</property>
         </analyzer>
-        -->
     </analyzers>
     <!-- Example on how to include only jcr:title in spellchecker. -->
     <!--

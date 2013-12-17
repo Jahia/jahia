@@ -509,20 +509,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     String ext = matcher.group(2);
                     String uuid = refs.get(new Long(id));
                     String nodePath = null;
-<<<<<<< .working
-                    JCRNodeWrapper node = null;
-                    if (uuid == null) {
-                                logger.warn(
-                                        "Cannot find referencing node UUID (link value: {}) for node {}",
-                                        path, parent.getPath());
-                        return "#";
-                    }
-                    try {
-                        node = session.getNodeByUUID(uuid);
-                    } catch (ItemNotFoundException infe) {
-                        logger.warn("Cannot find referenced item : "+uuid);
-                        return "#";
-=======
+
                     JCRNodeWrapper node = null;
                     if (!StringUtils.isEmpty(uuid)) {
                         try {
@@ -530,7 +517,6 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                         } catch (ItemNotFoundException infe) {
                             // Warning is logged below (also if uuid is empty)
                         }
->>>>>>> .merge-right.r48145
                     }
                     if (node == null) {
                         logger.warn("Cannot find referenced item : " + parent.getPath() + " -> " + path + " -> " + uuid);

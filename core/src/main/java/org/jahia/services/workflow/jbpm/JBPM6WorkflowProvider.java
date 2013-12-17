@@ -354,8 +354,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
             runtimeManager.close();
         }
 
+        final JahiaRuntimeManagerFactoryImpl runtimeFactory = JahiaRuntimeManagerFactoryImpl.getInstance();
+        runtimeFactory.setJbpmServicesPersistenceManager(jbpmServicesPersistenceManager);
+
         // Use singleton runtime manager - one manager/session/taskservice for all requests
-        runtimeManager = JahiaRuntimeManagerFactoryImpl.getInstance().newSingletonRuntimeManager(runtimeEnvironment);
+        runtimeManager = runtimeFactory.newSingletonRuntimeManager(runtimeEnvironment);
         runtimeEngine = runtimeManager.getRuntimeEngine(EmptyContext.get());
 
         KieSession kieSession = runtimeEngine.getKieSession();

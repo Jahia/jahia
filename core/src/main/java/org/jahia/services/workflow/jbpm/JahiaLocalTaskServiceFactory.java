@@ -20,9 +20,12 @@ public class JahiaLocalTaskServiceFactory extends LocalTaskServiceFactory {
 
     private org.kie.api.runtime.manager.RuntimeEnvironment runtimeEnvironment;
 
-    public JahiaLocalTaskServiceFactory(org.kie.api.runtime.manager.RuntimeEnvironment runtimeEnvironment) {
+    private JbpmServicesPersistenceManager jbpmServicesPersistenceManager;
+
+    public JahiaLocalTaskServiceFactory(org.kie.api.runtime.manager.RuntimeEnvironment runtimeEnvironment, JbpmServicesPersistenceManager jbpmServicesPersistenceManager) {
         super(runtimeEnvironment);
         this.runtimeEnvironment = runtimeEnvironment;
+        this.jbpmServicesPersistenceManager = jbpmServicesPersistenceManager;
     }
 
     @Override
@@ -30,11 +33,10 @@ public class JahiaLocalTaskServiceFactory extends LocalTaskServiceFactory {
         EntityManagerFactory emf = ((SimpleRuntimeEnvironment) runtimeEnvironment).getEmf();
         if (emf != null) {
 
-            final JbpmServicesPersistenceManager persistenceManager = (JbpmServicesPersistenceManager) SpringContextSingleton.getBean("jbpmServicesPersistenceManager");
-            final JbpmServicesTransactionManager transactionManager = (JbpmServicesTransactionManager) SpringContextSingleton.getBean("jbpmLocalTransactionManager");
+            final JbpmServicesTransactionManager transactionManager = jbpmServicesPersistenceManager.getTransactionManager();
             TaskService internalTaskService = HumanTaskServiceFactory.newTaskServiceConfigurator()
                     .transactionManager(transactionManager)
-                    .persistenceManager(persistenceManager)
+                    .persistenceManager(jbpmServicesPersistenceManager)
                     .entityManagerFactory(emf)
                     .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
                     .getTaskService();

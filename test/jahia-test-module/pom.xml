@@ -81,6 +81,7 @@
             org.apache.bsf;resolution:=optional,
             org.apache.cactus;resolution:=optional,
             org.apache.cactus.server;resolution:=optional,
+            org.apache.commons.cli;resolution:=optional,
             org.apache.commons.cli2;resolution:=optional,
             org.apache.commons.cli2.builder;resolution:=optional,
             org.apache.commons.cli2.commandline;resolution:=optional,

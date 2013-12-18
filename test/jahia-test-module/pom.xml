@@ -60,6 +60,8 @@
     <properties>
         <jahia.modules.test.importPackage>
             ${jahia.modules.importPackage},
+            org.testng.*;
+            org.jbpm.api;resolution:=optional,
 			com.google.inject;resolution:=optional,
 			com.google.inject.internal;resolution:=optional,
 			org.apache.bsf.util;resolution:=optional,
@@ -121,8 +123,6 @@
             org.mortbay.http;resolution:=optional,
             org.springframework.asm.tree;resolution:=optional,
             org.springframework.web.portlet.multipart;resolution:=optional,
-            org.testng;resolution:=optional,
-            org.testng.annotations;resolution:=optional,
             org.znerd.xmlenc;resolution:=optional,
             sun.misc;resolution:=optional,
             sun.rmi.rmic;resolution:=optional,
@@ -390,7 +390,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.8.5</version>
+            <version>6.8.7</version>
         </dependency>         
     </dependencies>
 

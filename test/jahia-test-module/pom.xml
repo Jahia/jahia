@@ -60,7 +60,7 @@
     <properties>
         <jahia.modules.test.importPackage>
             ${jahia.modules.importPackage},
-            org.testng.*;
+            org.testng.*,
             org.jbpm.api;resolution:=optional,
 			com.google.inject;resolution:=optional,
 			com.google.inject.internal;resolution:=optional,

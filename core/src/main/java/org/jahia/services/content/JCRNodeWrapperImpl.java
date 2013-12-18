@@ -2929,7 +2929,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!session.isSystem() && isLocked()) {
             List<String> owners = getLockOwners(objectNode);
             if (owners.size() == 1 && owners.contains(session.getUserID())) {
-                session.addLockToken(objectNode.getProperty("j:locktoken").getString());
+                objectNode.getSession().addLockToken(objectNode.getProperty("j:locktoken").getString());
             } else {
                 throw new LockException("Node locked.");
             }
@@ -2939,7 +2939,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (i18n.isLocked()) {
                         owners = getLockOwners(i18n);
                         if (owners.size() == 1 && owners.contains(session.getUserID())) {
-                            session.addLockToken(i18n.getProperty("j:locktoken").getString());
+                            i18n.getSession().addLockToken(i18n.getProperty("j:locktoken").getString());
                         } else {
                             throw new LockException("Node locked.");
                         }

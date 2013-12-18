@@ -198,6 +198,7 @@
                 </property>
             </activation>
             <modules>
+                <module>analyzer-registry</module>
                 <module>assets</module>
                 <!--<module>atmosphere</module>-->
                 <module>channels</module>

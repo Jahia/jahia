@@ -55,6 +55,7 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.DocumentException;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -77,7 +78,8 @@ import org.slf4j.LoggerFactory;
 public class SourceControlHelper {
 
     private static class ModuleInfo {
-        String name;
+        String id;
+        String groupId;
         File path;
         String version;
     }
@@ -102,12 +104,16 @@ public class SourceControlHelper {
 
             // verify the sources and found out module information
             ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
+            if (templatePackageRegistry.containsId(moduleInfo.id) && !moduleInfo.groupId.equals(templatePackageRegistry.lookupById(moduleInfo.id).getGroupId())) {
+                FileUtils.deleteDirectory(sources);
+                throw new RepositoryException("Cannot checkout module " + moduleInfo.id + " because another module with the same artifactId exists");
+            }
 
             if (newModule) {
-                File newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.name + "_" + moduleInfo.version);
+                File newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.id + "_" + moduleInfo.version);
                 int i = 0;
                 while (newPath.exists()) {
-                    newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.name + "_" + moduleInfo.version
+                    newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.id + "_" + moduleInfo.version
                             + "_" + (++i));
                 }
 
@@ -123,7 +129,7 @@ public class SourceControlHelper {
             }
 
             JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                    .compileAndDeploy(moduleInfo.name, moduleInfo.path, session);
+                    .compileAndDeploy(moduleInfo.id, moduleInfo.path, session);
             if (pack != null) {
                 JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());
                 pack.setSourceControl(scm);
@@ -214,7 +220,7 @@ public class SourceControlHelper {
             final String version, final String branchOrTag) throws IOException, DocumentException,
             XmlPullParserException {
         ModuleInfo info = new ModuleInfo();
-        info.name = moduleId;
+        info.id = moduleId;
         info.path = sources;
         info.version = version;
 
@@ -236,14 +242,20 @@ public class SourceControlHelper {
             pom = PomUtils.read(new File(sources, "pom.xml"));
         }
         if (pom != null) {
-            info.name = pom.getArtifactId();
+            info.id = pom.getArtifactId();
+            info.groupId = pom.getGroupId();
             info.version = pom.getVersion();
-            if (pom.getParent() != null) {
-                String v = pom.getParent().getVersion();
+            Parent parent = pom.getParent();
+            if (parent != null) {
+                String v = parent.getVersion();
                 if (info.version == null) {
                     info.version = v;
                 }
                 ensureMinimalRequiredJahiaVersion(v, info.path, scmURI, moduleId, version, branchOrTag);
+
+                if (info.groupId == null) {
+                    info.groupId = parent.getGroupId();
+                }
             }
         } else {
             FileUtils.deleteQuietly(sources);

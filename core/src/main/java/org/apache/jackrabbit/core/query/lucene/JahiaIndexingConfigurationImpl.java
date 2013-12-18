@@ -54,21 +54,7 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.ar.ArabicAnalyzer;
-import org.apache.lucene.analysis.br.BrazilianAnalyzer;
-import org.apache.lucene.analysis.cjk.CJKAnalyzer;
-import org.apache.lucene.analysis.cn.ChineseAnalyzer;
-import org.apache.lucene.analysis.cz.CzechAnalyzer;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
-import org.apache.lucene.analysis.el.GreekAnalyzer;
-import org.apache.lucene.analysis.fa.PersianAnalyzer;
-import org.apache.lucene.analysis.fr.FrenchAnalyzer;
-import org.apache.lucene.analysis.nl.DutchAnalyzer;
-import org.apache.lucene.analysis.ru.RussianAnalyzer;
-import org.apache.lucene.analysis.th.ThaiAnalyzer;
-import org.apache.lucene.util.Version;
 import org.jahia.api.Constants;
-import org.jahia.services.search.analyzer.ASCIIFoldingAnalyzerWrapper;
 import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +63,10 @@ import org.w3c.dom.CharacterData;
 
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Jahia specific {@link IndexingConfiguration} implementation.
@@ -104,27 +92,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * The item state manager to retrieve additional item states.
      */
     private ItemStateManager ism;
-
-    /**
-     * Language to Analyzer map.
-     */
-    private static final Map<String, Analyzer> languageToAnalyzer = new ConcurrentHashMap<String, Analyzer>();
-
-    static {
-        languageToAnalyzer.put("ar", new ASCIIFoldingAnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("br", new ASCIIFoldingAnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("cjk", new ASCIIFoldingAnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("cn", new ASCIIFoldingAnalyzerWrapper(new ChineseAnalyzer()));
-        languageToAnalyzer.put("cz", new ASCIIFoldingAnalyzerWrapper(new CzechAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("de", new ASCIIFoldingAnalyzerWrapper(new GermanAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("el", new ASCIIFoldingAnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("en", new ASCIIFoldingAnalyzerWrapper(new org.apache.lucene.analysis.standard.StandardAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("fa", new ASCIIFoldingAnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("fr", new ASCIIFoldingAnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("nl", new ASCIIFoldingAnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("ru", new ASCIIFoldingAnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("th", new ASCIIFoldingAnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
-    }
 
     private Set<String> includedInSpellchecking = null;
 
@@ -188,24 +155,9 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * @return the <code>analyzer</code> to use for indexing this property
      */
     public Analyzer getPropertyAnalyzer(String fieldName) {
-        if (StringUtils.contains(fieldName, FACET_EXPRESSION)) {
-            return keywordAnalyzer;
-        } else {
-            Analyzer analyzer = null;
-
-            // first attempt to find a language specific analyzer
-            final String language = LuceneUtils.extractLanguageOrNullFrom(fieldName);
-            if (language != null) {
-                analyzer = languageToAnalyzer.get(language);
-            }
-
-            // if we didn't find an analyzer yet, get one from super
-            if (analyzer == null) {
-                analyzer = super.getPropertyAnalyzer(fieldName);
-            }
-
-            return analyzer;
-        }
+        Analyzer analyzer = StringUtils.contains(fieldName, FACET_EXPRESSION) ? keywordAnalyzer
+                : super.getPropertyAnalyzer(StringUtils.startsWith(fieldName, SPELLCHECK_EXPRESSION) ? "0:FULL:SPELLCHECK" : fieldName);
+        return analyzer;
     }
 
     @Override

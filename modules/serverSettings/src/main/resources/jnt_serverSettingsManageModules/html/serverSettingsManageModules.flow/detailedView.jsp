@@ -102,18 +102,24 @@
     <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr>
-            <th style="width:25%">
+            <th style="width:${isStudio ? '20' : '17'}%">
+                <fmt:message key="serverSettings.manageModules.moduleId"/>
+            </th>
+            <th style="width:${isStudio ? '20' : '17'}%">
+                <fmt:message key="serverSettings.manageModules.groupId"/>
+            </th>
+            <th style="width:${isStudio ? '20' : '17'}%">
                 <fmt:message key="serverSettings.manageModules.module.state"/>
             </th>
-            <th style="width:25%">
+            <th style="width:${isStudio ? '20' : '17'}%">
                 <fmt:message key="serverSettings.manageModules.module.type"/>
             </th>
-            <th style="width:25%">
+            <th style="width:${isStudio ? '20' : '17'}%">
                 <fmt:message key="serverSettings.manageModules.module.author"/>
             </th>
 
             <c:if test="${not isStudio}">
-                <th style="width:25%">
+                <th style="width:17%">
                     <fmt:message key="serverSettings.manageModules.module.source.uri"/>
                 </th>
             </c:if>
@@ -122,6 +128,12 @@
         </thead>
         <tbody>
         <tr>
+            <td>
+                ${activeVersion.id}
+            </td>
+            <td>
+                ${activeVersion.groupId}
+            </td>
             <td>
                 <fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(activeVersion.state.state)}"/>
             </td>

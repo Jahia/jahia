@@ -83,7 +83,7 @@ import org.springframework.webflow.execution.RequestContext;
 
 /**
  * WebFlow handler for managing modules.
- * 
+ *
  * @author rincevent
  */
 public class ModuleManagementFlowHandler implements Serializable {
@@ -304,7 +304,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("sitesDirect",directSiteDep);
         context.getRequestScope().put("sitesTemplates",templateSiteDep);
         context.getRequestScope().put("sitesTransitive", transitiveSiteDep);
-        
+
         if (!((RenderContext) context.getExternalContext().getRequestMap().get("renderContext"))
                 .getEditModeConfigName().startsWith("studio")) {
             populateModuleVersionStateInfo(context, directSiteDep, templateSiteDep, transitiveSiteDep);
@@ -313,7 +313,7 @@ public class ModuleManagementFlowHandler implements Serializable {
 
     /**
      * Returns a map, keyed by the module name, with the sorted map (by version ascending) of {@link JahiaTemplatesPackage} objects.
-     * 
+     *
      * @return a map, keyed by the module name, with the sorted map (by version ascending) of {@link JahiaTemplatesPackage} objects
      */
     public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
@@ -334,32 +334,26 @@ public class ModuleManagementFlowHandler implements Serializable {
 
     /**
      * Returns a map, keyed by the module name, with all available module updates.
-     * 
+     *
      * @return a map, keyed by the module name, with all available module updates
      */
     public Map<String,Module> getAvailableUpdates() {
         Map<String,Module> availableUpdate = new HashMap<String, Module>();
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> moduleStates = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();
-        Set<Module> forgeModules = new HashSet<Module>();
-        forgeModules.addAll(forgeService.getModules());
         for (String key : moduleStates.keySet()) {
-            Module forgeModule = forgeService.findModule(key,"");
+            Module forgeModule = forgeService.findModule(key,moduleStates.get(key).get(moduleStates.get(key).firstKey()).getGroupId());
             if (forgeModule != null) {
-                forgeModules.remove(forgeModule);
                 ModuleVersion forgeVersion = new ModuleVersion(forgeModule.getVersion());
                 if (!moduleStates.get(key).containsKey(forgeVersion) && forgeVersion.compareTo(moduleStates.get(key).lastKey()) > 0) {
                     availableUpdate.put(key,forgeModule);
                 }
             }
         }
-        for (Module module : forgeModules) {
-            availableUpdate.put(module.getId(),module);
-        }
         return availableUpdate;
     }
 
     private void populateModuleVersionStateInfo(RequestContext context, Map<String, List<String>> directSiteDep,
-            Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep) {
+                                                Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep) {
         Map<String, Map<ModuleVersion, ModuleVersionState>> states = new TreeMap<String, Map<ModuleVersion, ModuleVersionState>>();
         Set<String> systemSiteRequiredModules = getSystemSiteRequiredModules();
         context.getRequestScope().put("systemSiteRequiredModules", systemSiteRequiredModules);
@@ -381,8 +375,8 @@ public class ModuleManagementFlowHandler implements Serializable {
     }
 
     private ModuleVersionState getModuleVersionState(ModuleVersion moduleVersion, JahiaTemplatesPackage pkg,
-            boolean multipleVersionsOfModuleInstalled, Map<String, List<String>> directSiteDep,
-            Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep, Set<String> systemSiteRequiredModules) {
+                                                     boolean multipleVersionsOfModuleInstalled, Map<String, List<String>> directSiteDep,
+                                                     Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep, Set<String> systemSiteRequiredModules) {
         ModuleVersionState state = new ModuleVersionState();
         Map<String, JahiaTemplatesPackage> registeredModules = templateManagerService.getTemplatePackageRegistry()
                 .getRegisteredModules();

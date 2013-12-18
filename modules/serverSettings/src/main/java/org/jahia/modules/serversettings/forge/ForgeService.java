@@ -146,7 +146,7 @@ public class ForgeService {
 
     public Module findModule(String name, String groupId) {
         for (Module m : modules) {
-            if (StringUtils.equals(name, m.getId())) {
+            if (StringUtils.equals(name, m.getId()) && m.getGroupId().equals(groupId)) {
                 return m;
             }
         }
@@ -159,7 +159,9 @@ public class ForgeService {
         for (Forge forge : forges) {
             String url = forge.getUrl() + "/contents/forge-modules-repository.forgeModuleList.json";
             Map<String, String> headers = new HashMap<String, String>();
-            headers.put("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));
+            if (!StringUtils.isEmpty(forge.getUser())) {
+                headers.put("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));
+            }
             headers.put("accept", "application/json");
 
             String jsonModuleList = httpClientService.executeGet(url, headers);

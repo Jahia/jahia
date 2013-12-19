@@ -1023,7 +1023,12 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-core</artifactId>
             <version>${jbpm.version.jahia}</version>
+            <classifier>nocdi</classifier>
             <exclusions>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-shared-services</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.drools</groupId>
                     <artifactId>drools-core</artifactId>
@@ -1046,6 +1051,17 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-audit</artifactId>
             <version>${jbpm.version}</version>
+            <classifier>nocdi</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-shared-services</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.seam.transaction</groupId>
@@ -1056,7 +1072,16 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-workitems</artifactId>
             <version>${jbpm.version}</version>
+            <classifier>nocdi</classifier>
             <exclusions>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-shared-services</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-core</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.drools</groupId>
                     <artifactId>drools-core</artifactId>
@@ -1076,7 +1101,20 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-runtime-manager</artifactId>
             <version>${jbpm.version}</version>
+            <classifier>nocdi</classifier>
             <exclusions>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-shared-services</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-workitems</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.kie</groupId>
                     <artifactId>kie-ci</artifactId>
@@ -1092,10 +1130,15 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-shared-services</artifactId>
             <version>${jbpm.version.jahia}</version>
+            <classifier>nocdi</classifier>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.seam.transaction</groupId>
                     <artifactId>seam-transaction</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.weld</groupId>
+                    <artifactId>weld-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1108,7 +1151,16 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-executor</artifactId>
             <version>${jbpm.version}</version>
+            <classifier>nocdi</classifier>
             <exclusions>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-shared-services</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-runtime-manager</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.jbpm</groupId>
                     <artifactId>jbpm-kie-services</artifactId>
@@ -1135,6 +1187,10 @@
                 <exclusion>
                     <groupId>org.jboss.seam.spring</groupId>
                     <artifactId>seam-spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.weld.se</groupId>
+                    <artifactId>weld-se-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

@@ -175,9 +175,16 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateLabel.setHtml("&nbsp;" + Messages.get("label.synchronizeName", "Automatically synchronize name with title") + ":");
                 } else {
                     autoUpdate = false;
+<<<<<<< .working
                     if (autoUpdateLabel != null) {
                         autoUpdateLabel.setHtml("");
                     }
+=======
+                    if (autoUpdateName != null) {
+                        autoUpdateName.setVisible(false);
+                    }
+                    autoUpdateLabel.setText("");
+>>>>>>> .merge-right.r48169
                 }
 
                 nameText.setEnabled(nameEditingAllowed && !autoUpdate);

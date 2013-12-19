@@ -37,8 +37,9 @@
  * If you are unsure which license is appropriate for your use,
  * please contact the sales department at sales@jahia.com.
  */
-package org.jahia.modules.lucene;
+package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.jackrabbit.api.lucene.AnalyzerRegistry;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.ar.ArabicAnalyzer;
 import org.apache.lucene.analysis.br.BrazilianAnalyzer;
@@ -63,12 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Christophe Laprun
  */
-public class LanguageCustomizingAnalyzerRegistry /*implements AnalyzerRegistry<String>*/ {
-    /**
-     * Should match {@link org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer#TRANSLATION_LANGUAGE},
-     * included here to avoid dependency.
-     */
-    private static final String TRANSLATION_FIELD_NAME = "_:TRANSLATION_LANGUAGE";
+public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<String> {
     /**
      * Language to Analyzer map.
      */
@@ -90,7 +86,7 @@ public class LanguageCustomizingAnalyzerRegistry /*implements AnalyzerRegistry<S
         languageToAnalyzer.put("th", new ASCIIFoldingAnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
     }
 
-    //    @Override
+    @Override
     public Analyzer getAnalyzerFor(Document document) {
         final String key = getKeyFor(document);
         if (key != null) {
@@ -100,10 +96,10 @@ public class LanguageCustomizingAnalyzerRegistry /*implements AnalyzerRegistry<S
         return null;
     }
 
-    //    @Override
+    @Override
     public String getKeyFor(Document document) {
         if (document != null) {
-            final Field field = document.getField(TRANSLATION_FIELD_NAME);
+            final Field field = document.getField(JahiaNodeIndexer.TRANSLATION_LANGUAGE);
             if (field != null) {
                 return field.stringValue();
             }
@@ -111,12 +107,12 @@ public class LanguageCustomizingAnalyzerRegistry /*implements AnalyzerRegistry<S
         return null;
     }
 
-    //    @Override
+    @Override
     public Analyzer getAnalyzer(String key) {
         return languageToAnalyzer.get(key);
     }
 
-    //    @Override
+    @Override
     public boolean acceptKey(Object key) {
         return key instanceof String;
     }

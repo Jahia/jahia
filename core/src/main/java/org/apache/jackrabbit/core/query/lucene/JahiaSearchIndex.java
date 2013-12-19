@@ -40,6 +40,7 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.jackrabbit.api.lucene.AnalyzerRegistry;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -82,7 +83,9 @@ public class JahiaSearchIndex extends SearchIndex {
     private int batchSize = 100;    
     
     private boolean addAclUuidInIndex = true;
-    
+
+    private static final AnalyzerRegistry analyzerRegistry = new LanguageCustomizingAnalyzerRegistry();
+
     public int getMaxClauseCount() {
         return maxClauseCount;
     }
@@ -91,7 +94,12 @@ public class JahiaSearchIndex extends SearchIndex {
         this.maxClauseCount = maxClauseCount;
         BooleanQuery.setMaxClauseCount(maxClauseCount);
     }
-    
+
+    @Override
+    protected AnalyzerRegistry getAnalyzerRegistry() {
+        return analyzerRegistry;
+    }
+
     /**
      * Set the maximum number of documents that will be sent in one batch to the index for certain
      * mass indexing requests, like after ACL change

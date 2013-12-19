@@ -265,6 +265,9 @@
                     <plugin>
                         <groupId>org.jahia.server</groupId>
                         <artifactId>jahia-hibernate-maven-plugin</artifactId>
+                        <configuration>
+                            <persistenceFileName>jahia-persistence.xml</persistenceFileName>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>ddl-derby</id>

@@ -835,7 +835,7 @@
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-jsp</artifactId>
-                                    <version>3.0.2-patch1</version>
+                                    <version>3.0.2-patch2</version>
                                 </artifactItem>
 
                                 <artifactItem>
@@ -1084,6 +1084,12 @@
                             <includes>*Resources*.properties</includes>
                             <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>list-jars-with-no-tlds</id>
+                        <goals>
+                            <goal>list-jars-with-no-tlds</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

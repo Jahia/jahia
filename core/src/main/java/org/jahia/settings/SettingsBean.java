@@ -60,6 +60,7 @@ package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.slf4j.Logger;
@@ -79,7 +80,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
+
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.*;
 
@@ -472,6 +475,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             
             reindexIfNeeded();
             
+            readTldConfigJarsToSkip();
         } catch (NullPointerException npe) {
             logger.error("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -479,6 +483,39 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     } // end load
 
+    private void readTldConfigJarsToSkip() {
+        File cfgDir = new File(jahiaEtcDiskPath, "config");
+        if (!cfgDir.isDirectory()) {
+            return;
+        }
+        List<File> cfgs = new LinkedList<File>();
+        File main = new File(cfgDir, "jar-scanner.conf");
+        if (main.isFile()) {
+            cfgs.add(main);
+        }
+        File[] secondary = cfgDir.listFiles((FileFilter) new WildcardFileFilter("jar-scanner.*.conf"));
+        if (secondary != null && secondary.length > 0) {
+            cfgs.addAll(Arrays.asList(secondary));
+        }
+        Set<String> jarsToSkip = new TreeSet<String>();
+        try {
+            for (File cfg : cfgs) {
+                jarsToSkip.addAll(FileUtils.readLines(cfg));
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        jarsToSkip.remove("");
+        if (!jarsToSkip.isEmpty()) {
+            System.setProperty("org.jahia.TldConfig.jarsToSkip", StringUtils.join(jarsToSkip, ','));
+            logger.info(
+                    "Set system property (org.jahia.TldConfig.jarsToSkip) for JARs to be skipped during TLD search, including {} JARs",
+                    jarsToSkip.size());
+            if (logger.isDebugEnabled()) {
+                logger.debug("org.jahia.TldConfig.jarsToSkip: {}", System.getProperty("org.jahia.TldConfig.jarsToSkip"));
+            }
+        }
+    }
 
     public File getRepositoryHome() throws IOException {
         Resource repoHome = applicationContext.getResource(getString("jahia.jackrabbit.home",

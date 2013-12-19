@@ -1022,7 +1022,7 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-core</artifactId>
-            <version>${jbpm.version}-jahia</version>
+            <version>${jbpm.version.jahia}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.drools</groupId>
@@ -1070,7 +1070,7 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-audit</artifactId>
-            <version>${jbpm.version}-jahia</version>
+            <version>${jbpm.version.jahia}</version>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -1091,7 +1091,7 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-shared-services</artifactId>
-            <version>${jbpm.version}-jahia</version>
+            <version>${jbpm.version.jahia}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.seam.transaction</groupId>
@@ -1122,7 +1122,7 @@
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-spring</artifactId>
-            <version>${jbpm.version}-jahia</version>
+            <version>${jbpm.version.jahia}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.drools</groupId>

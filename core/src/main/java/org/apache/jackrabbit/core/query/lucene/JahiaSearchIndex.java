@@ -40,11 +40,11 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
-import org.apache.jackrabbit.api.lucene.AnalyzerRegistry;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
+import org.apache.jackrabbit.core.query.lucene.AnalyzerRegistry;
 import org.apache.jackrabbit.core.query.lucene.constraint.NoDuplicatesConstraint;
 import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.core.session.SessionContext;

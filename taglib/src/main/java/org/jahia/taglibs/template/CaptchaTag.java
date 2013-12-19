@@ -87,9 +87,9 @@ public class CaptchaTag extends TagSupport {
                 out.append("&nbsp;")
                         .append("<a href=\"#reload-captcha\" onclick=\"var captcha=document.getElementById('jahia-captcha-")
                         .append(formId)
-                        .append("'); var captchaUrl=captcha.src; if (captchaUrl.indexOf('&tst=') != -1){"
-                                + "captchaUrl=captchaUrl.substring(0,captchaUrl.indexOf('&tst='));}"
-                                + "captchaUrl=captchaUrl+'&tst='+new Date().getTime();"
+                        .append("'); var captchaUrl=captcha.src; if (captchaUrl.indexOf('&amp;tst=') != -1){"
+                                + "captchaUrl=captchaUrl.substring(0,captchaUrl.indexOf('&amp;tst='));}"
+                                + "captchaUrl=captchaUrl+'&amp;tst='+new Date().getTime();"
                                 + " captcha.src=captchaUrl; return false;\"><img src=\"")
                         .append(urlGen.getContext())
                         .append("/icons/refresh.png\" alt=\"refresh\"/></a>");

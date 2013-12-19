@@ -19,7 +19,7 @@
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="service" ref="JCRStoreService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:5000}" />
+        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:-1}" />
     </bean>
 
     <bean id="AbstractJCRStoreProviderPrototype" class="org.jahia.services.content.JCRStoreProvider" abstract="true" destroy-method="stop" scope="prototype">
@@ -28,7 +28,7 @@
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="service" ref="JCRStoreService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:5000}" />
+        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:-1}" />
     </bean>
 
     <bean id="DefaulJCRStoreProvider" class="org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider"

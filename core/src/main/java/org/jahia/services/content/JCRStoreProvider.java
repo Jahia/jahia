@@ -147,7 +147,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private final Object syncRepoInit = new Object();
 
-    private long sessionKeepAliveCheckInterval = 5000L;
+    private long sessionKeepAliveCheckInterval = -1;
 
     private GroovyPatcher groovyPatcher;
 
@@ -298,10 +298,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.sessionFactory = sessionFactory;
     }
 
-    public long getSessionKeepAliveCheckInterval() {
-        return sessionKeepAliveCheckInterval;
-    }
-
     public void setSessionKeepAliveCheckInterval(long sessionKeepAliveCheckInterval) {
         this.sessionKeepAliveCheckInterval = sessionKeepAliveCheckInterval;
     }
@@ -381,30 +377,32 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                     Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
                     "/", true, null, null, false);
 
-            // The thread should always checks if the session is still alive and reconnect it if lost
             running = true;
-            Thread t = new Thread(ws + "-WorkspaceObserverKeepAlive") {
-                public void run() {
-                    while (isRunning() && session.isLive()) {
-                        try {
-                            // we retrieve root node to keep the session alive (note : in Jackrabbit sessions never
-                            // time-out but as this is possible in the spec, we do a simple read call in case we
-                            // use other implementations).
-                            session.getRootNode();
-                        } catch (RepositoryException e) {
-                            if (running && logger != null) logger.error(e.getMessage(), e);
+            if (sessionKeepAliveCheckInterval > 0) {
+                // The thread should always checks if the session is still alive and reconnect it if lost
+                Thread t = new Thread(ws + "-WorkspaceObserverKeepAlive") {
+                    public void run() {
+                        while (isRunning() && session.isLive()) {
+                            try {
+                                // we retrieve root node to keep the session alive (note : in Jackrabbit sessions never
+                                // time-out but as this is possible in the spec, we do a simple read call in case we
+                                // use other implementations).
+                                session.getRootNode();
+                            } catch (RepositoryException e) {
+                                if (running && logger != null) logger.error(e.getMessage(), e);
+                            }
+                            try {
+                                Thread.sleep(sessionKeepAliveCheckInterval);
+                            } catch (InterruptedException e) {
+                                // ignore
+                            }
                         }
-                        try {
-                            Thread.sleep(sessionKeepAliveCheckInterval);
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
+                        if (running && logger != null) logger.info("System session closed, deregister listeners");
                     }
-                    if (running && logger != null) logger.info("System session closed, deregister listeners");
-                }
-            };
-            t.setDaemon(true);
-            t.start();
+                };
+                t.setDaemon(true);
+                t.start();
+            }
         }
     }
 

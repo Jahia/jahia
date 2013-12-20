@@ -123,9 +123,13 @@ public class JahiaNodeIndexer extends NodeIndexer {
     protected final HierarchyManager hierarchyMgr;
 
     /**
-     * The <code>ExtendedNodeType</code> of the node to index
+     * The <code>ExtendedNodeType</code> of the node to index, lazily resolved from its type name
      */
-    protected ExtendedNodeType nodeType;
+    private ExtendedNodeType nodeType;
+    /**
+     * The associated node's type name.
+     */
+    private final Name nodeTypeName;
 
     /**
      * If set to <code>true</code> the fulltext field is also stored with site/locale suffix
@@ -146,13 +150,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     protected JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
                                NamespaceMappings mappings, Executor executor, Parser parser, QueryHandlerContext context,
-                               NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry, ExtendedNodeType nodeType) {
+                               NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
         super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = typeRegistry;
         this.namespaceRegistry = nameRegistry;
         this.hierarchyMgr = context.getHierarchyManager();
+        this.nodeTypeName = node.getNodeTypeName();
+
         try {
-            this.nodeType = nodeType;
             if (siteTypeName == null && nodeTypeRegistry != null) {
                 ExtendedNodeType siteNodeType = nodeTypeRegistry.getNodeType(Constants.JAHIANT_VIRTUALSITE);
                 if (siteNodeType != null) {
@@ -168,9 +173,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
     }
 
-    private static ExtendedNodeType getNodeType(NodeState node, NodeTypeRegistry typeRegistry, NamespaceRegistry namespaceRegistry) throws RepositoryException {
-        Name nodeTypeName = node.getNodeTypeName();
-        return typeRegistry.getNodeType(namespaceRegistry.getPrefix(nodeTypeName.getNamespaceURI()) + ":" + nodeTypeName.getLocalName());
+    private String getTypeNameAsString() throws RepositoryException {
+        return getTypeNameAsString(nodeTypeName, namespaceRegistry);
+    }
+
+    private static String getTypeNameAsString(Name nodeTypeName, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        return namespaceRegistry.getPrefix(nodeTypeName.getNamespaceURI()) + ":" + nodeTypeName.getLocalName();
     }
 
     /**
@@ -250,14 +258,27 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return false;
     }
 
+    protected ExtendedNodeType getNodeType() {
+        if (nodeType == null) {
+            try {
+                nodeType = nodeTypeRegistry.getNodeType(getTypeNameAsString());
+            } catch (RepositoryException e) {
+                logger.warn("QA-5070: Couldn't resolve type: " + nodeTypeName.getNamespaceURI() + ":" + nodeTypeName
+                        .getLocalName());
+            }
+        }
+
+        return nodeType;
+    }
+
     protected ExtendedPropertyDefinition getExtendedPropertyDefinition(String fieldName) {
         ExtendedPropertyDefinition propDef = fieldNameToPropDef.get(fieldName);
-        if (propDef == null && nodeType != null) {
+        if (propDef == null) {
             try {
                 propDef = getPropertyDefinition(fieldName);
             } catch (Exception e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Error finding language property", e);
+                    logger.debug("Error finding property associated with field named " + fieldName, e);
                 }
             }
 
@@ -269,7 +290,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     protected ExtendedPropertyDefinition getPropertyDefinition(String fieldName) throws RepositoryException, ItemStateException {
-        return getPropertyDefinitionFor(fieldName, nodeType, node);
+        return getPropertyDefinitionFor(fieldName, getNodeType(), node);
     }
 
     protected ExtendedPropertyDefinition getPropertyDefinitionFor(String fieldName, ExtendedNodeType nodeType, NodeState node) throws RepositoryException {
@@ -703,14 +724,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
                                                      Parser parser, QueryHandlerContext context) {
         final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
         final NamespaceRegistry namespaceRegistry = context.getNamespaceRegistry();
-        final ExtendedNodeType nodeType;
         try {
-            nodeType = getNodeType(node, typeRegistry, namespaceRegistry);
-            if(Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-                return new JahiaTranslationNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry, nodeType);
-            }
-            else {
-                return new JahiaNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry, nodeType);
+
+            if (Constants.JAHIANT_TRANSLATION.equals(getTypeNameAsString(node.getNodeTypeName(), namespaceRegistry))) {
+                return new JahiaTranslationNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry);
+            } else {
+                return new JahiaNodeIndexer(node, itemStateManager, nsMappings, executor, parser, context, typeRegistry, namespaceRegistry);
             }
         } catch (RepositoryException e) {
             throw new RuntimeException(e);

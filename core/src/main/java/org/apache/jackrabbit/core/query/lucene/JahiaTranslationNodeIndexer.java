@@ -73,9 +73,8 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
 
     protected JahiaTranslationNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings,
                                           Executor executor, Parser parser, QueryHandlerContext context,
-                                          NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry,
-                                          ExtendedNodeType nodeType) {
-        super(node, stateProvider, mappings, executor, parser, context, typeRegistry, nameRegistry, nodeType);
+                                          NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
+        super(node, stateProvider, mappings, executor, parser, context, typeRegistry, nameRegistry);
 
         try {
             for (Name propName : node.getPropertyNames()) {
@@ -115,7 +114,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
             ExtendedPropertyDefinition propDef = getPropertyDefinitionFor(fieldName, parentNodeType, parentNode);
 
             // if we haven't found the property on the parent, it might be on this node so try this
-            return propDef != null ? propDef : getPropertyDefinitionFor(fieldName, nodeType, node);
+            return propDef != null ? propDef : getPropertyDefinitionFor(fieldName, getNodeType(), node);
         }
     }
 

@@ -16,4 +16,3 @@ jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.pool.Postg
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
 jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
 jahia.jackrabbit.schema = postgresql
-jahia.jboss.datasource.typeMapping = PostgreSQL

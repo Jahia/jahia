@@ -90,6 +90,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     private transient Map<String, List<GWTJahiaValueDisplayBean>> snippets;
     private transient ComboBox<GWTJahiaValueDisplayBean> snippetType;
     private transient ComboBox<GWTJahiaValueDisplayBean> mirrorTemplates;
+    private transient boolean readOnly;
 
     public CodeEditorTabItem() {
         setHandleCreate(true);
@@ -274,7 +275,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             actions.add(indentButton);
             actions.show();
             tab.setProcessed(true);
-            codeField.setReadOnly(engine.getNode() !=null && engine.getNode().isLocked());
+            readOnly = engine.getNode() != null && engine.getNode().isLocked();
         }
     }
 
@@ -290,6 +291,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         tab.add(codeField, new BorderLayoutData(Style.LayoutRegion.CENTER));
         tab.layout();
         tab.show();
+        codeField.setReadOnly(readOnly);
     }
 
     @Override

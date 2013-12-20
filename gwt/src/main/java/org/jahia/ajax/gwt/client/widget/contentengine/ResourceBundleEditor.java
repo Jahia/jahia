@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -160,6 +161,8 @@ public class ResourceBundleEditor extends LayoutContainer {
 
     protected NodeHolder engine;
 
+    protected boolean writable = true;
+
     protected FormPanel form;
 
     protected FormBinding formBinding;
@@ -179,6 +182,7 @@ public class ResourceBundleEditor extends LayoutContainer {
     public ResourceBundleEditor(NodeHolder engine) {
         super();
         this.engine = engine;
+        writable = (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties", engine.getNode()) && !engine.getNode().isLocked()));
     }
 
     private Button createAddButton() {
@@ -460,7 +464,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                 String search = ((TextField<String>) event.getComponent()).getValue();
                 if (search != null && search.length() > 0) {
                     GWTResourceBundleEntry match = bundleView.getStore().findModel("key", search);
-                    addButton.setEnabled(match == null);
+                    addButton.setEnabled(match == null && writable);
                     if (match == null) {
                         for (GWTResourceBundleEntry e : bundleView.getStore().getModels()) {
                             if (e.getKey().startsWith(search)) {
@@ -495,7 +499,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                 new Listener<SelectionChangedEvent<GWTResourceBundleEntry>>() {
                     public void handleEvent(SelectionChangedEvent<GWTResourceBundleEntry> be) {
                         if (be.getSelection().size() > 0) {
-                            if (!valuesPerLanguage.values().iterator().next().isEnabled()) {
+                            if (writable && !valuesPerLanguage.values().iterator().next().isEnabled()) {
                                 for (TextArea textArea : valuesPerLanguage.values()) {
                                     textArea.enable();
                                 }
@@ -509,8 +513,9 @@ public class ResourceBundleEditor extends LayoutContainer {
                         }
                     }
                 });
-
-        view.setContextMenu(createContextMenu());
+        if (writable) {
+            view.setContextMenu(createContextMenu());
+        }
 
         return view;
     }
@@ -623,6 +628,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         tabPanel.add(createPropertiesTab());
         newLanguageTab = createNewLanguageTab();
         tabPanel.add(newLanguageTab);
+        newLanguageTab.setEnabled(writable);
 
         tabPanel.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -672,8 +678,10 @@ public class ResourceBundleEditor extends LayoutContainer {
         GWTResourceBundleEntry selectedItem = bundleView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             formBinding.bind(selectedItem);
-            for (TextArea textArea : valuesPerLanguage.values()) {
-                textArea.enable();
+            if (writable) {
+                for (TextArea textArea : valuesPerLanguage.values()) {
+                    textArea.enable();
+                }
             }
         }
 
@@ -768,6 +776,8 @@ public class ResourceBundleEditor extends LayoutContainer {
                         tabPanel.setSelection(tabPanel.getItem(0));
                     }
                 });
+
+        btn.setEnabled(writable);
 
         formPanel.addButton(btn);
 

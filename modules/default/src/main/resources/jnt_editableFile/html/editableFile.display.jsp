@@ -2,6 +2,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
@@ -45,9 +47,11 @@
         <c:set var="mode" value="jsp"/>
     </c:otherwise>
 </c:choose>
-<button name="save" id="saveButton" onclick="saveSourceCode();" disabled><fmt:message key="label.save"/></button>
+<c:if test="${not locked and not jcr:isNodeType(currentNode, 'jnt:resourceBundleFile')}">
+    <button name="save" id="saveButton" onclick="saveSourceCode();" disabled><fmt:message key="label.save"/></button>
+</c:if>
 <script type="text/javascript">
-    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${mode}",lineNumbers:true, matchBrackets:true, readOnly:${locked}});
+    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${mode}",lineNumbers:true, matchBrackets:true, readOnly:${jcr:isNodeType(currentNode, 'jnt:resourceBundleFile') or locked}});
     myCodeMirror.setSize("100%","100%");
     myCodeMirror.on("change", function() {
         if ($('#saveButton').prop('disabled')) {

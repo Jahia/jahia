@@ -274,7 +274,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             actions.add(indentButton);
             actions.show();
             tab.setProcessed(true);
-            codeField.setReadOnly(engine.getNode().isLocked());
+            codeField.setReadOnly(engine.getNode() !=null && engine.getNode().isLocked());
         }
     }
 

@@ -251,7 +251,6 @@ public class SourceControlHelper {
                 if (info.version == null) {
                     info.version = v;
                 }
-                ensureMinimalRequiredJahiaVersion(v, info.path, scmURI, moduleId, version, branchOrTag);
 
                 if (info.groupId == null) {
                     info.groupId = parent.getGroupId();

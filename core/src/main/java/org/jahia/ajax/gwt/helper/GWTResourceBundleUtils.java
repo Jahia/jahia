@@ -273,6 +273,60 @@ public final class GWTResourceBundleUtils {
 
     }
 
+    public static void lock(JCRNodeWrapper node) {
+        GWTResourceBundle gwtBundle = null;
+        long timer = System.currentTimeMillis();
+        try {
+            boolean isFile = false;
+            if (!(isFile = node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FILE))
+                    && !node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER)) {
+                return;
+            }
+
+            gwtBundle = new GWTResourceBundle();
+
+            Set<String> languages = new HashSet<String>();
+            List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
+                    isFile ? node.getParent() : node, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
+            for (JCRNodeWrapper rbFileNode : rbFileNodes) {
+                rbFileNode.lockAndStoreToken("engine");
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return;
+    }
+
+    public static void unlock(JCRNodeWrapper node) {
+        GWTResourceBundle gwtBundle = null;
+        long timer = System.currentTimeMillis();
+        try {
+            boolean isFile = false;
+            if (!(isFile = node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FILE))
+                    && !node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER)) {
+                return;
+            }
+
+            gwtBundle = new GWTResourceBundle();
+
+            Set<String> languages = new HashSet<String>();
+            List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
+                    isFile ? node.getParent() : node, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
+            for (JCRNodeWrapper rbFileNode : rbFileNodes) {
+                if (rbFileNode.isLocked()) {
+                    rbFileNode.unlock("engine");
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return;
+    }
+
+
+
     private GWTResourceBundleUtils() {
         super();
     }

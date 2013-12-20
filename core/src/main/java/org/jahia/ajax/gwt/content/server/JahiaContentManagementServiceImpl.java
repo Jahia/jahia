@@ -1701,6 +1701,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 if (tryToLockNode && !nodeWrapper.isLocked() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     nodeWrapper.checkout();
                     nodeWrapper.lockAndStoreToken("engine");
+                    GWTResourceBundleUtils.lock(nodeWrapper);
                 }
                 dumpLocks(nodeWrapper);
             } catch (UnsupportedRepositoryOperationException e) {
@@ -1793,6 +1794,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
             if (n.isLocked()) {
                 n.unlock("engine");
+                GWTResourceBundleUtils.unlock(n);
             }
 
             dumpLocks(n);
@@ -1853,6 +1855,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 nodeWrapper = sessionWrapper.getNode(path);
                 if (tryToLockNode) {
                     nodeWrapper.lockAndStoreToken("engine");
+                    GWTResourceBundleUtils.lock(nodeWrapper);
                 }
 
                 dumpLocks(nodeWrapper);

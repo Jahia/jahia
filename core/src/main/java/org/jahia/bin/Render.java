@@ -79,6 +79,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
@@ -141,6 +142,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             "onpause", "onplay", "onplaying", "onprogress", "onratechange", "onreadystatechange", "onscroll",
             "onseeked", "onseeking", "onshow", "onstalled", "onsuspend", "ontimeupdate", "onvolumechange", "onwaiting"
     );
+    public static final Pattern TAG_MISSING_END_BIGGERTHAN_PATTERN = Pattern.compile("<([^<>]*)(?=<|$)");
+    public static final Pattern TAG_MISSING_START_LESSERTHAN_PATTERN = Pattern.compile("(^|(?<=>))([^<>]*)>");
     public static final String ALLOWS_MULTIPLE_SUBMITS = "allowsMultipleSubmits";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
@@ -414,9 +417,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     private String xssFilter(String stringValue) {
 
+        // fail fast if we find no start or end of a tag
+        if (!stringValue.contains("<") && !stringValue.contains(">")) {
+            return stringValue;
+        }
+
         // fix for https://jira.jahia.org/browse/QA-4337, attack with unclosed tags. These regexp will encode unclosed tags.
-        stringValue = stringValue.replaceAll("<([^<>]*)(?=<|$)", "&lt$1");
-        stringValue = stringValue.replaceAll("(^|(?<=>))([^<>]*)>", "$1&gt");
+        stringValue = TAG_MISSING_END_BIGGERTHAN_PATTERN.matcher(stringValue).replaceAll("&lt;$1");
+        stringValue = TAG_MISSING_START_LESSERTHAN_PATTERN.matcher(stringValue).replaceAll("$1&gt;");
 
         Source source = new Source(stringValue);
         OutputDocument outputDocument = new OutputDocument(source);

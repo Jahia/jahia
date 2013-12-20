@@ -364,6 +364,8 @@ public class Activator implements BundleActivator {
         
         if (null == pkg) {
             // is not a Jahia module -> skip
+            installedBundles.remove(bundle);
+            moduleStates.remove(bundle);
             return;
         }
 

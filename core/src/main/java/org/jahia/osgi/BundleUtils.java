@@ -145,12 +145,18 @@ public final class BundleUtils {
 
         String moduleId = getModuleId(bundle);
         String version = getModuleVersion(bundle);
+        String groupId = getModuleGroupId(bundle);
 
         Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions == null) {
             moduleVersions = new ConcurrentHashMap<String, JahiaTemplatesPackage>(1);
             modules.put(moduleId, moduleVersions);
         } else {
+            if (!moduleVersions.isEmpty() && !moduleVersions.values().iterator().next().getGroupId().equals(groupId)) {
+                logger.error("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
+                return null;
+            }
+
             pkg = moduleVersions.get(version);
         }
 
@@ -193,6 +199,17 @@ public final class BundleUtils {
     public static String getModuleVersion(Bundle bundle) {
         return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Implementation-Version"), bundle
                 .getVersion().toString());
+    }
+
+    /**
+     * Returns the groupId of the module read from the provided bundle.
+     *
+     * @param bundle
+     *            the bundle to read the module groupId from
+     * @return groupId of the module read from the provided bundle
+     */
+    public static String getModuleGroupId(Bundle bundle) {
+        return bundle.getHeaders().get("Jahia-GroupId");
     }
 
     /**
@@ -265,9 +282,15 @@ public final class BundleUtils {
     public static void unregisterModule(Bundle bundle) {
         String moduleId = getModuleId(bundle);
         String version = getModuleVersion(bundle);
+        String groupId = getModuleGroupId(bundle);
 
         Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions != null) {
+            if (!moduleVersions.isEmpty() && !moduleVersions.values().iterator().next().getGroupId().equals(groupId)) {
+                logger.warn("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
+                return;
+            }
+
             JahiaTemplatesPackage pkg = moduleVersions.remove(version);
             if (moduleVersions.isEmpty()) {
                 modules.remove(moduleId);

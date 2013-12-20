@@ -413,6 +413,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     private String xssFilter(String stringValue) {
+
+        // fix for https://jira.jahia.org/browse/QA-4337, attack with unclosed tags. These regexp will encode unclosed tags.
+        stringValue = stringValue.replaceAll("<([^<>]*)(?=<|$)", "&lt$1");
+        stringValue = stringValue.replaceAll("(^|(?<=>))([^<>]*)>", "$1&gt");
+
         Source source = new Source(stringValue);
         OutputDocument outputDocument = new OutputDocument(source);
         List<Element> elements = source.getAllElements();

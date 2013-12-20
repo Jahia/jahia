@@ -16,7 +16,8 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="module" type="org.jahia.modules.serversettings.forge.Module"--%>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <fmt:message key="serverSettings.manageModules.details" var="i18nModuleDetails" />
 
 <form id="viewInstalledModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST">
@@ -85,7 +86,7 @@
                 <%--Other versions installed--%>
             <%--</c:when>--%>
             <c:otherwise>
-                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
                     <input type="hidden" name="forgeId" value="${module.forgeId}"/>
                     <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
                     <button class="btn btn-block button-download" type="submit" name="_eventId_installForgeModule">

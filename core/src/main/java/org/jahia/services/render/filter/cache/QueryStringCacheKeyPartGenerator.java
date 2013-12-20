@@ -71,29 +71,32 @@ public class QueryStringCacheKeyPartGenerator implements CacheKeyPartGenerator {
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
-        Matcher m = QUERYSTRING_REGEXP.matcher(keyPart);
-        if (m.matches()) {
-            Map parameterMap = renderContext.getRequest().getParameterMap();
-            String qsString = m.group(2);
-            String[] params = Patterns.COMMA.split(m.group(3));
+        Map parameterMap = renderContext.getRequest().getParameterMap();
+        if (!parameterMap.isEmpty()) {
+            Matcher m = QUERYSTRING_REGEXP.matcher(keyPart);
+            if (m.matches()) {
+                String qsString = m.group(2);
+                String[] params = Patterns.COMMA.split(m.group(3));
 
-            SortedMap<String, String> qs = new TreeMap<String, String>();
-            for (String param : params) {
-                param = param.trim();
-                if (param.endsWith("*")) {
-                    param = param.substring(0, param.length() - 1);
-                    for (Map.Entry o : (Iterable<? extends Map.Entry>) parameterMap.entrySet()) {
-                        String k = (String) o.getKey();
-                        if (k.startsWith(param)) {
-                            qs.put(k, Arrays.toString((String[]) o.getValue()));
+                SortedMap<String, String> qs = new TreeMap<String, String>();
+                for (String param : params) {
+                    param = param.trim();
+                    if (param.endsWith("*")) {
+                        param = param.substring(0, param.length() - 1);
+                        for (Map.Entry o : (Iterable<? extends Map.Entry>) parameterMap.entrySet()) {
+                            String k = (String) o.getKey();
+                            if (k.startsWith(param)) {
+                                qs.put(k, Arrays.toString((String[]) o.getValue()));
+                            }
                         }
+                    } else if (parameterMap.containsKey(param)) {
+                        qs.put(param, Arrays.toString((String[]) parameterMap.get(param)));
                     }
-                } else if (parameterMap.containsKey(param)) {
-                    qs.put(param, Arrays.toString((String[]) parameterMap.get(param)));
                 }
+                keyPart = keyPart.replace(qsString, qs.toString());
             }
-            keyPart = keyPart.replace(qsString, qs.toString());
+            return keyPart;
         }
-        return keyPart;
+        return "{}";
     }
 }

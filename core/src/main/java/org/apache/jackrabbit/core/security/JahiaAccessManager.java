@@ -40,6 +40,8 @@
 
 package org.apache.jackrabbit.core.security;
 
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
@@ -62,6 +64,8 @@ import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.CacheService;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -132,7 +136,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
-    private static final ConcurrentMap<String, Set<Privilege>> privilegesInRole = new ConcurrentHashMap<String, Set<Privilege>>();
+    private static SelfPopulatingCache privilegesInRole = null;
     private LRUMap pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;
@@ -172,6 +176,33 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public JahiaAccessManager() {
         initialized = false;
         jahiaPrincipal = null;
+        if(privilegesInRole==null){
+            CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
+            if(cacheService!=null) {
+                // Jahia is initialized
+                EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
+                privilegesInRole = ehCacheProvider.registerSelfPopulatingCache("org.jahia.security.priviliegesInRolesCache", new CacheEntryFactory() {
+                    @Override
+                    public Object createEntry(Object role) throws Exception {
+                        String externalPermission = null;
+                        Set<Privilege> privileges;
+                        String roleName = (String) role;
+                        if (roleName.contains("/")) {
+                            externalPermission = StringUtils.substringAfter((String) role, "/");
+                            roleName = StringUtils.substringBefore((String) role, "/");
+                        }
+
+                        Node roleNode = findRoleNode(roleName);
+                        if (roleNode != null) {
+                            privileges = getPrivileges(roleNode, externalPermission);
+                        } else {
+                            privileges = Collections.EMPTY_SET;
+                        }
+                        return privileges;
+                    }
+                });
+            }
+        }
     }
 
     public void init(AMContext amContext) throws AccessDeniedException, Exception {
@@ -656,8 +687,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
-        Set<Privilege> privileges = privilegesInRole.get(role);
-        if (privileges == null) {
+        if(privilegesInRole!=null)
+            return (Set<Privilege>) privilegesInRole.get(role).getObjectValue();
+        else {
+            Set<Privilege> privileges;
             String externalPermission = null;
 
             String roleName = role;
@@ -672,10 +705,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             } else {
                 privileges = Collections.EMPTY_SET;
             }
-
-            privilegesInRole.put(role, privileges);
+            return privileges;
         }
-        return privileges;
     }
 
     private Node findRoleNode(String role) throws RepositoryException {
@@ -949,7 +980,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         boolean granted;
     }
 
+    /**
+     * Flush the cache of privileges set by role
+     */
     public static void flushPrivilegesInRoles() {
-        privilegesInRole.clear();
+        if (privilegesInRole != null) {
+            privilegesInRole.refresh();
+        }
     }
 }

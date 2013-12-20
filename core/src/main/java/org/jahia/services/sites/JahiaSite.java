@@ -67,15 +67,6 @@ public interface JahiaSite {
      * Returns the description, provided for this site.
      * 
      * @return the description, provided for this site
-     * @deprecated use {@link #getDescription()} instead
-     */
-    @Deprecated
-    public String getDescr();
-
-    /**
-     * Returns the description, provided for this site.
-     * 
-     * @return the description, provided for this site
      */
     public String getDescription();
 

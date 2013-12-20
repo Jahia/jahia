@@ -40,14 +40,7 @@
 
 package org.jahia.services.scheduler;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-
-import javax.script.*;
-
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -56,6 +49,9 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.script.*;
+import java.io.*;
 
 /**
  * This class allows to execute any JSR-223 (Groovy, Velocity, Javascript) compatible script as a background job.
@@ -68,24 +64,38 @@ import org.slf4j.LoggerFactory;
  */
 public class JSR223ScriptJob extends BackgroundJob {
 
-	private static final Logger logger = LoggerFactory.getLogger(JSR223ScriptJob.class);
-	
+    private static final Logger logger = LoggerFactory.getLogger(JSR223ScriptJob.class);
+
     public final static String JOB_SCRIPT_PATH = "jobScriptPath";
+    public final static String JOB_SCRIPT_ABSOLUTE_PATH = "jobScriptPath";
     public final static String JOB_SCRIPT_OUTPUT = "jobScriptOutput";
 
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         final JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
+        String jobScriptPath;
+        boolean isAbsolutePath = false;
+        if (map.containsKey(JOB_SCRIPT_ABSOLUTE_PATH)) {
+            isAbsolutePath = true;
+            jobScriptPath = map.getString(JOB_SCRIPT_ABSOLUTE_PATH);
+        } else {
+            jobScriptPath = map.getString(JOB_SCRIPT_PATH);
+        }
+        logger.info("Start executing JSR223 script job {}", jobScriptPath);
 
-        String jobScriptPath = map.getString(JOB_SCRIPT_PATH);
-    	logger.info("Start executing JSR223 script job {}", jobScriptPath);
-    	
-        ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(jobScriptPath));
+        ScriptEngine scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(
+                jobScriptPath));
         if (scriptEngine != null) {
             ScriptContext scriptContext = new SimpleScriptContext();
             final Bindings bindings = new SimpleBindings();
             bindings.put("jobDataMap", map);
-            InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(jobScriptPath);
+
+            InputStream scriptInputStream;
+            if (!isAbsolutePath) {
+                scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(jobScriptPath);
+            } else {
+                scriptInputStream = FileUtils.openInputStream(new File(jobScriptPath));
+            }
             if (scriptInputStream != null) {
                 Reader scriptContent = null;
                 try {
@@ -95,12 +105,14 @@ public class JSR223ScriptJob extends BackgroundJob {
                     // The following binding is necessary for Javascript, which doesn't offer a console by default.
                     bindings.put("out", new PrintWriter(scriptContext.getWriter()));
                     scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-                    scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
+                    scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE),
+                            ScriptContext.GLOBAL_SCOPE);
                     scriptEngine.eval(scriptContent, scriptContext);
                     map.put(JOB_SCRIPT_OUTPUT, out.toString());
-                	logger.info("...JSR-223 script job {} execution finished", jobScriptPath);
+                    logger.info("...JSR-223 script job {} execution finished", jobScriptPath);
                 } catch (ScriptException e) {
-                	logger.error("Error during execution of the JSR-223 script job " + jobScriptPath + " execution failed with error " + e.getMessage(), e);
+                    logger.error("Error during execution of the JSR-223 script job " + jobScriptPath +
+                                 " execution failed with error " + e.getMessage(), e);
                     throw new Exception("Error during execution of script " + jobScriptPath, e);
                 } finally {
                     if (scriptContent != null) {

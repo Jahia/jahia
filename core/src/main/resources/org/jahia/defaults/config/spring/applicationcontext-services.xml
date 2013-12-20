@@ -81,6 +81,7 @@
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="ehCacheProvider" ref="ehCacheProvider"/>
     </bean>
 
 	<bean id="CategoryService" class="org.jahia.services.categories.CategoryServiceImpl"

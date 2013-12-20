@@ -17,6 +17,7 @@
             </list>
         </property>
         <property name="jahiaJcrEnforcedGroupsProviderKey" value="jcr"/>
+        <property name="ehCacheProvider" ref="ehCacheProvider"/>
     </bean>
 
 	<bean id="JahiaGroupManagerProvider" class="org.jahia.services.usermanager.JahiaGroupManagerProvider" parent="jahiaServiceTemplate" abstract="true">

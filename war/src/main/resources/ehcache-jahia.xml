@@ -713,4 +713,10 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             diskPersistent="true">
     </cache>
 
+    <cache name="org.jahia.selfPopulatingReplicatedCache"
+           overflowToDisk="false"
+           diskPersistent="false"
+           eternal="true" >
+    </cache>
+
 </ehcache>

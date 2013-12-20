@@ -101,6 +101,7 @@ public class RenderContext {
     // the current rendering channel, for example "iphone", "ipad", "android", etc...
     private Channel channel = null;
     private String mode;
+    private SiteInfo siteInfo;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -379,4 +380,11 @@ public class RenderContext {
     }
 
 
+    public void setSiteInfo(SiteInfo siteInfo) {
+        this.siteInfo = siteInfo;
+    }
+
+    public SiteInfo getSiteInfo() {
+        return siteInfo;
+    }
 }

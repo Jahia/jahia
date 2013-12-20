@@ -13,7 +13,7 @@ if (renderContext.editMode && renderContext.mainResource.contextConfiguration ==
 if (renderContext.mainResource.contextConfiguration == 'page') {
     def slangmap = [en:'en_US', da:'da_DK', nl:'nl_NL', fi:'fi_FI', fr:'fr_FR', de:'de_DE', el:'el_GR', it:'it_IT', nb:'nb_NO', pt:'pt_PT', es:'es_ES', sv:'sv_SE']
     println "<script type=\"text/javascript\">"
-    print "var contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.site.WCAGComplianceCheckEnabled}}; ";
+    print "var contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.siteInfo.WCAGComplianceCheckEnabled}}; ";
     print "var CKEDITOR_BASEPATH=\"${contextPath}/modules/assets/javascript/ckeditor/\"; "
     print "var scayt_custom_params=new Array(); "
     if (slangmap[renderContext.mainResource.locale.language] != null) {

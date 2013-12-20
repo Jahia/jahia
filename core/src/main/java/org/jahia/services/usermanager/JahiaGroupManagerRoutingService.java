@@ -52,12 +52,17 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -85,7 +90,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         }
     };
 
-    private static final Map<String, Integer> siteKeyIdMap = new HashMap<String, Integer>();
+    private static SelfPopulatingCache siteKeyIdMap;
 
     private Map<String, JahiaGroupManagerProvider> providerMap = new HashMap<String, JahiaGroupManagerProvider>();
     private List<JahiaGroupManagerProvider> providers = Collections.emptyList();
@@ -94,7 +99,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     private String jahiaJcrEnforcedGroupsProviderKey;
 
     private ApplicationEventPublisher applicationEventPublisher;
-
+    private EhCacheProvider ehCacheProvider;
 
     /**
      * Create an new instance of the Group Manager Service if the instance do not
@@ -463,33 +468,36 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     }
 
     private int getSiteId(final String siteKey) {
-        Integer id = siteKeyIdMap.get(siteKey);
-
-        if(id!=null) {
-            return id;
-        }
-        try {
-            if (siteKey != null) {
-                id = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+        if (StringUtils.isNotEmpty(siteKey)) {
+            if(siteKeyIdMap==null){
+                siteKeyIdMap = ehCacheProvider.registerSelfPopulatingCache("org.jahia.groups.siteKeyIDCache", new CacheEntryFactory() {
                     @Override
-                    public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey,
-                                session).getID();
+                    public Object createEntry(final Object key) throws Exception {
+                        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+                            @Override
+                            public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                try {
+                                    return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) key,
+                                            session).getID();
+                                } catch (RepositoryException e) {
+                                    return 0;
+                                }
+                            }
+                        });
                     }
                 });
-                synchronized (siteKeyIdMap) {
-                    siteKeyIdMap.put(siteKey,id);
-                }
-                return id;
             }
-        } catch (Exception e) {
+            return (Integer) siteKeyIdMap.get(siteKey).getObjectValue();
         }
         return 0;
     }
 
+    /**
+     * Flush the cache of site id by site key.
+     */
     public static void flushSiteKeyIdMap() {
-        synchronized (siteKeyIdMap) {
-            siteKeyIdMap.clear();
+        if(siteKeyIdMap!=null) {
+            siteKeyIdMap.refresh();
         }
     }
 
@@ -536,5 +544,9 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
+        this.ehCacheProvider = ehCacheProvider;
     }
 }

@@ -353,10 +353,10 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
 
         try {
-            String language = resolveSiteLanguage(targetSiteKey);
+            String language = siteService.getSiteDefaultLanguage(targetSiteKey);
             if (language == null) {
                 // remove template from the url
-                language = resolveSiteLanguage(StringUtils.substringBeforeLast(targetSiteKey, "."));
+                language = siteService.getSiteDefaultLanguage(StringUtils.substringBeforeLast(targetSiteKey, "."));
             }
             request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG, language);
         } catch (JahiaException e) {
@@ -364,14 +364,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         }
 
         return true;
-    }
-
-    private String resolveSiteLanguage(String targetSiteKey) throws JahiaException {
-        JahiaSite targetSite = siteService.getSiteByKey(targetSiteKey);
-        if (targetSite != null) {
-            return targetSite.getDefaultLanguage();
-        }
-        return null;
     }
 
     private void resetState(HttpServletRequest request) {

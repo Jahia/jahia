@@ -7,6 +7,7 @@ import javax.jcr.observation.Event
 import org.slf4j.Logger
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
+import org.jahia.services.sites.JahiaSitesService;
 
 
 expander rules.dsl
@@ -148,6 +149,7 @@ rule "Clear site cache when updated"
 			- the node has the type jnt:virtualsite
     then
 >       service.updateSite(node);
+>       JahiaSitesService.flushSitesInternalCaches();
 end
 
 rule "Update language availability on system site"

@@ -268,10 +268,7 @@ public class URLResolver {
         boolean mappingResolved = false;
 
         try {
-            JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(serverName);
-            if (site != null) {
-                siteKeyByServerName = site.getSiteKey();
-            }
+            siteKeyByServerName = ServicesRegistry.getInstance().getJahiaSitesService().getSitenameByServerName(serverName);
         } catch (JahiaException e) {
             logger.warn("Error finding site via servername: " + serverName, e);
         }
@@ -434,8 +431,8 @@ public class URLResolver {
         String nodePath = path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path;
         SiteInfo siteInfo = null;
         if (nodePathCache.containsKey(cacheKey) && siteInfoCache.containsKey(cacheKey)) {
-            nodePath = (String) nodePathCache.get(cacheKey);
-            siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
+            nodePath = nodePathCache.get(cacheKey);
+            siteInfo = siteInfoCache.get(cacheKey);
         }
         if (nodePath == null || siteInfo == null) {
             nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
@@ -443,6 +440,9 @@ public class URLResolver {
                         public String doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path);
+                            if(logger.isDebugEnabled()){
+                                logger.debug(cacheKey+ " has not been found in the cache, still looking for node "+nodePath);
+                            }
                             JCRNodeWrapper node = null;
                             while (true) {
                                 try {
@@ -466,9 +466,9 @@ public class URLResolver {
                             return nodePath;
                         }
                     });
-            siteInfo = (SiteInfo) siteInfoCache.get(cacheKey);
+            siteInfo = siteInfoCache.get(cacheKey);
         }
-
+        renderContext.setSiteInfo(siteInfo);
         JCRSessionFactory.getInstance().setCurrentSitePath(siteInfo.getSitePath());
         JCRSessionWrapper userSession = siteInfo != null
                 && siteInfo.getDefaultLanguage() != null
@@ -575,31 +575,29 @@ public class URLResolver {
                             }
                         }
 
-                        JCRSiteNode site = node.getResolveSite();
-                        JCRSessionWrapper userSession;
-
-                        if (site != null) {
-                            String defaultLanguage = site.getDefaultLanguage();
-                            boolean mixLanguagesActive = site
-                                    .isMixLanguagesActive();
-
-                            if (defaultLanguage != null && mixLanguagesActive) {
-                                userSession = JCRSessionFactory
-                                        .getInstance()
-                                        .getCurrentUserSession(
-                                                workspace,
-                                                locale,
-                                                LanguageCodeConverters
-                                                        .languageCodeToLocale(defaultLanguage));
-                            } else {
-                                userSession = JCRSessionFactory.getInstance()
-                                        .getCurrentUserSession(workspace,
-                                                locale);
+                        SiteInfo siteInfo = siteInfoCache.get(getCacheKey(workspace, locale, path));
+                        boolean mixLanguagesActive = false;
+                        String defaultLanguage = null;
+                        if(siteInfo==null){
+                            JCRSiteNode site = node.getResolveSite();
+                            if (site != null) {
+                                defaultLanguage = site.getDefaultLanguage();
+                                mixLanguagesActive = site.isMixLanguagesActive();
+                                siteInfoCache.put(getCacheKey(workspace, locale, path), new SiteInfo(site));
                             }
                         } else {
-                            userSession = JCRSessionFactory.getInstance()
-                                    .getCurrentUserSession(workspace, locale);
+                            defaultLanguage = siteInfo.getDefaultLanguage();
+                            mixLanguagesActive = siteInfo.isMixLanguagesActive();
                         }
+                        JCRSessionWrapper userSession;
+
+                        if (defaultLanguage != null && mixLanguagesActive) {
+                            userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,
+                                    LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+                        } else {
+                            userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+                        }
+
                         if(userSession.getVersionDate()==null)
                             userSession.setVersionDate(versionDate);
                         if(userSession.getVersionLabel()==null)

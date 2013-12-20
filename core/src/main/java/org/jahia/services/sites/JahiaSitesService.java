@@ -45,6 +45,8 @@
 //
 package org.jahia.services.sites;
 
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -53,6 +55,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -91,6 +94,7 @@ public class JahiaSitesService extends JahiaService {
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
+    protected EhCacheProvider ehCacheProvider;
 
     public void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -226,9 +230,6 @@ public class JahiaSitesService extends JahiaService {
             return null;
         }
 
-        // the site was not found in the cache, try to load it from the
-        // database.
-
         JahiaSite site = null;
         try {
             site = getSiteByServerName(serverName, getUserSession());
@@ -248,6 +249,23 @@ public class JahiaSitesService extends JahiaService {
         return null;
     }
 
+    private static SelfPopulatingCache siteKeyByServerNameCache;
+
+    public String getSitenameByServerName(final String serverName) throws JahiaException {
+        if (serverName == null) {
+            return null;
+        }
+
+        String siteName = getSiteKeyByServerNameCache().get(serverName).getObjectValue().toString();
+        return "".equals(siteName)?null:siteName;
+    }
+
+    private SelfPopulatingCache getSiteKeyByServerNameCache() {
+        if(siteKeyByServerNameCache == null) {
+            siteKeyByServerNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteKeyByServerNameCache",new SiteKeyByServerNameCacheEntryFactory());
+        }
+        return siteKeyByServerNameCache;
+    }
 
     /**
      * return a site looking at it's name
@@ -741,5 +759,66 @@ public class JahiaSitesService extends JahiaService {
             }
         }
         return false;
+    }
+
+    private static SelfPopulatingCache siteDefaultLanguageBySiteKey;
+
+    public String getSiteDefaultLanguage(String siteKey) throws JahiaException {
+        if (siteKey == null) {
+            return null;
+        }
+
+        return (String) getSiteDefaultLanguageBySiteKeyCache().get(siteKey).getObjectValue();
+    }
+
+    private SelfPopulatingCache getSiteDefaultLanguageBySiteKeyCache() {
+        if(siteDefaultLanguageBySiteKey == null) {
+            siteDefaultLanguageBySiteKey = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteDefaultLanguageBySiteKey",new SiteDefaultLanguageBySiteKeyCacheEntryFactory());
+        }
+        return siteDefaultLanguageBySiteKey;
+    }
+
+    /**
+     * Flush the sites internal caches ( site key by server name & default language by site key).
+     */
+    public static void flushSitesInternalCaches(){
+        if(siteKeyByServerNameCache !=null && siteDefaultLanguageBySiteKey !=null) {
+            siteKeyByServerNameCache.refresh();
+            siteDefaultLanguageBySiteKey.refresh();
+        }
+    }
+
+    public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
+        this.ehCacheProvider = ehCacheProvider;
+    }
+
+    /**
+     * Factory to fill the site key by server name cache.
+     */
+    public class SiteKeyByServerNameCacheEntryFactory implements CacheEntryFactory {
+        @Override
+        public Object createEntry(Object key) throws Exception {
+            JahiaSite siteByServerName = getSiteByServerName((String) key);
+            if (siteByServerName != null) {
+                return siteByServerName.getSiteKey();
+            } else {
+                return "";
+            }
+        }
+    }
+
+    /**
+     * Factory to fill the default language by site key cache.
+     */
+    public class SiteDefaultLanguageBySiteKeyCacheEntryFactory implements CacheEntryFactory {
+        @Override
+        public Object createEntry(Object key) throws Exception {
+            JahiaSite siteByServerName = getSiteByKey((String) key);
+            if (siteByServerName != null) {
+                return siteByServerName.getSiteKey();
+            } else {
+                return "";
+            }
+        }
     }
 }

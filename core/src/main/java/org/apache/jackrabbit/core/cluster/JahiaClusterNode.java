@@ -250,7 +250,9 @@ public class JahiaClusterNode extends ClusterNode {
     }
 
     public void setRevision(long revision) {
-        // do nothing
+        if (!(getJournal() instanceof NodeLevelLockableJournal)) {
+            super.setRevision(revision);
+        }
     }
 
     public void reallySetRevision(long revision) {

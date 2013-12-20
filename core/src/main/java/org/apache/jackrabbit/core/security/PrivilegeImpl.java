@@ -41,6 +41,7 @@
 package org.apache.jackrabbit.core.security;
 
 import javax.jcr.security.Privilege;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ import java.util.Set;
 * Date: 1/6/11
 * Time: 13:39
 */
-public class PrivilegeImpl implements Privilege {
+public class PrivilegeImpl implements Privilege, Serializable {
     private String prefixedName;
     private String expandedName;
     private boolean isAbstract;

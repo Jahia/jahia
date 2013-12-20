@@ -40,6 +40,13 @@
 
 package org.jahia.services.cache.ehcache;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.ObjectExistsException;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.config.Configuration;
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -56,6 +63,7 @@ import net.sf.ehcache.management.ManagementService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
+import java.util.Map;
 
 /**
  * EHCache based cache provider implementation.
@@ -133,5 +141,34 @@ public class EhCacheProvider implements CacheProvider {
 
     public boolean isStatisticsEnabled() {
         return statisticsEnabled;
+    }
+
+    /**
+     * This method register a SelfPopulatingCache in the CacheManager.
+     * @param cacheName the name of the cache to be registered
+     * @param factory the CacheFactory to be used to fill the CacheEntry
+     * @return teh instance of the registered cache
+     */
+    public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, CacheEntryFactory factory) {
+        // Call getEhCache to be sure to have the decorated cache. We manipulate only EhCache not Cache object
+        if (cacheManager.getEhcache(cacheName) == null) {
+            // get the default configuration four the self populating Caches
+            Configuration configuration = cacheManager.getConfiguration();
+            Map<String,CacheConfiguration> cacheConfigurations = configuration.getCacheConfigurations();
+            CacheConfiguration cacheConfiguration = cacheConfigurations.get("org.jahia.selfPopulatingReplicatedCache");
+            // Create a new cache with the configuration
+            Ehcache cache = new Cache(cacheConfiguration);
+            cache.setName(cacheName);
+            // Cache name has been set now we can initialize it by putting it in the manager.
+            // Only Cache manager is initializing caches.
+            cache = cacheManager.addCacheIfAbsent(cache);
+            // Create a decorated cache from an initialized cache.
+            SelfPopulatingCache selfPopulatingCache = new SelfPopulatingCache(cache, factory);
+            // replace the cache in the manager to be sure that everybody is using the decorated instance.
+            cacheManager.replaceCacheWithDecoratedCache(cache, selfPopulatingCache);
+            return selfPopulatingCache;
+        } else {
+            return (SelfPopulatingCache) cacheManager.getEhcache(cacheName);
+        }
     }
 }

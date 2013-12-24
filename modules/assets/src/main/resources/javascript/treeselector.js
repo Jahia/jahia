@@ -1,7 +1,7 @@
 function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nodeTypes, selectableNodeTypes, valueType,
                                      onSelect, onClose, treeviewOptions, fancyboxOptions) {
     $("#" + fieldId + "-treeItemSelectorTrigger").fancybox($.extend({
-        autoDimensions: false,
+        autoSize: false,
         height: 400,
         width: 350,
         hideOnOverlayClick: false,

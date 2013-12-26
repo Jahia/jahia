@@ -815,7 +815,7 @@ public class JahiaSitesService extends JahiaService {
         public Object createEntry(Object key) throws Exception {
             JahiaSite siteByServerName = getSiteByKey((String) key);
             if (siteByServerName != null) {
-                return siteByServerName.getSiteKey();
+                return siteByServerName.getDefaultLanguage();
             } else {
                 return "";
             }

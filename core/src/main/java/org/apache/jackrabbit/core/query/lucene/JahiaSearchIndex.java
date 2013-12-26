@@ -44,7 +44,6 @@ import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
-import org.apache.jackrabbit.core.query.lucene.AnalyzerRegistry;
 import org.apache.jackrabbit.core.query.lucene.constraint.NoDuplicatesConstraint;
 import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.core.session.SessionContext;
@@ -80,8 +79,8 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private Boolean versionIndex;
 
-    private int batchSize = 100;    
-    
+    private int batchSize = 100;
+
     private boolean addAclUuidInIndex = true;
 
     private static final AnalyzerRegistry analyzerRegistry = new LanguageCustomizingAnalyzerRegistry();
@@ -108,12 +107,12 @@ public class JahiaSearchIndex extends SearchIndex {
      */
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
-    }    
+    }
 
     /**
      * We override this method in order to trigger re-indexing on translation nodes, when their
      * parent node is getting re-indexed.
-     *
+     * <p/>
      * After that we just call the updateNodes from the Jackrabbut SearchIndex implementation.
      *
      * @param remove ids of nodes to remove.
@@ -131,7 +130,7 @@ public class JahiaSearchIndex extends SearchIndex {
         final List<NodeId> removeList = new ArrayList<NodeId>();
         final Set<NodeId> removedIds = new HashSet<NodeId>();
         final Set<NodeId> addedIds = new HashSet<NodeId>();
-        final List<NodeId> aclChangedList = new ArrayList<NodeId>();        
+        final List<NodeId> aclChangedList = new ArrayList<NodeId>();
 
         while (add.hasNext()) {
             final NodeState state = add.next();
@@ -150,28 +149,28 @@ public class JahiaSearchIndex extends SearchIndex {
             final IndexReader reader = getIndexReader();
             final Searcher searcher = new IndexSearcher(reader);
             try {
-            int removeSubListStart = 0;
-            int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
-            while (removeSubListStart < removeList.size()) {
-                BooleanQuery query = new BooleanQuery();
-                for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
-                    TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
-                    query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
-                }
-                searcher.search(query, new AbstractHitCollector() {
-                    public void collect(int doc, float score) {
-                        try {
-                            String uuid = reader.document(doc).get("_:UUID");
-                            addIdToBeIndexed(new NodeId(uuid), addedIds, removedIds, addList, removeList);
-                        } catch (Exception e) {
-                            log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
-                        }
+                int removeSubListStart = 0;
+                int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
+                while (removeSubListStart < removeList.size()) {
+                    BooleanQuery query = new BooleanQuery();
+                    for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
+                        TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
+                        query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
                     }
-                });
-                removeSubListStart += BooleanQuery.getMaxClauseCount();
-                removeSubListEnd =  Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
+                    searcher.search(query, new AbstractHitCollector() {
+                        public void collect(int doc, float score) {
+                            try {
+                                String uuid = reader.document(doc).get("_:UUID");
+                                addIdToBeIndexed(new NodeId(uuid), addedIds, removedIds, addList, removeList);
+                            } catch (Exception e) {
+                                log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
+                            }
+                        }
+                    });
+                    removeSubListStart += BooleanQuery.getMaxClauseCount();
+                    removeSubListEnd = Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
 
-            }
+                }
             } finally {
                 searcher.close();
                 Util.closeOrRelease(reader);
@@ -210,10 +209,10 @@ public class JahiaSearchIndex extends SearchIndex {
         super.updateNodes(removeList.iterator(), addList.iterator());
 
         if (log.isDebugEnabled()) {
-            log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[] {
-                    (System.currentTimeMillis() - timer), removeList.size(), addList.size() });
+            log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[]{
+                    (System.currentTimeMillis() - timer), removeList.size(), addList.size()});
         }
-        
+
         if (!aclChangedList.isEmpty()) {
             int aclSubListStart = 0;
             int aclSubListEnd = Math.min(aclChangedList.size(), batchSize);
@@ -222,7 +221,7 @@ public class JahiaSearchIndex extends SearchIndex {
                     Thread.yield();
                 }
                 List<NodeState> aclAddList = new ArrayList<NodeState>();
-                List<NodeId> aclRemoveList = new ArrayList<NodeId>();                
+                List<NodeId> aclRemoveList = new ArrayList<NodeId>();
                 for (final NodeId node : aclChangedList.subList(aclSubListStart, aclSubListEnd)) {
                     try {
                         addIdToBeIndexed(node, addedIds, removedIds,
@@ -231,22 +230,22 @@ public class JahiaSearchIndex extends SearchIndex {
                         log.warn("ACL_UUID field in document for nodeId '" + node.toString() + "' may not be updated, so access rights check in search may not work correctly", e);
                     }
                 }
-                
+
                 super.updateNodes(aclRemoveList.iterator(), aclAddList.iterator());
-                
+
                 aclSubListStart += batchSize;
-                aclSubListEnd =  Math.min(aclChangedList.size(), aclSubListEnd + batchSize);
+                aclSubListEnd = Math.min(aclChangedList.size(), aclSubListEnd + batchSize);
             }
             if (log.isDebugEnabled()) {
-                log.debug("Re-indexed {} nodes after ACL change in {} ms", new Object[] {aclChangedList.size(), 
+                log.debug("Re-indexed {} nodes after ACL change in {} ms", new Object[]{aclChangedList.size(),
                         (System.currentTimeMillis() - timer)});
             }
         }
     }
 
-    private void recurseTreeForAclIdSetting (NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeId> aclChangedList, ItemStateManager itemStateManager) {
+    private void recurseTreeForAclIdSetting(NodeState node, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeId> aclChangedList, ItemStateManager itemStateManager) {
         for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
-            try {            
+            try {
                 NodeState childNode = (NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId());
                 boolean breakInheritance = false;
                 if (childNode.hasPropertyName(JahiaNodeIndexer.J_ACL_INHERITED)) {
@@ -269,12 +268,12 @@ public class JahiaSearchIndex extends SearchIndex {
                 log.debug("Exception when checking for creating ACL_UUID in index", e);
             } catch (RepositoryException e) {
                 log.warn("ACL_UUID field in document for nodeId '{}' may not be updated, so access rights check in search may not work correctly", childNodeEntry.getId().toString());
-                log.debug("Exception when checking for creating ACL_UUID in index", e);                
-            }            
+                log.debug("Exception when checking for creating ACL_UUID in index", e);
+            }
         }
     }
 
-    private void addIdToBeIndexed(NodeId id, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList)  throws ItemStateException {
+    private void addIdToBeIndexed(NodeId id, Set<NodeId> addedIds, Set<NodeId> removedIds, List<NodeState> addList, List<NodeId> removeList) throws ItemStateException {
         if (!removedIds.contains(id)
                 && !addedIds.contains(id)) {
             removeList.add(id);
@@ -297,7 +296,7 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setIndexFormatVersion(indexFormatVersion);
         indexer.setMaxExtractLength(getMaxExtractLength());
         indexer.setSupportSpellchecking(getSpellCheckerClass() != null);
-        indexer.setAddAclUuidInIndex(addAclUuidInIndex);        
+        indexer.setAddAclUuidInIndex(addAclUuidInIndex);
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
@@ -442,16 +441,16 @@ public class JahiaSearchIndex extends SearchIndex {
 
         return versionIndex;
     }
-    
+
     /**
      * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
      * This can have a negative effect on performance, when setting rights on a node,
      * which has a large subtree using the same rights, as all these nodes will need
      * to be reindexed. On the other side the advantage is that the queries are faster,
      * as the user rights are resolved faster.
-     * 
+     *
      * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
-     */    
+     */
     public boolean isAddAclUuidInIndex() {
         return addAclUuidInIndex;
     }

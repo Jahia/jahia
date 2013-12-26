@@ -44,11 +44,15 @@ import org.apache.jackrabbit.core.query.PropertyTypeRegistry;
 import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.commons.query.QueryNodeFactory;
+import org.apache.lucene.analysis.Analyzer;
 
 import javax.jcr.query.InvalidQueryException;
 
 public class JahiaQueryImpl extends QueryImpl {
 
+    private static final String JCR_LANGUAGE = "jcr:language='";
+    private static final String JCR_SYSTEM = "jcr:system";
+    public static final int LENGTH = "jcr:language='".length();
     private Constraint constraint = null;
     private String statement = null;    
 
@@ -69,7 +73,19 @@ public class JahiaQueryImpl extends QueryImpl {
 
     @Override
     public boolean needsSystemTree() {
-        return statement.contains("jcr:system");
+        return statement.contains(JCR_SYSTEM);
     }
 
+    @Override
+    protected Analyzer getTextAnalyzer() {
+        // extract language code from statement if available
+        int langIndex = statement.indexOf(JCR_LANGUAGE);
+        if (langIndex >= 0 && langIndex <= statement.length() - LENGTH - 2) {
+            final int end = langIndex + LENGTH;
+            final String lang = statement.substring(end, end + 2);
+            return index.getAnalyzerRegistry().getAnalyzer(lang);
+        }
+
+        return super.getTextAnalyzer();
+    }
 }

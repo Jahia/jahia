@@ -44,10 +44,10 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
 import org.apache.jackrabbit.commons.predicate.Predicate;
+import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
-import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
 import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
@@ -72,7 +72,6 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -88,7 +87,7 @@ import static org.apache.lucene.search.BooleanClause.Occur.MUST;
  * - handles rep:filter in fulltext constraint  
  */
 public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
-    private static Logger logger = LoggerFactory.getLogger(LazySelectorRow.class);   // <-- Added by jahia
+    private static Logger logger = LoggerFactory.getLogger(JahiaLuceneQueryFactoryImpl.class);   // <-- Added by jahia
 
     private Locale locale;
 

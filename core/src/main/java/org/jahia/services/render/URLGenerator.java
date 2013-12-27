@@ -121,7 +121,7 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-        base = getBase(resource.getLocale().getLanguage());
+        base = getBase(resource.getLocale().toString());
 
         final String resourcePath = getResourcePath();
 

@@ -76,6 +76,7 @@ public class JahiaQueryImpl extends QueryImpl {
         return statement.contains(JCR_SYSTEM);
     }
 
+    @Override
     protected Analyzer getTextAnalyzer() {
         // extract language code from statement if available
         int langIndex = statement.indexOf(JCR_LANGUAGE);
@@ -85,6 +86,6 @@ public class JahiaQueryImpl extends QueryImpl {
             return index.getAnalyzerRegistry().getAnalyzer(lang);
         }
 
-        return index.getTextAnalyzer();
+        return super.getTextAnalyzer();
     }
 }

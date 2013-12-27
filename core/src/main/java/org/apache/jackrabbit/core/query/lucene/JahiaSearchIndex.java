@@ -83,8 +83,6 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private boolean addAclUuidInIndex = true;
 
-    private static final AnalyzerRegistry analyzerRegistry = new LanguageCustomizingAnalyzerRegistry();
-
     public int getMaxClauseCount() {
         return maxClauseCount;
     }
@@ -96,7 +94,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
     @Override
     protected AnalyzerRegistry getAnalyzerRegistry() {
-        return analyzerRegistry;
+        return LanguageCustomizingAnalyzerRegistry.getInstance();
     }
 
     /**

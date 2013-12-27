@@ -54,6 +54,7 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.util.Version;
 import org.jahia.api.Constants;
 import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
@@ -63,10 +64,8 @@ import org.w3c.dom.CharacterData;
 
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.lang.reflect.Constructor;
+import java.util.*;
 
 /**
  * Jahia specific {@link IndexingConfiguration} implementation.
@@ -177,7 +176,109 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                 excludesFromI18NCopy = initPropertyCollectionFrom(configNode, "exclude-property", resolver);
             } else if (nodeName.equals("spellchecker")) {
                 includedInSpellchecking = initPropertyCollectionFrom(configNode, "include-property", null);
+            } else if (nodeName.equals("analyzer-registry")) {
+                processAnalyzerRegistryConfiguration(configNode);
             }
+        }
+    }
+
+    private void processAnalyzerRegistryConfiguration(Node configNode) {
+        try {
+            // each node should be a language code to which an analyzer and its optional customization is
+            // associated
+            final NodeList childNodes = configNode.getChildNodes();
+            final int length = childNodes.getLength();
+
+            // iterate over children
+            for (int j = 0; j < length; j++) {
+                final Node child = childNodes.item(j);
+
+                // only process elements
+                if (Node.ELEMENT_NODE == child.getNodeType()) {
+                    // language code
+                    final String lang = child.getNodeName();
+
+                    // Analyzer class name
+                    final String className = getClassAttribute(child);
+                    if (className != null) {
+
+                        Analyzer analyzer;
+                        try {
+                            // instantiate Analyzer
+                            final Class<?> analyzerClass = Class.forName(className);
+                            final Constructor<?> constructor = analyzerClass.getConstructor(Version.class);
+                            analyzer = (Analyzer) constructor.newInstance(Version.LUCENE_30);
+
+                            // and add it to the registry
+                            LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer);
+
+                        } catch (Exception e) {
+                            logger.warn("Couldn't instantiate Analyzer class: " + className, e);
+                            continue;
+                        }
+
+                        // instantiate and initialize AnalyzerCustomizer
+                        final NodeList potentialCustomizers = child.getChildNodes();
+                        final int potentialCustomizersNb = potentialCustomizers.getLength();
+                        for (int customizerIndex = 0; customizerIndex < potentialCustomizersNb; customizerIndex++) {
+
+                            final Node customizerNode = potentialCustomizers.item(customizerIndex);
+                            if (Node.ELEMENT_NODE == customizerNode.getNodeType()) {
+                                final String customizerClassName = getClassAttribute(customizerNode);
+                                if (customizerClassName != null) {
+                                    try {
+                                        final Class<?> customizerClass = Class.forName(customizerClassName);
+                                        final AnalyzerCustomizer customizer = (AnalyzerCustomizer) customizerClass.newInstance();
+
+                                        // now that we have our customizer, initialize it
+                                        final NodeList keys = customizerNode.getChildNodes();
+                                        final int keyNb = keys.getLength();
+                                        final Map<String, List<String>> props = new HashMap<String, List<String>>(keyNb);
+                                        for (int keyIndex = 0; keyIndex < keyNb; keyIndex++) {
+                                            final Node item = keys.item(keyIndex);
+
+                                            // only process element nodes
+                                            if (Node.ELEMENT_NODE == item.getNodeType()) {
+                                                final String key = item.getNodeName();
+                                                final String value = getTextContent(item).trim();
+
+                                                List<String> values = props.get(key);
+                                                if (values == null) {
+                                                    values = new ArrayList<String>();
+                                                    props.put(key, values);
+                                                }
+
+                                                values.add(value);
+                                            }
+                                        }
+                                        customizer.initFrom(props);
+
+                                        // and finally, customize the Analyzer
+                                        customizer.customize(analyzer);
+
+                                        // we only allow one customizer so stop here
+                                        break;
+                                    } catch (Exception e) {
+                                        // we don't break out of the loop here in an attempt to check if maybe
+                                        // another customizer has been configured
+                                        logger.warn("Couldn't instantiate AnalyzerCustomizer class: " + customizerClassName, e);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Couldn't process AnalyzerRegistry configuration", e);
+        }
+    }
+
+    private String getClassAttribute(Node node) {
+        try {
+            return node.getAttributes().getNamedItem("class").getNodeValue().trim();
+        } catch (Exception e) {
+            return null;
         }
     }
 

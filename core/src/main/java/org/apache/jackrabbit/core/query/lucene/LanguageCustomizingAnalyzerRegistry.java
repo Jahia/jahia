@@ -85,11 +85,38 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
         languageToAnalyzer.put("th", new ASCIIFoldingAnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
     }
 
+    private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
+
+    public static LanguageCustomizingAnalyzerRegistry getInstance() {
+        return instance;
+    }
+
+    private LanguageCustomizingAnalyzerRegistry() {
+    }
+
     @Override
     public Analyzer getAnalyzerFor(Document document) {
         final String key = getKeyFor(document);
         if (key != null) {
-            return languageToAnalyzer.get(key);
+            // first attempt to get the exact match
+            Analyzer analyzer = languageToAnalyzer.get(key);
+            if (analyzer == null) {
+                // if we didn't get an exact match, attempt to see if we're dealing with a language variant
+                final int underscore = key.indexOf('_');
+                if (underscore >= 0) {
+                    // we have a variant, extract main language and use this as key
+                    analyzer = languageToAnalyzer.get(key.substring(0, underscore));
+
+                    if (analyzer != null) {
+                        // we had a match on main language so add a new entry to avoid going through language parsing
+                        // again next time around!
+                        languageToAnalyzer.put(key, analyzer);
+                    }
+                    return analyzer;
+                }
+            }
+
+            return analyzer;
         }
 
         return null;
@@ -114,5 +141,9 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     @Override
     public boolean acceptKey(Object key) {
         return key instanceof String;
+    }
+
+    void addAnalyzer(String key, Analyzer analyzer) {
+        languageToAnalyzer.put(key, new ASCIIFoldingAnalyzerWrapper(analyzer));
     }
 }

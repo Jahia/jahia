@@ -895,6 +895,7 @@ extends = jnt:content
 [jnt:metaInfFolder] > jnt:folder
 
 [jnt:definitionFile] > jnt:editableFile
+ + * (jnt:namespaceDefinition)
  + * (jnt:nodeType)
 
 [jnt:nodeType] > nt:base, mix:title orderable abstract

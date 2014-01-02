@@ -41,22 +41,29 @@
 package org.jahia.modules.serversettings.portlets;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.pluto.util.assemble.Assembler;
 import org.apache.pluto.util.assemble.AssemblerConfig;
 import org.apache.pluto.util.assemble.war.WarAssembler;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 /**
- * .
  * User: jahia
  * Date: 15 avr. 2009
  * Time: 12:31:07
@@ -65,20 +72,91 @@ public class AssemblerTask {
 
     private static final Logger logger = LoggerFactory.getLogger(AssemblerTask.class);
 
-    private File webapp;
+    private static JarEntry cloneEntry(JarEntry originalJarEntry) {
+        final JarEntry newJarEntry = new JarEntry(originalJarEntry.getName());
+        newJarEntry.setComment(originalJarEntry.getComment());
+        newJarEntry.setExtra(originalJarEntry.getExtra());
+        newJarEntry.setMethod(originalJarEntry.getMethod());
+        newJarEntry.setTime(originalJarEntry.getTime());
+
+        // Must set size and CRC for STORED entries
+        if (newJarEntry.getMethod() == ZipEntry.STORED) {
+            newJarEntry.setSize(originalJarEntry.getSize());
+            newJarEntry.setCrc(originalJarEntry.getCrc());
+        }
+
+        return newJarEntry;
+    }
     private File tempDir;
+
+    private File webapp;
 
     public AssemblerTask(File tempDir, File webapp) {
         this.tempDir = tempDir;
         this.webapp = webapp;
     }
 
-    public File getWebapp() {
-        return webapp;
+    private File addTlds(File sourceJar) throws IOException {
+        JarFile jar = new JarFile(sourceJar);
+        File dest = new File(FilenameUtils.getFullPathNoEndSeparator(sourceJar.getPath()),
+                FilenameUtils.getBaseName(sourceJar.getName()) + ".war");
+        try {
+            boolean hasPortletTld = jar.getEntry("WEB-INF/portlet.tld") != null;
+            boolean hasPortlet2Tld = jar.getEntry("WEB-INF/portlet_2_0.tld") != null;
+            if (!hasPortletTld || !hasPortlet2Tld) {
+                jar.close();
+                final JarInputStream jarIn = new JarInputStream(new FileInputStream(sourceJar));
+                final Manifest manifest = jarIn.getManifest();
+                final JarOutputStream jarOut;
+                if (manifest != null) {
+                    jarOut = new JarOutputStream(new FileOutputStream(dest), manifest);
+                }
+                else {
+                    jarOut = new JarOutputStream(new FileOutputStream(dest));
+                }
+                
+                try {            
+                    copyEntries(jarIn, jarOut);
+                    if (!hasPortletTld) {
+                        addTldToJar("portlet.tld", jarOut);
+                    }
+                    if (!hasPortlet2Tld) {
+                        addTldToJar("portlet_2_0.tld", jarOut);
+                    }
+                } finally {
+                    jarIn.close();
+                    jarOut.close();
+                }
+                return dest;
+            }
+        } finally {
+            jar.close();
+        }
+        
+        return sourceJar;
     }
 
-    public File getTempDir() {
-        return tempDir;
+    private void addTldToJar(String tld, JarOutputStream jos) throws IOException {
+        jos.putNextEntry(new JarEntry("WEB-INF/" + tld));
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("META-INF/portlet-tlds/" + tld);
+        try {
+            IOUtils.copy(is, jos);
+            jos.closeEntry();
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    private void copyEntries(JarInputStream source, JarOutputStream dest) throws IOException {
+        JarEntry originalJarEntry = source.getNextJarEntry();
+        while (originalJarEntry != null) {
+            final JarEntry newJarEntry = cloneEntry(originalJarEntry);
+            dest.putNextEntry(newJarEntry);
+            IOUtils.copy(source, dest);
+            dest.closeEntry();
+            dest.flush();
+            originalJarEntry = source.getNextJarEntry();
+        }
     }
 
     public File execute() throws Exception {
@@ -103,10 +181,22 @@ public class AssemblerTask {
         assembler.assemble(config);
 
         File destFile = new File(tempDir, getWebapp().getName());
+        
+        if (SettingsBean.getInstance().getServer().startsWith("jboss")) {
+            destFile = addTlds(destFile);
+        }
 
         logger.info("Done assembling WAR file {} in {} ms.", destFile, (System.currentTimeMillis() - timer));
 
         return destFile;
+    }
+
+    public File getTempDir() {
+        return tempDir;
+    }
+
+    public File getWebapp() {
+        return webapp;
     }
 
     private boolean needRewriting(File source) throws FileNotFoundException, IOException {

@@ -3,7 +3,7 @@
 <jboss-deployment-structure>
    <deployment>
       <dependencies>
-         <module name="deployment.jahia.ear" optional="true" />
+         <module name="deployment.jahia.ear" />
       </dependencies>
    </deployment>
 </jboss-deployment-structure>

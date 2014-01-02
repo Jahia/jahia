@@ -797,13 +797,21 @@ public class JahiaSitesService extends JahiaService {
      */
     public class SiteKeyByServerNameCacheEntryFactory implements CacheEntryFactory {
         @Override
-        public Object createEntry(Object key) throws Exception {
-            JahiaSite siteByServerName = getSiteByServerName((String) key);
-            if (siteByServerName != null) {
-                return siteByServerName.getSiteKey();
-            } else {
-                return "";
-            }
+        public Object createEntry(final Object key) throws Exception {
+            final String[] siteKey = {""};
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where s.[j:serverName]='" + key + "'", Query.JCR_SQL2);
+                    NodeIterator ni = q.execute().getNodes();
+                    if (ni.hasNext()) {
+                        siteKey[0] = ((JahiaSite) ni.next()).getSiteKey();
+                        return null;
+                    }
+                    return null;
+                }
+            });
+            return siteKey[0];
         }
     }
 

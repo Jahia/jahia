@@ -801,9 +801,9 @@ public class JahiaSitesService extends JahiaService {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    String s = getSiteByServerName((String) key,session).getSiteKey();
+                    JCRSiteNode s = getSiteByServerName((String) key,session);
                     if (s!=null) {
-                        return s;
+                        return s.getSiteKey();
                     }  else {
                         return "";
                     }

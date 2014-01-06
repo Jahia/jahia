@@ -272,8 +272,6 @@
                             </form>
                             <c:set var="cellEmpty" value="false"/>
                         </c:when>
-                        <c:when test="${not empty sitesTransitive[activeVersion.id] and functions:contains(sitesTransitive[activeVersion.id],site)}">
-                        </c:when>
                         <c:otherwise>
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                 <input type="hidden" name="module" value="${activeVersion.id}"/>

@@ -163,7 +163,7 @@
                                 <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
                                     <i class="icon-pencil"></i>
                                 </a>
-                                <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="<fmt:message key='label.edit'/>" onclick="submitSiteForm('editSite', '${site.name}'); return false;">
+                                <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="<fmt:message key='serverSettings.manageWebProjects.editSite'/>" onclick="submitSiteForm('editSite', '${site.name}'); return false;">
                                     <i class=" icon-edit"></i>
                                 </a>
                                 <%--
@@ -186,7 +186,7 @@
     </fieldset>
 
     <fieldset>
-        <h2>System Site</h2>
+        <h2><fmt:message key="serverSettings.manageWebProjects.systemsite"/></h2>
         <div class="btn-group">
             <a class="btn" href="<c:url value='/cms/export/default/systemsite_export_${now}.zip?exportformat=site&live=true&sitebox=systemsite' />">
                 <i class="icon-upload"></i>

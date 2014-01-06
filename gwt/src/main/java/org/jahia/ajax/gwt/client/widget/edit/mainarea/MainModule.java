@@ -965,10 +965,13 @@ public class MainModule extends Module {
                     if (contextMenu != null) {
                         contextMenu.hide();
                     }
-                    if (el != null) {
+                    if (el != null && elBody != null) {
                         ModuleHelper.initAllModules(MainModule.this, body,elBody, config);
                         ModuleHelper.buildTree(MainModule.this,el);
                         parse(el);
+                    } else {
+                        // if body empty, this is not a jahia page
+                        path = "";
                     }
                     editLinker.getMainModule().unmask();
                     needParseAfterLayout = true;

@@ -60,8 +60,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.*;
 
@@ -138,9 +140,10 @@ class ContentBrowseTabItem extends BrowseTabItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 boolean displayGrid = false;
-                if (event.getSelectedItem() != null) {
+                final GWTJahiaNode node = event.getSelectedItem();
+                if (node != null) {
                     if (displayGridForTypes != null) {
-                        for (String type : event.getSelectedItem().getNodeTypes()) {
+                        for (String type : node.getNodeTypes()) {
                             displayGrid = displayGridForTypes.contains(type);
                             if (displayGrid) {
                                 break;
@@ -150,12 +153,16 @@ class ContentBrowseTabItem extends BrowseTabItem {
                         displayGrid = true;
                     }
                     if (displayGrid) {
-                        listLoader.load(event.getSelectedItem());
+                        listLoader.load(node);
                         contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
                     } else {
                         contentStore.removeAll();
                     }
-                } else {
+                    if (!node.getPath().equals(editLinker.getMainModule().getPath()) && node.getNodeTypes().contains("jnt:page") &&
+                            (PermissionsUtils.isPermitted("editModeAccess", node) || PermissionsUtils.isPermitted("studioModeAccess", node))
+                            ) {
+                        MainModule.staticGoTo(node.getPath(), null);
+                    }                } else {
                     contentStore.removeAll();
                 }
             }

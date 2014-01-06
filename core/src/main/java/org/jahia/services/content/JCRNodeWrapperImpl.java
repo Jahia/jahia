@@ -917,10 +917,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         if (objectNode.hasNode(s)) {
-            if (!s.contains("/")) {
-                return provider.getNodeWrapper(objectNode.getNode(s), buildSubnodePath(s), this, session);
-            } else {
-                return provider.getNodeWrapper(objectNode.getNode(s), session);
+            final Node node = objectNode.getNode(s);
+            if (!node.hasProperty("j:isExternalProviderRoot")) {
+                if (!s.contains("/")) {
+                    return provider.getNodeWrapper(node, buildSubnodePath(s), this, session);
+                } else {
+                    return provider.getNodeWrapper(node, session);
+                }
             }
         }
         if (provider.getService() != null) {

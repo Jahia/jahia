@@ -216,6 +216,10 @@ public class MainModule extends Module {
 
         String location = newLocation;
         newLocation = null;
+        if (location.contains("://")) {
+            location = location.substring(location.indexOf("://")+3);
+            location = location.substring(location.indexOf("/"));
+        }
         if (location == null && !Window.Location.getHash().equals("")) {
             location = Window.Location.getHash().substring(Window.Location.getHash().indexOf('|')+1);
         }

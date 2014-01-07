@@ -87,9 +87,7 @@ public class ComponentTypesChoiceListInitializerImpl implements ChoiceListInitia
         }
 
         try {
-            for (Map.Entry<String, String> comp : ComponentRegistry.getComponentTypes(
-                    contextNode, includes, excludes, locale)
-                    .entrySet()) {
+            for (Map.Entry<String, String> comp : ComponentRegistry.getComponentTypes(contextNode, includes, excludes, locale).entrySet()) {
                 choiceList.add(new ChoiceListValue(comp.getValue(), comp.getKey()));
             }
         } catch (RepositoryException e) {

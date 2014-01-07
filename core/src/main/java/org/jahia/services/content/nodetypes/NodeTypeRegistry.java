@@ -47,6 +47,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
@@ -282,7 +283,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return new JahiaNodeTypeIterator(res.iterator(), res.size());
     }
 
-    public NodeTypeIterator getNodeTypes(String systemId) {
+    public JahiaNodeTypeIterator getNodeTypes(String systemId) {
         List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
         for (ExtendedNodeType nt : nodeTypesList) {
             if (nt.getSystemId().equals(systemId)) {
@@ -371,7 +372,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
-    class JahiaNodeTypeIterator implements NodeTypeIterator {
+    public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType>  {
         private long size;
         private long pos=0;
         private Iterator<ExtendedNodeType> iterator;
@@ -417,6 +418,16 @@ public class NodeTypeRegistry implements NodeTypeManager {
         public void remove() {
             iterator.remove();
             size -= 1;
+        }
+
+        /**
+         * Returns an iterator over a set of elements of type T.
+         *
+         * @return an Iterator.
+         */
+        @Override
+        public Iterator<ExtendedNodeType> iterator() {
+            return this;
         }
     }
 

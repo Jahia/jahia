@@ -109,95 +109,53 @@ public class ComponentRegistry {
         return include;
     }
 
-    private static Map<String, String> getComponentTypes(JCRNodeWrapper node,
-                                                         List<String> includeTypeList, List<String> excludeTypeList)
-            throws PathNotFoundException, RepositoryException {
-
-        Map<ExtendedNodeType, JCRNodeWrapper> typeComponentMap = new HashMap<ExtendedNodeType, JCRNodeWrapper>();
-        List<JCRNodeWrapper> components = new LinkedList<JCRNodeWrapper>();
-
-        JCRSiteNode resolvedSite = node.getResolveSite();
-
-        if (resolvedSite != null && resolvedSite.hasNode("components")) {
-            components.add(resolvedSite.getNode("components"));
-        }
-        if (resolvedSite != null && ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(resolvedSite.getName()) != null) {
-
-            for (JahiaTemplatesPackage dep : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(resolvedSite.getName()).getDependencies()) {
-                String version = dep.getIdWithVersion();
-                String path = "/modules/" + version + "/components";
-
-                if (resolvedSite.getSession().nodeExists(path)) {
-                    components.add(resolvedSite.getSession().getNode(path));
-                }
-            }
-        }
-        for (int i = 0; i < components.size(); i++) {
-            JCRNodeWrapper n = components.get(i);
-            if (n.isNodeType("jnt:componentFolder")) {
-                NodeIterator nodeIterator = n.getNodes();
-                while (nodeIterator.hasNext()) {
-                    JCRNodeWrapper next = (JCRNodeWrapper) nodeIterator.next();
-                    components.add(next);
-                }
-            } else if (n.isNodeType("jnt:simpleComponent") /*&& n.hasPermission("useComponentForCreate")*/) {
-                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(n.getName());
-                if (allowType(t, includeTypeList, excludeTypeList)) {
-                    typeComponentMap.put(t, n);
-                }
-            }
-        }
-
-        String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
-        Set<ExtendedNodeType> finaltypes = new HashSet<ExtendedNodeType>();
-        for (ExtendedNodeType type : typeComponentMap.keySet()) {
-            for (String s : constraints) {
-                if (!finaltypes.contains(type) && type.isNodeType(s)) {
-                    finaltypes.add(type);
-                    continue;
-                }
-            }
-        }
-
-        if (finaltypes.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        Map<String, String> finalComponents = new HashMap<String, String>(finaltypes.size());
-        for (ExtendedNodeType type : finaltypes) {
-            finalComponents.put(type.getName(), typeComponentMap.get(type).getDisplayableName());
-        }
-
-        SortedMap<String, String> sortedComponents = new TreeMap<String, String>(
-                CASE_INSENSITIVE_ORDERING.onResultOf(Functions.forMap(finalComponents)));
-        sortedComponents.putAll(finalComponents);
-
-        return sortedComponents;
-    }
-
     public static Map<String, String> getComponentTypes(final JCRNodeWrapper node,
                                                         final List<String> includeTypeList, final List<String> excludeTypeList,
                                                         Locale displayLocale) throws PathNotFoundException, RepositoryException {
 
         long timer = System.currentTimeMillis();
 
-        Map<String, String> sortedComponents = null;
-
-        if (displayLocale == null || displayLocale.equals(node.getSession().getLocale())) {
-            sortedComponents = getComponentTypes(node, includeTypeList, excludeTypeList);
-        } else {
-            sortedComponents = JCRTemplate.getInstance().doExecuteWithUserSession(
-                    node.getSession().getUser().getUsername(),
-                    node.getSession().getWorkspace().getName(), displayLocale,
-                    new JCRCallback<Map<String, String>>() {
-
-                        public Map<String, String> doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            return getComponentTypes(session.getNodeByUUID(node.getIdentifier()),
-                                    includeTypeList, excludeTypeList);
-                        }
-                    });
+        if (displayLocale == null) {
+            displayLocale = node.getSession().getLocale();
         }
+
+        Map<String, String> finalComponents = new HashMap<String, String>();
+
+        JCRSiteNode resolvedSite = node.getResolveSite();
+
+        String[] constraints = Patterns.SPACE.split(ConstraintsHelper.getConstraints(node));
+
+        Set<String> l = new HashSet<String>();
+        l.add("system-jahia");
+
+        if (resolvedSite != null) {
+            for (String s : resolvedSite.getInstalledModules()) {
+                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
+
+                l.add(module.getId());
+
+                for (JahiaTemplatesPackage dep : module.getDependencies()) {
+                    l.add(dep.getId());
+                }
+            }
+        }
+
+        for (String aPackage : l) {
+            for (ExtendedNodeType type : NodeTypeRegistry.getInstance().getNodeTypes(aPackage)) {
+                if (allowType(type, includeTypeList, excludeTypeList)) {
+                    for (String s : constraints) {
+                        if (!finalComponents.containsKey(type) && type.isNodeType(s)) {
+                            finalComponents.put(type.getName(), type.getLabel(displayLocale));
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+
+        SortedMap<String, String> sortedComponents = new TreeMap<String, String>(
+                CASE_INSENSITIVE_ORDERING.onResultOf(Functions.forMap(finalComponents)));
+        sortedComponents.putAll(finalComponents);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Execution took {} ms", (System.currentTimeMillis() - timer));

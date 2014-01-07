@@ -216,15 +216,15 @@ public class MainModule extends Module {
 
         String location = newLocation;
         newLocation = null;
-        if (location.contains("://")) {
-            location = location.substring(location.indexOf("://")+3);
-            location = location.substring(location.indexOf("/"));
-        }
         if (location == null && !Window.Location.getHash().equals("")) {
             location = Window.Location.getHash().substring(Window.Location.getHash().indexOf('|')+1);
         }
         if (location == null) {
             location = Window.Location.getPath();
+        }
+        if (location.contains("://")) {
+            location = location.substring(location.indexOf("://")+3);
+            location = location.substring(location.indexOf("/"));
         }
         if (location.startsWith(JahiaGWTParameters.getContextPath() + config.getDefaultUrlMapping() + "/")) {
             location = location.replaceFirst(config.getDefaultUrlMapping(), config.getDefaultUrlMapping()+"frame");

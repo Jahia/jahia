@@ -79,7 +79,8 @@ public class JahiaTemplatesPackage {
     private ModuleState state;
 
     private ClassLoader classLoader;
-    
+    private ClassLoader chainedClassLoader;
+
     /**
      * the full path to the source file or directory
      */
@@ -854,6 +855,9 @@ public class JahiaTemplatesPackage {
      *         at the end the list of class loaders of modules, this module depends on
      */
     public ClassLoader getChainedClassLoader() {
+        if (chainedClassLoader != null) {
+            return chainedClassLoader;
+        }
         final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
         classLoaders.add(Jahia.class.getClassLoader());
         if (getClassLoader() != null) {
@@ -864,7 +868,7 @@ public class JahiaTemplatesPackage {
                 classLoaders.add(dependentPack.getClassLoader());
             }
         }
-        return new ClassLoader() {
+        chainedClassLoader = new ClassLoader() {
             public URL getResource(String name) {
                 URL url = null;
                 for (ClassLoader loader : classLoaders) {
@@ -888,6 +892,7 @@ public class JahiaTemplatesPackage {
                 throw new ClassNotFoundException(name);
             }
         };
+        return chainedClassLoader;
     }
     
     /**

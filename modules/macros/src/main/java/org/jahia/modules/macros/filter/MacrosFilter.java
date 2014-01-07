@@ -105,7 +105,11 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
             }
             String[] macro = getMacro(macroName, renderContext);
             if (macro != null) {
+                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(macro[2]);
+                Thread.currentThread().setContextClassLoader(module.getChainedClassLoader());
                 try {
+
                     // execute macro
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(macro[1]);
                     ScriptContext scriptContext = new SimpleScriptContext();
@@ -119,6 +123,8 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
                 } catch (ScriptException e) {
                     logger.warn("Error during execution of macro "+macroName+" with message "+ e.getMessage(), e);
                     previousOut = matcher.replaceFirst(macroName);
+                } finally {
+                    Thread.currentThread().setContextClassLoader(tccl);
                 }
                 matcher = macrosPattern.matcher(previousOut);
             } else if(replaceByErrorMessageOnMissingMacros) {
@@ -181,7 +187,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
                     for (org.springframework.core.io.Resource resource : resources) {
                         if (resource.getFilename().startsWith(macroName)) {
                             macro = new String[] { FileUtils.getContent(resource),
-                                    FilenameUtils.getExtension(resource.getFilename()) };
+                                    FilenameUtils.getExtension(resource.getFilename()), aPackage.getId() };
 
                             scriptCache.put(macroName, macro);
 

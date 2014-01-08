@@ -74,7 +74,7 @@ public class LanguageHelper {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            if (site != null && site.getLanguages() != null && site.getLanguages().size()>0)  {
+            if (site != null && !site.isNodeType("jnt:module") && site.getLanguages() != null && site.getLanguages().size()>0)  {
                 final Set<String> languageSettings = site.getLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
                 final Set<String> activeLanguages = site.getActiveLiveLanguages();

@@ -720,9 +720,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     @SuppressWarnings("unchecked")
-    public void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl,
+    public RpcMap saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
+        RpcMap result = new RpcMap();
         closeEditEngine(node.getPath());
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
 
@@ -832,6 +833,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
         if (rb != null) {
             GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
+            try {
+                result.put(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()), getUser(), getLocale()));
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -844,6 +850,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause",getUILocale()) + e.getMessage());
         }
+        return result;
     }
 
 

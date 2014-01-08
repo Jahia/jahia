@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -151,12 +152,12 @@ public class UpdateButtonItem extends SaveButtonItem {
 
         JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(),
                 engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
-                removedTypes, new BaseAsyncCallback<Object>() {
+                removedTypes, new BaseAsyncCallback<RpcMap>() {
             public void onApplicationFailure(Throwable throwable) {
                 failSave(engine, throwable);
             }
 
-            public void onSuccess(Object o) {
+            public void onSuccess(RpcMap o) {
                 Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put(Linker.REFRESH_MAIN, true);
@@ -173,6 +174,9 @@ public class UpdateButtonItem extends SaveButtonItem {
                 }
                 data.put("node", node);
                 ((EditContentEngine) engine).closeEngine();
+                if (o != null && o.containsKey(GWTJahiaNode.SITE_LANGUAGES)) {
+                    JahiaGWTParameters.getSiteNode().set(GWTJahiaNode.SITE_LANGUAGES, o.get(GWTJahiaNode.SITE_LANGUAGES));
+                }
                 engine.getLinker().refresh(data);
             }
         });

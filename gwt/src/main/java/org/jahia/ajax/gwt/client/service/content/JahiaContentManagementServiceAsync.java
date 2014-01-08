@@ -303,7 +303,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void saveModule(String moduleId, String message, AsyncCallback asyncCallback);
 
-    void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback async);
+    void saveNode(GWTJahiaNode node, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes, AsyncCallback<RpcMap> async);
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
 

@@ -266,6 +266,7 @@ public final class GWTResourceBundleUtils {
             }
             ResourceBundle.clearCache();
             NodeTypeRegistry.getInstance().flushLabels();
+            node.getResolveSite().setLanguages(bundle.getLanguages());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -286,11 +287,13 @@ public final class GWTResourceBundleUtils {
             gwtBundle = new GWTResourceBundle();
 
             Set<String> languages = new HashSet<String>();
+            final JCRNodeWrapper parent = isFile ? node.getParent() : node;
             List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
-                    isFile ? node.getParent() : node, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
+                    parent, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
             for (JCRNodeWrapper rbFileNode : rbFileNodes) {
                 rbFileNode.lockAndStoreToken("engine");
             }
+            parent.lockAndStoreToken("engine");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -311,12 +314,16 @@ public final class GWTResourceBundleUtils {
             gwtBundle = new GWTResourceBundle();
 
             Set<String> languages = new HashSet<String>();
+            final JCRNodeWrapper parent = isFile ? node.getParent() : node;
             List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
-                    isFile ? node.getParent() : node, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
+                    parent, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
             for (JCRNodeWrapper rbFileNode : rbFileNodes) {
                 if (rbFileNode.isLocked()) {
                     rbFileNode.unlock("engine");
                 }
+            }
+            if (parent.isLocked()) {
+                parent.unlock("engine");
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

@@ -14,12 +14,6 @@
         <property name="titleKey" value="label.languages"/>
     </bean>
 
-    <!-- site language switcher -->
-    <bean id="Toolbar.ItemsGroup.SiteLanguageSwitcher" parent="Toolbar.ItemsGroup.LanguageSwitcher">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteLanguageSwitcherActionItem"/>
-        </property>
-    </bean>
 
     <bean id="Toolbar.Item.WorkInProgressAdmin" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="icon" value="workInProgress"/>

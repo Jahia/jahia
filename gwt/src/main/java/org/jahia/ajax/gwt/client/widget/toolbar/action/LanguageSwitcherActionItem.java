@@ -40,8 +40,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -52,6 +54,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
+
+import java.util.Arrays;
 
 /**
  * Language switcher toolbar item for all possible languages. 
@@ -100,6 +104,39 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
         setEnabled(true);
     }
 
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        super.handleNewMainNodeLoaded(node);
+        updateSite();
+    }
+
+    @Override
+    public void handleNewLinkerSelection() {
+        super.handleNewLinkerSelection();
+        updateSite();
+    }
+
+    private void updateSite() {
+        if (!JahiaGWTParameters.getSiteLanguages().equals(mainComponent.getStore().getModels())) {
+            events = false;
+            mainComponent.getStore().removeAll();
+            mainComponent.reset();
+            mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
+            mainComponent.getListView().getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+            if (mainComponent.getSelection().isEmpty() || !JahiaGWTParameters.getLanguage().equals(mainComponent.getSelection().get(0).getLanguage())) {
+                for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
+                    if (language.getLanguage().equals(JahiaGWTParameters.getLanguage())) {
+                        mainComponent.setSelection(Arrays.asList(language));
+                        break;
+                    }
+                }
+            }
+            events = true;
+            if (!JahiaGWTParameters.getSiteLanguages().contains(mainComponent.getSelection().get(0))) {
+                mainComponent.setSelection(Arrays.asList(JahiaGWTParameters.getSiteLanguages().get(0)));
+            }
+        }
+    }
 
     @Override
     public Component getCustomItem() {

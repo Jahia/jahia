@@ -546,8 +546,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                 </list>
                             </property>
                         </bean>
@@ -577,8 +576,7 @@
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                     </list>
                 </property>
             </bean>

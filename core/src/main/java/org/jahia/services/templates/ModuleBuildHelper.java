@@ -40,20 +40,6 @@
 
 package org.jahia.services.templates;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -77,9 +63,19 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Utility class for module compilation and build.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ModuleBuildHelper {
@@ -159,7 +155,7 @@ public class ModuleBuildHelper {
             StringBuilder out = new StringBuilder();
             int r = 0;
             try {
-                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean","install"}, null, sources, out, null);
+                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean", "install"}, null, sources, out, null);
             } catch (JahiaRuntimeException e) {
                 logger.error(e.getCause().getMessage(), e.getCause());
                 throw e;
@@ -187,7 +183,7 @@ public class ModuleBuildHelper {
     }
 
     public JCRNodeWrapper createModule(final String moduleName, String artifactId, final String groupId, final String moduleType, final File moduleSources,
-            final JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+                                       final JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(moduleName)) {
             throw new RepositoryException("Cannot create module because no module name has been specified");
         }
@@ -198,7 +194,7 @@ public class ModuleBuildHelper {
             throw new RepositoryException("Cannot create module " + artifactId + " because another module with the same artifactId exists");
         }
 
-        File sources = moduleSources; 
+        File sources = moduleSources;
         if (sources == null) {
             sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources");
             if (!sources.exists() && !sources.mkdirs()) {
@@ -225,7 +221,7 @@ public class ModuleBuildHelper {
         archetypeParams.add("-DarchetypeGroupId=org.jahia.archetypes");
         archetypeParams.add("-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype");
         archetypeParams.add("-Dversion=1.0-SNAPSHOT");
-        archetypeParams.add("\"-DmoduleName=" + moduleName+ "\"");
+        archetypeParams.add("\"-DmoduleName=" + moduleName + "\"");
         archetypeParams.add("-DartifactId=" + artifactId);
         if (StringUtils.isNotBlank(groupId)) {
             archetypeParams.add("-DgroupId=" + groupId);
@@ -289,24 +285,25 @@ public class ModuleBuildHelper {
                 throw new IOException(e);
             }
 
-            String[] deployParams = { "deploy:deploy-file", "-Dfile=" + generatedJar,
+            String[] deployParams = {"deploy:deploy-file", "-Dfile=" + generatedJar,
                     "-DrepositoryId=" + releaseInfo.getRepositoryId(), "-Durl=" + releaseInfo.getRepositoryUrl(),
                     "-DpomFile=" + pomFile.getPath(),
                     "-Dpackaging=" + StringUtils.substringAfterLast(generatedJar.getName(), "."),
                     "-DgroupId=" + PomUtils.getGroupId(pom), "-DartifactId=" + pom.getArtifactId(),
-                    "-Dversion=" + pom.getVersion() };
+                    "-Dversion=" + pom.getVersion()};
             if (settings != null) {
                 deployParams = (String[]) ArrayUtils.addAll(deployParams,
-                        new String[] { "--settings", settings.getPath() });
+                        new String[]{"--settings", settings.getPath()});
             }
             StringBuilder out = new StringBuilder();
             int ret = ProcessHelper.execute(mavenExecutable, deployParams, null,
                     generatedJar.getParentFile(), out, out);
 
             if (ret > 0) {
+                String s = getMavenError(out.toString());
                 logger.error("Maven archetype call returned " + ret);
                 logger.error("Maven out : " + out);
-                throw new IOException("Maven invocation failed");
+                throw new IOException("Maven invocation failed\n" + s);
             }
         } finally {
             FileUtils.deleteQuietly(settings);
@@ -329,10 +326,10 @@ public class ModuleBuildHelper {
             }
         }
         if (!found) {
-            throw  new IOException("unable to find pom.xml file within while looking for " + artifactId);
+            throw new IOException("unable to find pom.xml file within while looking for " + artifactId);
         }
         InputStream is = jar.getInputStream(jarEntry);
-        File pomFile = File.createTempFile("pom",".xml");
+        File pomFile = File.createTempFile("pom", ".xml");
         FileUtils.copyInputStreamToFile(is, pomFile);
         return pomFile;
     }
@@ -346,7 +343,7 @@ public class ModuleBuildHelper {
     }
 
     protected File releaseModuleInternal(Model model, String lastVersion, String releaseVersion,
-            ModuleReleaseInfo releaseInfo, File sources, String scmUrl) throws IOException, XmlPullParserException {
+                                         ModuleReleaseInfo releaseInfo, File sources, String scmUrl) throws IOException, XmlPullParserException {
         String nextVersion = releaseInfo.getNextVersion();
         String artifactId = model.getArtifactId();
         File pom = new File(sources, "pom.xml");
@@ -360,21 +357,22 @@ public class ModuleBuildHelper {
 
             File tmpRepo = new File(System.getProperty("java.io.tmpdir"), "repo");
             tmpRepo.mkdir();
-            String[] installParams = new String[] { "release:prepare", "release:stage",
+            String[] installParams = new String[]{"release:prepare", "release:stage",
                     "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag, "-DreleaseVersion=" + releaseVersion,
                     "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=true",
-                    "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode" };
+                    "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode"};
             StringBuilder out = new StringBuilder();
             ret = ProcessHelper.execute(mavenExecutable, installParams, null, sources, out, out);
 
             FileUtils.deleteDirectory(tmpRepo);
 
             if (ret > 0) {
+                String s = getMavenError(out.toString());
                 logger.error("Maven release call returnedError release, maven out : " + out);
                 logger.error("Error when releasing, maven out : " + out);
                 ProcessHelper.execute(mavenExecutable, new String[]{"release:rollback"}, null, sources, out, out);
                 logger.error("Rollback release : " + out);
-                throw new IOException("Maven invocation failed");
+                throw new IOException("Maven invocation failed\n" + s);
             }
 
             File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".war");
@@ -401,6 +399,15 @@ public class ModuleBuildHelper {
             PomUtils.updateVersion(pom, nextVersion);
         }
         return generatedWar;
+    }
+
+    private String getMavenError(String out) {
+        Matcher m = Pattern.compile("^\\[ERROR\\](.*)$", Pattern.MULTILINE).matcher(out);
+        StringBuilder s = new StringBuilder();
+        while (m.find()) {
+            s.append(m.group(1)).append("\n");
+        }
+        return s.toString();
     }
 
     public void setMavenArchetypeCatalog(String mavenArchetypeCatalog) {

@@ -106,6 +106,7 @@ public abstract class AbstractView extends TopRightComponent {
                 keys.add(GWTJahiaNode.PUBLICATION_INFO);
                 keys.add(GWTJahiaNode.PERMISSIONS);
                 keys.add(GWTJahiaNode.LOCKS_INFO);
+                keys.add(GWTJahiaNode.ICON);
                 JahiaContentManagementService.App.getInstance().lsLoad(root,
                         configuration.getNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), keys,

@@ -697,6 +697,7 @@ public class ResourceBundleEditor extends LayoutContainer {
             currentTab.add(sourceView);
             currentTab.layout();
             currentTab.setProcessed(true);
+            sourceView.setEnabled(writable);
         } else {
             sourceView = (TextArea) currentTab.getItem(0);
         }

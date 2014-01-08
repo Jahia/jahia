@@ -616,7 +616,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>     
+            </plugin> 
+            <!--    
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -628,6 +629,7 @@
                     <stagingProfileId>64277f72646358</stagingProfileId>
                 </configuration>
             </plugin>
+            -->
         </plugins>
     </build>
     <reporting>

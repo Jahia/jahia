@@ -629,16 +629,6 @@
 [jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:multimediaContent, jmix:editorialContent
  - j:node (weakreference,picker[type='file']) < jnt:file
 
-[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:multimediaContent, jmix:editorialContent
- - j:node (weakreference,picker[type='image']) < jmix:image
- - j:alternateText (string) i18n
-
-[jnt:nodeLinkImageReference] > jnt:imageReference, jmix:link
- - j:linknode (weakreference,picker[type='editoriallink']) < jmix:droppableContent, jnt:page
-
-[jnt:externalLinkImageReference] > jnt:imageReference, jmix:link
- - j:url (string)
-
 [jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
  - j:node (weakreference) < jmix:droppableContent
 
@@ -669,17 +659,6 @@
 
 [jnt:fileI18nReference] > jnt:fileReference
  - j:node (weakreference,picker[type='file']) i18n < jnt:file
-
-[jnt:imageI18nReference] > jnt:imageReference
- - j:node (weakreference,picker[type='image']) i18n < jmix:image
-
-[jnt:nodeLinkI18nImageReference] > jnt:nodeLinkImageReference
- - j:node (weakreference,picker[type='image']) i18n < jmix:image
- - j:linknode (weakreference) i18n < jmix:droppableContent, jnt:page
-
-[jnt:externalLinkI18nImageReference] > jnt:externalLinkImageReference
- - j:node (weakreference,picker[type='image']) i18n < jmix:image
- - j:url (string) i18n
 
 //---------------------------------------------------------
 // Caches

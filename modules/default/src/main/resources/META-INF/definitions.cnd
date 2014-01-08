@@ -258,3 +258,33 @@
  - contextNodePath (string)
 
 [jnt:simpleWorkflow] > mix:title, nt:base, jmix:i18n
+
+[jnt:imageReferenceLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:multimediaContent, jmix:editorialContent
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
+ - j:linknode (weakreference) i18n < jmix:droppableContent, jnt:page
+ - j:alternateText (string) i18n
+ - j:url (string) i18n
+
+// deprecated Image references
+
+[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:multimediaContent, jmix:editorialContent, jmix:hiddenType
+ - j:node (weakreference,picker[type='image']) < jmix:image
+ - j:alternateText (string) i18n
+
+[jnt:nodeLinkImageReference] > jnt:imageReference, jmix:link, jmix:hiddenType
+ - j:linknode (weakreference,picker[type='editoriallink']) < jmix:droppableContent, jnt:page
+
+[jnt:externalLinkImageReference] > jnt:imageReference, jmix:link, jmix:hiddenType
+ - j:url (string)
+
+[jnt:imageI18nReference] > jnt:imageReference, jmix:hiddenType
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
+
+[jnt:nodeLinkI18nImageReference] > jnt:nodeLinkImageReference, jmix:hiddenType
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
+ - j:linknode (weakreference) i18n < jmix:droppableContent, jnt:page
+
+[jnt:externalLinkI18nImageReference] > jnt:externalLinkImageReference, jmix:hiddenType
+ - j:node (weakreference,picker[type='image']) i18n < jmix:image
+ - j:url (string) i18n
+

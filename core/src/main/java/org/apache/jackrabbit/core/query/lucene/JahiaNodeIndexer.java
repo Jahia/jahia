@@ -297,8 +297,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         ExtendedPropertyDefinition propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
         if (propDef == null) {
             for (Name mixinTypeName : node.getMixinTypeNames()) {
-                ExtendedNodeType mixinType = nodeTypeRegistry.getNodeType(namespaceRegistry.getPrefix(mixinTypeName.getNamespaceURI())
-                        + ":" + mixinTypeName.getLocalName());
+                ExtendedNodeType mixinType = nodeTypeRegistry.getNodeType(getTypeNameAsString(mixinTypeName, namespaceRegistry));
                 propDef = mixinType.getPropertyDefinitionsAsMap().get(fieldName);
                 if (propDef != null) {
                     break;
@@ -399,17 +398,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addStringValue(doc, fieldName, internalValue, tokenized, includeInNodeIndex, boost,
                 useInExcerpt);
         if (tokenized) {
-            String stringValue = internalValue;
-            if (stringValue.length() == 0) {
+            if (internalValue.isEmpty()) {
                 return;
             }
 
-            if (includeInNodeIndex && isSupportSpellchecking()) {
-                if (getIndexingConfig().shouldPropertyBeSpellchecked(propertyName)) {
-                    String site = resolveSite();
-                    if (site != null) {
-                        doc.add(createFulltextField(getFullTextFieldName(site), stringValue, false));
-                    }
+            if (includeInNodeIndex && isSupportSpellchecking() && getIndexingConfig().shouldPropertyBeSpellchecked(propertyName)) {
+                String site = resolveSite();
+                if (site != null) {
+                    doc.add(createFulltextField(getFullTextFieldName(site), internalValue, false));
                 }
             }
         }

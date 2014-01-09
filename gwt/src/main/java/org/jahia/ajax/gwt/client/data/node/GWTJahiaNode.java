@@ -672,14 +672,17 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     @Override
     public void remove(int index) {
-        String path = ((GWTJahiaNode) children.get(index)).getPath();
-        removedChildrenPaths.add(path);
+        GWTJahiaNode child = (GWTJahiaNode) children.get(index);
+        if (child.get("uuid") != null) {
+            String path = child.getPath();
+            removedChildrenPaths.add(path);
+        }
         super.remove(index);
     }
 
     @Override
     public void remove(ModelData child) {
-        if (children.contains(child)) {
+        if (children.contains(child) && child.get("uuid") != null ) {
             removedChildrenPaths.add(((GWTJahiaNode)child).getPath());
         }
         super.remove(child);

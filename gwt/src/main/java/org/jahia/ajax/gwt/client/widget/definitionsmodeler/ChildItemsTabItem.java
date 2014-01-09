@@ -55,7 +55,9 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DualListField;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -78,6 +80,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * Tab item to edit child items of a node type
@@ -190,37 +193,46 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 final MessageBox box = MessageBox.prompt(Messages.get("label.name"), Messages.get("label.enterItemName")+ ":");
-                box.addCallback(new Listener<MessageBoxEvent>() {
-                    public void handleEvent(MessageBoxEvent be) {
-                        if (Dialog.OK.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
+                box.getTextBox().setValidator(new Validator() {
+                    @Override
+                    public String validate(Field<?> field, String value) {
+                        if (!value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^+*\\-\\[\\]\\/\\|]*")) {
+                            return Messages.get("label.childName.error","the name cannot contain one of these characters * [ ] | - / + : or start with a number");
+                        };
+                        for (GWTJahiaNode n : store.getModels()) {
+                            if (n.getName().equals(value)) {
+                                return Messages.get("label.duplicate.name","this name already used, please select a new one");
+                            }
+                        }
+                        return null;
+                    }
+                });
+
+                box.getDialog().getButtonById(Dialog.OK).removeAllListeners();
+                box.getDialog().getButtonById(Dialog.OK).addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        if (box.getTextBox().isValid()) {
                             GWTJahiaNode itemDefinition = new GWTJahiaNode();
-                            String name = "*".equals(be.getValue()) ? findAvailableName(new StringBuilder("__undef")).toString():be.getValue();
-                            boolean process=true;
-                            for (GWTJahiaNode n : store.getModels()) {
-                                if (n.getName().equals(name)) {
-                                    process = false;
-                                    break;
+                            String name = "*".equals(box.getTextBox().getValue()) ? findAvailableName(new StringBuilder("__undef")).toString():box.getTextBox().getValue();
+
+                            itemDefinition.setName(name);
+                            String t = type;
+                            if ("*".equals(box.getTextBox().getValue())) {
+                                if (type.equals("jnt:propertyDefinition")) {
+                                    t = "jnt:unstructuredPropertyDefinition";
+                                } else {
+                                    t = "jnt:unstructuredChildNodeDefinition";
                                 }
                             }
-                            if (process) {
-                                itemDefinition.setName(name);
-                                String t = type;
-                                if ("*".equals(be.getValue())) {
-                                    if (type.equals("jnt:propertyDefinition")) {
-                                        t = "jnt:unstructuredPropertyDefinition";
-                                    } else {
-                                        t = "jnt:unstructuredChildNodeDefinition";
-                                    }
-                                }
-                                itemDefinition.setNodeTypes(Arrays.asList(t));
-                                initValues(itemDefinition);
-                                removedChildren.remove(itemDefinition);
-                                children.add(itemDefinition);
-                                store.add(itemDefinition);
-                                grid.getSelectionModel().select(itemDefinition, false);
-                            } else {
-                                Window.alert(Messages.get("label.duplicate.name","this name already used, please select a new one"));
-                            }
+                            itemDefinition.setNodeTypes(Arrays.asList(t));
+                            initValues(itemDefinition);
+                            removedChildren.remove(itemDefinition);
+                            children.add(itemDefinition);
+                            store.add(itemDefinition);
+                            grid.getSelectionModel().select(itemDefinition, false);
+
+                            box.getDialog().hide();
                         }
                     }
 
@@ -250,9 +262,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 grid.getSelectionModel().setFiresEvents(false);
                 List<GWTJahiaNode> selection = grid.getSelectionModel().getSelection();
                 for (GWTJahiaNode node : selection) {
-                    if (!"true".equals(node.get("newItem"))) {
-                        removedChildren.add(node);
-                    }
+                    removedChildren.add(node);
+                    engine.getNode().remove(node);
                     propertiesEditors.remove(node);
                     children.remove(node);
                     store.remove(node);
@@ -617,25 +628,20 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 if (propertiesEditorsByLang.containsKey(itemDefinition)) {
                     PropertiesEditor pe = propertiesEditors.get(itemDefinition);
                     Map<String,PropertiesEditor> peByLang = propertiesEditorsByLang.get(itemDefinition);
-                    boolean isNew = "true".equals(itemDefinition.get("newItem"));
-                    if (isNew) {
-                        if (itemDefinition.getName().startsWith("__undef")) {
-                            itemDefinition.setName(computeUnstructuredItemName(itemDefinition));
-                            String path = itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName();
-                            for (GWTJahiaNode n : store.getModels()) {
-                                if (n.getPath().equals(path)) {
-                                    duplicate = true;
-                                    break;
-                                }
-                            }
-                            if (!duplicate) {
-                                itemDefinition.setPath(itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName());
-                            }  else {
-                                this.children.remove(itemDefinition);
+                    boolean isNew = itemDefinition.get("uuid") == null;
+                    if (itemDefinition.getName().startsWith("__undef")) {
+                        itemDefinition.setName(computeUnstructuredItemName(itemDefinition));
+                        String path = itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName();
+                        for (GWTJahiaNode n : store.getModels()) {
+                            if (n.getPath().equals(path)) {
+                                duplicate = true;
+                                break;
                             }
                         }
                         if (!duplicate) {
-                            itemDefinition.remove("newItem");
+                            itemDefinition.setPath(itemDefinition.getPath().substring(0,itemDefinition.getPath().indexOf("__undef")) + itemDefinition.getName());
+                        }  else {
+                            this.children.remove(itemDefinition);
                         }
                     }
                     itemDefinition.set("nodeProperties", pe.getProperties(false, true, !isNew));
@@ -728,7 +734,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 if (e instanceof String) {
                     s.append(e).append(" ");
                 } else if (e instanceof GWTJahiaNodePropertyValue) {
-                    s.append(((GWTJahiaNodePropertyValue) e).getString()).append(" ");
+                    s.append(((GWTJahiaNodePropertyValue) e).getString().replace(":","@@")).append(" ");
                 }
             }
             s1 = s.toString().trim();

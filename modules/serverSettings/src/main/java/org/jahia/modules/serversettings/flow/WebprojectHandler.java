@@ -240,10 +240,12 @@ public class WebprojectHandler implements Serializable {
             if (sitesKey.contains(siteKey)) {
                 try {
                     List<JCRSiteNode> sitesNodeList = sitesService.getSitesNodeList();
-                    if (!sitesNodeList.isEmpty()) {
-                        sitesService.setDefaultSite(sitesService.getSiteByKey(sitesNodeList.get(0).getName()));
-                    } else {
-                        sitesService.setDefaultSite(null);
+                    sitesService.setDefaultSite(null);
+                    for (JCRSiteNode siteNode : sitesNodeList) {
+                        if (!siteNode.getName().equals("systemsite")) {
+                            sitesService.setDefaultSite(sitesService.getSiteByKey(siteNode.getName()));
+                            break;
+                        }
                     }
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);

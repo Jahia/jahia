@@ -1332,6 +1332,11 @@
         </property>
         <property name="titleKey" value="label.homepage"/>
         <property name="icon" value="siteManager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.InvertedVisibility">
+                <property name="inNodePath" value="/sites/systemsite"/>
+            </bean>
+        </property>
     </bean>
     <bean id="Toolbar.Item.SiteContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

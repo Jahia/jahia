@@ -109,12 +109,17 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
             linker.loading(Messages.get("label.loading", "Loading..."));
             JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
-                    ((EditLinker)linker).switchConfig(gwtEditConfiguration, null, updateSidePanel, updateToolbar);
+                    if (gwtEditConfiguration.getDefaultLocation() == null) {
+                        linker.loaded();
+                        Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {}", new Object[]{ Messages.get("label.noAvailableSites")} ));
+                    } else {
+                        ((EditLinker)linker).switchConfig(gwtEditConfiguration, null, updateSidePanel, updateToolbar);
+                    }
                 }
 
                 public void onApplicationFailure(Throwable throwable) {
                     linker.loaded();
-                    Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {}", new Object[] {throwable}));
+                    Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {}", new Object[] {throwable.getMessage()}));
                     Log.error("Error when loading EditConfiguration", throwable);
                 }
             });

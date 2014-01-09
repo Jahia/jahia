@@ -85,6 +85,23 @@
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                 <ref bean="sidePanelTab.serverSettings"/>
+                <bean id="sidePanelTab.siteSettings" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="systemSiteSettings"/>
+                    <property name="icon" value="siteSettings"/>
+                    <property name="treeColumns">
+                        <list>
+                            <value>displayName,*,label.title</value>
+                        </list>
+                    </property>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
+                            <property name="settingsTemplateRoot" value="site-settings-base"/>
+                            <property name="label" value="systemSiteSettings.tab.title"/>
+                            <property name="settingPath" value="/sites/systemsite"/>
+                        </bean>
+                    </property>
+                    <property name="requiredPermission" value="siteAdministrationAccess"/>
+                </bean>
             </list>
         </property>
     </bean>

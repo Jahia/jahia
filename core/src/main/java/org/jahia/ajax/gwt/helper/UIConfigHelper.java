@@ -587,8 +587,11 @@ public class UIConfigHelper {
                         resolvedSite = JahiaSitesService.getInstance().getDefaultSite(session);
                         if (resolvedSite == null) {
                             List<JCRSiteNode> sites = JahiaSitesService.getInstance().getSitesNodeList(session);
-                            if (!sites.isEmpty()) {
-                                resolvedSite = sites.get(0);
+                            for (JCRSiteNode site : sites) {
+                                if (!"systemsite".equals(site.getName())) {
+                                    resolvedSite = site;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -596,7 +599,7 @@ public class UIConfigHelper {
                         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(((JCRSiteNode)resolvedSite).getPath());
                         defaultLocation = defaultLocation.replace("$defaultSiteHome", siteNode.getHome().getPath());
                     } else {
-                        throw new GWTJahiaServiceException("no sites available");
+                        defaultLocation = null;
                     }
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);

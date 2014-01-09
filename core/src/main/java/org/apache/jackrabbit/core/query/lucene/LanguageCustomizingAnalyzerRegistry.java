@@ -97,6 +97,23 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     @Override
     public Analyzer getAnalyzerFor(Document document) {
         final String key = getKeyFor(document);
+
+        return getAnalyzer(key);
+    }
+
+    @Override
+    public String getKeyFor(Document document) {
+        if (document != null) {
+            final Field field = document.getField(JahiaNodeIndexer.TRANSLATION_LANGUAGE);
+            if (field != null) {
+                return field.stringValue();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Analyzer getAnalyzer(String key) {
         if (key != null) {
             // first attempt to get the exact match
             Analyzer analyzer = languageToAnalyzer.get(key);
@@ -117,25 +134,9 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
             }
 
             return analyzer;
+        } else {
+            return null;
         }
-
-        return null;
-    }
-
-    @Override
-    public String getKeyFor(Document document) {
-        if (document != null) {
-            final Field field = document.getField(JahiaNodeIndexer.TRANSLATION_LANGUAGE);
-            if (field != null) {
-                return field.stringValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Analyzer getAnalyzer(String key) {
-        return languageToAnalyzer.get(key);
     }
 
     @Override

@@ -221,6 +221,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
                         if (analyzer != null) {
                             // and add the Analyzer to the registry if we managed to instantiate it
+                            LanguageCustomizingAnalyzerRegistry.setIndexingConfiguration(this);
                             LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer);
 
                             // instantiate and initialize AnalyzerCustomizer

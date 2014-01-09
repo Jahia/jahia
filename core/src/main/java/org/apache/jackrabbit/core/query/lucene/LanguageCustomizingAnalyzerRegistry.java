@@ -39,7 +39,10 @@
  */
 package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.lucene.analysis.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.StopAnalyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.ar.ArabicAnalyzer;
 import org.apache.lucene.analysis.br.BrazilianAnalyzer;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
@@ -51,44 +54,63 @@ import org.apache.lucene.analysis.fa.PersianAnalyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.nl.DutchAnalyzer;
 import org.apache.lucene.analysis.ru.RussianAnalyzer;
+import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
 import org.apache.lucene.analysis.th.ThaiAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.util.Version;
-import org.jahia.services.search.analyzer.ASCIIFoldingAnalyzerWrapper;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * An implementation of {@link org.apache.jackrabbit.core.query.lucene.AnalyzerRegistry} that associates Analyzers to
+ * languages so that a language-specific Analyzer can be used if available.
+ * <p/>
+ * Note that this AnalyzerRegistry performs partial match on languages so that variants (e.g. <code>en_US</code>)
+ * of the same language can use the Analyzer configured for the main variant (e.g. <code>en</code>) automatically.
+ * Also note that, when an Analyzer is registered for a specific language with this AnalyzerRegistry,
+ * it is automatically wrapped to first check whether a property-specific Analyzer has been configured (in which case
+ * it's used) and then filter the token streams using {@link org.apache.lucene.analysis.ASCIIFoldingFilter}.
+ *
  * @author Christophe Laprun
  */
 public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<String> {
     /**
      * Language to Analyzer map.
      */
-    private static final Map<String, Analyzer> languageToAnalyzer = new ConcurrentHashMap<String, Analyzer>();
+    private static final Map<String, AnalyzerWrapper> languageToAnalyzer = new ConcurrentHashMap<String,
+            AnalyzerWrapper>();
+
+    private static final AtomicReference<IndexingConfiguration> configuration = new AtomicReference<IndexingConfiguration>();
 
     static {
-        languageToAnalyzer.put("ar", new ASCIIFoldingAnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("br", new ASCIIFoldingAnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("cjk", new ASCIIFoldingAnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("cn", new ASCIIFoldingAnalyzerWrapper(new ChineseAnalyzer()));
-        languageToAnalyzer.put("cz", new ASCIIFoldingAnalyzerWrapper(new CzechAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("de", new ASCIIFoldingAnalyzerWrapper(new GermanAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("el", new ASCIIFoldingAnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("en", new ASCIIFoldingAnalyzerWrapper(new org.apache.lucene.analysis.standard.StandardAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("fa", new ASCIIFoldingAnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("fr", new ASCIIFoldingAnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("nl", new ASCIIFoldingAnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("ru", new ASCIIFoldingAnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("th", new ASCIIFoldingAnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("ar", new AnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("br", new AnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("cjk", new AnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("cn", new AnalyzerWrapper(new ChineseAnalyzer()));
+        languageToAnalyzer.put("cz", new AnalyzerWrapper(new CzechAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("de", new AnalyzerWrapper(new GermanAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("el", new AnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("en", new AnalyzerWrapper(new SnowballAnalyzer(Version.LUCENE_30, "English", StopAnalyzer.ENGLISH_STOP_WORDS_SET)));
+        languageToAnalyzer.put("fa", new AnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("fr", new AnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("nl", new AnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("ru", new AnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("th", new AnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
     }
 
     private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
 
     public static LanguageCustomizingAnalyzerRegistry getInstance() {
         return instance;
+    }
+
+    static void setIndexingConfiguration(IndexingConfiguration configuration) {
+        LanguageCustomizingAnalyzerRegistry.configuration.compareAndSet(null, configuration);
     }
 
     private LanguageCustomizingAnalyzerRegistry() {
@@ -116,7 +138,7 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     public Analyzer getAnalyzer(String key) {
         if (key != null) {
             // first attempt to get the exact match
-            Analyzer analyzer = languageToAnalyzer.get(key);
+            AnalyzerWrapper analyzer = languageToAnalyzer.get(key);
             if (analyzer == null) {
                 // if we didn't get an exact match, attempt to see if we're dealing with a language variant
                 final int underscore = key.indexOf('_');
@@ -128,15 +150,18 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
                         // we had a match on main language so add a new entry to avoid going through language parsing
                         // again next time around!
                         languageToAnalyzer.put(key, analyzer);
-                    }
-                    return analyzer;
-                }
-            }
 
-            return analyzer;
-        } else {
-            return null;
+                        analyzer.setIndexingConfig(configuration.get());
+                        return analyzer;
+                    }
+                }
+            } else {
+                analyzer.setIndexingConfig(configuration.get());
+                return analyzer;
+            }
         }
+
+        return null;
     }
 
     @Override
@@ -145,6 +170,34 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     }
 
     void addAnalyzer(String key, Analyzer analyzer) {
-        languageToAnalyzer.put(key, new ASCIIFoldingAnalyzerWrapper(analyzer));
+        languageToAnalyzer.put(key, new AnalyzerWrapper(analyzer));
+    }
+
+    /**
+     * Wraps a configured {@link org.apache.lucene.analysis.Analyzer} instance to make sure property-specific as
+     * configured are properly used and filter token streams using ASCIIFoldingFilter.
+     *
+     * @author Christophe Laprun
+     */
+    private static class AnalyzerWrapper extends JackrabbitAnalyzer {
+
+        public AnalyzerWrapper(Analyzer wrappee) {
+            // so that if we don't find a property-specific Analyzer, we use the wrapped one instead
+            setDefaultAnalyzer(wrappee);
+        }
+
+        @Override
+        public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+            TokenStream result = super.reusableTokenStream(fieldName, reader);
+            result = new ASCIIFoldingFilter(result);
+            return result;
+        }
+
+        @Override
+        public TokenStream tokenStream(String fieldName, Reader reader) {
+            TokenStream result = super.tokenStream(fieldName, reader);
+            result = new ASCIIFoldingFilter(result);
+            return result;
+        }
     }
 }

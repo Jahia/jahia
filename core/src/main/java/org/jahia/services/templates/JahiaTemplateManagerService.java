@@ -448,6 +448,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } finally {
             IOUtils.closeQuietly(out);
         }
+
+        final String importFileBasePath = "content/modules/" + aPackage.getId() + "/files/";
+        JCRNodeWrapper filesNode = session.getNode("/modules/" + aPackage.getIdWithVersion() + "/files");
+
         ZipInputStream zis = null;
         try {
             zis = new ZipInputStream(new FileInputStream(f));
@@ -458,7 +462,20 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         String name = zipentry.getName();
                         name = name.replace(aPackage.getIdWithVersion(), aPackage.getId());
                         File sourceFile = new File(sourcesImportFolder, name);
-                        if (saveFile(zis, sourceFile)) {
+                        boolean nodeMoreRecentThanSourceFile = true;
+                        if (sourceFile.exists() && name.startsWith(importFileBasePath)) {
+                            String relPath = name.substring(importFileBasePath.length());
+                            if (relPath.endsWith(sourceFile.getName() + "/" + sourceFile.getName())) {
+                                relPath = StringUtils.substringBeforeLast(relPath, "/");
+                            }
+                            if (filesNode.hasNode(relPath)) {
+                                JCRNodeWrapper node = filesNode.getNode(relPath);
+                                if (node.hasProperty("jcr:lastModified")) {
+                                    nodeMoreRecentThanSourceFile = node.getProperty("jcr:lastModified").getDate().getTimeInMillis() > sourceFile.lastModified();
+                                }
+                            }
+                        }
+                        if (nodeMoreRecentThanSourceFile && saveFile(zis, sourceFile)) {
                             modifiedFiles.add(sourceFile);
                         }
                     } catch (IOException e) {
@@ -494,6 +511,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (!target.exists()) {
             if (!target.getParentFile().exists() && !target.getParentFile().mkdirs()) {
                 throw new IOException("Unable to create path for: " + target.getParentFile());
+            }
+            if (target.getParentFile().isFile()) {
+                target.getParentFile().delete();
+                target.getParentFile().mkdirs();
             }
             if (transCodeTarget != null) {
                 FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");

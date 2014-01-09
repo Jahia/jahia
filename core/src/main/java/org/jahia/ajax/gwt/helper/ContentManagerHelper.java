@@ -948,7 +948,6 @@ public class ContentManagerHelper {
                 }
             }
             node.setAclInheritanceBreak(acl.isBreakAllInheritance());
-            currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("Error while saving acl on node "+node.getPath(), e);
             throw new GWTJahiaServiceException("Could not save acl on node " + node.getPath());

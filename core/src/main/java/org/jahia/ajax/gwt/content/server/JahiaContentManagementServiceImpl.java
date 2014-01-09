@@ -691,7 +691,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         // save acl
         if (acl != null) {
             for (GWTJahiaNode node : nodes) {
-                contentManager.setACL(node.getPath(), acl, retrieveCurrentSession());
+                contentManager.setACL(node.getUUID(), acl, retrieveCurrentSession());
             }
         }
         try {
@@ -914,7 +914,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()),fields);
 
             if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
-                contentManager.setACL(res.getPath(), acl, session);
+                contentManager.setACL(res.getUUID(), acl, session);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

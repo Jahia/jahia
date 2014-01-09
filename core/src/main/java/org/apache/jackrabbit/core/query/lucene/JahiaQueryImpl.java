@@ -45,14 +45,11 @@ import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.commons.query.QueryNodeFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.jahia.api.Constants;
 
 import javax.jcr.query.InvalidQueryException;
 
 public class JahiaQueryImpl extends QueryImpl {
-
-    private static final String JCR_LANGUAGE = "jcr:language='";
-    private static final String JCR_SYSTEM = "jcr:system";
-    public static final int LENGTH = "jcr:language='".length();
     private Constraint constraint = null;
     private String statement = null;    
 
@@ -73,17 +70,23 @@ public class JahiaQueryImpl extends QueryImpl {
 
     @Override
     public boolean needsSystemTree() {
-        return statement.contains(JCR_SYSTEM);
+        return statement.contains(Constants.JCR_SYSTEM);
     }
 
     @Override
     protected Analyzer getTextAnalyzer() {
-        // extract language code from statement if available
-        int langIndex = statement.indexOf(JCR_LANGUAGE);
-        if (langIndex >= 0 && langIndex <= statement.length() - LENGTH - 2) {
-            final int end = langIndex + LENGTH;
-            final String lang = statement.substring(end, end + 2);
-            return index.getAnalyzerRegistry().getAnalyzer(lang);
+        // extract language code from statement if available, might be availabe in the form jcr:language = 'lang'
+        int langIndex = statement.indexOf(Constants.JCR_LANGUAGE);
+        if (langIndex >= 0) {
+            int begLang = statement.indexOf('\'', langIndex);
+            if (begLang >= 0) {
+                begLang = begLang + 1; // move past '
+                int endLang = statement.indexOf('\'', begLang);
+                if (endLang > 0 && endLang < statement.length()) {
+                    final String lang = statement.substring(begLang, endLang).trim();
+                    return index.getAnalyzerRegistry().getAnalyzer(lang);
+                }
+            }
         }
 
         return super.getTextAnalyzer();

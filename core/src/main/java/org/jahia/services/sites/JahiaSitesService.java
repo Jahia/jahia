@@ -817,18 +817,13 @@ public class JahiaSitesService extends JahiaService {
      */
     public class SiteDefaultLanguageBySiteKeyCacheEntryFactory implements CacheEntryFactory {
         @Override
-        public Object createEntry(final Object key) throws Exception {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRSiteNode s = getSiteByKey((String) key, session);
-                    if (s != null) {
-                        return s.getDefaultLanguage();
-                    } else {
-                        return "";
-                    }
-                }
-            });
+        public Object createEntry(Object key) throws Exception {
+            JahiaSite siteByServerName = getSiteByKey((String) key);
+            if (siteByServerName != null) {
+                return siteByServerName.getDefaultLanguage();
+            } else {
+                return "";
+            }
         }
     }
 }

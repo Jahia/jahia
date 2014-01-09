@@ -45,6 +45,8 @@ import java.util.Arrays;
 import java.util.Locale;
 
 /**
+ * An utility class to gather useful methods to work with Lucene.
+ *
  * @author Christophe Laprun
  */
 public class LuceneUtils {

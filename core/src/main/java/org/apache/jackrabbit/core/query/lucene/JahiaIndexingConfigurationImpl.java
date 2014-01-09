@@ -202,66 +202,73 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                     final String className = getClassAttribute(child);
                     if (className != null) {
 
-                        Analyzer analyzer;
+                        Analyzer analyzer = null;
+                        final Class<?> analyzerClass = Class.forName(className);
                         try {
                             // instantiate Analyzer
-                            final Class<?> analyzerClass = Class.forName(className);
                             final Constructor<?> constructor = analyzerClass.getConstructor(Version.class);
                             analyzer = (Analyzer) constructor.newInstance(Version.LUCENE_30);
-
-                            // and add it to the registry
-                            LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer);
-
                         } catch (Exception e) {
-                            logger.warn("Couldn't instantiate Analyzer class: " + className, e);
-                            continue;
+                            // attempt to use a default constructor if it exists
+                            try {
+                                analyzer = (Analyzer) analyzerClass.newInstance();
+                            } catch (Exception e1) {
+                                logger.warn("Couldn't instantiate Analyzer class: " + className
+                                        + ". It must provide a constructor with a org.apache.lucene.util.Version " +
+                                        "argument or a no-arg constructor.", e1);
+                            }
                         }
 
-                        // instantiate and initialize AnalyzerCustomizer
-                        final NodeList potentialCustomizers = child.getChildNodes();
-                        final int potentialCustomizersNb = potentialCustomizers.getLength();
-                        for (int customizerIndex = 0; customizerIndex < potentialCustomizersNb; customizerIndex++) {
+                        if (analyzer != null) {
+                            // and add the Analyzer to the registry if we managed to instantiate it
+                            LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer);
 
-                            final Node customizerNode = potentialCustomizers.item(customizerIndex);
-                            if (Node.ELEMENT_NODE == customizerNode.getNodeType()) {
-                                final String customizerClassName = getClassAttribute(customizerNode);
-                                if (customizerClassName != null) {
-                                    try {
-                                        final Class<?> customizerClass = Class.forName(customizerClassName);
-                                        final AnalyzerCustomizer customizer = (AnalyzerCustomizer) customizerClass.newInstance();
+                            // instantiate and initialize AnalyzerCustomizer
+                            final NodeList potentialCustomizers = child.getChildNodes();
+                            final int potentialCustomizersNb = potentialCustomizers.getLength();
+                            for (int customizerIndex = 0; customizerIndex < potentialCustomizersNb; customizerIndex++) {
 
-                                        // now that we have our customizer, initialize it
-                                        final NodeList keys = customizerNode.getChildNodes();
-                                        final int keyNb = keys.getLength();
-                                        final Map<String, List<String>> props = new HashMap<String, List<String>>(keyNb);
-                                        for (int keyIndex = 0; keyIndex < keyNb; keyIndex++) {
-                                            final Node item = keys.item(keyIndex);
+                                final Node customizerNode = potentialCustomizers.item(customizerIndex);
+                                if (Node.ELEMENT_NODE == customizerNode.getNodeType()) {
+                                    final String customizerClassName = getClassAttribute(customizerNode);
+                                    if (customizerClassName != null) {
+                                        try {
+                                            final Class<?> customizerClass = Class.forName(customizerClassName);
+                                            final AnalyzerCustomizer customizer = (AnalyzerCustomizer) customizerClass.newInstance();
 
-                                            // only process element nodes
-                                            if (Node.ELEMENT_NODE == item.getNodeType()) {
-                                                final String key = item.getNodeName();
-                                                final String value = getTextContent(item).trim();
+                                            // now that we have our customizer, initialize it
+                                            final NodeList keys = customizerNode.getChildNodes();
+                                            final int keyNb = keys.getLength();
+                                            final Map<String, List<String>> props = new HashMap<String, List<String>>(keyNb);
+                                            for (int keyIndex = 0; keyIndex < keyNb; keyIndex++) {
+                                                final Node item = keys.item(keyIndex);
 
-                                                List<String> values = props.get(key);
-                                                if (values == null) {
-                                                    values = new ArrayList<String>();
-                                                    props.put(key, values);
+                                                // only process element nodes
+                                                if (Node.ELEMENT_NODE == item.getNodeType()) {
+                                                    final String key = item.getNodeName();
+                                                    final String value = getTextContent(item).trim();
+
+                                                    List<String> values = props.get(key);
+                                                    if (values == null) {
+                                                        values = new ArrayList<String>();
+                                                        props.put(key, values);
+                                                    }
+
+                                                    values.add(value);
                                                 }
-
-                                                values.add(value);
                                             }
+                                            customizer.initFrom(props);
+
+                                            // and finally, customize the Analyzer
+                                            customizer.customize(analyzer);
+
+                                            // we only allow one customizer so stop here
+                                            break;
+                                        } catch (Exception e) {
+                                            // we don't break out of the loop here in an attempt to check if maybe
+                                            // another customizer has been configured
+                                            logger.warn("Couldn't instantiate AnalyzerCustomizer class: " + customizerClassName, e);
                                         }
-                                        customizer.initFrom(props);
-
-                                        // and finally, customize the Analyzer
-                                        customizer.customize(analyzer);
-
-                                        // we only allow one customizer so stop here
-                                        break;
-                                    } catch (Exception e) {
-                                        // we don't break out of the loop here in an attempt to check if maybe
-                                        // another customizer has been configured
-                                        logger.warn("Couldn't instantiate AnalyzerCustomizer class: " + customizerClassName, e);
                                     }
                                 }
                             }

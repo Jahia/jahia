@@ -63,6 +63,9 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 /**
+ * A {@link org.apache.jackrabbit.core.query.lucene.NodeIndexer} implementation for {@link
+ * Constants#JAHIANT_TRANSLATION} nodes.
+ *
  * @author Christophe Laprun
  */
 public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
@@ -70,6 +73,8 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
     private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
     private String language;
+    private NodeState parentNode;
+    private ExtendedNodeType parentNodeType;
 
     protected JahiaTranslationNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings,
                                           Executor executor, Parser parser, QueryHandlerContext context,
@@ -101,21 +106,30 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
             fieldName = fieldName.substring(0, endIndex);
         }
 
-        final NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
-        if (parentNode == null) {
-            return super.getPropertyDefinition(fieldName);
-        } else {
-            final Name parenteNodeTypeName = parentNode.getNodeTypeName();
-            final ExtendedNodeType parentNodeType = nodeTypeRegistry.getNodeType(
-                    namespaceRegistry.getPrefix(parenteNodeTypeName.getNamespaceURI())
-                            + ":" + parenteNodeTypeName.getLocalName()
-            );
-            // try to get the property definition on the parent first since we're dealing with a translation node
-            ExtendedPropertyDefinition propDef = getPropertyDefinitionFor(fieldName, parentNodeType, parentNode);
+        // try to get the property definition on the parent first since we're dealing with a translation node
+        final ExtendedNodeType parentNodeType = getParentNodeType();
+        ExtendedPropertyDefinition propDef = getPropertyDefinitionFor(fieldName, parentNodeType, parentNode);
 
-            // if we haven't found the property on the parent, it might be on this node so try this
-            return propDef != null ? propDef : getPropertyDefinitionFor(fieldName, getNodeType(), node);
+        // if we haven't found the property on the parent, it might be on this node so try this
+        return propDef != null ? propDef : getPropertyDefinitionFor(fieldName, getNodeType(), node);
+    }
+
+    private ExtendedNodeType getParentNodeType() throws RepositoryException, ItemStateException {
+        if (parentNodeType == null) {
+            final Name parenteNodeTypeName = getParentNodeState().getNodeTypeName();
+            parentNodeType = nodeTypeRegistry.getNodeType(getTypeNameAsString(parenteNodeTypeName,
+                    namespaceRegistry));
         }
+
+        return parentNodeType;
+    }
+
+    private NodeState getParentNodeState() throws ItemStateException {
+        if (parentNode == null) {
+            parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
+        }
+
+        return parentNode;
     }
 
     @Override
@@ -130,7 +144,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
         doNotUseInExcerpt.clear();
 
         try {
-            NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
+            NodeState parentNode = getParentNodeState();
 
             NodeId parentId = parentNode.getParentId();
             if (parentId == null) {
@@ -142,7 +156,7 @@ public class JahiaTranslationNodeIndexer extends JahiaNodeIndexer {
             }
 
             if (language == null) {
-                logger.warn("The node " + node.getId().toString() + " which is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property !");
+                logger.warn("The node " + node.getId().toString() + " is of type " + Constants.JAHIANT_TRANSLATION + " but doesn't contain a valid value for the jcr:language property!");
             } else {
                 doc.add(new Field(TRANSLATION_LANGUAGE, language, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
             }

@@ -173,11 +173,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
     }
 
-    private String getTypeNameAsString() throws RepositoryException {
+    protected String getTypeNameAsString() throws RepositoryException {
         return getTypeNameAsString(nodeTypeName, namespaceRegistry);
     }
 
-    private static String getTypeNameAsString(Name nodeTypeName, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+    protected static String getTypeNameAsString(Name nodeTypeName, NamespaceRegistry namespaceRegistry) throws
+            RepositoryException {
         return namespaceRegistry.getPrefix(nodeTypeName.getNamespaceURI()) + ":" + nodeTypeName.getLocalName();
     }
 

@@ -84,7 +84,8 @@ public class JahiaQueryImpl extends QueryImpl {
                 int endLang = statement.indexOf('\'', begLang);
                 if (endLang > 0 && endLang < statement.length()) {
                     final String lang = statement.substring(begLang, endLang).trim();
-                    return index.getAnalyzerRegistry().getAnalyzer(lang);
+                    final Analyzer analyzer = index.getAnalyzerRegistry().getAnalyzer(lang);
+                    return analyzer != null ? analyzer : super.getTextAnalyzer();
                 }
             }
         }

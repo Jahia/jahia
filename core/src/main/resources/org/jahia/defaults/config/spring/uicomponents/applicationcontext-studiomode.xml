@@ -48,7 +48,7 @@
                 <value>jmix:list</value>
             </set>
         </property>
-        <property name="nonVisibleTypes">
+        <property name="excludedNodeTypes">
             <set>
                 <value>jmix:hiddenType</value>
             </set>

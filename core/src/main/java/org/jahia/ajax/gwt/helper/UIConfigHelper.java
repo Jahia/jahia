@@ -628,6 +628,7 @@ public class UIConfigHelper {
                 gwtConfig.setSkipMainModuleTypesDomParsing(config.getSkipMainModuleTypesDomParsing());
                 gwtConfig.setVisibleTypes(config.getVisibleTypes());
                 gwtConfig.setNonVisibleTypes(config.getNonVisibleTypes());
+                gwtConfig.setExcludedNodeTypes(config.getExcludedNodeTypes());
 
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
 

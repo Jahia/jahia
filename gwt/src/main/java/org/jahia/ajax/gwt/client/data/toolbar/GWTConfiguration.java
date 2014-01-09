@@ -73,6 +73,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private Set<String> visibleTypes;
     private Set<String> nonVisibleTypes;
     private Set<String> skipMainModuleTypesDomParsing;
+    private Set<String> excludedNodeTypes;
 
     public GWTConfiguration() {
     	super();
@@ -216,5 +217,13 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
         this.nonVisibleTypes = nonVisibleTypes;
+    }
+
+    public Set<String> getExcludedNodeTypes() {
+        return excludedNodeTypes;
+    }
+
+    public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
+        this.excludedNodeTypes = excludedNodeTypes;
     }
 }

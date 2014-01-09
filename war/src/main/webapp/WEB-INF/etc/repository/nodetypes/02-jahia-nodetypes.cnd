@@ -569,7 +569,7 @@
 
 [jmix:userProfileComponents] > jmix:droppableContent, jmix:accessControllableContent mixin
 
-// To exclude a notetype from the components tree
+// To exclude a node type from the components tree and create engine
 
 [jmix:hiddenType] mixin
 

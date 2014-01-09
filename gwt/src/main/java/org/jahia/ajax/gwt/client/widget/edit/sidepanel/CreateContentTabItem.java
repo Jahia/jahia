@@ -97,6 +97,9 @@ class CreateContentTabItem extends SidePanelTabItem {
         if (linker.getConfig().getNonVisibleTypes() != null) {
             excludedNodeTypes.addAll(linker.getConfig().getNonVisibleTypes());
         }
+        if (linker.getConfig().getExcludedNodeTypes() != null) {
+            excludedNodeTypes.addAll(linker.getConfig().getExcludedNodeTypes());
+        }
     }
 
     public void setBaseType(String baseType) {
@@ -105,6 +108,10 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public void setBaseTypes(List<String> baseTypes) {
         this.baseTypes = baseTypes;
+    }
+
+    public void setExcludedNodeTypes(List<String> excludedNodeTypes) {
+        this.excludedNodeTypes = excludedNodeTypes;
     }
 
     public void setPaths(List<String> paths) {

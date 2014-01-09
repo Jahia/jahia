@@ -163,6 +163,10 @@ public class ContentTypeWindow extends Window {
         if (linker.getConfig().getNonVisibleTypes() != null) {
             excluded.addAll(linker.getConfig().getNonVisibleTypes());
         }
+        if (linker.getConfig().getExcludedNodeTypes() != null) {
+            excluded.addAll(linker.getConfig().getExcludedNodeTypes());
+        }
+
         JahiaContentManagementService.App.getInstance().getContentTypesAsTree(nodeTypes, excluded, includeSubTypes, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
             public void onSuccess(List<GWTJahiaNodeType> result) {
                 linker.loaded();

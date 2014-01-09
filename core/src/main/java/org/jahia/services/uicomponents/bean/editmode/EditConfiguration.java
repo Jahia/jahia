@@ -85,6 +85,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private Set<String> nonEditableTypes;
     private Set<String> visibleTypes;
     private Set<String> nonVisibleTypes;
+    private Set<String> excludedNodeTypes;
 
     private Set<String> bypassModeForTypes;
 
@@ -289,6 +290,18 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setNonVisibleTypes(Set<String> nonVisibleTypes) {
         this.nonVisibleTypes = nonVisibleTypes;
+    }
+
+    /**
+     * Excluded node types from creation
+     * @return
+     */
+    public Set<String> getExcludedNodeTypes() {
+        return excludedNodeTypes;
+    }
+
+    public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
+        this.excludedNodeTypes = excludedNodeTypes;
     }
 
     public Set<String> getBypassModeForTypes() {

@@ -189,13 +189,13 @@
                     </c:if>
             </c:when>
             <c:otherwise>
-                <c:set var="editModeAccess"
-                       value="${jcr:findAllowedNodesForPermission('editModeAccess', node, 'jnt:page')}"/>
-                <c:set var="contributeModeAccess"
-                       value="${jcr:findAllowedNodesForPermission('contributeModeAccess', node, 'jnt:page')}"/>
-                <c:set var="previewModeAccess"
-                       value="${jcr:findAllowedNodesForPermission('jcr:read_default', node, 'jnt:page')}"/>
-                <c:if test="${node.home.properties['j:published'].boolean or not empty editModeAccess or not empty contributeModeAccess or not empty previewModeAccess}">
+                <c:set var="editModeAccessNode"
+                       value="${jcr:getFirstAllowedNodeForPermission('editModeAccess', node, 'jnt:page')}"/>
+                <c:set var="contributeModeAccessNode"
+                       value="${jcr:getFirstAllowedNodeForPermission('contributeModeAccess', node, 'jnt:page')}"/>
+                <c:set var="previewModeAccessNode"
+                       value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
+                <c:if test="${node.home.properties['j:published'].boolean or not empty editModeAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
                         <c:set var="baseLive" value="${url.baseLive}"/>
                         <c:set var="basePreview" value="${url.basePreview}"/>
                         <c:set var="baseContribute" value="${url.baseContribute}"/>
@@ -212,24 +212,24 @@
                                    value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                         </c:if>
 
-                        <c:if test="${not empty editModeAccess && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                        <c:if test="${not empty editModeAccessNode && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
                             <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${baseEdit}${editModeAccess[0].path}.html'/>"><fmt:message
+                                href="<c:url value='${baseEdit}${editModeAccessNode.path}.html'/>"><fmt:message
                                 key="label.editMode"/></a>
                         </c:if>
 
-                        <c:if test="${not empty contributeModeAccess && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                        <c:if test="${not empty contributeModeAccessNode && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
                             <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${baseContribute}${contributeModeAccess[0].path}.html'/>"><fmt:message
+                                href="<c:url value='${baseContribute}${contributeModeAccessNode.path}.html'/>"><fmt:message
                                 key="label.contribute"/></a>
                         </c:if>
 
-                        <c:if test="${not empty previewModeAccess && currentNode.properties.preview.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                        <c:if test="${not empty previewModeAccessNode && currentNode.properties.preview.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
                             <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${basePreview}${previewModeAccess[0].path}.html'/>"><fmt:message
+                                href="<c:url value='${basePreview}${previewModeAccessNode.path}.html'/>"><fmt:message
                                 key="label.preview"/></a>
                         </c:if>
                         <c:if test="${currentNode.properties.live.boolean && node.home.properties['j:published'].boolean}">

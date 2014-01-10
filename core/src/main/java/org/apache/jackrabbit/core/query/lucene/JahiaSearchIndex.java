@@ -94,7 +94,12 @@ public class JahiaSearchIndex extends SearchIndex {
 
     @Override
     protected AnalyzerRegistry getAnalyzerRegistry() {
-        return LanguageCustomizingAnalyzerRegistry.getInstance();
+        LanguageCustomizingAnalyzerRegistry analyzerRegistry = LanguageCustomizingAnalyzerRegistry.getInstance();
+        analyzerRegistry.setConfiguration(getIndexingConfig());
+        // we get the JackrabbitAnalyzer this way, note though that this will mean that field names will be looked at
+        // twice
+        analyzerRegistry.setDefaultAnalyzer(getTextAnalyzer());
+        return analyzerRegistry;
     }
 
     /**

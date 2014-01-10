@@ -92,6 +92,9 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      */
     private ItemStateManager ism;
 
+    /**
+     * Sets of property names which are included in spellchecking.
+     */
     private Set<String> includedInSpellchecking = null;
 
     /**
@@ -221,7 +224,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
                         if (analyzer != null) {
                             // and add the Analyzer to the registry if we managed to instantiate it
-                            LanguageCustomizingAnalyzerRegistry.setIndexingConfiguration(this);
                             LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer);
 
                             // instantiate and initialize AnalyzerCustomizer
@@ -234,6 +236,8 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                                     final String customizerClassName = getClassAttribute(customizerNode);
                                     if (customizerClassName != null) {
                                         try {
+                                            // todo: how should these be packaged? Class-loading this way might not
+                                            // work in an OSGi environment
                                             final Class<?> customizerClass = Class.forName(customizerClassName);
                                             final AnalyzerCustomizer customizer = (AnalyzerCustomizer) customizerClass.newInstance();
 

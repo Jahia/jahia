@@ -60,11 +60,9 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.util.Version;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * An implementation of {@link org.apache.jackrabbit.core.query.lucene.AnalyzerRegistry} that associates Analyzers to
@@ -82,12 +80,18 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     /**
      * Language to Analyzer map.
      */
-    private static final Map<String, AnalyzerWrapper> languageToAnalyzer = new ConcurrentHashMap<String,
-            AnalyzerWrapper>();
+    private final Map<String, AnalyzerWrapper> languageToAnalyzer = new ConcurrentHashMap<String, AnalyzerWrapper>();
 
-    private static final AtomicReference<IndexingConfiguration> configuration = new AtomicReference<IndexingConfiguration>();
+    private IndexingConfiguration configuration;
+    private Analyzer defaultAnalyzer;
 
-    static {
+    private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
+
+    static final LanguageCustomizingAnalyzerRegistry getInstance() {
+        return instance;
+    }
+
+    private LanguageCustomizingAnalyzerRegistry() {
         languageToAnalyzer.put("ar", new AnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30)));
         languageToAnalyzer.put("br", new AnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30)));
         languageToAnalyzer.put("cjk", new AnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30)));
@@ -101,19 +105,6 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
         languageToAnalyzer.put("nl", new AnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30)));
         languageToAnalyzer.put("ru", new AnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30)));
         languageToAnalyzer.put("th", new AnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
-    }
-
-    private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
-
-    public static LanguageCustomizingAnalyzerRegistry getInstance() {
-        return instance;
-    }
-
-    static void setIndexingConfiguration(IndexingConfiguration configuration) {
-        LanguageCustomizingAnalyzerRegistry.configuration.compareAndSet(null, configuration);
-    }
-
-    private LanguageCustomizingAnalyzerRegistry() {
     }
 
     @Override
@@ -150,13 +141,10 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
                         // we had a match on main language so add a new entry to avoid going through language parsing
                         // again next time around!
                         languageToAnalyzer.put(key, analyzer);
-
-                        analyzer.setIndexingConfig(configuration.get());
                         return analyzer;
                     }
                 }
             } else {
-                analyzer.setIndexingConfig(configuration.get());
                 return analyzer;
             }
         }
@@ -173,29 +161,42 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
         languageToAnalyzer.put(key, new AnalyzerWrapper(analyzer));
     }
 
+    public void setDefaultAnalyzer(Analyzer defaultAnalyzer) {
+        this.defaultAnalyzer = defaultAnalyzer;
+    }
+
+    public void setConfiguration(IndexingConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
     /**
      * Wraps a configured {@link org.apache.lucene.analysis.Analyzer} instance to make sure property-specific as
      * configured are properly used and filter token streams using ASCIIFoldingFilter.
      *
      * @author Christophe Laprun
      */
-    private static class AnalyzerWrapper extends JackrabbitAnalyzer {
+    private class AnalyzerWrapper extends Analyzer {
+        private final Analyzer wrappee;
 
         public AnalyzerWrapper(Analyzer wrappee) {
-            // so that if we don't find a property-specific Analyzer, we use the wrapped one instead
-            setDefaultAnalyzer(wrappee);
-        }
-
-        @Override
-        public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-            TokenStream result = super.reusableTokenStream(fieldName, reader);
-            result = new ASCIIFoldingFilter(result);
-            return result;
+            this.wrappee = wrappee;
         }
 
         @Override
         public TokenStream tokenStream(String fieldName, Reader reader) {
-            TokenStream result = super.tokenStream(fieldName, reader);
+            // first look at indexing configuration to see if a property analyzer has been set for this field
+            Analyzer analyzer = configuration.getPropertyAnalyzer(fieldName);
+            if (analyzer == null) {
+                // we didn't configure a property analyzer for this field
+                if (FieldNames.isFulltextField(fieldName)) {
+                    // we have a full text field, so we can use our wrapped Analyzer
+                    analyzer = wrappee;
+                } else {
+                    analyzer = defaultAnalyzer;
+                }
+            }
+
+            TokenStream result = analyzer.tokenStream(fieldName, reader);
             result = new ASCIIFoldingFilter(result);
             return result;
         }

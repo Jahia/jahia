@@ -37,8 +37,9 @@
  - displayNbOfItemsPerPage (boolean) = true autocreated
  - displayNbOfItemsPerPageValues (string) = '5,10,25,50,100' indexed=no < '[0-9,]*'
 
-[jnt:fileList] > jnt:content, jmix:listContent, jmix:editorialContent, jmix:bindedComponent
+[jnt:fileList] > jnt:content, jmix:listContent, jmix:editorialContent, jmix:bindedComponent, jmix:link
  - folder (weakreference, picker[type='folder'])
+ - useNodeNameAsTitle (boolean) = true autocreated
 
 [jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:siteComponent
  - source (string) i18n indexed=no

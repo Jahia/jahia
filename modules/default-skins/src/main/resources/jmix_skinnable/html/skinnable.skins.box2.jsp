@@ -3,9 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="box2.css"/>
-<template:addResources>
-<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/box2-ie6.css'/>" media="screen" /><![endif]-->
-</template:addResources>
+<template:addResources type="css" resources="box2-ie6.css" condition="if lte IE 6" media="screen" />
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <div class="box2 ">
     <div class="box2-topright"></div><div class="box2-topleft"></div>

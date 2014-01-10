@@ -807,21 +807,6 @@ extends = jnt:content
 [jnt:referencesKeeper] > nt:base, jmix:nodenameInfo
  + * (jnt:reference) multiple
 
-
-//---------------------------------------------------------
-// Compatibility nodes
-//---------------------------------------------------------
-
-[jnt:container] > nt:base,  jmix:basemetadata, mix:title
-
-[jnt:containerList] > nt:base,  jmix:basemetadata orderable
- + * (jnt:container) version
-
-[jmix:legacyPage] mixin
-    - jmix:legacyPid (string) hidden nofulltext
-<<<<<<< .working
-    - jmix:legacyPageKey (string) hidden nofulltext
-
 //---------------------------------------------------------
 // Modules filesystem nodes
 //---------------------------------------------------------
@@ -961,9 +946,20 @@ extends = jnt:content
 [jnt:namespaceDefinition] > nt:base
  - j:prefix (string) = 'jnt' mandatory
  - j:uri (string) = 'http://www.jahia.org/jahia/nt/1.0' mandatory
-=======
+
+
+//---------------------------------------------------------
+// Compatibility nodes
+//---------------------------------------------------------
+
+[jnt:container] > nt:base,  jmix:basemetadata, mix:title
+
+[jnt:containerList] > nt:base,  jmix:basemetadata orderable
+ + * (jnt:container) version
+
+[jmix:legacyPage] mixin
+    - jmix:legacyPid (string) hidden nofulltext
     - jmix:legacyPageKey (string) hidden nofulltext
 
 [jmix:legacyFile] mixin
     - jmix:legacyPath (string) hidden nofulltext
->>>>>>> .merge-right.r48254

@@ -1000,8 +1000,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         break;
                     String name = zipentry.getName();
                     if (name.equals(FILESACL_XML)) {
+                        logger.info("Importing file " + FILESACL_XML);
                         importFilesAcl(site, file, zis, mapping, fileList);
                     } else if (name.startsWith("export")) {
+                        logger.info("Importing file " + name);
                         String languageCode;
                         if (name.indexOf("_") != -1) {
                             languageCode = name.substring(7, name.lastIndexOf("."));
@@ -1043,6 +1045,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
                     zis.closeEntry();
                 }
+                ReferencesHelper.resolveReferencesKeeper(session);
+                siteFolder.getSession().save(JCRObservationManager.IMPORT);
             } finally {
                 zis.reallyClose();
             }

@@ -68,43 +68,11 @@ public class ReferencesHelper {
     }
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper) throws RepositoryException {
-        int batchCount = 0;
+        if (useReferencesKeeper) {
+            resolveReferencesKeeper(session);
+        }
         Map<String, String> uuidMapping = session.getUuidMapping();
         JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
-        if (useReferencesKeeper) {
-            NodeIterator ni = refRoot.getNodes();
-            if (ni.getSize() > 5000) {
-                logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to clean them. Parsing them may take a while.");
-            }
-            while (ni.hasNext()) {
-
-                batchCount++;
-
-                if (batchCount > maxBatch) {
-                    session.save();
-                    batchCount = 0;
-                }
-
-                Node refNode = ni.nextNode();
-                String refuuid = refNode.getProperty("j:node").getString();
-
-                try {
-                    JCRNodeWrapper n = session.getNodeByUUID(refuuid);
-                    String uuid = refNode.getProperty("j:originalUuid").getString();
-                    if (uuidMapping.containsKey(uuid)) {
-                        String pName = refNode.getProperty("j:propertyName").getString();
-                        updateProperty(session, n, pName, uuidMapping.get(uuid));
-                        refNode.remove();
-                    } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
-                        String pName = refNode.getProperty("j:propertyName").getString();
-                        updateProperty(session, n, pName, session.getNode(uuid).getIdentifier());
-                        refNode.remove();
-                    }
-                } catch (ItemNotFoundException e) {
-                    refNode.remove();
-                }
-            }
-        }
         boolean resolved;
         List<String> resolvedUUIDStringList = new LinkedList<String>();
         for (String uuid : references.keySet()) {
@@ -170,6 +138,51 @@ public class ReferencesHelper {
         for (String uuid : resolvedUUIDStringList) {
             references.remove(uuid);
         }
+    }
+
+    public static void resolveReferencesKeeper(JCRSessionWrapper session) throws RepositoryException {
+        NodeIterator ni = null;
+        try {
+            ni = session.getNode("/referencesKeeper").getNodes();
+        } catch (RepositoryException e) {
+            logger.error("Impossible to load the references keeper", e);
+            return;
+        }
+        if (ni.getSize() > 5000) {
+            logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to clean them. Parsing them may take a while.");
+        }
+
+        int batchCount = 0;
+        Map<String, String> uuidMapping = session.getUuidMapping();
+        while (ni.hasNext()) {
+
+            batchCount++;
+
+            if (batchCount > maxBatch) {
+                session.save();
+                batchCount = 0;
+            }
+
+            Node refNode = ni.nextNode();
+            String refuuid = refNode.getProperty("j:node").getString();
+
+            try {
+                JCRNodeWrapper n = session.getNodeByUUID(refuuid);
+                String uuid = refNode.getProperty("j:originalUuid").getString();
+                if (uuidMapping.containsKey(uuid)) {
+                    String pName = refNode.getProperty("j:propertyName").getString();
+                    updateProperty(session, n, pName, uuidMapping.get(uuid));
+                    refNode.remove();
+                } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
+                    String pName = refNode.getProperty("j:propertyName").getString();
+                    updateProperty(session, n, pName, session.getNode(uuid).getIdentifier());
+                    refNode.remove();
+                }
+            } catch (ItemNotFoundException e) {
+                refNode.remove();
+            }
+        }
+
     }
 
     private static void update(List<String> paths, JCRSessionWrapper session, String value) throws RepositoryException {

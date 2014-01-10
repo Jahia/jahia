@@ -15,6 +15,8 @@ global SeoService seoService
 global JCRContentUtils jcrUtils
 
 rule "Check uniqueness"
+    salience 50
+    activation-group "seo_rules"
     when
         Not in operation import
         A new node is created
@@ -24,6 +26,8 @@ rule "Check uniqueness"
 end
 
 rule "Add auto-generated URL mapping for news item"
+    salience 50
+    activation-group "seo_rules"
     when
         Not in operation import
         A property jcr:title has been set on a node

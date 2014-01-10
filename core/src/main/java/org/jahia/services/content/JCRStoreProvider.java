@@ -40,6 +40,7 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
@@ -53,8 +54,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -85,6 +85,7 @@ import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.net.URLEncoder;
 import java.rmi.Naming;
 import java.util.*;
 
@@ -507,6 +508,19 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             try {
                 String propKey = file.getURL().toString() + ".lastRegistered."+key;
                 if (file.exists() && (p.getProperty(propKey) == null || Long.parseLong(p.getProperty(propKey)) != file.lastModified())) {
+                    if (!systemId.startsWith("system-")){
+                        File definitionsFolder = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "definitions");
+                        definitionsFolder.mkdirs();
+                        try {
+                            final File definitionsFile = new File(definitionsFolder, systemId + ".cnd");
+                            final FileWriter out = new FileWriter(definitionsFile, false);
+                            new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
+                            out.close();
+                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(definitionsFile);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     needUpdate = true;
                     p.setProperty(propKey, Long.toString(file.lastModified()));
                 }

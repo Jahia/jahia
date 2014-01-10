@@ -264,7 +264,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 nodeType = nodeTypeRegistry.getNodeType(getTypeNameAsString());
             } catch (RepositoryException e) {
-                logger.debug("QA-5070: Couldn't resolve type: " + nodeTypeName.getNamespaceURI() + ":" + nodeTypeName
+                logger.error("Couldn't resolve type: " + nodeTypeName.getNamespaceURI() + ":" + nodeTypeName
                         .getLocalName());
             }
         }
@@ -719,7 +719,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,
                                                      NamespaceMappings nsMappings, Executor executor,
                                                      Parser parser, QueryHandlerContext context) {
-        final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
+        final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getProviderNodeTypeRegistry();
         final NamespaceRegistry namespaceRegistry = context.getNamespaceRegistry();
         try {
 

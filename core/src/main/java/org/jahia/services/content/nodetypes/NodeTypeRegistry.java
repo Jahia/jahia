@@ -46,8 +46,7 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.util.StringUtils;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
@@ -88,6 +87,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private final Properties deploymentProperties = new Properties();
 
     private static NodeTypeRegistry instance;
+
+    private static NodeTypeRegistry providerNodeTypeRegistry;
+
     private static boolean hasEncounteredIssuesWithDefinitions = false;
 
     public static NodeTypeRegistry getInstance() {
@@ -101,6 +103,44 @@ public class NodeTypeRegistry implements NodeTypeManager {
             }
         }
         return instance;
+    }
+
+    public static NodeTypeRegistry getProviderNodeTypeRegistry() {
+        if (providerNodeTypeRegistry == null) {
+            providerNodeTypeRegistry = new NodeTypeRegistry();
+            try {
+                providerNodeTypeRegistry.initSystemDefinitions();
+                File definitions = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "definitions");
+
+                if (definitions.exists()) {
+                    List<File> files = new ArrayList<File>();
+                    List<File> remfiles = new ArrayList<File>(Arrays.asList(definitions.listFiles()));
+                    while (!remfiles.isEmpty() && !remfiles.equals(files)) {
+                        files = new ArrayList<File>(remfiles);
+                        remfiles.clear();
+                        for (File file : files) {
+                            try {
+                                if (file.getName().endsWith(".cnd")) {
+                                    deployDefinitionsFileToProviderNodeTypeRegistry(file);
+                                }
+                            } catch (ParseException e) {
+                                remfiles.add(file);
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+        }
+        return providerNodeTypeRegistry;
+    }
+
+    public static void deployDefinitionsFileToProviderNodeTypeRegistry(File file) throws ParseException, IOException {
+        final String systemId = StringUtils.substringBefore(file.getName(), ".cnd");
+        JahiaCndReader r = new JahiaCndReader(new FileReader(file), file.getName(), systemId, providerNodeTypeRegistry);
+        r.parse();
     }
 
     /**
@@ -268,11 +308,11 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return res;
     }
 
-    public NodeTypeIterator getAllNodeTypes() {
+    public JahiaNodeTypeIterator getAllNodeTypes() {
         return new JahiaNodeTypeIterator(nodeTypesList.iterator(),nodeTypesList.size());
     }
 
-    public NodeTypeIterator getAllNodeTypes(List<String> systemIds) {
+    public JahiaNodeTypeIterator getAllNodeTypes(List<String> systemIds) {
         List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
 
         for (ExtendedNodeType nt : nodetypes.values()) {

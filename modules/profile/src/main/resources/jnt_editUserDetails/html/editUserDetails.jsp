@@ -249,13 +249,14 @@
             <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
             <c:if test="${not empty birthDate}">
                 <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                <fmt:formatDate value="${birthDate.date.time}" pattern="MMM dd yyyy" var="dateforCal"/>
             </c:if>
             <c:if test="${empty birthDate}">
                 <c:set var="displayBirthDate"><fmt:message key="label.clickToEdit"/></c:set>
             </c:if>
             <span <c:if test="${user:isPropertyEditable(user,'j:birthDate')}"> jcr:id="j:birthDate" class="inline-editable dateEdit${currentNode.identifier}"
                  id="JahiaGxt_userDateEdit_birthDate" <c:if test="${empty fields['j:birthDate']}">init:data="<%= getPublicPropertiesData(pageContext, "j:birthDate")%>"</c:if>
-                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${birthDate.string}" </c:if>>${displayBirthDate}</span>
+                 jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${dateforCal}" </c:if>>${displayBirthDate}</span>
         </li>
     </c:if>
 

@@ -1147,7 +1147,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                                 value = baseType != null ? mapping.getMappedPropertyValue(baseType, localName, value) :
                                         value;
-                                if (constraints.isEmpty() || constraints.contains(value)) {
+                                if (valueMatchesContraints(value, constraints)) {
                                     try {
                                         n.setProperty(propertyName, value);
                                         if (logger.isDebugEnabled())
@@ -1157,6 +1157,8 @@ public class LegacyImportHandler extends DefaultHandler {
                                     }
                                 } else {
                                     logger.error("Impossible to set property " + propertyName + " due to some constraint error");
+                                    logger.error(" - value       = " + value);
+                                    logger.error(" - constraints = " + constraints.toString());
                                 }
                             } else {
                                 String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
@@ -1190,6 +1192,16 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         return true;
+    }
+
+    private boolean valueMatchesContraints(String value, List<String> constraints) {
+        if (constraints == null) return true;
+        if (constraints.isEmpty()) return true;
+        if (constraints.contains(value)) return true;
+        for (final String constraint : constraints) {
+            if (Pattern.compile(constraint).matcher(value).matches()) return true;
+        }
+        return false;
     }
 
     private void createReferenceValue(String value, int selector, Node node, String prop) throws RepositoryException {
@@ -1231,13 +1243,16 @@ public class LegacyImportHandler extends DefaultHandler {
     }
 
     private String correctFilename(String value) {
+        /*
         if (value.startsWith("/users/")) {
             Matcher m = Pattern.compile("/users/([^/]+)(/.*)?").matcher(value);
             if (m.matches()) {
                 value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
                 value = value + "/files" + ((m.group(2) != null) ? m.group(2) : "");
             }
-        } else if (value.startsWith("/content/users/")) {
+        } else
+        */
+        if (value.startsWith("/content/users/")) {
             Matcher m = Pattern.compile("/content/users/([^/]+)(/.*)?").matcher(value);
             if (m.matches()) {
                 value = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));

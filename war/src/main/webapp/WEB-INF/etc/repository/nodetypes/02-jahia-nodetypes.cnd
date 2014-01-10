@@ -819,6 +819,7 @@ extends = jnt:content
 
 [jmix:legacyPage] mixin
     - jmix:legacyPid (string) hidden nofulltext
+<<<<<<< .working
     - jmix:legacyPageKey (string) hidden nofulltext
 
 //---------------------------------------------------------
@@ -960,3 +961,9 @@ extends = jnt:content
 [jnt:namespaceDefinition] > nt:base
  - j:prefix (string) = 'jnt' mandatory
  - j:uri (string) = 'http://www.jahia.org/jahia/nt/1.0' mandatory
+=======
+    - jmix:legacyPageKey (string) hidden nofulltext
+
+[jmix:legacyFile] mixin
+    - jmix:legacyPath (string) hidden nofulltext
+>>>>>>> .merge-right.r48254

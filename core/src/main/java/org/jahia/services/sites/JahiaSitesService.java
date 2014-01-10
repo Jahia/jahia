@@ -818,12 +818,18 @@ public class JahiaSitesService extends JahiaService {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRSiteNode s = StringUtils.isEmpty((String) key)?null:getSiteByKey((String) key, session);
-                    if (s != null) {
-                        return s.getDefaultLanguage();
-                    } else {
-                        return "";
+                    try {
+                        JCRSiteNode s = StringUtils.isEmpty((String) key)?null:getSiteByKey((String) key, session);
+                        if (s != null) {
+                            return s.getDefaultLanguage();
+                        }
+                    } catch (PathNotFoundException e) {
+                        // site not found .. do nothing
+                    } catch (RepositoryException e) {
+                        // other errors
+                        logger.error("cannot get site", e);
                     }
+                return "";
                 }
             });
         }

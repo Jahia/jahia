@@ -191,7 +191,7 @@ public class SettingsTabItem extends SidePanelTabItem {
                             boolean access = true;
                             if (requiredPermissions != null) {
                                 for (String p : requiredPermissions) {
-                                    if (!PermissionsUtils.isPermitted(p, mainNode)) {
+                                    if (!PermissionsUtils.isPermitted(p, JahiaGWTParameters.getSiteNode())) {
                                         access = false;
                                         break;
                                     }

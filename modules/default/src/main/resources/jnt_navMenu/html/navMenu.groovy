@@ -12,7 +12,6 @@ maxDepth = currentNode.properties['j:maxDepth']
 startLevel = currentNode.properties['j:startLevel']
 styleName = currentNode.properties['j:styleName']
 layoutID = currentNode.properties['j:layoutID']
-// menuItemView = currentNode.properties['j:menuItemView'] ignored
 
 def base;
 if (!baseline || baseline.string == 'home') {

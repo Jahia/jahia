@@ -15,20 +15,22 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
-<c:if test="${renderContext.editMode}">
-    <fmt:message key="label.comments.list"/>
-</c:if>
-<c:set var="boundComponent"
-       value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty boundComponent}">
-    <jcr:node var="comments" path="${boundComponent.path}/comments"/>
-    <c:choose>
-        <c:when test="${empty comments}">
-            <template:addCacheDependency node="${boundComponent}"/>
-        </c:when>
-        <c:otherwise>
-            <template:addCacheDependency node="${comments}"/>
-            <template:module node="${comments}"/>
-        </c:otherwise>
-    </c:choose>
-</c:if>
+<div id="comments">
+    <c:if test="${renderContext.editMode}">
+        <fmt:message key="label.comments.list"/>
+    </c:if>
+    <c:set var="boundComponent"
+           value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+    <c:if test="${not empty boundComponent}">
+        <jcr:node var="comments" path="${boundComponent.path}/comments"/>
+        <c:choose>
+            <c:when test="${empty comments}">
+                <template:addCacheDependency node="${boundComponent}"/>
+            </c:when>
+            <c:otherwise>
+                <template:addCacheDependency node="${comments}"/>
+                <template:module node="${comments}"/>
+            </c:otherwise>
+        </c:choose>
+    </c:if>
+</div>

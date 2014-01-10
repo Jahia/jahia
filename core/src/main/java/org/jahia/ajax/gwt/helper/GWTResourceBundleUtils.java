@@ -59,6 +59,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -125,7 +126,7 @@ public final class GWTResourceBundleUtils {
 
     private static String getLanguageCode(String resourceBundleFileName) {
         String name = StringUtils.substringBeforeLast(resourceBundleFileName, ".properties");
-        String lang = GWTResourceBundle.DEFAULT_LANG;
+        String lang = Locale.ENGLISH.getLanguage();
         if (name.contains("_")) {
             String[] parts = Patterns.UNDERSCORE.split(name);
             int l = parts.length;
@@ -167,7 +168,17 @@ public final class GWTResourceBundleUtils {
                     }
                 }
             }
-
+            // if empty, define a default bundle
+            if (gwtBundle.getEntries().isEmpty()) {
+                String lang = null;
+                try {
+                    lang = ((JCRSiteNode) node.getSession().getNode(JCRContentUtils.getSystemSitePath())).getDefaultLanguage();
+                } catch (RepositoryException e) {
+                    lang = Locale.ENGLISH.getLanguage();
+                }
+                gwtBundle.setName(node.getResolveSite().getTemplatePackage().getId());
+                gwtBundle.setValue("<empty>",lang,null);
+            }
             // load available languages
             List<GWTJahiaValueDisplayBean> availableLocales = new ArrayList<GWTJahiaValueDisplayBean>();
             for (Locale l : LanguageCodeConverters.getSortedLocaleList(uiLocale)) {
@@ -191,7 +202,12 @@ public final class GWTResourceBundleUtils {
             Set<String> languages) {
 
         String name = StringUtils.substringBeforeLast(node.getName(), ".properties");
-        String lang = GWTResourceBundle.DEFAULT_LANG;
+        String lang = null;
+        try {
+            lang = ((JCRSiteNode) node.getSession().getNode(JCRContentUtils.getSystemSitePath())).getDefaultLanguage();
+        } catch (RepositoryException e) {
+            lang = Locale.ENGLISH.getLanguage();
+        }
         if (name.contains("_")) {
             lang = getLanguageCode(name);
             if (gwtBundle.getName() == null) {

@@ -47,6 +47,8 @@ import org.apache.jackrabbit.core.observation.EventImpl;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.ExternalEventListener;
 import org.jahia.services.content.JCREventIterator;
+import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +126,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
                     flushParent = true;
                 }
-                if (path.contains("vanityUrlMapping")) {
+                if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
                     flushForVanityUrl=true;
                 }
                 if (path.contains("j:acl") || type == Event.NODE_MOVED) {
@@ -173,7 +175,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
 
                 if (flushForVanityUrl) {
-                    path = StringUtils.substringBeforeLast(path, "/vanityUrlMapping");
+                    path = StringUtils.substringBeforeLast(path, VanityUrlManager.VANITYURLMAPPINGS_NODE);
                     flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
                         flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);

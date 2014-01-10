@@ -133,7 +133,7 @@ public class VanityUrlManager {
     public VanityUrl getVanityUrlForCurrentLocale(JCRNodeWrapper contentNode,
                                                   String siteKey, JCRSessionWrapper session) throws RepositoryException {
         VanityUrl vanityUrl = null;
-        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED) && contentNode.hasNode(VANITYURLMAPPINGS_NODE)) {
             boolean isSite = (contentNode.getResolveSite().getSiteKey().equals(siteKey));
             String currentLanguage = session.getLocale().toString();
             for (NodeIterator it = session.getNode(contentNode.getPath() + "/" + VANITYURLMAPPINGS_NODE).getNodes(); it
@@ -168,7 +168,7 @@ public class VanityUrlManager {
             throws RepositoryException {
         List<VanityUrl> vanityUrls = new ArrayList<VanityUrl>();
         contentNode = session.getNodeByUUID(contentNode.getIdentifier());
-        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED) && contentNode.hasNode(VANITYURLMAPPINGS_NODE)) {
             for (NodeIterator it = contentNode.getNode(VANITYURLMAPPINGS_NODE).getNodes(); it
                     .hasNext();) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
@@ -200,7 +200,7 @@ public class VanityUrlManager {
         JCRNodeWrapper newDefaultVanityUrlNode = null;
         boolean found = false;
         JCRNodeWrapper vanityUrlMappingsNode = null;
-        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED) && contentNode.hasNode(VANITYURLMAPPINGS_NODE)) {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
             for (NodeIterator it = vanityUrlMappingsNode.getNodes(); it.hasNext();) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
@@ -251,7 +251,7 @@ public class VanityUrlManager {
      */    
     public boolean removeVanityUrlMappings(JCRNodeWrapper contentNode, String languageCode, JCRSessionWrapper session)
             throws RepositoryException {
-        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+        if (contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED) && contentNode.hasNode(VANITYURLMAPPINGS_NODE)) {
             JCRNodeWrapper vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
             NodeIterator it = vanityUrlMappingsNode.getNodes();
             if (it.hasNext()) {
@@ -305,11 +305,11 @@ public class VanityUrlManager {
         JCRNodeWrapper vanityUrlNode = null;
         JCRNodeWrapper previousDefaultVanityUrlNode = null;
         JCRNodeWrapper vanityUrlMappingsNode = null;
-        if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
-            session.checkout(contentNode);
-            contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
-            session.save();
-            vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
+        if (!contentNode.hasNode(VANITYURLMAPPINGS_NODE)) {
+            if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+                contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
+            }
+            vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE,JAHIANT_VANITYURLS);
         } else {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);            
             boolean found = false;
@@ -396,12 +396,12 @@ public class VanityUrlManager {
             JCRSessionWrapper session) throws RepositoryException {
         Map<String, Map<String, VanityUrl>> existingMappings = new HashMap<String, Map<String, VanityUrl>>();
         Map<String, KeyValue> oldDefaultMappings = new HashMap<String, KeyValue>();
-        JCRNodeWrapper vanityUrlMappingsNode = null;        
-        if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
-            session.checkout(contentNode);
-            contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
-            session.save();
-            vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);            
+        JCRNodeWrapper vanityUrlMappingsNode = null;
+        if (!contentNode.hasNode(VANITYURLMAPPINGS_NODE)) {
+            if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+                contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
+            }
+            vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE,JAHIANT_VANITYURLS);
         } else {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
             

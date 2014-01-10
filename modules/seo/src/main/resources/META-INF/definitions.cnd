@@ -13,4 +13,4 @@
  + * (jnt:vanityUrl)
 
 [jmix:vanityUrlMapped] mixin
- + vanityUrlMapping (jnt:vanityUrls) = jnt:vanityUrls autocreated
+ + vanityUrlMapping (jnt:vanityUrls) = jnt:vanityUrls

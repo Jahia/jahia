@@ -60,7 +60,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
                 correctType = false
                 menuItem.properties['j:displayInMenu'].each() {
                   if (it.node != null) {                  
-                    correctType |= (it.node.identifier == currentNode.identifier)
+                    correctType |= (it.node.name == currentNode.name)
                   }
                 }
             }

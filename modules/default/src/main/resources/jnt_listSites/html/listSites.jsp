@@ -27,6 +27,8 @@
 <template:addResources type="css" resources="listsites.css"/>
 <template:include view="hidden.header"/>
 
+<c:set var="currentLocale">${currentResource.locale}</c:set>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $("a.changePropertiesButton").fancybox();
@@ -95,12 +97,12 @@
                     <c:set var="baseContribute" value="${url.baseContribute}"/>
                     <c:set var="baseEdit" value="${url.baseEdit}"/>
                     <c:set var="siteInLang" value="false"/>
-                    <c:set var="currentLocale">${currentResource.locale}</c:set>	
-                    <c:forEach items="${node.languages}" var="mapLang">	
+                    <c:set var="currentLocale">${currentResource.locale}</c:set>
+                    <c:forEach items="${node.languages}" var="mapLang">
                     	<c:if test="${currentLocale == mapLang}">
                     		<c:set var="siteInLang" value="true"/>
                     	</c:if>
-                    </c:forEach>	
+                    </c:forEach>
                     <c:if test="${not siteInLang}">
                         <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
                         <c:set var="baseLive"
@@ -198,8 +200,8 @@
                         <c:set var="basePreview" value="${url.basePreview}"/>
                         <c:set var="baseContribute" value="${url.baseContribute}"/>
                         <c:set var="baseEdit" value="${url.baseEdit}"/>
-                        <c:if test="${not fn:contains(node.languages, currentResource.locale)}">
-                            <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
+                        <c:if test="${not functions:contains(node.languages, currentLocale)}">
+                            <c:set var="localeLength" value="${fn:length(currentLocale)}"/>
                             <c:set var="baseLive"
                                    value="${fn:substring(url.baseLive,-1,fn:length(url.baseLive)-localeLength)}${node.defaultLanguage}"/>
                             <c:set var="basePreview"

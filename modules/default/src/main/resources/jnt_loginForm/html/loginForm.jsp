@@ -17,10 +17,7 @@
 <template:addResources type="css" resources="loginForm.css"/>
 
 <c:if test="${!renderContext.loggedIn || currentAliasUser.username eq 'guest'}">
-    <script type="text/javascript">
-    	document.onkeydown = function (e) { if ((e || window.event).keyCode == 13) document.loginForm.submit(); };
-    </script>
-    <ui:loginArea class="loginForm">
+    <ui:loginArea class="loginForm" onsubmit="loginButton.disabled = true; return true;">
         <h3 class="loginicon">${fn:escapeXml(currentNode.displayableName)}</h3>
         <ui:isLoginError var="loginResult">
             <span class="error"><fmt:message key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
@@ -47,7 +44,7 @@
         </p>
 
         <div class="divButton">
-            <input type="submit" name="search" class="button" value="<fmt:message key='loginForm.loginbutton.label'/>"/>
+            <input type="submit" name="loginButton" class="button" value="<fmt:message key='loginForm.loginbutton.label'/>"/>
         </div>
     </ui:loginArea>
 </c:if>

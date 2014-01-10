@@ -1,0 +1,24 @@
+###############################################################################
+package org.jahia.modules.seo.rules.live
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.JCRContentUtils
+import org.slf4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global JCRContentUtils jcrUtils
+###############################################################################
+
+rule "URL mapping cache flush"
+    when
+        A node is moved
+            - the node has the type jmix:vanityUrlMapped
+    then
+        Flush vanityUrlByUrlCache
+end

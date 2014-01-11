@@ -420,7 +420,15 @@ public class MainModule extends Module {
     }
 
     private String getUrl(String path, String template) {
-        return getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html";
+        StringBuilder url = new StringBuilder(getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html");
+        // add channel parameters
+        if (editLinker.getActiveChannel() != null && !"default".equals(editLinker.getActiveChannel().getValue())) {
+            url.append("?channel=").append(editLinker.getActiveChannel().getValue());
+            if (editLinker.getActiveChannelVariant() != null) {
+                url.append("&variant=").append(editLinker.getActiveChannelVariant());
+            }
+        }
+        return url.toString();
     }
 
     /**

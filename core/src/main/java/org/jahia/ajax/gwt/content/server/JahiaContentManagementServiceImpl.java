@@ -2370,7 +2370,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(entry.getKey(), fields);
                 jahiaNode.set("conditionMatch", entry.getValue());
                 ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(entry.getKey().getPrimaryNodeTypeName());
-                ResourceBundle rb = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(nt.getSystemId()), getUILocale());
+                ResourceBundle rb = ResourceBundles.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(nt.getSystemId()), getUILocale());
                 for (String prop : requiredFields.get(entry.getKey().getPrimaryNodeTypeName())) {
                     Object val = jahiaNode.get(prop);
                     if (val instanceof List) {

@@ -73,7 +73,7 @@ public class ChannelExclusionFilter extends AbstractFilter {
                 return null;
             }
             Property channelExclusionProperty = resource.getNode().getProperty("j:channelSelection");
-            String includeOrExclude = resource.getNode().getProperty("j:channelIncludeOrExclude").getString();
+            String includeOrExclude = resource.getNode().hasProperty("j:channelIncludeOrExclude") ? resource.getNode().getProperty("j:channelIncludeOrExclude").getString() : "exclude";
             Value[] channelExclusionValues = channelExclusionProperty.getValues();
             Channel currentChannel = renderContext.getChannel();
             for (Value channelExclusionValue : channelExclusionValues) {

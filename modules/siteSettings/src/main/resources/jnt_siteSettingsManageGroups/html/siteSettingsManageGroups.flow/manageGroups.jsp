@@ -132,10 +132,10 @@ function submitGroupForm(act, group) {
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
-                <th width="3%">#</th>
+                <th width="4%">#</th>
                 <th><fmt:message key="label.name"/></th>
                 <c:if test="${multipleProvidersAvailable}">
-                    <th width="10%"><fmt:message key="column.provider.label"/></th>
+                    <th width="11%"><fmt:message key="column.provider.label"/></th>
                 </c:if>
                 <th width="20%"><fmt:message key="label.actions"/></th>
             </tr>

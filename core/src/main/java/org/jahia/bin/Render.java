@@ -746,6 +746,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             }
 
+            renderContext.setSiteInfo(urlResolver.getSiteInfo());
+
             if (renderContext.isPreviewMode() && req.getParameter(PREVIEW_DATE) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 Calendar previewDate = Calendar.getInstance();
                 previewDate.setTime(new Date(new Long(req.getParameter(PREVIEW_DATE))));

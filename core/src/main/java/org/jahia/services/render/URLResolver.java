@@ -123,6 +123,7 @@ public class URLResolver {
     private Date versionDate;
     private String versionLabel;
     private static final String CACHE_KEY_SEPARATOR = "___";
+    private SiteInfo siteInfo;
 
     public void setRenderContext(RenderContext renderContext) {
         this.renderContext = renderContext;
@@ -429,7 +430,7 @@ public class URLResolver {
         }
         JCRNodeWrapper node = null;
         String nodePath = path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path;
-        SiteInfo siteInfo = null;
+        siteInfo = null;
         if (nodePathCache.containsKey(cacheKey) && siteInfoCache.containsKey(cacheKey)) {
             nodePath = nodePathCache.get(cacheKey);
             siteInfo = siteInfoCache.get(cacheKey);
@@ -468,7 +469,6 @@ public class URLResolver {
                     });
             siteInfo = siteInfoCache.get(cacheKey);
         }
-        renderContext.setSiteInfo(siteInfo);
         JCRSessionFactory.getInstance().setCurrentSitePath(siteInfo.getSitePath());
         JCRSessionWrapper userSession = siteInfo != null
                 && siteInfo.getDefaultLanguage() != null
@@ -749,5 +749,9 @@ public class URLResolver {
 
     public String getVersionLabel() {
         return versionLabel;
+    }
+
+    public SiteInfo getSiteInfo() {
+        return siteInfo;
     }
 }

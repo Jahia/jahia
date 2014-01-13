@@ -147,6 +147,7 @@ public class WorkflowService implements BeanPostProcessor {
                         }
 
                         type.setProvider(provider.getKey());
+                        cache.flush();
                         ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle(def.getPackageName() + "." + type.getDefinition(), type.getModule());
                         break;
                     }
@@ -168,6 +169,7 @@ public class WorkflowService implements BeanPostProcessor {
         if (workflowRegistrationByDefinition.get(type.getDefinition()) == type) {
             workflowRegistrationByDefinition.remove(type.getDefinition());
             modulesForWorkflowDefinition.remove(type.getDefinition());
+            cache.flush();
         }
     }
 

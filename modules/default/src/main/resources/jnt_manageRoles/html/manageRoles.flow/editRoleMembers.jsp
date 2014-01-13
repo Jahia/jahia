@@ -99,12 +99,12 @@
                 &nbsp;<fmt:message key="default.manageRoles.backToRoles"/>
             </button>
             <button class="btn ${displayUsers}" type="submit" name="_eventId_users">
-                <i class="icon-user"></i>
+                <img src="<c:url value='/modules/assets/css/img/icon-user-small.png'/>" alt=""/>
                 &nbsp;<fmt:message key="label.users"/>
             </button>
 
             <button class="btn ${displayGroups}" type="submit" name="_eventId_groups">
-                <i class="icon-list"></i>
+                <img src="<c:url value='/modules/assets/css/img/icon-group-small.png'/>" alt=""/>
                 &nbsp;<fmt:message key="label.groups"/>
             </button>
 

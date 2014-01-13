@@ -48,14 +48,14 @@
                     <tbody>
                     <c:forEach items="${entry.value}" var="member" varStatus="loopStatus">
                         <c:set var="principalType" value="${user:principalType(member)}"/>
-                        <c:set var="principalIcon" value="${principalType == 'u' ? 'usersmall' : 'group-icon'}"/>
+                        <c:set var="principalIcon" value="${principalType == 'u' ? 'icon-user-small' : 'icon-group-small'}"/>
                         <c:set var="principalKey" value="${principalType}:${member.name}"/>
                         <tr>
                             <td>
                                     ${loopStatus.count}
                             </td>
                             <td>
-                                <img src="<c:url value='/modules/default/images/${principalIcon}.png'/>" alt="${principalType}" width="16" height="16"/>
+                                <img src="<c:url value='/modules/assets/css/img/${principalIcon}.png'/>" alt="${principalType}"/>
                             </td>
                             <td>
                                     ${fn:escapeXml(user:displayName(member))}

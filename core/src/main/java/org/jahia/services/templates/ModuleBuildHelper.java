@@ -357,7 +357,7 @@ public class ModuleBuildHelper {
 
             File tmpRepo = new File(System.getProperty("java.io.tmpdir"), "repo");
             tmpRepo.mkdir();
-            String[] installParams = new String[]{"release:prepare", "release:stage",
+            String[] installParams = new String[]{"release:prepare", "release:stage", "release:clean",
                     "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag, "-DreleaseVersion=" + releaseVersion,
                     "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=true",
                     "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode"};

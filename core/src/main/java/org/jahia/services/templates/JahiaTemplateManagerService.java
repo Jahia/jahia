@@ -450,7 +450,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         final String importFileBasePath = "content/modules/" + aPackage.getId() + "/files/";
-        JCRNodeWrapper filesNode = session.getNode("/modules/" + aPackage.getIdWithVersion() + "/files");
+        String filesNodePath = "/modules/" + aPackage.getIdWithVersion() + "/files";
+        JCRNodeWrapper filesNode = null;
+        if (session.nodeExists(filesNodePath)) {
+            filesNode = session.getNode(filesNodePath);
+        }
 
         ZipInputStream zis = null;
         try {
@@ -468,7 +472,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             if (relPath.endsWith(sourceFile.getName() + "/" + sourceFile.getName())) {
                                 relPath = StringUtils.substringBeforeLast(relPath, "/");
                             }
-                            if (filesNode.hasNode(relPath)) {
+                            if (filesNode != null && filesNode.hasNode(relPath)) {
                                 JCRNodeWrapper node = filesNode.getNode(relPath);
                                 if (node.hasProperty("jcr:lastModified")) {
                                     nodeMoreRecentThanSourceFile = node.getProperty("jcr:lastModified").getDate().getTimeInMillis() > sourceFile.lastModified();

@@ -81,6 +81,7 @@
         <transition on="disable" to="disableFromSite"/>
         <transition on="disableAll" to="disableFromAllSites"/>
         <transition on="viewInstalledModules" to="view"/>
+        <transition on="undeployModule" to="undeployModule"/>
     </view-state>
 
     <action-state id="downloadSources">

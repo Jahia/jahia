@@ -546,17 +546,19 @@ public class ErrorFileDumper {
                 for (String ehcacheName : ehcacheNames) {
                     net.sf.ehcache.Cache ehcache = ehcacheManager.getCache(ehcacheName);
                     strOut.append(ehcacheName).append(": ");
-                    StatisticsGateway ehcacheStats = ehcache.getStatistics();
-                    String efficiencyStr = "0";
-                    if (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount() > 0) {
-                        efficiencyStr = percentFormat.format(ehcacheStats.cacheHitCount() * 100f / (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount()));
+                    if (ehcache != null) {
+                        StatisticsGateway ehcacheStats = ehcache.getStatistics();
+                        String efficiencyStr = "0";
+                        if (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount() > 0) {
+                            efficiencyStr = percentFormat.format(ehcacheStats.cacheHitCount() * 100f / (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount()));
+                        }
+                        strOut.append("size=" + ehcacheStats.getSize()
+                                + ", successful hits=" + ehcacheStats.cacheHitCount()
+                                + ", total hits="
+                                + (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount())
+                                + ", efficiency=" + efficiencyStr + "%");
+                        strOut.println();
                     }
-                    strOut.append("size=" + ehcacheStats.getSize()
-                            + ", successful hits=" + ehcacheStats.cacheHitCount()
-                            + ", total hits="
-                            + (ehcacheStats.cacheHitCount() + ehcacheStats.cacheMissCount())
-                            + ", efficiency=" + efficiencyStr + "%");
-                    strOut.println();
                 }
             }
         }

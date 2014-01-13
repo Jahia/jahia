@@ -40,6 +40,7 @@
 
 package org.jahia.services.render.filter;
 
+import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
@@ -50,6 +51,7 @@ import org.slf4j.profiler.Profiler;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Stack;
@@ -156,6 +158,14 @@ public class TemplateScriptFilter extends AbstractFilter {
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
         if (renderContext.isEditMode() && SettingsBean.getInstance().isDevelopmentMode()) {
+            if (!ErrorFileDumper.isShutdown()) {
+                try {
+                    ErrorFileDumper.dumpToFile(e, renderContext.getRequest());
+                } catch (IOException e1) {
+                    logger.error("Cannot log error", e1);
+                }
+            }
+
             return "<pre>"+getExceptionDetails(e)+"</pre>";
         }
         return super.getContentForError(renderContext, resource, renderChain, e);

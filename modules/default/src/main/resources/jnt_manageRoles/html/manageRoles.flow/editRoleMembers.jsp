@@ -104,7 +104,7 @@
             </button>
 
             <button class="btn ${displayGroups}" type="submit" name="_eventId_groups">
-                <i class="icon-group"></i>
+                <i class="icon-list"></i>
                 &nbsp;<fmt:message key="label.groups"/>
             </button>
 

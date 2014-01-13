@@ -459,6 +459,10 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             return Collections.emptySet();
         }
         if (allBundleScripts.size() == 1) {
+            final ViewResourceInfo res = allBundleScripts.iterator().next();
+            if (!res.path.startsWith(pathPrefix)) {
+                return Collections.emptySet();
+            }
             return allBundleScripts;
         }
         SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);

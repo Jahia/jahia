@@ -283,7 +283,7 @@
 
 [jnt:nodeLinkI18nImageReference] > jnt:nodeLinkImageReference, jmix:hiddenType
  - j:node (weakreference,picker[type='image']) i18n < jmix:image
- - j:linknode (weakreference) i18n < jmix:droppableContent, jnt:page
+ - j:linknode (weakreference,picker[type='editoriallink']) i18n < jmix:droppableContent, jnt:page
 
 [jnt:externalLinkI18nImageReference] > jnt:externalLinkImageReference, jmix:hiddenType
  - j:node (weakreference,picker[type='image']) i18n < jmix:image

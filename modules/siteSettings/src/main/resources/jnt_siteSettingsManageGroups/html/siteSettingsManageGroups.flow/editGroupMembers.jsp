@@ -202,7 +202,7 @@
             <c:otherwise>
                 <c:forEach items="${principals}" var="principal" end="${memberDisplayLimit - 1}" varStatus="loopStatus">
                     <tr>
-                        <td><input class="selectedMember" type="checkbox" name="selectedMembers" value="${principal.name}" ${functions:contains(members, principal) ? 'checked="checked"' : ''}/> </td>
+                        <td><input class="selectedMember" type="checkbox" name="selectedMembers" value="${flowHandler.searchType eq 'users' ? principal.userKey : principal.groupKey}" ${functions:contains(members, principal) ? 'checked="checked"' : ''}/> </td>
                         <td>
                             ${fn:escapeXml(user:displayName(principal))}
                         </td>

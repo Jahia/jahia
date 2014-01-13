@@ -125,6 +125,9 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the message context object
      */
     public void addMembers(String groupKey, String[] members, MessageContext context) {
+        if (members.length == 0) {
+            return;
+        }
         JahiaGroup group = lookupGroup(groupKey);
         logger.info("Adding members {} to group {}", members, group.getGroupKey());
         long timer = System.currentTimeMillis();
@@ -353,7 +356,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the message context object
      */
     public void removeMembers(String groupKey, String[] members, MessageContext context) {
-        if (members == null) {
+        if (members == null || members.length == 0) {
             return;
         }
         JahiaGroup group = lookupGroup(groupKey);

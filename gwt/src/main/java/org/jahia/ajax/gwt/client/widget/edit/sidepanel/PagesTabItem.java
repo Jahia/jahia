@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -69,7 +70,10 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Side panel tab item for browsing the pages tree.
@@ -156,6 +160,8 @@ public class PagesTabItem extends SidePanelTabItem {
     @Override
     public void handleNewMainSelection(String path) {
         selectMainNodeTreeLoadListener.handleNewMainSelection(path);
+        editLinker.getSelectionContext().setSelectedNodes(Arrays.asList(MainModule.getInstance().getNode()));
+        editLinker.getSelectionContext().refresh(LinkerSelectionContext.BOTH);
         super.handleNewMainSelection(path);
     }
 

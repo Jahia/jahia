@@ -59,6 +59,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -167,6 +168,11 @@ public final class GWTResourceBundleUtils {
                     }
                 }
             }
+            // if empty, define a default bundle
+            if (gwtBundle.getEntries().isEmpty()) {
+                gwtBundle.setName(node.getResolveSite().getTemplatePackage().getId());
+                gwtBundle.setValue("<empty>",GWTResourceBundle.DEFAULT_LANG,null);
+            }
 
             // load available languages
             List<GWTJahiaValueDisplayBean> availableLocales = new ArrayList<GWTJahiaValueDisplayBean>();
@@ -242,7 +248,13 @@ public final class GWTResourceBundleUtils {
                     if (current == null) {
                         // new language
                         logger.debug("Processing new resource bundle for language '{}'", lang);
-                        node.uploadFile(bundle.getName() + "_" + lang + ".properties", is,
+                        String bundleName;
+                        if (StringUtils.equals(lang,GWTResourceBundle.DEFAULT_LANG)) {
+                            bundleName = bundle.getName() + ".properties";
+                        }  else {
+                            bundleName = bundle.getName() + "_" + lang + ".properties";
+                        }
+                        node.uploadFile(bundleName, is,
                                 "text/plain");
                     } else {
                         // updating existing language

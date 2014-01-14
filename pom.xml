@@ -430,6 +430,20 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>release-to-staging-repository</id>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${nexus.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <nexusUrl>https://devtools.jahia.com/nexus/</nexusUrl>
+                    <serverId>staging-repository</serverId>
+                    <stagingProfileId>64277f72646358</stagingProfileId>
+                </configuration>
+            </plugin>
+        </profile>
     </profiles>
 
     <distributionManagement>
@@ -606,6 +620,7 @@
                     <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production</releaseProfiles>
                 </configuration>
             </plugin>
+<<<<<<< .working
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
@@ -629,6 +644,8 @@
                     <stagingProfileId>64277f72646358</stagingProfileId>
                 </configuration>
             </plugin>
+=======
+>>>>>>> .merge-right.r48341
             -->
         </plugins>
     </build>

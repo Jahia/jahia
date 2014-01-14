@@ -360,7 +360,7 @@ public class JahiaCndReader {
             lexer.fail("Missing > in namespace decl.");
         }
 
-        if (registry.getNamespaces().containsKey(prefix) && !registry.getNamespaces().get(prefix).equals(uri)) {
+        if (registry.getNamespaces().containsKey(prefix) && !StringUtils.equals(registry.getNamespaces().get(prefix),uri)) {
             lexer.fail("Invalid namespace declaration : prefix already declared");
         }
 

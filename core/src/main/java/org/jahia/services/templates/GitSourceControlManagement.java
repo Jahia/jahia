@@ -89,7 +89,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
         if (commitRequired) {
             checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m","\"" + message + "\""}));
-            checkExecutionResult(executeCommand(executable, new String[]{"push","-u","origin","master"}));
+            checkExecutionResult(executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin","master"}));
         }
     }
 
@@ -175,7 +175,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, new String[]{"clone",uri,workingDirectory.getName()});
+        ExecutionResult r = executeCommand(executable, new String[]{"-c", "core.askpass=true","clone",uri,workingDirectory.getName()});
         if (r.exitValue > 0) {
             throw new IOException(r.err);
         }
@@ -192,9 +192,9 @@ public class GitSourceControlManagement extends SourceControlManagement {
         executeCommand(executable, new String[]{"add","."});
         executeCommand(executable, new String[]{"commit","-a","-m","First commit"});
         executeCommand(executable, new String[]{"remote","add","origin",url});
-        executeCommand(executable, new String[]{"fetch"});
+        executeCommand(executable, new String[]{"-c", "core.askpass=true","fetch"});
         executeCommand(executable, new String[]{"merge","origin/master"});
-        executeCommand(executable, new String[]{"push","-u","origin","master"});
+        executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin","master"});
     }
 
     protected void initWithWorkingDirectory(File workingDirectory) throws IOException {

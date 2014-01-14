@@ -633,10 +633,12 @@ public class Activator implements BundleActivator {
 
     private synchronized void stopped(Bundle bundle) {
         JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
-        if (jahiaTemplatesPackage.getContext() != null) {
-            jahiaTemplatesPackage.setContext(null);
+        if (jahiaTemplatesPackage != null) {
+            if (jahiaTemplatesPackage.getContext() != null) {
+                jahiaTemplatesPackage.setContext(null);
+            }
+            jahiaTemplatesPackage.setClassLoader(null);
         }
-        jahiaTemplatesPackage.setClassLoader(null);
     }
 
     private void registerHttpResources(final Bundle bundle) {

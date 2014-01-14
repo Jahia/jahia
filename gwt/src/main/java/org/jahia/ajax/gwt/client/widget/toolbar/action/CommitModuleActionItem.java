@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -99,7 +100,7 @@ public class CommitModuleActionItem extends BaseActionItem {
 
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display(Messages.get("label.error", "Error"), caught.getMessage());
+                        MessageBox.alert(Messages.get("label.error", "Error"), caught.getMessage(), null);
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("event","commit");
                         linker.refresh(data);

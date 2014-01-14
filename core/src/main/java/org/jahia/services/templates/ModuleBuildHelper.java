@@ -49,6 +49,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -136,6 +137,13 @@ public class ModuleBuildHelper {
             bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), is);
         } finally {
             IOUtils.closeQuietly(is);
+        }
+        JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+        if (pkg == null) {
+            throw new IOException("Cannot deploy module");
+        }
+        if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_PARSED) {
+            throw new IOException("Missing dependency : " +pkg.getState().getDetails().toString());
         }
         bundle.start();
         return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(

@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -101,7 +102,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
 
                             public void onApplicationFailure(Throwable caught) {
                                 linker.loaded();
-                                Info.display(Messages.get("label.error", "Error"), caught.getMessage());
+                                MessageBox.alert(Messages.get("label.error", "Error"), caught.getMessage(), null);
                             }
                         });
                     }

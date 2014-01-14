@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
@@ -66,17 +67,35 @@ import java.util.List;
 public class ToolbarHeader extends Header {
     private HorizontalPanel horizontalPanel;
     private List<ActionItem> actionItems = new ArrayList<ActionItem>();
+    private HorizontalPanel leftWidgetPanel;
 
     public ToolbarHeader() {
         super();
         setHeight("22");
+        leftWidgetPanel = new HorizontalPanel();
+        leftWidgetPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+    }
 
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        leftWidgetPanel.addStyleName("x-panel-toolbar");
+        leftWidgetPanel.setLayoutOnChange(true);
+        leftWidgetPanel.setStyleAttribute("float", "left");
+        leftWidgetPanel.getAriaSupport().setPresentation(true);
+        leftWidgetPanel.setVisible(true);
+
+        leftWidgetPanel.render(getElement());
+        getElement().insertFirst(leftWidgetPanel.getElement());
     }
 
     public void removeAllTools() {
         if (horizontalPanel != null) {
             super.removeTool(horizontalPanel);
             horizontalPanel = null;
+        }
+        if (leftWidgetPanel != null) {
+            leftWidgetPanel.removeAll();
         }
         if (actionItems != null) {
             actionItems.clear();
@@ -85,14 +104,24 @@ public class ToolbarHeader extends Header {
 
     @Override
     public void addTool(Component tool) {
-        if (horizontalPanel == null) {
-            horizontalPanel = new HorizontalPanel();
-            horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-
-        }
-        horizontalPanel.add(tool);
-        horizontalPanel.layout();
+        addTool(tool, false);
     }
+
+    public void addTool(Component tool, boolean left) {
+        if (left) {
+            leftWidgetPanel.add(tool);
+            leftWidgetPanel.layout();
+        } else {
+            if (horizontalPanel == null) {
+                horizontalPanel = new HorizontalPanel();
+                horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+
+            }
+            horizontalPanel.add(tool);
+            horizontalPanel.layout();
+        }
+    }
+
 
     @Override
     public void removeTool(Component tool) {
@@ -107,6 +136,11 @@ public class ToolbarHeader extends Header {
     }
 
     public void addItem(Linker linker, GWTJahiaToolbarItem gwtToolbarItem) {
+        boolean left = gwtToolbarItem.getProperties().get("position") != null && gwtToolbarItem.getProperties().get("position").getValue().equals("left");
+        addItem(linker, gwtToolbarItem, left);
+    }
+
+    private void addItem(Linker linker, GWTJahiaToolbarItem gwtToolbarItem, boolean left) {
         if (gwtToolbarItem instanceof GWTJahiaToolbarMenu) {
             GWTJahiaToolbarMenu gwtToolbarMenu = (GWTJahiaToolbarMenu) gwtToolbarItem;
             ActionToolbarMenu menu = new ActionToolbarMenu(linker);
@@ -123,16 +157,16 @@ public class ToolbarHeader extends Header {
                 menuToolItem.setIcon(ToolbarIconProvider.getInstance().getIcon(minIconStyle));
             }
             menuToolItem.setMenu(menu);
-            addTool(menuToolItem);
+            addTool(menuToolItem, left);
         } else {
             final ActionItem actionItem = gwtToolbarItem.getActionItem();
             actionItems.add(actionItem);
             if (actionItem != null) {
                 actionItem.init(gwtToolbarItem, linker);
                 if (actionItem.getCustomItem() != null) {
-                    addTool(actionItem.getCustomItem());
+                    addTool(actionItem.getCustomItem(), left);
                 } else {
-                    addTool(actionItem.getTextToolItem());
+                    addTool(actionItem.getTextToolItem(), left);
                 }
             }
         }

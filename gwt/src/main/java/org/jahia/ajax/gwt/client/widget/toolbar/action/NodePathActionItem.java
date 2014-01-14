@@ -42,7 +42,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Text;
-
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -61,6 +61,11 @@ public class NodePathActionItem extends BaseActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        text.setText(Messages.get("label.page", "Page") + ": " + node.getPath());
+        String path = node.getPath();
+        if (path.startsWith(JahiaGWTParameters.getSiteNode().getPath())) {
+            path = path.substring(JahiaGWTParameters.getSiteNode().getPath().length()+1);
+        }
+        text.setText(" " + Messages.get("label.currentPagePath", "Current page path") + ": " + path);
+        text.addStyleName("x-current-page-path");
     }
 }

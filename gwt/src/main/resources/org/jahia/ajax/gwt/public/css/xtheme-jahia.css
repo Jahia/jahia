@@ -71,6 +71,13 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     border-bottom-color: #000;
 }
 
+/*Page path*/
+.x-current-page-path{
+    font-family: tahoma,arial,helvetica,sans-serif;
+    font-size: 12px;
+    text-shadow: none;
+}
+
 /*Studio Mode*/
 .x-viewport-studiomode .x-toolbar-first{
     background:none !important;

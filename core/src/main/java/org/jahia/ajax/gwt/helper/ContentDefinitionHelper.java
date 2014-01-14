@@ -953,9 +953,8 @@ public class ContentDefinitionHelper {
         while (it.hasNext()) {
             ExtendedNodeType next = (ExtendedNodeType) it.next();
             if (superTypes.contains(next)) {
-                if (allowed = node.hasPermission("component-" + next.getName().replace(":","_"))) {
-                    return true;
-                }
+                allowed = node.hasPermission("component-" + next.getName().replace(":","_"));
+                // Keep only last (nearest) accessControllableContent mixin if type inherits from multiple ones, so continue looping
             }
         }
         return allowed;

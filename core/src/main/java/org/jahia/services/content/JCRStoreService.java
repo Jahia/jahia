@@ -64,12 +64,12 @@ import javax.jcr.query.QueryResult;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This is a Jahia service, which manages the delegation of JCR store related deployment
@@ -94,15 +94,15 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return instance;
     }
 
-    private Map<String, Class<? extends JCRNodeDecorator>> decorators = new HashMap<String, Class<? extends JCRNodeDecorator>>();
-    private Map<String, Constructor<?>> decoratorCreators = new HashMap<String, Constructor<?>>();
+    private Map<String, Class<? extends JCRNodeDecorator>> decorators = new ConcurrentHashMap<String, Class<? extends JCRNodeDecorator>>();
+    private Map<String, Constructor<?>> decoratorCreators = new ConcurrentHashMap<String, Constructor<?>>();
     private InterceptorChain interceptorChain;
-    private Map<String,ProviderFactory> providerFactories = new HashMap<String, ProviderFactory>();
+    private Map<String,ProviderFactory> providerFactories = new ConcurrentHashMap<String, ProviderFactory>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
     private Set<String> noValidityCheckTypes = new HashSet<String>();
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
-    private Map<String, Class<? extends JCRNodeValidator>> validators = new HashMap<String, Class<? extends JCRNodeValidator>>();
-    private Map<String, Constructor<?>> validatorCreators = new HashMap<String, Constructor<?>>();
+    private Map<String, Class<? extends JCRNodeValidator>> validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
+    private Map<String, Constructor<?>> validatorCreators = new ConcurrentHashMap<String, Constructor<?>>();
     
     private Map<String,List<DefaultEventListener>> listeners;
 
@@ -299,7 +299,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         try {
             if (!NodeTypeRegistry.getInstance().getNodeType(nodeType).isMixin()) {
                 if (decorators == null) {
-                    decorators = new HashMap<String, Class<? extends JCRNodeDecorator>>();
+                    decorators = new ConcurrentHashMap<String, Class<? extends JCRNodeDecorator>>();
                 }
                 decorators.put(nodeType, decoratorClass);
                 try {
@@ -381,7 +381,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void addValidator(String nodeType, Class<? extends JCRNodeValidator> validatorClass) {
         if (validators == null) {
-            validators = new HashMap<String, Class<? extends JCRNodeValidator>>();
+            validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
         }
         validators.put(nodeType, validatorClass);
         try {
@@ -393,7 +393,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void removeValidator(String nodeType) {
         if (validators == null) {
-            validators = new HashMap<String, Class<? extends JCRNodeValidator>>();
+            validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
         }
         validators.remove(nodeType);
         validatorCreators.remove(nodeType);

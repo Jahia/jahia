@@ -294,7 +294,11 @@ public class NavigationHelper {
                 if (openPaths == null) {
                     openPaths = selectedNodes;
                 } else {
+<<<<<<< .working
                     openPaths = new ArrayList<String>(openPaths);
+=======
+                    openPaths = new ArrayList<String>(openPaths);                    
+>>>>>>> .merge-right.r48321
                     openPaths.addAll(selectedNodes);
                 }
             }

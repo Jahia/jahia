@@ -618,6 +618,10 @@
             <param-name>org.atmosphere.cpr.broadcastFilterClasses</param-name>
             <param-value>org.atmosphere.client.TrackMessageSizeFilter</param-value>
         </init-param>
+        <init-param>
+            <param-name>org.atmosphere.cpr.ApplicationConfig.scanClassPath</param-name>
+            <param-value>false</param-value>
+        </init-param>
         <!-- shared thread pool across Broadcaster -->
         <load-on-startup>800</load-on-startup>
         <async-supported>true</async-supported>

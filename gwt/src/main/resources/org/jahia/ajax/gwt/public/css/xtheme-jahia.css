@@ -73,9 +73,10 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
 /*Page path*/
 .x-current-page-path{
-    font-family: tahoma,arial,helvetica,sans-serif;
-    font-size: 12px;
+    font-family: tahoma,arial,helvetica,sans-serif !important;
+    font-size: 12px !important;
     text-shadow: none;
+    padding-left: 5px;
 }
 
 /*Studio Mode*/

@@ -558,7 +558,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         try {
             List<Value> l = new ArrayList<Value>();
             for (String s : languages) {
-                l.add(getSession().getValueFactory().createValue(s));
+                if (s.matches("[\\-_a-zA-Z1-9 ]+")) {
+                    l.add(getSession().getValueFactory().createValue(s));
+                }
             }
             setProperty(SitesSettings.LANGUAGES, l.toArray(new Value[l.size()]));
             this.languages = null;

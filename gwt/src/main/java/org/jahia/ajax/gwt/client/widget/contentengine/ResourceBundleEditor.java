@@ -537,7 +537,9 @@ public class ResourceBundleEditor extends LayoutContainer {
     }
 
     protected String getLanguageDisplayName(String langCode) {
-
+        if (GWTResourceBundle.DEFAULT_LANG.equals(langCode)) {
+            return "[" + Messages.get("label.default", "Default") + "]";
+        }
         String label = null;
 
         for (GWTJahiaValueDisplayBean langBean : availableLanguages) {
@@ -731,6 +733,9 @@ public class ResourceBundleEditor extends LayoutContainer {
         languageSelector.setFieldLabel(Messages.get("label.resourceBundle.addLanguage.choose",
                 "Choose"));
         languageSelector.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+        languageSelector.getStore().add(
+                new GWTJahiaValueDisplayBean(GWTResourceBundle.DEFAULT_LANG, "["
+                        + Messages.get("label.default", "Default") + "]"));
         languageSelector.getStore().add(availableLanguages);
         languageSelector.setDisplayField("display");
         languageSelector.setTypeAhead(true);
@@ -751,7 +756,9 @@ public class ResourceBundleEditor extends LayoutContainer {
                         if (se == null) {
                             return;
                         }
-                        langField.setValue(se.getSelectedItem().getValue());
+                        langField.setValue(!GWTResourceBundle.DEFAULT_LANG.equals(se
+                                .getSelectedItem().getValue()) ? se.getSelectedItem().getValue()
+                                : "");
                     }
                 });
 

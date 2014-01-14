@@ -57,6 +57,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 public class GWTResourceBundle extends BaseModelData {
 
+    public static final String DEFAULT_LANG = "<default>";
+
+    private static final Set<String> DEFAULT_LANG_SET = new HashSet<String>(
+            Arrays.asList(DEFAULT_LANG));
+
     private static final long serialVersionUID = -354218306140608645L;
 
     public GWTResourceBundle() {
@@ -85,7 +90,7 @@ public class GWTResourceBundle extends BaseModelData {
     }
 
     public Set<String> getLanguages() {
-        return getEntryMap().isEmpty() ? new HashSet<String>() : getEntryMap().entrySet().iterator()
+        return getEntryMap().isEmpty() ? DEFAULT_LANG_SET : getEntryMap().entrySet().iterator()
                 .next().getValue().getValues().getProperties().keySet();
     }
 

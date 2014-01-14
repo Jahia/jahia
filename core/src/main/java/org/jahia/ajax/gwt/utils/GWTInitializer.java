@@ -291,7 +291,7 @@ public class GWTInitializer {
                         b = true;
                     }
                     //s.append("\n");
-                    s.append(param.getKey()).append(":\"").append(String.valueOf(param.getValue())).append("\"");
+                    s.append("\"").append(param.getKey()).append("\":\"").append(String.valueOf(param.getValue())).append("\"");
                 }
             }
         }

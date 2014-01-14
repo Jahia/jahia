@@ -145,7 +145,7 @@ public class SimpleModule extends Module {
                 public void handleEvent(ComponentEvent ce) {
                     if (selectable) {
                         Log.info("click" + path + " : " + scriptInfo);
-                        mainModule.setCtrlActive(ce.isControlKey());
+                        mainModule.setCtrlActive(ce);
                         if (!ce.isRightClick() || !mainModule.getSelections().containsKey(SimpleModule.this)) {
                             mainModule.getEditLinker().onModuleSelection(SimpleModule.this);
                         }

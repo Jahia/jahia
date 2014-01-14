@@ -242,7 +242,7 @@ public class MainModule extends Module {
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                ctrlActive = ce.isControlKey();
+                setCtrlActive(ce);
                 makeSelected();
             }
         };
@@ -560,8 +560,8 @@ public class MainModule extends Module {
         return ctrlActive;
     }
 
-    public void setCtrlActive(boolean ctrlActive) {
-        this.ctrlActive = ctrlActive;
+    public void setCtrlActive(DomEvent event) {
+        this.ctrlActive = Window.Navigator.getPlatform().toLowerCase().contains("mac")?DOM.eventGetMetaKey(event.getEvent()):event.isControlKey();
     }
 
     public void parse(List<Element> el) {

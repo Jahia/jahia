@@ -52,7 +52,9 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridView;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -207,7 +209,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                         }
                         break;
                 }
-                editLinker.getMainModule().setCtrlActive(ge.isControlKey());
+                editLinker.getMainModule().setCtrlActive(ge);
                 super.handleComponentEvent(ge);
             }
 

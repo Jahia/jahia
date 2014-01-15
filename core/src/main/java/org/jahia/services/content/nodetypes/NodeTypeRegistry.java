@@ -139,7 +139,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     public static void deployDefinitionsFileToProviderNodeTypeRegistry(File file) throws ParseException, IOException {
         final String systemId = StringUtils.substringBefore(file.getName(), ".cnd");
-        JahiaCndReader r = new JahiaCndReader(new FileReader(file), file.getName(), systemId, providerNodeTypeRegistry);
+        JahiaCndReader r = new JahiaCndReader(new FileReader(file), file.getName(), systemId, getProviderNodeTypeRegistry());
         r.parse();
     }
 

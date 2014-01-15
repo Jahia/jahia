@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -58,7 +57,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.Cache;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,8 +98,6 @@ public class URLResolver {
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
-    private static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}(_[A-Z]{2})?");
-    
     private static Logger logger = LoggerFactory.getLogger(URLResolver.class);
 
     private static String[] servletsAllowingUrlMapping = new String[] {
@@ -707,7 +703,7 @@ public class URLResolver {
             return DEFAULT_LOCALE;
         }
         
-        if (!LANGUAGE_PATTERN.matcher(lang).matches()) {
+        if (!LanguageCodeConverters.LANGUAGE_PATTERN.matcher(lang).matches()) {
             return null;
         }
         

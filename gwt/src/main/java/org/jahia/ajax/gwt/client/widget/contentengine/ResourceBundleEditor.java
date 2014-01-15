@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -96,14 +97,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.Element;
@@ -439,11 +433,12 @@ public class ResourceBundleEditor extends LayoutContainer {
         // center panel
         ContentPanel cpCenter = new ContentPanel();
         cpCenter.setHeaderVisible(false);
-        cpCenter.setLayout(new FitLayout());
+        cpCenter.setLayout(new FlowLayout());
+        cpCenter.setScrollMode(Scroll.AUTOY);
 
         form = createForm();
-        form.setHeight("100%");
         form.setBorders(true);
+        form.setWidth("100%");
         cpCenter.add(form);
 
         // layout and add center panel
@@ -767,6 +762,10 @@ public class ResourceBundleEditor extends LayoutContainer {
                     public void componentSelected(ButtonEvent event) {
                         String newLang = langField.getValue();
                         if (languages.contains(newLang)) {
+                            return;
+                        }
+                        if (!newLang.matches("[a-z]{2}(_[A-Z]{2})?")) {
+                            MessageBox.alert(Messages.get("label.error"), Messages.get("label.resourceBundle.addLanguage.invalidLang"), null);
                             return;
                         }
                         languages.add(newLang);

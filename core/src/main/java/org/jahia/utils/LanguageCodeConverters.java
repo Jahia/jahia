@@ -43,6 +43,7 @@ package org.jahia.utils;
 import java.text.Collator;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
@@ -65,6 +66,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LanguageCodeConverters {
 
+    public static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}(_[A-Z]{2})?");
     private static List<Locale> availableBundleLocales;
     
     private static Map<String, Locale> locales = new ConcurrentHashMap<String, Locale>();

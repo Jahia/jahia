@@ -540,7 +540,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         if (GWTResourceBundle.DEFAULT_LANG.equals(langCode)) {
             return "[" + Messages.get("label.default", "Default") + "]";
         }
-        String label = null;
+        String label = langCode;
 
         for (GWTJahiaValueDisplayBean langBean : availableLanguages) {
             if (langBean.getValue().equals(langCode)) {

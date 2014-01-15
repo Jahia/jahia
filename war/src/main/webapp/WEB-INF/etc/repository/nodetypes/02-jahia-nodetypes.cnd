@@ -940,7 +940,7 @@ extends = jnt:content
 
 [jnt:resourceBundleFolder] > jnt:folder
 
-[jnt:resourceBundleFile] > jnt:editableFile
+[jnt:resourceBundleFile] > jnt:propertiesFile
  - * (string) i18n
 
 [jnt:namespaceDefinition] > nt:base

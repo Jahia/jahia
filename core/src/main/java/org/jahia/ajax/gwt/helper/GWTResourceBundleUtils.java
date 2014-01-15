@@ -59,7 +59,6 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -235,8 +234,7 @@ public final class GWTResourceBundleUtils {
                     .substringBeforeLast(gwtNode.getPath(), "/") : gwtNode.getPath());
 
             Map<String, JCRNodeWrapper> nodesByLanguage = new HashMap<String, JCRNodeWrapper>();
-            for (JCRNodeWrapper rbFileNode : JCRContentUtils.getChildrenOfType(node,
-                    Constants.JAHIANT_RESOURCEBUNDLE_FILE)) {
+            for (JCRNodeWrapper rbFileNode : JCRContentUtils.getChildrenOfType(node,"jnt:propertiesFile")) {
                 nodesByLanguage.put(getLanguageCode(rbFileNode.getName()), rbFileNode);
             }
 

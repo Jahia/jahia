@@ -62,8 +62,8 @@ public class NodePathActionItem extends BaseActionItem {
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
         String path = node.getPath();
-        if (path.startsWith(JahiaGWTParameters.getSiteNode().getPath())) {
-            path = path.substring(JahiaGWTParameters.getSiteNode().getPath().length()+1);
+        if (path.startsWith("/sites/"+node.getSiteKey())) {
+            path = path.substring(node.getSiteKey().length()+8);
         }
         text.setText(" " + Messages.get("label.currentPagePath", "Current page path") + ": " + path);
         text.addStyleName("x-current-page-path");

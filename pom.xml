@@ -107,7 +107,7 @@
 
         <jahia.plugin.version>4.0-SNAPSHOT</jahia.plugin.version>
         <jahia.deployers.version>4.0-SNAPSHOT</jahia.deployers.version>
-        <jahia.commons.version>1.0.1</jahia.commons.version>
+        <jahia.commons.version>1.0.4</jahia.commons.version>
 
         <jahia.modules.importPackage>
             org.jahia.defaults.config.spring,
@@ -634,7 +634,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> 
         </plugins>
     </build>
     <reporting>

@@ -42,7 +42,6 @@ package org.jahia.services.content.impl.jackrabbit;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -77,28 +76,6 @@ import org.slf4j.LoggerFactory;
 public class RepositoryMigrator {
 
     private static final Logger logger = LoggerFactory.getLogger(RepositoryMigrator.class);
-
-    private static List<String> getScriptStatements(File scriptFile) throws IOException {
-        List<String> statements = new LinkedList<String>();
-        InputStream is = null;
-        try {
-            is = new BufferedInputStream(new FileInputStream(scriptFile));
-            for (String line : IOUtils.readLines(is)) {
-                if (StringUtils.isBlank(line) || line.trim().startsWith("#") || line.trim().startsWith("--")) {
-                    continue;
-                }
-                line = line.trim();
-                if (line.endsWith(";") && !line.endsWith("end;")) {
-                    line = line.substring(0, line.length() - 1);
-                }
-                statements.add(line);
-            }
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-
-        return statements;
-    }
 
     private static Document readConfig(File cfgFile) throws JDOMException, IOException {
         SAXBuilder saxBuilder = new SAXBuilder(false);
@@ -270,11 +247,7 @@ public class RepositoryMigrator {
     }
 
     private void dbExecute(String fileName, String description) throws IOException, SQLException {
-        File scriptFile = new File(scriptsDir, fileName);
-
-        List<String> statements = getScriptStatements(scriptFile);
-
-        DatabaseUtils.executeStatements(statements);
+        DatabaseUtils.executeScript(new FileReader(new File(scriptsDir, fileName)));
 
         logger.info(description);
     }

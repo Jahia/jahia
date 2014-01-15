@@ -47,6 +47,7 @@
               <value>WEB-INF/etc/config/license*.xml</value>
           </list>
       </constructor-arg>
+      <property name="dataSource" ref="dataSource"/>
   </bean>
 
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">

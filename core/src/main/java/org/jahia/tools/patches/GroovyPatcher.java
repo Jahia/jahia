@@ -99,8 +99,6 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             return 0;
         }
     };
-    private ServletContext servletContext;
-
     public static void executeScripts(Resource[] scripts) {
         long timer = System.currentTimeMillis();
         logger.info("Found new patch scripts {}. Executing...", StringUtils.join(scripts));
@@ -108,14 +106,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         for (Resource script : scripts) {
             try {
                 long timerSingle = System.currentTimeMillis();
-                String scriptContent = null;
-                InputStream in = null;
-                try {
-                    in = script.getInputStream();
-                    scriptContent = IOUtils.toString(in, "UTF-8");
-                } finally {
-                    IOUtils.closeQuietly(in);
-                }
+                String scriptContent = getContent(script);
                 if (StringUtils.isNotEmpty(scriptContent)) {
                     ScriptEngine engine = getEngine();
                     ScriptContext ctx = new SimpleScriptContext();
@@ -181,8 +172,14 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         }
     }
 
-    public void executeScripts(String lifecyclePhase) {
-        executeScripts(servletContext, lifecyclePhase);
+    protected static String getContent(Resource r) throws IOException {
+        InputStream in = null;
+        try {
+            in = r.getInputStream();
+            return IOUtils.toString(in, "UTF-8");
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
     }
 
     protected static ScriptEngine getEngine() throws ScriptException {
@@ -220,12 +217,18 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
     private String patchesLookup = PATCHES_BASE + "/**/*.groovy";
 
+    private ServletContext servletContext;
+
     private Timer watchdog;
 
     public void destroy() throws Exception {
         if (watchdog != null) {
             watchdog.cancel();
         }
+    }
+
+    public void executeScripts(String lifecyclePhase) {
+        executeScripts(servletContext, lifecyclePhase);
     }
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
@@ -295,7 +298,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
     public void setPatchesLookup(String patchesLookup) {
         this.patchesLookup = patchesLookup;
     }
-
+    
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }

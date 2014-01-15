@@ -40,30 +40,24 @@
 
 package org.jahia.utils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
-import org.hibernate.lob.ReaderInputStream;
+import org.jahia.commons.DatabaseScripts;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -81,6 +75,8 @@ public final class DatabaseUtils {
     }
 
     private static DatabaseType dbType;
+
+    private static DataSource ds;
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
@@ -112,26 +108,15 @@ public final class DatabaseUtils {
         }
     }
 
+    public static void executeScript(Reader sqlScript) throws SQLException, IOException {
+        executeStatements(DatabaseScripts.getScriptStatements(sqlScript));
+    }
+
     public static void executeStatements(List<String> statements) throws SQLException {
         Connection conn = null;
-        Statement stmt = null;
         try {
             conn = getDatasource().getConnection();
-            stmt = conn.createStatement();
-            for (String query : statements) {
-                try {
-                    stmt.execute(query);
-                } catch (SQLException e) {
-                    String lcLine = query.toLowerCase();
-                    if (!lcLine.contains("drop table") && !lcLine.contains("drop trigger")
-                            && !lcLine.contains("drop sequence")) {
-                        logger.error(
-                                "Unable to execute query: " + query + ". Cause: " + e.getMessage(),
-                                e);
-                        throw e;
-                    }
-                }
-            }
+            DatabaseScripts.executeStatements(statements, conn);
             if (!conn.getAutoCommit()) {
                 conn.commit();
             }
@@ -140,13 +125,6 @@ public final class DatabaseUtils {
                 conn.rollback();
             }
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
             if (conn != null) {
                 try {
                     conn.close();
@@ -195,18 +173,21 @@ public final class DatabaseUtils {
     public static DatabaseType getDatabaseType() {
         if (dbType == null) {
             dbType = DatabaseType.valueOf(StringUtils.substringBefore(
-                    StringUtils.substringBefore(SettingsBean.getInstance().getPropertiesFile()
-                            .getProperty("db_script").trim(), "."), "_"));
+                    StringUtils.substringBefore(SettingsBean.getInstance().getPropertiesFile().getProperty("db_script")
+                            .trim(), "."), "_"));
         }
         return dbType;
     }
 
     public static DataSource getDatasource() {
-        return (DataSource) SpringContextSingleton.getBean("dataSource");
+        if (ds == null) {
+            ds = (DataSource) SpringContextSingleton.getBean("dataSource");
+        }
+
+        return ds;
     }
 
-    public static ScrollMode getFirstSupportedScrollMode(ScrollMode fallback,
-            ScrollMode... scrollModesToTest) {
+    public static ScrollMode getFirstSupportedScrollMode(ScrollMode fallback, ScrollMode... scrollModesToTest) {
 
         ScrollMode supportedMode = null;
         Connection conn = null;
@@ -221,12 +202,9 @@ public final class DatabaseUtils {
             }
         } catch (Exception e) {
             if (logger.isDebugEnabled()) {
-                logger.warn(
-                        "Unlable to check supported scrollable resultset type. Cause: "
-                                + e.getMessage(), e);
+                logger.warn("Unlable to check supported scrollable resultset type. Cause: " + e.getMessage(), e);
             } else {
-                logger.warn("Unlable to check supported scrollable resultset type. Cause: "
-                        + e.getMessage());
+                logger.warn("Unlable to check supported scrollable resultset type. Cause: " + e.getMessage());
             }
         } finally {
             closeQuietly(conn);
@@ -240,35 +218,10 @@ public final class DatabaseUtils {
         return (SessionFactory) SpringContextSingleton.getBean("sessionFactory");
     }
 
-    public static List<String> getScriptStatements(File scriptFile) throws IOException {
-        return getScriptStatements(new BufferedInputStream(new FileInputStream(scriptFile)));
+    public static void setDatasource(DataSource ds) {
+        DatabaseUtils.ds = ds;
     }
 
-    public static List<String> getScriptStatements(InputStream is) throws IOException {
-        List<String> statements = new LinkedList<String>();
-        try {
-            for (String line : IOUtils.readLines(is)) {
-                if (StringUtils.isBlank(line) || line.trim().startsWith("#")
-                        || line.trim().startsWith("--")) {
-                    continue;
-                }
-                line = line.trim();
-                if (line.endsWith(";") && !line.endsWith("end;")) {
-                    line = line.substring(0, line.length() - 1);
-                }
-                statements.add(line);
-            }
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-
-        return statements;
-    }
-
-    public static List<String> getScriptStatements(String scriptContent) throws IOException {
-        return getScriptStatements(new ReaderInputStream(new StringReader(scriptContent)));
-    }
-    
     private DatabaseUtils() {
         super();
     }

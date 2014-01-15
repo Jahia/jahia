@@ -66,6 +66,9 @@ import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.tools.patches.GroovyPatcher;
+import org.jahia.tools.patches.SqlPatcher;
+import org.jahia.utils.DatabaseUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
 import org.jahia.bin.Jahia;
@@ -80,6 +83,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
+import javax.sql.DataSource;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -257,6 +261,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean globalGroupMembershipCheckActivated = false;
     
     private boolean readOnlyMode;
+    
+    private DataSource dataSource;
 
     /**
      * Default constructor.
@@ -476,6 +482,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             reindexIfNeeded();
             
             readTldConfigJarsToSkip();
+            
+            DatabaseUtils.setDatasource(dataSource);
+            if (isProcessingServer()) {
+                SqlPatcher.apply(applicationContext);
+                GroovyPatcher.executeScripts(servletContext, "contextInitializing");
+            }
         } catch (NullPointerException npe) {
             logger.error("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -1150,5 +1162,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public void setReadOnlyMode(boolean readOnlyMode) {
         this.readOnlyMode = readOnlyMode;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 }

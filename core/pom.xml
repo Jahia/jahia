@@ -1169,6 +1169,10 @@
                     <groupId>org.jboss.seam.transaction</groupId>
                     <artifactId>seam-transaction</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jboss-el-api_2.2_spec</artifactId>
+                    <groupId>org.jboss.spec.javax.el</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

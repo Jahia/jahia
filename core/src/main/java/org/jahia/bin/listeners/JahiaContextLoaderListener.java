@@ -178,7 +178,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
         writePID(servletContext);
         
-        GroovyPatcher.executeScripts(servletContext, "contextInitializing");
+        GroovyPatcher.executeScripts(servletContext, "beforeContextInitializing");
 
         // initialize VFS file system (solves classloader issue: https://issues.apache.org/jira/browse/VFS-228 )
         try {

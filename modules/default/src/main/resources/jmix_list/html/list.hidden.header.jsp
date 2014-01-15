@@ -115,6 +115,8 @@
 <c:if test="${not empty param.filter}">
     <jcr:filter var="currentList" list="${moduleMap.currentList}" properties="${param.filter}" node="${currentNode}"/>
     <c:set value="${currentList}" target="${moduleMap}" property="currentList"/>
+    <c:set target="${moduleMap}" property="end" value="${fn:length(moduleMap.currentList)}" />
+    <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}" />	
 </c:if>
 
 <c:if test="${empty moduleMap.editable}">

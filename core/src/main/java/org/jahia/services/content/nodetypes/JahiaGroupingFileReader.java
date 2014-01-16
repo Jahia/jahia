@@ -42,7 +42,6 @@ package org.jahia.services.content.nodetypes;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.Reader;
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -62,7 +61,7 @@ public class JahiaGroupingFileReader extends JahiaCndReader {
      * @throws ParseException
      */
     public JahiaGroupingFileReader(Reader r, String filename, String systemId, NodeTypeRegistry registry)
-            throws ParseException, IOException {
+            throws ParseException {
         super(r, filename, systemId, registry);
     }
 
@@ -71,7 +70,7 @@ public class JahiaGroupingFileReader extends JahiaCndReader {
      *
      * @throws ParseException
      */
-    public void parse() throws ParseException, IOException {
+    public void parse() throws ParseException {
         nextToken();
 
         while (!currentTokenEquals(Lexer.EOF)) {

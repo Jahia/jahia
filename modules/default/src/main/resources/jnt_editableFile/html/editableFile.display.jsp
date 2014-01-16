@@ -3,6 +3,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -13,7 +14,8 @@
 <template:addResources type="css" resources="01web.css,codemirror/codemirror.css"/>
 <c:url var="postURL" value="${url.base}${currentNode.path}"/>
 <c:set var="locked" value="false"/>
-
+<fmt:message key="jnt_editableFile.save.error" var="saveError" />
+<c:set var="saveError" value="${functions:escapeJavaScript(saveError)}"/>
 <c:if test="${currentNode.locked and !(currentNode.lockOwner eq renderContext.user.name)}">
     <c:set var="locked" value="true"/>
 </c:if>
@@ -72,6 +74,9 @@
             success: function() {
                 $('#saveButton').prop('disabled', true);
                 $.get("<c:url value="${url.base}${currentNode.path}.unlock.do?type=editSource"/>");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("${saveError}");
             },
             dataType: 'json'
         });

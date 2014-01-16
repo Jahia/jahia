@@ -292,6 +292,23 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return Collections.emptyList();
     }
 
+    public void validateDefinitionsFile(InputStream inputStream, String filename, String systemId) throws ParseException, IOException, RepositoryException {
+        if (filename.toLowerCase().endsWith(".cnd")) {
+            Reader resourceReader = null;
+            try {
+                resourceReader = new InputStreamReader(inputStream, Charsets.UTF_8);
+                JahiaCndReader r = new JahiaCndReader(resourceReader, filename, systemId, this);
+                r.setDoRegister(false);
+                r.parse();
+                if (r.hasEncounteredIssuesWithDefinitions()) {
+                    throw new RepositoryException(StringUtils.join(r.getParsingErrors(), "\n"));
+                }
+            } finally {
+                IOUtils.closeQuietly(resourceReader);
+            }
+        }
+    }
+
     public List<String> getSystemIds() {
         return new ArrayList<String>(files.keySet());
     }

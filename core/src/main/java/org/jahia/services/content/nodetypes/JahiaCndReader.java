@@ -50,7 +50,6 @@ import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 
@@ -163,6 +162,8 @@ public class JahiaCndReader {
 
     protected boolean doRegister = true;
 
+    protected List<String> parsingErrors = new ArrayList<String>();
+
     /**
      * Checks if the provided token is semantically equal to the given
      * argument.
@@ -258,16 +259,16 @@ public class JahiaCndReader {
 
     /**
      * Creates a new CND reader.
-     *
-     * @param r
-     * @throws ParseException
+     * @param reader
+     * @param filename
+     * @param systemId
+     * @param registry
      */
-    public JahiaCndReader(Reader r, String filename, String systemId, NodeTypeRegistry registry)
-            throws ParseException, IOException {
+    public JahiaCndReader(Reader reader, String filename, String systemId, NodeTypeRegistry registry) {
         this.systemId = systemId;
         this.registry = registry;
         this.filename = filename;
-        lexer = new Lexer(r, filename);
+        lexer = new Lexer(reader, filename);
     }
 
     public void setDoRegister(boolean doRegister) {
@@ -288,7 +289,7 @@ public class JahiaCndReader {
      *
      * @throws ParseException
      */
-    public void parse() throws ParseException, IOException {
+    public void parse() throws ParseException {
         nextToken();
         while (!currentTokenEquals(Lexer.EOF)) {
             if (!doNameSpace()) {
@@ -309,6 +310,7 @@ public class JahiaCndReader {
                 nodeTypesList.add(ntd);
             } catch (ParseException e) {
                 this.hasEncounteredIssuesWithDefinitions = true;
+                parsingErrors.add(e.getMessage());
                 logger.error(e.getMessage(), e);
                 nextToken();
                 while (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME) && !currentTokenEquals(Lexer.EOF)) {
@@ -341,7 +343,7 @@ public class JahiaCndReader {
      * @return
      * @throws ParseException
      */
-    private boolean doNameSpace() throws ParseException, IOException {
+    private boolean doNameSpace() throws ParseException {
         if (!currentTokenEquals('<')) {
             return false;
         }
@@ -380,7 +382,7 @@ public class JahiaCndReader {
      * @param ntd
      * @throws ParseException
      */
-    private void doNodeTypeName(ExtendedNodeType ntd) throws ParseException,IOException {
+    private void doNodeTypeName(ExtendedNodeType ntd) throws ParseException {
         if (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME)) {
             lexer.fail("Unexpected token '" + currentToken +"'");
         }
@@ -401,7 +403,7 @@ public class JahiaCndReader {
      * @param ntd
      * @throws ParseException
      */
-    private void doSuperTypes(ExtendedNodeType ntd) throws ParseException, IOException {
+    private void doSuperTypes(ExtendedNodeType ntd) throws ParseException {
         // a set would be nicer here, in case someone defines a supertype twice.
         // but due to issue [JCR-333], the resulting node type definition is
         // not symmetric anymore and the tests will fail.
@@ -424,7 +426,7 @@ public class JahiaCndReader {
      * @param ntd
      * @throws ParseException
      */
-    private void doOptions(ExtendedNodeType ntd) throws ParseException, IOException {
+    private void doOptions(ExtendedNodeType ntd) throws ParseException {
         boolean hasOption = true;
         while (hasOption) {
             if (currentTokenEquals(Lexer.ORDERABLE)) {
@@ -490,9 +492,9 @@ public class JahiaCndReader {
      * processes the item definitions
      *
      * @param ntd
-     * @throws ParseException, IOException
+     * @throws ParseException
      */
-    private void doItemDefs(ExtendedNodeType ntd) throws ParseException, IOException {
+    private void doItemDefs(ExtendedNodeType ntd) throws ParseException {
         while (true) {
             if (currentTokenEquals(Lexer.PROPERTY_DEFINITION)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
@@ -518,7 +520,7 @@ public class JahiaCndReader {
      * @throws ParseException
      */
     private void doPropertyDefinition(ExtendedPropertyDefinition pdi, ExtendedNodeType ntd)
-            throws ParseException, IOException {
+            throws ParseException {
         Name name = parseName(currentToken);
         pdi.setName(name);
         nextToken();
@@ -534,7 +536,7 @@ public class JahiaCndReader {
      * @param pdi
      * @throws ParseException
      */
-    private void doPropertyType(ExtendedPropertyDefinition pdi) throws ParseException, IOException {
+    private void doPropertyType(ExtendedPropertyDefinition pdi) throws ParseException {
         if (!currentTokenEquals(Lexer.BEGIN_TYPE)) {
             return;
         }
@@ -560,7 +562,7 @@ public class JahiaCndReader {
         }
     }
 
-    private void doPropertySelector(ExtendedPropertyDefinition pdi) throws ParseException, IOException {
+    private void doPropertySelector(ExtendedPropertyDefinition pdi) throws ParseException {
         int selector = getSelectorType(currentToken);
         if (selector >= 0) {
             pdi.setSelector(selector);
@@ -585,7 +587,7 @@ public class JahiaCndReader {
      * @param ntd
      * @throws ParseException
      */
-    private void doPropertyAttributes(ExtendedPropertyDefinition pdi, ExtendedNodeType ntd) throws ParseException, IOException {
+    private void doPropertyAttributes(ExtendedPropertyDefinition pdi, ExtendedNodeType ntd) throws ParseException {
         while (currentTokenEquals(Lexer.PROP_ATTRIBUTE)) {
             if (currentTokenEquals(Lexer.PRIMARY)) {
                 ntd.setPrimaryItemName(pdi.getName());
@@ -749,7 +751,7 @@ public class JahiaCndReader {
      * @param pdi
      * @throws ParseException
      */
-    private void doPropertyDefaultValue(ExtendedPropertyDefinition pdi) throws ParseException, IOException {
+    private void doPropertyDefaultValue(ExtendedPropertyDefinition pdi) throws ParseException {
         if (!currentTokenEquals(Lexer.DEFAULT)) {
             return;
         }
@@ -763,7 +765,7 @@ public class JahiaCndReader {
      * @param pdi
      * @throws ParseException
      */
-    private void doPropertyValueConstraints(ExtendedPropertyDefinition pdi) throws ParseException, IOException {
+    private void doPropertyValueConstraints(ExtendedPropertyDefinition pdi) throws ParseException {
         if (!currentTokenEquals(Lexer.CONSTRAINT)) {
             return;
         }
@@ -802,7 +804,7 @@ public class JahiaCndReader {
      * @throws ParseException
      */
     private void doChildNodeDefinition(ExtendedNodeDefinition ndi, ExtendedNodeType ntd)
-            throws ParseException, IOException {
+            throws ParseException {
         Name name = parseName(currentToken);
         ndi.setName(name);
         nextToken();
@@ -817,7 +819,7 @@ public class JahiaCndReader {
      * @param ndi
      * @throws ParseException
      */
-    private void doChildNodeRequiredTypes(ExtendedNodeDefinition ndi) throws ParseException, IOException {
+    private void doChildNodeRequiredTypes(ExtendedNodeDefinition ndi) throws ParseException {
         if (!currentTokenEquals(Lexer.BEGIN_TYPE)) {
             return;
         }
@@ -844,7 +846,7 @@ public class JahiaCndReader {
         }
     }
 
-    private void doChildNodeSelector(ExtendedNodeDefinition ndi) throws ParseException, IOException {
+    private void doChildNodeSelector(ExtendedNodeDefinition ndi) throws ParseException {
         if (currentTokenEquals(Lexer.PAGE)) {
             ndi.setSelector(SelectorType.PAGE);
         } else {
@@ -867,7 +869,7 @@ public class JahiaCndReader {
      * @param ndi
      * @throws ParseException
      */
-    private void doChildNodeDefaultType(ExtendedNodeDefinition ndi) throws ParseException, IOException {
+    private void doChildNodeDefaultType(ExtendedNodeDefinition ndi) throws ParseException {
         if (!currentTokenEquals(Lexer.DEFAULT)) {
             return;
         }
@@ -884,7 +886,7 @@ public class JahiaCndReader {
      * @param ntd
      * @throws ParseException
      */
-    private void doChildNodeAttributes(ExtendedNodeDefinition ndi, ExtendedNodeType ntd) throws ParseException, IOException {
+    private void doChildNodeAttributes(ExtendedNodeDefinition ndi, ExtendedNodeType ntd) throws ParseException {
         while (currentTokenEquals(Lexer.NODE_ATTRIBUTE)) {
             if (currentTokenEquals(Lexer.PRIMARY)) {
                 ntd.setPrimaryItemName(ndi.getName());
@@ -936,7 +938,7 @@ public class JahiaCndReader {
         }
     }
 
-    private void doSelectorOptions(ExtendedItemDefinition pdi) throws ParseException, IOException {
+    private void doSelectorOptions(ExtendedItemDefinition pdi) throws ParseException {
         nextToken();
         Map<String,String> options = new LinkedHashMap<String,String>();
         while (true) {
@@ -1030,5 +1032,13 @@ public class JahiaCndReader {
      */
     public final boolean hasEncounteredIssuesWithDefinitions() {
         return hasEncounteredIssuesWithDefinitions;
+    }
+
+    /**
+     * Return errors that has been catched during parsing
+     * @return a list of ParseException messages
+     */
+    public List<String> getParsingErrors() {
+        return parsingErrors;
     }
 }

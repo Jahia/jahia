@@ -40,13 +40,7 @@
 
 package org.jahia.ajax.gwt.client.data;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -90,8 +84,18 @@ public class GWTResourceBundle extends BaseModelData {
     }
 
     public Set<String> getLanguages() {
-        return getEntryMap().isEmpty() ? DEFAULT_LANG_SET : getEntryMap().entrySet().iterator()
-                .next().getValue().getValues().getProperties().keySet();
+        if (getEntryMap().isEmpty()) {
+            return DEFAULT_LANG_SET;
+        } else {
+            Set<String> languages = new HashSet<String>();
+            Iterator entries = getEntryMap().entrySet().iterator();
+
+            while (entries.hasNext()) {
+                languages.addAll(((GWTResourceBundleEntry) ((Map.Entry) entries.next()).getValue()).getValues().getProperties().keySet());
+
+            }
+            return languages;
+        }
     }
 
     public String getName() {

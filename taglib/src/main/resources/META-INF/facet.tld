@@ -114,10 +114,10 @@
         <description>Create the URL to remove the facet value from the filter</description>
         <name>getDeleteFacetUrl</name>
         <function-class>org.jahia.taglibs.facet.Functions</function-class>
-        <function-signature>java.lang.String getDeleteFacetUrl(java.lang.Object, org.apache.commons.collections.KeyValue, java.lang.String)
+        <function-signature>java.lang.String getDeleteFacetUrl(org.apache.commons.collections.KeyValue, java.lang.String)
         </function-signature>
         <example>
-            ${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}
+            ${facet:getDeleteFacetUrl(facetValue, activeFacetsVars[facetParamVarName])}
         </example>
     </function>
 

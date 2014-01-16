@@ -53,6 +53,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.query.QueryResultWrapper;
 import org.slf4j.Logger;
 
+<<<<<<< .working
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
 
@@ -62,6 +63,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+=======
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.PropertyDefinition;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+>>>>>>> .merge-right.r48367
 /**
  * Custom facet functions, which are exposed into the template scope.
  * 
@@ -203,8 +214,10 @@ public class Functions {
      * @param facetValue the applied facet value, which need to be removed again
      * @param queryString the current facet filter URL query parameter 
      * @return the new facet filter URL query parameter
+     * @deprecated Use {@link #getDeleteFacetUrl(org.apache.commons.collections.KeyValue, String)} instead
      */
     public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
+<<<<<<< .working
         // retrieve all facet Strings from query
         final String[] facets = queryString.split(ESCAPED_FACET_DELIM);
 
@@ -218,6 +231,38 @@ public class Functions {
 
                 // only append the facet delim if we're not processing the last facet String
                 if (index++ != newFacetNumber - 1) {
+                    newQueryString.append(FACET_DELIM);
+                }
+            }
+        }
+        return newQueryString.toString();
+=======
+        return getDeleteFacetUrl(facetValue, queryString);
+>>>>>>> .merge-right.r48367
+    }
+
+    /**
+     * Create the URL to remove the given facet from the facet filter query parameter
+     *
+     * @param facetValue the applied facet value, which need to be removed again
+     * @param queryString the current facet filter URL query parameter
+     * @return the new facet filter URL query parameter
+     */
+    @SuppressWarnings("unchecked")
+    public static String getDeleteFacetUrl(KeyValue facetValue, String queryString) {
+        // retrieve all facet Strings from query
+        final String[] facets = FILTER_STRING_PATTERN.split(queryString);
+
+        // rebuild a new query String omitting the facet String corresponding to the facet value we want to remove
+        StringBuilder newQueryString = new StringBuilder(queryString.length());
+        int index = 0;
+        final int newFacetNumber = facets.length - 1;
+        for (String facet : facets) {
+            if(!facet.contains(facetValue.getValue().toString())) {
+                newQueryString.append(facet);
+
+                // only append the facet delim if we're not processing the last facet String
+                if(index++ != newFacetNumber - 1) {
                     newQueryString.append(FACET_DELIM);
                 }
             }

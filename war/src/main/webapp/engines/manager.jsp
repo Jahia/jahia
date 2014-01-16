@@ -9,11 +9,15 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <c:set var="cfg" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
+<% pageContext.setAttribute("xUaCompatible", SettingsBean.getInstance().getInternetExplorerCompatibility()); %>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+    <c:if test="${not empty xUaCompatible}">
+        <meta http-equiv="X-UA-Compatible" content="${xUaCompatible}"/>
+    </c:if>
     <meta name="robots" content="noindex, nofollow"/>
     <fmt:message key="label.${fn:escapeXml(cfg)}" var="title"/>
     <title>${fn:escapeXml(title)}</title>

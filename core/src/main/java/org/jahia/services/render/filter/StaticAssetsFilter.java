@@ -44,7 +44,9 @@ import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
 import com.yahoo.platform.yui.org.mozilla.javascript.EvaluatorException;
+
 import net.htmlparser.jericho.*;
+
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
@@ -60,8 +62,8 @@ import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
@@ -76,6 +78,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleScriptContext;
 import javax.servlet.ServletContext;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.security.MessageDigest;
@@ -154,7 +157,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
-    private JahiaTemplateManagerService templateManagerService;
 
     private String ajaxResolvedTemplate;
 
@@ -169,10 +171,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private boolean aggregateAndCompress;
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
-
-    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
-        this.templateManagerService = templateManagerService;
-    }
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -346,12 +344,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
                     }
                 }
-                String header = renderContext.getRequest().getHeader("user-agent");
-                // workaround for ie9 in gxt/gwt
-                // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
-                if (renderContext.isEditMode() && header != null && header.contains("MSIE")) {
-                    int idx = element.getBegin() + element.toString().indexOf(">");
-                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=8\">";
+                if (isEnforceIECompatibilityMode(renderContext)) {
+                    int idx = element.getBegin() + element.toString().indexOf('>');
+                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
+                            + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
                     outputDocument.replace(idx, idx + 1, str);
                 }
                 if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
@@ -380,6 +376,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
+    private static boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
+        if (!renderContext.isEditMode()) {
+            return false;
+        }
+        String header = renderContext.getRequest().getHeader("user-agent");
+        if (header == null || header.length() == 0) {
+            return false;
+        }
+        header = header.toLowerCase();
+        return header.contains("msie") || header.contains("trident/7");
+    }
+
     public static String removeTempTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
             return CLEANUP_REGEXP.matcher(content).replaceAll("");
@@ -387,9 +395,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             return content;
         }
     }
-
-
-
 
     private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> map, String type) throws IOException {
         List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(map.entrySet());

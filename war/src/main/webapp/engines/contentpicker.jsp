@@ -1,15 +1,19 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" 
+%><html>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/functions" prefix="functions" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <c:set var="config" value="${functions:default(param.type, 'filepicker')}"/>
-<html>
+<% pageContext.setAttribute("xUaCompatible", SettingsBean.getInstance().getInternetExplorerCompatibility()); %>
 	<head>
-        <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+        <c:if test="${not empty xUaCompatible}">
+            <meta http-equiv="X-UA-Compatible" content="${xUaCompatible}"/>
+        </c:if>
         <meta name="robots" content="noindex, nofollow"/>
 		<title><fmt:message key="org.jahia.admin.sitepermissions.permission.engines.importexport.ManageContentPicker.label"/></title>
         <internal:gwtGenerateDictionary/>

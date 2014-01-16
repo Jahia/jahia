@@ -263,6 +263,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean readOnlyMode;
     
     private DataSource dataSource;
+    
+    private String internetExplorerCompatibility;
 
     /**
      * Default constructor.
@@ -436,6 +438,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             globalGroupMembershipCheckActivated = getBoolean("globalGroupMembershipCheckActivated", false);
             
             readOnlyMode = getBoolean("readOnlyMode", false);
+            
+            internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1166,5 +1170,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public String getInternetExplorerCompatibility() {
+        return internetExplorerCompatibility;
     }
 }

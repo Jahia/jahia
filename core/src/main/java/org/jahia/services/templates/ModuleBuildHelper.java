@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -106,6 +107,8 @@ public class ModuleBuildHelper {
     }
 
     private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
+
+    private boolean ignoreSnapshots;
 
     private String mavenArchetypeCatalog;
 
@@ -342,6 +345,15 @@ public class ModuleBuildHelper {
         return pomFile;
     }
 
+    private String getMavenError(String out) {
+        Matcher m = Pattern.compile("^\\[ERROR\\](.*)$", Pattern.MULTILINE).matcher(out);
+        StringBuilder s = new StringBuilder();
+        while (m.find()) {
+            s.append(m.group(1)).append("\n");
+        }
+        return s.toString();
+    }
+
     private String getMavenHome() throws IOException {
         String home = System.getenv().get("M2_HOME") != null ? System.getenv().get("M2_HOME") : "/usr/share/maven";
         if (!new File(home).exists()) {
@@ -367,7 +379,7 @@ public class ModuleBuildHelper {
             tmpRepo.mkdir();
             String[] installParams = new String[]{"release:prepare", "release:stage", "release:clean",
                     "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag, "-DreleaseVersion=" + releaseVersion,
-                    "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=true",
+                    "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=" + ignoreSnapshots,
                     "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode"};
             StringBuilder out = new StringBuilder();
             ret = ProcessHelper.execute(mavenExecutable, installParams, null, sources, out, out);
@@ -409,13 +421,8 @@ public class ModuleBuildHelper {
         return generatedWar;
     }
 
-    private String getMavenError(String out) {
-        Matcher m = Pattern.compile("^\\[ERROR\\](.*)$", Pattern.MULTILINE).matcher(out);
-        StringBuilder s = new StringBuilder();
-        while (m.find()) {
-            s.append(m.group(1)).append("\n");
-        }
-        return s.toString();
+    public void setIgnoreSnapshots(boolean ignoreSnapshots) {
+        this.ignoreSnapshots = ignoreSnapshots;
     }
 
     public void setMavenArchetypeCatalog(String mavenArchetypeCatalog) {

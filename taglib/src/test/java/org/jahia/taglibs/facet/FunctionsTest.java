@@ -2,19 +2,9 @@ package org.jahia.taglibs.facet;
 
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-<<<<<<< .working
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-=======
-import static org.junit.Assert.assertEquals;
->>>>>>> .merge-right.r48367
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,13 +26,9 @@ public class FunctionsTest {
         KeyValue facetValue1 = new DefaultKeyValue("4c1b0348-89d0-461e-b31d-d725b8e6ea18", "3056820\\:FACET\\:tags:4c1b0348\\-89d0\\-461e\\-b31d\\-d725b8e6ea18");
         KeyValue facetValue2 = new DefaultKeyValue("cdc62535-bcac-44d7-b4da-be8c865d7a58", "3056820\\:FACET\\:tags:cdc62535\\-bcac\\-44d7\\-b4da\\-be8c865d7a58");
 
-<<<<<<< .working
-        assertEquals("j:tags###cdc62535-bcac-44d7-b4da-be8c865d7a58###3056820\\:FACET\\:tags:cdc62535\\-bcac\\-44d7\\-b4da\\-be8c865d7a58", Functions.getDeleteFacetUrl(appliedFilters, facetValue1, query));
-        assertEquals("j:tags###4c1b0348-89d0-461e-b31d-d725b8e6ea18###3056820\\:FACET\\:tags:4c1b0348\\-89d0\\-461e\\-b31d\\-d725b8e6ea18", Functions.getDeleteFacetUrl(appliedFilters, facetValue2, query));
-=======
+
         assertEquals("j:tags###cdc62535-bcac-44d7-b4da-be8c865d7a58###3056820\\:FACET\\:tags:cdc62535\\-bcac\\-44d7\\-b4da\\-be8c865d7a58", Functions.getDeleteFacetUrl(facetValue1, query));
         assertEquals("j:tags###4c1b0348-89d0-461e-b31d-d725b8e6ea18###3056820\\:FACET\\:tags:4c1b0348\\-89d0\\-461e\\-b31d\\-d725b8e6ea18", Functions.getDeleteFacetUrl(facetValue2, query));
->>>>>>> .merge-right.r48367
     }
 
 } 

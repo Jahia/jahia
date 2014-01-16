@@ -53,17 +53,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.query.QueryResultWrapper;
 import org.slf4j.Logger;
 
-<<<<<<< .working
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.PropertyDefinition;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-=======
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.ArrayList;
@@ -72,10 +61,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
->>>>>>> .merge-right.r48367
 /**
  * Custom facet functions, which are exposed into the template scope.
- * 
+ *
  * @author Benjamin Papez
  */
 public class Functions {
@@ -91,12 +79,13 @@ public class Functions {
 
     /**
      * Get a list of applied facets
+     *
      * @param filterString the already decoded filter String from the query parameter
      * @return a Map with the facet group as key and a KeyValue with the facet value as key and the query as value
      * @see org.jahia.taglibs.functions.Functions#decodeUrlParam(String)
      */
     public static Map<String, List<KeyValue>> getAppliedFacetFilters(String filterString) {
-        Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();        
+        Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();
         if (!StringUtils.isEmpty(filterString)) {
             for (String filterInstance : FILTER_STRING_PATTERN.split(filterString)) {
                 String[] filterTokens = FACET_PARAM_DELIM_PATTERN.split(filterInstance);
@@ -112,16 +101,17 @@ public class Functions {
         }
         return appliedFacetFilters;
     }
-    
+
     /**
      * Check whether a facet is currently applied to the query
-     * @param facetName the facet name to check 
+     *
+     * @param facetName     the facet name to check
      * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
-     * @param propDef property definition if facet is a field/date facet
+     * @param propDef       property definition if facet is a field/date facet
      * @return true if facet is applied otherwise false
      */
     public static boolean isFacetApplied(String facetName, Map<String, List<KeyValue>> appliedFacets,
-            PropertyDefinition propDef) {
+                                         PropertyDefinition propDef) {
         boolean facetApplied = false;
         if (appliedFacets != null && appliedFacets.containsKey(facetName)) {
             if (propDef == null || (propDef != null && !propDef.isMultiple())) {
@@ -130,15 +120,16 @@ public class Functions {
         }
         return facetApplied;
     }
-    
+
     /**
      * Check whether a facet value is currently applied to the query
+     *
      * @param facetValueObj the facet value object to check (either FacetField.Count or Map.Entry<String, Long>)
      * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
      * @return true if facet value is applied otherwise false
      */
     public static boolean isFacetValueApplied(Object facetValueObj,
-            Map<String, List<KeyValue>> appliedFacets) {
+                                              Map<String, List<KeyValue>> appliedFacets) {
         boolean facetValueApplied = false;
         if (facetValueObj != null) {
             String facetKey = null;
@@ -172,12 +163,13 @@ public class Functions {
         }
         return facetValueApplied;
     }
-    
+
     /**
      * Create the drill down URL for a facet value
-     * @param facetValueObj either FacetField.Count or a Map.Entry for the facet value to create 
-     *        the URL for applying this facet value
-     * @param queryString the current facet filter URL query parameter
+     *
+     * @param facetValueObj either FacetField.Count or a Map.Entry for the facet value to create
+     *                      the URL for applying this facet value
+     * @param queryString   the current facet filter URL query parameter
      * @return the new facet filter URL query parameter
      */
     public static String getFacetDrillDownUrl(Object facetValueObj, String queryString) {
@@ -193,7 +185,7 @@ public class Functions {
                 builder.append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey());
             } else {
                 throw new IllegalArgumentException(
-                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");                
+                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");
             }
         } catch (ClassCastException e) {
             throw new IllegalArgumentException(
@@ -210,16 +202,28 @@ public class Functions {
 
     /**
      * Create the URL to remove the given facet from the facet filter query parameter
-     * @param facetFilterObj one Map.Entry in the applied facet filter Map corresponding to the value in the next paramter 
-     * @param facetValue the applied facet value, which need to be removed again
-     * @param queryString the current facet filter URL query parameter 
+     *
+     * @param facetFilterObj one Map.Entry in the applied facet filter Map corresponding to the value in the next paramter
+     * @param facetValue     the applied facet value, which need to be removed again
+     * @param queryString    the current facet filter URL query parameter
      * @return the new facet filter URL query parameter
      * @deprecated Use {@link #getDeleteFacetUrl(org.apache.commons.collections.KeyValue, String)} instead
      */
     public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
-<<<<<<< .working
+        return getDeleteFacetUrl(facetValue, queryString);
+    }
+
+    /**
+     * Create the URL to remove the given facet from the facet filter query parameter
+     *
+     * @param facetValue  the applied facet value, which need to be removed again
+     * @param queryString the current facet filter URL query parameter
+     * @return the new facet filter URL query parameter
+     */
+    @SuppressWarnings("unchecked")
+    public static String getDeleteFacetUrl(KeyValue facetValue, String queryString) {
         // retrieve all facet Strings from query
-        final String[] facets = queryString.split(ESCAPED_FACET_DELIM);
+        final String[] facets = FILTER_STRING_PATTERN.split(queryString);
 
         // rebuild a new query String omitting the facet String corresponding to the facet value we want to remove
         StringBuilder newQueryString = new StringBuilder(queryString.length());
@@ -236,49 +240,18 @@ public class Functions {
             }
         }
         return newQueryString.toString();
-=======
-        return getDeleteFacetUrl(facetValue, queryString);
->>>>>>> .merge-right.r48367
     }
 
     /**
-     * Create the URL to remove the given facet from the facet filter query parameter
-     *
-     * @param facetValue the applied facet value, which need to be removed again
-     * @param queryString the current facet filter URL query parameter
-     * @return the new facet filter URL query parameter
-     */
-    @SuppressWarnings("unchecked")
-    public static String getDeleteFacetUrl(KeyValue facetValue, String queryString) {
-        // retrieve all facet Strings from query
-        final String[] facets = FILTER_STRING_PATTERN.split(queryString);
-
-        // rebuild a new query String omitting the facet String corresponding to the facet value we want to remove
-        StringBuilder newQueryString = new StringBuilder(queryString.length());
-        int index = 0;
-        final int newFacetNumber = facets.length - 1;
-        for (String facet : facets) {
-            if(!facet.contains(facetValue.getValue().toString())) {
-                newQueryString.append(facet);
-
-                // only append the facet delim if we're not processing the last facet String
-                if(index++ != newFacetNumber - 1) {
-                    newQueryString.append(FACET_DELIM);
-                }
-            }
-        }
-        return newQueryString.toString();
-    }
-
-    /**
-     * Check whether there is an unapplied facet existing in the query. Useful in order to determine 
+     * Check whether there is an unapplied facet existing in the query. Useful in order to determine
      * whether a title/label should be displayed or not.
-     * @param result the Jahia QueryResultWrapper object holding query results 
+     *
+     * @param result        the Jahia QueryResultWrapper object holding query results
      * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
      * @return true if unapplied facet exists otherwise false
      */
     public static boolean isUnappliedFacetExisting(QueryResultWrapper result,
-            Map<String, List<KeyValue>> appliedFacets) {
+                                                   Map<String, List<KeyValue>> appliedFacets) {
         if (result.getFacetFields() != null) {
             for (FacetField facetField : result.getFacetFields()) {
                 if (facetField.getValueCount() > 0) {
@@ -310,27 +283,29 @@ public class Functions {
         }
         return false;
     }
-    
+
     /**
-     * Check whether there is an unapplied facet value existing in the facet. Useful in order to determine 
+     * Check whether there is an unapplied facet value existing in the facet. Useful in order to determine
      * whether a title/label should be displayed or not.
-     * @param facetField the FacetField object holding all facet values for the facet field 
+     *
+     * @param facetField    the FacetField object holding all facet values for the facet field
      * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
      * @return true if unapplied facet value exists otherwise false
-     */    
+     */
     public static boolean isUnappliedFacetValueExisting(FacetField facetField, Map<String, List<KeyValue>> appliedFacets) {
         if (facetField.getValueCount() > 0) {
             for (FacetField.Count facetCount : facetField.getValues()) {
                 if (!isFacetValueApplied(facetCount, appliedFacets)) {
-                    return true;                    
+                    return true;
                 }
-            }                
-        }         
+            }
+        }
         return false;
     }
 
     /**
      * Get the drill down prefix for a hierarchical facet value
+     *
      * @param hierarchicalFacet the hierarchical facet value
      * @return the prefix
      */
@@ -340,13 +315,15 @@ public class Functions {
             try {
                 int i = Integer.parseInt(hierarchicalFacet.substring(0, pathStart));
                 return (i + 1) + hierarchicalFacet.substring(pathStart);
-            } catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+            }
         }
         return hierarchicalFacet;
     }
 
     /**
      * Get the facet property definitions necessary to build the filter query
+     *
      * @param facet the facet node
      * @return the list of property definitions
      */
@@ -382,6 +359,7 @@ public class Functions {
 
     /**
      * Get the index prefixed path of a hierarchical facet root. For example, 1/sites/systemsite/categories.
+     *
      * @param facetPath the hierarchical facet path
      * @return the index prefixed path
      */

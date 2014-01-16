@@ -47,6 +47,7 @@ package org.jahia.services.sites;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -55,6 +56,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -62,6 +64,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -69,6 +72,7 @@ import org.springframework.core.io.Resource;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -519,7 +523,9 @@ public class JahiaSitesService extends JahiaService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
-        List<String> groups = groupService.getGroupList(site.getSiteKey());
+        JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton
+                .getInstance().getContext().getBean("JCRGroupManagerProvider");
+        List<String> groups = groupManager.getGroupList(site.getID());
         for (String group : groups) {
             groupService.deleteGroup(groupService.lookupGroup(JCR_KEY_PATTERN.matcher(group).replaceAll("")));
         }

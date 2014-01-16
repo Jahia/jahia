@@ -50,6 +50,7 @@ import org.jahia.utils.osgi.parsers.Parsers;
 import org.jahia.utils.osgi.parsers.ParsingContext;
 import org.jahia.utils.osgi.parsers.TldXmlFileParser;
 import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
@@ -141,6 +142,7 @@ public class Connection extends URLConnection {
         final Set<String> directoryEntries = new HashSet<String>();
 
         ParsingContext parsingContext = new ParsingContext();
+        String resolvedGroupId = null;
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         JarOutputStream jos = null;
@@ -252,6 +254,23 @@ public class Connection extends URLConnection {
                             }
                         } else if (hasNamespaceURI(rootElementNamespaces, "http://jbpm.org/4.3/jpdl")) {
                             // jBPM workflow definition file detected.
+                        } else if (hasNamespaceURI(rootElementNamespaces, "http://maven.apache.org/POM/4.0.0")) {
+                            Namespace mavenNamespace = getNamespaceByURI(rootElementNamespaces, "http://maven.apache.org/POM/4.0.0");
+                            // Maven POM.xml file detected
+                            if (newName.startsWith("META-INF/maven/")) {
+                                // we must check if it matches with the module's name
+                                Element projectElement = jdomDocument.getRootElement();
+                                Element artifactIdElement = projectElement.getChild("artifactId", mavenNamespace);
+                                String rootFolder = inputManifest.getMainAttributes().getValue("root-folder");
+                                if (rootFolder != null) {
+                                    if (artifactIdElement != null && artifactIdElement.getTextTrim().equals(rootFolder)) {
+                                        Element groupIdElement = projectElement.getChild("groupId", mavenNamespace);
+                                        if (groupIdElement != null && groupIdElement.getTextTrim() != null && groupIdElement.getTextTrim().length() > 0) {
+                                            resolvedGroupId = groupIdElement.getTextTrim();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     } catch (JDOMException e) {
                         e.printStackTrace();
@@ -435,6 +454,10 @@ public class Connection extends URLConnection {
 
         bndProperties.put("Bundle-Category", "jahia-module");
 
+        if (resolvedGroupId != null) {
+            bndProperties.put("Jahia-GroupId", resolvedGroupId);
+        }
+
         convertJahiaManifestAttributes(inputManifest.getMainAttributes(), bndProperties, depends);
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
@@ -573,13 +596,22 @@ public class Connection extends URLConnection {
                 + ",package-name,resource-bundle,root-folder");
     }
 
-    private boolean hasNamespaceURI(List<Namespace> rootElementNamespaces, String springNSURI) {
+    private boolean hasNamespaceURI(List<Namespace> rootElementNamespaces, String namespaceURI) {
         for (Namespace namespace : rootElementNamespaces) {
-            if (namespace.getURI().contains(springNSURI)) {
+            if (namespace.getURI().contains(namespaceURI)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private Namespace getNamespaceByURI(List<Namespace> rootElementNamespaces, String namespaceURI) {
+        for (Namespace namespace : rootElementNamespaces) {
+            if (namespace.getURI().contains(namespaceURI)) {
+                return namespace;
+            }
+        }
+        return null;
     }
 
     private void updateExportTracking(String newName, Set<String> exportPackageIncludes, Set<String> allNonEmptyDirectories) {

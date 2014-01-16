@@ -152,9 +152,13 @@ public final class BundleUtils {
             moduleVersions = new ConcurrentHashMap<String, JahiaTemplatesPackage>(1);
             modules.put(moduleId, moduleVersions);
         } else {
-            if (!moduleVersions.isEmpty() && !moduleVersions.values().iterator().next().getGroupId().equals(groupId)) {
-                logger.error("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
-                return null;
+            if (!moduleVersions.isEmpty()) {
+                JahiaTemplatesPackage firstVersionTemplatePackage = moduleVersions.values().iterator().next();
+                if ( ((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
+                        ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null)) ) {
+                    logger.error("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
+                    return null;
+                }
             }
 
             pkg = moduleVersions.get(version);
@@ -286,9 +290,13 @@ public final class BundleUtils {
 
         Map<String, JahiaTemplatesPackage> moduleVersions = modules.get(moduleId);
         if (moduleVersions != null) {
-            if (!moduleVersions.isEmpty() && !moduleVersions.values().iterator().next().getGroupId().equals(groupId)) {
-                logger.warn("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
-                return;
+            if (!moduleVersions.isEmpty()) {
+                JahiaTemplatesPackage firstVersionTemplatePackage = moduleVersions.values().iterator().next();
+                if ( ((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
+                        ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null)) ) {
+                    logger.warn("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
+                    return;
+                }
             }
 
             JahiaTemplatesPackage pkg = moduleVersions.remove(version);

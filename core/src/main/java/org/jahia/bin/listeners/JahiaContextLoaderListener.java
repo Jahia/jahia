@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -395,7 +395,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                             + "                  v e r s i o n  :  @VERSION@\n"
                             + "                c o d e  n a m e :  @CODENAME@\n"
                             + "\n\n"
-                            + "   Copyright 2002-2013 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
+                            + "   Copyright 2002-2014 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
                             + "\n\n"
                             + " *******************************************************************************\n"
                             + " * The contents of this software, or the files included with this software,    *\n"

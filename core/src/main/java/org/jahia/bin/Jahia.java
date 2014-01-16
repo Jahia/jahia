@@ -6,7 +6,7 @@
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2013 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -94,7 +94,7 @@ public final class Jahia {
     public static final String CODE_NAME = "Elektra";
     
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2013  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+            "&copy; Copyright 2002-2014  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
     public final static String COPYRIGHT_TXT = "2013 Jahia Solutions Group SA" ;
 

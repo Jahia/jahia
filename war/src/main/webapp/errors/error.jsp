@@ -43,8 +43,10 @@
 <c:if test="${devMode && (not empty requestScope['org.jahia.exception'] || not empty requestScope['javax.servlet.error.exception'])}">
     <div class="row-fluid dev-mode">
         <div class="span10 offset1">
-            <div style="display:none">
-                <pre class="pre-dev">Error: <c:out value="${not empty requestScope['org.jahia.exception'] ? requestScope['org.jahia.exception'].message : requestScope['javax.servlet.error.exception'].message}"/>
+            <div>
+                <pre class="pre-dev">
+                These error details are shown in development mode. To switch it off, change the operatingMode in jahia.properties.
+                <br/>Error: <c:out value="${not empty requestScope['org.jahia.exception'] ? requestScope['org.jahia.exception'].message : requestScope['javax.servlet.error.exception'].message}"/>
 
                 <c:out value="${not empty requestScope['org.jahia.exception.trace'] ? requestScope['org.jahia.exception.trace'] : requestScope['javax.servlet.error.exception']}"/>
                 </pre>

@@ -40,6 +40,7 @@
 
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -59,6 +60,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Includes an option as a module into the page. The nodetype of the option to render is defined by nodetype attribute.
+ * The node to display is determined by node attribute. template attribute determines the way the node is rendered.
+ *
  * @author : rincevent
  * @since JAHIA 6.5 Created : 27 oct. 2009
  */
@@ -93,15 +97,15 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
         return super.doEndTag();
     }
 
-    public static void renderNodeWithViewAndTypes(JCRNodeWrapper node, String view, String nodeTypes, PageContext pageContext, Map<String, String> parameters) throws RepositoryException, IOException, RenderException {
+    public static void renderNodeWithViewAndTypes(JCRNodeWrapper node, String view, String commaConcatenatedNodeTypes, PageContext pageContext, Map<String, String> parameters) throws RepositoryException, IOException, RenderException {
         String charset = pageContext.getResponse().getCharacterEncoding();
         // Todo test if module is active
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-        String[] nodetypes = nodeTypes.split(",");
+        String[] nodeTypes = StringUtils.split(commaConcatenatedNodeTypes, ",");
 
-        if (nodetypes.length > 0) {
-            final String primaryNodeType = nodetypes[0];
+        if (nodeTypes.length > 0) {
+            final String primaryNodeType = nodeTypes[0];
 
             if (node.isNodeType(primaryNodeType)) {
                 ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(primaryNodeType);
@@ -128,8 +132,8 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                     logger.error(e.getMessage(), e);
                 } catch (TemplateNotFoundException e) {
                     // if we didn't find a script, attempt to locate one based on secondary node type if one was specified
-                    if (nodetypes.length > 1) {
-                        mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodetypes[1]);
+                    if (nodeTypes.length > 1) {
+                        mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeTypes[1]);
                         wrappedResource.setResourceNodeType(mixinNodeType);
                         script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                     }

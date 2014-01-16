@@ -40,6 +40,7 @@
 package org.jahia.taglibs.facet;
 
 import org.apache.commons.collections.KeyValue;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -47,7 +48,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.query.QOMBuilder;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.jcr.node.JCRTagUtils;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.qom.QueryObjectModel;
@@ -62,6 +62,7 @@ import java.util.Map;
  * @author Christophe Laprun
  */
 public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
+    private static final transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SetupQueryAndMetadataTag.class);
 
     private JCRNodeWrapper boundComponent;
     private QueryObjectModel existing;
@@ -102,7 +103,16 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
                 selectorName = wantedNodeType;
                 qomBuilder.setSource(factory.selector(wantedNodeType, selectorName));
+
+                // replace the site name in bound component by the one from the render context
                 String path = boundComponent.getPath();
+                final String siteName = getRenderContext().getSite().getName();
+                final int afterSites = "/sites/".length();
+                final int afterSite = path.indexOf('/', afterSites + 1);
+                if (afterSite > 0 && afterSite < path.length()) {
+                    String restOfPath = path.substring(afterSite);
+                    path = "/sites/" + siteName + restOfPath;
+                }
                 qomBuilder.andConstraint(factory.descendantNode(selectorName, path));
             } else {
                 final Selector selector = (Selector) existing.getSource();
@@ -122,122 +132,122 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
             final List<JCRNodeWrapper> facets = JCRContentUtils.getNodes(currentNode, "jnt:facet");
             for (JCRNodeWrapper facet : facets) {
 
+                // extra query parameters
+                String extra = null;
+
+                // min count
+                final String minCount = facet.getPropertyAsString("mincount");
+
                 // field components
                 final String field = facet.getPropertyAsString("field");
-                final String[] fieldComponents = field.split(";");
+                final String[] fieldComponents = StringUtils.split(field, ";");
                 final String facetNodeTypeName = fieldComponents[0];
                 final String facetPropertyName = fieldComponents[1];
-                if (facetNodeTypeName != null && facetPropertyName != null && !facetNodeTypeName.isEmpty() && !facetPropertyName.isEmpty()) {
-                    // node type
-                    final ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(facetNodeTypeName);
+
+                // are we dealing with a query facet?
+                boolean isQuery = facet.hasProperty("query");
+
+                // query value if it exists
+                final String queryProperty = isQuery ? facet.getPropertyAsString("query") : null;
+
+                // key used in metadata maps
+                final String metadataKey = isQuery ? queryProperty : facetPropertyName;
+
+                // get node type if we can
+                ExtendedNodeType nodeType = null;
+                if (StringUtils.isNotEmpty(facetNodeTypeName)) {
+                    nodeType = NodeTypeRegistry.getInstance().getNodeType(facetNodeTypeName);
                     if (facetValueNodeTypes != null) {
                         facetValueNodeTypes.put(facetPropertyName, nodeType);
                     }
+                }
 
-                    // min count
-                    final String minCount = facet.getPropertyAsString("mincount");
+                // label
+                String currentFacetLabel = null;
+                // use label property if it exists
+                if (facet.hasProperty("label")) {
+                    currentFacetLabel = facet.getPropertyAsString("label");
+                }
+                // otherwise try to derive a label from node type and field name
+                if (StringUtils.isEmpty(currentFacetLabel) && StringUtils.isNotEmpty(facetNodeTypeName) && StringUtils.isNotEmpty(facetPropertyName)) {
+                    final String labelKey = facetNodeTypeName.replace(':', '_') + "." + facetPropertyName.replace(':', '_');
 
-                    // label
-                    final String currentFacetLabel;
-                    if (facet.hasProperty("label")) {
-                        currentFacetLabel = facet.getPropertyAsString("label");
-                    } else {
-                        final String labelKey = facetNodeTypeName.replace(':', '_') + "." + facetPropertyName.replace(':', '_');
+                    currentFacetLabel = getMessage(labelKey);
+                }
+                if (facetLabels != null && StringUtils.isNotEmpty(currentFacetLabel)) {
+                    facetLabels.put(metadataKey, currentFacetLabel);
+                }
 
-                        currentFacetLabel = getMessage(labelKey);
+                // value format
+                if (facetValueFormats != null && facet.hasProperty("labelFormat")) {
+                    facetValueFormats.put(metadataKey, facet.getPropertyAsString("labelFormat"));
+                }
+
+                // label renderer
+                String labelRenderer = null;
+                if (facetValueRenderers != null && facet.hasProperty("labelRenderer")) {
+                    labelRenderer = facet.getPropertyAsString("labelRenderer");
+                    facetValueRenderers.put(metadataKey, labelRenderer);
+                }
+
+                // value label
+                if (facetValueLabels != null && facet.hasProperty("valueLabel")) {
+                    facetValueLabels.put(metadataKey, facet.getPropertyAsString("valueLabel"));
+                }
+
+                if (nodeType != null
+                        && StringUtils.isNotEmpty(facetPropertyName)
+                        && !Functions.isFacetApplied(facetPropertyName, activeFacets, nodeType.getPropertyDefinition(facetPropertyName))) {
+
+                    StringBuilder extraBuilder = new StringBuilder();
+
+                    // deal with facets with labelRenderers, currently only jnt:dateFacet or jnt:rangeFacet
+                    String prefix = facet.isNodeType("jnt:dateFacet") ? "date." : (facet.isNodeType("jnt:rangeFacet") ? "range." : "");
+                    if (StringUtils.isNotEmpty(labelRenderer)) {
+                        extraBuilder.append(prefixedNameValuePair(prefix, "labelRenderer", labelRenderer));
                     }
-                    if (facetLabels != null) {
-                        facetLabels.put(facetPropertyName, currentFacetLabel);
-                    }
 
-                    String key = null;
-                    String extra = null;
-                    if (facet.hasProperty("query")) {
-                        final String queryProperty = facet.getPropertyAsString("query");
+                    for (ExtendedPropertyDefinition propertyDefinition : Functions.getPropertyDefinitions(facet)) {
+                        final String name = propertyDefinition.getName();
+                        if (facet.hasProperty(name)) {
+                            final JCRPropertyWrapper property = facet.getProperty(name);
 
-                        // value label
-                        if (facetValueLabels != null) {
-                            if (facet.hasProperty("valueLabel")) {
-                                final String valueLabel = facet.getPropertyAsString("valueLabel");
-                                facetValueLabels.put(queryProperty, valueLabel);
-                            }
-                        }
+                            if (property.isMultiple()) {
+                                // if property is multiple append prefixed name value pair to query
+                                for (JCRValueWrapper value : property.getValues()) {
+                                    extraBuilder.append(prefixedNameValuePair(prefix, name, value.getString()));
+                                }
+                            } else {
+                                String value = property.getString();
 
-                        // query label
-                        if (facetLabels != null) {
-                            facetLabels.put(queryProperty, currentFacetLabel);
-                        }
-
-                        if (!Functions.isFacetApplied(queryProperty, activeFacets, null)) {
-                            key = facet.getName();
-                            extra = "&facet.query=" + queryProperty;
-                        }
-                    } else {
-                        if (facetValueFormats != null && facet.hasProperty("labelFormat")) {
-                            facetValueFormats.put(facetPropertyName, facet.getPropertyAsString("labelFormat"));
-                        }
-
-                        String labelRenderer = null;
-                        if (facetValueRenderers != null && facet.hasProperty("labelRenderer")) {
-                            labelRenderer = facet.getPropertyAsString("labelRenderer");
-                            facetValueRenderers.put(facetNodeTypeName, labelRenderer);
-                        }
-
-                        if (!Functions.isFacetApplied(facetPropertyName, activeFacets, nodeType.getPropertyDefinition(facetPropertyName))) {
-
-                            key = facetPropertyName;
-
-                            StringBuilder extraBuilder = new StringBuilder();
-
-                            // deal with facets with labelRenderers, currently only jnt:dateFacet or jnt:rangeFacet
-                            String prefix = facet.isNodeType("jnt:dateFacet") ? "date." : (facet.isNodeType("jnt:rangeFacet") ? "range." : "");
-                            if (labelRenderer != null) {
-                                extraBuilder.append("&").append(prefix).append("labelRenderer=").append(labelRenderer);
-                            }
-
-                            for (ExtendedPropertyDefinition propertyDefinition : Functions.getPropertyDefinitions(facet)) {
-                                final String name = propertyDefinition.getName();
-                                if (facet.hasProperty(name)) {
-                                    final JCRPropertyWrapper property = facet.getProperty(name);
-
-                                    if (property.isMultiple()) {
-                                        // if property is multiple append prefixed name value pair to query
-                                        for (JCRValueWrapper value : property.getValues()) {
-                                            extraBuilder.append(prefixedNameValuePair(prefix, name, value.getString()));
-                                        }
+                                // adjust value for hierarchical facets
+                                if (facet.isNodeType("jnt:fieldHierarchicalFacet") && name.equals("prefix") && activeFacets != null) {
+                                    final List<KeyValue> active = this.activeFacets.get(facetPropertyName);
+                                    if (active.isEmpty()) {
+                                        value = Functions.getIndexPrefixedPath(value);
                                     } else {
-                                        String value = property.getString();
-
-                                        // adjust value for hierarchical facets
-                                        if (facet.isNodeType("jnt:fieldHierarchicalFacet") && name.equals("prefix")) {
-                                            if (activeFacets != null) {
-                                                final List<KeyValue> activeFacets = this.activeFacets.get(facetPropertyName);
-                                                if (activeFacets.isEmpty()) {
-                                                    value = Functions.getIndexPrefixedPath(value);
-                                                } else {
-                                                    value = Functions.getDrillDownPrefix((String) activeFacets.get(activeFacets.size() - 1).getKey());
-                                                }
-                                            }
-                                        }
-
-                                        extraBuilder.append(prefixedNameValuePair(prefix, name, value));
+                                        value = Functions.getDrillDownPrefix((String) active.get(active.size() - 1).getKey());
                                     }
                                 }
-                                else {
-//                                    System.out.println("Property definition without property named = " + name);
-                                    // todo: do something?
-                                }
-                            }
 
-                            extra = extraBuilder.toString();
+                                extraBuilder.append(prefixedNameValuePair(prefix, name, value));
+                            }
                         }
                     }
 
-                    if (key != null) {
-                        String query = buildQueryString(facetNodeTypeName, key, minCount, extra);
-                        qomBuilder.getColumns().add(factory.column(selectorName, facetPropertyName, query));
-                    }
+                    extra = extraBuilder.toString();
+
                 }
+
+                if (isQuery && !Functions.isFacetApplied(queryProperty, activeFacets, null)) {
+                    extra = "&facet.query=" + queryProperty;
+                }
+
+                // key used in the solr query string
+                final String key = isQuery ? facet.getName() : facetPropertyName;
+                String query = buildQueryString(facetNodeTypeName, key, minCount, extra);
+                final String columnPropertyName = StringUtils.isNotEmpty(facetPropertyName) ? facetPropertyName : "rep:facet()";
+                qomBuilder.getColumns().add(factory.column(selectorName, columnPropertyName, query));
             }
 
             // repeat applied facets
@@ -268,6 +278,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
     }
 
     private static String buildQueryString(String facetNodeTypeName, String key, String minCount, String extra) {
-        return "rep:facet(nodetype=" + facetNodeTypeName + "&key=" + key + "&mincount=" + minCount + extra + ")";
+        final String nodeType = facetNodeTypeName != null ? "nodetype=" + facetNodeTypeName + "&" : "";
+        return "rep:facet(" + nodeType + "key=" + key + "&mincount=" + minCount + extra + ")";
     }
 }

@@ -29,6 +29,7 @@
         <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
 
+    <%-- These maps are populated by facet:setupQueryAndMetadata tag --%>
     <jsp:useBean id="facetLabels" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueLabels" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>

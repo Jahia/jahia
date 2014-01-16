@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -61,6 +62,7 @@ import java.util.Map;
 /**
  * Action item to create a new module
  */
+@SuppressWarnings("serial")
 public class NewModuleActionItem extends BaseActionItem {
     private String siteType = null;
 
@@ -70,7 +72,7 @@ public class NewModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
         final Dialog dialog = new Dialog();
-        dialog.setHeadingHtml("Create module");
+        dialog.setHeadingHtml(Messages.get("label.moduleCreate", "Create module"));
         dialog.setButtons(Dialog.OKCANCEL);
         dialog.setModal(true);
         dialog.setHideOnButtonClick(true);
@@ -112,7 +114,7 @@ public class NewModuleActionItem extends BaseActionItem {
         final TextField<String> groupId = new TextField<String>();
         groupId.setName("groupId");
         groupId.setFieldLabel(Messages.get("label.groupId", "groupId"));
-        groupId.setEmptyText(Messages.get("label.moduleId.empty", "org.jahia.modules"));
+        groupId.setEmptyText(Messages.get("label.groupId.empty", "org.jahia.modules"));
         form.add(groupId);
 
         final TextField<String> sources = new TextField<String>();

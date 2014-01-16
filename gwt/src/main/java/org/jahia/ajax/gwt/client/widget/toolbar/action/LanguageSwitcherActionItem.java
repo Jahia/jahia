@@ -67,6 +67,7 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     private static final long serialVersionUID = 9115660301140902069L;
 	protected transient ComboBox<GWTJahiaLanguage> mainComponent;
     protected boolean events = true;
+    private boolean allowInactiveLanguages = false;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -92,7 +93,7 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                if (events && event.getSelectedItem().isActive()) {
+                if (events && (isAllowInactiveLanguages() || event.getSelectedItem().isActive())) {
                     if (linker instanceof EditLinker) {
                         ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem());
                     } else if (linker instanceof ManagerLinker) {
@@ -136,6 +137,14 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
                 mainComponent.setSelection(Arrays.asList(JahiaGWTParameters.getSiteLanguages().get(0)));
             }
         }
+    }
+
+    public boolean isAllowInactiveLanguages() {
+        return allowInactiveLanguages;
+    }
+
+    public void setAllowInactiveLanguages(boolean allowInactiveLanguages) {
+        this.allowInactiveLanguages = allowInactiveLanguages;
     }
 
     @Override

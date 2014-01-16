@@ -196,7 +196,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
+                        <ref bean="Toolbar.ItemsGroup.SiteLanguageSwitcher"/>
                     </list>
                 </property>
             </bean>

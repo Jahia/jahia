@@ -8,7 +8,7 @@
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="properties">
             <props value-type="java.lang.String">
-                <prop key="gosh.args">--nointeractive -sc telnetd --port=${felix.gogo.shell.telnet.port:2019} start</prop>
+                <prop key="gosh.args">--nointeractive -sc telnetd --port=${felix.gogo.shell.telnet.port:-1} start</prop>
                 
                 <prop key="felix.cache.bufsize">65536</prop>
                 <prop key="felix.log.level">1</prop>

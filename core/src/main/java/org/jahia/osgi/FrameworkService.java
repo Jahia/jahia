@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
 
 import javax.servlet.ServletContext;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,6 +112,10 @@ public class FrameworkService {
         HashMap<String, Object> map = new HashMap<String, Object>();
         for (Map.Entry<String, String> entry : unreplaced.entrySet()) {
             map.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), systemProps));
+        }
+        String value = (String) map.get("gosh.args");
+        if (value != null && value.contains("--port=-1")) {
+            map.put("gosh.args", "--nointeractive");
         }
 
         map.put("org.jahia.servlet.context", context);

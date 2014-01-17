@@ -321,7 +321,7 @@
                         <version>1.8.0</version>
                         <configuration>
                             <basedir>${basedir}</basedir>
-                            <header>header.txt</header>
+                            <header>c:/header.txt</header>
                             <quiet>false</quiet>
                             <failIfMissing>true</failIfMissing>
                             <aggregate>true</aggregate>
@@ -353,7 +353,7 @@
                             </properties>
                             <encoding>UTF-8</encoding>
                             <headerDefinitions>
-                                <headerDefinition>style.xml</headerDefinition>
+                                <headerDefinition>c:/style.xml</headerDefinition>
                             </headerDefinitions>
                         </configuration>
                         <executions>

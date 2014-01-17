@@ -41,41 +41,34 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
-import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 
 public class ModulesTabItem extends BrowseTabItem {
     private static final long serialVersionUID = 7656741991148114672L;
-    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected transient ListStore<GWTJahiaNode> contentStore;
     protected transient ButtonBar buttonBar;
     protected transient LayoutContainer layoutContainer;
     protected transient ActionToolbar toolbar;
@@ -103,49 +96,9 @@ public class ModulesTabItem extends BrowseTabItem {
             }
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        this.tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<SelectionEvent<GWTJahiaNode>>() {
-            @Override
-            public void handleEvent(SelectionEvent<GWTJahiaNode> be) {
-                if (be.getModel().getNodeTypes().contains("jmix:moduleImportFile")) {
-                    be.setCancelled(true);
-                }
-            }
-        });
-        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                listLoader.load(se.getSelectedItem());
-            }
-        });
 
-
-        // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(final Object gwtJahiaFolder, final AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                System.out.println("?");
-            }
-        };
-
-        listLoader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(listProxy);
-
-        contentStore = new ListStore<GWTJahiaNode>(listLoader);
-        contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
-            @SuppressWarnings({"unchecked", "rawtypes"})
-            public int compare(Object o1, Object o2) {
-                if (o1 instanceof String && o2 instanceof String) {
-                    String s1 = (String) o1;
-                    String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1, s2);
-                } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
-                    return ((Comparable) o1).compareTo(o2);
-                }
-                return 0;
-            }
-        }));
-        contentStore.setSortField("display");
-
-        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+        final Menu contextMenu = createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel());
+        tree.setContextMenu(contextMenu);
 
         tree.getColumnModel().getColumn(0).setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
             @Override
@@ -168,6 +121,17 @@ public class ModulesTabItem extends BrowseTabItem {
                     v = "<span class=\"" + classes + "\">" + v + "</span>";
                 }
                 return v;
+            }
+        });
+        this.tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<SelectionEvent<GWTJahiaNode>>() {
+            @Override
+            public void handleEvent(SelectionEvent<GWTJahiaNode> be) {
+                if (be.getModel().getNodeTypes().contains("jmix:moduleImportFile")) {
+                    tree.setContextMenu(null);
+                    be.setCancelled(true);
+                } else {
+                    tree.setContextMenu(contextMenu);
+                }
             }
         });
 
@@ -230,7 +194,6 @@ public class ModulesTabItem extends BrowseTabItem {
         tree.getTreeStore().removeAll();
         if (checkIfCurrentNodeIsModule()) {
             tree.getTreeStore().getLoader().load();
-            listLoader.load();
         }
     }
 

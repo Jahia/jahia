@@ -52,16 +52,12 @@
             data: data,
             dataType: "json",
             success: function(response) {
+                hideLoading();
                 if (response.warn != undefined) {
                     alert(response.warn);
-                    hideLoading();
-                } else {
-                    if ($("#updateSiteForm #language_list").fieldValue().length == 0) {
-                        hideLoading();
-                    } else {
-                        top.location.reload();
-                    }
                 }
+                // Always reload the full page to reload the language switchers
+                top.location.reload();
             },
             error: function(response) {
                 hideLoading();

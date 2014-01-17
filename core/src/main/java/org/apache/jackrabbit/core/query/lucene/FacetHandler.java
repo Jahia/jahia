@@ -207,7 +207,8 @@ public class FacetHandler {
         final String propertyName = columnPropertyName + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
 
         // only set facet type if the facet is not a query
-        if (!facetOptions.contains(FacetParams.FACET_QUERY)) {
+        final boolean isNotQuery = !facetOptions.contains(FacetParams.FACET_QUERY);
+        if (isNotQuery) {
             // we can assert the facet type by checking whether the the options String contains date or range, otherwise, the type is field
             String facetType = FacetParams.FACET_FIELD; // default facet type
             if (facetOptions.contains("date")) {
@@ -251,7 +252,11 @@ public class FacetHandler {
             // if we didn't have a node type specified in the given options, extract it from the selector name and create the associated parameter
             nodeType = getNodeTypeFromSelector(column.getValue().getSelectorName(), columnPropertyName);
         }
-        parameters.add(getFullParameterName(propertyName, getFacetOption("nodetype")), nodeType);
+
+        // only add node type parameter if we're not dealing with a query
+        if (isNotQuery) {
+            parameters.add(getFullParameterName(propertyName, getFacetOption("nodetype")), nodeType);
+        }
 
         // deal with embedded query if needed, at this point, nodeType will have been either extracted or asserted from selector name
         if (unparsedQueries != null) {

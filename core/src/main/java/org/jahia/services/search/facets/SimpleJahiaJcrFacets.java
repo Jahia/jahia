@@ -41,11 +41,7 @@
 package org.jahia.services.search.facets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
-import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
-import org.apache.jackrabbit.core.query.lucene.NamespaceMappings;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
@@ -55,40 +51,30 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.FieldSelectorResult;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
+import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.apache.solr.common.SolrException;
-import org.apache.solr.common.params.CommonParams;
-import org.apache.solr.common.params.FacetParams;
+import org.apache.solr.common.params.*;
+import org.apache.solr.common.params.FacetParams.FacetDateOther;
 import org.apache.solr.common.params.FacetParams.FacetRangeInclude;
 import org.apache.solr.common.params.FacetParams.FacetRangeOther;
-import org.apache.solr.common.params.MapSolrParams;
-import org.apache.solr.common.params.RequiredSolrParams;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.common.params.FacetParams.FacetDateOther;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.common.util.StrUtils;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.request.SimpleFacets;
-import org.apache.solr.schema.BoolField;
+import org.apache.solr.schema.*;
 import org.apache.solr.schema.DateField;
-import org.apache.solr.schema.FieldType;
-import org.apache.solr.schema.SchemaField;
-import org.apache.solr.schema.SortableDoubleField;
-import org.apache.solr.schema.SortableFloatField;
-import org.apache.solr.schema.SortableIntField;
-import org.apache.solr.schema.SortableLongField;
-import org.apache.solr.schema.TrieField;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QueryParsing;
 import org.apache.solr.search.SolrIndexSearcher;
@@ -102,28 +88,13 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.EnumSet;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A class that generates simple Facet information for a request.
@@ -418,39 +389,28 @@ public class SimpleJahiaJcrFacets {
                 try {
                     String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
                     String locale = params.getFieldParam(f, "facet.locale");
-                    ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(
-                            params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(
-                            fieldName);
+                    ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(fieldName);
                     String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, locale, true);
                     
                     parseParams(FacetParams.FACET_FIELD, f);
                    // TODO: can we use the key to add item in result like in original Solr ??? 
                     String termList = localParams == null ? null : localParams.get(CommonParams.TERMS);
                     if (termList != null) {
-                        res.add(StringUtils.substringBeforeLast(f,
-                                PROPNAME_INDEX_SEPARATOR)
-                                + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
-                                ensureSortingAndNameResolution(
-                                        params.getFieldParam(f, "facet.sort"),
-                                        getListedTermCounts(f, epd,
-                                                fieldNameInIndex, locale,
-                                                termList), epd, params
-                                                .getFieldParam(f,
-                                                        "facet.labelRenderer"),
-                                        LanguageCodeConverters
-                                                .getLocaleFromCode(locale), fieldNameInIndex));
+                        res.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
+                                ensureSortingAndNameResolution(params.getFieldParam(f, "facet.sort"),
+                                        getListedTermCounts(f, epd, fieldNameInIndex, locale, termList),
+                                        epd,
+                                        params.getFieldParam(f, "facet.labelRenderer"),
+                                        LanguageCodeConverters.getLocaleFromCode(locale),
+                                        fieldNameInIndex));
                     } else {
-                        res.add(StringUtils.substringBeforeLast(f,
-                                PROPNAME_INDEX_SEPARATOR)
-                                + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
-                                ensureSortingAndNameResolution(
-                                        params.getFieldParam(f, "facet.sort"),
-                                        getTermCounts(f, epd, fieldNameInIndex,
-                                                locale), epd, params
-                                                .getFieldParam(f,
-                                                        "facet.labelRenderer"),
-                                        LanguageCodeConverters
-                                                .getLocaleFromCode(locale), fieldNameInIndex));
+                        res.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
+                                ensureSortingAndNameResolution(params.getFieldParam(f, "facet.sort"),
+                                        getTermCounts(f, epd, fieldNameInIndex, locale),
+                                        epd,
+                                        params.getFieldParam(f, "facet.labelRenderer"),
+                                        LanguageCodeConverters.getLocaleFromCode(locale),
+                                        fieldNameInIndex));
                     }
                 } catch (Exception e) {
                     logger.error("Cant display facets for: " + f, e);
@@ -817,28 +777,20 @@ public class SimpleJahiaJcrFacets {
     public String getFieldNameInIndex(String field, String propertyFieldName, ExtendedPropertyDefinition epd, String langCode, boolean useJackrabbitField) {
         String fieldName = propertyFieldName;
         try {
-            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()),
-                    epd.getLocalName()));
+            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()), epd.getLocalName()));
             int idx = fieldName.indexOf(':');
             if (epd != null && epd.isFacetable()) {
-                fieldName = fieldName.substring(0, idx + 1)
-                        + JahiaNodeIndexer.FACET_PREFIX
-                        + fieldName.substring(idx + 1);
-            } else if ((epd == null || !epd.isFacetable())
-                    && useJackrabbitField && params instanceof MapSolrParams) {
-                String prefix = params.getFieldParam(field,
-                        FacetParams.FACET_PREFIX);
-                ((MapSolrParams) params).getMap().put(
-                        "f." + field + '.' + FacetParams.FACET_PREFIX,
-                        fieldName + (prefix != null ? prefix : ""));
+                fieldName = fieldName.substring(0, idx + 1) + JahiaNodeIndexer.FACET_PREFIX + fieldName.substring(idx + 1);
+            } else if ((epd == null || !epd.isFacetable()) && useJackrabbitField && params instanceof MapSolrParams) {
+                String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
+                ((MapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, fieldName + (prefix != null ? prefix : ""));
                 fieldName = FieldNames.PROPERTIES;
             } else {
-                fieldName = fieldName.substring(0, idx + 1)
-                        + FieldNames.FULLTEXT_PREFIX
-                        + fieldName.substring(idx + 1);
+                fieldName = fieldName.substring(0, idx + 1) + FieldNames.FULLTEXT_PREFIX + fieldName.substring(idx + 1);
             }
         } catch (RepositoryException e) {
-            // will never happen
+            // will never happen <- false: this actually happens quite often as epd.getPrefix is sometimes null
+            // todo: what should be done here when the exception happens? Or rather, what should be done to prevent it?
         }
         return fieldName;
     }
@@ -1285,8 +1237,6 @@ public class SimpleJahiaJcrFacets {
   
     /**
      * Macro for getting the numDocs of a ConstantScoreRangeQuery over docs
-     * 
-     * @see ConstantScoreRangeQuery
      */
     protected int rangeCount(Query rangeQuery) throws IOException {
         return (int) OpenBitSet.intersectionCount(getDocIdSet(rangeQuery, null),

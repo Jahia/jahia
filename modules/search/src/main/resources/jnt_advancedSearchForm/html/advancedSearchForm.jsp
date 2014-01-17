@@ -33,12 +33,6 @@
         $(document).ready(function() {
             $('#advancedSearch').hide();
 
-            $(".BtToggleSearch").toggle(function() {
-                $(this).addClass("active");
-            }, function () {
-                $(this).removeClass("active");
-            });
-
             $('.BtToggleSearch').click(function() {
                 $('#advancedSearch').slideToggle("slow");
             });

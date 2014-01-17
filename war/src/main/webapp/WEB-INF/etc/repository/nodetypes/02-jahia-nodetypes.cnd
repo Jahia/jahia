@@ -840,6 +840,8 @@ extends = jnt:content
 
 [jnt:xmlFile] > jnt:editableFile
 
+[jmix:moduleImportFile]
+
 [jnt:mavenTargetFolder] > jnt:folder
 
 [jmix:viewProperties] mixin

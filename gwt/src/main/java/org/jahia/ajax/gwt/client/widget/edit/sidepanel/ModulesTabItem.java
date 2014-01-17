@@ -41,25 +41,28 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.data.BaseListLoader;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoader;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.Collator;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
@@ -100,8 +103,17 @@ public class ModulesTabItem extends BrowseTabItem {
             }
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        this.tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<SelectionEvent<GWTJahiaNode>>() {
+            @Override
+            public void handleEvent(SelectionEvent<GWTJahiaNode> be) {
+                if (be.getModel().getNodeTypes().contains("jmix:moduleImportFile")) {
+                    be.setCancelled(true);
+                }
+            }
+        });
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 listLoader.load(se.getSelectedItem());
             }
         });
@@ -111,6 +123,7 @@ public class ModulesTabItem extends BrowseTabItem {
         RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(final Object gwtJahiaFolder, final AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+                System.out.println("?");
             }
         };
 
@@ -118,12 +131,12 @@ public class ModulesTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
-            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @SuppressWarnings({"unchecked", "rawtypes"})
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
+                    return Collator.getInstance().localeCompare(s1, s2);
                 } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
@@ -133,6 +146,30 @@ public class ModulesTabItem extends BrowseTabItem {
         contentStore.setSortField("display");
 
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+
+        tree.getColumnModel().getColumn(0).setRenderer(new TreeGridCellRenderer<GWTJahiaNode>() {
+            @Override
+            protected String getText(TreeGrid<GWTJahiaNode> gwtJahiaNodeTreeGrid, GWTJahiaNode node, String property, int rowIndex, int colIndex) {
+                String v = super.getText(gwtJahiaNodeTreeGrid, node, property, rowIndex, colIndex);
+                if (v != null) {
+                    v = SafeHtmlUtils.htmlEscape(v);
+                }
+                String classes = "";
+                if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+                    classes += "markedForDeletion ";
+                }
+                if (node.getNodeTypes().contains("jmix:moduleImportFile")) {
+                    classes += "notPublished ";
+                }
+                if (!PermissionsUtils.isPermitted("editModeAccess", node) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
+                    classes += "accessForbidden ";
+                }
+                if (classes.length() > 0) {
+                    v = "<span class=\"" + classes + "\">" + v + "</span>";
+                }
+                return v;
+            }
+        });
 
         return tab;
     }
@@ -175,7 +212,7 @@ public class ModulesTabItem extends BrowseTabItem {
                 return true;
             }
         }
-        if (data.containsKey("event") && ("commit".equals(data.get("event")) ||"update".equals(data.get("event")))) {
+        if (data.containsKey("event") && ("commit".equals(data.get("event")) || "update".equals(data.get("event")))) {
             return true;
         }
         return super.needRefresh(data);
@@ -200,9 +237,9 @@ public class ModulesTabItem extends BrowseTabItem {
     private boolean checkIfCurrentNodeIsModule() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         if (siteNode.get("j:sourcesFolder") == null) {
-            ((TabPanel)tab.getParent()).mask();
+            ((TabPanel) tab.getParent()).mask();
         } else {
-            ((TabPanel)tab.getParent()).unmask();
+            ((TabPanel) tab.getParent()).unmask();
         }
         return siteNode.get("j:sourcesFolder") != null;
     }

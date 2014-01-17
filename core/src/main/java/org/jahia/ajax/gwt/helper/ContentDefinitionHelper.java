@@ -564,7 +564,12 @@ public class ContentDefinitionHelper {
                 break;
             case PropertyType.DATE:
                 type = GWTJahiaNodePropertyType.DATE;
-                theValue = String.valueOf(val.getDate().getTimeInMillis());
+                Calendar date = val.getDate();
+                if (date == null) {
+                    theValue = null;
+                } else {
+                    theValue = String.valueOf(date.getTimeInMillis());
+                }
                 break;
             case PropertyType.DOUBLE:
                 type = GWTJahiaNodePropertyType.DOUBLE;

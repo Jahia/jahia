@@ -77,6 +77,7 @@ import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -405,7 +406,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
     }
 
     public static String getEntryPointPrefix(final String appName, final String entryPointDefinitionName) {
-        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(appName + "_" + entryPointDefinitionName));
+        return JCRContentUtils.encodeJCRNamePrefix(getCompactName(appName + entryPointDefinitionName));
     }
 
     public static String getWebAppQualifiedNodeName(final String appName, final String localName) {
@@ -457,7 +458,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                     // if a default mapping is provided in the service's configuration.
 
                     String webappRolesPath = webappPath + "/" + getWebAppQualifiedNodeName(app.getName(), "roles");
-                    JCRNodeWrapper webappRolesPermNode = getOrCreatePermissionNode(webappRolesPath, session);
+                    getOrCreatePermissionNode(webappRolesPath, session);
                     session.save();
 
                     try {
@@ -502,7 +503,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                         }
 
                         String portletModePath = webappPath + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets") + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), "modes");
-                        JCRNodeWrapper portletModePermNode = getOrCreatePermissionNode(portletModePath, session);
+                        getOrCreatePermissionNode(portletModePath, session);
                         session.save();
                         for (PortletMode portletMode : entryPointDefinition.getPortletModes()) {
                             JCRNodeWrapper permission = getOrCreatePermissionNode(portletModePath + "/" + getPortletQualifiedNodeName(app.getName(), entryPointDefinition.getName(), portletMode.toString()), session);
@@ -620,8 +621,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         applicationCache.flush();
     }
 
-    //--------------------------------------------------------------------------
-
     /**
      * delete groups associated with an application.
      * When deleting an Application definition, should call this method to
@@ -651,8 +650,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         }
     }
 
-    //--------------------------------------------------------------------------
-
     /**
      * create groups for each context, that is for each field id
      */
@@ -671,8 +668,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         }
 
     }
-
-    //--------------------------------------------------------------------------
 
     /**
      * delete groups associated with a gived context, that is attached to a field id
@@ -700,8 +695,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
 
     }
 
-    //--------------------------------------------------------------------------
-
     /**
      * Get an ApplicationContext for a given application id
      *
@@ -711,8 +704,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
     public WebAppContext getApplicationContext(String id) throws JahiaException {
         return servletContextManager.getApplicationContext(id);
     }
-
-    //--------------------------------------------------------------------------
 
     /**
      * Get an WebAppContext for a given application bean
@@ -884,8 +875,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
     }
 
 
-    //--------------------------------------------------------------------------
-
     /**
      * load all application Definitions in registry
      */
@@ -893,8 +882,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         List<ApplicationBean> apps = null;
         try {
             apps = getApplications();
+            loadApplicationPrivileges(apps);
         } catch (JahiaException e) {
             logger.error("Error while loading all the applications", e);
+        } catch (RepositoryException e) {
+            logger.error("Error registering JCR namespaces and loading privileges for portlets", e);
         }
         if (apps != null) {
             ApplicationBean app;
@@ -904,8 +896,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             }
         }
     }
-
-    //--------------------------------------------------------------------------
 
     /**
      * throw an exception if the service hasn't been loaded successfully
@@ -1118,20 +1108,53 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         // we load all the privileges attached to portlets.
         final PortletApplicationDefinition portletApplication = evt.getPortletApplication();
         String applicationName = portletApplication.getName();
-        if (applicationName.startsWith("/")) {
+        if (applicationName.charAt(0) == '/') {
             applicationName = applicationName.substring(1);
         }
         final String appName = applicationName;
+        
+        Map<String, String> namespaces = new LinkedHashMap<String, String>();
+        namespaces.put(getWebAppPrefix(appName), getWebAppNamespaceURI(appName));
+        
+        List<? extends PortletDefinition> portlets = portletApplication.getPortlets();
+        for (PortletDefinition portlet : portlets) {
+            namespaces.put(getEntryPointPrefix(appName, portlet.getPortletName()), getEntryPointNamespaceURI(appName, portlet.getPortletName()));
+        }
 
+        registerNamespacesAndLoadPrivileges(namespaces);
+    }
+
+    
+    private void loadApplicationPrivileges(List<ApplicationBean> apps) throws RepositoryException {
+        if (apps == null || apps.isEmpty()) {
+            return;
+        }
+        
+        Map<String, String> namespaces = new LinkedHashMap<String, String>();
+
+        for (ApplicationBean app : apps) {
+            namespaces.put(getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
+            for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
+                namespaces.put(getEntryPointPrefix(app.getName(), entryPointDefinition.getName()),
+                        getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
+            }
+        }
+
+        registerNamespacesAndLoadPrivileges(namespaces);
+    }
+
+    private void registerNamespacesAndLoadPrivileges(final Map<String, String> namespaces) throws RepositoryException {
+        if (namespaces == null || namespaces.isEmpty()) {
+            return;
+        }
+        // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
+        // we load all the privileges attached to portlets.
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // first we register the namespaces.
 
-                JCRContentUtils.registerNamespace(session, getWebAppPrefix(appName), getWebAppNamespaceURI(appName));
-
-                List<? extends PortletDefinition> portlets = portletApplication.getPortlets();
-                for (PortletDefinition portlet : portlets) {
-                    JCRContentUtils.registerNamespace(session, getEntryPointPrefix(appName, portlet.getPortletName()), getEntryPointNamespaceURI(appName, portlet.getPortletName()));
+                for (Map.Entry<String, String> ns : namespaces.entrySet()) {
+                    JCRContentUtils.registerNamespace(session, ns.getKey(), ns.getValue());
                 }
 
                 // now let's reload the privileges
@@ -1141,5 +1164,4 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             }
         });
     }
-
-} // end JahiaApplicationsService
+}

@@ -282,7 +282,7 @@ public class PropertiesHelper {
 
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
-                if (prop != null && !prop.getName().equals("*")) {
+                if (prop != null && !prop.getName().equals("*") && !Constants.forbiddenPropertiesToCopy.contains(prop.getName())) {
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {

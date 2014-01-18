@@ -105,9 +105,12 @@
         <pax.swissbox.version>1.5.0</pax.swissbox.version>
         <!-- End of OSGi versions -->
 
-        <jahia.plugin.version>4.0-SNAPSHOT</jahia.plugin.version>
-        <jahia.deployers.version>4.0-SNAPSHOT</jahia.deployers.version>
         <jahia.commons.version>1.0.4</jahia.commons.version>
+        <jahia.plugin.version>4.0-SNAPSHOT</jahia.plugin.version>
+		<jahia.archivers.version>4.0-SNAPSHOT</jahia.archivers.version>
+		<jahia.configurators.version>4.0-SNAPSHOT</jahia.configurators.version>
+        <jahia.deployers.version>4.0-SNAPSHOT</jahia.deployers.version>
+		<jahia.installers.version>4.0-SNAPSHOT</jahia.installers.version>
 
         <jahia.modules.importPackage>
             org.jahia.defaults.config.spring,
@@ -518,6 +521,10 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.6</version>
                 </plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
                 <plugin>
                     <groupId>de.juplo</groupId>
                     <artifactId>hibernate4-maven-plugin</artifactId>

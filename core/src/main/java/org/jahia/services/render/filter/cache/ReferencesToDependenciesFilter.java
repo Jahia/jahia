@@ -62,9 +62,8 @@ import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
  * Checks if the node is a jmix:referencesInField and add references to other content items (links in rich text
  * fields) as dependencies.
  *
- * @author : cedric.mailleux@jahia.com
- * @since  : JAHIA 6.7
- * Created : 13/06/13
+ * @author cedric.mailleux@jahia.com
+ * @since  JAHIA 7.0
  */
 public class ReferencesToDependenciesFilter extends AbstractFilter {
     private static Logger logger = LoggerFactory.getLogger(ReferencesToDependenciesFilter.class);

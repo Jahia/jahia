@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * Interpolate a given constraint violation message using Jahia resource bundle.
  *
  * @author rincevent
- * @since JAHIA 6.7
+ * @since JAHIA 7.0
  *        Created : 19/10/12
  */
 public class JahiaMessageInterpolator implements MessageInterpolator {

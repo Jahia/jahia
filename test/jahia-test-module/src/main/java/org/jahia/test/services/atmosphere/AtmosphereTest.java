@@ -72,8 +72,7 @@ import static org.junit.Assert.*;
 
 /**
  * @author rincevent
- * @since JAHIA 6.7
- *        Created : 01/10/12
+ * @since JAHIA 7.0
  */
 public class AtmosphereTest extends JahiaTestCase {
     private transient static Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
@@ -205,7 +204,7 @@ public class AtmosphereTest extends JahiaTestCase {
         final Value[] values = testHomeEdit.getResolveSite().getProperty("j:installedModules").getValues();
         Value[] values1 = new Value[values.length+1];
         System.arraycopy(values,0,values1,0,values.length);
-        values1[values.length] = JCRValueFactoryImpl.getInstance().createValue("atmosphere:6.7.0.0-SNAPSHOT");
+        values1[values.length] = JCRValueFactoryImpl.getInstance().createValue("atmosphere:7.0.0.0-SNAPSHOT");
         testHomeEdit.getResolveSite().setProperty("j:installedModules",values1);
         englishEditSession.save();
         final CountDownLatch latch = new CountDownLatch(1);

@@ -43,7 +43,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>6.7.0.0-SNAPSHOT</version>
+        <version>7.0.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-war</artifactId>
@@ -310,25 +310,25 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -336,134 +336,134 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>assets</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <!--<dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>atmosphere</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>-->
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>channels</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>contentRetrieval</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>default</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>siteSettings</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>facets</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>grid</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>macros</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>profile</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>search</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>seo</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>skins</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>default-skins</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>serverSettings</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tabularList</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tags</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>tasks</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>templates-system</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>visibility</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>translation</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>jquery</artifactId>
-            <version>6.7.0.0-SNAPSHOT</version>
+            <version>7.0.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

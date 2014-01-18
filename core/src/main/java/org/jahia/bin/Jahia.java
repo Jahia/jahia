@@ -116,7 +116,7 @@ public final class Jahia {
             v = new Version(Constants.JAHIA_PROJECT_VERSION);
         } catch (NumberFormatException e) {
         }
-        JAHIA_VERSION = v != null ? v : new Version("6.7.0.0");
+        JAHIA_VERSION = v != null ? v : new Version("7.0.0.0");
     }
 
     /** Jahia server release number */

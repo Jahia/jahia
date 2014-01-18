@@ -433,7 +433,7 @@ public class PrincipalViewHelper implements Serializable {
      *
      * @param p    The principal object
      * @return The principal type
-     * @since 6.7
+     * @since 7.0
      */
     public static char getPrincipalType(Principal p) {
         if (p instanceof JahiaUser) {

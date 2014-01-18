@@ -188,11 +188,11 @@ public class SourceControlHelper {
     private void ensureMinimalRequiredJahiaVersion(String parentVersion, File sources, String scmURI,
             String moduleName, String version, String branchOrTag) throws IOException {
         ModuleVersion moduleVersion = new ModuleVersion(parentVersion);
-        if (moduleVersion.compareTo(new ModuleVersion("6.7")) < 0) {
+        if (moduleVersion.compareTo(new ModuleVersion("7.0")) < 0) {
             FileUtils.deleteQuietly(sources);
             String msg = "Module " + moduleName + "  " + StringUtils.defaultIfEmpty(version, "") + " in " + scmURI
                     + " " + StringUtils.defaultIfEmpty(branchOrTag, "")
-                    + " is not compatible with Jahia 6.7 and later version";
+                    + " is not compatible with Jahia 7.0 and later version";
             logger.error(msg);
             throw new IOException(msg);
         }

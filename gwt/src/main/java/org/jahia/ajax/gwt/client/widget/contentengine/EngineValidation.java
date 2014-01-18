@@ -55,7 +55,7 @@ import java.util.Map;
 /**
  * Utility class used to collect validation result for engine decoration.
  *
- * @since : JAHIA 6.7
+ * @since Jahia 7.0
  */
 public class EngineValidation {
     private TabPanel tabs;

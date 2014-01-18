@@ -53,9 +53,8 @@ import java.util.Map;
 /**
  * Choice list initializer listing all the namespaces declared for node types.
  *
- * @author : cedric.mailleux@jahia.com
- * @since : JAHIA 6.7
- * Created : 02/05/13
+ * @author cedric.mailleux@jahia.com
+ * @since JAHIA 7.0
  */
 public class NamespaceChoiceListInitializer implements ChoiceListInitializer {
     @Override

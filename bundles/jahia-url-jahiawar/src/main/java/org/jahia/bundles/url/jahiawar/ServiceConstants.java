@@ -65,4 +65,6 @@ public interface ServiceConstants {
     static final String PROPERTY_EXCLUDED_IMPORT_PACKAGES = PID + ".excludedImportPackages";
 
     static final String PROPERTY_EXCLUDED_EXPORT_PACKAGES = PID + ".excludedExportPackages";
+
+    static final String PROPERTY_FORBIDDEN_JARS = PID + ".forbiddenJars";
 }

@@ -116,7 +116,13 @@
                 ]]>
                 </prop>
                 <prop key="org.jahia.bundles.url.jahiawar.excludedExportPackages"><![CDATA[
-                    templates-wise=org.jahia.modules.social
+                    templates-wise=org.jahia.modules.social,
+                    *=javax.servlet,
+                    *=javax.servlet.http
+                ]]>
+                </prop>
+                <prop key="org.jahia.bundles.url.jahiawar.forbiddenJars"><![CDATA[
+                    servlet-api*.jar
                 ]]>
                 </prop>
             </props>

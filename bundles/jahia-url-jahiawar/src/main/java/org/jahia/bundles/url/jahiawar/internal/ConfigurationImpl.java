@@ -130,6 +130,25 @@ public class ConfigurationImpl
         return get( ServiceConstants.PROPERTY_EXCLUDED_EXPORT_PACKAGES);
     }
 
+    @Override
+    public Set<String> getForbiddenJars() {
+        if( !contains( ServiceConstants.PROPERTY_FORBIDDEN_JARS) )
+        {
+            String forbiddenJarsPropValue = propertyResolver.get(ServiceConstants.PROPERTY_FORBIDDEN_JARS);
+            if (forbiddenJarsPropValue != null) {
+                Set<String> forbiddenJars = new LinkedHashSet<String>();
+                String[] forbiddenJarArray = forbiddenJarsPropValue.split(",");
+                for (String forbiddenJar : forbiddenJarArray) {
+                    forbiddenJars.add(forbiddenJar.trim());
+                }
+                return set(ServiceConstants.PROPERTY_FORBIDDEN_JARS, forbiddenJars);
+            } else {
+                return set(ServiceConstants.PROPERTY_FORBIDDEN_JARS, Collections.<String>emptySet());
+            }
+        }
+        return get( ServiceConstants.PROPERTY_FORBIDDEN_JARS);
+    }
+
     private Map<String,Set<String>> getBundlePackageMappings(String propertyValue) {
         Map<String,Set<String>> excludedImportPackages = new TreeMap<String,Set<String>>();
         String[] excludedImportPackageArray = propertyValue.split(",");

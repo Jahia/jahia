@@ -77,6 +77,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Url connection for jahiawar protocol handler.
@@ -101,11 +103,13 @@ public class Connection extends URLConnection {
         }
     });
 
-    public Set<String> extensionsToExport = new HashSet<String>();
+    private Set<String> extensionsToExport = new HashSet<String>();
 
-    public Map<String,Set<String>> importPackages = null;
-    public Map<String,Set<String>> excludedImportPackages = null;
-    public Map<String,Set<String>> excludedExportPackages = null;
+    private Map<String,Set<String>> importPackages = null;
+    private Map<String,Set<String>> excludedImportPackages = null;
+    private Map<String,Set<String>> excludedExportPackages = null;
+    private Set<String> forbiddenJars = new LinkedHashSet<String>();
+    private List<Pattern> forbiddenJarPatterns = new ArrayList<Pattern>();
 
     public Connection(final URL url, final Configuration configuration)
             throws MalformedURLException {
@@ -120,6 +124,11 @@ public class Connection extends URLConnection {
         excludedExportPackages = configuration.getExcludedExportPackages();
         extensionsToExport.add(".class");
         extensionsToExport.add(".tld");
+        forbiddenJars = configuration.getForbiddenJars();
+        for (String forbiddenJar : forbiddenJars) {
+            Pattern forbiddenJarPattern = Pattern.compile(forbiddenJar.replaceAll("\\*", "\\.*"));
+            forbiddenJarPatterns.add(forbiddenJarPattern);
+        }
         parser = new Parser(url.getPath());
     }
 
@@ -182,6 +191,17 @@ public class Connection extends URLConnection {
                     }
                 } else if (newName.startsWith("WEB-INF/lib/")) {
                     newName = jarEntry.getName().substring("WEB-INF/lib/".length());
+                    boolean forbiddenJar = false;
+                    for (Pattern forbiddenJarPattern : forbiddenJarPatterns) {
+                        Matcher forbiddenJarMatcher = forbiddenJarPattern.matcher(newName);
+                        if (forbiddenJarMatcher.matches()) {
+                            forbiddenJar = true;
+                            break;
+                        }
+                    }
+                    if (forbiddenJar) {
+                        continue;
+                    }
                     classPathEntries.add(newName);
                     ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
                     StreamUtils.copyStream(entryInputStream, entryOutputStream, false);
@@ -422,6 +442,7 @@ public class Connection extends URLConnection {
                     !getBundlePackages(rootFolder, excludedImportPackages).contains(curImportPackage)) {
                     importPackage.append(",");
                     importPackage.append(curImportPackage);
+                    importPackage.append(";resolution:=optional");
                     alreadyImportedPackages.add(curImportPackage);
                 }
             }
@@ -430,6 +451,7 @@ public class Connection extends URLConnection {
                     !getBundlePackages(rootFolder, excludedImportPackages).contains(importPackageFromParsing)) {
                     importPackage.append(",");
                     importPackage.append(importPackageFromParsing);
+                    importPackage.append(";resolution:=optional");
                     alreadyImportedPackages.add(importPackageFromParsing);
                 }
             }

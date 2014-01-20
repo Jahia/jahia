@@ -62,4 +62,6 @@ public interface Configuration {
 
     Map<String,Set<String>> getExcludedExportPackages();
 
+    Set<String> getForbiddenJars();
+
 }

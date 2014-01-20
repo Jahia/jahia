@@ -56,7 +56,7 @@
                 <entry key="jcr.repository.vendor" value="Jahia"/>
                 <entry key="jcr.repository.vendor.url" value="http://www.jahia.org/"/>
                 <entry key="jcr.repository.name" value="Jahia"/>
-                <entry key="jcr.repository.version" value="6.5"/>
+                <entry key="jcr.repository.version" value="7.0"/>
                 <entry key="level.1.supported" value="true"/>
                 <entry key="level.2.supported" value="true"/>
                 <entry key="option.transactions.supported" value="true"/>

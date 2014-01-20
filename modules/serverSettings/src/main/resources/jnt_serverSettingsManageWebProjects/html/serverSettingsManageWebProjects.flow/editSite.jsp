@@ -15,7 +15,7 @@
     </script>
 </template:addResources>
 
-<h2>Edit site</h2>
+<h2><fmt:message key="serverSettings.manageWebProjects.editSite"/></h2>
 
 <c:if test="${!empty flowRequestContext.messageContext.allMessages}">
             <c:forEach var="error" items="${flowRequestContext.messageContext.allMessages}">

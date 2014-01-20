@@ -612,6 +612,7 @@
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                                 <property name="parentTypes" value="jnt:folder"/>
                                                 <property name="nodeTypes" value="jnt:editableFile"/>
+                                                <property name="includeSubTypes" value="false"/>
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newFile"/>

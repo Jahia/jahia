@@ -48,6 +48,7 @@ import org.jahia.utils.Patterns;
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeTypeExistsException;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.Reader;
@@ -292,8 +293,19 @@ public class JahiaCndReader {
     public void parse() throws ParseException {
         nextToken();
         while (!currentTokenEquals(Lexer.EOF)) {
-            if (!doNameSpace()) {
-                break;
+            try {
+                if (!doNameSpace()) {
+                    break;
+                }
+            } catch (ParseException e) {
+                this.hasEncounteredIssuesWithDefinitions = true;
+                parsingErrors.add(e.getMessage());
+                logger.error(e.getMessage(), e);
+                doRegister = false;
+                nextToken();
+                while (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME) && !currentTokenEquals("<") && !currentTokenEquals(Lexer.EOF)) {
+                    nextToken();
+                }
             }
         }
         while (!currentTokenEquals(Lexer.EOF)) {
@@ -304,20 +316,30 @@ public class JahiaCndReader {
                 doOptions(ntd);
                 doItemDefs(ntd);
 
-                if (doRegister) {
-                    registry.addNodeType(ntd.getNameObject(),ntd);
-                }
                 nodeTypesList.add(ntd);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 this.hasEncounteredIssuesWithDefinitions = true;
                 parsingErrors.add(e.getMessage());
                 logger.error(e.getMessage(), e);
+                doRegister = false;
                 nextToken();
                 while (!currentTokenEquals(Lexer.BEGIN_NODE_TYPE_NAME) && !currentTokenEquals(Lexer.EOF)) {
                     nextToken();
                 }
             }
         }
+
+        if (doRegister) {
+            for (ExtendedNodeType nodeType : nodeTypesList) {
+                try {
+                    registry.addNodeType(nodeType.getNameObject(),nodeType);
+                } catch (NodeTypeExistsException e) {
+                    this.hasEncounteredIssuesWithDefinitions = true;
+                    parsingErrors.add(e.getMessage());
+                }
+            }
+        }
+
         for (ExtendedNodeType type : nodeTypesList) {
             try {
                 type.validate();
@@ -331,7 +353,7 @@ public class JahiaCndReader {
                 }
             } catch (NoSuchNodeTypeException e) {
                 this.hasEncounteredIssuesWithDefinitions = true;
-                throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
+                parsingErrors.add(e.getMessage());
             }
         }
 

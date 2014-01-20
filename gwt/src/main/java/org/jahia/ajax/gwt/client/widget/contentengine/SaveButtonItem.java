@@ -240,8 +240,8 @@ public abstract class SaveButtonItem implements ButtonItem {
                     });
         } catch (Throwable t) {
             String message = throwable.getMessage();
-            com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
-                    + message);
+            MessageBox.alert(Messages.get("label.error"),Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
+                    + message, null);
             Log.error("failed", throwable);
         }
         engine.unmask();

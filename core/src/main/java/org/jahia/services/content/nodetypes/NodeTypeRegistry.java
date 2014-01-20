@@ -47,6 +47,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.xerces.impl.dv.dtd.ENTITYDatatypeValidator;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
@@ -55,10 +56,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
-
+import javax.jcr.nodetype.*;
 import java.io.*;
 import java.util.*;
 
@@ -300,8 +300,18 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 JahiaCndReader r = new JahiaCndReader(resourceReader, filename, systemId, this);
                 r.setDoRegister(false);
                 r.parse();
+
                 if (r.hasEncounteredIssuesWithDefinitions()) {
                     throw new RepositoryException(StringUtils.join(r.getParsingErrors(), "\n"));
+                }
+
+                for (ExtendedNodeType nodeType : r.getNodeTypesList()) {
+                    if (NodeTypeRegistry.getInstance().hasNodeType(nodeType.getName())) {
+                        ExtendedNodeType existingNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
+                        if (!existingNodeType.getSystemId().equals(nodeType.getSystemId())) {
+                            throw new NodeTypeExistsException("Node type already defined : "+nodeType.getName());
+                        }
+                    }
                 }
             } finally {
                 IOUtils.closeQuietly(resourceReader);
@@ -384,9 +394,13 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return new JahiaNodeTypeIterator(res.iterator(), res.size());
     }
 
-    public void addNodeType(Name name, ExtendedNodeType nodeType) {
+    public void addNodeType(Name name, ExtendedNodeType nodeType) throws NodeTypeExistsException {
         if (nodetypes.containsKey(name)) {
-            nodeTypesList.remove(nodetypes.get(name));
+            if (!nodetypes.get(name).getSystemId().equals(nodeType.getSystemId())) {
+                throw new NodeTypeExistsException("Node type already defined : "+nodeType.getName());
+            } else {
+                nodeTypesList.remove(nodetypes.get(name));
+            }
         }
         nodeTypesList.add(nodeType);
         nodetypes.put(name, nodeType);

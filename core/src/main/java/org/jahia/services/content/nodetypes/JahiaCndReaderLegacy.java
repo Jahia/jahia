@@ -47,6 +47,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.Patterns;
 
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.OnParentVersionAction;
@@ -185,7 +186,7 @@ public class JahiaCndReaderLegacy {
      *
      * @throws ParseException
      */
-    public void parse() throws ParseException, IOException {
+    public void parse() throws ParseException, IOException, RepositoryException {
         nextToken();
         while (!currentTokenEquals(LexerLegacy.EOF)) {
             if (!doNameSpace()) {
@@ -345,7 +346,7 @@ public class JahiaCndReaderLegacy {
      * @param ntd
      * @throws ParseException, IOException
      */
-    private void doItemDefs(ExtendedNodeType ntd) throws ParseException, IOException {
+    private void doItemDefs(ExtendedNodeType ntd) throws ParseException, IOException, RepositoryException {
         while (true) {
             if (currentTokenEquals(LexerLegacy.PROPERTY_DEFINITION)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);

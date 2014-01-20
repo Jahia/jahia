@@ -42,6 +42,7 @@
                     *=org.jahia.ajax.gwt.client.widget.toolbar.action,
                     *=org.jahia.api,
                     *=org.jahia.bundles.extender.jahiamodules,
+                    *=org.jahia.commons,
                     *=org.jahia.data.templates,
                     *=org.jahia.data.viewhelper.principal,
                     *=org.jahia.defaults.config.spring,

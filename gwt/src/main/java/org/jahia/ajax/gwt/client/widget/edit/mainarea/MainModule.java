@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Point;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
@@ -527,7 +528,6 @@ public class MainModule extends Module {
                 scrollContainer.setSize(usableResolution[0], usableResolution[1]);
             }
             needParseAfterLayout = false;
-            //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         }
     }
 
@@ -542,8 +542,6 @@ public class MainModule extends Module {
             scrollContainer.setSize(usableResolution[0], usableResolution[1]);
         }
 
-        //scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
-        //scrollContainer.setWidth(getWidth());
         if (editLinker.getSelectedModule() != null) {
             for (Selection s : selections.values()) {
                 s.hide();
@@ -565,6 +563,16 @@ public class MainModule extends Module {
     }
 
     public void parse(List<Element> el) {
+        if (moduleMap != null) {
+            ModuleHelper.deleteAll(moduleMap);
+            List<Component> l = new ArrayList<Component>(scrollContainer.getItems());
+            for (Component component : l) {
+                if (component instanceof Module) {
+                    component.removeFromParent();
+                }
+            }
+
+        }
         moduleMap = ModuleHelper.parse(this, null, el);
     }
 
@@ -988,10 +996,11 @@ public class MainModule extends Module {
                     editLinker.getMainModule().unmask();
                     needParseAfterLayout = true;
                     layout();
-                    DOM.sinkEvents(body, Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK/*+ Event.ONMOUSEDOWN*/);
-                    DOM.setEventListener(body, new EventListener() {
+
+                    DOM.sinkEvents((Element) contentDocument.getDocumentElement(), Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK + Event.ONMOUSEDOWN);
+                    DOM.setEventListener((Element) contentDocument.getDocumentElement(), new EventListener() {
                         public void onBrowserEvent(Event event) {
-                            if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP) {
+                            if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP || event.getTypeInt() == Event.ONMOUSEDOWN) {
                                 inframe = true;
                                 Event.fireNativePreviewEvent(event);
                                 inframe = false;

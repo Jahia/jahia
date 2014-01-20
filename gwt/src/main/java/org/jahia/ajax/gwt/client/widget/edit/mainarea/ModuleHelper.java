@@ -300,6 +300,13 @@ public class ModuleHelper {
         GWT.log("Move : " + (System.currentTimeMillis() - start) + " ms");
     }
 
+
+    public static void deleteAll(Map<Element, Module> m) {
+        for (Element element : m.keySet()) {
+            element.removeFromParent();
+        }
+    }
+
     public static List<Module> getModules() {
         return modules;
     }

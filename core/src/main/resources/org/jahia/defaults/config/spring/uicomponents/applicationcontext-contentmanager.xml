@@ -425,9 +425,7 @@
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Undelete"/>
-                                    <ref bean="Toolbar.Item.DeletePermanently"/>
+                                    <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -464,9 +462,7 @@
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Rename"/>
-                        <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Undelete"/>
-                        <ref bean="Toolbar.Item.DeletePermanently"/>
+                        <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>

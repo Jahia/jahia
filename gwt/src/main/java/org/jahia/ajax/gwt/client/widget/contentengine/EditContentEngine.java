@@ -83,6 +83,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
+    private boolean hasOrderableChildNodes;
 
     /**
      * Initializes an instance of this class.
@@ -132,7 +133,7 @@ public class EditContentEngine extends AbstractContentEngine {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), node)) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
-                        (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))) {
+                        ((hasOrderableChildNodes && tabItem.isOrderableTab()) || ( !tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
                     tabs.add(tabItem.create(tabConfig, this));
                 }
             }
@@ -195,6 +196,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 properties = result.getProperties();
                 currentLanguageBean = result.getCurrentLocale();
                 defaultLanguageCode = result.getDefaultLanguageCode();
+                hasOrderableChildNodes = result.hasOrderableChildNodes();
                 langCodeGWTJahiaGetPropertiesResultMap.put(currentLanguageBean.getLanguage(), result);
                 acl = result.getAcl();
                 referencesWarnings = result.getReferencesWarnings();

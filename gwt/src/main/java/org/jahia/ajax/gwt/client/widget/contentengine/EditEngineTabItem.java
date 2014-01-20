@@ -106,12 +106,25 @@ public abstract class EditEngineTabItem implements Serializable {
         return false;
     }
 
+    /**
+     * @return if true, the tab will appear both in the create and edit engine, if false only appear in edit engine
+     */
     public boolean isHandleCreate() {
         return handleCreate;
     }
 
+    /**
+     * @param handleCreate (default true) if true, the tab will appear both in the create and edit engine, if false only appear in edit engine
+     */
     public void setHandleCreate(boolean handleCreate) {
         this.handleCreate = handleCreate;
+    }
+
+    /**
+     * @return if true, the tab allow to order child nodes (default false)
+     */
+    public boolean isOrderableTab() {
+        return false;
     }
 
     public List<String> getShowForTypes() {

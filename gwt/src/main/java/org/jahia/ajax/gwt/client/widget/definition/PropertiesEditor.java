@@ -263,9 +263,9 @@ public class PropertiesEditor extends FormPanel {
             String key = definition.getOverrideDeclaringNodeType() + "." + definition.getName();
             GWTChoiceListInitializer choiceListInitializer = choiceListInitializersValues != null ? choiceListInitializersValues.get(key) : null;
             List<GWTJahiaNodePropertyValue> propertyDefaultValues = (this.defaultValues != null &&
-                                                                     (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName())) || !nodeTypes.contains(nodeType)) ? this.defaultValues.get(key) : null;
+                    (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName())) || !nodeTypes.contains(nodeType)) ? this.defaultValues.get(key) : null;
             if (propertyDefaultValues != null && gwtJahiaNodeProperty.getValues().size() == 0 &&
-                (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName()))) {
+                    (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName()))) {
                 defaultedProperties.add(definition.getName());
             }
             Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, choiceListInitializer, displayHiddenProperties, permissions, propertyDefaultValues);
@@ -308,54 +308,60 @@ public class PropertiesEditor extends FormPanel {
                 }
                 fieldSet.layout();
                 if (optional) {
+                    boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
                     if (isWriteable) {
                         fieldSet.setCollapsible(true);
-                        fieldSet.setCheckboxToggle(true);
-                        if ((nodeTypes.contains(nodeType) && !removedTypes.contains(nodeType.getName())) || addedTypes.contains(nodeType.getName())) {
-                            fieldSet.setExpanded(true);
-                        } else {
-                            fieldSet.setExpanded(false);
-                        }
-                        fieldSet.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-                            public void handleEvent(ComponentEvent componentEvent) {
-                                removedTypes.add(definition.getDeclaringNodeType());
-                                addedTypes.remove(definition.getDeclaringNodeType());
-                                final FieldSet  fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
-                                for (Component component : fs.getItems()) {
-                                    if (component instanceof PropertyAdapterField) {
-                                        PropertyAdapterField adapterField = (PropertyAdapterField) component;
-                                        if (adapterField.getField() instanceof ComboBox) {
-                                            removeExternalMixin(((ComboBox) adapterField.getField()).getSelection(),adapterField);
+                        if (!isOrderingList) {
+                            fieldSet.setCheckboxToggle(true);
+                            if ((nodeTypes.contains(nodeType) && !removedTypes.contains(nodeType.getName())) || addedTypes.contains(nodeType.getName())) {
+                                fieldSet.setExpanded(true);
+                            } else {
+                                fieldSet.setExpanded(false);
+                            }
+                            fieldSet.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+                                public void handleEvent(ComponentEvent componentEvent) {
+                                    removedTypes.add(definition.getDeclaringNodeType());
+                                    addedTypes.remove(definition.getDeclaringNodeType());
+                                    final FieldSet  fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
+                                    for (Component component : fs.getItems()) {
+                                        if (component instanceof PropertyAdapterField) {
+                                            PropertyAdapterField adapterField = (PropertyAdapterField) component;
+                                            if (adapterField.getField() instanceof ComboBox) {
+                                                removeExternalMixin(((ComboBox) adapterField.getField()).getSelection(),adapterField);
+                                            }
                                         }
+                                        component.setData("addedField", null);
                                     }
-                                    component.setData("addedField", null);
                                 }
-                            }
-                        });
-                        fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
-                            public void handleEvent(ComponentEvent componentEvent) {
-                                addedTypes.add(definition.getDeclaringNodeType());
-                                removedTypes.remove(definition.getDeclaringNodeType());
-                                final FieldSet fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
-                                final List<Component> w = new ArrayList<Component>();
-                                w.addAll(fs.getItems());
-                                fs.removeAll();
-                                DeferredCommand.addCommand(new Command() {
-                                    public void execute() {
-                                        for (Component component : w) {
-                                            component.setWidth("98%");
-                                            fs.add(component);
-                                            component.setData("addedField", "true");
+                            });
+                            fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
+                                public void handleEvent(ComponentEvent componentEvent) {
+                                    addedTypes.add(definition.getDeclaringNodeType());
+                                    removedTypes.remove(definition.getDeclaringNodeType());
+                                    final FieldSet fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
+                                    final List<Component> w = new ArrayList<Component>();
+                                    w.addAll(fs.getItems());
+                                    fs.removeAll();
+                                    DeferredCommand.addCommand(new Command() {
+                                        public void execute() {
+                                            for (Component component : w) {
+                                                component.setWidth("98%");
+                                                fs.add(component);
+                                                component.setData("addedField", "true");
+                                            }
+                                            fs.layout();
                                         }
-                                        fs.layout();
-                                    }
-                                });
-                            }
-                        });
+                                    });
+                                }
+                            });
+                        }
                     } else {
                         if (!nodeTypes.contains(nodeType)) {
                             fieldSet.setVisible(false);
                         }
+                    }
+                    if (isOrderingList) {
+                        orderingListFieldSet.add(fieldSet);
                     }
                 }
                 if (field instanceof ComboBox) {

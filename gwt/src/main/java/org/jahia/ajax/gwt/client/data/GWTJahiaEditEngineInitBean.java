@@ -67,6 +67,7 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     private Map<String, Set<String>> referencesWarnings;
     private String defaultLanguageCode;
     private boolean translationEnabled;
+    private boolean hasOrderableChildNodes;
 
     public GWTJahiaEditEngineInitBean() {
     }
@@ -129,5 +130,13 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
 
     public void setDefaultValues(Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues) {
         this.defaultValues = defaultValues;
+    }
+
+    public boolean hasOrderableChildNodes() {
+        return hasOrderableChildNodes;
+    }
+
+    public void hasOrderableChildNodes(boolean hasOrderableChildNodes) {
+        this.hasOrderableChildNodes = hasOrderableChildNodes;
     }
 }

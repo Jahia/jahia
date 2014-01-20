@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -69,6 +70,10 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     private transient CheckBox useManualRanking;
     private transient ManualListOrderingEditor manualListOrderingEditor = null;
     private static final String JMIX_ORDERED_LIST = "jmix:orderedList";
+
+    public ListOrderingContentTabItem() {
+        setHandleCreate(false);
+    }
 
     @Override
     public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
@@ -157,7 +162,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
-        if (manualListOrderingEditor != null) {
+        if (manualListOrderingEditor != null && useManualRanking.getValue()) {
             for (GWTJahiaNode child : manualListOrderingEditor.getOrderedNodes()) {
                 node.add(child);
             }
@@ -166,6 +171,16 @@ public class ListOrderingContentTabItem extends ContentTabItem {
                 node.remove(child);
             }
             node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
+        } else if (propertiesEditor != null) {
+            addedTypes.addAll(propertiesEditor.getAddedTypes());
+            addedTypes.addAll(propertiesEditor.getExternalMixin());
+            changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));
+            removedTypes.addAll(propertiesEditor.getRemovedTypes());
         }
+    }
+
+    @Override
+    public boolean isOrderableTab() {
+        return true;
     }
 }

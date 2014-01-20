@@ -777,12 +777,9 @@
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem">
                 <property name="dataType" value="listOrdering"/>
-                <property name="showForTypes">
+                <property name="hideForTypes">
                     <list>
-                        <value>jnt:contentList</value>
-                        <value>jnt:area</value>
-                        <value>jnt:absoluteArea</value>
-                        <value>jnt:levelAbsoluteArea</value>
+                        <value>jnt:page</value>
                     </list>
                 </property>
             </bean>

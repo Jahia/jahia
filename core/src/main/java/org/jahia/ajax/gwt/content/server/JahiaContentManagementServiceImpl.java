@@ -1712,6 +1712,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             final GWTJahiaEditEngineInitBean result = new GWTJahiaEditEngineInitBean(nodeTypes, props);
             result.setNode(node);
+            result.hasOrderableChildNodes(nodeWrapper.getPrimaryNodeType().hasOrderableChildNodes());
             result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
 

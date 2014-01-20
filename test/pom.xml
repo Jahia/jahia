@@ -50,6 +50,21 @@
     <name>Jahia Test Parent Package</name>
     <packaging>pom</packaging>
 
+    <repositories>
+        <repository>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <modules>
         <module>dummy-modules</module>
         <module>jahia-test-module</module>

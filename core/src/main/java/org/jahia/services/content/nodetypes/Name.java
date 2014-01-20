@@ -52,7 +52,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Name {
     private String localName;
-    private String prefix;
+    private String prefix = StringUtils.EMPTY;
     private String uri;
 
     private String preComputedToString;
@@ -74,12 +74,12 @@ public class Name {
             }
         }
         
-        return p;
+        return StringUtils.defaultString(p);
     }
 
     public Name(String localName, String prefix, String uri) {
         this.localName = localName;
-        this.prefix = prefix;
+        this.prefix = StringUtils.defaultString(prefix);
         this.uri = uri;
     }
 
@@ -114,6 +114,7 @@ public class Name {
                 uri = namespaceMapping.get("");
             }
         }
+        prefix = StringUtils.defaultString(prefix);
     }
 
     public String getLocalName() {

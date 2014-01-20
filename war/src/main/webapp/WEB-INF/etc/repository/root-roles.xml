@@ -98,7 +98,7 @@
         </web-designer>
         <site-administrator j:hidden="false"
 
-                            j:permissionNames="contributeMode editMode categoryManager editorialContentManager fileManager portletManager remotePublicationManager repositoryExplorer siteManager tagManager jcr:all_default site-admin templates wysiwyg-editor-toolbar"
+                            j:permissionNames="contributeMode editMode editorialContentManager fileManager portletManager remotePublicationManager repositoryExplorer siteManager tagManager jcr:all_default site-admin templates wysiwyg-editor-toolbar"
                             j:privilegedAccess="true"
                             j:roleGroup="site-role"
                             jcr:primaryType="jnt:role">
@@ -117,6 +117,9 @@
                               jcr:language="en"
                               jcr:primaryType="jnt:translation"
                               jcr:title="Server administrator"/>
+            <currentSite-access j:path="/sites/systemsite"
+                                j:permissionNames="categoryManager engineTabs"
+                                jcr:primaryType="jnt:externalPermissions"/>
         </server-administrator>
 
 

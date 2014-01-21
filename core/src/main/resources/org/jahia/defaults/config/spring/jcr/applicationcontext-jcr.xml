@@ -53,17 +53,10 @@
                 <entry key="jcr.specification.version" value="1.0"/>
                 <entry key="jcr.specification.name"
                        value="Content Repository API for Java(TM) Technology Specification"/>
-<<<<<<< .working
-                <entry key="jcr.repository.vendor" value="Jahia"/>
-                <entry key="jcr.repository.vendor.url" value="http://www.jahia.org/"/>
-                <entry key="jcr.repository.name" value="Jahia"/>
-                <entry key="jcr.repository.version" value="7.0"/>
-=======
                 <entry key="jcr.repository.vendor" value="${jahia.jcr.repository.vendor:Jahia}"/>
                 <entry key="jcr.repository.vendor.url" value="${jahia.jcr.repository.vendor.url:http://www.jahia.com/}"/>
                 <entry key="jcr.repository.name" value="${jahia.jcr.repository.name:Jahia}"/>
-                <entry key="jcr.repository.version" value="${jahia.jcr.repository.version:6.6}"/>
->>>>>>> .merge-right.r48417
+                <entry key="jcr.repository.version" value="${jahia.jcr.repository.version:7.0}"/>
                 <entry key="level.1.supported" value="true"/>
                 <entry key="level.2.supported" value="true"/>
                 <entry key="option.transactions.supported" value="true"/>

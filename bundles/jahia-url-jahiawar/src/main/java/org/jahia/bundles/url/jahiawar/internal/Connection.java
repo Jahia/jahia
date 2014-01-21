@@ -478,6 +478,8 @@ public class Connection extends URLConnection {
 
         if (resolvedGroupId != null) {
             bndProperties.put("Jahia-GroupId", resolvedGroupId);
+        } else {
+            bndProperties.put("Jahia-GroupId", "org.jahia.modules"); // use default Jahia groupdId if none could be resolved.
         }
 
         convertJahiaManifestAttributes(inputManifest.getMainAttributes(), bndProperties, depends);

@@ -808,7 +808,7 @@ extends = jnt:content
  + * (jnt:reference) multiple
 
 //---------------------------------------------------------
-// Modules filesystem nodes extension nodes.
+// extension nodes.
 //---------------------------------------------------------
 
 [jmix:hasExternalProviderExtension] mixin

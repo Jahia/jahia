@@ -97,7 +97,7 @@ public class DeleteItemWindow extends Window {
 	    formPanel.setLayout(new RowLayout(Orientation.VERTICAL));
 	    formPanel.setSize(windowWidth, windowHeight);
 	    
-	    final Text textMessage = new Text();
+	    final Html textMessage = new Html();
 	    formPanel.add(textMessage);	    
 	    
 		/* Usages grid */
@@ -122,7 +122,7 @@ public class DeleteItemWindow extends Window {
         final TextArea textArea = new TextArea();
         textArea.setSize(windowWidth - 30, 100);
 	    if (!permanentlyDelete) {
-	        formPanel.add(new Text("<br />" + Messages.get("label.comment", "Comment") + ": <br />"));
+	        formPanel.add(new Html("<br />" + Messages.get("label.comment", "Comment") + ": <br />"));
 	    	formPanel.add(textArea);
 	    }
 	    
@@ -146,7 +146,7 @@ public class DeleteItemWindow extends Window {
                     	formPanel.setHeight(130);
                     }
 				}
-				textMessage.setText(strMessage);
+				textMessage.setHtml(strMessage);
 				formPanel.layout();
             }
 		});

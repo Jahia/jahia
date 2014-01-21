@@ -44,10 +44,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -152,7 +149,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 HorizontalPanel h = new HorizontalPanel();
                 h.add(GWTJahiaPublicationInfo.renderPublicationStatusImage(status));
                 final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
-                h.add(new Text("&nbsp;" + Messages.get("label.publication." + labelKey, labelKey) + " : " +
+                h.add(new Html("&nbsp;" + Messages.get("label.publication." + labelKey, labelKey) + " : " +
                         results.get(status) + " " +
                         (results.get(status) > 1 ? Messages.get("label.items","Items") : Messages.get("label.item","Item"))));
                 layoutContainer.add(h);

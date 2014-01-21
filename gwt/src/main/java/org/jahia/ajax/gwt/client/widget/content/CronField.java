@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -89,7 +90,7 @@ public class CronField extends AdapterField {
 
     private void createUI() {
         panel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-        panel.add(new Text(Messages.get("label.cron.every", "Every") + "&nbsp;"));
+        panel.add(new Html(Messages.get("label.cron.every", "Every") + "&nbsp;"));
 
         choose = new SimpleComboBox<String>();
         choose.setEditable(false);
@@ -168,40 +169,40 @@ public class CronField extends AdapterField {
 
         widgets.put(EVERY_HOUR, new ArrayList<Widget>());
         String textEvery = "&nbsp;" + Messages.get("label.cron.at", "Every") + "&nbsp;";
-		widgets.get(EVERY_HOUR).add(new Text(textEvery));
+		widgets.get(EVERY_HOUR).add(new Html(textEvery));
         widgets.get(EVERY_HOUR).add(minuteCombo);
-        widgets.get(EVERY_HOUR).add(new Text("&nbsp;" + Messages.get("label.cron.minutesPastHour", "minutes past the hour")));
+        widgets.get(EVERY_HOUR).add(new Html("&nbsp;" + Messages.get("label.cron.minutesPastHour", "minutes past the hour")));
 
         widgets.put(EVERY_DAY, new ArrayList<Widget>());
-        widgets.get(EVERY_DAY).add(new Text(textEvery));
+        widgets.get(EVERY_DAY).add(new Html(textEvery));
         widgets.get(EVERY_DAY).add(hourCombo);
-        widgets.get(EVERY_DAY).add(new Text("&nbsp;:&nbsp;"));
+        widgets.get(EVERY_DAY).add(new Html("&nbsp;:&nbsp;"));
         widgets.get(EVERY_DAY).add(minuteCombo);
 
         widgets.put(EVERY_WEEK, new ArrayList<Widget>());
-        widgets.get(EVERY_WEEK).add(new Text("&nbsp;" + Messages.get("label.cron.on") + "&nbsp;"));
+        widgets.get(EVERY_WEEK).add(new Html("&nbsp;" + Messages.get("label.cron.on") + "&nbsp;"));
         widgets.get(EVERY_WEEK).add(weekDayCombo);
-        widgets.get(EVERY_WEEK).add(new Text(textEvery));
+        widgets.get(EVERY_WEEK).add(new Html(textEvery));
         widgets.get(EVERY_WEEK).add(hourCombo);
-        widgets.get(EVERY_WEEK).add(new Text("&nbsp;:&nbsp;"));
+        widgets.get(EVERY_WEEK).add(new Html("&nbsp;:&nbsp;"));
         widgets.get(EVERY_WEEK).add(minuteCombo);
 
         widgets.put(EVERY_MONTH, new ArrayList<Widget>());
-        widgets.get(EVERY_MONTH).add(new Text("&nbsp;" + Messages.get("label.cron.onThe") + "&nbsp;"));
+        widgets.get(EVERY_MONTH).add(new Html("&nbsp;" + Messages.get("label.cron.onThe") + "&nbsp;"));
         widgets.get(EVERY_MONTH).add(monthDayCombo);
-        widgets.get(EVERY_MONTH).add(new Text(textEvery));
+        widgets.get(EVERY_MONTH).add(new Html(textEvery));
         widgets.get(EVERY_MONTH).add(hourCombo);
-        widgets.get(EVERY_MONTH).add(new Text("&nbsp;:&nbsp;"));
+        widgets.get(EVERY_MONTH).add(new Html("&nbsp;:&nbsp;"));
         widgets.get(EVERY_MONTH).add(minuteCombo);
 
         widgets.put(EVERY_YEAR, new ArrayList<Widget>());
-        widgets.get(EVERY_YEAR).add(new Text("&nbsp;" + Messages.get("label.cron.onThe") + "&nbsp;"));
+        widgets.get(EVERY_YEAR).add(new Html("&nbsp;" + Messages.get("label.cron.onThe") + "&nbsp;"));
         widgets.get(EVERY_YEAR).add(monthDayCombo);
-        widgets.get(EVERY_YEAR).add(new Text("&nbsp;" + Messages.get("label.cron.of") + "&nbsp;"));
+        widgets.get(EVERY_YEAR).add(new Html("&nbsp;" + Messages.get("label.cron.of") + "&nbsp;"));
         widgets.get(EVERY_YEAR).add(monthCombo);
-        widgets.get(EVERY_YEAR).add(new Text(textEvery));
+        widgets.get(EVERY_YEAR).add(new Html(textEvery));
         widgets.get(EVERY_YEAR).add(hourCombo);
-        widgets.get(EVERY_YEAR).add(new Text("&nbsp;:&nbsp;"));
+        widgets.get(EVERY_YEAR).add(new Html("&nbsp;:&nbsp;"));
         widgets.get(EVERY_YEAR).add(minuteCombo);
 
 

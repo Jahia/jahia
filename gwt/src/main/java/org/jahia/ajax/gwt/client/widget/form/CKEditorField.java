@@ -441,7 +441,7 @@ public class CKEditorField extends Field<String> {
             public Object render(WCAGViolation model, String property, ColumnData config,
                                  int rowIndex, int colIndex, ListStore<WCAGViolation> store,
                                  Grid<WCAGViolation> grid) {
-                Text txt = new Text(model.getMessage());
+                Html txt = new Html(model.getMessage());
                 txt.setToolTip(model.getMessage());
 
                 return txt;

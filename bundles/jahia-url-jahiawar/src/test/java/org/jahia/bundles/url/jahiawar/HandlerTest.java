@@ -84,7 +84,7 @@ public class HandlerTest {
 
         Assert.assertEquals("Bundle-SymbolicName", "forum", mainAttributes.getValue("Bundle-SymbolicName"));
         Assert.assertEquals("Bundle-Name", "Jahia Forum", mainAttributes.getValue("Bundle-Name"));
-        Assert.assertEquals("Bundle-ClassPath header is not valid", ".,forum-1.3.jar", mainAttributes.getValue("Bundle-ClassPath"));
+        Assert.assertEquals("Bundle-ClassPath header is not valid", ".,WEB-INF/lib/forum-1.3.jar", mainAttributes.getValue("Bundle-ClassPath"));
         Assert.assertEquals("Bundle-Version header is not valid", "1.3", mainAttributes.getValue("Bundle-Version"));
 
         List<ManifestValueClause> importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));

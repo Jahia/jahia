@@ -190,7 +190,7 @@ public class Connection extends URLConnection {
                         }
                     }
                 } else if (newName.startsWith("WEB-INF/lib/")) {
-                    newName = jarEntry.getName().substring("WEB-INF/lib/".length());
+                    // newName = jarEntry.getName().substring("WEB-INF/lib/".length());
                     boolean forbiddenJar = false;
                     for (Pattern forbiddenJarPattern : forbiddenJarPatterns) {
                         Matcher forbiddenJarMatcher = forbiddenJarPattern.matcher(newName);
@@ -254,7 +254,7 @@ public class Connection extends URLConnection {
                     embeddedJarOutputStream.close();
                     entryInputStream = new ByteArrayInputStream(embeddedJarByteOutputStream.toByteArray());
                 } else if (newName.startsWith("WEB-INF/")) {
-                    newName = jarEntry.getName().substring("WEB-INF/".length());
+                    // newName = jarEntry.getName().substring("WEB-INF/".length());
                 }
                 if (newName.endsWith(".xml")) {
                     ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();

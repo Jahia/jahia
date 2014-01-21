@@ -263,6 +263,7 @@ public class EditLinker implements Linker {
      */
     public void onMainSelection(String mainPath, String template) {
         this.mainPath = mainPath;
+        this.selectedModule = null;
         this.template = template;
     }
 
@@ -296,11 +297,11 @@ public class EditLinker implements Linker {
      */
     public void handleNewMainSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
+        mainModule.handleNewMainSelection(mainPath,template);
+        mainModule.handleNewModuleSelection(null);
         if (sidePanel != null) {
             sidePanel.handleNewMainSelection(mainPath);
         }
-        mainModule.handleNewMainSelection(mainPath,template);
-        mainModule.handleNewModuleSelection(null);
         toolbar.handleNewLinkerSelection();
     }
 

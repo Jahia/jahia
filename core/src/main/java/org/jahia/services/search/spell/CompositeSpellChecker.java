@@ -56,6 +56,7 @@ import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
 import org.apache.lucene.search.spell.LuceneDictionary;
+import org.apache.lucene.search.spell.StringDistance;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -67,6 +68,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
@@ -300,6 +302,12 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 this.lastRefresh = System.currentTimeMillis();
             }
             this.spellChecker = new JahiaExtendedSpellChecker(spellIndexDirectory);
+            spellChecker.setAccuracy(Float.parseFloat(SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.jackrabbit.searchIndex.spellChecker.minimumScore")));
+            try {
+                spellChecker.setStringDistance((StringDistance) Class.forName(SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.jackrabbit.searchIndex.spellChecker.distanceImplementation")).newInstance());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             refreshSpellChecker();
         }
 

@@ -471,11 +471,11 @@
  extends = jnt:page, jnt:template
  - j:theme (weakreference,choicelist[nodes='$currentSite/templates/files/themes;jnt:folder'])
 
-// @since Jahia 6.7
+// @since Jahia 7.0
 [jmix:useUILocale] mixin
  extends = jnt:template
 
-// @since Jahia 6.7
+// @since Jahia 7.0
 [jmix:rbTitle] mixin
  extends = jnt:template
  - j:titleKey (string)
@@ -610,7 +610,7 @@
   - * (UNDEFINED) i18n multiple
   - * (UNDEFINED) i18n
 
-// @since Jahia 6.7
+// @since Jahia 7.0
 [jmix:hasIcon] mixin
  - j:icon (weakreference,picker[type='image']) < jmix:image
 

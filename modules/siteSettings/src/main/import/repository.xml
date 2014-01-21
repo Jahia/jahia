@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:j="http://www.jahia.org/jahia/1.0"
-         xmlns:jcr="http://www.jcp.org/jcr/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <modules jcr:primaryType="jnt:modules">
         <siteSettings j:dependencies="default"
                     j:installedModules="siteSettings"
@@ -208,7 +206,7 @@
                              j:icon="/modules/siteSettings/templates/files/users_into.png"
                              j:priority="100"
                              j:requiredPermissionNames="siteAdminGroups"
-                             j:titleKey="label.manageGroups"
+                             j:titleKey="siteSettings.label.manageGroups"
                              jcr:mixinTypes="jmix:rbTitle"
                              jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">

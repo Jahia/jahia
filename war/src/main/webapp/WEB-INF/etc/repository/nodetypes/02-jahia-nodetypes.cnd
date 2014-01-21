@@ -808,6 +808,15 @@ extends = jnt:content
  + * (jnt:reference) multiple
 
 //---------------------------------------------------------
+// Modules filesystem nodes extension nodes.
+//---------------------------------------------------------
+
+[jmix:hasExternalProviderExtension] mixin
+ + * (jnt:externalProviderExtension)
+
+[jnt:externalProviderExtension] > nt:unstructured, jmix:lockable
+
+//---------------------------------------------------------
 // Modules filesystem nodes
 //---------------------------------------------------------
 

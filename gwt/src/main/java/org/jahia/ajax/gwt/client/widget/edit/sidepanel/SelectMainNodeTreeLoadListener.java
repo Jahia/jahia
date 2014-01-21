@@ -97,9 +97,9 @@ class SelectMainNodeTreeLoadListener extends LoadListener {
     }
 
     public void handleNewMainSelection(String path) {
+        selectedPath = path;
         if (tree != null && (tree.getSelectionModel().getSelectedItem() == null || !path.equals(
                 tree.getSelectionModel().getSelectedItem().getPath()))) {
-            selectedPath = path;
             if (nodesByPath.containsKey(path) && tree.getStore().contains(nodesByPath.get(path))) {
                 tree.getSelectionModel().setSelection(Arrays.asList(nodesByPath.get(path)));
             } else {

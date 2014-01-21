@@ -323,12 +323,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         Model model = null;
         try {
             model = PomUtils.read(pom);
+            if (!StringUtils.equals(model.getScm().getConnection(),scmUrl)) {
+                PomUtils.updateScm(pom, scmUrl);
+                module.getSourceControl().add(pom);
+                module.getSourceControl().commit("restore pom scm uri before release");
+            }
         } catch (XmlPullParserException e) {
             throw new IOException(e);
-        }
-        // reset scm uri if the one define in the pom not equals the one get by scm command.
-        if (!StringUtils.equals(model.getScm().getConnection(),scmUrl)) {
-            scmUrl = null;
         }
         String lastVersion = PomUtils.getVersion(model);
         if (!lastVersion.endsWith("-SNAPSHOT")) {

@@ -89,7 +89,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
         if (commitRequired) {
             String branch = executeCommand(executable, new String[]{"symbolic-ref"," --short ","HEAD"}).out.trim();
-            checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m","\"" + message + "\""}));
+            checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m", message }));
             checkExecutionResult(executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin",branch}));
         }
     }

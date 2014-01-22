@@ -162,21 +162,23 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
-        if (manualListOrderingEditor != null && useManualRanking.getValue()) {
-            for (GWTJahiaNode child : manualListOrderingEditor.getOrderedNodes()) {
-                node.add(child);
+        if (propertiesEditor != null) {
+            if (manualListOrderingEditor != null && useManualRanking.getValue()) {
+                for (GWTJahiaNode child : manualListOrderingEditor.getOrderedNodes()) {
+                    node.add(child);
+                }
+                for (GWTJahiaNode child : manualListOrderingEditor.getRemovedNodes()) {
+                    node.add(child);
+                    node.remove(child);
+                }
+                node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
             }
-            for (GWTJahiaNode child : manualListOrderingEditor.getRemovedNodes()) {
-                node.add(child);
-                node.remove(child);
-            }
-            node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
-        }
 
-        addedTypes.addAll(propertiesEditor.getAddedTypes());
-        addedTypes.addAll(propertiesEditor.getExternalMixin());
-        changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));
-        removedTypes.addAll(propertiesEditor.getRemovedTypes());
+            addedTypes.addAll(propertiesEditor.getAddedTypes());
+            addedTypes.addAll(propertiesEditor.getExternalMixin());
+            changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));
+            removedTypes.addAll(propertiesEditor.getRemovedTypes());
+        }
 
     }
 

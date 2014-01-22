@@ -171,12 +171,13 @@ public class ListOrderingContentTabItem extends ContentTabItem {
                 node.remove(child);
             }
             node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
-        } else if (propertiesEditor != null) {
-            addedTypes.addAll(propertiesEditor.getAddedTypes());
-            addedTypes.addAll(propertiesEditor.getExternalMixin());
-            changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));
-            removedTypes.addAll(propertiesEditor.getRemovedTypes());
         }
+
+        addedTypes.addAll(propertiesEditor.getAddedTypes());
+        addedTypes.addAll(propertiesEditor.getExternalMixin());
+        changedProperties.addAll(propertiesEditor.getProperties(false, true, node != null));
+        removedTypes.addAll(propertiesEditor.getRemovedTypes());
+
     }
 
     @Override

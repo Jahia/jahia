@@ -330,109 +330,112 @@ public class WorkflowService implements BeanPostProcessor {
                                                 final String activityName, final String processId) throws RepositoryException {
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-
-                List<JahiaPrincipal> principals = Collections.emptyList();
-                Map<String, String> perms = workflowRegistrationByDefinition.get(definition.getKey()).getPermissions();
-                String permPath = perms != null ? perms.get(activityName) : null;
-                if (permPath == null) {
-                    return principals;
-                }
-
-                Workflow w = getWorkflow(definition.getProvider(), processId, null);
-                JCRNodeWrapper node = session.getNodeByIdentifier((String) w.getVariables().get("nodeId"));
-                if (permPath.indexOf("$") > -1) {
-                    if (w != null) {
-                        for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
-                            Object value = entry.getValue();
-                            if (value instanceof List) {
-                                List list = (List) entry.getValue();
-                                StringBuilder sb = new StringBuilder();
-                                Iterator iterator = list.iterator();
-                                while (iterator.hasNext()) {
-                                    Object o = iterator.next();
-                                    if (o instanceof WorkflowVariable) {
-                                        sb.append(((WorkflowVariable) o).getValue());
-                                    }
-                                    if (iterator.hasNext()) {
-                                        sb.append(",");
-                                    }
-                                }
-                                permPath = permPath.replace("$" + entry.getKey(), iterator.toString());
-                            } else if (value instanceof WorkflowVariable) {
-                                permPath = permPath.replace("$" + entry.getKey(), ((WorkflowVariable) value).getValue());
-                            }
-                        }
-                    }
-                }
-                try {
-                    if (!permPath.contains("/")) {
-                        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='" + permPath + "'", Query.JCR_SQL2);
-                        NodeIterator ni = q.execute().getNodes();
-                        if (ni.hasNext()) {
-                            permPath = StringUtils.substringAfter(ni.nextNode().getPath(), "/permissions");
-
-                        } else {
-                            return principals;
-                        }
-                    }
-
-                    Set<String> roles = new HashSet<String>();
-                    Set<String> extPerms = new HashSet<String>();
-
-                    while (!StringUtils.isEmpty(permPath)) {
-                        String permissionName = permPath.contains("/") ? StringUtils.substringAfterLast(permPath, "/") : permPath;
-                        NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
-                        while (ni.hasNext()) {
-                            JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
-                            roles.add(roleNode.getName());
-                        }
-                        ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
-                        while (ni.hasNext()) {
-                            JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
-                            extPerms.add(roleNode.getParent().getName() + "/" + roleNode.getName());
-                        }
-                        permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
-                    }
-
-                    Map<String, List<String[]>> m = node.getAclEntries();
-                    principals = new LinkedList<JahiaPrincipal>();
-                    JahiaUserManagerService userService = ServicesRegistry.getInstance()
-                            .getJahiaUserManagerService();
-                    JahiaGroupManagerService groupService = ServicesRegistry.getInstance()
-                            .getJahiaGroupManagerService();
-
-                    JCRSiteNode site = null;
-
-                    for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
-                        for (String[] strings : entry.getValue()) {
-                            if (strings[1].equals("GRANT") && roles.contains(strings[2]) || strings[1].equals("EXTERNAL") && extPerms.contains(strings[2])) {
-                                String principal = entry.getKey();
-                                final String principalName = principal.substring(2);
-                                if (principal.charAt(0) == 'u') {
-                                    JahiaUser jahiaUser = userService.lookupUser(principalName);
-                                    principals.add(jahiaUser);
-                                } else if (principal.charAt(0) == 'g') {
-                                    if (site == null) {
-                                        site = node.getResolveSite();
-                                    }
-                                    JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
-                                            principalName);
-                                    if (group == null) {
-                                        group = groupService.lookupGroup(null, principalName);
-                                    }
-                                    principals.add(group);
-                                }
-                            }
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (BeansException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                return principals;
+                return getAssignedRole(definition, activityName, processId, session);
             }
         });
+    }
+
+    public List<JahiaPrincipal> getAssignedRole(WorkflowDefinition definition, String activityName, String processId, JCRSessionWrapper session) throws RepositoryException {
+        List<JahiaPrincipal> principals = Collections.emptyList();
+        Map<String, String> perms = workflowRegistrationByDefinition.get(definition.getKey()).getPermissions();
+        String permPath = perms != null ? perms.get(activityName) : null;
+        if (permPath == null) {
+            return principals;
+        }
+
+        Workflow w = getWorkflow(definition.getProvider(), processId, null);
+        JCRNodeWrapper node = session.getNodeByIdentifier((String) w.getVariables().get("nodeId"));
+        if (permPath.indexOf("$") > -1) {
+            if (w != null) {
+                for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
+                    Object value = entry.getValue();
+                    if (value instanceof List) {
+                        List list = (List) entry.getValue();
+                        StringBuilder sb = new StringBuilder();
+                        Iterator iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            Object o = iterator.next();
+                            if (o instanceof WorkflowVariable) {
+                                sb.append(((WorkflowVariable) o).getValue());
+                            }
+                            if (iterator.hasNext()) {
+                                sb.append(",");
+                            }
+                        }
+                        permPath = permPath.replace("$" + entry.getKey(), iterator.toString());
+                    } else if (value instanceof WorkflowVariable) {
+                        permPath = permPath.replace("$" + entry.getKey(), ((WorkflowVariable) value).getValue());
+                    }
+                }
+            }
+        }
+        try {
+            if (!permPath.contains("/")) {
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='" + permPath + "'", Query.JCR_SQL2);
+                NodeIterator ni = q.execute().getNodes();
+                if (ni.hasNext()) {
+                    permPath = StringUtils.substringAfter(ni.nextNode().getPath(), "/permissions");
+
+                } else {
+                    return principals;
+                }
+            }
+
+            Set<String> roles = new HashSet<String>();
+            Set<String> extPerms = new HashSet<String>();
+
+            while (!StringUtils.isEmpty(permPath)) {
+                String permissionName = permPath.contains("/") ? StringUtils.substringAfterLast(permPath, "/") : permPath;
+                NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
+                    roles.add(roleNode.getName());
+                }
+                ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
+                    extPerms.add(roleNode.getParent().getName() + "/" + roleNode.getName());
+                }
+                permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
+            }
+
+            Map<String, List<String[]>> m = node.getAclEntries();
+            principals = new LinkedList<JahiaPrincipal>();
+            JahiaUserManagerService userService = ServicesRegistry.getInstance()
+                    .getJahiaUserManagerService();
+            JahiaGroupManagerService groupService = ServicesRegistry.getInstance()
+                    .getJahiaGroupManagerService();
+
+            JCRSiteNode site = null;
+
+            for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
+                for (String[] strings : entry.getValue()) {
+                    if (strings[1].equals("GRANT") && roles.contains(strings[2]) || strings[1].equals("EXTERNAL") && extPerms.contains(strings[2])) {
+                        String principal = entry.getKey();
+                        final String principalName = principal.substring(2);
+                        if (principal.charAt(0) == 'u') {
+                            JahiaUser jahiaUser = userService.lookupUser(principalName);
+                            principals.add(jahiaUser);
+                        } else if (principal.charAt(0) == 'g') {
+                            if (site == null) {
+                                site = node.getResolveSite();
+                            }
+                            JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
+                                    principalName);
+                            if (group == null) {
+                                group = groupService.lookupGroup(null, principalName);
+                            }
+                            principals.add(group);
+                        }
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        } catch (BeansException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return principals;
     }
 
     /**

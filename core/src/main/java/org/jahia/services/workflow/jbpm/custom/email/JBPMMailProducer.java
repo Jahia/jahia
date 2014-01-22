@@ -44,13 +44,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -238,7 +237,22 @@ public class JBPMMailProducer {
             String[] userIds = tokenizeActors(userList, workItem, session);
             List<User> users = new ArrayList<User>();
             for (String userId : userIds) {
-                users.add(taskIdentityService.getUserById(userId));
+                if (userId.startsWith("assignableFor(")) {
+                    String task = StringUtils.substringBetween(userId, "assignableFor(",")");
+                    WorkflowDefinition definition = WorkflowService.getInstance().getWorkflow("jBPM",Long.toString(workItem.getProcessInstanceId()), null).getWorkflowDefinition();
+                    List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(definition, task, Long.toString(workItem.getProcessInstanceId()), session);
+                    for (JahiaPrincipal principal : principals) {
+                        if (principal instanceof JahiaUser) {
+                            users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
+                        } else if (principal instanceof JahiaGroup) {
+                            for (Principal user : ((JahiaGroup) principal).getRecursiveUserMembers()) {
+                                users.add(taskIdentityService.getUserById(((JahiaUser)user).getUserKey()));
+                            }
+                        }
+                    }
+                } else {
+                    users.add(taskIdentityService.getUserById(userId));
+                }
             }
             email.addRecipients(recipientType, getAddresses(users));
         }

@@ -1,5 +1,4 @@
 to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
-to-users: nextTaskAssignable
 subject: Publication workflow rejected by ${currentUser.getUsername()}
 text: Hi,
 

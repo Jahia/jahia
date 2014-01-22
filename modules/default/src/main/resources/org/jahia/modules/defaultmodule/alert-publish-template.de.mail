@@ -1,5 +1,5 @@
 to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
-to-users: nextTaskAssignable
+to-users: assignableFor(
 subject: Veröffentlichungsworkflow aktzeptiert von ${currentUser.getUsername()}
 text: Hi,
 

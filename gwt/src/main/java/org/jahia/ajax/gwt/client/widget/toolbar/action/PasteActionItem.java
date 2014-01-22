@@ -76,12 +76,7 @@ public class PasteActionItem extends BaseActionItem {
         if (m != null) {
             linker.loading(Messages.get("statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            GWTJahiaNode currentNode = MainModule.getInstance().getNode();
-            boolean goTo = copyPasteEngine.isCut() && m.getPath().equals(currentNode.getPath());
             copyPasteEngine.paste(m, linker);
-            if (goTo) {
-                linker.setSelectPathAfterDataUpdate(Arrays.asList(m.getPath()));
-            }
         }
     }
 

@@ -116,23 +116,13 @@ public class CopyPasteEngine {
     }
 
     private void afterPaste(Linker linker, List<String> copiedPaths) {
-        boolean refresh = false;
-        for (GWTJahiaNode n : getCopiedPaths()) {
-            if (!n.isFile()) {
-                refresh = true;
-                break;
-            }
-        }
-        onPastedPath();
-        linker.setSelectPathAfterDataUpdate(copiedPaths);
         linker.loaded();
         Map<String, Object> data = new HashMap<String, Object>();
-        if (refresh) {
-            data.put(Linker.REFRESH_ALL, true);
-        } else {
-            data.put(Linker.REFRESH_MAIN, true);
-        }
+        data.put("node", getCopiedPaths().get(0));
+        data.put("nodes", getCopiedPaths());
         linker.refresh(data);
+        onPastedPath();
+        linker.setSelectPathAfterDataUpdate(copiedPaths);
     }
 
     public List<GWTJahiaNode> getCopiedPaths() {

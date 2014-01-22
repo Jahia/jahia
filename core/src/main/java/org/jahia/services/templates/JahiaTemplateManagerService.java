@@ -156,6 +156,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     
     private ForgeHelper forgeHelper;
 
+    private List<String> nonManageableModules;
+
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -187,6 +189,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setXmlIndentation(int i) {
         prettyPrint.setIndentSize(i);
+    }
+
+    public List<String> getNonManageableModules() {
+        return nonManageableModules;
+    }
+
+    public void setNonManageableModules(List<String> nonManageableModules) {
+        this.nonManageableModules = nonManageableModules;
     }
 
     public void start() throws JahiaInitializationException {

@@ -446,15 +446,14 @@ public class ModuleManagementFlowHandler implements Serializable {
 
     private Set<String> getSystemSiteRequiredModules() {
         Set<String> modules = new TreeSet<String>();
-        try {
-            JahiaTemplatesPackage pkg = templateManagerService.getTemplatePackage(sitesService.getSiteByKey(
-                    JahiaSitesService.SYSTEM_SITE_KEY).getTemplatePackageName());
-            modules.add(pkg.getId());
-            for (JahiaTemplatesPackage dep : pkg.getDependencies()) {
-                modules.add(dep.getId());
+        for (String module : templateManagerService.getNonManageableModules()) {
+            JahiaTemplatesPackage pkg = templateManagerService.getTemplatePackageById(module);
+            if (pkg != null) {
+                modules.add(pkg.getId());
+                for (JahiaTemplatesPackage dep : pkg.getDependencies()) {
+                    modules.add(dep.getId());
+                }
             }
-        } catch (JahiaException e) {
-            throw new JahiaRuntimeException(e);
         }
 
         return modules;

@@ -263,11 +263,13 @@
                                 <input type="hidden" name="disableFrom" value="/sites/${site}"/>
                                 <input type="hidden" name="purge" value="false"/>
                                 <input type="hidden" name="_eventId_disable" value="true"/>
+                                <c:if test="${site ne 'systemsite' or not moduleStates[activeVersion.id][activeVersion.version].systemDependency}">
                                 <fmt:message var="label"
                                              key='serverSettings.manageModules.module.disable'/>
                                 <button class="btn btn-danger disable-button" type="button" onclick="">
                                     <i class=" icon-stop icon-white"></i>&nbsp;${label}
                                 </button>
+                                </c:if>
                                 <c:set var="usedOnce" value="true"/>
                             </form>
                             <c:set var="cellEmpty" value="false"/>
@@ -276,12 +278,14 @@
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                 <input type="hidden" name="module" value="${activeVersion.id}"/>
                                 <input type="hidden" name="enableOn" value="/sites/${site}"/>
+                                <c:if test="${site ne 'systemsite' or not moduleStates[activeVersion.id][activeVersion.version].systemDependency}">
                                 <fmt:message var="label"
                                              key='serverSettings.manageModules.module.enable'/>
                                 <button class="btn btn-success" type="submit" name="_eventId_enable" onclick="">
                                     <i class=" icon-play icon-white"></i>
                                     &nbsp;${label}
                                 </button>
+                                </c:if>
                             </form>
                             <c:set var="cellEmpty" value="false"/>
                         </c:otherwise>

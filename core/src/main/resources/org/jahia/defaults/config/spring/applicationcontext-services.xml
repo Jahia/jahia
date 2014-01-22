@@ -146,6 +146,14 @@
         <property name="forgeHelper">
             <bean class="org.jahia.services.templates.ForgeHelper"/>
         </property>
+        <property name="nonManageableModules" >
+            <list>
+                <value>templates-system</value>
+                <value>serverSettings</value>
+                <value>serverSettings-ee</value>
+                <value>siteSettings</value>
+            </list>
+        </property>
     </bean>
     
     <bean id="ModuleInstallationHelper" class="org.jahia.services.templates.ModuleInstallationHelper">

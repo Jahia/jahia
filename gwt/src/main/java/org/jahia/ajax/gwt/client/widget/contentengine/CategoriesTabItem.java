@@ -97,22 +97,20 @@ public class CategoriesTabItem extends EditEngineTabItem {
             treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories/*"),
                     Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.CHILDREN_INFO,GWTJahiaNode.NAME,GWTJahiaNode.DISPLAY_NAME));
             final GWTJahiaNode node = engine.getNode();
-            if (node != null) {
-                categoryProperty = engine.getProperties().get("j:defaultCategory");
-                if (categoryProperty != null) {
-                    final List<GWTJahiaNodePropertyValue> propertyValues = categoryProperty.getValues();
-                    for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                        catStore.add(propertyValue.getNode());
-                        topPanel.add(getOrCreateButton(propertyValue.getNode()));
-                    }
-                }
-                tab.add(topPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,75));
-                if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked())) {
-                    tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.CENTER, 250));
-                }
-                tab.layout();
 
+            categoryProperty = engine.getProperties().get("j:defaultCategory");
+            if (categoryProperty != null) {
+                final List<GWTJahiaNodePropertyValue> propertyValues = categoryProperty.getValues();
+                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                    catStore.add(propertyValue.getNode());
+                    topPanel.add(getOrCreateButton(propertyValue.getNode()));
+                }
             }
+            tab.add(topPanel, new BorderLayoutData(Style.LayoutRegion.NORTH,75));
+            if (!engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:modifyProperties",node) && !node.isLocked())) {
+                tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.CENTER, 250));
+            }
+            tab.layout();
         }
     }
 

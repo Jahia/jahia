@@ -40,10 +40,8 @@
 
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.*;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
@@ -55,25 +53,21 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.services.visibility.VisibilityService;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRFileContent;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
-import org.jahia.services.content.decorator.JCRPlaceholderNode;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.decorator.JCRVersion;
+import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -89,11 +83,12 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static org.jahia.api.Constants.*;
 
 /**
  * Wrappers around <code>javax.jcr.Node</code> to be able to inject
@@ -2366,7 +2361,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         for (int i = 0; i < getDepth(); i++) {
             try {
                 ancestors.add(getAncestor(i));
-            } catch (PathNotFoundException nfe) {
             } catch (AccessDeniedException ade) {
                 return ancestors;
             }
@@ -2406,7 +2400,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         getSession().move(getPath(), parent.getPath() + "/" + newName);
-        i18NobjectNodes.clear();
+        if (i18NobjectNodes != null) {
+            i18NobjectNodes.clear();
+        }
         this.localPathInProvider = parent.getPath() + "/" + newName;
         String mountPoint = getProvider().getMountPoint();
         if (mountPoint.length() > 1 && localPathInProvider.startsWith(mountPoint)) {
@@ -3872,7 +3868,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));
         } catch (PathNotFoundException e) {
-        } catch (ItemNotFoundException e) {
         }
         return null;
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();

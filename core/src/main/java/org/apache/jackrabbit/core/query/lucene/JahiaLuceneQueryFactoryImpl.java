@@ -49,6 +49,7 @@ import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -532,6 +533,24 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
         } 
         return super.getComparisonQuery(left, transform, operator, rigth, selectorMap);
+    }
+
+    @Override
+    protected Analyzer getTextAnalyzer() {
+        if(locale != null) {
+            // if we have a locale set up, use it to retrieve a potential language-specific Analyzer
+            final AnalyzerRegistry analyzerRegistry = index.getAnalyzerRegistry();
+            final String lang = locale.toString();
+            if(analyzerRegistry.acceptKey(lang)) {
+                final Analyzer analyzer = analyzerRegistry.getAnalyzer(lang);
+                if(analyzer != null) {
+                    return analyzer;
+                }
+            }
+        }
+
+        // if we didn't find a language-specific analyzer, just return the default one
+        return super.getTextAnalyzer();
     }
 
     class IndexedNodeInfo {

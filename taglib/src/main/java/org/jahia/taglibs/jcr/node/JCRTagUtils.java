@@ -228,7 +228,7 @@ public class JCRTagUtils {
      */
     public static List<JCRNodeWrapper> getParentsOfType(JCRNodeWrapper node,
             String type) {
-        
+
         List<JCRNodeWrapper> parents = new ArrayList<JCRNodeWrapper>();
         do {
             node = getParentOfType(node, type);
@@ -253,23 +253,7 @@ public class JCRTagUtils {
      */
     public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node,
             String type) {
-        JCRNodeWrapper matchingParent = null;
-        try {
-            JCRNodeWrapper parent = node.getParent();
-            while (parent != null) {
-                if (parent.isNodeType(type)) {
-                    matchingParent = parent;
-                    break;
-                }
-                parent = parent.getParent();
-            }
-        } catch (ItemNotFoundException e) {
-            // we reached the hierarchy top
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving nodes parent node. Cause: "
-                    + e.getMessage(), e);
-        }
-        return matchingParent;
+        return JCRContentUtils.getParentOfType(node, type);
     }
 
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {

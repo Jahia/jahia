@@ -67,7 +67,7 @@ to bring more so it helps if people play fair :)
 
        For more information, please check the template developer guide.
 
-    3. Download and Install Maven 3.x or 2.x (http://maven.apache.org), and set an
+    3. Download and Install Maven 3.x (http://maven.apache.org), and set an
        M2_HOME environment variable pointing at the installation
        directory. Put M2_HOME/bin folder in path. Also increase the
        memory for Maven by setting the following environment variable:

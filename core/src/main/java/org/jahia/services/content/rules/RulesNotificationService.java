@@ -203,10 +203,6 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        if (StringUtils.isEmpty(fromMail)) {
-            logger.warn("A mail couldn't be sent because from: has no recipient");
-            return;
-        }
         if (StringUtils.isEmpty(toMail)) {
             logger.warn("A mail couldn't be sent because to: has no recipient");
             return;

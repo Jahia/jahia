@@ -38,7 +38,7 @@ function submitGroupForm(act, group) {
 
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
 
-<h2><fmt:message key="label.manageGroups"/> - ${fn:escapeXml(site.displayableName)}</h2>
+<h2><fmt:message key="siteSettings.label.manageGroups"/> - ${fn:escapeXml(site.displayableName)}</h2>
 
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
 

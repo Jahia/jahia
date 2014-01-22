@@ -82,7 +82,7 @@ function updateSiteHtmlFiltering(btn) {
 <c:set var="propFilteredTags" value="${site.properties['j:filteredTags']}"/>
 <c:set var="filteredTags" value="${not empty propFilteredTags ? propFilteredTags.string : ''}"/>
 
-<h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
+<h2><fmt:message key="siteSettings.label.htmlFiltering"/> - ${fn:escapeXml(site.displayableName)}</h2>
 <p><fmt:message key="label.htmlFiltering.description"/>:</p>
 
 <form id="updateSiteForm" action="<c:url value='${url.base}${renderContext.mainResource.node.resolveSite.path}'/>" method="post">

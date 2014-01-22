@@ -20,7 +20,7 @@
     pageContext.setAttribute("modules", templateService.getInstalledModulesForSite((String) pageContext.getAttribute("siteKey"), false, true, false));
     pageContext.setAttribute("requiredModules", templateService.getInstalledModulesForSite((String) pageContext.getAttribute("siteKey"), false, false, true));
 %>
-<h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
+<h2><fmt:message key="siteSettings.label.manageModules"/> - ${fn:escapeXml(site.displayableName)}</h2>
 <p>
 <strong><fmt:message key="siteSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;</strong>
 ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})

@@ -15,6 +15,9 @@
 <c:set var="resourceReadOnly" value="${currentResource.moduleParams.readOnly}"/>
 <template:include view="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
+<c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
+
+<h2><fmt:message key="siteSettings.label.vanityURLSettings"/> - ${fn:escapeXml(site.displayableName)}</h2>
 
 <form class="form-inline" action="<c:url value='${url.base}${renderContext.mainResource.node.path}.vanityURLSetting.html'/>">
     <label for="vanityUrlSearch"><fmt:message key='label.urlmapping.filter'/></label>

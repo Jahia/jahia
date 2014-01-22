@@ -100,7 +100,7 @@
 
 </script>
 
-<h2>${fn:escapeXml(currentNode.displayableName)} - ${fn:escapeXml(site.displayableName)}</h2>
+<h2><fmt:message key="siteSettings.label.manageLanguages"/> - ${fn:escapeXml(site.displayableName)}</h2>
 
 <%
     JCRSiteNode site = (JCRSiteNode) pageContext.getAttribute("site");

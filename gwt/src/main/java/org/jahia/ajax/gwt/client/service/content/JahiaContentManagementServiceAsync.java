@@ -288,7 +288,7 @@ public interface JahiaContentManagementServiceAsync {
      */
     void publish(List<String> uuids, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
-    void rename(String path, String newName, AsyncCallback<String> async);
+    void rename(String path, String newName, AsyncCallback<GWTJahiaNode> async);
 
     void resizeImage(String path, String target, int width, int height, boolean forceReplace, AsyncCallback async);
 

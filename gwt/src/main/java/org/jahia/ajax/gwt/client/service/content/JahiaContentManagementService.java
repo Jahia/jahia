@@ -353,7 +353,7 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     void publish(List<String> uuids, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
 
-    String rename(String path, String newName) throws GWTJahiaServiceException;
+    GWTJahiaNode rename(String path, String newName) throws GWTJahiaServiceException;
 
     void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException;
 

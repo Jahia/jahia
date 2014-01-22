@@ -610,7 +610,7 @@ public class ContentManagerHelper {
         return nodeToDelete.canMarkForDeletion();
     }
 
-    public String rename(String path, String newName, JCRSessionWrapper currentUserSession, Locale uiLocale)
+    public GWTJahiaNode rename(String path, String newName, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
@@ -639,7 +639,7 @@ public class ContentManagerHelper {
         }
         try {
             node.saveSession();
-            return node.getPath();
+            return navigation.getGWTJahiaNode(currentUserSession.getNode(node.getPath()), NEW_NODE_FIELDS);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(

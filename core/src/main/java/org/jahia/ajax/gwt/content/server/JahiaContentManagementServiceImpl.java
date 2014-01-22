@@ -1026,7 +1026,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public String rename(String path, String newName) throws GWTJahiaServiceException {
+    public GWTJahiaNode rename(String path, String newName) throws GWTJahiaServiceException {
         return contentManager.rename(path, newName, retrieveCurrentSession(), getUILocale());
     }
 

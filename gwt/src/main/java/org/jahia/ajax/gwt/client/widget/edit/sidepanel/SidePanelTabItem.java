@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
@@ -237,7 +238,10 @@ public class SidePanelTabItem implements Serializable {
         }
 
         public void setSelectPathAfterDataUpdate(List<String> paths) {
-            // do nothing
+            if (paths != null && !paths.isEmpty()) {
+                String template = MainModule.getInstance().getTemplate();
+                MainModule.staticGoTo(paths.get(0), "default".equals(template) ? null : template);
+            }
         }
 
         public GWTConfiguration getConfig() {

@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,34 +63,34 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class RenameActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
+        GWTJahiaNode currentNode = MainModule.getInstance().getNode();
         final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
             if (selection.isLocked()) {
                 Window.alert(selection.getName() + " is locked");
                 return;
             }
+            final boolean goTo = selection.getPath().equals(currentNode.getPath());
             linker.loading(Messages.get("statusbar.renaming.label"));
             String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
                     selection.getName());
             if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 final boolean folder = !selection.isFile();
                 JahiaContentManagementService.App.getInstance()
-                        .rename(selection.getPath(), newName, new BaseAsyncCallback<String>() {
+                        .rename(selection.getPath(), newName, new BaseAsyncCallback<GWTJahiaNode>() {
                             public void onApplicationFailure(Throwable throwable) {
                                 Window.alert(
                                         Messages.get("failure.rename.label") + "\n" + throwable.getLocalizedMessage());
                                 linker.loaded();
                             }
 
-                            public void onSuccess(String newPath) {
-                                linker.setSelectPathAfterDataUpdate(Arrays.asList(newPath));
+                            public void onSuccess(GWTJahiaNode node) {
+                                if (goTo) {
+                                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                                }
                                 linker.loaded();
                                 Map<String, Object> data = new HashMap<String, Object>();
-                                if (folder) {
-                                    data.put(Linker.REFRESH_ALL, true);
-                                } else {
-                                    data.put(Linker.REFRESH_MAIN, true);
-                                }
+                                data.put("node", node);
                                 linker.refresh(data);
                             }
                         });

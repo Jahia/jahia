@@ -169,6 +169,7 @@ public class ModulesTabItem extends BrowseTabItem {
             List<String> inheritedNodeTypes = node.getInheritedNodeTypes();
             List<String> nodeTypes = node.getNodeTypes();
             if (inheritedNodeTypes.contains("jnt:editableFile")
+                    || nodeTypes.contains("jnt:editableFile")
                     || nodeTypes.contains("jnt:definitionFile")
                     || inheritedNodeTypes.contains("jnt:nodeType")
                     || nodeTypes.contains("jnt:resourceBundleFile")

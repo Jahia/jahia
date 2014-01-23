@@ -49,7 +49,7 @@
                     <c:set var="sourcesFound" value="true"/>
                 </c:if>
             </c:forEach>
-            <c:if test="${not empty availableUpdates[entry.key]}">
+            <c:if test="${not empty availableUpdates[entry.key] and not functions:contains(systemSiteRequiredModules,entry.key)}">
                 <br/>Update available to version ${availableUpdates[entry.key].version}!
                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
                     <input type="hidden" name="forgeId" value="${availableUpdates[entry.key].forgeId}"/>

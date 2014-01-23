@@ -338,22 +338,22 @@ public class JahiaCndReader {
                     parsingErrors.add(e.getMessage());
                 }
             }
-        }
 
-        for (ExtendedNodeType type : nodeTypesList) {
-            try {
-                type.validate();
-                if (!type.getPrefix().equals("nt") && !type.isMixin() && !type.isNodeType(Constants.MIX_REFERENCEABLE)) {
-                    int length = type.getDeclaredSupertypeNames().length;
-                    String[] newTypes = new String[length + 1];
-                    System.arraycopy(type.getDeclaredSupertypeNames(), 0, newTypes, 0, length);
-                    newTypes[length] = Constants.MIX_REFERENCEABLE;
-                    type.setDeclaredSupertypes(newTypes);
+            for (ExtendedNodeType type : nodeTypesList) {
+                try {
                     type.validate();
+                    if (!type.getPrefix().equals("nt") && !type.isMixin() && !type.isNodeType(Constants.MIX_REFERENCEABLE)) {
+                        int length = type.getDeclaredSupertypeNames().length;
+                        String[] newTypes = new String[length + 1];
+                        System.arraycopy(type.getDeclaredSupertypeNames(), 0, newTypes, 0, length);
+                        newTypes[length] = Constants.MIX_REFERENCEABLE;
+                        type.setDeclaredSupertypes(newTypes);
+                        type.validate();
+                    }
+                } catch (NoSuchNodeTypeException e) {
+                    this.hasEncounteredIssuesWithDefinitions = true;
+                    parsingErrors.add(e.getMessage());
                 }
-            } catch (NoSuchNodeTypeException e) {
-                this.hasEncounteredIssuesWithDefinitions = true;
-                parsingErrors.add(e.getMessage());
             }
         }
 

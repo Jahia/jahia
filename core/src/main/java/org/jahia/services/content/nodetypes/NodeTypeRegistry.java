@@ -298,7 +298,6 @@ public class NodeTypeRegistry implements NodeTypeManager {
             try {
                 resourceReader = new InputStreamReader(inputStream, Charsets.UTF_8);
                 JahiaCndReader r = new JahiaCndReader(resourceReader, filename, systemId, this);
-                r.setDoRegister(false);
                 r.parse();
 
                 if (r.hasEncounteredIssuesWithDefinitions()) {

@@ -114,7 +114,6 @@ public class JCRSessionWrapper implements Session {
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
     private Locale locale;
-    private String sitePath;
     private List<String> tokens = new ArrayList<String>();
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
@@ -149,7 +148,6 @@ public class JCRSessionWrapper implements Session {
         this.isSystem = isSystem;
         this.versionDate = null;
         this.versionLabel = null;
-        this.sitePath = sessionFactory.getCurrentSitePath();
         if (workspace == null) {
             this.workspace = new JCRWorkspaceWrapper("default", this, sessionFactory);
         } else {
@@ -1244,14 +1242,6 @@ public class JCRSessionWrapper implements Session {
 
     public void setCurrentUserSession(boolean isCurrentUserSession) {
         this.isCurrentUserSession = isCurrentUserSession;
-    }
-
-    public String getSitePath() {
-        return sitePath;
-    }
-
-    public void setSitePath(String sitePath) {
-        this.sitePath = sitePath;
     }
 
     public Exception getSessionTrace() {

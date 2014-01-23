@@ -67,12 +67,14 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.interceptor.TemplateModuleInterceptor;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.validation.*;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -1773,7 +1775,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 zis.closeEntry();
 
+                // during import/export, never try to resolve the references between templates and site.
+                RenderContext r;
+                r = TemplateModuleInterceptor.renderContextThreadLocal.get();
+                TemplateModuleInterceptor.renderContextThreadLocal.remove();
+
                 ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper);
+
+                TemplateModuleInterceptor.renderContextThreadLocal.set(r);
+
                 session.save(JCRObservationManager.IMPORT);
             }
         } catch (RepositoryException e) {

@@ -525,11 +525,4 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         this.validatorFactoryBean = validatorFactoryBean;
     }
 
-    public String getCurrentSitePath() {
-        return currentSitePath.get();
-    }
-
-    public void setCurrentSitePath(String currentSitePath) {
-        this.currentSitePath.set(currentSitePath);
-    }
 }

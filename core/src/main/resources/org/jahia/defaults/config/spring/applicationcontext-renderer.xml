@@ -60,6 +60,10 @@
         <property name="description" value="portlet rendering"/>
         <property name="applyOnConfigurations" value="page"/>
     </bean>
+    <bean class="org.jahia.services.render.filter.TemplateModuleInterceptorFilter">
+        <property name="description" value="Inject renderContext in TemplateModuleInterceptor."/>
+        <property name="priority" value="-2"/>
+    </bean>
     <!--
     <bean class="org.jahia.services.render.filter.SourceFormatterFilter">
         <property name="priority" value="-2" />
@@ -210,7 +214,6 @@
             </list>
         </property>
     </bean>
-
     <bean class="org.jahia.services.render.filter.TemplateNodeFilter">
         <property name="priority" value="22"/>
         <property name="description"

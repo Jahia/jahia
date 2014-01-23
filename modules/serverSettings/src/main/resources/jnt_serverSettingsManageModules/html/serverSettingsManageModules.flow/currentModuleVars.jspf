@@ -6,4 +6,4 @@
     </c:forEach>
 </c:if>
 <c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, currentModule != null ? currentModule.id : defaultVersion.id)}" var="isMandatoryDependency"/>
-<c:set value="${currentModule != null ? currentModule.sourcesDownloadable : defaultVersion.sourcesDownloadable}" var="sourcesDownloadable"/>
+<c:set value="${(currentModule != null ? currentModule.sourcesDownloadable : defaultVersion.sourcesDownloadable) and (currentModule.id ne script.view.module.id)}" var="sourcesDownloadable"/>

@@ -62,8 +62,10 @@ import org.apache.jackrabbit.spi.commons.name.PathFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
@@ -137,6 +139,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private WorkspaceConfig workspaceConfig;
 
     private static SelfPopulatingCache privilegesInRole = null;
+    private static Cache<String, Boolean> matchingPermissions = null;
     private LRUMap pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;
@@ -201,6 +204,17 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                         return privileges;
                     }
                 });
+            }
+        }
+        if(matchingPermissions==null){
+            CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
+            if(cacheService!=null) {
+                // Jahia is initialized
+                try {
+                    matchingPermissions = cacheService.getCache("org.jahia.security.matchingPermissions",true);
+                } catch (JahiaInitializationException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
     }
@@ -778,30 +792,46 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return privileges;
     }
 
+
     public boolean matchPermission(Set<String> permissions, String role) throws RepositoryException {
-        Set<Privilege> permsInRole = getPermissionsInRole(role);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Checking role {}", role);
+        StringBuilder stringBuilder = new StringBuilder(role);
+        for (String permission : permissions) {
+            stringBuilder.append(permission.hashCode());
         }
-
-        for (Privilege privilege : permsInRole) {
-            String privilegeName = privilege.getName();
-            if (checkPrivilege(permissions, privilegeName)) {
-                return true;
-            }
-            if (isAliased && privilegeName.contains("_" + Constants.LIVE_WORKSPACE)) {
-                if (checkPrivilege(permissions, privilegeName.replaceAll("_" + Constants.LIVE_WORKSPACE, "_" + workspaceName))) {
-                    return true;
-                }
+        String entryKey = stringBuilder.toString();
+        Boolean o = matchingPermissions.get(entryKey);
+        if (o == null) {
+            Set<Privilege> permsInRole = getPermissionsInRole(role);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Checking role {}", role);
             }
 
-            for (Privilege sub : privilege.getAggregatePrivileges()) {
-                if (checkPrivilege(permissions, sub.getName())) {
+            for (Privilege privilege : permsInRole) {
+                String privilegeName = privilege.getName();
+                if (checkPrivilege(permissions, privilegeName)) {
+                    matchingPermissions.put(entryKey, Boolean.TRUE);
                     return true;
                 }
+                if (isAliased && privilegeName.contains("_" + Constants.LIVE_WORKSPACE)) {
+                    if (checkPrivilege(permissions, privilegeName.replaceAll("_" + Constants.LIVE_WORKSPACE,
+                            "_" + workspaceName))) {
+                        matchingPermissions.put(entryKey, Boolean.TRUE);
+                        return true;
+                    }
+                }
+
+                for (Privilege sub : privilege.getAggregatePrivileges()) {
+                    if (checkPrivilege(permissions, sub.getName())) {
+                        matchingPermissions.put(entryKey, Boolean.TRUE);
+                        return true;
+                    }
+                }
             }
+            matchingPermissions.put(entryKey, Boolean.FALSE);
+            return false;
+        } else {
+            return (boolean) o;
         }
-        return false;
     }
 
     private boolean checkPrivilege(Set<String> permissions, String privilegeName) {

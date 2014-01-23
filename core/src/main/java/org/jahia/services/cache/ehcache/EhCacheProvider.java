@@ -45,6 +45,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.ObjectExistsException;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
+import net.sf.ehcache.config.PinningConfiguration;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.slf4j.Logger;
@@ -156,6 +157,9 @@ public class EhCacheProvider implements CacheProvider {
             Configuration configuration = cacheManager.getConfiguration();
             Map<String,CacheConfiguration> cacheConfigurations = configuration.getCacheConfigurations();
             CacheConfiguration cacheConfiguration = cacheConfigurations.get("org.jahia.selfPopulatingReplicatedCache");
+            PinningConfiguration pinningConfiguration = new PinningConfiguration();
+            pinningConfiguration.setStore("INCACHE");
+            cacheConfiguration.addPinning(pinningConfiguration);
             // Create a new cache with the configuration
             Ehcache cache = new Cache(cacheConfiguration);
             cache.setName(cacheName);

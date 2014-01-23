@@ -68,7 +68,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 /**
@@ -288,18 +288,19 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return r;
     }
 
-    private final Map<String, Object> processings = new ConcurrentHashMap<String, Object>();
+    private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
     private Map<String, Set<String>> getPrincipalAcl(final String key, final int siteId) throws RepositoryException {
         final String cacheKey = key + ":" + siteId;
         Element element = cache.get(cacheKey);
         if (element == null) {
-            synchronized (processings) {
-                if (!processings.containsKey(cacheKey)) {
-                    processings.put(cacheKey, new Object());
-                }
+            Semaphore semaphore = processings.get(cacheKey);
+            if(semaphore==null) {
+                semaphore = new Semaphore(1);
+                processings.putIfAbsent(cacheKey, semaphore);
             }
-            synchronized (processings.get(cacheKey)) {
+            try {
+                semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
                 element = cache.get(cacheKey);
                 if (element != null) {
                     return (Map<String, Set<String>>) element.getObjectValue();
@@ -365,6 +366,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 element.setEternal(true);
                 cache.put(element);
                 logger.debug("Getting ACL for " + cacheKey + " took " + (System.currentTimeMillis() - l) + "ms");
+            } catch (InterruptedException e) {
+                logger.debug(e.getMessage(), e);
+            } finally {
+                semaphore.release();
             }
 
 

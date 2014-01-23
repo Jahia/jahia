@@ -58,6 +58,8 @@ public class PrivilegeImpl implements Privilege, Serializable {
     private Set<Privilege> aggregates;
     private transient int hash;
     private String nodePath;
+    private Privilege[] aggregatePrivileges = null;
+    private Privilege[] declaredPrivileges = null;
 
     PrivilegeImpl(String prefixedName, String expandedName, boolean anAbstract, Set<Privilege> declaredAggregates, String nodePath) {
         this.prefixedName = prefixedName;
@@ -83,6 +85,8 @@ public class PrivilegeImpl implements Privilege, Serializable {
                 }
             }
         }
+        declaredPrivileges=null;
+        aggregatePrivileges=null;
     }
 
     public String getName() {
@@ -102,11 +106,17 @@ public class PrivilegeImpl implements Privilege, Serializable {
     }
 
     public Privilege[] getDeclaredAggregatePrivileges() {
-        return declaredAggregates.toArray(new Privilege[declaredAggregates.size()]);
+        if(declaredPrivileges==null) {
+            declaredPrivileges = declaredAggregates.toArray(new Privilege[declaredAggregates.size()]);
+        }
+        return declaredPrivileges;
     }
 
     public Privilege[] getAggregatePrivileges() {
-        return aggregates.toArray(new Privilege[aggregates.size()]);
+        if(aggregatePrivileges==null) {
+            aggregatePrivileges = aggregates.toArray(new Privilege[aggregates.size()]);
+        }
+        return aggregatePrivileges;
     }
 
     public String getNodePath() {

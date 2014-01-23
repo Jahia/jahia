@@ -70,9 +70,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 /**
@@ -486,8 +484,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Element element1 = dependenciesCache.get(path);
                 Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.<String>emptySet();
                 if (!dependencies.contains("ALL")) {
-                    Set<String> newDependencies = new HashSet<String>(dependencies.size() + 1);
-                    newDependencies.addAll(dependencies);
+                    Set<String> newDependencies = new CopyOnWriteArraySet<String>(dependencies);
                     if ((newDependencies.size() + 1) > dependenciesLimit) {
                         newDependencies.clear();
                         newDependencies.add("ALL");
@@ -502,8 +499,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             for (String regexp : regexpDepNodeWrappers) {
                 Element element1 = regexpDependenciesCache.get(regexp);
                 Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.<String>emptySet();
-                Set<String> newDependencies = new LinkedHashSet<String>(dependencies.size() + 1);
-                newDependencies.addAll(dependencies);
+                Set<String> newDependencies = new CopyOnWriteArraySet<String>(dependencies);
                 addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, newDependencies);
             }
         }
@@ -672,7 +668,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * Replace all placeholders in the cache key to get a final key.
      * @param renderContext RenderContext
      * @param key Key with placeholders
-     * @return The final key with placehodlers replaced
+     * @return The final key with placeholders replaced
      */
     protected String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
         return cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);

@@ -425,20 +425,23 @@ public class URLResolver {
             return resolvedNodes.get(cacheKey);
         }
         JCRNodeWrapper node = null;
-        String nodePath = path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path;
+        String nodePath = null;
         siteInfo = null;
-        if (nodePathCache.containsKey(cacheKey) && siteInfoCache.containsKey(cacheKey)) {
+        if (nodePathCache.containsKey(cacheKey)) {
             nodePath = nodePathCache.get(cacheKey);
+        }
+        if ( siteInfoCache.containsKey(cacheKey)) {
             siteInfo = siteInfoCache.get(cacheKey);
         }
         if (nodePath == null || siteInfo == null) {
-            nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                    workspace, locale, new JCRCallback<String>() {
-                        public String doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0, path.lastIndexOf("/*")) : path);
-                            if(logger.isDebugEnabled()){
-                                logger.debug(cacheKey+ " has not been found in the cache, still looking for node "+nodePath);
+            nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale,
+                    new JCRCallback<String>() {
+                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0,
+                                    path.lastIndexOf("/*")) : path);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug(cacheKey + " has not been found in the cache, still looking for node " +
+                                             nodePath);
                             }
                             JCRNodeWrapper node = null;
                             while (true) {
@@ -457,13 +460,16 @@ public class URLResolver {
                             // the next condition is false e.g. when nodePath is "/" and session's locale is not in systemsite's locales
                             JCRSiteNode resolveSite = node.getResolveSite();
                             if (resolveSite != null) {
-                                SiteInfo siteInfo = new SiteInfo(resolveSite);
+                                siteInfo = new SiteInfo(resolveSite);
                                 siteInfoCache.put(cacheKey, siteInfo);
                             }
                             return nodePath;
                         }
                     });
-            siteInfo = siteInfoCache.get(cacheKey);
+        }
+        if(siteInfo == null) {
+            siteInfoCache.remove(cacheKey);
+            throw new RepositoryException("could not resolve site for "+path+" in workspace "+ workspace + " in language "+locale);
         }
         JCRSessionWrapper userSession = siteInfo != null
                 && siteInfo.getDefaultLanguage() != null

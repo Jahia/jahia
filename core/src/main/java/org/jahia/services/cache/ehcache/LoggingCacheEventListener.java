@@ -63,31 +63,31 @@ public class LoggingCacheEventListener implements CacheEventListener {
 
     public void notifyElementRemoved(Ehcache ehcache, Element element) throws CacheException {
         if (logger.isDebugEnabled()) {
-            logger.debug(ehcache.getName() + ": Element " + element.getKey() + " removed.");
+            logger.debug(ehcache.getName() + ": Element " + element.getObjectKey() + " removed.");
         }
     }
 
     public void notifyElementPut(Ehcache ehcache, Element element) throws CacheException {
         if (logger.isDebugEnabled()) {
-            logger.debug(ehcache.getName() +": Element " + element.getKey() + " put.");
+            logger.debug(ehcache.getName() +": Element " + element.getObjectKey() + " put.");
         }
     }
 
     public void notifyElementUpdated(Ehcache ehcache, Element element) throws CacheException {
         if (logger.isDebugEnabled()) {
-            logger.debug(ehcache.getName() +": Element " + element.getKey() + " updated.");
+            logger.debug(ehcache.getName() +": Element " + element.getObjectKey() + " updated.");
         }
     }
 
     public void notifyElementExpired(Ehcache ehcache, Element element) {
         if (logger.isInfoEnabled()) {
-            logger.info(ehcache.getName() +": Element " + element.getKey() + " expired.");
+            logger.info(ehcache.getName() +": Element " + element.getObjectKey() + " expired.");
         }
     }
 
     public void notifyElementEvicted(Ehcache ehcache, Element element) {
         if (logger.isDebugEnabled()) {
-            logger.debug(ehcache.getName() +": Element " + element.getKey() + " evicted.");
+            logger.debug(ehcache.getName() +": Element " + element.getObjectKey() + " evicted.");
         }
     }
 

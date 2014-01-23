@@ -491,6 +491,10 @@ public final class JCRContentUtils implements ServletContextAware {
      *         by a comma).
      */
     public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type) {
+        return getChildrenOfType(node, type, 0);
+    }
+
+    public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type, int limit) {
         List<JCRNodeWrapper> children = null;
         if (node == null) {
             return null;
@@ -500,6 +504,9 @@ public final class JCRContentUtils implements ServletContextAware {
             List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
             try {
                 for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
+                    if(limit > 0 && matchingChildren.size()==limit) {
+                        break;
+                    }
                     Node child = iterator.nextNode();
                     for (String matchType : typesToCheck) {
                         if (child.isNodeType(matchType)) {
@@ -513,11 +520,10 @@ public final class JCRContentUtils implements ServletContextAware {
             }
             children = matchingChildren;
         } else {
-            children = getNodes(node, type);
+            children = getNodes(node, type, limit);
         }
         return children;
     }
-
     /**
      * Returns a content object key for a node if available. Otherwise returns
      * node name.
@@ -815,10 +821,17 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static List<JCRNodeWrapper> getNodes(JCRNodeWrapper node, String type) {
+        return getNodes(node, type, 0);
+    }
+
+    public static List<JCRNodeWrapper> getNodes(JCRNodeWrapper node, String type, int limit) {
         try {
             List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
+                if(limit > 0 && res.size() == limit) {
+                    break;
+                }
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
                 if (StringUtils.isEmpty(type) || child.isNodeType(type)) {
                     res.add(child);

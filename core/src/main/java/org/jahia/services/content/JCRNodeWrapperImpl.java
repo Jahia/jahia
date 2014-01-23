@@ -3729,38 +3729,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean checkValidity() {
-        final JCRSessionWrapper jcrSessionWrapper = getSession();
-        try {
-            if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName()) && !JCRStoreService.getInstance().getNoValidityCheckTypes().contains(getPrimaryNodeTypeName())) {
-                boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
-                if (isLocaleDefined) {
-                    if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
-                        return false;
-                    } else if (hasI18N(jcrSessionWrapper.getLocale(), false)) {
-                        if (JCRContentUtils.isLanguageInvalid(objectNode, jcrSessionWrapper
-                                .getLocale().toString())) {
+        if (getPath().startsWith("/sites")) {
+            final JCRSessionWrapper jcrSessionWrapper = getSession();
+            try {
+                if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName()) &&
+                    !JCRStoreService.getInstance().getNoValidityCheckTypes().contains(getPrimaryNodeTypeName())) {
+                    boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
+                    if (isLocaleDefined) {
+                        if (objectNode.hasProperty("j:published") && !objectNode.getProperty(
+                                "j:published").getBoolean()) {
                             return false;
-                        }
-                        JCRSiteNode siteNode = getResolveSite();
-                        if (!siteNode.isMixLanguagesActive()) {
-                            Node i18n = getI18N(jcrSessionWrapper.getLocale(), false);
-                            if (i18n.hasProperty("j:published") && !i18n.getProperty("j:published").getBoolean()) {
+                        } else if (hasI18N(jcrSessionWrapper.getLocale(), false)) {
+                            if (JCRContentUtils.isLanguageInvalid(objectNode,
+                                    jcrSessionWrapper.getLocale().toString())) {
                                 return false;
+                            }
+                            JCRSiteNode siteNode = getResolveSite();
+                            if (!siteNode.isMixLanguagesActive()) {
+                                Node i18n = getI18N(jcrSessionWrapper.getLocale(), false);
+                                if (i18n.hasProperty("j:published") && !i18n.getProperty("j:published").getBoolean()) {
+                                    return false;
+                                }
                             }
                         }
                     }
+                    boolean result = checkLanguageValidity(null);
+                    if (result && isLocaleDefined) {
+                        result = VisibilityService.getInstance().matchesConditions(this);
+                    }
+                    return result;
                 }
-                boolean result = checkLanguageValidity(null);
-                if(result && isLocaleDefined) {
-                    result = VisibilityService.getInstance().matchesConditions(this);
+                if (getProvider().isDefault()) {
+                    return !objectNode.hasProperty("j:isExternalProviderRoot");
                 }
-                return result;
+            } catch (RepositoryException e) {
+                return false;
             }
-            if (getProvider().isDefault()) {
-                return !objectNode.hasProperty("j:isExternalProviderRoot");
-            }
-        } catch (RepositoryException e) {
-            return false;
         }
         return true;
     }

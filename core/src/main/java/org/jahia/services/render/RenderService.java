@@ -227,11 +227,11 @@ public class RenderService {
 
     public boolean hasView(JCRNodeWrapper node, String key, String templateType, RenderContext renderContext) {
         try {
-            if (hasView(node.getPrimaryNodeType(), key, node.getResolveSite(), templateType, renderContext)) {
+            if (hasView(node.getPrimaryNodeType(), key, renderContext.getSite(), templateType, renderContext)) {
                 return true;
             }
             for (ExtendedNodeType type : node.getMixinNodeTypes()) {
-                if (hasView(type, key, node.getResolveSite(), templateType, renderContext)) {
+                if (hasView(type, key, renderContext.getSite(), templateType, renderContext)) {
                     return true;
                 }
             }

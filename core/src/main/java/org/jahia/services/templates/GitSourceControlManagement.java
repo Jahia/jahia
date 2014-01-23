@@ -101,6 +101,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     private Map<String, Status> createStatusMap(boolean folder) throws IOException {
         Map<String, Status> newMap = new HashMap<String, Status>();
+        String relPath = readLines(executeCommand(executable, new String[]{"rev-parse", "--show-prefix"}).out).get(0);
         ExecutionResult result = executeCommand(executable, new String[]{"status","--porcelain"});
         for (String line : readLines(result.out)) {
             if (StringUtils.isBlank(line)) {
@@ -111,6 +112,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 path = StringUtils.substringAfter(path, " -> ");
             }
             path = StringUtils.removeEnd(path, "/");
+            path = StringUtils.removeStart(path, relPath);
             char indexStatus = line.charAt(0);
             char workTreeStatus = line.charAt(1);
             Status status = null;

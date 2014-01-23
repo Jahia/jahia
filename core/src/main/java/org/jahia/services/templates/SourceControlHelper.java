@@ -95,8 +95,24 @@ public class SourceControlHelper {
     public JCRNodeWrapper checkoutModule(final File moduleSources, final String scmURI, final String branchOrTag,
             final String moduleId, final String version, final JCRSessionWrapper session) throws IOException,
             RepositoryException, BundleException {
-        boolean newModule = moduleSources == null;
-        File sources = ensureModuleSourceFolder(moduleSources);
+        File sources = moduleSources;
+        if (sources == null) {
+            String parentPath = SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources";
+            String sourcesFolderName;
+            if (moduleId == null) {
+                sourcesFolderName = UUID.randomUUID().toString();
+            } else {
+                sourcesFolderName = moduleId;
+                if (version != null) {
+                    sourcesFolderName += "_" + version;
+                }
+            }
+            sources = new File(parentPath, sourcesFolderName);
+            int i = 0;
+            while (sources.exists()) {
+                sources = new File(parentPath, sourcesFolderName + "_" + (++i));
+            }
+        }
 
         try {
             // checkout sources from SCM
@@ -109,24 +125,7 @@ public class SourceControlHelper {
                 throw new RepositoryException("Cannot checkout module " + moduleInfo.id + " because another module with the same artifactId exists");
             }
 
-            if (newModule) {
-                File newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.id + "_" + moduleInfo.version);
-                int i = 0;
-                while (newPath.exists()) {
-                    newPath = new File(moduleInfo.path.getParentFile(), moduleInfo.id + "_" + moduleInfo.version
-                            + "_" + (++i));
-                }
-
-                FileUtils.moveDirectory(moduleInfo.path, newPath);
-                moduleInfo.path = new File(moduleInfo.path.getPath().replace(moduleInfo.path.getPath(),
-                        newPath.getPath()));
-                sources = newPath;
-                scm = sourceControlFactory.getSourceControlManagement(moduleInfo.path);
-            }
-
-            if (sources.equals(moduleInfo.path)) {
-                setSCMConfigInPom(sources, scmURI);
-            }
+            setSCMConfigInPom(moduleInfo.path, scmURI);
 
             JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                     .compileAndDeploy(moduleInfo.id, moduleInfo.path, session);
@@ -183,37 +182,6 @@ public class SourceControlHelper {
             }
         }
         return false;
-    }
-
-    private void ensureMinimalRequiredJahiaVersion(String parentVersion, File sources, String scmURI,
-            String moduleName, String version, String branchOrTag) throws IOException {
-        ModuleVersion moduleVersion = new ModuleVersion(parentVersion);
-        if (moduleVersion.compareTo(new ModuleVersion("7.0")) < 0) {
-            FileUtils.deleteQuietly(sources);
-            String msg = "Module " + moduleName + "  " + StringUtils.defaultIfEmpty(version, "") + " in " + scmURI
-                    + " " + StringUtils.defaultIfEmpty(branchOrTag, "")
-                    + " is not compatible with Jahia 7.0 and later version";
-            logger.error(msg);
-            throw new IOException(msg);
-        }
-    }
-
-    private File ensureModuleSourceFolder(File moduleSources) throws IOException {
-        File sources = moduleSources;
-        if (sources == null) {
-            sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", UUID.randomUUID()
-                    .toString());
-        }
-
-        if (sources.exists()) {
-            throw new IOException("Sources folder " + sources + " already exist");
-        }
-
-        if (!sources.getParentFile().exists() && !sources.getParentFile().mkdirs()) {
-            throw new IOException("Unable to create sources folder at: " + sources);
-        }
-
-        return sources;
     }
 
     private ModuleInfo getModuleInfo(final File sources, final String scmURI, final String moduleId,

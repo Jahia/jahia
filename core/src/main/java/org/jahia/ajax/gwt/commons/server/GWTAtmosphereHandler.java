@@ -47,6 +47,7 @@ import org.atmosphere.gwt.server.AtmosphereGwtHandler;
 import org.atmosphere.gwt.server.GwtAtmosphereResource;
 import org.jahia.api.Constants;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
@@ -77,14 +78,13 @@ public class GWTAtmosphereHandler extends AtmosphereGwtHandler {
             userBroadcaster.addAtmosphereResource(resource.getAtmosphereResource());
         }
 
-        return NO_TIMEOUT;
-
+        return Integer.parseInt(SettingsBean.getInstance().getPropertiesFile().getProperty("cometTimeout")) * 60 * 1000;
     }
 
     @Override
     public void cometTerminated(GwtAtmosphereResource cometResponse, boolean serverInitiated) {
         super.cometTerminated(cometResponse, serverInitiated);
-        logger.info("Comet disconnected");
+        logger.debug("Comet disconnected");
     }
 
     @Override

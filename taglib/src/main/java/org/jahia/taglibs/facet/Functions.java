@@ -207,29 +207,13 @@ public class Functions {
      * @param facetValue     the applied facet value, which need to be removed again
      * @param queryString    the current facet filter URL query parameter
      * @return the new facet filter URL query parameter
+     * @deprecated Use {@link #getDeleteFacetUrl(org.apache.commons.collections.KeyValue, String)} instead
      */
     public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
-		Map.Entry<String, List<KeyValue>> facetFilter;
-		try {
-			facetFilter = (Map.Entry<String, List<KeyValue>>)facetFilterObj;
-		} catch (ClassCastException e) {
-			throw new IllegalArgumentException("Passed parameter is not of type java.util.Map.Entry", e);
-		}
-		StringBuilder builder = new StringBuilder();
-		builder.append(facetFilter.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey())
-			.append(FACET_PARAM_DELIM).append(facetValue.getValue());
-		String facetValueFilter = builder.toString();
-		int index = StringUtils.indexOf(queryString, facetValueFilter);
-		if (index != -1) {
-			queryString = queryString.replace(
-				(index >= FACET_DELIM.length() && queryString.regionMatches(index - FACET_DELIM.length(), FACET_DELIM, 0, FACET_DELIM.length()) ? FACET_DELIM : "")
-					+ facetValueFilter, "");
-		}
-		return queryString;
+        return getDeleteFacetUrl(facetValue, queryString);
     }
 
     /**
-<<<<<<< .working
      * Create the URL to remove the given facet from the facet filter query parameter
      *
      * @param facetValue  the applied facet value, which need to be removed again
@@ -259,8 +243,6 @@ public class Functions {
     }
 
     /**
-=======
->>>>>>> .merge-right.r48445
      * Check whether there is an unapplied facet existing in the query. Useful in order to determine
      * whether a title/label should be displayed or not.
      *

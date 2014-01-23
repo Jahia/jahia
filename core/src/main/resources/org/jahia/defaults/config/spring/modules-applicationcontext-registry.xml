@@ -25,6 +25,12 @@
         <property name="properties">
             <ref bean="jahiaProperties"/>
         </property>
+        <property name="locations">
+            <list>
+                <value>classpath*:jahia-modules-*.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
     </bean>
 
     <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">

@@ -110,6 +110,7 @@ public class Connection extends URLConnection {
     private Map<String,Set<String>> excludedExportPackages = null;
     private Set<String> forbiddenJars = new LinkedHashSet<String>();
     private List<Pattern> forbiddenJarPatterns = new ArrayList<Pattern>();
+    private Map<String,byte[]> addedFiles = new LinkedHashMap<String,byte[]>();
 
     public Connection(final URL url, final Configuration configuration)
             throws MalformedURLException {
@@ -203,8 +204,10 @@ public class Connection extends URLConnection {
                         continue;
                     }
                     classPathEntries.add(newName);
+                    // first we copy the JAR input stream into a byte array
                     ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
                     StreamUtils.copyStream(entryInputStream, entryOutputStream, false);
+                    // then we read the byte array as a JAR again to process it
                     ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                     JarInputStream embeddedJarInputStream = new JarInputStream(tempEntryInputStream);
                     Manifest mf = embeddedJarInputStream.getManifest();
@@ -238,15 +241,34 @@ public class Connection extends URLConnection {
                         }
 
                         InputStream embeddedInputStream = parseFile(embeddedJarInputStream, embeddedJarNewName, parsingContext);
-                        // create the new entry
-                        JarEntry newEmbeddedJarEntry = new JarEntry(embeddedJarNewName);
-                        if (embeddedJarEntry.getTime() > mostRecentTime) {
-                            mostRecentTime = embeddedJarEntry.getTime();
+                        if (!embeddedJarEntry.isDirectory() && embeddedJarNewName.endsWith(".xml") &&
+                                (embeddedJarNewName.startsWith("org/jahia/config/") ||
+                                        embeddedJarNewName.startsWith("org/jahia/defaults/config/"))) {
+                            // we have detected old Spring configuration files for the top-level application context,
+                            // we will now move them into the bundle's META-INF/spring directory.
+                            ByteArrayOutputStream destinationByteArrayStream = new ByteArrayOutputStream();
+                            StreamUtils.copyStream(embeddedInputStream, destinationByteArrayStream, false);
+                            String destinationName = null;
+                            if (embeddedJarNewName.startsWith("org/jahia/config")) {
+                                destinationName = "META-INF/spring/" + embeddedJarNewName.substring("org/jahia/config/".length());
+                            } else if (embeddedJarNewName.startsWith("org/jahia/defaults/config/")) {
+                                destinationName = "META-INF/spring/" + embeddedJarNewName.substring("org/jahia/defaults/config/".length());
+                            }
+                            addedFiles.put(destinationName, destinationByteArrayStream.toByteArray());
+                            destinationByteArrayStream.close();
+                            // set to null to deallocate as quickly as possible.
+                            destinationByteArrayStream = null;
+                        } else {
+                            // create the new entry
+                            JarEntry newEmbeddedJarEntry = new JarEntry(embeddedJarNewName);
+                            if (embeddedJarEntry.getTime() > mostRecentTime) {
+                                mostRecentTime = embeddedJarEntry.getTime();
+                            }
+                            newEmbeddedJarEntry.setTime(embeddedJarEntry.getTime());
+                            embeddedJarOutputStream.putNextEntry(newEmbeddedJarEntry);
+                            StreamUtils.copyStream(embeddedInputStream, embeddedJarOutputStream, false);
+                            embeddedJarOutputStream.closeEntry();
                         }
-                        newEmbeddedJarEntry.setTime(embeddedJarEntry.getTime());
-                        embeddedJarOutputStream.putNextEntry(newEmbeddedJarEntry);
-                        StreamUtils.copyStream(embeddedInputStream, embeddedJarOutputStream, false);
-                        embeddedJarOutputStream.closeEntry();
                     }
                     embeddedJarInputStream.close();
                     tempEntryInputStream.close();
@@ -319,6 +341,20 @@ public class Connection extends URLConnection {
                 updateExportTracking(newName, exportPackageIncludes, allNonEmptyDirectories);
 
             }
+
+            for (Map.Entry<String,byte[]> addedFileEntry : addedFiles.entrySet()) {
+                JarEntry newJarEntry = new JarEntry(addedFileEntry.getKey());
+                if (mostRecentTime > 0) {
+                    newJarEntry.setTime(mostRecentTime);
+                }
+                jos.putNextEntry(newJarEntry);
+                ByteArrayInputStream entryInputStream = new ByteArrayInputStream(addedFileEntry.getValue());
+                StreamUtils.copyStream(entryInputStream, jos, false);
+                entryInputStream.close();
+                entryInputStream = null;
+                jos.closeEntry();
+            }
+
             jos.finish();
         } catch (IOException e) {
             throw new RuntimeException("Could not process resources", e);

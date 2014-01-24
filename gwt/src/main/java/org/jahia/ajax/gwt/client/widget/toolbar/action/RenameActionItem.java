@@ -63,14 +63,19 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class RenameActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
-        GWTJahiaNode currentNode = MainModule.getInstance().getNode();
         final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
             if (selection.isLocked()) {
                 Window.alert(selection.getName() + " is locked");
                 return;
             }
-            final boolean goTo = selection.getPath().equals(currentNode.getPath());
+            MainModule mainModule = MainModule.getInstance();
+            final boolean goTo;
+            if (mainModule != null) {
+                goTo = selection.getPath().equals(mainModule.getNode().getPath());
+            } else {
+                goTo = false;
+            }
             linker.loading(Messages.get("statusbar.renaming.label"));
             String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
                     selection.getName());

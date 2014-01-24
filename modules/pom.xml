@@ -220,6 +220,7 @@
                 <module>visibility</module>
                 <module>translation</module>
                 <module>jquery</module>
+                <module>userDashboard</module>
             </modules>
         </profile>
     </profiles>

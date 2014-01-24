@@ -125,8 +125,10 @@ public class GWTInitializer {
             } else {
                 params.put(JahiaGWTParameters.CURRENT_USER_NAME, name);
             }
+            params.put(JahiaGWTParameters.CURRENT_USER_PATH, user.getLocalPath());
         } else {
             params.put(JahiaGWTParameters.CURRENT_USER_NAME, "guest");
+            params.put(JahiaGWTParameters.CURRENT_USER_PATH, "/users/guest");
         }
 
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());

@@ -601,6 +601,8 @@ public class UIConfigHelper {
                     } else {
                         defaultLocation = null;
                     }
+                } else if(defaultLocation.contains("$user")) {
+                    defaultLocation = defaultLocation.replace("$user",jahiaUser.getLocalPath());
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
                 JCRNodeWrapper contextNode;

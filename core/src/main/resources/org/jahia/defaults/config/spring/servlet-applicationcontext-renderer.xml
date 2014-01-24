@@ -60,6 +60,14 @@
         <property name="workspace" value="default"/>
     </bean>
 
+    <bean name="org.jahia.bin.DashboardLayout" parent="abstractRender" class="org.jahia.bin.Edit">
+        <property name="sessionExpiryTime" value="60"/>
+        <property name="editConfiguration" ref="dashboardmode"/>
+        <property name="availableInProductionMode" value="true"/>
+        <property name="availableInDistantPublicationServerMode" value="true"/>
+        <property name="workspace" value="default"/>
+    </bean>
+
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
@@ -82,6 +90,8 @@
                 <entry key="/editframe/**" value-ref="org.jahia.bin.Edit"/>
                 <entry key="/contribute/**" value-ref="org.jahia.bin.Contribute"/>
                 <entry key="/contributeframe/**" value-ref="org.jahia.bin.Contribute"/>
+                <entry key="/dashboard/**" value-ref="org.jahia.bin.DashboardLayout"/>
+                <entry key="/dashboardframe/**" value-ref="org.jahia.bin.DashboardLayout"/>
                 <entry key="/studio/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/studioframe/**" value-ref="org.jahia.bin.Studio"/>
                 <entry key="/studiovisual/**" value-ref="org.jahia.bin.StudioVisual"/>

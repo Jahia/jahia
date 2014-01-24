@@ -210,6 +210,24 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
+     * Evaluates to <code>true</code> if the current mode equals to the
+     * specified one
+     *
+     * @author Sergiy Shyrkov
+     */
+    public static class EditModeCondition implements ExecutionCondition {
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return renderContext.isEditMode();
+        }
+
+        @Override
+        public String toString() {
+            return "render context is in edit mode";
+        }
+    }
+
+    /**
      * Evaluates to <code>true</code> if the current resource's template type
      * matches the provided one.
      *
@@ -697,6 +715,17 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
+     * Apply this filter if RenderContext isEditMode method call return true.
+     *
+     * @param applyOnEditMode true to apply this configuration
+     */
+    public void setApplyOnEditMode(Boolean applyOnEditMode) {
+        if (applyOnEditMode) {
+            addCondition(0, new EditModeCondition());
+        }
+    }
+
+    /**
      * Comma-separated list of module names this filter will be executed for
      * (all others are skipped).
      *
@@ -886,6 +915,17 @@ public abstract class AbstractFilter implements RenderFilter {
             condition = new ModeCondition(modes);
         }
         addCondition(0, new NotCondition(condition));
+    }
+
+    /**
+     * Skip this filter if RenderContext isEditMode method call return false.
+     *
+     * @param skipOnEditMode true to apply this configuration
+     */
+    public void setSkipOnEditMode(Boolean skipOnEditMode) {
+        if(skipOnEditMode) {
+            addCondition(new NotCondition(new EditModeCondition()));
+        }
     }
 
     /**

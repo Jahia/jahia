@@ -93,7 +93,7 @@ public class Edit extends Render {
             if (node.getResolveSite() == null) {
                 return false;
             }
-            String checkedPath = StringUtils.replace(editConfiguration.getNodeCheckPermission(),"$site",node.getResolveSite().getPath());
+            String checkedPath = StringUtils.replace(StringUtils.replace(editConfiguration.getNodeCheckPermission(),"$site",node.getResolveSite().getPath()),"$user",node.getSession().getUser().getLocalPath());
             if (editConfiguration.getNodeCheckPermission() == null) {
                 checkedPath = node.getResolveSite().getPath();
             }

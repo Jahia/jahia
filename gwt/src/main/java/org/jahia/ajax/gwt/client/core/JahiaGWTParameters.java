@@ -61,6 +61,7 @@ public class JahiaGWTParameters {
     public static final String SERVICE_ENTRY_POINT = "serviceEntryPoint";
     public static final String JAHIA_GWT_PARAMETERS = "jahiaGWTParameters";
     public static final String CURRENT_USER_NAME = "currentUser";
+    public static final String CURRENT_USER_PATH = "currentUserPath";
     public static final String COPYRIGHT = "copyright";
     public static final String UI_LANGUAGE = "uilang";
     public static final String UI_LANGUAGE_DISPLAY_NAME = "uilangdisplayname";
@@ -102,6 +103,10 @@ public class JahiaGWTParameters {
 
     public static String getCurrentUser() {
         return jahiaParamDictionary.get(CURRENT_USER_NAME);
+    }
+
+    public static String getCurrentUserPath() {
+        return jahiaParamDictionary.get(CURRENT_USER_PATH);
     }
 
     public static boolean isDevelopmentMode() {

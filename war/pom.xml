@@ -467,6 +467,12 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>userDashboard</artifactId>
+            <version>7.0.0.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>

@@ -268,7 +268,7 @@ public class SettingsTabItem extends SidePanelTabItem {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
-                final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath());
+                final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath()).replaceAll("\\$user",JahiaGWTParameters.getCurrentUserPath());
                 if (e.getModel().isNodeType("jnt:contentTemplate") && !Boolean.FALSE.equals(e.getModel().get("hasAccessToSettings"))) {
                     MainModule.getInstance().staticGoTo(path, getSelectedItem().getName());
                 }

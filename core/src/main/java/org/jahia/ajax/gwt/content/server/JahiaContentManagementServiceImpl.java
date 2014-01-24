@@ -2123,17 +2123,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         WCAGValidationResult wcagResult = new WCAGValidationResult();
         for (Result result : validatorResults.getErrors()) {
-            wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), StringEscapeUtils.escapeXml(result.getCode()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+            wcagResult.getErrors().add(new WCAGViolation(result.getType().toString(), StringEscapeUtils.escapeHtml(result.getMessage()), result.getContext(), StringEscapeUtils.escapeXml(result.getCode()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
 
         for (Result result : validatorResults.getWarnings()) {
-            wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), StringEscapeUtils.escapeXml(result.getCode()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+            wcagResult.getWarnings().add(new WCAGViolation(result.getType().toString(), StringEscapeUtils.escapeHtml(result.getMessage()), result.getContext(), StringEscapeUtils.escapeXml(result.getCode()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
 
         for (Result result : validatorResults.getInfos()) {
-            wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), result.getMessage(), result.getContext(), StringEscapeUtils.escapeXml(result.getCode()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
+            wcagResult.getInfos().add(new WCAGViolation(result.getType().toString(), StringEscapeUtils.escapeHtml(result.getMessage()), result.getContext(), StringEscapeUtils.escapeXml(result.getCode()), result.getExample(), Integer.valueOf(result.getLine()), Integer.valueOf(result.getColumn())));
         }
-
+        
         return wcagResult;
     }
 

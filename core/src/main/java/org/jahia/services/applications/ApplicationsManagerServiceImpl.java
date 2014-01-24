@@ -521,6 +521,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                     }
 
                     session.save();
+                    
+                    JahiaPrivilegeRegistry.init(session);
 
                     return true;
                 }

@@ -264,7 +264,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             try {
                 child = session.getNode(path);
                 if (child.hasPermission("jcr:versionManagement") && child.isVersioned() && !child.isCheckedOut()) {
-                    session.getWorkspace().getVersionManager().checkout(child.getPath());
+                    session.checkout(child);
                 }
             } catch (PathNotFoundException e) {
                 isValid = false;

@@ -303,9 +303,7 @@ public class JCRPublicationService extends JahiaService {
                 }
                 if (jcrNodeWrapper.isNodeType("jmix:lastPublished") && (!jcrNodeWrapper.hasProperty("j:published") ||
                         !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
-                    if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
-                        sourceVersionManager.checkout(jcrNodeWrapper.getPath());
-                    }
+                    sourceSession.checkout(jcrNodeWrapper);
                     jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
                     jcrNodeWrapper.setProperty("j:lastPublished", calendar);
                     jcrNodeWrapper.setProperty("j:lastPublishedBy", userID);
@@ -313,9 +311,7 @@ public class JCRPublicationService extends JahiaService {
                     try {
                         JCRNodeWrapper destNode = destinationSession
                                 .getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
-                        if (!destinationVersionManager.isCheckedOut(destNode.getPath())) {
-                            destinationVersionManager.checkout(destNode.getPath());
-                        }
+                        destinationSession.checkout(destNode);
                         destNode.setProperty("j:published", Boolean.TRUE);
                     } catch (ItemNotFoundException e) {
                     }
@@ -525,9 +521,7 @@ public class JCRPublicationService extends JahiaService {
             JCRNodeWrapper destinationNode = destinationSession
                     .getNode(destinationPath); // Live node exists - merge live node from source space
 
-            if (!destinationVersionManager.isCheckedOut(destinationNode.getPath())) {
-                destinationVersionManager.checkout(destinationNode.getPath());
-            }
+            destinationSession.checkout(destinationNode);
 
             final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
@@ -539,8 +533,7 @@ public class JCRPublicationService extends JahiaService {
 
             if (!node.getPath().equals(destinationPath)) {
                 try {
-                    destinationVersionManager
-                            .checkout(StringUtils.substringBeforeLast(destinationPath, "/")); // previous parent
+                    destinationSession.checkout(destinationNode.getParent()); // previous parent
                     JCRNodeWrapper nodeParent = node.getParent();
                     String newParentPath = null;
                     try {
@@ -549,8 +542,9 @@ public class JCRPublicationService extends JahiaService {
                         ensureNodeInDestinationWorkspace(nodeParent, destinationSession, toCheckpoint);
                         newParentPath = nodeParent.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
                     }
-                    destinationVersionManager.checkout(newParentPath); // new parent
-                    recurseCheckout(destinationNode, null, destinationVersionManager); // node and sub nodes
+                    JCRNodeWrapper destinationNewParent = destinationSession.getNode(newParentPath);
+                    destinationSession.checkout(destinationNewParent); // new parent
+                    recurseCheckout(destinationNode, null, destinationSession); // node and sub nodes
 
                     String newDestinationPath = newParentPath + "/" + node.getName();
                     destinationSession.move(destinationPath, newDestinationPath);
@@ -559,8 +553,7 @@ public class JCRPublicationService extends JahiaService {
                     destinationPath = newDestinationPath;
                     destinationNode = destinationSession.getNode(destinationPath);
 
-                    JCRNodeWrapper destinationParent = destinationSession.getNode(newParentPath);
-                    if (destinationParent.getPrimaryNodeType().hasOrderableChildNodes()) {
+                    if (destinationNewParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                         NodeIterator ni = node.getParent().getNodes();
                         boolean found = false;
                         while (ni.hasNext()) {
@@ -570,8 +563,8 @@ public class JCRPublicationService extends JahiaService {
                             } else if (found) {
                                 try {
                                     destinationSession.getNode(newParentPath + "/" + currentNode.getName());
-                                    destinationParent.orderBefore(node.getName(), currentNode.getName());
-                                    destinationParent.getSession().save();
+                                    destinationNewParent.orderBefore(node.getName(), currentNode.getName());
+                                    destinationNewParent.getSession().save();
                                     break;
                                 } catch (PathNotFoundException e1) {
 
@@ -606,7 +599,7 @@ public class JCRPublicationService extends JahiaService {
             if (oldPath != null) {
                 try {
                     JCRNodeWrapper snode = destinationSession.getNode(oldPath);
-                    recurseCheckout(snode, null, destinationVersionManager);
+                    recurseCheckout(snode, null, destinationSession);
                     JCRNodeWrapper oldParent = snode.getParent();
                     oldParent.checkout();
                     snode.remove();
@@ -673,9 +666,7 @@ public class JCRPublicationService extends JahiaService {
             cloneResult.includedUuids.addAll(included);
             JahiaAccessManager.setDeniedPaths(deniedPaths);
 
-            if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
-                destinationVersionManager.checkout(destinationParentPath);
-            }
+            destinationSession.checkout(destinationParent);
             String destinationPath;
             if (destinationParentPath.equals("/")) {
                 destinationPath = "/" + sourceNode.getName();
@@ -687,11 +678,10 @@ public class JCRPublicationService extends JahiaService {
                 String correspondingNodePath = sourceNode.getCorrespondingNodePath(destinationWorkspaceName);
                 logger.warn("Cloning existing node " + sourceNode.getPath());
                 // Node has been moved
-                destinationVersionManager
-                        .checkout(StringUtils.substringBeforeLast(correspondingNodePath, "/")); // previous parent
-                destinationVersionManager.checkout(destinationParentPath); // new parent
+                destinationSession.checkout(destinationSession.getNodeByIdentifier(sourceNode.getIdentifier()));
+                destinationSession.checkout(destinationParent); // new parent
                 recurseCheckout(destinationSession.getNode(correspondingNodePath), null,
-                        destinationVersionManager); // node and sub nodes
+                        destinationSession); // node and sub nodes
 
                 destinationSession.move(correspondingNodePath, destinationPath);
                 destinationSession.save();
@@ -781,7 +771,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
             if (oldPath != null) {
-                sourceNode.checkout();
+                sourceSession.checkout(sourceNode);
                 if (values.isEmpty()) {
                     movedFrom.remove();
                 } else {
@@ -819,16 +809,14 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private void recurseCheckout(Node node, List<String> prune, VersionManager versionManager)
+    private void recurseCheckout(Node node, List<String> prune, JCRSessionWrapper session)
             throws RepositoryException {
-        if (!versionManager.isCheckedOut(node.getPath())) {
-            versionManager.checkout(node.getPath());
-        }
+        session.checkout(node);
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
             if (prune == null || !prune.contains(sub.getIdentifier())) {
-                recurseCheckout(sub, prune, versionManager);
+                recurseCheckout(sub, prune, session);
             }
         }
     }

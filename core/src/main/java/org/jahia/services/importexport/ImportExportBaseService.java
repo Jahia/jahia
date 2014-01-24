@@ -1138,10 +1138,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 try {
                     String dirName = path.substring(path.lastIndexOf('/') + 1);
                     if (!StringUtils.isEmpty(dirName)) {
-                        if (!parentDir.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager()
-                                    .checkout(parentDir.getPath());
-                        }
+                        session.checkout(parentDir);
                         JCRNodeWrapper createdDir = parentDir.createCollection(dirName);
                         createdDir.saveSession();
                     }
@@ -1170,8 +1167,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 try {
                     if (!parentDir.isCheckedOut()) {
-                        session.getWorkspace().getVersionManager()
-                                .checkout(parentDir.getPath());
+                        session.checkout(parentDir);
                     }
                     JCRNodeWrapper res = parentDir.uploadFile(name, inputStream, type);
                     if (logger.isDebugEnabled()) {

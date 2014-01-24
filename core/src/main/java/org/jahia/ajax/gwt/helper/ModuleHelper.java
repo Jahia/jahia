@@ -254,15 +254,11 @@ public class ModuleHelper {
         JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
 
         if (!privateFolder.hasNode("modules")) {
-            if (!privateFolder.isCheckedOut()) {
-                session.getWorkspace().getVersionManager().checkout(privateFolder.getPath());
-            }
+            session.checkout(privateFolder);
             privateFolder.addNode("modules", Constants.JAHIANT_FOLDER);
         }
         JCRNodeWrapper parent = privateFolder.getNode("modules");
-        if (!parent.isCheckedOut()) {
-            session.getWorkspace().getVersionManager().checkout(parent.getPath());
-        }
+        session.checkout(parent);
         InputStream is = new BufferedInputStream(new FileInputStream(f));
         try {
             JCRNodeWrapper res = parent.uploadFile(f.getName(), is, "application/x-zip");

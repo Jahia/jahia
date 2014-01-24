@@ -118,8 +118,7 @@ public class DefaultPostAction extends Action {
                     } catch (PathNotFoundException e) {
                         if (node != null) {
                             if (!node.isCheckedOut()) {
-                                session.getWorkspace().getVersionManager()
-                                        .checkout(node.getPath());
+                                session.checkout(node);
                             }
                             String parentType = "jnt:contentList";
                             if (parameters.containsKey(Render.PARENT_TYPE)) {

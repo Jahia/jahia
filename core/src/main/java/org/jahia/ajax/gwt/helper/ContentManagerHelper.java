@@ -145,9 +145,7 @@ public class ContentManagerHelper {
         }
         JCRNodeWrapper childNode = null;
         try {
-            if (!parentNode.isCheckedOut()) {
-                parentNode.getSession().getWorkspace().getVersionManager().checkout(parentNode.getPath());
-            }
+            parentNode.getSession().checkout(parentNode);
             childNode = parentNode.addNode(name, nodeType);
             if (mixin != null) {
                 for (String m : mixin) {
@@ -285,21 +283,15 @@ public class ContentManagerHelper {
         JCRSessionWrapper session = currentUserSession;
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
-        if (!targetNode.isCheckedOut()) {
-            session.getWorkspace().getVersionManager().checkout(targetPath);
-        }
+        session.checkout(targetNode);
 
         if (srcNode.getParent().getPath().equals(targetNode.getPath())) {
             if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                 targetNode.orderBefore(srcNode.getName(), null);
             }
         } else {
-            if (!srcNode.isCheckedOut()) {
-                session.getWorkspace().getVersionManager().checkout(sourcePath);
-            }
-            if (!srcNode.getParent().isCheckedOut()) {
-                session.getWorkspace().getVersionManager().checkout(srcNode.getParent().getPath());
-            }
+            session.checkout(srcNode);
+            session.checkout(srcNode.getParent());
             String newname = findAvailableName(targetNode, srcNode.getName());
             session.move(sourcePath, targetNode.getPath() + "/" + newname);
             if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
@@ -315,20 +307,14 @@ public class ContentManagerHelper {
         final JCRNodeWrapper srcNode = session.getNode(sourcePath);
         final JCRNodeWrapper targetNode = session.getNode(targetPath);
         final JCRNodeWrapper targetParent = (JCRNodeWrapper) targetNode.getParent();
-        if (!targetParent.isCheckedOut()) {
-            session.getWorkspace().getVersionManager().checkout(targetParent.getPath());
-        }
+        session.checkout(targetParent);
         if (srcNode.getParent().getPath().equals(targetParent.getPath())) {
             if (targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                 targetParent.orderBefore(srcNode.getName(), targetNode.getName());
             }
         } else {
-            if (!srcNode.isCheckedOut()) {
-                session.getWorkspace().getVersionManager().checkout(srcNode.getPath());
-            }
-            if (!srcNode.getParent().isCheckedOut()) {
-                session.getWorkspace().getVersionManager().checkout(srcNode.getParent().getPath());
-            }
+            session.checkout(srcNode);
+            session.checkout(srcNode.getParent());
             String newname = findAvailableName(targetParent, srcNode.getName());
             session.move(sourcePath, targetParent.getPath() + "/" + newname);
             if (targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
@@ -476,14 +462,11 @@ public class ContentManagerHelper {
                                    boolean reference) throws RepositoryException, JahiaException {
         targetNode.checkout();
         if (cut) {
-            node.getSession().getWorkspace().getVersionManager().checkout(node.getPath());
-            node.getParent().getSession().getWorkspace().getVersionManager().checkout(node.getParent().getPath());
+            node.getSession().checkout(node);
+            node.getParent().getSession().checkout(node.getParent());
             targetNode.getSession().move(node.getPath(), targetNode.getPath() + "/" + name);
         } else if (reference) {
-            /*Property p = */
-            if (!targetNode.isCheckedOut()) {
-                targetNode.getSession().getWorkspace().getVersionManager().checkout(targetNode.getPath());
-            }
+            targetNode.getSession().checkout(targetNode);
             if (targetNode.getPrimaryNodeTypeName().equals("jnt:members")) {
                 if (node.getPrimaryNodeTypeName().equals("jnt:user")) {
                     Node member = targetNode.addNode(name, Constants.JAHIANT_MEMBER);
@@ -544,10 +527,7 @@ public class ContentManagerHelper {
                     if (!permanentlyDelete && supportsMarkingForDeletion(nodeToDelete)) {
                         nodeToDelete.markForDeletion(comment);
                     } else {
-                        if (!nodeToDelete.getParent().isCheckedOut()) {
-                            nodeToDelete.getParent().getSession().getWorkspace().getVersionManager().checkout(nodeToDelete.getParent().getPath());
-                        }
-
+                        nodeToDelete.getParent().getSession().checkout(nodeToDelete.getParent());
                         nodeToDelete.remove();
                     }
 

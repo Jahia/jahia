@@ -193,9 +193,7 @@ public class LastModifiedListener extends DefaultEventListener {
         boolean isAutoPublished = addAutoPublish(n, autoPublished);
 
         if (type != JCRObservationManager.IMPORT || isAutoPublished) {
-            if (!n.isCheckedOut()) {
-                n.getSession().getWorkspace().getVersionManager().checkout(n.getPath());
-            }
+            n.getSession().checkout(n);
             n.setProperty(JCR_LASTMODIFIED,c);
             n.setProperty(JCR_LASTMODIFIEDBY, userId);
             if (n.isNodeType("nt:resource")) {

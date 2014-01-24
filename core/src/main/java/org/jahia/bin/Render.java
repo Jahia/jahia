@@ -534,7 +534,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                     session.checkout(fileNode);
                                 }
                                 // checkout parent directory
-                                session.getWorkspace().getVersionManager().checkout(targetDirectory.getPath());
+                                session.checkout(targetDirectory);
                                 InputStream is = null;
                                 JCRNodeWrapper wrapper = null;
                                 try {

@@ -385,6 +385,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                     }
                 }
             }
+            installedModules.add("templates-system");
         }
 
         return installedModules;

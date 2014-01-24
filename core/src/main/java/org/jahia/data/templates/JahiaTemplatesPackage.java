@@ -725,9 +725,11 @@ public class JahiaTemplatesPackage {
      * @param scmURI the SCM URI for this module if the source control is available for it
      */
     public void setScmURI(String scmURI) {
-        int index = scmURI.lastIndexOf(GIT_URI_END);
-        if (index > -1) {
-            scmURI = scmURI.substring(0, index + GIT_URI_END.length());
+        if (scmURI != null) {
+            int index = scmURI.lastIndexOf(GIT_URI_END);
+            if (index > -1) {
+                scmURI = scmURI.substring(0, index + GIT_URI_END.length());
+            }
         }
         this.scmURI = scmURI;
     }

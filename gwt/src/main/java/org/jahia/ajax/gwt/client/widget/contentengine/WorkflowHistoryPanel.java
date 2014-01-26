@@ -45,6 +45,8 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -149,7 +151,12 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
         // trees store
         final TreeStore<GWTJahiaWorkflowHistoryItem> store = new TreeStore<GWTJahiaWorkflowHistoryItem>(loader);
-
+        store.setStoreSorter(new StoreSorter<GWTJahiaWorkflowHistoryItem>() {
+            @Override
+            public int compare(Store<GWTJahiaWorkflowHistoryItem> store, GWTJahiaWorkflowHistoryItem m1, GWTJahiaWorkflowHistoryItem m2, String property) {
+                return m1.getStartDate().compareTo(m2.getStartDate());
+            }
+        });
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 100);

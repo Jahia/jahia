@@ -385,7 +385,14 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                     }
                 }
             }
-            installedModules.add("templates-system");
+            if (installedModules != null) {
+                installedModules.add("templates-system");
+                for (JahiaTemplatesPackage depend : templateManagerService.getTemplatePackageById("templates-system").getDependencies()) {
+                    if (!installedModules.contains(depend.getId())) {
+                        installedModules.add(depend.getId());
+                    }
+                }
+            }
         }
 
         return installedModules;

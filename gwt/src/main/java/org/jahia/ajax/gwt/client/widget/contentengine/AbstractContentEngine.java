@@ -186,7 +186,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 }
             }
         });
-        languageSwitcher.setTemplate(LanguageSwitcherActionItem.getLangSwitchingTemplate());
+        languageSwitcher.setTemplate(LanguageSwitcherActionItem.getLangEngineSwitchingTemplate());
         languageSwitcher.setTypeAhead(true);
         languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
         languageSwitcher.setForceSelection(true);

@@ -167,5 +167,18 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
     ].join("");
   }-*/;
 
+    /**
+     * LangSwithcing template
+     *
+     * @return
+     */
+    public static native String getLangEngineSwitchingTemplate()  /*-{
+        return  [
+            '<tpl for=".">',
+            '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+            '</tpl>'
+        ].join("");
+    }-*/;
+
 
 }

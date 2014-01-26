@@ -58,7 +58,7 @@
             }
         });
         $(".disable-button").click(function() {
-            selectedForm = $(".disable-button").parent().attr('id');
+            selectedForm = 'disable' + $(this).attr('id').replace("disableButton-","");
             $( "#disable-confirm" ).dialog( "open" );
         });
     });
@@ -266,7 +266,7 @@
                                 <c:if test="${site ne 'systemsite' or not moduleStates[activeVersion.id][activeVersion.version].systemDependency}">
                                 <fmt:message var="label"
                                              key='serverSettings.manageModules.module.disable'/>
-                                <button class="btn btn-danger disable-button" type="button" onclick="">
+                                <button class="btn btn-danger disable-button" type="button" onclick="" id="disableButton-${status.index}">
                                     <i class=" icon-stop icon-white"></i>&nbsp;${label}
                                 </button>
                                 </c:if>
@@ -304,7 +304,7 @@
                     <input type="hidden" name="_eventId_disableAll" value="true"/>
                     <fmt:message var="label"
                                  key='serverSettings.manageModules.module.disable.all'/>
-                    <button class="btn btn-danger disable-button" type="button" onclick="">
+                    <button class="btn btn-danger disable-button" type="button" onclick="" id="disableButton-${status.index}">
                         <i class="icon-ban-circle icon-white"></i>&nbsp;${label}
                     </button>
                 </form>

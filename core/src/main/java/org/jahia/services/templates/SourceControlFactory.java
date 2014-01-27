@@ -72,7 +72,7 @@ public class SourceControlFactory {
      * @throws IOException
      *             in case of communication errors
      */
-    public SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag)
+    public SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag, boolean initRepository)
             throws IOException {
         SourceControlManagement scm = null;
 
@@ -87,8 +87,11 @@ public class SourceControlFactory {
             } else {
                 throw new IOException("Unknown repository type");
             }
-
-            scm.initFromURI(workingDir, scmUrl, branchOrTag);
+            if (initRepository) {
+                scm.initNewModule(workingDir, scmUrl);
+            } else  {
+                scm.initFromURI(workingDir, scmUrl, branchOrTag);
+            }
         }
         return scm;
     }

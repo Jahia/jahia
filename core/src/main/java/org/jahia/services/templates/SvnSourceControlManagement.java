@@ -167,8 +167,15 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
+    protected void initNewModule(File workingDirectory, String uri) throws IOException {
         this.rootFolder = workingDirectory;
+        ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri ,"."});
+        executeCommand(executable, new String[]{"add","src"});
+        executeCommand(executable, new String[]{"add","pom.xml"});
+        executeCommand(executable, new String[]{"commit","-m","First commit"});
+        if (r.exitValue > 0) {
+            throw new IOException(r.err);
+        }
     }
 
     @Override

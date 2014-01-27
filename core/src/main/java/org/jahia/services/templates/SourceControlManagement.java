@@ -218,7 +218,7 @@ public abstract class SourceControlManagement {
 
     protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException;
 
-    protected abstract void initWithEmptyFolder(File workingDirectory, String url) throws IOException;
+    protected abstract void initNewModule(File workingDirectory, String url) throws IOException;
 
     protected abstract void initWithWorkingDirectory(File workingDirectory) throws IOException;
 

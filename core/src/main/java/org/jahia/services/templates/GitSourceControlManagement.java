@@ -189,10 +189,11 @@ public class GitSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory;
     }
 
-    protected void initWithEmptyFolder(File workingDirectory, String url) throws IOException {
+    protected void initNewModule(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
         executeCommand(executable, new String[]{"init"});
-        executeCommand(executable, new String[]{"add","."});
+        executeCommand(executable, new String[]{"add","src"});
+        executeCommand(executable, new String[]{"add","pom.xml"});
         executeCommand(executable, new String[]{"commit","-a","-m","First commit"});
         executeCommand(executable, new String[]{"remote","add","origin",url});
         executeCommand(executable, new String[]{"-c", "core.askpass=true","fetch"});

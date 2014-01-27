@@ -100,7 +100,7 @@ public class SourceControlHelper {
 
         try {
             // checkout sources from SCM
-            SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, scmURI, branchOrTag);
+            SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, scmURI, branchOrTag, false);
 
             // verify the sources and found out module information
             ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
@@ -283,34 +283,7 @@ public class SourceControlHelper {
         JahiaTemplatesPackage pack = templatePackageRegistry.lookupById(moduleId);
         String fullUri = "scm:" + scmType + ":" + scmURI;
         final File sources = getSources(pack, session);
-
-        String tempName = UUID.randomUUID().toString();
-        final File tempSources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", tempName);
-        FileUtils.moveDirectory(sources, tempSources);
-        SourceControlManagement scm = null;
-        try {
-            scm = sourceControlFactory.checkoutRepository(sources, fullUri, null);
-        } catch (IOException e) {
-            FileUtils.moveDirectory(tempSources, sources);
-            throw e;
-        }
-        final List<File> modifiedFiles = new ArrayList<File>();
-        FileUtils.copyDirectory(tempSources, sources, new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                if (!".gitignore".equals(pathname.getName())
-                        && (pathname.getPath().startsWith(tempSources.getPath() + File.separator + "target") || pathname
-                                .getPath().startsWith(tempSources.getPath() + File.separator + ".git"))) {
-                    return false;
-                }
-                modifiedFiles.add(new File(pathname.getPath().replace(tempSources.getPath(), sources.getPath())));
-                return true;
-            }
-        });
-        FileUtils.deleteQuietly(tempSources);
-
-        scm.add(modifiedFiles);
-
+        SourceControlManagement scm = sourceControlFactory.checkoutRepository(sources, fullUri, null, true);
         pack.setSourceControl(scm);
         setSCMConfigInPom(sources, fullUri);
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());

@@ -198,7 +198,7 @@ public class TestServlet extends BaseTestController {
                 Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) ? Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
                                 .substring(1) : pathInfo) : null;
-                Set<String> testCases = getAllTestCases();
+                Set<String> testCases = getAllTestCases(Boolean.valueOf(httpServletRequest.getParameter("skipCoreTests")));
 
 
                 PrintWriter pw = httpServletResponse.getWriter();
@@ -216,14 +216,16 @@ public class TestServlet extends BaseTestController {
             }
     }
 
-    private Set<String> getAllTestCases() {
+    private Set<String> getAllTestCases(boolean skipCore) {
         Set<String> testCases = new TreeSet<String>();
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null) {
                 Map<String,TestBean> packageTestBeans = aPackage.getContext().getBeansOfType(TestBean.class);
                 if (packageTestBeans.size() > 0) {
                     for (TestBean testBean : packageTestBeans.values()) {
-                        testCases.addAll(testBean.getTestCases());
+                        if (!skipCore || !testBean.isCoreTests()) {
+                            testCases.addAll(testBean.getTestCases());
+                        }
                     }
                 }
             }

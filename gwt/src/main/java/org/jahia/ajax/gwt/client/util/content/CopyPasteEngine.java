@@ -120,6 +120,7 @@ public class CopyPasteEngine {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("node", getCopiedPaths().get(0));
         data.put("nodes", getCopiedPaths());
+        data.put(Linker.REFRESH_MAIN,true);
         linker.refresh(data);
         onPastedPath();
         linker.setSelectPathAfterDataUpdate(copiedPaths);

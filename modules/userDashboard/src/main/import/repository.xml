@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
+    <modules jcr:primaryType="jnt:modules">
+        <userDashboard j:dependencies="bootstrap bootstrap-components default"
+                       j:installedModules="userDashboard"
+                       j:moduleType="module"
+                       j:title="Jahia User Dashboard"
+                       jcr:primaryType="jnt:module">
+                
+            <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                <contents jcr:primaryType="jnt:contentFolder"/>
+                <dashboard-modules-base j:view="dashboard"
+                                        jcr:mixinTypes="jmix:useUILocale"
+                                        jcr:primaryType="jnt:template">
+                    <me j:applyOn="jnt:user"
+                                j:defaultTemplate="false"
+                                j:hiddenTemplate="false"
+                                j:titleKey="label.aboutMe"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <about-user jcr:primaryType="jnt:aboutUserDashboard"/>
+                        </pagecontent>
+                    </me>
+                    <pages j:applyOn="jnt:user"
+                           j:defaultTemplate="false"
+                           j:hiddenTemplate="false"
+                           j:titleKey="label.myPages"
+                           jcr:mixinTypes="jmix:rbTitle"
+                           jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent j:id="user-content"
+                                     jcr:mixinTypes="jmix:customSkin"
+                                     jcr:primaryType="jnt:contentList">
+                                <my-pages-1 jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(label.myPages)##"/>
+                                <my-pages j:criteria="jcr:created"
+                                          j:skin="skins.custom"
+                                          j:sortDirection="asc"
+                                          j:type="jnt:page"
+                                          j:view="bootstrapUserContent"
+                                          jcr:mixinTypes="jmix:customSkin jmix:renderable jmix:skinnable"
+                                          jcr:primaryType="jnt:userContentRetrieval">
+                                    <j:translation_en jcr:language="en"
+                                                      jcr:mixinTypes="mix:title"
+                                                      jcr:primaryType="jnt:translation"/>
+                                </my-pages>
+                            </my-pages-1>
+                        </pagecontent>
+                    </pages>
+                </dashboard-modules-base>
+            </templates>
+                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
+        </userDashboard>
+    </modules>
+</content>

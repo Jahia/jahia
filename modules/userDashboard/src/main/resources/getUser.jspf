@@ -1,0 +1,7 @@
+<c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:if test="${!empty param.userUuid}">
+    <jcr:node var="user" uuid="${param.userUuid}"/>
+</c:if>
+<c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
+    <jcr:node var="user" path="${renderContext.user.localPath}"/>
+</c:if>

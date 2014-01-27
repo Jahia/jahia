@@ -64,22 +64,30 @@
 
 
     function saveSourceCode() {
-        var data = {"sourceCode" : myCodeMirror.getValue(),
-            "form-token" : document.forms['sourceForm'].elements['form-token'].value,
-            "jcrMethodToCall":"put"};
-        $.ajax({
-            type: 'POST',
-            url: '${postURL}',
-            data: data,
-            success: function() {
-                $('#saveButton').prop('disabled', true);
-                $.get("<c:url value="${url.base}${currentNode.path}.unlock.do?type=editSource"/>");
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert("${saveError}");
-            },
-            dataType: 'json'
-        });
+        disabled = $('#saveButton').prop('disabled');
+        if (!disabled) {
+            var data = {"sourceCode" : myCodeMirror.getValue(),
+                "form-token" : document.forms['sourceForm'].elements['form-token'].value,
+                "jcrMethodToCall":"put"};
+            $.ajax({
+                type: 'POST',
+                url: '${postURL}',
+                data: data,
+                success: function() {
+                    $('#saveButton').prop('disabled', true);
+                    $.get("<c:url value="${url.base}${currentNode.path}.unlock.do?type=editSource"/>");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#saveButton').prop('disabled', true);
+                    error = "${saveError}";
+                    if (textStatus == 'error') {
+                        error = $.parseJSON(jqXHR.responseText)['error']
+                    }
+                    alert(error);
+                },
+                dataType: 'json'
+            });
+        }
     }
     $(window).blur(function() {
         saveSourceCode();

@@ -329,7 +329,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public ExtendedNodeType getNodeType(String name) throws NoSuchNodeTypeException {
         ExtendedNodeType res = StringUtils.isNotEmpty(name) ? nodetypes.get(new Name(name, namespaces)) : null;
         if (res == null) {
-            throw new NoSuchNodeTypeException(name);
+            throw new NoSuchNodeTypeException("Unknown type : " + name);
         }
         return res;
     }

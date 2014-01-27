@@ -131,7 +131,12 @@ public class DefaultPutAction extends Action {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("validationError", Arrays.asList(getJSONConstraintError(e)));
             return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
+        } catch (Exception e) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("error", e.getMessage());
+            return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, jsonObject);
         }
+
         if (req.getParameter(Render.AUTO_CHECKIN) != null && req.getParameter(Render.AUTO_CHECKIN).length() > 0) {
             session.getWorkspace().getVersionManager().checkpoint(node.getPath());
         }

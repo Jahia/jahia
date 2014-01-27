@@ -3,6 +3,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="jahia" uri="http://www.jahia.org/tags/templateLib" %>
 
 <jcr:nodeProperty node="${currentNode}" name="j:node" var="reference"/>
 <jcr:nodeProperty node="${currentNode}" name="j:target" var="target"/>
@@ -12,6 +13,7 @@
 
 <c:set var="node" value="${reference.node}"/>
 <c:if test="${not empty node}">
+    <jahia:addCacheDependency node="${node}" />
     <c:url var="imageUrl" value="${node.url}" context="/"/>
     <c:set var="height" value=""/>
     <c:set var="width" value=""/>

@@ -21,6 +21,6 @@
 
     create index jahia_external_mapping_index1 on jahia_external_mapping (externalIdHash, providerKey);
 
-    create index jahia_external_provider_id_index1 on jahia_external_provider_id (providerKey);
+    create index jahia_external_provider_id_ix1 on jahia_external_provider_id (providerKey);
 
     create sequence jahia_external_provider_id_seq;

@@ -304,7 +304,7 @@
                     <input type="hidden" name="_eventId_disableAll" value="true"/>
                     <fmt:message var="label"
                                  key='serverSettings.manageModules.module.disable.all'/>
-                    <button class="btn btn-danger disable-button" type="button" onclick="" id="disableButton-${status.index}">
+                    <button class="btn btn-danger disable-button" type="button" onclick="" id="disableButton-All">
                         <i class="icon-ban-circle icon-white"></i>&nbsp;${label}
                     </button>
                 </form>

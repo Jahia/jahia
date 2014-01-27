@@ -170,6 +170,9 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     protected void initNewModule(File workingDirectory, String uri) throws IOException {
         this.rootFolder = workingDirectory;
         ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri ,"."});
+
+        String ignorepath = new File(workingDirectory,".gitignore").getAbsolutePath();
+        executeCommand(executable, new String[]{"propset", "svn:ignore", "-F", ignorepath, "."});
         executeCommand(executable, new String[]{"add","src"});
         executeCommand(executable, new String[]{"add","pom.xml"});
         executeCommand(executable, new String[]{"commit","-m","First commit"});

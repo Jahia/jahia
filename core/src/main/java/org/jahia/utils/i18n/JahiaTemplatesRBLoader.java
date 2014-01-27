@@ -55,6 +55,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,6 +110,37 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
      */
     public static void clearCache() {
         loadersCache.clear();
+<<<<<<< .working
+=======
+        Method clearCacheMethod = null;
+        try {
+            clearCacheMethod = ResourceBundle.class.getMethod("clearCache", new Class[0]);
+        } catch (NoSuchMethodException e) {
+            // Don't log anything as we could be in Java 5
+        }
+>>>>>>> .merge-right.r48487
+        if (clearCacheMethod != null) {
+            try {
+                clearCacheMethod.invoke(null, new Class[0]);
+            } catch (Exception e) {
+                logger.warn("Unable to flush resource bundle cache", e);
+            }
+        } else {
+            Field cacheList = null;
+            try {
+                cacheList = ResourceBundle.class.getDeclaredField("cacheList");
+            } catch (NoSuchFieldException e) {
+                // Don't log anything as cacheList could not exist, depending of the implementation
+            }
+            if (cacheList != null) {
+                try {
+                    cacheList.setAccessible(true);
+                    ((Map<?, ?>) cacheList.get(ResourceBundle.class)).clear();
+                } catch (Exception e) {
+                    logger.warn("Unable to flush resource bundle cache", e);
+                }
+            }
+        }
     }
     
     private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {

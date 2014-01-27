@@ -497,7 +497,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      */
     public static void flushSiteKeyIdMap() {
         if(siteKeyIdMap!=null) {
-            siteKeyIdMap.refresh();
+            siteKeyIdMap.refresh(false);
         }
     }
 

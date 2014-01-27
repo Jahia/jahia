@@ -40,6 +40,7 @@
 
 package org.apache.jackrabbit.core.security;
 
+import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.collections.map.LRUMap;
@@ -1015,7 +1016,31 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
      */
     public static void flushPrivilegesInRoles() {
         if (privilegesInRole != null) {
-            privilegesInRole.refresh();
+            privilegesInRole.refresh(false);
+        }
+        if (matchingPermissions != null) {
+            matchingPermissions.flush();
+            if (Boolean.getBoolean("cluster.activated")) {
+                // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
+                // to flush it across the cluster
+                CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
+                if (cacheService != null) {
+                    // Jahia is initialized
+                    EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
+                    net.sf.ehcache.Cache htmlCacheEventSync = ehCacheProvider.getCacheManager().getCache(
+                            "HTMLCacheEventSync");
+                    if (htmlCacheEventSync != null) {
+                        htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
+                                Boolean.TRUE));
+                    }
+                }
+            }
+        }
+    }
+
+    public static void flushMatchingPermissions() {
+        if(matchingPermissions != null) {
+            matchingPermissions.flush();
         }
     }
 }

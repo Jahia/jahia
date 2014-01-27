@@ -787,10 +787,12 @@ public class JahiaSitesService extends JahiaService {
     /**
      * Flush the sites internal caches ( site key by server name & default language by site key).
      */
-    public static void flushSitesInternalCaches(){
-        if(siteKeyByServerNameCache !=null && siteDefaultLanguageBySiteKey !=null) {
-            siteKeyByServerNameCache.refresh();
-            siteDefaultLanguageBySiteKey.refresh();
+    public static void flushSitesInternalCaches() {
+        if (siteKeyByServerNameCache != null) {
+            siteKeyByServerNameCache.refresh(false);
+        }
+        if (siteDefaultLanguageBySiteKey != null) {
+            siteDefaultLanguageBySiteKey.refresh(false);
         }
     }
 

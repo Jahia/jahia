@@ -155,8 +155,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String serverVersion;
     private String serverHome;
     private String jahiaHomeDiskPath;
-    private String jahiaWebAppsDiskPath;
-    private String jahiaFilesDiskPath;
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
     private String jahiaWebAppsDeployerBaseURL;
@@ -324,7 +322,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             sessionExpiryTime = getInt("sessionExpiryTime", 60);
 
             classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
-            jahiaFilesDiskPath = convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
             jahiaEtcDiskPath = convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
             jahiaVarDiskPath = convertContexted (getString("jahiaVarDiskPath"), pathResolver);
             tmpContentDiskPath = convertContexted (getString("tmpContentDiskPath"), pathResolver);
@@ -346,16 +343,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             if (server.toLowerCase().contains("tomcat")) {      // the server is tomcat
                 jahiaHomeDiskPath = parent.getAbsolutePath ();
-                // look in the properties file. If not found guess from jahiaContextFolder
-                jahiaWebAppsDiskPath = properties.getProperty("jahiaWebAppsDiskPath");
-                if(jahiaWebAppsDiskPath == null || jahiaWebAppsDiskPath.length() == 0){
-                    jahiaWebAppsDiskPath = parent.getParentFile ().getAbsolutePath () + File.separator;
-                }else{
-                   jahiaWebAppsDiskPath.trim();
-                }
             } else {
                 jahiaHomeDiskPath = jahiaContextFolder.getAbsolutePath ();
-                jahiaWebAppsDiskPath = jahiaContextFolder.getAbsolutePath ();
             }
 
             // files...
@@ -791,15 +780,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     } // end getServerHomeDiskPath
 
     /**
-     * Used to get the web apps disk path.
-     *
-     * @return  The web apps disk path.
-     */
-    public String getJahiaWebAppsDiskPath() {
-        return jahiaWebAppsDiskPath;
-    } // end getJahiaWebAppsDiskPath
-
-    /**
      * Used to get the jahiafiles /etc disk path.
      *
      * @return  The jahiafiles /etc disk path.
@@ -830,9 +810,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public String getClassDiskPath() {
         return classDiskPath;
-    }
-    public String getJahiaFilesDiskPath() {
-        return jahiaFilesDiskPath;
     }
     public long getJahiaFileUploadMaxSize() {
         return jahiaFileUploadMaxSize;

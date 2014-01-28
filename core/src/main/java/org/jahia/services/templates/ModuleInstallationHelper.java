@@ -284,7 +284,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             NodeIterator ni = source.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder")) {
+                if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder") || child.isNodeType("jnt:externalProviderExtension")) {
                     continue;
                 }
                 JCRNodeWrapper node;

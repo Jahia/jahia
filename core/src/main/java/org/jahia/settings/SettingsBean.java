@@ -438,8 +438,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             settings.put("default_templates_set",
                     getString("default_templates_set"));
 
-            settings.put("templates.modules.onError", getString("templates.modules.onError", "compact"));
-            
             settings.setFast(true);
             // If cluster is activated then try to expose some properties as system properties for JGroups
             boolean clusterActivated = getBoolean("cluster.activated",false);

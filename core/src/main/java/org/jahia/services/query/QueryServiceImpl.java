@@ -940,8 +940,8 @@ public class QueryServiceImpl extends QueryService {
                                         nodeType, selector) : false;
                                 ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
                                         nodeType, selector, propertyName) : null;
-                                if (propDef != null && propDef.isInternationalized() && !Constants.JAHIANT_FILE.equals(selector.getNodeTypeName())
-                                        || isFulltextIncludingMultilingualProperties) {
+                                if (!Constants.JAHIANT_FILE.equals(selector.getNodeTypeName())
+                                        && ((propDef != null && propDef.isInternationalized()) || isFulltextIncludingMultilingualProperties)) {
                                     newLanguageCodes.remove(NO_LOCALE);
                                 }
                             }

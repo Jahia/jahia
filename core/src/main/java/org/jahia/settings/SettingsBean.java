@@ -196,7 +196,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String characterEncoding;
 
     private String tmpContentDiskPath;
-    private long templatesObserverInterval;
     private boolean isProcessingServer;
 
     private int siteURLPortOverride = -1;
@@ -354,20 +353,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 }else{
                    jahiaWebAppsDiskPath.trim();
                 }
-                /*
-                } else if ( (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA2) != -1)
-                        || (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA3) != -1)
-                        || (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA6) != -1) ) {             // the server is tomcat...
-                    jahiaHomeDiskPath	 = parent.getAbsolutePath();
-                    jahiaWebAppsDiskPath =  parent.getParentFile().getAbsolutePath() + File.separator;
-                */
             } else {
                 jahiaHomeDiskPath = jahiaContextFolder.getAbsolutePath ();
                 jahiaWebAppsDiskPath = jahiaContextFolder.getAbsolutePath ();
             }
-
-            // autodeployer...
-            templatesObserverInterval = getLong("templates.observer.interval", 5000);
 
             // files...
             jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize");
@@ -872,10 +861,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String getTmpContentDiskPath() {
     return tmpContentDiskPath;
   }
-    public long getTemplatesObserverInterval() {
-        return templatesObserverInterval;
-    }
-
     public boolean isProcessingServer() {
         return isProcessingServer;
     }

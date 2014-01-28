@@ -151,6 +151,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private long sessionKeepAliveCheckInterval = -1;
 
     private GroovyPatcher groovyPatcher;
+    private NodeTypesDBServiceImpl nodeTypesDBService;
 
     public String getKey() {
         return key;
@@ -509,14 +510,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 String propKey = file.getURL().toString() + ".lastRegistered."+key;
                 if (file.exists() && (p.getProperty(propKey) == null || Long.parseLong(p.getProperty(propKey)) != file.lastModified())) {
                     if (!systemId.startsWith("system-")){
-                        File definitionsFolder = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "definitions");
-                        definitionsFolder.mkdirs();
                         try {
-                            final File definitionsFile = new File(definitionsFolder, systemId + ".cnd");
-                            final FileWriter out = new FileWriter(definitionsFile, false);
+                            final StringWriter out = new StringWriter();
                             new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
-                            out.close();
-                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(definitionsFile);
+                            nodeTypesDBService.saveCndFile(systemId+".cnd",out.toString());
+                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(out.toString()),systemId+".cnd");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1090,5 +1088,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public Map<String,Constructor<?>> getValidators() {
         return service.getValidators();
+    }
+
+    public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
+        this.nodeTypesDBService = nodeTypesDBService;
     }
 }

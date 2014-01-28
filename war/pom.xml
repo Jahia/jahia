@@ -203,7 +203,7 @@
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
-                                            <includes>org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class</includes>
+                                            <includes>org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class,org/jahia/services/content/nodetypes/NodeTypesDBProvider.class</includes>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>

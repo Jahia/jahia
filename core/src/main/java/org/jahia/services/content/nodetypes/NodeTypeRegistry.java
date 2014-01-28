@@ -53,6 +53,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -68,7 +69,7 @@ import java.util.*;
  * Date: 4 janv. 2008
  * Time: 15:08:56
  */
-public class NodeTypeRegistry implements NodeTypeManager {
+public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     public static final String SYSTEM = "system";
     private static Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
 
@@ -91,44 +92,43 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private static NodeTypeRegistry providerNodeTypeRegistry;
 
     private static boolean hasEncounteredIssuesWithDefinitions = false;
+    private NodeTypesDBServiceImpl nodeTypesDBService;
 
     public static NodeTypeRegistry getInstance() {
         if (instance == null) {
             instance = new NodeTypeRegistry();
-            try {
-                instance.initPropertiesFile();
-                instance.initSystemDefinitions();
-            } catch (IOException e) {
-                logger.error("Cannot load definition deployment properties");
-            }
         }
         return instance;
     }
 
     public static NodeTypeRegistry getProviderNodeTypeRegistry() {
-        if (providerNodeTypeRegistry == null) {
+        if (providerNodeTypeRegistry == null && instance !=null) {
             providerNodeTypeRegistry = new NodeTypeRegistry();
             try {
                 providerNodeTypeRegistry.initSystemDefinitions();
-                File definitions = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "definitions");
 
-                if (definitions.exists()) {
-                    List<File> files = new ArrayList<File>();
-                    List<File> remfiles = new ArrayList<File>(Arrays.asList(definitions.listFiles()));
+                    List<String> files = new ArrayList<String>();
+                List<String> remfiles = null;
+                try {
+                    remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
                     while (!remfiles.isEmpty() && !remfiles.equals(files)) {
-                        files = new ArrayList<File>(remfiles);
+                        files = new ArrayList<String>(remfiles);
                         remfiles.clear();
-                        for (File file : files) {
+                        for (String file : files) {
                             try {
-                                if (file.getName().endsWith(".cnd")) {
-                                    deployDefinitionsFileToProviderNodeTypeRegistry(file);
+                                if (file.endsWith(".cnd")) {
+                                    final String cndFile = instance.getNodeTypesDBService().readCndFile(file);
+                                    deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
                                 }
                             } catch (ParseException e) {
                                 remfiles.add(file);
                             }
                         }
                     }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                 }
+
             } catch (IOException e) {
 
                 e.printStackTrace();
@@ -137,9 +137,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return providerNodeTypeRegistry;
     }
 
-    public static void deployDefinitionsFileToProviderNodeTypeRegistry(File file) throws ParseException, IOException {
-        final String systemId = StringUtils.substringBefore(file.getName(), ".cnd");
-        JahiaCndReader r = new JahiaCndReader(new FileReader(file), file.getName(), systemId, getProviderNodeTypeRegistry());
+    public static void deployDefinitionsFileToProviderNodeTypeRegistry(Reader reader, String definitionName) throws ParseException, IOException {
+        final String systemId = StringUtils.substringBefore(definitionName, ".cnd");
+        JahiaCndReader r = new JahiaCndReader(reader, definitionName, systemId, getProviderNodeTypeRegistry());
         r.parse();
     }
 
@@ -172,14 +172,13 @@ public class NodeTypeRegistry implements NodeTypeManager {
     }
 
     public void initPropertiesFile() throws IOException  {
-        File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
-        if (f.exists()) {
-            InputStream stream = new BufferedInputStream(new FileInputStream(f));
-            try {
-                deploymentProperties.load(stream);
-            } finally {
-                IOUtils.closeQuietly(stream);
+        try {
+            final String propertyFile = nodeTypesDBService.readDefinitionPropertyFile();
+            if(propertyFile!=null) {
+                deploymentProperties.load(new StringReader(propertyFile));
             }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
         propertiesLoaded = true;
     }
@@ -187,12 +186,12 @@ public class NodeTypeRegistry implements NodeTypeManager {
     public void saveProperties() throws IOException {
         if (propertiesLoaded) {
             synchronized (deploymentProperties) {
-                File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
-                OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+                final StringWriter writer = new StringWriter();
+                deploymentProperties.store(writer, "");
                 try {
-                    deploymentProperties.store(out, "");
-                } finally {
-                    IOUtils.closeQuietly(out);
+                    nodeTypesDBService.saveDefinitionPropertyFile(writer.toString());
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -442,7 +441,25 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
-    public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType>  {
+    public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
+        this.nodeTypesDBService = nodeTypesDBService;
+    }
+
+    public NodeTypesDBServiceImpl getNodeTypesDBService() {
+        return nodeTypesDBService;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        try {
+            initPropertiesFile();
+            initSystemDefinitions();
+        } catch (IOException e) {
+            logger.error("Cannot load definition deployment properties");
+        }
+    }
+
+public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType>  {
         private long size;
         private long pos=0;
         private Iterator<ExtendedNodeType> iterator;
@@ -572,3 +589,4 @@ public class NodeTypeRegistry implements NodeTypeManager {
         return hasEncounteredIssuesWithDefinitions;
     }
 }
+

@@ -189,7 +189,7 @@ public class Logout implements Controller {
             if (redirect.startsWith(prefix)) {
                 String url = "/" + StringUtils.substringAfter(redirect, prefix);
                 String hash = StringUtils.substringAfterLast(url, "#");
-                url = StringUtils.substringBefore(url, ";jsessionid");
+                url = StringUtils.substringBefore(url, ";" + SettingsBean.getInstance().getJsessionIdParameterName());
                 url = StringUtils.substringBefore(url, "?");
                 url = StringUtils.substringBefore(url, "#");
                 if (hash != null && hash.startsWith("/sites/") && url.contains("/sites/")) {

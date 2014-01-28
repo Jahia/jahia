@@ -130,12 +130,13 @@ public class WelcomeServlet extends HttpServlet {
 
     protected void redirect(String url, HttpServletResponse response) throws IOException {
         String targetUrl = response.encodeRedirectURL(url);
-        if (targetUrl.contains(";jsessionid")) {
+        String jsessionIdParameterName = SettingsBean.getInstance().getJsessionIdParameterName();
+        if (targetUrl.contains(";" + jsessionIdParameterName)) {
             if (targetUrl.contains("?")) {
-                targetUrl = StringUtils.substringBefore(targetUrl, ";jsessionid=") + "?"
+                targetUrl = StringUtils.substringBefore(targetUrl, ";" + jsessionIdParameterName + "=") + "?"
                         + StringUtils.substringAfter(targetUrl, "?");
             } else {
-                targetUrl = StringUtils.substringBefore(targetUrl, ";jsessionid=");
+                targetUrl = StringUtils.substringBefore(targetUrl, ";" + jsessionIdParameterName + "=");
             }
         }
         WebUtils.setNoCacheHeaders(response);

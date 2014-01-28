@@ -26,7 +26,7 @@
                     <select class="span6" name="templateSet" id="templateSet">
                         <c:forEach items="${allModules}" var="module">
                             <c:if test="${module.moduleType eq 'templatesSet' && module.id != 'templates-system'}">
-                            <option value="${module.id}" ${siteBean.templateSet eq module.id ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.id})</option>
+                            <option value="${module.id}" ${siteBean.templateSet eq module.id || empty siteBean.templateSet && module.id eq defaultTemplateSetId ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.id})</option>
                             </c:if>
                         </c:forEach>
                     </select>

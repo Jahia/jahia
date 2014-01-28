@@ -45,7 +45,12 @@
                 <div class="row-fluid">
                     <div class="span4">
                         <label for="defaultSite">
-                            <input type="checkbox" name="defaultSite" id="defaultSite" <c:if test="${siteBean.defaultSite}">checked="checked"</c:if> /> <fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>
+                            <c:if test="${numberOfSites > 1}">
+                                <input type="checkbox" name="defaultSite" id="defaultSite" <c:if test="${siteBean.defaultSite}">checked="checked"</c:if> /> <fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>
+                            </c:if>
+                            <c:if test="${numberOfSites <= 1}">
+                                <input type="checkbox" name="defaultSite" id="defaultSite" disabled="disabled" checked="checked"/> <fmt:message key="serverSettings.manageWebProjects.webProject.isDefault"/>
+                            </c:if>
                         </label>
                         <input type="hidden" name="_defaultSite"/>
                     </div>

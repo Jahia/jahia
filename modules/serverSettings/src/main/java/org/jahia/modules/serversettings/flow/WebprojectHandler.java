@@ -924,4 +924,40 @@ public class WebprojectHandler implements Serializable {
             logger.error(e.getMessage(), e);
         }
     }
+    
+    /**
+     * Returns the ID of the default template set.
+     * 
+     * @return the ID of the default template set
+     */
+    public String getDefaultTemplateSetId() {
+        String id = null;
+        String defTemplateSet = StringUtils.defaultIfBlank(
+                SettingsBean.getInstance().lookupString("default_templates_set"), StringUtils.EMPTY).trim();
+        if (defTemplateSet.length() > 0) {
+            JahiaTemplatesPackage pkg = templateManagerService.getTemplatePackage(defTemplateSet);
+            if (pkg == null) {
+                pkg = templateManagerService.getTemplatePackageById(defTemplateSet);
+            }
+            if (pkg == null) {
+                logger.warn("Unable to find default template set \"{}\","
+                        + " specified via default_templates_set (jahia.properties)");
+            } else {
+                id = pkg.getId();
+            }
+        }
+        return id;
+    }
+
+    /**
+     * Returns the total number of sites in Jahia.
+     * 
+     * @return the total number of sites in Jahia
+     * @throws JahiaException
+     *             in case of an error
+     */
+    public int getNumberOfSites() throws JahiaException {
+        return sitesService.getNbSites();
+    }
+
 }

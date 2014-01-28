@@ -40,7 +40,7 @@
           <instructions>
             <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
             <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
-            <Jahia-Depends>default,bootstrap,bootstrap-components</Jahia-Depends>
+            <Jahia-Depends>default</Jahia-Depends>
           </instructions>
         </configuration>
       </plugin>

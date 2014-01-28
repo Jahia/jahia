@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <userDashboard j:dependencies="bootstrap bootstrap-components default"
+        <userDashboard j:dependencies="default"
                        j:installedModules="userDashboard"
                        j:moduleType="module"
                        j:title="Jahia User Dashboard"
@@ -28,26 +28,17 @@
                            j:titleKey="system.myPages"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">
-                        <pagecontent j:id="user-content"
-                                     jcr:mixinTypes="jmix:customSkin"
-                                     jcr:primaryType="jnt:contentList">
-                                <my-pages-1 jcr:primaryType="jnt:contentList">
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(label.myPages)##"/>
+                        <pagecontent jcr:primaryType="jnt:contentList">
                                 <my-pages j:criteria="jcr:created"
-                                          j:skin="skins.custom"
                                           j:sortDirection="asc"
                                           j:type="jnt:page"
                                           j:view="bootstrapUserContent"
-                                          jcr:mixinTypes="jmix:customSkin jmix:renderable jmix:skinnable"
+                                          jcr:mixinTypes="jmix:renderable"
                                           jcr:primaryType="jnt:userContentRetrieval">
                                     <j:translation_en jcr:language="en"
                                                       jcr:mixinTypes="mix:title"
                                                       jcr:primaryType="jnt:translation"/>
                                 </my-pages>
-                            </my-pages-1>
                         </pagecontent>
                     </pages>
                     <web-projects j:applyOn="jnt:user"
@@ -103,7 +94,6 @@
                     </web-projects>
                 </dashboard-modules-base>
             </templates>
-                
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>

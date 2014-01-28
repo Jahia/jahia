@@ -176,8 +176,11 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
 
         for (String s : m) {
             JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
-            packages.add(pack);
-            packages.addAll(pack.getDependencies());
+            // pack can be null if the module has been stopped
+            if (pack != null) {
+                packages.add(pack);
+                packages.addAll(pack.getDependencies());
+            }
         }
 
         try {

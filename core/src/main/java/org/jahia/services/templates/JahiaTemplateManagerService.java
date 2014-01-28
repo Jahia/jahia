@@ -333,7 +333,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         Model model = null;
         try {
             model = PomUtils.read(pom);
-            if (!StringUtils.equals(model.getScm().getConnection(),scmUrl)) {
+            if (scmUrl != null && !StringUtils.equals(model.getScm().getConnection(),scmUrl)) {
                 PomUtils.updateScm(pom, scmUrl);
                 module.getSourceControl().add(pom);
                 module.getSourceControl().commit("restore pom scm uri before release");

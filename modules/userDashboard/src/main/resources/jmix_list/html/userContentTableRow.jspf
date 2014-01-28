@@ -1,0 +1,59 @@
+<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
+    <tr>
+        <td>
+            <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
+            <c:choose>
+                <c:when test='${jcr:isNodeType(subchild, "nt:file")}'>
+                    <a href="<c:url value='${url.files}${subchild.path}'/>"><c:out
+                            value="${not empty subchild && not empty subchild.displayableName ? subchild.string : subchild.name}"/></a>
+                </c:when>
+                <c:when test='${jcr:isNodeType(subchild, "jmix:nodeReference")}'>
+                    <jcr:nodeProperty node="${subchild.properties['j:node'].node}" name="jcr:title" var="title"/>
+                    <a href="<c:url value='${url.base}${subchild.properties["j:node"].node.path}.html'/>">
+                        <c:out value="${not empty subchild && not empty subchild.displayableName ? subchild.displayableName : subchild.properties['j:node'].node.name}"/></a>
+                </c:when>
+                <c:otherwise>
+                    <a href="<c:url value='${url.base}${subchild.path}.html'/>"><c:out
+                            value="${not empty subchild && not empty subchild.displayableName ? subchild.displayableName : subchild.name}"/></a>
+                </c:otherwise>
+            </c:choose>
+        </td>
+        <td>
+            <c:set var="siteNode" value="${subchild.resolveSite}"/>
+            <c:out value="${not empty siteNode && not empty siteNode.displayableName ? siteNode.displayableName : subchild.name}"/>
+        </td>
+        <td>
+            <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
+            <jcr:nodeProperty node="${subchild}" name="jcr:createdBy" var="createdBy"/>
+            <fmt:message key="metadata.createdBy"/>&nbsp;
+            <c:out value="${not empty createdBy && not empty createdBy.string ? createdBy.string : subchild.name}"/>&nbsp;
+            <fmt:message key="metadata.on"/>&nbsp;
+            <fmt:formatDate value="${not empty created && not empty created.time ? created.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;
+        </td>
+        <td>
+            <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>
+            <jcr:nodeProperty node="${subchild}" name="jcr:lastModifiedBy" var="modifiedBy"/>
+            <fmt:message key="metadata.modifiedBy"/>&nbsp;
+            <c:out value="${not empty modifiedBy && not empty modifiedBy.string ? modifiedBy.string : subchild.name}"/>&nbsp;
+            <fmt:message key="metadata.on"/>&nbsp;
+            <fmt:formatDate value="${not empty modified && not empty modified.time ? modified.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;
+        </td>
+        <td>
+            <jcr:nodeProperty node="${subchild}" name="j:lastPublished" var="published"/>
+            <jcr:nodeProperty node="${subchild}" name="j:lastPublishedBy" var="publishedBy"/>
+
+            <%--<c:out value="${not empty published && not empty published.string ? published.string : subchild.name}"/>&nbsp;--%>
+            <c:choose>
+                <c:when test="${not empty published}">
+                    <fmt:message key="metadata.publishedBy"/>&nbsp;
+                    <c:out value="${not empty publishedBy && not empty publishedBy.string ? publishedBy.string : subchild.name}"/>&nbsp;
+                    <fmt:message key="metadata.on"/>&nbsp;
+                    <fmt:formatDate value="${not empty published && not empty published.time ? published.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;
+                </c:when>
+                <c:otherwise>
+                    <fmt:message key="metadata.neverPublished"/>
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+</c:forEach>

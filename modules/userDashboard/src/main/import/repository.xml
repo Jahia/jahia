@@ -25,7 +25,7 @@
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
-                           j:titleKey="label.myPages"
+                           j:titleKey="system.myPages"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">
                         <pagecontent j:id="user-content"
@@ -50,6 +50,57 @@
                             </my-pages-1>
                         </pagecontent>
                     </pages>
+                    <web-projects j:applyOn="jnt:user"
+                                j:defaultTemplate="false"
+                                j:hiddenTemplate="false"
+                                j:titleKey="system.myWebProjects"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                j:requiredPermissionNames="jcr:write_default"
+                                jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent j:id="user-sites"
+                                     jcr:mixinTypes="jmix:customSkin"
+                                     jcr:primaryType="jnt:contentList">
+                                <my-sites jcr:mixinTypes="jmix:skinnable jmix:style"
+                               jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:language="en"
+                                                  jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="##resourceBundle(system.myWebProjects)##"/>
+                                <ajax-mode-dispatcher-live j:contextNodePath="/sites"
+                                                           j:invertCondition="true"
+                                                           j:requireLoggedUser="false"
+                                                           j:requirePrivilegedUser="false"
+                                                           j:requiredPermissionNames="jcr:read_default"
+                                                           jcr:mixinTypes="jmix:requiredPermissions"
+                                                           jcr:primaryType="jnt:modeDispatcher"
+                                                           mode="live">
+                                    <websites-list-in-edit-mode contribute="true"
+                                                                edit="true"
+                                                       j:view="bootstrapSites"
+                                                                jcr:mixinTypes="jmix:renderable"
+                                                                jcr:primaryType="jnt:listSites"
+                                                                live="true"
+                                                                preview="true"/>
+                                    </ajax-mode-dispatcher-live>
+                                <ajax-mode-dispatcher-preview j:contextNodePath="/sites"
+                                                              j:invertCondition="false"
+                                                              j:requireLoggedUser="false"
+                                                              j:requirePrivilegedUser="false"
+                                                              j:requiredPermissionNames="jcr:read_default"
+                                                              jcr:mixinTypes="jmix:requiredPermissions"
+                                                              jcr:primaryType="jnt:modeDispatcher"
+                                                              mode="preview">
+                                    <websites-list-in-edit-mode contribute="true"
+                                                                        edit="true"
+                                                                        j:view="bootstrapSites"
+                                                                jcr:mixinTypes="jmix:renderable"
+                                                                jcr:primaryType="jnt:listSites"
+                                                                live="true"
+                                                                preview="true"/>
+                                    </ajax-mode-dispatcher-preview>
+                            </my-sites>
+                        </pagecontent>
+                    </web-projects>
                 </dashboard-modules-base>
             </templates>
                 

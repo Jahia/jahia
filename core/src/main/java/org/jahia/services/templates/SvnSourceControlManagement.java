@@ -157,7 +157,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
+    protected void getFromSCM(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
         ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri ,workingDirectory.getName()});
         if (r.exitValue > 0) {
@@ -167,12 +167,16 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    protected void initNewModule(File workingDirectory, String uri) throws IOException {
+    protected void sendToSCM(File workingDirectory, String uri) throws IOException {
         this.rootFolder = workingDirectory;
         ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri ,"."});
 
-        String ignorepath = new File(workingDirectory,".gitignore").getAbsolutePath();
-        executeCommand(executable, new String[]{"propset", "svn:ignore", "-F", ignorepath, "."});
+        File gitIgnore = new File(workingDirectory, ".gitignore");
+        if (gitIgnore.exists()) {
+            String ignorepath = gitIgnore.getAbsolutePath();
+            executeCommand(executable, new String[]{"propset", "svn:ignore", "-F", ignorepath, "."});
+            gitIgnore.delete();
+        }
         executeCommand(executable, new String[]{"add","src"});
         executeCommand(executable, new String[]{"add","pom.xml"});
         executeCommand(executable, new String[]{"commit","-m","First commit"});

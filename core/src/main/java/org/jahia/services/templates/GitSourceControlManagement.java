@@ -176,7 +176,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         return null;
     }
 
-    protected void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException {
+    protected void getFromSCM(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
         ExecutionResult r = executeCommand(executable, new String[]{"-c", "core.askpass=true","clone",uri,workingDirectory.getName()});
         if (r.exitValue > 0) {
@@ -189,7 +189,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory;
     }
 
-    protected void initNewModule(File workingDirectory, String url) throws IOException {
+    protected void sendToSCM(File workingDirectory, String url) throws IOException {
         this.rootFolder = workingDirectory;
         executeCommand(executable, new String[]{"init"});
         executeCommand(executable, new String[]{"add","."});

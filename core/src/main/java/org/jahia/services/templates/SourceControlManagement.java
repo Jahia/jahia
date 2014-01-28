@@ -216,9 +216,9 @@ public abstract class SourceControlManagement {
      */
     public abstract String getURI() throws IOException;
 
-    protected abstract void initFromURI(File workingDirectory, String uri, String branchOrTag) throws IOException;
+    protected abstract void getFromSCM(File workingDirectory, String uri, String branchOrTag) throws IOException;
 
-    protected abstract void initNewModule(File workingDirectory, String url) throws IOException;
+    protected abstract void sendToSCM(File workingDirectory, String url) throws IOException;
 
     protected abstract void initWithWorkingDirectory(File workingDirectory) throws IOException;
 

@@ -88,9 +88,9 @@ public class SourceControlFactory {
                 throw new IOException("Unknown repository type");
             }
             if (initRepository) {
-                scm.initNewModule(workingDir, scmUrl);
+                scm.sendToSCM(workingDir, scmUrl);
             } else  {
-                scm.initFromURI(workingDir, scmUrl, branchOrTag);
+                scm.getFromSCM(workingDir, scmUrl, branchOrTag);
             }
         }
         return scm;

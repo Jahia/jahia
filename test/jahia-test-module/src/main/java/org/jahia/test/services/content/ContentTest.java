@@ -132,7 +132,7 @@ public class ContentTest {
         for (String providerRoot : mountPoints.keySet()) {
             if (providerRoot.equals("/")) {
                 providerRoot = "/sites/systemsite";
-            } else if (providerRoot.equals("/modulesFileSystem")) {
+            } else if (providerRoot.startsWith("/modules/")) {
                 continue;
             }
             Object[] parameter = new Object[1];
@@ -561,7 +561,7 @@ public class ContentTest {
             // nodes.add(testFile.getIdentifier());
 
             // now let's sleep a little to give time for Jackrabbit to index the file's content.
-            Thread.sleep(5000);
+            Thread.sleep(10000);
 
             // Do the query
             QueryManager qm = JCRSessionFactory.getInstance()

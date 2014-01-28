@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
+    <modules jcr:primaryType="jnt:modules">
+        <tasks j:dependencies="default"
+               j:installedModules="tasks"
+               j:moduleType="module"
+               j:title="Jahia User Tasks"
+               jcr:primaryType="jnt:module">
+        <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+            <dashboard-modules-base j:view="dashboard"
+                                    jcr:mixinTypes="jmix:useUILocale"
+                                    jcr:primaryType="jnt:template">
+                <tasks j:applyOn="jnt:user"
+                       j:defaultTemplate="false"
+                       j:hiddenTemplate="false"
+                       j:requireLoggedUser="false"
+                       j:requirePrivilegedUser="true"
+                       j:requiredPermissionNames="jcr:write_default"
+                       j:titleKey="system.myTasks"
+                       jcr:mixinTypes="jmix:rbTitle"
+                       jcr:primaryType="jnt:contentTemplate">
+                    <pagecontent j:id="user-tasks"
+                                 jcr:mixinTypes="jmix:customSkin"
+                                 jcr:primaryType="jnt:contentList">
+                        <my-tasks icon="/modules/templates-system/templates/files/icons/mytasks.png"
+                                  jcr:primaryType="jnt:contentList">
+                            <j:translation_en jcr:language="en"
+                                              jcr:mixinTypes="mix:title"
+                                              jcr:primaryType="jnt:translation"
+                                              jcr:title="##resourceBundle(system.myTasks)##"/>
+                            <modedispatcher jcr:primaryType="jnt:modeDispatcher" mode="preview">
+                                <currentUserTasks displayAssignee="true"
+                                                  displayCreator="true"
+                                                  displayState="true"
+                                                  filterOnAssignee="assignedToMeOrUnassigned"
+                                                  filterOnStates="active started suspended"
+                                                  jcr:mixinTypes="jmix:renderable"
+                                                  jcr:primaryType="jnt:currentUserTasks"
+                                                  j:view="bootstrapTasks"
+                                                  sortBy="jcr:created"/>
+                            </modedispatcher>
+                        </my-tasks>
+                    </pagecontent>
+                </tasks>
+            </dashboard-modules-base>
+        </templates>
+        </tasks>
+    </modules>
+</content>

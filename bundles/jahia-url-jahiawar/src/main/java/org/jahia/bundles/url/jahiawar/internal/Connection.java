@@ -90,24 +90,11 @@ public class Connection extends URLConnection {
     private Parser parser;
     private final Configuration configuration;
     private List<String> classPathEntries = new ArrayList<String>();
-    private Set<String> exportPackageExcludes = new TreeSet<String>(new Comparator<String>() {
-        @Override
-        public int compare(String s, String s1) {
-            if (s.length() > s1.length()) {
-                return -1;
-            } else if (s.length() < s1.length()) {
-                return 1;
-            } else {
-                return s.compareTo(s1);
-            }
-        }
-    });
 
     private Set<String> extensionsToExport = new HashSet<String>();
 
     private Map<String,Set<String>> importPackages = null;
     private Map<String,Set<String>> excludedImportPackages = null;
-    private Map<String,Set<String>> excludedExportPackages = null;
     private Set<String> forbiddenJars = new LinkedHashSet<String>();
     private List<Pattern> forbiddenJarPatterns = new ArrayList<Pattern>();
     private Map<String,byte[]> addedFiles = new LinkedHashMap<String,byte[]>();
@@ -122,9 +109,6 @@ public class Connection extends URLConnection {
         this.configuration = configuration;
         importPackages = configuration.getImportedPackages();
         excludedImportPackages = configuration.getExcludedImportPackages();
-        excludedExportPackages = configuration.getExcludedExportPackages();
-        extensionsToExport.add(".class");
-        extensionsToExport.add(".tld");
         forbiddenJars = configuration.getForbiddenJars();
         for (String forbiddenJar : forbiddenJars) {
             Pattern forbiddenJarPattern = Pattern.compile(forbiddenJar.replaceAll("\\*", "\\.*"));
@@ -147,8 +131,6 @@ public class Connection extends URLConnection {
         final Manifest inputManifest = new Manifest(jarInputStream.getManifest());
         String depends = inputManifest.getMainAttributes().getValue("depends");
 
-        final Set<String> exportPackageIncludes = new HashSet<String>();
-        final Set<String> allNonEmptyDirectories = new HashSet<String>();
         final Set<String> directoryEntries = new HashSet<String>();
 
         ParsingContext parsingContext = new ParsingContext();
@@ -216,7 +198,6 @@ public class Connection extends URLConnection {
                     Set<String> processed = new HashSet<String>();
                     JarEntry embeddedJarEntry = null;
                     while ((embeddedJarEntry = embeddedJarInputStream.getNextJarEntry()) != null) {
-                        updateExportTracking(embeddedJarEntry.getName(), exportPackageIncludes, allNonEmptyDirectories);
                         String embeddedJarNewName = embeddedJarEntry.getName();
                         if (processed.contains(embeddedJarNewName)) {
                             continue;
@@ -338,8 +319,6 @@ public class Connection extends URLConnection {
                 }
                 jos.closeEntry();
                 entryNames.add(newName);
-                updateExportTracking(newName, exportPackageIncludes, allNonEmptyDirectories);
-
             }
 
             for (Map.Entry<String,byte[]> addedFileEntry : addedFiles.entrySet()) {
@@ -411,42 +390,14 @@ public class Connection extends URLConnection {
             bndProperties.put("Bundle-Version", versionStr);
         }
 
-        // calculate export package exclusions that are all non-empty directories minus the ones that contain
-        // resources to export.
-        exportPackageExcludes.addAll(allNonEmptyDirectories);
-        exportPackageExcludes.removeAll(exportPackageIncludes);
-
         String rootFolder = inputManifest.getMainAttributes().getValue("root-folder");
         if (rootFolder != null) {
-            String packagePrefix = rootFolder.replaceAll("[ -]", "");
-
             bndProperties.put("Bundle-SymbolicName", rootFolder);
-            StringBuilder exportPackage = new StringBuilder(128);
-            if (exportPackageIncludes.size() > 0) {
-                for (String exportPackageInclude : exportPackageIncludes) {
-                    if (!getBundlePackages(rootFolder, excludedExportPackages).contains(exportPackageInclude)) {
-                        exportPackage.append(exportPackageInclude);
-                        exportPackage.append(",");
-                    }
-                }
-            }
-
-            if (getBundlePackages(rootFolder, excludedExportPackages).size() > 0) {
-                for (String exportPackageExclude : getBundlePackages(rootFolder, excludedExportPackages)) {
-                    exportPackage.append("!");
-                    exportPackage.append(exportPackageExclude);
-                    exportPackage.append(",");
-                }
-            }
             String titleAttribute = inputManifest.getMainAttributes().getValue("package-name");
             if (titleAttribute == null) {
                 titleAttribute = inputManifest.getMainAttributes().getValue("Implementation-Title");
             }
             bndProperties.put("Bundle-Name", titleAttribute);
-            exportPackage.append(titleAttribute.replaceAll("[ -]", ""));
-            exportPackage.append(",");
-            exportPackage.append(packagePrefix);
-            bndProperties.put("Export-Package", exportPackage.toString());
 
             if (depends == null) {
                 depends = "";
@@ -458,19 +409,7 @@ public class Connection extends URLConnection {
                 depends += "default";
             }
 
-
-//            String[] dependsArray = depends.split(",");
             StringBuilder importPackage = new StringBuilder("*;resolution:=optional");
-
-            /*
-            for (String dep : dependsArray) {
-                if (!"".equals(dep)) {
-                    importPackage.append(",");
-                    dep = dep.replaceAll("[ -]", "");
-                    importPackage.append(dep);
-                }
-            }
-            */
 
             List<String> alreadyImportedPackages = new ArrayList<String>(Arrays.asList(importPackage.toString().split(",")));
             for (String curImportPackage : getBundlePackages(rootFolder, importPackages)) {
@@ -672,45 +611,6 @@ public class Connection extends URLConnection {
             }
         }
         return null;
-    }
-
-    private void updateExportTracking(String newName, Set<String> exportPackageIncludes, Set<String> allNonEmptyDirectories) {
-        // now let's see if the new entry starts with an existing package import, in which case
-        // we will not export it.
-        for (String extensionToExport : extensionsToExport) {
-            if (newName.endsWith(extensionToExport)) {
-                int lastSlashPos = newName.lastIndexOf("/");
-                if (lastSlashPos > -1) {
-                    String directoryName = newName.substring(0, lastSlashPos).replaceAll("/", ".");
-                    if (!directoryName.startsWith("META-INF")) {
-                        if (!exportPackageIncludes.contains(directoryName)) {
-                            exportPackageIncludes.add(directoryName);
-                        }
-                        if (!allNonEmptyDirectories.contains(directoryName)) {
-                            allNonEmptyDirectories.add(directoryName);
-                        }
-                    }
-                } else {
-                    // do nothing this is a top level file.
-                }
-            } else {
-                if (newName.endsWith("/")) {
-                    // for a directory we do nothing, we only treat directories that have content.
-                } else {
-                    int lastSlashPos = newName.lastIndexOf("/");
-                    if (lastSlashPos > -1) {
-                        String directoryName = newName.substring(0, lastSlashPos).replaceAll("/", ".");
-                        if (!directoryName.startsWith("META-INF")) {
-                            if (!allNonEmptyDirectories.contains(directoryName)) {
-                                allNonEmptyDirectories.add(directoryName);
-                            }
-                        }
-                    } else {
-                        // do nothing this is a top level file.
-                    }
-                }
-            }
-        }
     }
 
     public Set<String> getBundlePackages(String bundleName, Map<String,Set<String>> bundlePackages) {

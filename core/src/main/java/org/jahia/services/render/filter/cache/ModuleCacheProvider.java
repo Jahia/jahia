@@ -152,11 +152,8 @@ public class ModuleCacheProvider implements InitializingBean {
                 invalidateDependencies(deps);
             }
         }
-        if(propagateToOtherClusterNodes && syncCache != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of {} across cluster", nodePath);
-            }
-            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), nodePath));
+        if(propagateToOtherClusterNodes) {
+            propagatePathFlushToCluster(nodePath, true);
         }
     }
 
@@ -225,6 +222,33 @@ public class ModuleCacheProvider implements InitializingBean {
                 logger.debug("Sending flush of regexp {} across cluster", key);
             }
             syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), key));
+        }
+    }
+
+    public void propagateFlushRegexpDependenciesOfPath(String key, boolean propagateToOtherClusterNodes) {
+        if(propagateToOtherClusterNodes && syncCache != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of regexp dependencies {} across cluster", key);
+            }
+            syncCache.put(new Element("FLUSH_REGEXPDEP-" + UUID.randomUUID(), key));
+        }
+    }
+
+    public void propagateChildrenDependenciesFlushToCluster(String path, boolean propagateToOtherClusterNodes) {
+        if(propagateToOtherClusterNodes && syncCache != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of children of {} across cluster", path);
+            }
+            syncCache.put(new Element("FLUSH_CHILDS-" + UUID.randomUUID(), path));
+        }
+    }
+
+    public void propagatePathFlushToCluster(String nodePath, boolean propagateToOtherClusterNodes) {
+        if(propagateToOtherClusterNodes && syncCache != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sending flush of {} across cluster", nodePath);
+            }
+            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), nodePath));
         }
     }
 }

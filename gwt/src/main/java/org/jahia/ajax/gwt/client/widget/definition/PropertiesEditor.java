@@ -262,8 +262,12 @@ public class PropertiesEditor extends FormPanel {
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             String key = definition.getOverrideDeclaringNodeType() + "." + definition.getName();
             GWTChoiceListInitializer choiceListInitializer = choiceListInitializersValues != null ? choiceListInitializersValues.get(key) : null;
-            List<GWTJahiaNodePropertyValue> propertyDefaultValues = (this.defaultValues != null &&
-                    (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName())) || !nodeTypes.contains(nodeType)) ? this.defaultValues.get(key) : null;
+            List<GWTJahiaNodePropertyValue> propertyDefaultValues = null;
+            if (this.defaultValues != null) {
+                if (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName()) || !nodeTypes.contains(nodeType)) {
+                    propertyDefaultValues = this.defaultValues.get(key);
+                }
+            }
             if (propertyDefaultValues != null && gwtJahiaNodeProperty.getValues().size() == 0 &&
                     (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName()))) {
                 defaultedProperties.add(definition.getName());

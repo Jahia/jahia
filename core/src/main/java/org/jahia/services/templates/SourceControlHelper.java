@@ -289,6 +289,7 @@ public class SourceControlHelper {
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());
         setSourcesFolderInPackageAndNode(pack, sources, node);
         session.save();
+        scm.add(new File(sources, "pom.xml"));
         scm.commit("Initial commit");
     }
 

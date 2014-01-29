@@ -100,11 +100,6 @@ public class HandlerTest {
                 "org.jahia.services.render.scripting"
         });
 
-        List<ManifestValueClause> exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.modules.forum.actions"
-        });
-
         URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
         String modulePath = firstModuleURI.getPath();
 
@@ -123,11 +118,6 @@ public class HandlerTest {
                 "org.jahia.services.workflow.jbpm"
         });
 
-        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.modules.translation.initializers"
-        });
-
 
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/ldap/1.3/ldap-1.3.war", new Handler());
         System.out.println("");
@@ -136,12 +126,6 @@ public class HandlerTest {
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
         dumpManifest(jarInputStream);
         dumpJarEntries(jarInputStream);
-
-        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.params.valves",
-                "org.jahia.services.usermanager"
-        });
 
         jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/social/1.5/social-1.5.war", new Handler());
         System.out.println("");
@@ -157,12 +141,6 @@ public class HandlerTest {
                 "org.jahia.services.content.rules"
         });
 
-        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.modules.social",
-                "org.jahia.modules.social.choicelist",
-                "org.jahia.modules.social.taglib",
-        });
     }
 
     private void dumpManifest(JarInputStream jarInputStream) throws IOException {

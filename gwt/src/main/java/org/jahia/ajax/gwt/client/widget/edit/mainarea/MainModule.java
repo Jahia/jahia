@@ -53,11 +53,12 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.*;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
@@ -77,7 +78,6 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.*;
 
@@ -93,7 +93,7 @@ public class MainModule extends Module {
     private Storage storage;
     private ActionContextMenu contextMenu;
     private GWTEditConfiguration config;
-    private Map<String,GWTEditConfiguration> configs = new HashMap<String, GWTEditConfiguration>();
+    private Map<String, GWTEditConfiguration> configs = new HashMap<String, GWTEditConfiguration>();
 
     private InfoLayers infoLayers = new InfoLayers();
     private Map<String, Boolean> activeLayers = new HashMap<String, Boolean>();
@@ -196,8 +196,8 @@ public class MainModule extends Module {
         ((ToolbarHeader) head).removeAllTools();
         if (config.getMainModuleToolbar() != null && !config.getMainModuleToolbar().getGwtToolbarItems().isEmpty()) {
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
-                        ((ToolbarHeader) head).addItem(linker, item);
-                    }
+                ((ToolbarHeader) head).addItem(linker, item);
+            }
             head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
                     Map<String, Object> data = new HashMap<String, Object>();
@@ -218,22 +218,22 @@ public class MainModule extends Module {
         String location = newLocation;
         newLocation = null;
         if (location == null && !Window.Location.getHash().equals("")) {
-            location = Window.Location.getHash().substring(Window.Location.getHash().indexOf('|')+1);
+            location = Window.Location.getHash().substring(Window.Location.getHash().indexOf('|') + 1);
         }
         if (location == null) {
             location = Window.Location.getPath();
         }
         if (location.contains("://")) {
-            location = location.substring(location.indexOf("://")+3);
+            location = location.substring(location.indexOf("://") + 3);
             location = location.substring(location.indexOf("/"));
         }
         if (location.startsWith(JahiaGWTParameters.getContextPath() + config.getDefaultUrlMapping() + "/")) {
-            location = location.replaceFirst(config.getDefaultUrlMapping(), config.getDefaultUrlMapping()+"frame");
+            location = location.replaceFirst(config.getDefaultUrlMapping(), config.getDefaultUrlMapping() + "frame");
         }
         if (location.contains("frame/") && !isValidUrl(location)) {
-            String start = location.substring(0,location.indexOf("frame/"));
+            String start = location.substring(0, location.indexOf("frame/"));
             start = start.substring(JahiaGWTParameters.getContextPath().length());
-            location = location.replaceFirst(start+"frame/", config.getDefaultUrlMapping()+"frame/");
+            location = location.replaceFirst(start + "frame/", config.getDefaultUrlMapping() + "frame/");
         }
 
         location = URL.decode(location);
@@ -306,7 +306,7 @@ public class MainModule extends Module {
             AbsoluteData deviceOuterData = new AbsoluteData(0, 0);
             deviceOuterData.setMargins(new Margins(0, 0, 0, 0));
             if (activeChannel.getVariantDecoratorImage(activeChannelVariantIndex) != null) {
-                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath()+activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
+                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath() + activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
             }
 
             int[] usableResolution = getUsableDeviceResolution(activeChannel, activeChannelVariantIndex);
@@ -362,7 +362,7 @@ public class MainModule extends Module {
 
     /**
      * Returns an instance of the edit linker.
-     * 
+     *
      * @return an instance of the edit linker
      */
     public EditLinker getEditLinker() {
@@ -371,9 +371,8 @@ public class MainModule extends Module {
 
     /**
      * Performs refresh of the main module, based on the provided data.
-     * 
-     * @param data
-     *            the refresh data
+     *
+     * @param data the refresh data
      */
     public void refresh(Map<String, Object> data) {
         if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
@@ -396,15 +395,11 @@ public class MainModule extends Module {
 
     /**
      * Changes the frame URL to the provided one.
-     * 
-     * @param url
-     *            the URL to be used for the frame
-     * @param forceImageRefresh
-     *            should we force refresh of the images?
-     * @param forceCssRefresh
-     *            should we force refresh of the CSS files?
-     * @param forceJavascriptRefresh
-     *            should we force refresh of the JavaScript files?
+     *
+     * @param url                    the URL to be used for the frame
+     * @param forceImageRefresh      should we force refresh of the images?
+     * @param forceCssRefresh        should we force refresh of the CSS files?
+     * @param forceJavascriptRefresh should we force refresh of the JavaScript files?
      */
     public void goToUrl(final String url, final boolean forceImageRefresh, boolean forceCssRefresh, boolean forceJavascriptRefresh) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
@@ -417,7 +412,7 @@ public class MainModule extends Module {
     }
 
     public static void waitingMask(String text) {
-        getInstance().mask(text,"x-mask-loading");
+        getInstance().mask(text, "x-mask-loading");
     }
 
     private String getUrl(String path, String template) {
@@ -434,12 +429,12 @@ public class MainModule extends Module {
 
     /**
      * Computes the base URL for the main module frame.
-     * 
+     *
      * @return the base URL for the main module frame
      */
     public String getBaseUrl() {
         String baseUrl = JahiaGWTParameters.getBaseUrl();
-        baseUrl = baseUrl.substring(0, baseUrl.indexOf("/"+JahiaGWTParameters.getWorkspace()+"/"));
+        baseUrl = baseUrl.substring(0, baseUrl.indexOf("/" + JahiaGWTParameters.getWorkspace() + "/"));
         baseUrl += "frame/" + JahiaGWTParameters.getWorkspace();
         baseUrl += "/" + (editLinker.getLocale() == null ? JahiaGWTParameters.getLanguage() : editLinker.getLocale());
         return baseUrl;
@@ -452,7 +447,7 @@ public class MainModule extends Module {
             com.google.gwt.dom.client.Element body = iframe.getContentDocument().getElementsByTagName("body").getItem(0);
             return (Element) body;
         }
-        return super.getInnerElement();    
+        return super.getInnerElement();
     }
 
     public static native void setDocumentTitle(String title) /*-{
@@ -559,7 +554,7 @@ public class MainModule extends Module {
     }
 
     public void setCtrlActive(DomEvent event) {
-        this.ctrlActive = Window.Navigator.getPlatform().toLowerCase().contains("mac")?DOM.eventGetMetaKey(event.getEvent()):event.isControlKey();
+        this.ctrlActive = Window.Navigator.getPlatform().toLowerCase().contains("mac") ? DOM.eventGetMetaKey(event.getEvent()) : event.isControlKey();
     }
 
     public void parse(List<Element> el) {
@@ -571,7 +566,6 @@ public class MainModule extends Module {
                     component.removeFromParent();
                 }
             }
-
         }
         moduleMap = ModuleHelper.parse(this, null, el);
     }
@@ -584,10 +578,14 @@ public class MainModule extends Module {
         module.goTo(path, template);
     }
 
+    public static void staticGoToUrl(String path) {
+        module.goToUrl(path, false, false, false);
+    }
+
     public static void popState(String location, String config) {
         MainModule m = getInstance();
         if (!config.equals(m.getConfig().getName())) {
-            m.getEditLinker().switchConfig(m.configs.get(config), location + "##" , true, true);
+            m.getEditLinker().switchConfig(m.configs.get(config), location + "##", true, true);
         } else {
             m.goToUrl(location + "##", false, false, false);
         }
@@ -626,9 +624,9 @@ public class MainModule extends Module {
         if (storage != null) {
             String storedPath = path;
             if (storedPath.endsWith("##")) {
-                storedPath = storedPath.substring(0,storedPath.length()-2);
+                storedPath = storedPath.substring(0, storedPath.length() - 2);
             }
-            storage.setItem(MainModule.getInstance().getConfig().getName() +"_path", storedPath);
+            storage.setItem(MainModule.getInstance().getConfig().getName() + "_path", storedPath);
         }
     }
 
@@ -691,7 +689,7 @@ public class MainModule extends Module {
         if (newPath != null) {
             newLocation = newPath;
         } else if (changedRoot) {
-            if (storage != null && storage.getItem(config.getName() +"_path") != null) {
+            if (storage != null && storage.getItem(config.getName() + "_path") != null) {
                 newLocation = storage.getItem(config.getName() + "_path");
             } else {
                 newLocation = getBaseUrl() + config.getDefaultLocation();
@@ -888,7 +886,10 @@ public class MainModule extends Module {
         $wnd.goTo = function (path, template, params) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(path, template);
         }
-        $wnd.addEventListener("popstate", function(event) {
+        $wnd.goToUrl = function (path, template, params) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoToUrl(Ljava/lang/String;)(path);
+        }
+        $wnd.addEventListener("popstate", function (event) {
             if (event.state) {
                 @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::popState(Ljava/lang/String;Ljava/lang/String;)(event.state.location, event.state.config);
             }
@@ -911,7 +912,7 @@ public class MainModule extends Module {
     }-*/;
 
     private native boolean pushState(String path, String location, String config) /*-{
-        var state = {location:location, config:config};
+        var state = {location: location, config: config};
         if ($wnd.history.state) {
             $wnd.history.pushState(state, null, path);
         } else {
@@ -925,6 +926,71 @@ public class MainModule extends Module {
         frame.setExternalUrl(url);
     }
 
+    private void parseFrameContent(boolean forceImageRefresh, boolean forceCssRefresh, boolean forceJavascriptRefresh) {
+        try {
+            final IFrameElement iframe = IFrameElement.as(frame.getElement());
+            Document contentDocument = iframe.getContentDocument();
+            Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
+            Element head = (Element) contentDocument.getElementsByTagName("head").getItem(0);
+            setHashMarker(frame.getCurrentFrameUrl());
+            if (forceImageRefresh) {
+                refreshImages(body);
+            }
+            if (head != null) {
+                if (forceCssRefresh) {
+                    refreshCSS(head);
+                }
+                if (forceJavascriptRefresh) {
+                    refreshScripts(head);
+                }
+            }
+            Hover.getInstance().removeAll();
+            List<Element> el = null;
+            List<Element> elBody = null;
+            if ("true".equals(body.getAttribute("jahia-parse-html"))) {
+                Element innerElement = getInnerElement();
+                elBody = ModuleHelper.getAllJahiaTypedElementsRec(body);
+                if (body.equals(innerElement)) {
+                    el = elBody;
+                } else {
+                    el = ModuleHelper.getAllJahiaTypedElementsRec(getInnerElement());
+                }
+
+            } else {
+                NodeList<com.google.gwt.dom.client.Element> el1 = body.getElementsByTagName("div");
+                int i = 0;
+                Element e = null;
+                while (i < el1.getLength()) {
+                    e = (Element) el1.getItem(i);
+                    if ("mainmodule".equals(e.getAttribute(ModuleHelper.JAHIA_TYPE))) {
+                        el = Arrays.asList(e);
+                        elBody = Arrays.asList(e);
+                        break;
+                    }
+                    i++;
+                }
+
+
+            }
+            if (contextMenu != null) {
+                contextMenu.hide();
+            }
+
+            if (el != null && elBody != null) {
+                ModuleHelper.tranformLinks((Element) contentDocument.getDocumentElement());
+                ModuleHelper.initAllModules(MainModule.this, body, el, elBody, config);
+            } else {
+                // if body empty, this is not a jahia page
+                path = "";
+            }
+            editLinker.getMainModule().unmask();
+            needParseAfterLayout = true;
+            layout();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private class EditFrame extends Frame {
         private String url = null;
         private boolean forceImageRefresh = false;
@@ -935,90 +1001,39 @@ public class MainModule extends Module {
         }
 
         public void onBrowserEvent(Event event) {
-            if (event.getTypeInt() == Event.ONLOAD) {
-                if (isValidUrl(url)) {
-                    final IFrameElement iframe = IFrameElement.as(frame.getElement());
-                    Document contentDocument = iframe.getContentDocument();
-                    Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
-                    Element head = (Element) contentDocument.getElementsByTagName("head").getItem(0);
+            try {
+                if (event.getTypeInt() == Event.ONLOAD) {
+                    if (isValidUrl(url)) {
+                        final IFrameElement iframe = IFrameElement.as(frame.getElement());
+                        Document contentDocument = iframe.getContentDocument();
 
-                    setHashMarker(getCurrentFrameUrl());
-                    if (forceImageRefresh) {
-                        refreshImages(body);
-                    }
-                    if (head != null) {
-                        if (forceCssRefresh) {
-                            refreshCSS(head);
-                        }
-                        if (forceJavascriptRefresh) {
-                            refreshScripts(head);
-                        }
-                    }
-                    Hover.getInstance().removeAll();
-                    List<Element> el = null;
-                    List<Element> elBody = null;
-                    if ("true".equals(body.getAttribute("jahia-parse-html"))) {
-                        Element innerElement = getInnerElement();
-                        elBody = ModuleHelper.getAllJahiaTypedElementsRec(body);
-                        if (body.equals(innerElement)) {
-                            el = elBody;
-                        } else {
-                            el = ModuleHelper.getAllJahiaTypedElementsRec(getInnerElement());
-                        }
+                        parseFrameContent(forceImageRefresh, forceCssRefresh, forceJavascriptRefresh);
 
-                    } else {
-                        NodeList<com.google.gwt.dom.client.Element> el1 = body.getElementsByTagName("div");
-                        int i = 0;
-                        Element e = null;
-                        while (i < el1.getLength()) {
-                            e = (Element) el1.getItem(i);
-                            if ("mainmodule".equals(e.getAttribute(ModuleHelper.JAHIA_TYPE))) {
-                                el = Arrays.asList(e);
-                                elBody = Arrays.asList(e);
-                                break;
+                        DOM.sinkEvents((Element) contentDocument.getDocumentElement(), Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK + Event.ONMOUSEDOWN);
+                        DOM.setEventListener((Element) contentDocument.getDocumentElement(), new EventListener() {
+                            public void onBrowserEvent(Event event) {
+                                if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP || event.getTypeInt() == Event.ONMOUSEDOWN) {
+                                    inframe = true;
+                                    Event.fireNativePreviewEvent(event);
+                                    inframe = false;
+                                } else {
+                                    GWT.log("event:" + event.getTypeInt());
+                                    scrollContainer.onBrowserEvent(event);
+                                }
                             }
-                            i ++;
-                        }
-
-
-                    }
-                    if (contextMenu != null) {
-                        contextMenu.hide();
-                    }
-                    if (el != null && elBody != null) {
-                        ModuleHelper.initAllModules(MainModule.this, body,elBody, config);
-                        ModuleHelper.buildTree(MainModule.this,el);
-                        parse(el);
-                    } else {
-                        // if body empty, this is not a jahia page
-                        path = "";
-                    }
-                    editLinker.getMainModule().unmask();
-                    needParseAfterLayout = true;
-                    layout();
-
-                    DOM.sinkEvents((Element) contentDocument.getDocumentElement(), Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK + Event.ONMOUSEDOWN);
-                    DOM.setEventListener((Element) contentDocument.getDocumentElement(), new EventListener() {
-                        public void onBrowserEvent(Event event) {
-                            if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP || event.getTypeInt() == Event.ONMOUSEDOWN) {
-                                inframe = true;
-                                Event.fireNativePreviewEvent(event);
-                                inframe = false;
-                            } else {
-                                GWT.log("event:" + event.getTypeInt());
-                                scrollContainer.onBrowserEvent(event);
+                        });
+                        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                            @Override
+                            public void execute() {
+                                onGWTFrameReady(iframe);
                             }
-                        }
-                    });
-                    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                        @Override
-                        public void execute() {
-                            onGWTFrameReady(iframe);
-                        }
-                    });
-                } else {
-                    editLinker.getMainModule().unmask();
+                        });
+                    } else {
+                        editLinker.getMainModule().unmask();
+                    }
                 }
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
 
@@ -1030,7 +1045,7 @@ public class MainModule extends Module {
         public void setUrl(String url) {
             url = getPathFromUrl(url);
             if (isValidUrl(url)) {
-                if (isAttached()) {
+                if (getElement() != null) {
                     this.url = url;
                     super.setUrl(url);
                 } else {
@@ -1064,17 +1079,17 @@ public class MainModule extends Module {
         protected void onAttach() {
             super.onAttach();
             IFrameElement iframe = IFrameElement.as(frame.getElement());
-            iframe.setAttribute("frameborder","0");
+            iframe.setAttribute("frameborder", "0");
 //            iframe.setAttribute("sandbox","allows-scripts");
-            if (url != null) {
+            if (url != null && !super.getUrl().endsWith(url)) {
                 super.setUrl(url);
             }
         }
 
         public final native String getFrameUrl(IFrameElement iFrameElement) /*-{
-           // This is known to work on all modern browsers.
-           return iFrameElement.contentWindow.location.href;
-         }-*/;
+            // This is known to work on all modern browsers.
+            return iFrameElement.contentWindow.location.href;
+        }-*/;
 
         public final native String onGWTFrameReady(IFrameElement iFrameElement) /*-{
             if (iFrameElement.contentWindow.onGWTFrameLoaded != null) {
@@ -1090,7 +1105,7 @@ public class MainModule extends Module {
 
     private String getPathFromUrl(String url) {
         if (url.contains("://")) {
-            url = url.substring(url.indexOf("://")+3);
+            url = url.substring(url.indexOf("://") + 3);
             url = url.substring(url.indexOf('/'));
         }
         return url;

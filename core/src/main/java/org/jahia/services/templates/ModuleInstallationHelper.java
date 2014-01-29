@@ -542,7 +542,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 uninstallModulesFromAllSites(templatePackageRegistry.lookupById(module), session);
                 if (purgeAllContent) {
-                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), "/", session);
+                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), "/sites", session);
                 }
                 session.save();
                 return null;
@@ -551,7 +551,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         if (purgeAllContent) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(username, "live", new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), "/", session);
+                    purgeModuleContent(Arrays.asList(templatePackageRegistry.lookupById(module)), "/sites", session);
                     session.save();
                     return null;
                 }

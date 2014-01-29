@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.util.*;
 
@@ -200,7 +201,9 @@ public class ContentActions {
                     }
 
                     public void onSuccess(GWTJahiaNode node) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                        if (!(linker instanceof SidePanelTabItem.SidePanelLinker)) {
+                            linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                        }
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("node", node);

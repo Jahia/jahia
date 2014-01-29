@@ -173,7 +173,7 @@ public class ImageMagickImageService extends AbstractImageService {
 
             // create the operation, add images and operators/options
             IMOperation op = new IMOperation();
-            op.addImage(i.getPath());
+            op.addImage(((ImageMagickImage)i).getFile().getPath());
             op.background("none");
             op.crop(width, height, left, top);
             op.p_repage();
@@ -198,7 +198,7 @@ public class ImageMagickImageService extends AbstractImageService {
 
             // create the operation, add images and operators/options
             IMOperation op = new IMOperation();
-            op.addImage(image.getPath());
+            op.addImage(((ImageMagickImage)image).getFile().getPath());
             op.rotate(clockwise ? 90. : -90.);
             op.addImage(outputFile.getPath());
 

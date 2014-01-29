@@ -2,7 +2,7 @@
 
 <!-- New document created with EditiX at Fri Apr 02 14:31:29 CEST 2010 -->
 
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:jcr="http://www.jcp.org/jcr/1.0">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:j="http://www.jahia.org/jahia/1.0">
     <xsl:output method="xml" indent="yes"/>
     <xsl:template match="@*">
         <xsl:choose>
@@ -52,6 +52,7 @@
             <xsl:when test="@jcr:primaryType='jnt:roles'"/>
             <xsl:when test="@jcr:primaryType='jnt:versionInfo'"/>
             <xsl:when test="@jcr:primaryType='jnt:componentFolder'"/>
+            <xsl:when test="@jcr:primaryType='jnt:externalProviderExtension' and @j:extendedType='jnt:moduleVersionFolder' and matches(name(),'sources')"/>
             <xsl:when test="@jcr:primaryType='jnt:module'">
                 <xsl:element name="{name()}" namespace="{namespace-uri()}">
                     <xsl:for-each select="*">

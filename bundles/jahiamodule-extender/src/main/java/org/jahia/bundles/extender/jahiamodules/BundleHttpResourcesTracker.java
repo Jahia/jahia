@@ -44,6 +44,7 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.framework.util.MapToDictionary;
 import org.apache.jasper.servlet.JspServlet;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
@@ -58,6 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -221,6 +223,9 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
 
     @Override
     public void removedService(ServiceReference reference, Object service) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         HttpService httpService = (HttpService) service;
         int count = 0;
         for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {

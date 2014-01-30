@@ -45,6 +45,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
@@ -121,7 +122,6 @@ public class TemplatePackageRegistry {
     private Map<String, Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
     private List<HandlerMapping> springHandlerMappings = new ArrayList<HandlerMapping>();
-    private JCRStoreService jcrStoreService;
     private Map<String, JahiaTemplatesPackage> packagesForResourceBundles = new HashMap<String, JahiaTemplatesPackage>();
     private boolean afterInitializeDone = false;
 
@@ -179,10 +179,6 @@ public class TemplatePackageRegistry {
                 modulesWithViewsPerComponents.remove(component);
             }
         }
-    }
-
-    public void setJcrStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
     }
 
     private boolean computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
@@ -609,6 +605,10 @@ public class TemplatePackageRegistry {
         private JCRStoreService jcrStoreService;
 
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
+            if (!JahiaContextLoaderListener.isRunning()) {
+                return;
+            }
+            
             if (bean instanceof RenderFilter) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Unregistering RenderFilter '" + beanName + "'");
@@ -677,6 +677,9 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof WorklowTypeRegistration) {
                 WorklowTypeRegistration registration = (WorklowTypeRegistration) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unregistering workflow type {}", registration.getType());
+                }
                 workflowService.unregisterWorkflowType(registration);
             }
 

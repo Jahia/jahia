@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
@@ -65,6 +66,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -594,6 +596,9 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopping(Bundle bundle) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 

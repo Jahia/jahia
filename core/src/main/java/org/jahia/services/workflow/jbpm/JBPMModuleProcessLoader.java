@@ -41,6 +41,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplateRegistry;
@@ -197,6 +198,10 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
     }
 
     private void undeployDeclaredProcesses() throws IOException {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
+        
         if (processes != null && processes.length > 0) {
             logger.info("Found {} workflow processes to be undeployed.", processes.length);
 

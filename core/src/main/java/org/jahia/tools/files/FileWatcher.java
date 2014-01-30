@@ -51,6 +51,7 @@ package org.jahia.tools.files;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.*;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.scheduler.SchedulerService;
 import org.quartz.*;
@@ -263,6 +264,9 @@ public class FileWatcher extends Observable implements Serializable {
     }
 
     public void stop() {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         try {
             ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler().unscheduleJob(triggerName, Scheduler.DEFAULT_GROUP);
         } catch (SchedulerException e) {

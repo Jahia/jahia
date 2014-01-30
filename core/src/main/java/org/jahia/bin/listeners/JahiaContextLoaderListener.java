@@ -130,6 +130,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private static boolean contextInitialized = false;
     
+    private static boolean running;
+    
     private static Map<String, Object> jahiaContextListenersConfiguration;
 
     @SuppressWarnings("unchecked")
@@ -191,6 +193,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             long timer = System.currentTimeMillis();
             logger.info("Start initializing Spring root application context");
             
+            running = true;
+            
             super.contextInitialized(event);
             
             logger.info("Spring Root application context initialized in {} ms", (System.currentTimeMillis() - timer));
@@ -246,11 +250,16 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
             }
         } catch (JahiaException e) {
+            running = false;
             logger.error(e.getMessage(), e);
             throw new JahiaRuntimeException(e);
         } catch (BundleException e) {
+            running = false;
             logger.error(e.getMessage(), e);
             throw new JahiaRuntimeException(e);
+        } catch (RuntimeException e) {
+            running = false;
+            throw e;
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
         }
@@ -322,6 +331,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     public void contextDestroyed(ServletContextEvent event) {
         contextInitialized = false;
+        running = false;
         if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(
                     new ServletContextDestroyedEvent(event.getServletContext()));
@@ -744,5 +754,15 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         public ServletContextDestroyedEvent(ServletContext servletContext) {
             super(servletContext);
         }
+    }
+
+    /**
+     * Returns <code>true</code> if Jahia is either starting or is currently running, but is not in a process of shutting down.
+     * 
+     * @return <code>true</code> if Jahia is either starting or is currently running, but is not in a process of shutting down; otherwise
+     *         returns <code>false</code>
+     */
+    public static boolean isRunning() {
+        return running;
     }
 }

@@ -204,11 +204,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void stop() throws JahiaException {
-        logger.info("Stopping JahiaTemplateManagerService ...");
-
-        templatePackageRegistry.reset();
-
-        logger.info("... JahiaTemplateManagerService stopped successfully");
+        // do nothing
     }
 
     public void onApplicationEvent(final ApplicationEvent event) {

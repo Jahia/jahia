@@ -40,7 +40,6 @@
 
 package org.jahia.services.content;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
@@ -85,7 +84,6 @@ import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.net.URLEncoder;
 import java.rmi.Naming;
 import java.util.*;
 

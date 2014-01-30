@@ -237,8 +237,8 @@ public class SidePanelTabItem implements Serializable {
             ctx.refresh(context);
         }
 
-        public void setSelectPathAfterDataUpdate(List<String> paths) {
-            if (paths != null && !paths.isEmpty()) {
+        public void setSelectPathAfterDataUpdate(List<String> paths, boolean refreshMainModule) {
+            if (refreshMainModule && paths != null && !paths.isEmpty()) {
                 String template = MainModule.getInstance().getTemplate();
                 MainModule.staticGoTo(paths.get(0), "default".equals(template) ? null : template);
             }

@@ -291,7 +291,7 @@ public class FileUploader extends Window {
                     layout();
                 } else {
                     if (selectFileAfterDataUpdate != null) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + selectFileAfterDataUpdate));
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + selectFileAfterDataUpdate), false);
                     }
                     endUpload(unzip, linker);
                 }

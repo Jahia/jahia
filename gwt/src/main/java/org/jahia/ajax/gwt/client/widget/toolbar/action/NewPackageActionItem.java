@@ -43,8 +43,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -82,7 +80,7 @@ public class NewPackageActionItem extends NodeTypeAwareBaseActionItem {
             }
             JahiaContentManagementService.App.getInstance().createNode(parentPath, newNodeName, nodeType, null, null, null, null, null, parentNodesType, false, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode node) {
-                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
                     linker.loaded();
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put("node", node);

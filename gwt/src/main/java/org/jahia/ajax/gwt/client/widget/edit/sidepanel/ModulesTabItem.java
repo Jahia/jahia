@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
@@ -164,6 +165,7 @@ public class ModulesTabItem extends BrowseTabItem {
 
     @Override
     public boolean needRefresh(Map<String, Object> data) {
+        data.put(Linker.REFRESH_MAIN, true);
         if (data.containsKey("node")) {
             GWTJahiaNode node = (GWTJahiaNode) data.get("node");
             List<String> inheritedNodeTypes = node.getInheritedNodeTypes();
@@ -173,7 +175,8 @@ public class ModulesTabItem extends BrowseTabItem {
                     || nodeTypes.contains("jnt:definitionFile")
                     || inheritedNodeTypes.contains("jnt:nodeType")
                     || nodeTypes.contains("jnt:resourceBundleFile")
-                    || nodeTypes.contains("jnt:folder")) {
+                    || nodeTypes.contains("jnt:folder")
+                    || nodeTypes.contains("jnt:file")) {
                 return true;
             }
         }

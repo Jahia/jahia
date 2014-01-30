@@ -116,24 +116,29 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
 
     @Override
     public Object addingService(ServiceReference reference) {
-        HttpService httpService = (HttpService) super.addingService(reference);
+        try {
+            HttpService httpService = (HttpService) super.addingService(reference);
 
-        long timer = System.currentTimeMillis();
+            long timer = System.currentTimeMillis();
 
-        HttpContext httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle),
-                httpService.createDefaultHttpContext());
+            HttpContext httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle),
+                    httpService.createDefaultHttpContext());
 
-        int resourceCount = registerStaticResources(httpService, httpContext);
+            int resourceCount = registerStaticResources(httpService, httpContext);
 
-        // register servlets for JSPs
-        int jspCount = registerJsps(httpService, httpContext);
+            // register servlets for JSPs
+            int jspCount = registerJsps(httpService, httpContext);
 
-        if (resourceCount > 0 || jspCount > 0) {
-            logger.info("Bundle {} registered {} JSPs and {} static resources in {} ms", new Object[] { bundleName,
-                    jspCount, resourceCount, System.currentTimeMillis() - timer });
+            if (resourceCount > 0 || jspCount > 0) {
+                logger.info("Bundle {} registered {} JSPs and {} static resources in {} ms", new Object[] { bundleName,
+                        jspCount, resourceCount, System.currentTimeMillis() - timer });
+            }
+
+            return httpService;
+        } catch (Exception e) {
+            logger.error("Error when adding service",e);
+            return super.addingService(reference);
         }
-
-        return httpService;
     }
 
     protected int registerJsps(HttpService httpService, HttpContext httpContext) {

@@ -137,6 +137,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
+    private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
+    private Set<Bundle> installedBundles = new HashSet<Bundle>();
+    private Set<Bundle> initializedBundles = new HashSet<Bundle>();
+    private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
+    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
     private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
@@ -1060,6 +1065,26 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public Map<Bundle, ModuleState> getModuleStates() {
         return moduleStates;
+    }
+
+    public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {
+        return registeredBundles;
+    }
+
+    public Set<Bundle> getInstalledBundles() {
+        return installedBundles;
+    }
+
+    public Set<Bundle> getInitializedBundles() {
+        return initializedBundles;
+    }
+
+    public Map<String, List<Bundle>> getToBeParsed() {
+        return toBeParsed;
+    }
+
+    public Map<String, List<Bundle>> getToBeStarted() {
+        return toBeStarted;
     }
 
     /**

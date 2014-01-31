@@ -1,0 +1,33 @@
+<c:if test="${currentResource.workspace ne 'default'}">
+    <script type="text/javascript">
+        function deleteBookmark(source) {
+            $.post('<c:url value="${url.base}"/>' + source, {"jcrMethodToCall":"delete"},function(result) {
+            $('#bookmarkList${user.identifier}').load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax${ps}"/>');
+            },'json');
+        }
+    </script>
+    <c:if test="${moduleMap.listTotalSize eq 0}">
+        <fmt:message key="bookmark.emptyResults"/>
+    </c:if>
+    <c:if test="${moduleMap.listTotalSize ne 0}">
+            <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                <tr class="userMyBookmarksList" id="${currentNode.UUID}">
+                    <td>
+                        <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
+                        <jcr:node var="myNode" path="${bookmark.path}"/>
+                        <a class="userMyBookmarksListIcon" href="${bookmark.properties['url'].string}">${bookmark.properties['jcr:title'].string}</a>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <span class="small">&nbsp;<fmt:formatDate
+                                value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
+                    </td>
+                    <td>
+                            &nbsp;<button onclick="deleteBookmark('${bookmark.path}')">
+                            <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
+                        <div class="clear"></div>
+                    </td>
+                </tr>
+            </c:forEach>
+    </c:if>
+</c:if>

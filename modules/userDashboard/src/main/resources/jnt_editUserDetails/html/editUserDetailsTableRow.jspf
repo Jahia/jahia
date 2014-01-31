@@ -1,0 +1,529 @@
+<tr id="names" >
+    <td>
+        Name
+    </td>
+    <td>
+        <c:if test="${currentNode.properties['j:title'].boolean}">
+            <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>
+        </c:if>
+
+        <c:if test="${currentNode.properties['j:firstName'].boolean}">
+        <c:if test="${!empty fields['j:firstName']}">
+            ${fn:escapeXml(fields['j:firstName'])}
+        </c:if>
+        </c:if>
+        <c:if test="${currentNode.properties['j:lastName'].boolean}">
+        <c:if test="${!empty fields['j:lastName']}">
+            ${fn:escapeXml(fields['j:lastName'])}
+        </c:if>
+        </c:if>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('names')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="names_form" class="hide">
+    <td>
+        <div>Name form</div>
+    </td>
+    <td>
+            <c:if test="${currentNode.properties['j:title'].boolean}">
+                 <label>Title : </label>
+                <select>
+                    <option value=""></option>
+                    <c:forEach items="${titleInit}"
+                               varStatus="status"
+                               var="title">
+                        <option value="${title.value.string}" >${title.displayName}</option>
+                    </c:forEach>
+                </select>
+             </c:if>
+
+             <c:if test="${currentNode.properties['j:firstName'].boolean}">
+                 <label>Firstname : </label>
+                 <input name="firstName" type="text" value="<c:if test="${!empty fields['j:firstName']}">${fn:escapeXml(fields['j:firstName'])}</c:if>"/>
+             </c:if>
+             <c:if test="${currentNode.properties['j:lastName'].boolean}">
+                 <label>Lastname : </label>
+                 <input name="lastName" type="text" value="<c:if test="${!empty fields['j:lastName']}">${fn:escapeXml(fields['j:lastName'])}</c:if>"/>
+             </c:if>
+             <c:if test="${currentNode.properties['j:gender'].boolean}">
+                     <label>Gender : </label>
+                    <select>
+                        <c:forEach items="${genderInit}"
+                                   varStatus="status"
+                                   var="gender">
+                            <option value="${gender.value.string}" >${gender.displayName}</option>
+                        </c:forEach>
+                    </select>
+             </c:if>
+            <button class="btn btn-primary" type="button" onclick="changeFields('title','firstName', 'lastName','gender')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('names')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+</tr>
+<tr id="profession">
+    <td>
+        Profession
+    </td>
+    <td>
+        <c:if test="${currentNode.properties['j:function'].boolean}">
+            <c:if test="${!empty fields['j:function']}">
+                ${fn:escapeXml(fields['j:function'])}
+            </c:if>
+        </c:if>
+        at
+        <c:if test="${currentNode.properties['j:organization'].boolean}">
+            <c:if test="${!empty fields['j:organization']}">
+                ${fn:escapeXml(fields['j:organization'])}
+            </c:if>
+        </c:if>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('profession')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="profession_form" class="hide">
+    <td>
+        pro Form
+    </td>
+    <td>
+            <c:if test="${currentNode.properties['j:function'].boolean}">
+                <label>Function : </label>
+                <input name="function" type="text" value="<c:if test="${!empty fields['j:function']}">${fn:escapeXml(fields['j:function'])}</c:if>"/>
+            </c:if>
+
+            <c:if test="${currentNode.properties['j:organization'].boolean}">
+                <label>Organization : </label>
+                <input name="organization" type="text" value="<c:if test="${!empty fields['j:organization']}">${fn:escapeXml(fields['j:organization'])}</c:if>"/>
+            </c:if>
+        <button class="btn btn-primary" type="button" onclick="changeFields('function','organization')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('profession')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="social">
+    <td>
+        Social
+    </td>
+    <td>
+            <c:if test="${currentNode.properties['j:facebookID'].boolean}">
+                <c:choose>
+                    <c:when test="${!empty fields['j:facebookID']}">
+                        <img src="${url.context}/icons/fb_logo_20_20.png"/>&nbsp;&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <img src="${url.context}/icons/fb_logo_off_20_20.png"/>&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+            <c:if test="${currentNode.properties['j:skypeID'].boolean}">
+                <c:choose>
+                    <c:when test="${!empty fields['j:skypeID']}">
+                        <img src="${url.context}/icons/skype_logo_20_20.png"/>&nbsp;&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <img src="${url.context}/icons/skype_logo_off_20_20.png"/>&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+
+            <c:if test="${currentNode.properties['j:twitterID'].boolean}">
+                    <c:choose>
+                        <c:when test="${!empty fields['j:twitterID']}">
+                            <img src="${url.context}/icons/twitter_logo_20_20.png"/>&nbsp;&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${url.context}/icons/twitter_logo_off_20_20.png"/>&nbsp;&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+            </c:if>
+
+            <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
+                <c:choose>
+                <c:when test="${!empty fields['j:linkedinID']}">
+                    <img src="${url.context}/icons/in_logo_20_20.png"/>&nbsp;&nbsp;&nbsp;
+                </c:when>
+                    <c:otherwise>
+                        <img src="${url.context}/icons/in_logo_off_20_20.png"/>&nbsp;&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('social')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="social_form" class="hide">
+    <td>
+        Social Form
+    </td>
+    <td>
+        <c:if test="${currentNode.properties['j:facebookID'].boolean}">
+            <label>Facebook Id : </label>
+            <input name="facebookID" type="text" value="<c:if test="${!empty fields['j:facebookID']}">${fn:escapeXml(fields['j:facebookID'])}</c:if>"/>
+        </c:if>
+        <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
+            <label>Linkedin Id : </label>
+            <input name="linkedinID" type="text" value="<c:if test="${!empty fields['j:linkedinID']}">${fn:escapeXml(fields['j:linkedinID'])}</c:if>"/>
+        </c:if>
+        <c:if test="${currentNode.properties['j:skypeID'].boolean}">
+            <label>Skype Id : </label>
+            <input name="skypeID" type="text" value="<c:if test="${!empty fields['j:skypeID']}">${fn:escapeXml(fields['j:skypeID'])}</c:if>"/>
+        </c:if>
+        <c:if test="${currentNode.properties['j:twitterID'].boolean}">
+            <label>Twitter Id : </label>
+            <input name="twitterID" type="text" value="<c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if>"/>
+        </c:if>
+        <button class="btn btn-primary" type="button" onclick="changeFields('facebookID','linkedinID','skypeID','twitterID')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('social')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="adress">
+    <td>
+        Adress
+    </td>
+    <td>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('adress')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="adress_form" class="hide">
+    <td>
+        Adress form
+    </td>
+    <td>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('adress')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="password">
+    <td>
+        Password
+    </td>
+    <td>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('password')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+<tr id="password_form" class="hide">
+    <td>
+        Password Form
+    </td>
+    <td>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="editRow('password')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+<tr>
+
+
+
+<%--
+
+<ul class="user-profile-list">
+<c:if test="${currentNode.properties['j:title'].boolean}">
+    <li>
+        <span class="label"><fmt:message key="jnt_user.j_title"/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:title')}"> jcr:id="j:title" class="inline-editable choicelistEdit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_title" jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['j:title']}">init:data="<%= getPublicPropertiesData(pageContext, "j:title")%>"</c:if>
+                jcr:options="{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}"</c:if>><jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:firstName'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_firstName'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:firstName')}"> jcr:id="j:firstName" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_firstName" <c:if test="${empty fields['j:firstName']}">init:data="<%= getPublicPropertiesData(pageContext, "j:firstName")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:firstName'] and user:isPropertyEditable(user,'j:firstName')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:firstName']}">${fn:escapeXml(fields['j:firstName'])}</c:if></span>
+    </li>
+</c:if>
+<c:if test="${currentNode.properties['j:lastName'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_lastName'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:lastName')}"> jcr:id="j:lastName" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_lastName" <c:if test="${empty fields['j:lastName']}">init:data="<%= getPublicPropertiesData(pageContext, "j:lastName")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:lastName'] and user:isPropertyEditable(user,'j:lastName')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:lastName']}">${fn:escapeXml(fields['j:lastName'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:gender'].boolean}">
+    <li>
+        <span class="label"><fmt:message key="jnt_user.profile.gender"/> : </span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:gender')}"> jcr:id="j:gender" class="inline-editable choicelistEdit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_gender" jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['j:gender']}">init:data="<%= getPublicPropertiesData(pageContext, "j:gender")%>"</c:if>
+                jcr:options="{<c:forEach items="${genderInit}" varStatus="status" var="gender"><c:if test="${status.index > 0}">,</c:if>'${gender.value.string}':'${gender.displayName}'</c:forEach>}"</c:if>><jcr:nodePropertyRenderer node="${user}" name="j:gender" renderer="resourceBundle"/></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:birthDate'].boolean}">
+    <li>
+        <span class="label"><fmt:message key="jnt_user.j_birthDate"/></span>
+        <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
+        <c:if test="${not empty birthDate}">
+            <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+            <fmt:formatDate value="${birthDate.date.time}" pattern="MMM dd yyyy" var="dateforCal"/>
+        </c:if>
+        <c:if test="${empty birthDate}">
+            <c:set var="displayBirthDate"><fmt:message key="label.clickToEdit"/></c:set>
+        </c:if>
+            <span <c:if test="${user:isPropertyEditable(user,'j:birthDate')}"> jcr:id="j:birthDate" class="inline-editable dateEdit${currentNode.identifier}"
+                id="JahiaGxt_userDateEdit_birthDate" <c:if test="${empty fields['j:birthDate']}">init:data="<%= getPublicPropertiesData(pageContext, "j:birthDate")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>" jcr:value="${dateforCal}" </c:if>>${displayBirthDate}</span>
+    </li>
+</c:if>
+
+
+
+<c:if test="${currentNode.properties['j:about'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_about'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:about')}"> jcr:id="j:about" class="inline-editable-block ckeditorEdit${currentNode.identifier}"
+                id="JahiaGxt_userCkeditorEdit_about" <c:if test="${empty fields['j:about']}">init:data="<%= getPublicPropertiesData(pageContext, "j:about")%>"</c:if>
+                ckeditor:type="Mini"
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>>${fields['j:about']}</span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:address'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_address'/></span>
+
+                <span <c:if test="${user:isPropertyEditable(user,'j:address')}"> jcr:id="j:address" class="inline-editable edit${currentNode.identifier}"
+                    id="JahiaGxt_userEdit_address" <c:if test="${empty fields['j:address']}">init:data="<%= getPublicPropertiesData(pageContext, "j:address")%>"</c:if>
+                    jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:address'] and user:isPropertyEditable(user,'j:address')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:address']}">${fn:escapeXml(fields['j:address'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:zipCode'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_zipCode'/></span>
+
+                    <span <c:if test="${user:isPropertyEditable(user,'j:zipCode')}"> jcr:id="j:zipCode" class="inline-editable edit${currentNode.identifier}"
+                        id="JahiaGxt_userEdit_zipCode" <c:if test="${empty fields['j:zipCode']}">init:data="<%= getPublicPropertiesData(pageContext, "j:zipCode")%>"</c:if>
+                        jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:zipCode'] and user:isPropertyEditable(user,'j:zipCode')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:zipCode']}">${fn:escapeXml(fields['j:zipCode'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:city'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_city'/></span>
+
+                    <span <c:if test="${user:isPropertyEditable(user,'j:city')}"> jcr:id="j:city" class="inline-editable edit${currentNode.identifier}"
+                        id="JahiaGxt_userEdit_city" <c:if test="${empty fields['j:city']}">init:data="<%= getPublicPropertiesData(pageContext, "j:city")%>"</c:if>
+                        jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:city'] and user:isPropertyEditable(user,'j:city')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:city']}">${fn:escapeXml(fields['j:city'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:country'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_country'/></span>
+
+                    <span <c:if test="${user:isPropertyEditable(user,'j:country')}"> jcr:id="j:country" class="inline-editable edit${currentNode.identifier}"
+                        id="JahiaGxt_userEdit_country" <c:if test="${empty fields['j:country']}">init:data="<%= getPublicPropertiesData(pageContext, "j:country")%>"</c:if>
+                        jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:country'] and user:isPropertyEditable(user,'j:country')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:country']}">${fn:escapeXml(fields['j:country'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:phoneNumber'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_phoneNumber'/></span>
+
+                    <span <c:if test="${user:isPropertyEditable(user,'j:phoneNumber')}"> jcr:id="j:phoneNumber" class="inline-editable edit${currentNode.identifier}"
+                        id="JahiaGxt_userEdit_phoneNumber" <c:if test="${empty fields['j:phoneNumber']}">init:data="<%= getPublicPropertiesData(pageContext, "j:phoneNumber")%>"</c:if>
+                        jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:phoneNumber'] and user:isPropertyEditable(user,'j:phoneNumber')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:phoneNumber']}">${fn:escapeXml(fields['j:phoneNumber'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:mobileNumber'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_mobileNumber'/></span>
+
+                    <span <c:if test="${user:isPropertyEditable(user,'j:mobileNumber')}"> jcr:id="j:mobileNumber" class="inline-editable edit${currentNode.identifier}"
+                        id="JahiaGxt_userEdit_mobileNumber" <c:if test="${empty fields['j:mobileNumber']}">init:data="<%= getPublicPropertiesData(pageContext, "j:mobileNumber")%>"</c:if>
+                        jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:mobileNumber'] and user:isPropertyEditable(user,'j:mobileNumber')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:mobileNumber']}">${fn:escapeXml(fields['j:mobileNumber'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:email'].boolean}">
+    <li>
+        <span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:email')}"> jcr:id="j:email" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_email" <c:if test="${empty fields['j:email']}">init:data="<%= getPublicPropertiesData(pageContext, "j:email")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:email'] and user:isPropertyEditable(user,'j:email')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:skypeID'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_skypeID'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:skypeID')}"> jcr:id="j:skypeID" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_skypeID" <c:if test="${empty fields['j:skypeID']}">init:data="<%= getPublicPropertiesData(pageContext, "j:skypeID")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:skypeID'] and user:isPropertyEditable(user,'j:skypeID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:skypeID']}">${fn:escapeXml(fields['j:skypeID'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:twitterID'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_twitterID'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:twitterID')}"> jcr:id="j:twitterID" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_twitterID" <c:if test="${empty fields['j:twitterID']}">init:data="<%= getPublicPropertiesData(pageContext, "j:twitterID")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:twitterID'] and user:isPropertyEditable(user,'j:twitterID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:facebookID'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_facebookID'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:facebookID')}"> jcr:id="j:facebookID" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_facebookID" <c:if test="${empty fields['j:facebookID']}">init:data="<%= getPublicPropertiesData(pageContext, "j:facebookID")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:facebookID'] and user:isPropertyEditable(user,'j:facebookID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:facebookID']}">${fn:escapeXml(fields['j:facebookID'])}</c:if></span>
+    </li>
+</c:if>
+
+<c:if test="${currentNode.properties['j:linkedinID'].boolean}">
+    <li>
+        <span class="label"><fmt:message key='jnt_user.j_linkedinID'/></span>
+
+            <span <c:if test="${user:isPropertyEditable(user,'j:linkedinID')}"> jcr:id="j:linkedinID" class="inline-editable edit${currentNode.identifier}"
+                id="JahiaGxt_userEdit_linkedinID" <c:if test="${empty fields['j:linkedinID']}">init:data="<%= getPublicPropertiesData(pageContext, "j:linkedinID")%>"</c:if>
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>><c:if test="${empty fields['j:linkedinID'] and user:isPropertyEditable(user,'j:linkedinID')}"><fmt:message key="label.clickToEdit"/></c:if><c:if test="${!empty fields['j:linkedinID']}">${fn:escapeXml(fields['j:linkedinID'])}</c:if></span>
+    </li>
+</c:if>
+
+
+
+<c:if test="${currentNode.properties['preferredLanguage'].boolean}">
+    <li>
+        <span class="label"><fmt:message key="jnt_user.preferredLanguage"/></span>
+        <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/><c:set var="prefLocale" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
+            <span jcr:id="preferredLanguage" class="inline-editable preferredLanguageEdit${currentNode.identifier}"
+                  id="JahiaGxt_userEdit_preferredLanguage"  jcr:url="<c:url value='${url.basePreview}${user.path}'/>" <c:if test="${empty fields['preferredLanguage']}">init:data="<%= getPublicPropertiesData(pageContext, "preferredLanguage")%>"</c:if>
+                  jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${status.index > 0}">,</c:if>'${adLocale}':'${functions:escapeJavaScript(functions:displayLocaleNameWith(adLocale, adLocale))}'</c:forEach>}">${functions:displayLocaleNameWith(prefLocale, prefLocale)}</span>
+    </li>
+
+</c:if>
+
+<c:if test="${currentNode.properties['age'].boolean}">
+    <li><span class="label"><fmt:message key="jnt_user.age"/>:&nbsp;</span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></li>
+</c:if>
+<c:if test="${currentNode.properties['password'].boolean and !(user.properties['j:external'].boolean)}">
+    <div id="passwordFormContainer" style="display:none;">
+        <div id="passwordForm">
+            <form id="changePassword" method="post" action="">
+                <c:forEach items="${param}" var="p">
+                    <c:if test="${not empty ps}">
+                        <c:set var="ps" value="${ps}&${p.key}=${p.value}"/>
+                    </c:if>
+                    <c:if test="${empty ps}">
+                        <c:set var="ps" value="?${p.key}=${p.value}"/>
+                    </c:if>
+                </c:forEach>
+                <p>
+                    <input type="password" id="password" name="password"/></p>
+                </p>
+                <p>
+                    <span class="label"><fmt:message key="label.confirmPassword"/></span>
+                    <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+                </p>
+                <div>
+                    <button id="passwordokbutton" ><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>
+                    <button type="button" id="passwordcancelbutton" ><span class="icon-contribute icon-cancel"></span><fmt:message key="label.cancel"/></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <li>
+        <span class="label"><fmt:message key="label.password"/></span>
+
+        <span id="passwordEdit" class="inline-editable edit${currentNode.identifier}"><fmt:message key="label.clickToEdit"/></span>
+    </li>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            $('#passwordEdit').click(function() {
+                $('#passwordEdit').html('');
+                $('#passwordForm').insertAfter('#passwordEdit');
+            });
+
+            $('#passwordcancelbutton').click(function() {
+                $('#passwordForm').appendTo('#passwordFormContainer');
+                $('#passwordEdit').html('<fmt:message key="label.clickToEdit"/>');
+            });
+
+            $("#changePassword").submit(function() {
+                if ($("#password").val() == "") {
+                    alert("<fmt:message key='serverSettings.user.errors.password.mandatory'/>");
+                    return false;
+                }
+
+                if ($("#password").val() != $("#passwordconfirm").val()) {
+                    alert("<fmt:message key='serverSettings.user.errors.password.not.matching'/>");
+                    return false;
+                }
+
+                $.post('<c:url value="${url.base}${user.path}.changePassword.do"/>',
+                        $(this).serializeArray(), function(data) {
+                            alert(data['errorMessage']);
+                            if (data['result']=='success') {
+                                $('#passwordForm').appendTo('#passwordFormContainer');
+                                $('#passwordEdit').html('<fmt:message key="label.clickToEdit"/>');
+                            }
+                        }, 'json');
+
+                return false;
+            });
+        });
+
+    </script>
+</c:if>
+</ul>
+
+&ndash;%&gt;
+--%>

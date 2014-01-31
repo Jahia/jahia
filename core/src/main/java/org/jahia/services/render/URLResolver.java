@@ -138,17 +138,17 @@ public class URLResolver {
      * Initializes an instance of this class. This constructor is mainly used when
      * resolving URLs of incoming requests.
      *
-     * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
+     * @param pathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
      */
-    protected URLResolver(String urlPathInfo, String serverName, String workspace, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+    protected URLResolver(String pathInfo, String serverName, String workspace, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
         super();
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
         this.workspace = workspace;
 
-        this.urlPathInfo = urlPathInfo;
+        this.urlPathInfo = normalizeUrlPathInfo(pathInfo);
         
         Date date = getVersionDate(request);
         String versionLabel = getVersionLabel(request);
@@ -189,6 +189,14 @@ public class URLResolver {
         }
     }
 
+    private static String normalizeUrlPathInfo(String urlPathInfo) {
+        if (urlPathInfo != null && urlPathInfo.length() > 1 && urlPathInfo.charAt(urlPathInfo.length() - 1) == '/') {
+            urlPathInfo = urlPathInfo.substring(0, urlPathInfo.length() - 1);
+            return urlPathInfo;
+        }
+        return urlPathInfo;
+    }
+
     /**
      * Initializes an instance of this class. This constructor is mainly used when
      * trying to find mapping for URLs in outgoing requests.
@@ -203,7 +211,7 @@ public class URLResolver {
         renderContext = context;
         String contextPath = context.getRequest().getContextPath();
 
-        this.urlPathInfo = StringUtils.substringAfter(url, contextPath + context.getServletPath());
+        this.urlPathInfo = normalizeUrlPathInfo(StringUtils.substringAfter(url, !contextPath.isEmpty() ? contextPath + context.getServletPath() : context.getServletPath()));
         this.servletPart = StringUtils.substringAfterLast(context.getServletPath(), "/");
 
         if (!StringUtils.isEmpty(urlPathInfo)) {

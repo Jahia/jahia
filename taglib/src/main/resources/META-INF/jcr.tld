@@ -325,6 +325,10 @@
         </attribute>
     </tag>
     <tag>
+        <!--
+            Import-Package:
+                org.jahia.taglibs.query
+        -->
         <description>
             Exposes into the template scope the result (as the javax.jcr.query.QueryResult instance) of the JCR query
             based on the provided Query Object Model, which is defined in the body via query tags.

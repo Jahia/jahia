@@ -51,50 +51,50 @@
                 <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
                 <td>
                     <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-                        <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
-                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
-                            href="<c:url value='${baseEdit}${node.path}${page}.html'/>"><fmt:message
-                            key="label.editMode"/></a>
+
+                        <a href="<c:url value='${baseEdit}${node.path}${page}.html'/>">
+                            <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative; top: 4px; margin-right:2px; "/>
+                        </a>
                     </c:if>
                 </td>
                 <td>
                     <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-                        <c:url value='/icons/contribute.png' var="icon"/>
-                        <c:if test="${currentNode.properties.typeOfContent.string eq 'contents'}">
-                            <c:url value='/icons/content-manager-1616.png' var="icon"/>
-                        </c:if>
-                        <img src="${icon}" width="16" height="16" alt=" " role="presentation"
-                             style="position:relative; top: 4px; margin-right:2px; "/><a
-                            href="<c:url value='${baseContribute}${node.path}${page}.html'/>"><fmt:message
-                            key="label.contribute"/></a>
+                        <a href="<c:url value='${baseContribute}${node.path}${page}.html'/>">
+                            <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative; top: 4px; margin-right:2px; "/>
+                        </a>
                     </c:if>
                 </td>
                 <td>
                     <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-                        <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" "
-                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
-                            href="<c:url value='${basePreview}${node.path}${page}.html'/>"><fmt:message
-                            key="label.preview"/></a>
+                        <a href="<c:url value='${basePreview}${node.path}${page}.html'/>">
+                            <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                        </a>
                     </c:if>
                 </td>
                 <td>
                     <c:if test="${currentNode.properties.live.boolean && (node.home.properties['j:published'].boolean or remotelyPublished)}">
-                        <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" "
-                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
-                            href="<c:url value='${baseLive}${node.path}${page}.html'/>"><fmt:message
-                            key="label.live"/></a>
+                        <a href="<c:url value='${baseLive}${node.path}${page}.html'/>">
+                            <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
+                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                        </a>
                     </c:if>
                 </td>
                 <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
-                    <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
-                         role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
-                        href="#editSiteDiv${node.identifier}" class="changePropertiesButton" id="changePropertiesButton${node.identifier}"><fmt:message key="label.manageSite.changeProperties"/></a>
+                    <a href="#editSiteDiv${node.identifier}" class="changePropertiesButton" id="changePropertiesButton${node.identifier}">
+                        <img src="/icons/search.png" width="16" height="16" alt=" "
+                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                    </a>
                 </c:if>
                 <c:if test="${currentNode.properties.details.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
-                    <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
-                         role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
-                        href="<c:url value='${basePreview}${node.path}${page}.${currentNode.properties.detailsTemplate.string}.html'/>"
-                        class="detailsButton" id="detailsButton${node.identifier}">${currentNode.properties.detailsLabel.string}</a>
+                    <a href="<c:url value='${basePreview}${node.path}${page}.${currentNode.properties.detailsTemplate.string}.html'/>"
+                        class="detailsButton" id="detailsButton${node.identifier}">
+                        <img src="/icons/search.png" width="16" height="16" alt=" "
+                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                             ${currentNode.properties.detailsLabel.string}
+                    </a>
                 </c:if>
 
                 <jsp:useBean id="nowDate" class="java.util.Date" />

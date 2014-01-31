@@ -188,6 +188,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageRegistry;
     }
 
+    public SourceControlFactory getSourceControlFactory() {
+        return scmHelper.getSourceControlFactory();
+    }
+
     public void setXmlIndentation(int i) {
         prettyPrint.setIndentSize(i);
     }

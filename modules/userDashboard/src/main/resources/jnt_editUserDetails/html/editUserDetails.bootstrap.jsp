@@ -96,7 +96,8 @@
 <template:addResources>
 <script type="text/javascript">
     function ajaxReloadCallback(jcrId) {
-    	if (jcrId == 'preferredLanguage') {
+    	//alert('callback Called with :'+jcrId);
+        if (jcrId == 'preferredLanguage') {
     		window.location.reload();
     	} else {
         	$('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?includeJavascripts=true&userUuid=${user.identifier}"/>');
@@ -176,6 +177,7 @@
 
         var fields = changeFields.arguments;
         var data;
+        var reloadType='other';
 
         //initializing data table
         var initData = $(this).attr('init:data');
@@ -195,6 +197,10 @@
         for(var nbFields=0; nbFields<fields.length; nbFields++)
         {
             var currentFieldname = fields[nbFields];
+            if(currentFieldname=='preferredLanguage')
+            {
+                reloadType='currentFieldname';
+            }
             var currentFieldJcrId = "j:"+currentFieldname;
             var currentInput = "input[name="+currentFieldname+"]";
             data[currentFieldJcrId]=$(currentInput).val();
@@ -202,23 +208,72 @@
 
         //calling ajax POST
         var thisField = this;
-       /* var url = "";
-        url += ${url.basePreview}${user.path};*/
-        /*$.ajax({ type: 'POST',
-                 url: url,
-                 data: data,
-                 dataType: "json",
-                 error:errorOnSave(thisField),
-                 traditional: true
-               });*/
+        var url = '${url.basePreview}${user.path}';
         $.ajax({ type: 'POST',
-            url: '/cms/render/default/en/users/root',
+            url: url,
             data: data,
             dataType: "json",
             error:errorOnSave(thisField),
-            traditional: true
+            traditional: true,
+            callback: ajaxReloadCallback(reloadType)
         });
 
+    }
+
+    function changeFieldsByRowId(rowId)
+    {
+
+        var data;
+        var reloadType='other';
+
+        //initializing data table
+        var initData = $(this).attr('init:data');
+        if (initData != null)
+        {
+            data = $.parseJSON(initData);
+        }
+        if (data == null)
+        {
+            data = {};
+        }
+
+        //presetting the jcr method
+        data['jcrMethodToCall'] = 'put';
+        var divId = "#"+rowId;
+        var inputFields = $(divId+" :input");
+        var options = jQuery('option:selected')
+        var selectFields = $(divId+" :selected");
+        alert('selects done :'+selectFields.innerHTML);
+        var fields = inputFields;
+        alert("Nombre de champs avec input : "+fields.length);
+        fields+=selectFields;
+        alert("Nombre de champs avec select : "+fields.length);
+        //Getting the inputs
+        for(var nbFields=0; nbFields<fields.length; nbFields++)
+        {
+            var currentFieldname = fields[nbFields];
+            if(currentFieldname=='preferredLanguage')
+            {
+                reloadType='currentFieldname';
+            }
+            var currentFieldJcrId = "j:"+currentFieldname;
+            var currentInput = "input[name="+currentFieldname+"]";
+            data[currentFieldJcrId]=$(currentInput).val();
+        }
+
+        //Getting the selects
+
+        //calling ajax POST
+        var thisField = this;
+        var url = '${url.basePreview}${user.path}';
+        $.ajax({ type: 'POST',
+            url: url,
+            data: data,
+            dataType: "json",
+            error:errorOnSave(thisField),
+            traditional: true,
+            callback: ajaxReloadCallback(reloadType)
+        });
     }
 
     function editRow(elementId){
@@ -240,67 +295,73 @@
     $(document).ready(initEditUserDetails);
 </script>
 </template:addResources>
-    <c:if test="${currentNode.properties['j:picture'].boolean}">
 
-            <%--<span class="label"><fmt:message key='jnt_user.j_picture'/></span>--%>
-            <div class="row">
-                <div class="span2">
-                    <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                    <c:choose>
-                        <c:when test="${empty picture}">
-                            <div class='image'>
-                                <div class='itemImage itemImageLeft'>
-                                    <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                                         alt="" border="0"/></div>
-                            </div>
-                            <div class="clear"></div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class='image'>
-                                <div class='itemImage itemImageLeft'><img class="userProfileImage"
-                                                                          src="${picture.node.thumbnailUrls['avatar_120']}"
-                                                                          alt="${fn:escapeXml(person)}"/></div>
-                            </div>
-                            <div class="clear"></div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-                <div class="span10" style="height:120px">
-                    <c:if test="${currentNode.properties['j:about'].boolean}">
-                            <span class="label"><fmt:message key='jnt_user.j_about'/></span>
-                            <span <c:if test="${user:isPropertyEditable(user,'j:about')}"> jcr:id="j:about" class="inline-editable-block ckeditorEdit${currentNode.identifier}"
-                            id="JahiaGxt_userCkeditorEdit_about" <c:if test="${empty fields['j:about']}">init:data="<%= getPublicPropertiesData(pageContext, "j:about")%>"</c:if>
-                            ckeditor:type="Mini"
-                            jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>>${fields['j:about']}</span>
-                    </c:if>
-                </div>
-            </div>
 
-        <c:if test="${currentNode.properties['j:organization'].boolean}">
-                <%--<span class="label"><fmt:message key='jnt_user.j_organization'/></span>--%>
-
+<%--<span class="label"><fmt:message key='jnt_user.j_picture'/></span>--%>
+<div class="row">
+    <div class="span2">
+        <div>
+        <c:if test="${currentNode.properties['j:picture'].boolean}">
+            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+            <c:choose>
+                <c:when test="${empty picture}">
+                    <div class='image'>
+                        <div class='itemImage itemImageLeft'>
+                            <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                 alt="" border="0"/></div>
+                    </div>
+                    <div class="clear"></div>
+                </c:when>
+                <c:otherwise>
+                    <div class='image'>
+                        <div class='itemImage itemImageLeft'><img class="userProfileImage"
+                                                                  src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                                  alt="${fn:escapeXml(person)}"/></div>
+                    </div>
+                    <div class="clear"></div>
+                </c:otherwise>
+            </c:choose>
+        </c:if>
+        </div>
+        <div>
+            <c:if test="${currentNode.properties['j:organization'].boolean}">
                 <c:if test="${empty fields['j:organization'] and user:isPropertyEditable(user,'j:organization')}">
                     <fmt:message key="label.clickToEdit"/>
                 </c:if>
                 <c:if test="${!empty fields['j:organization']}">
                     <h3>${fn:escapeXml(fields['j:organization'])}</h3>
                 </c:if>
-        </c:if>
-
-        <c:if test="${currentNode.properties['j:function'].boolean}">
+            </c:if>
+            <c:if test="${currentNode.properties['j:function'].boolean}">
                 <c:if test="${empty fields['j:function'] and user:isPropertyEditable(user,'j:function')}">
                     <fmt:message key="label.clickToEdit"/>
                 </c:if>
                 <c:if test="${!empty fields['j:function']}">
                     <h4>${fn:escapeXml(fields['j:function'])}</h4>
                 </c:if>
+            </c:if>
+        </div>
+    </div>
+    <div class="span10" style="height:120px">
+        <c:if test="${currentNode.properties['j:about'].boolean}">
+                <span class="label"><fmt:message key='jnt_user.j_about'/></span>
+                <span <c:if test="${user:isPropertyEditable(user,'j:about')}"> jcr:id="j:about" class="inline-editable-block ckeditorEdit${currentNode.identifier}"
+                id="JahiaGxt_userCkeditorEdit_about" <c:if test="${empty fields['j:about']}">init:data="<%= getPublicPropertiesData(pageContext, "j:about")%>"</c:if>
+                ckeditor:type="Mini"
+                jcr:url="<c:url value='${url.basePreview}${user.path}'/>"</c:if>>${fields['j:about']}</span>
         </c:if>
-    </c:if>
-
-<form id="editUserDetailsForm" method="post">
-    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="editUserDetails_table">
-        <tbody>
-            <%@include file="editUserDetailsTableRow.jspf" %>
-        </tbody>
-    </table>
-</form>
+    </div>
+</div>
+<div class="row">
+    <div class="span2"></div>
+    <div class="span10">
+        <form id="editUserDetailsForm" method="post">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="editUserDetails_table">
+                <tbody>
+                    <%@include file="editUserDetailsTableRow.jspf" %>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div class="span2"></div>
+</div>

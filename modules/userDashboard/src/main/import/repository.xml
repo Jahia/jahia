@@ -42,7 +42,6 @@
                                 j:hiddenTemplate="false"
                                 j:titleKey="system.myWebProjects"
                                 jcr:mixinTypes="jmix:rbTitle"
-                                j:requiredPermissionNames="jcr:write_default"
                                 jcr:primaryType="jnt:contentTemplate">
                         <pagecontent j:id="user-sites"
                                      jcr:mixinTypes="jmix:customSkin"
@@ -57,7 +56,7 @@
                                                            mode="live">
                                     <websites-list-in-edit-mode contribute="true"
                                                                 edit="true"
-                                                       j:view="bootstrapSites"
+                                                                j:view="bootstrapSites"
                                                                 jcr:mixinTypes="jmix:renderable"
                                                                 jcr:primaryType="jnt:listSites"
                                                                 live="true"

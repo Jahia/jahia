@@ -118,7 +118,8 @@ public class ModuleDropTarget extends DropTarget {
                 for (GWTJahiaNode source : sources) {
                     boolean nodeAllowed = false;
                     for (String type : allowedTypes) {
-                        if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
+                        if (source.isNodeType(type)
+                                || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) {
                             nodeAllowed = true;
                             break;
                         }

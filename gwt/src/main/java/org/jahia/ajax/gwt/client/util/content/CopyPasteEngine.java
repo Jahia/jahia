@@ -186,7 +186,8 @@ public class CopyPasteEngine {
                 for (GWTJahiaNode source : sources) {
                     boolean nodeAllowed = false;
                     for (String type : allowedTypes) {
-                        if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
+                        if (source.isNodeType(type)
+                                || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) {
                             nodeAllowed = true;
                             break;
                         }
@@ -199,7 +200,22 @@ public class CopyPasteEngine {
         }
         return allowed;
     }
-    
+
+    public boolean canPasteAsReference() {
+        if (isCut()) {
+            return false;
+        }
+        List<GWTJahiaNode> sources = getCopiedPaths();
+        if (sources != null) {
+            for (GWTJahiaNode source : sources) {
+                if (source.isReference()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void updatePlaceholders() {
         for (PlaceholderModule module : placeholders) {
             module.updatePasteButton();

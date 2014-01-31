@@ -110,8 +110,11 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void commit(String message) throws IOException {
+        boolean commitRequired = checkCommit();
+        if (commitRequired) {
+            checkExecutionResult(executeCommand(executable, new String[]{"commit","-m",message}));
+        }
         invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, new String[]{"commit","-m",message}));
     }
 
     @Override

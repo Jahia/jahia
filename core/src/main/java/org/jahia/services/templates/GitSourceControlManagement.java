@@ -82,16 +82,13 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void commit(String message) throws IOException {
-        invalidateStatusCache();
-        Map<String, Status> statusMap = createStatusMap(false);
-        boolean commitRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
-                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
-                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+        boolean commitRequired = checkCommit();
         if (commitRequired) {
             String branch = executeCommand(executable, new String[]{"symbolic-ref"," --short ","HEAD"}).out.trim();
             checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m", message }));
             checkExecutionResult(executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin",branch}));
         }
+        invalidateStatusCache();
     }
 
     @Override

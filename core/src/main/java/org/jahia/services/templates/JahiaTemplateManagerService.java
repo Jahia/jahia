@@ -188,10 +188,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageRegistry;
     }
 
-    public SourceControlFactory getSourceControlFactory() {
-        return scmHelper.getSourceControlFactory();
-    }
-
     public void setXmlIndentation(int i) {
         prettyPrint.setIndentSize(i);
     }
@@ -316,7 +312,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                 if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm = null;
-                    scm = scmHelper.getSourceControlFactory().getSourceControlManagement(sources);
+                    scm = pack.getSourceControl();
                     if (scm != null) {
                         scm.update();
                         scm.commit("Release");
@@ -410,7 +406,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         SourceControlManagement scm = null;
         try {
-            scm = scmHelper.getSourceControlFactory().getSourceControlManagement(sources);
+            scm = getTemplatePackageById(moduleId).getSourceControl();
         } catch (Exception e) {
             logger.error("Cannot get SCM", e);
         }

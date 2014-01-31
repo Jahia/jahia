@@ -111,6 +111,10 @@ public final class CacheHelper {
                 }
             }
         }
+        
+        if (propagateInCluster) {
+            flushOutputCachesCluster();
+        }
 
         logger.info("...done flushing all caches.");
     }
@@ -193,6 +197,19 @@ public final class CacheHelper {
                 logger.info("...done flushing {}", cacheName);
             }
         }
+        if (propagateInCluster) {
+            flushOutputCachesCluster();
+        }
+    }
+
+    private static void flushOutputCachesCluster() {
+        CacheManager ehcacheManager = getJahiaCacheManager();
+        Cache cache = ehcacheManager.getCache("HTMLCacheEventSync");
+        if (cache == null) {
+            ehcacheManager.addCache("HTMLCacheEventSync");
+            cache = ehcacheManager.getCache("HTMLCacheEventSync");
+        }
+        cache.put(new Element("FLUSH_OUTPUT_CACHES", Boolean.TRUE));
     }
     
     @SuppressWarnings("deprecation")

@@ -42,10 +42,12 @@ package org.jahia.bundles.url.jahiawar.internal;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.utils.migration.Migrators;
 import org.jahia.utils.osgi.parsers.Parsers;
 import org.jahia.utils.osgi.parsers.ParsingContext;
 import org.jahia.utils.osgi.parsers.TldXmlFileParser;
@@ -306,6 +308,17 @@ public class Connection extends URLConnection {
 
                 entryInputStream = parseFile(entryInputStream, newName, parsingContext);
 
+                ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
+                List<String> messages = Migrators.getInstance().migrate(entryInputStream, entryOutputStream, newName, new Version("6.6"), new Version("7.0"), true);
+                if (messages.size() > 0) {
+                    for (String message : messages) {
+                        logger.warn(message);
+                    }
+                }
+                entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+                entryOutputStream.close();
+                entryOutputStream = null;
+
                 JarEntry newJarEntry = new JarEntry(newName);
                 if (jarEntry.getTime() > mostRecentTime) {
                     mostRecentTime = jarEntry.getTime();
@@ -486,11 +499,13 @@ public class Connection extends URLConnection {
     private void resolveTaglibs(String depends, ParsingContext parsingContext, Set<String> unresolvedTaglibUris) {
         try {
             List<Resource> allTlds = new LinkedList<Resource>();
-            // first detect available TLDs in Web application class loader
-            Resource[] tldResources = SpringContextSingleton.getInstance().getResources("classpath*:/META-INF/*.tld",
-                    false);
-            if (tldResources != null) {
-                allTlds.addAll(Arrays.asList(tldResources));
+            // first detect available TLDs in Web application class loader, if it is available (not available in unit tests)
+            if (SpringContextSingleton.getInstance().isInitialized()) {
+                Resource[] tldResources = SpringContextSingleton.getInstance().getResources("classpath*:/META-INF/*.tld",
+                        false);
+                if (tldResources != null) {
+                    allTlds.addAll(Arrays.asList(tldResources));
+                }
             }
 
             // check dependencies

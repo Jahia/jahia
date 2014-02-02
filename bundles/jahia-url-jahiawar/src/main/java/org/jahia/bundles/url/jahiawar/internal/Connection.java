@@ -308,16 +308,25 @@ public class Connection extends URLConnection {
 
                 entryInputStream = parseFile(entryInputStream, newName, parsingContext);
 
-                ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
-                List<String> messages = Migrators.getInstance().migrate(entryInputStream, entryOutputStream, newName, new Version("6.6"), new Version("7.0"), true);
-                if (messages.size() > 0) {
-                    for (String message : messages) {
-                        logger.warn(message);
+                ByteArrayOutputStream tempByteArrayOutputStream = new ByteArrayOutputStream();
+                IOUtils.copyLarge(entryInputStream, tempByteArrayOutputStream);
+                byte[] tempByteArray = tempByteArrayOutputStream.toByteArray();
+                ByteArrayInputStream tempByteArrayInputStream = new ByteArrayInputStream(tempByteArray);
+                if (Migrators.getInstance().willMigrate(tempByteArrayInputStream, newName, new Version("6.6"), new Version("7.0"))) {
+                    entryInputStream = new ByteArrayInputStream(tempByteArray);
+                    ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
+                    List<String> messages = Migrators.getInstance().migrate(entryInputStream, entryOutputStream, newName, new Version("6.6"), new Version("7.0"), true);
+                    if (messages.size() > 0) {
+                        for (String message : messages) {
+                            logger.warn(message);
+                        }
                     }
+                    entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
+                    entryOutputStream.close();
+                    entryOutputStream = null;
+                } else {
+                    entryInputStream = new ByteArrayInputStream(tempByteArray);
                 }
-                entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
-                entryOutputStream.close();
-                entryOutputStream = null;
 
                 JarEntry newJarEntry = new JarEntry(newName);
                 if (jarEntry.getTime() > mostRecentTime) {

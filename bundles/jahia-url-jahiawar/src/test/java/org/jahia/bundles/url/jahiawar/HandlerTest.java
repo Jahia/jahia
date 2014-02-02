@@ -161,7 +161,7 @@ public class HandlerTest {
         System.out.println("JAR contents:");
         System.out.println("-------------");
         while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
-            System.out.println(jarEntry.getName());
+            displayEntryInfo(null, jarEntry);
             if (contentChecks != null && contentChecks.keySet().contains(jarEntry.getName())) {
                 String[] contentsToFind = contentChecks.get(jarEntry.getName());
                 String entryContent = IOUtils.toString(jarInputStream);
@@ -178,10 +178,17 @@ public class HandlerTest {
                 JarInputStream embeddedJar = new JarInputStream(jarInputStream);
                 JarEntry embeddedJarEntry = null;
                 while ((embeddedJarEntry = embeddedJar.getNextJarEntry()) != null) {
-                    System.out.println("    " + embeddedJarEntry.getName());
+                    displayEntryInfo("    ",embeddedJarEntry);
                 }
             }
         }
+    }
+
+    private void displayEntryInfo(String padding, JarEntry jarEntry) {
+        if (padding == null) {
+            padding = "";
+        }
+        System.out.println(padding + jarEntry.getName() + " size=" + jarEntry.getSize() + " compressedSize=" + jarEntry.getCompressedSize());
     }
 
     private boolean clauseListContainsPackage(List<ManifestValueClause> manifestValueClauses, String packageName) {

@@ -211,7 +211,7 @@ public class URLResolver {
         renderContext = context;
         String contextPath = context.getRequest().getContextPath();
 
-        this.urlPathInfo = normalizeUrlPathInfo(StringUtils.substringAfter(url, !contextPath.isEmpty() ? contextPath + context.getServletPath() : context.getServletPath()));
+        this.urlPathInfo = normalizeUrlPathInfo(StringUtils.substringAfter(url, !StringUtils.isEmpty(contextPath) ? contextPath + context.getServletPath() : context.getServletPath()));
         this.servletPart = StringUtils.substringAfterLast(context.getServletPath(), "/");
 
         if (!StringUtils.isEmpty(urlPathInfo)) {

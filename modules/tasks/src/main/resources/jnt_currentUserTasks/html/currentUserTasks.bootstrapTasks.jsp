@@ -120,19 +120,23 @@
         <c:set value="${currentNode.properties['displayLastModifiedDate'].boolean}" var="dispLastModifiedDate"/>
         <c:set value="${currentNode.properties['displayAssignee'].boolean}" var="dispAssignee"/>
         <c:set value="${currentNode.properties['displayCreator'].boolean}" var="dispCreator"/>
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="userTasks_table">
-            <thead>
-            <tr>
-                <th><fmt:message key="mix_title.jcr_title"/></th>
-                <th><fmt:message key="label.owner"/></th>
-                <th><fmt:message key="mix_createdBy.jcr_createdBy"/></th>
-                <th><fmt:message key="jnt_task.state"/></th>
-            </tr>
-            </thead>
-            <tbody>
-            <%@include file="userTasksTableRow.jspf" %>
-            </tbody>
-        </table>
-        <div class="clear"></div>
+        <fieldset class="well">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userTasks_table">
+                <thead>
+                <tr>
+                    <th><fmt:message key="mix_title.jcr_title"/></th>
+                    <th><fmt:message key="label.owner"/></th>
+                    <th><fmt:message key="mix_createdBy.jcr_createdBy"/></th>
+                    <th><fmt:message key="jnt_task.state"/></th>
+                </tr>
+                </thead>
+                <tbody>
+                <%@include file="userTasksTableRow.jspf" %>
+                </tbody>
+            </table>
+        </fieldset>
+        <div class="clear">
+
+        </div>
     </div>
 </div>

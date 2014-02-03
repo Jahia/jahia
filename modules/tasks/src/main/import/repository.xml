@@ -15,7 +15,6 @@
                            j:hiddenTemplate="false"
                            j:requireLoggedUser="false"
                            j:requirePrivilegedUser="true"
-                           j:requiredPermissionNames="jcr:write_default"
                            j:titleKey="system.myTasks"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">
@@ -47,3 +46,4 @@
         </tasks>
     </modules>
 </content>
+        <!--j:requiredPermissionNames="jcr:write_default"-->

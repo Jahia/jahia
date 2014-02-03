@@ -5,22 +5,22 @@
     </td>
     <td>
         <c:if test="${currentNode.properties['j:title'].boolean}">
-            <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>
+            <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
         </c:if>
 
         <c:if test="${currentNode.properties['j:firstName'].boolean}">
         <c:if test="${!empty fields['j:firstName']}">
-            ${fn:escapeXml(fields['j:firstName'])}
+            ${fn:escapeXml(fields['j:firstName'])}&nbsp;
         </c:if>
         </c:if>
         <c:if test="${currentNode.properties['j:lastName'].boolean}">
         <c:if test="${!empty fields['j:lastName']}">
-            ${fn:escapeXml(fields['j:lastName'])}
+            ${fn:escapeXml(fields['j:lastName'])}&nbsp;
         </c:if>
         </c:if>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('names')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('names')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -30,14 +30,22 @@
         <div>Name form</div>
     </td>
     <td>
+        <div>
             <c:if test="${currentNode.properties['j:title'].boolean}">
                  <label>Title : </label>
-                <select>
+                <select name="title">
                     <option value=""></option>
                     <c:forEach items="${titleInit}"
                                varStatus="status"
                                var="title">
-                        <option value="${title.value.string}" >${title.displayName}</option>
+                        <c:choose>
+                            <c:when test="${(fn:escapeXml(fields['j:title'])) eq  (title.value.string)}">
+                                <option name="title" value="${title.value.string}" selected="selected">${title.displayName}</option>
+                            </c:when>
+                            <c:otherwise>
+                                <option name="title" value="${title.value.string}">${title.displayName}</option>
+                            </c:otherwise>
+                        </c:choose>
                     </c:forEach>
                 </select>
              </c:if>
@@ -52,21 +60,31 @@
              </c:if>
              <c:if test="${currentNode.properties['j:gender'].boolean}">
                      <label>Gender : </label>
-                    <select>
+                    <select name="gender">
                         <c:forEach items="${genderInit}"
                                    varStatus="status"
                                    var="gender">
-                            <option value="${gender.value.string}" >${gender.displayName}</option>
+                                <c:choose>
+                                    <c:when test="${(fn:escapeXml(fields['j:gender'])) eq  (gender.value.string)}">
+                                        <option name="gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option name="gender" value="${gender.value.string}" >${gender.displayName}</option>
+                                    </c:otherwise>
+                                </c:choose>
                         </c:forEach>
                     </select>
              </c:if>
-            <button class="btn btn-primary" type="button" onclick="changeFieldsByRowId('names')">
+        </div>
+        <div>
+            <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('names')">
             <%--<button class="btn btn-primary" type="button" onclick="changeFields('title','firstName', 'lastName','gender')">--%>
                 <fmt:message key="label.clickToEdit"/>
             </button>
+        </div>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('names')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('names')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -89,7 +107,7 @@
         </c:if>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('profession')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('profession')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -108,12 +126,12 @@
                 <label>Organization : </label>
                 <input name="organization" type="text" value="<c:if test="${!empty fields['j:organization']}">${fn:escapeXml(fields['j:organization'])}</c:if>"/>
             </c:if>
-        <button class="btn btn-primary" type="button" onclick="changeFields('function','organization')">
+        <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('profession')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('profession')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('profession')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -167,7 +185,7 @@
             </c:if>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('social')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('social')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -193,17 +211,17 @@
             <label>Twitter Id : </label>
             <input name="twitterID" type="text" value="<c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if>"/>
         </c:if>
-        <button class="btn btn-primary" type="button" onclick="changeFields('facebookID','linkedinID','skypeID','twitterID')">
+        <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('social')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('social')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('social')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
 <tr>
-<tr id="adress">
+<tr id="address">
     <td>
         <c:if test="${currentNode.properties['j:address'].boolean}">
                 <fmt:message key='jnt_user.j_address'/>
@@ -249,12 +267,12 @@
          </div>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('adress')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('address')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
 <tr>
-<tr id="adress_form" class="hide">
+<tr id="address_form" class="hide">
     <td>
         Adress form
     </td>
@@ -288,13 +306,13 @@
             <input name="email" value="<c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if>"/>
         </c:if>
         <div>
-            <button class="btn btn-primary" type="button" onclick="changeFields('address','zipCode','city','country','phoneNumber','mobileNumber','email')">
+            <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('address')">
                 <fmt:message key="label.clickToEdit"/>
             </button>
         </div>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('adress')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('address')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -306,7 +324,7 @@
     <td>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('password')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('password')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -318,7 +336,7 @@
     <td>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('password')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('password')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -355,7 +373,7 @@
     </c:if>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('other')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('other')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -381,12 +399,12 @@
                 </select>
             </div>
         </c:if>
-        <button class="btn btn-primary" type="button" onclick="changeFields('birthdate','preferredLanguage')">
+        <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('other')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
     <td>
-        <button class="btn btn-primary" type="button" onclick="editRow('other')">
+        <button class="btn btn-primary" type="button" onclick="switchRow('other')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </td>
@@ -475,3 +493,32 @@
 
 &ndash;%&gt;
 --%>
+<c:if test="${currentNode.properties['preferredLanguage'].boolean}">
+    <li>
+        <span class="label">
+                <fmt:message key="jnt_user.preferredLanguage"/>
+        </span>
+        <jcr:nodeProperty node="${user}"
+                          name="preferredLanguage"
+                          var="prefLang"/>
+        <c:set var="prefLocale" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
+        <span jcr:id="preferredLanguage"
+              class="inline-editable preferredLanguageEdit${currentNode.identifier}"
+              id="JahiaGxt_userEdit_preferredLanguage"  jcr:url="<c:url value='${url.basePreview}${user.path}'/>"
+                                                        <c:if test="${empty fields['preferredLanguage']}">
+                                                            init:data="<%= getPublicPropertiesData(pageContext, "preferredLanguage")%>"
+                                                        </c:if>
+                                                        jcr:options="{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
+                                                        var="adLocale"
+                                                        varStatus="status">
+                                                        <c:if test="${status.index > 0}">
+                                                            ,
+                                                        </c:if>
+                                                        '${adLocale}':'${functions:escapeJavaScript(functions:displayLocaleNameWith(adLocale, adLocale))}'
+                                                        </c:forEach>}"
+                >
+              ${functions:displayLocaleNameWith(prefLocale, prefLocale)}
+        </span>
+    </li>
+
+</c:if>

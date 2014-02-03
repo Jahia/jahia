@@ -95,16 +95,33 @@
 
 <template:addResources>
 <script type="text/javascript">
-    function ajaxReloadCallback(jcrId) {
-    	//alert('callback Called with :'+jcrId);
+    /*function ajaxReloadCallback(jcrId) {
+    	alert('callback Called with :'+jcrId);
         if (jcrId == 'preferredLanguage') {
+            alert('prefered language detected reloading the page ...');
     		window.location.reload();
     	} else {
-        	$('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?includeJavascripts=true&userUuid=${user.identifier}"/>');
+            alert('other case detected reloading the user ...');
+            $('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?includeJavascripts=true&userUuid=${user.identifier}"/>');
+            *//*alert('now reloading the page ...');
+            window.location.reload();*//*
     	}
+    }*/
+    function ajaxReloadCallbackSwitchRows(jcrId,rowId) {
+        alert('callback Called with :'+jcrId);
+        if (jcrId == 'preferredLanguage') {
+            alert('prefered language detected reloading the page ...');
+            window.location.reload();
+        } else {
+            alert('other case detected reloading the user ...');
+            $('.user-profile-list').parent().load('<c:url value="${url.baseLive}${currentNode.path}.html.ajax?includeJavascripts=true&userUuid=${user.identifier}"/>');
+            /*alert('now reloading the page ...');
+             window.location.reload();*/
+        }
+        switchRow(rowId);
     }
 
-    function initEditUserDetails() {
+    /*function initEditUserDetails() {
 
 
         initEditFields("${currentNode.identifier}", true, ajaxReloadCallback);
@@ -170,57 +187,9 @@
                 $(".userPicture${currentNode.identifier}").html(original.revert);
             }
         });
-    }
+    }*/
 
-    function changeFields()
-    {
-
-        var fields = changeFields.arguments;
-        var data;
-        var reloadType='other';
-
-        //initializing data table
-        var initData = $(this).attr('init:data');
-        if (initData != null)
-        {
-            data = $.parseJSON(initData);
-        }
-        if (data == null)
-        {
-            data = {};
-        }
-
-        //presetting the jcr method
-        data['jcrMethodToCall'] = 'put';
-
-        //browsing the args and getting the fields values
-        for(var nbFields=0; nbFields<fields.length; nbFields++)
-        {
-            var currentFieldname = fields[nbFields];
-            if(currentFieldname=='preferredLanguage')
-            {
-                reloadType='currentFieldname';
-            }
-            var currentFieldJcrId = "j:"+currentFieldname;
-            var currentInput = "input[name="+currentFieldname+"]";
-            data[currentFieldJcrId]=$(currentInput).val();
-        }
-
-        //calling ajax POST
-        var thisField = this;
-        var url = '${url.basePreview}${user.path}';
-        $.ajax({ type: 'POST',
-            url: url,
-            data: data,
-            dataType: "json",
-            error:errorOnSave(thisField),
-            traditional: true,
-            callback: ajaxReloadCallback(reloadType)
-        });
-
-    }
-
-    function changeFieldsByRowId(rowId)
+    function saveChangesByRowId(rowId)
     {
 
         var data;
@@ -239,29 +208,27 @@
 
         //presetting the jcr method
         data['jcrMethodToCall'] = 'put';
-        var divId = "#"+rowId;
-        var inputFields = $(divId+" :input");
-        var options = jQuery('option:selected')
-        var selectFields = $(divId+" :selected");
-        alert('selects done :'+selectFields.innerHTML);
-        var fields = inputFields;
-        alert("Nombre de champs avec input : "+fields.length);
-        fields+=selectFields;
-        alert("Nombre de champs avec select : "+fields.length);
-        //Getting the inputs
-        for(var nbFields=0; nbFields<fields.length; nbFields++)
-        {
-            var currentFieldname = fields[nbFields];
-            if(currentFieldname=='preferredLanguage')
-            {
-                reloadType='currentFieldname';
-            }
-            var currentFieldJcrId = "j:"+currentFieldname;
-            var currentInput = "input[name="+currentFieldname+"]";
-            data[currentFieldJcrId]=$(currentInput).val();
-        }
+        var divId = "#"+rowId+'_form';
 
-        //Getting the selects
+        //getting the form selects
+        $(divId+' select').each(function() {
+            if(this.name=='preferredLanguage')
+            {
+                reloadType='preferredLanguage';
+                alert('save field as data['+this.name+']='+this.value);
+                data[this.name]=this.value;
+            }
+            else
+            {
+                data['j:'+this.name]=this.value;
+            }
+
+        });
+
+        //getting the form inputs
+        $(divId+' input').each(function() {
+            data['j:'+this.name]=this.value;
+        });
 
         //calling ajax POST
         var thisField = this;
@@ -271,12 +238,14 @@
             data: data,
             dataType: "json",
             error:errorOnSave(thisField),
-            traditional: true,
-            callback: ajaxReloadCallback(reloadType)
-        });
+            traditional: true
+        }).done(function() {
+                    ajaxReloadCallbackSwitchRows(reloadType,rowId);
+                });
+        //switchRow(rowId);
     }
 
-    function editRow(elementId){
+    function switchRow(elementId){
         elementId="#"+elementId;
         var elementFormId = elementId+"_form";
         if( $(elementId).is(":visible"))

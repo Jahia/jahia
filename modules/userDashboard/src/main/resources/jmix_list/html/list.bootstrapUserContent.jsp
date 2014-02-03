@@ -44,20 +44,22 @@
 
 <template:include view="hidden.header"/>
 <c:if test="${not empty moduleMap.currentList}">
-    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="userContent_table">
-        <thead>
-        <tr>
-            <th><fmt:message key='label.name'/></th>
-            <th><fmt:message key='label.site'/></th>
-            <th><fmt:message key='mix_created'/></th>
-            <th><fmt:message key='jmix_contentmetadata.j_lastModificationDate'/></th>
-            <th><fmt:message key='jmix_contentmetadata.j_lastPublishingDate'/></th>
-        </tr>
-        </thead>
-        <tbody>
-            <%@include file="userContentTableRow.jspf" %>
-        </tbody>
-    </table>
+    <fieldset class="well">
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userContent_table">
+            <thead>
+            <tr>
+                <th><fmt:message key='label.name'/></th>
+                <th><fmt:message key='label.site'/></th>
+                <th><fmt:message key='mix_created'/></th>
+                <th><fmt:message key='jmix_contentmetadata.j_lastModificationDate'/></th>
+                <th><fmt:message key='jmix_contentmetadata.j_lastPublishingDate'/></th>
+            </tr>
+            </thead>
+            <tbody>
+                <%@include file="userContentTableRow.jspf" %>
+            </tbody>
+        </table>
+    </fieldset>
 </c:if>
 
 <c:if test="${functions:length(moduleMap.currentList) == 0 and not empty moduleMap.emptyListMessage}">

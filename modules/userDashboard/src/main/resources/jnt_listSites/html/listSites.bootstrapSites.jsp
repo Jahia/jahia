@@ -90,36 +90,38 @@
     </c:if>
 </c:if>
 
-<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="userSites_table">
-    <thead>
-        <tr>
-            <th><img src="/icons/siteManager.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key='label.site'/></th>
-            <th><img src="/icons/editMode.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key="label.editMode"/></th>
-            <th><img src="/icons/contribute.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key="label.contribute"/></th>
-            <th><img src="/icons/preview.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key="label.preview"/></th>
-            <th><img src="/icons/live.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key="label.live.version"/></th>
-            <th><img src="/icons/files-manager-1616.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key="label.filemanager"/></th>
-            <th><img src="/icons/content-manager-1616.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative;"/>
-                <fmt:message key="label.contentmanager"/></th>
-        </tr>
-    </thead>
-    <tbody>
-        <%@include file="sitesTableRow.jspf" %>
-    </tbody>
-</table>
+<fieldset class="well">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userSites_table">
+        <thead>
+            <tr>
+                <th><img src="/icons/siteManager.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key='label.site'/></th>
+                <th><img src="/icons/editMode.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key="label.editMode"/></th>
+                <th><img src="/icons/contribute.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key="label.contribute"/></th>
+                <th><img src="/icons/preview.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key="label.preview"/></th>
+                <th><img src="/icons/live.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key="label.live.version"/></th>
+                <th><img src="/icons/files-manager-1616.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key="label.filemanager"/></th>
+                <th><img src="/icons/content-manager-1616.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key="label.contentmanager"/></th>
+            </tr>
+        </thead>
+        <tbody>
+            <%@include file="sitesTableRow.jspf" %>
+        </tbody>
+    </table>
+</fieldset>
 
 <div style="display:none">
     <div id="dialog-delete-confirm" title=" ">

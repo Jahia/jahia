@@ -50,51 +50,71 @@
                 </c:if>
                 <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
                 <td>
-                    <c:if test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-
-                        <a href="<c:url value='${baseEdit}${node.path}${page}.html'/>">
-                            <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                    <c:choose>
+                        <c:when test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                            <a href="<c:url value='${baseEdit}${node.path}${page}.html'/>">
+                                <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative; top: 4px; margin-right:2px; "/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
                                  style="position:relative; top: 4px; margin-right:2px; "/>
-                        </a>
-                    </c:if>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
                 <td>
-                    <c:if test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
-                        <a href="<c:url value='${baseContribute}${node.path}${page}.html'/>">
-                            <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                    <c:choose>
+                        <c:when test="${currentNode.properties.contribute.boolean  && jcr:hasPermission(node,'contributeModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                            <a href="<c:url value='${baseContribute}${node.path}${page}.html'/>">
+                                <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative; top: 4px; margin-right:2px; "/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
                                  style="position:relative; top: 4px; margin-right:2px; "/>
-                        </a>
-                    </c:if>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
                 <td>
-                    <c:if test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
+                    <c:choose>
+                        <c:when test="${currentNode.properties.preview.boolean && jcr:hasPermission(node,'jcr:read_default') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
                         <a href="<c:url value='${basePreview}${node.path}${page}.html'/>">
                             <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
                                  role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
                         </a>
-                    </c:if>
+                        </c:when>
+                        <c:otherwise>
+                            <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative; top: 4px; margin-right:2px; "/>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
                 <td>
-                    <c:if test="${currentNode.properties.live.boolean && (node.home.properties['j:published'].boolean or remotelyPublished)}">
-                        <a href="<c:url value='${baseLive}${node.path}${page}.html'/>">
-                            <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
-                        </a>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${currentNode.properties.live.boolean && (node.home.properties['j:published'].boolean or remotelyPublished)}">
+                            <a href="<c:url value='${baseLive}${node.path}${page}.html'/>">
+                                <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
+                                     role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative; top: 4px; margin-right:2px; "/>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
                 <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
-                    <a href="#editSiteDiv${node.identifier}" class="changePropertiesButton" id="changePropertiesButton${node.identifier}">
-                        <img src="/icons/search.png" width="16" height="16" alt=" "
-                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
-                    </a>
+                    <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
+                        href="#editSiteDiv${node.identifier}" class="changePropertiesButton" id="changePropertiesButton${node.identifier}"><fmt:message key="label.manageSite.changeProperties"/></a>
                 </c:if>
                 <c:if test="${currentNode.properties.details.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
-                    <a href="<c:url value='${basePreview}${node.path}${page}.${currentNode.properties.detailsTemplate.string}.html'/>"
-                        class="detailsButton" id="detailsButton${node.identifier}">
-                        <img src="/icons/search.png" width="16" height="16" alt=" "
-                             role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
-                             ${currentNode.properties.detailsLabel.string}
-                    </a>
+                    <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
+                        href="<c:url value='${basePreview}${node.path}${page}.${currentNode.properties.detailsTemplate.string}.html'/>"
+                        class="detailsButton" id="detailsButton${node.identifier}">${currentNode.properties.detailsLabel.string}</a>
                 </c:if>
 
                 <jsp:useBean id="nowDate" class="java.util.Date" />
@@ -154,36 +174,60 @@
                                value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                     </c:if>
                     <td>
-                        <c:if test="${not empty editModeAccessNode && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
-                            <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${baseEdit}${editModeAccessNode.path}.html'/>"><fmt:message
-                                key="label.editMode"/></a>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${not empty editModeAccessNode && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                                <a href="<c:url value='${baseEdit}${editModeAccessNode.path}.html'/>">
+                                    <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                                         style="position:relative; top: 4px; margin-right:2px; "/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative; top: 4px; margin-right:2px; "/>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
                     <td>
-                        <c:if test="${not empty contributeModeAccessNode && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
-                            <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${baseContribute}${contributeModeAccessNode.path}.html'/>"><fmt:message
-                                key="label.contribute"/></a>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${not empty contributeModeAccessNode && currentNode.properties.contribute.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                                <a href="<c:url value='${baseContribute}${contributeModeAccessNode.path}.html'/>">
+                                    <img src="/icons/goto.png" width="16" height="16" alt=" " role="presentation"
+                                         style="position:relative; top: 4px; margin-right:2px; "/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative; top: 4px; margin-right:2px; "/>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
                     <td>
-                        <c:if test="${not empty previewModeAccessNode && currentNode.properties.preview.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
-                            <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${basePreview}${previewModeAccessNode.path}.html'/>"><fmt:message
-                                key="label.preview"/></a>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${not empty previewModeAccessNode && currentNode.properties.preview.boolean && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode}">
+                                <a href="<c:url value='${basePreview}${previewModeAccessNode.path}.html'/>">
+                                    <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
+                                         role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative; top: 4px; margin-right:2px; "/>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
                     <td>
-                        <c:if test="${currentNode.properties.live.boolean && node.home.properties['j:published'].boolean}">
-                            <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" "
-                                 role="presentation" style="position:relative; top: 4px; margin-right:2px; "><a
-                                href="<c:url value='${baseLive}${node.path}${page}.html'/>"><fmt:message
-                                key="label.live"/></a>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${currentNode.properties.live.boolean && node.home.properties['j:published'].boolean}">
+                                <a href="<c:url value='${baseLive}${node.path}${page}.html'/>">
+                                    <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" "
+                                         role="presentation" style="position:relative; top: 4px; margin-right:2px; "/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="/icons/cancel.png" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative; top: 4px; margin-right:2px; "/>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
                 </c:if>
             </c:otherwise>
@@ -193,10 +237,9 @@
             <c:set var="conf" value="filemanager"/>
             <c:set var="requiredPermission" value="fileManager"/>
             <c:set var="label" value="label.filemanager"/>
-            <c:set var="icon" value="files-manager-1616"/>
             <c:set var="multisite" value="false"/>
             <a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}" target="_blank">
-                <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
+                <img src="${url.context}/icons/search.png" width="16" height="16" alt=" "
                      role="presentation" style="position:relative; top: 4px; margin-right:2px; " />
             </a>
         </td>
@@ -204,10 +247,9 @@
             <c:set var="conf" value="editorialcontentmanager"/>
             <c:set var="requiredPermission" value="editorialContentManager"/>
             <c:set var="label" value="label.contentmanager"/>
-            <c:set var="icon" value="content-manager-1616"/>
             <c:set var="multisite" value="false"/>
             <a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}" target="_blank">
-                <img src="${url.context}/icons/${icon}.png" width="16" height="16" alt=" "
+                <img src="${url.context}/icons/search.png" width="16" height="16" alt=" "
                      role="presentation" style="position:relative; top: 4px; margin-right:2px; " />
             </a>
         </td>

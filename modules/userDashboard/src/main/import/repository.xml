@@ -42,7 +42,6 @@
                                 j:hiddenTemplate="false"
                                 j:titleKey="system.myWebProjects"
                                 jcr:mixinTypes="jmix:rbTitle"
-                                j:requiredPermissionNames="jcr:write_default"
                                 jcr:primaryType="jnt:contentTemplate">
                         <pagecontent j:id="user-sites"
                                      jcr:mixinTypes="jmix:customSkin"
@@ -103,19 +102,19 @@
                                          j:skypeID="true"
                                          j:title="true"
                                          j:twitterID="true"
+                                  j:view="bootstrap"
+                                  jcr:mixinTypes="jmix:renderable"
                                          jcr:primaryType="jnt:editUserDetails"
                                          password="true"
-                                         preferredLanguage="true"
-                                         j:view="bootstrap"
-                                         jcr:mixinTypes="jmix:renderable"/>
+                                  preferredLanguage="true"/>
                         </pagecontent>
                     </profile>
                 </dashboard-modules-base>
             </templates>
+                
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
         </userDashboard>
     </modules>
 </content>
-        <!--j:requiredPermissionNames="jcr:write_default"-->

@@ -475,6 +475,21 @@ public class QueryServiceImpl extends QueryService {
          */
         @Override
         public Object visit(PropertyExistenceImpl node, Object data) throws Exception {
+            if (getModificationInfo().getMode() == INITIALIZE_MODE) {
+                if (Constants.JCR_LANGUAGE.equals(node.getPropertyName())) {
+                    Selector selector = getSelector(getOriginalSource(),
+                            node.getSelectorName());
+                    Set<String> languages = getLanguagesPerSelector().get(
+                            selector.getSelectorName());
+                    if (languages == null) {
+                        languages = new HashSet<String>();
+                        getLanguagesPerSelector().put(selector.getSelectorName(), languages);
+                    }
+
+                    languages.add(NO_LOCALE);
+                }
+            }
+        	
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
@@ -936,12 +951,10 @@ public class QueryServiceImpl extends QueryService {
                             if (newLanguageCodes.contains(NO_LOCALE)) {
                                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                                         .getNodeType(selector.getNodeTypeName());
-                                boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? isFulltextIncludingMultilingualProperties(
-                                        nodeType, selector) : false;
                                 ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
                                         nodeType, selector, propertyName) : null;
                                 if (!Constants.JAHIANT_FILE.equals(selector.getNodeTypeName())
-                                        && ((propDef != null && propDef.isInternationalized()) || isFulltextIncludingMultilingualProperties)) {
+                                        && propDef != null && propDef.isInternationalized()) {
                                     newLanguageCodes.remove(NO_LOCALE);
                                 }
                             }
@@ -1051,25 +1064,6 @@ public class QueryServiceImpl extends QueryService {
                 }
             }
             return propDef;
-        }
-
-        private boolean isFulltextIncludingMultilingualProperties(ExtendedNodeType nodeType,
-                Selector selector) throws RepositoryException {
-            boolean isFulltextIncludingMultilingualProperties = true;
-            if (Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-                isFulltextIncludingMultilingualProperties = false;
-            } else if (!Constants.NT_BASE.equals(nodeType.getName())
-                    && !Constants.JAHIANT_CONTENT.equals(nodeType.getName())) {
-                isFulltextIncludingMultilingualProperties = false;
-                for (ExtendedPropertyDefinition propDef : nodeType.getPropertyDefinitionsAsMap()
-                        .values()) {
-                    if (propDef.isInternationalized()) {
-                        isFulltextIncludingMultilingualProperties = true;
-                        break;
-                    }
-                }
-            }
-            return isFulltextIncludingMultilingualProperties;
         }
 
         private String getCommonChildNodeTypes(String parentPath, Set<String> commonNodeTypes)

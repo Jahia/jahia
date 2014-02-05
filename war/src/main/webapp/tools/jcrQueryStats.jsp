@@ -24,18 +24,28 @@ QueryStat queryStat = ((JahiaRepositoryImpl)((SpringJackrabbitRepository)JCRSess
 pageContext.setAttribute("queryStat", queryStat);
 %>
 <h1>JCR Query statistics</h1>
-<p><a href="?refresh=true"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a></p>
+<p>
+	<a href="?refresh=true"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
+	<a href="?action=reset"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Reset statistics</a>
+</p>
 <c:if test="${not empty param.action}">
 	<c:choose>
-		<c:when test="${param.action == 'query-stat'}">
+		<c:when test="${param.action == 'enable'}">
 			<% queryStat.setEnabled("on".equals(request.getParameter("status"))); %>
 			<p style="color: blue">Query statistics now ${param.status == 'on' ? 'enabled' : 'disabled'}.</p>
+		</c:when>
+		<c:when test="${param.action == 'reset'}">
+			<%
+			queryStat.clearPopularQueriesQueue();
+			queryStat.clearSlowQueriesQueue();
+			%>
+			<p style="color: blue">Query statistics was cleared.</p>
 		</c:when>
 	</c:choose>
 </c:if>
 <p>Query statistics when enabled provides information about slow queries and most popular queries.</p>
 <p>The JCR query statistics is currently ${queryStat.enabled ? 'enabled' : 'disabled'}.
-<a href="?action=query-stat&amp;status=${queryStat.enabled ? 'off' : 'on'}">${queryStat.enabled ? 'Disable it' : 'Enable it'}</a></p>
+<a href="?action=enable&amp;status=${queryStat.enabled ? 'off' : 'on'}">${queryStat.enabled ? 'Disable it' : 'Enable it'}</a></p>
 <c:if test="${queryStat.enabled}">
 <fieldset>
 <legend>Slow queries</legend>

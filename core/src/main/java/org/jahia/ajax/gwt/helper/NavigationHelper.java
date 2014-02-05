@@ -294,12 +294,8 @@ public class NavigationHelper {
                 if (openPaths == null) {
                     openPaths = selectedNodes;
                 } else {
-<<<<<<< .working
-                    openPaths = new ArrayList<String>(openPaths);
-=======
-                	// copy the list to avoid ConcurrentModificationException, see QA-5200
+                    // copy the list to avoid ConcurrentModificationException, see QA-5200
                     openPaths = new ArrayList<String>(openPaths);                    
->>>>>>> .merge-right.r48586
                     openPaths.addAll(selectedNodes);
                 }
             }

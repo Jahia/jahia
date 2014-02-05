@@ -156,13 +156,9 @@ public class TemplateHelper {
 
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
-<<<<<<< .working
-=======
             if ("contributemode".equals(configName)) {
             	renderContext.setContributionMode(true);
             }
-            renderContext.setEditModeConfigName(configName);
->>>>>>> .merge-right.r48600
             renderContext.setMainResource(r);
 
             EditConfiguration editConfiguration = null;

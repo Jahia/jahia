@@ -190,7 +190,7 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE contains(news.*, 'ACME') ORDER BY news.[date]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.*, 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.*, 'ACME') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.*, 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);

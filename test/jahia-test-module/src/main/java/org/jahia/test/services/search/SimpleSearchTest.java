@@ -131,11 +131,34 @@ public class SimpleSearchTest extends JahiaTestCase {
         }
     }
 
+    private RenderContext getContext() throws RepositoryException {
+    	return getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
+    }
+    
+    private RenderContext getContext(String siteRootNode, Locale locale) throws RepositoryException {
+        ProcessingContext ctx = Jahia.getThreadParamBean();    	
+        RenderContext context = new RenderContext(((ParamBean) ctx)
+                .getRequest(), ((ParamBean) ctx).getResponse(), ctx
+                .getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(null, locale);
+        JCRNodeWrapper homeNode = session
+                .getNode(siteRootNode + "/home");
+        Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
+        context.setMainResource(resource);
+        context.setSite(homeNode.getResolveSite());
+        context.setServletPath("/cms/render");
+        new URLGenerator(context, resource);
+        
+        return context;
+    }
+    
     @Test
     public void testSimpleFulltextSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
+<<<<<<< .working
             RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
             JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.ENGLISH);
@@ -146,6 +169,9 @@ public class SimpleSearchTest extends JahiaTestCase {
             context.setSite(homeNode.getResolveSite());
             context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
+=======
+            RenderContext context = getContext();
+>>>>>>> .merge-right.r48603
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -178,6 +204,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
+<<<<<<< .working
             RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.FRENCH);
             JCRNodeWrapper homeNode = session
@@ -187,6 +214,9 @@ public class SimpleSearchTest extends JahiaTestCase {
             context.setSite(homeNode.getResolveSite());
             context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
+=======
+            RenderContext context = getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.FRENCH);
+>>>>>>> .merge-right.r48603
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -216,6 +246,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
+<<<<<<< .working
             RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
@@ -226,6 +257,10 @@ public class SimpleSearchTest extends JahiaTestCase {
             context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
 
+=======
+        	RenderContext context = getContext();
+        	
+>>>>>>> .merge-right.r48603
             SearchCriteria criteria = new SearchCriteria();
 
             CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
@@ -262,6 +297,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
+<<<<<<< .working
             RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession(null, Locale.ENGLISH);
             JCRNodeWrapper homeNode = session
@@ -271,6 +307,9 @@ public class SimpleSearchTest extends JahiaTestCase {
             context.setSite(homeNode.getResolveSite());
             context.setServletPath("/cms/render");
             new URLGenerator(context, resource);
+=======
+        	RenderContext context = getContext();
+>>>>>>> .merge-right.r48603
 
             SearchCriteria criteria = new SearchCriteria();
 
@@ -326,6 +365,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
         try {
+<<<<<<< .working
             RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());            JCRSessionWrapper session = JCRSessionFactory.getInstance()
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
@@ -335,6 +375,9 @@ public class SimpleSearchTest extends JahiaTestCase {
             context.setSite(homeNode.getResolveSite());
             context.setServletPath("/cms/render");
                 new URLGenerator(context, resource);
+=======
+        	RenderContext context = getContext(SECOND_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
+>>>>>>> .merge-right.r48603
 
             SearchCriteria criteria = new SearchCriteria();
 

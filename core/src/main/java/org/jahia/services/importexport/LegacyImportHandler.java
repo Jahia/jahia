@@ -176,9 +176,10 @@ public class LegacyImportHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         int ctx = -1;
+        String uuid = null;
         try {
             currentNode = localName;
-            String uuid = attributes.getValue("jcr:uuid");
+            uuid = attributes.getValue("jcr:uuid");
 
             if (!currentCtx.isEmpty()) {
                 ctx = currentCtx.peek().ctx.peek();
@@ -210,7 +211,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         setMetadata(attributes);
                         setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG,"acl"));
                     } else {
-                        logger.warn(
+                        logger.error(
                                 "Unexpected " + localName + " element ("+ uuid +") in import file - skipping it and its subtree (more info in debug mode)");
                         if (logger.isDebugEnabled() && localName.endsWith("List")) {
                             if (getCurrentContentType() == null) {
@@ -249,7 +250,7 @@ public class LegacyImportHandler extends DefaultHandler {
                             itemDef = getCurrentContentType().getPropertyDefinitionsAsMap().get(localName);
                         }
                         if (itemDef == null) {
-                            logger.warn("Definition not found for field " + localName + " in node " + getCurrentContentType().getName() + " , uuid=" + uuid);
+                            logger.error("Definition not found for field " + localName + " in node " + getCurrentContentType().getName() + " , uuid=" + uuid);
                         } else if (logger.isDebugEnabled()) {
                             if (itemDef.isNode()) {
                                 logger.debug("The field {} is a subnode of the node type {} (child node definition = {})"
@@ -359,7 +360,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     break;
             }
         } catch (RepositoryException e) {
-            logger.error("Error while processing element: [uri=" + uri + "], [localName=" + localName + "], [qName=" + qName + "], [ctx=" + ctx + "]");
+            logger.error(MessageFormat.format("Error while processing element: [uri={0}], [localName={1}], [qName={2}], [uuid={3}], [ctx={4}]", uri, localName, qName, uuid, ctx));
             throw new SAXException(e);
         }
 
@@ -470,8 +471,22 @@ public class LegacyImportHandler extends DefaultHandler {
             pageKey = pageKey.replace(']', '_');
 
             ExtendedNodeType pageType = registry.getNodeType("jnt:page");
+<<<<<<< .working
             String templateName = StringUtils.substringAfterLast("templates/"+template,"/");
             subPage = addOrCheckoutPageNode(templateName, parent, pageKey, creationMetadata);
+=======
+            JCRNodeWrapper templateNode = null;
+            try {
+                if (!StringUtils.isEmpty(template)) {
+                    template = mapping.getMappedPropertyValue(pageType, "jahia:template", template);
+                }
+                templateNode = !StringUtils.isEmpty(template) ? currentSiteNode.getNode("templates/" + template) : null;
+            } catch (PathNotFoundException e) {
+                logger.error("Template '" + template + "' not found. Plain jnt:page will be created");
+            }
+
+            subPage = addOrCheckoutPageNode(templateNode, parent, pageKey, creationMetadata);
+>>>>>>> .merge-right.r48606
             uuidMapping.put(uuid, subPage.getIdentifier());
 
             performActions(mapping.getActions(pageType, "jahia:template", template), subPage);
@@ -762,7 +777,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         return;
                     }
                 } catch (NoSuchNodeTypeException e) {
-                    logger.warn("Unexpected nodetype " + nodeType + " - skipping it and its subtree");
+                    logger.error("Unexpected nodetype " + nodeType + " - skipping it and its subtree");
                     currentCtx.peek().pushSkip();
                     return;
                 }
@@ -814,7 +829,11 @@ public class LegacyImportHandler extends DefaultHandler {
                     final String fieldName = entry.getKey();
                     logger.debug("About to import field {}/{}", currentContentType.getName(), fieldName);
                     if (!setPropertyField(currentContentType, fieldName, entry.getValue()) && !"#skip".equals(fieldName)) {
+<<<<<<< .working
                         logger.warn("Not imported field {}/{}", currentContentType.getName(), fieldName);
+=======
+                        logger.error(MessageFormat.format("Not imported field {0}/{1}", currentContentType.getName(), fieldName));
+>>>>>>> .merge-right.r48606
                     }
                 }
             }
@@ -854,7 +873,7 @@ public class LegacyImportHandler extends DefaultHandler {
             try {
                 setPropertyField(null, null, node, propertyName, property.getValue());
             } catch (RepositoryException e) {
-                logger.warn("Error setting property: " + propertyName + " on node: " + node.getPath(), e);
+                logger.error("Error setting property: " + propertyName + " on node: " + node.getPath(), e);
             }
         }
     }

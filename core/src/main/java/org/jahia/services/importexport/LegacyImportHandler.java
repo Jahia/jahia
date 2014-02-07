@@ -471,22 +471,8 @@ public class LegacyImportHandler extends DefaultHandler {
             pageKey = pageKey.replace(']', '_');
 
             ExtendedNodeType pageType = registry.getNodeType("jnt:page");
-<<<<<<< .working
             String templateName = StringUtils.substringAfterLast("templates/"+template,"/");
             subPage = addOrCheckoutPageNode(templateName, parent, pageKey, creationMetadata);
-=======
-            JCRNodeWrapper templateNode = null;
-            try {
-                if (!StringUtils.isEmpty(template)) {
-                    template = mapping.getMappedPropertyValue(pageType, "jahia:template", template);
-                }
-                templateNode = !StringUtils.isEmpty(template) ? currentSiteNode.getNode("templates/" + template) : null;
-            } catch (PathNotFoundException e) {
-                logger.error("Template '" + template + "' not found. Plain jnt:page will be created");
-            }
-
-            subPage = addOrCheckoutPageNode(templateNode, parent, pageKey, creationMetadata);
->>>>>>> .merge-right.r48606
             uuidMapping.put(uuid, subPage.getIdentifier());
 
             performActions(mapping.getActions(pageType, "jahia:template", template), subPage);
@@ -829,11 +815,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     final String fieldName = entry.getKey();
                     logger.debug("About to import field {}/{}", currentContentType.getName(), fieldName);
                     if (!setPropertyField(currentContentType, fieldName, entry.getValue()) && !"#skip".equals(fieldName)) {
-<<<<<<< .working
-                        logger.warn("Not imported field {}/{}", currentContentType.getName(), fieldName);
-=======
-                        logger.error(MessageFormat.format("Not imported field {0}/{1}", currentContentType.getName(), fieldName));
->>>>>>> .merge-right.r48606
+                        logger.error("Not imported field {}/{}", currentContentType.getName(), fieldName);
                     }
                 }
             }

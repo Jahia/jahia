@@ -60,6 +60,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.util.Version;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -186,6 +187,21 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
 
         @Override
         public TokenStream tokenStream(String fieldName, Reader reader) {
+            final Analyzer analyzer = getAnalyzer(fieldName);
+
+            TokenStream result = analyzer.tokenStream(fieldName, reader);
+            return useFilter ? new ASCIIFoldingFilter(result) : result;
+        }
+
+        @Override
+        public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+            final Analyzer analyzer = getAnalyzer(fieldName);
+
+            TokenStream result = analyzer.reusableTokenStream(fieldName, reader);
+            return useFilter ? new ASCIIFoldingFilter(result) : result;
+        }
+
+        private Analyzer getAnalyzer(String fieldName) {
             // first look at indexing configuration to see if a property analyzer has been set for this field
             Analyzer analyzer = configuration.getPropertyAnalyzer(fieldName);
             if (analyzer == null) {
@@ -197,9 +213,7 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
                     analyzer = defaultAnalyzer;
                 }
             }
-
-            TokenStream result = analyzer.tokenStream(fieldName, reader);
-            return useFilter ? new ASCIIFoldingFilter(result) : result;
+            return analyzer;
         }
     }
 }

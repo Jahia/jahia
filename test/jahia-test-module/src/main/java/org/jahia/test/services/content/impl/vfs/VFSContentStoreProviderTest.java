@@ -375,7 +375,7 @@ public class VFSContentStoreProviderTest {
             ValueFactory valueFactory = englishEditSession.getValueFactory();
 
             List<Value> values = new ArrayList<Value>();
-            values.add(new ExternalReferenceValue(vfsTestFile2.getIdentifier(), PropertyType.WEAKREFERENCE));
+            values.add(session.getValueFactory().createValue(vfsTestFile2,true));
 
             is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 

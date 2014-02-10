@@ -652,20 +652,10 @@ public class ContentDefinitionHelper {
                 value = PathValue.valueOf(val.getString());
                 break;
             case GWTJahiaNodePropertyType.REFERENCE:
-                try {
-                    value = ReferenceValue.valueOf(val.getString());
-                } catch (ValueFormatException vfe) {
-                    // this can happen in the case of a reference to an external repository which doesn't use UUIDs as identifiers
-                    value = new ExternalReferenceValue(val.getString(), PropertyType.REFERENCE);
-                }
+                value = ReferenceValue.valueOf(val.getString());
                 break;
             case GWTJahiaNodePropertyType.WEAKREFERENCE:
-                try {
-                    value = WeakReferenceValue.valueOf(val.getString());
-                } catch (ValueFormatException vfe) {
-                    // this can happen in the case of a reference to an external repository which doesn't use UUIDs as identifiers
-                    value = new ExternalReferenceValue(val.getString(), PropertyType.WEAKREFERENCE);
-                }
+                value = WeakReferenceValue.valueOf(val.getString());
                 break;
             case GWTJahiaNodePropertyType.STRING:
                 value = new StringValue(val.getString());

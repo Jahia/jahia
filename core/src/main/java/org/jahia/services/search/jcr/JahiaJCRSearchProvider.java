@@ -701,7 +701,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     }
                 }
                 if (searchFields.isFileContent()) {
-                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:content", searchExpression, xpath));
+                    if (xpath) {
+                        addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content," + searchExpression + ")");
+                    } else {
+                        addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:content", searchExpression, xpath));
+                    }
                 }
                 if (searchFields.isDescription()) {
                     addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:description", searchExpression, xpath));

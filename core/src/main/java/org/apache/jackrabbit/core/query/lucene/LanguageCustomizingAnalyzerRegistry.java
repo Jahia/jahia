@@ -88,7 +88,7 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
 
     private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
 
-    static final LanguageCustomizingAnalyzerRegistry getInstance() {
+    public static final LanguageCustomizingAnalyzerRegistry getInstance() {
         return instance;
     }
 

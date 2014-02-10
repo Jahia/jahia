@@ -65,6 +65,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.jahia.api.Constants;
 import org.jahia.services.search.facets.JahiaQueryParser;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -518,7 +519,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     public Locale getLocale() {
         // if the query set a specific language, we should probably be using this one
         if(queryLanguage != null) {
-            return Locale.forLanguageTag(queryLanguage);
+            return LanguageCodeConverters.languageCodeToLocale(queryLanguage);
         }
 
         return locale;

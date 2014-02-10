@@ -47,6 +47,7 @@ import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.*;
 import javax.jcr.version.VersionException;
 import java.util.*;
@@ -180,7 +180,7 @@ public class QueryWrapper implements Query {
                 if (query instanceof JahiaQueryObjectModelImpl) {
                     JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)
                             .getLuceneQueryFactory();
-                    lqf.setLocale(session.getLocale());
+                    lqf.setQueryLanguageAndLocale(LuceneUtils.extractLanguageOrNullFromStatement(statement), session.getLocale());
                 }
             }
         }

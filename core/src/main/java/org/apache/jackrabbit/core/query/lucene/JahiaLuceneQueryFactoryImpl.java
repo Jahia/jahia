@@ -91,6 +91,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     private static Logger logger = LoggerFactory.getLogger(JahiaLuceneQueryFactoryImpl.class);   // <-- Added by jahia
 
     private Locale locale;
+    private String queryLanguage;
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
         super(session, index, bindVariables);
@@ -514,12 +515,18 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
     }
 
-    public void setLocale(Locale locale) {
-        this.locale = locale;
+    public Locale getLocale() {
+        // if the query set a specific language, we should probably be using this one
+        if(queryLanguage != null) {
+            return Locale.forLanguageTag(queryLanguage);
+        }
+
+        return locale;
     }
 
-    public Locale getLocale() {
-        return locale;
+    public void setQueryLanguageAndLocale(String queryLanguage, Locale locale) {
+        this.queryLanguage = queryLanguage;
+        this.locale = locale;
     }
 
     @Override
@@ -537,10 +544,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
     @Override
     protected Analyzer getTextAnalyzer() {
-        if(locale != null) {
-            // if we have a locale set up, use it to retrieve a potential language-specific Analyzer
+        if(locale != null || queryLanguage != null) {
+            // if we have a locale or the query specified a language, use it to retrieve a potential language-specific Analyzer
             final AnalyzerRegistry analyzerRegistry = index.getAnalyzerRegistry();
-            final String lang = locale.toString();
+            final String lang = getLocale().toString();
             if(analyzerRegistry.acceptKey(lang)) {
                 final Analyzer analyzer = analyzerRegistry.getAnalyzer(lang);
                 if(analyzer != null) {

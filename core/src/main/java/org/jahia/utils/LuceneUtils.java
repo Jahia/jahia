@@ -41,6 +41,7 @@
 package org.jahia.utils;
 
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
+import org.jahia.api.Constants;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -86,6 +87,28 @@ public class LuceneUtils {
                 final String languageCode = fieldName.substring(lastDash + DASH.length());
                 if (Arrays.binarySearch(Locale.getISOLanguages(), languageCode) >= 0) {
                     return languageCode;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Extracts the language code that might be available in the form of a <code>jcr:language = 'lang'</code> constraint from the given query statement.
+     *
+     * @param statement the query statement from which to extract a potential language code
+     * @return the language code associated with the jcr:language constraint if it exists in the specified query statement or <code>null</code> otherwise.
+     */
+    public static String extractLanguageOrNullFromStatement(String statement) {
+        int langIndex = statement.indexOf(Constants.JCR_LANGUAGE);
+        if (langIndex >= 0) {
+            int begLang = statement.indexOf('\'', langIndex);
+            if (begLang >= 0) {
+                begLang = begLang + 1; // move past '
+                int endLang = statement.indexOf('\'', begLang);
+                if (endLang > 0 && endLang < statement.length()) {
+                    return statement.substring(begLang, endLang).trim();
                 }
             }
         }

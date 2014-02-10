@@ -1550,63 +1550,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
-    public Set<String> getSharedExternalPropertyNames() throws RepositoryException {
-        Set<String> result = new HashSet<String>();
-
-        if (objectNode.hasProperty(SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME)) {
-            Property referenceProperty = getProperty(SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
-            Value[] propertyReferences = referenceProperty.getValues();
-            for (Value propertyReference : propertyReferences) {
-                String curPropertyReference = propertyReference.getString();
-                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
-                String curPropertyName = refParts[1];
-                result.add(curPropertyName);
-            }
-        }
-        return result;
-    }
-
-    public Set<String> getCurrentLocaleExternalPropertyNames() throws RepositoryException {
-        Set<String> result = new HashSet<String>();
-        if (getSession().getLocale() == null) {
-            return result;
-        }
-
-        if (hasI18N(getSession().getLocale()) &&
-                getI18N(getSession().getLocale()).hasProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME)) {
-            Property referenceProperty = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
-            Value[] propertyReferences = referenceProperty.getValues();
-            for (Value propertyReference : propertyReferences) {
-                String curPropertyReference = propertyReference.getString();
-                String[] refParts = EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN.split(curPropertyReference);
-                String curPropertyName = refParts[1];
-                result.add(curPropertyName);
-            }
-        }
-        return result;
-    }
-
-    public Set<String> getAllExternalPropertyNames() throws RepositoryException {
-        Set<String> result = getSharedExternalPropertyNames();
-        result.addAll(getCurrentLocaleExternalPropertyNames());
-        return result;
-    }
-
     /**
      * {@inheritDoc}
      */
     public PropertyIterator getProperties() throws RepositoryException {
         final Locale locale = getSession().getLocale();
-        Set<String> externalPropertyNames = null;
-        Set<String> externalI18PropertyNames = null;
-        if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
-            externalPropertyNames = getSharedExternalPropertyNames();
-            externalI18PropertyNames = getCurrentLocaleExternalPropertyNames();
-        }
         if (locale != null) {
-            return new LazyPropertyIterator(this, locale, externalPropertyNames, externalI18PropertyNames);
+            return new LazyPropertyIterator(this, locale);
         }
-        return new LazyPropertyIterator(this, null, externalPropertyNames, externalI18PropertyNames);
+        return new LazyPropertyIterator(this, null);
     }
 
     /**
@@ -1614,16 +1566,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public PropertyIterator getProperties(String s) throws RepositoryException {
         final Locale locale = getSession().getLocale();
-        Set<String> externalPropertyNames = null;
-        Set<String> externalI18PropertyNames = null;
-        if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
-            externalPropertyNames = getSharedExternalPropertyNames();
-            externalI18PropertyNames = getCurrentLocaleExternalPropertyNames();
-        }
         if (locale != null) {
-            return new LazyPropertyIterator(this, locale, s, externalPropertyNames, externalI18PropertyNames);
+            return new LazyPropertyIterator(this, locale, s);
         }
-        return new LazyPropertyIterator(this, null, s, externalPropertyNames, externalI18PropertyNames);
+        return new LazyPropertyIterator(this, null, s);
     }
 
 
@@ -1978,19 +1924,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private boolean internalHasProperty(String propertyName) throws RepositoryException {
         final Locale locale = getSession().getLocale();
-        if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
-                getSharedExternalPropertyNames().contains(propertyName)) {
-            return true;
-        }
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(propertyName);
         if (epd == null) {
             return false;
         }
         if (locale != null && !propertyName.equals("jcr:language")) {
-            if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
-                    getCurrentLocaleExternalPropertyNames().contains(propertyName)) {
-                return true;
-            }
             try {
                 if (epd.isInternationalized()) {
                     if (hasI18N(locale, true)) {
@@ -2019,10 +1957,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (hasI18N(locale, true)) {
                 return getI18N(locale).hasProperties();
             }
-        }
-        if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE) &&
-                getAllExternalPropertyNames().size() > 0) {
-            return true;
         }
         return false;
     }

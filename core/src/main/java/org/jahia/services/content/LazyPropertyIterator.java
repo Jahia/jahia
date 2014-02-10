@@ -59,40 +59,24 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     protected PropertyIterator i18nPropertyIterator;
     protected Property tempNext = null;
     protected String fallbackLocale;
-    protected Set<String> externalSharedPropertyNames = new HashSet<String>();
-    protected Set<String> externalI18NPropertyNames = new HashSet<String>();;
-    protected PropertyIterator externalSharedPropertyNameIterator;
-    protected PropertyIterator externalI18NPropertyNameIterator;
 
     public LazyPropertyIterator(JCRNodeWrapper node) {
         this.node = node;
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, Set<String> sharedPropertyNames, Set<String> i18PropertyNames) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale) {
         this.node = node;
         this.locale = locale;
-        if (sharedPropertyNames != null) {
-            this.externalSharedPropertyNames = sharedPropertyNames;
-        }
-        if (i18PropertyNames != null) {
-            this.externalI18NPropertyNames = i18PropertyNames;
-        }
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern, Set<String> sharedPropertyNames, Set<String> i18PropertyNames) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern) {
         this.node = node;
         this.locale = locale;
         this.pattern = pattern;
-        if (sharedPropertyNames != null) {
-            this.externalSharedPropertyNames = sharedPropertyNames;
-        }
-        if (i18PropertyNames != null) {
-            this.externalI18NPropertyNames = i18PropertyNames;
-        }
     }
 
     public int size() {
-        return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize() + externalI18NPropertyNames.size() + externalSharedPropertyNames.size());
+        return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize());
     }
 
     protected PropertyIterator getPropertiesIterator() {

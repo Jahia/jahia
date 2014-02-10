@@ -223,8 +223,15 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                         }
 
                         if (analyzer != null) {
+                            Boolean useASCIIFoldingFilter = null;
+                            try {
+                                useASCIIFoldingFilter = Boolean.parseBoolean(child.getAttributes().getNamedItem("useASCIIFoldingFilter").getNodeValue().trim());
+                            } catch (Exception e) {
+                                // nothing to do
+                            }
+
                             // and add the Analyzer to the registry if we managed to instantiate it
-                            LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer);
+                            LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer, useASCIIFoldingFilter);
 
                             // instantiate and initialize AnalyzerCustomizer
                             final NodeList potentialCustomizers = child.getChildNodes();

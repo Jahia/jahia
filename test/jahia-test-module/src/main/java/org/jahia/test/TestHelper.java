@@ -43,6 +43,7 @@ package org.jahia.test;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -102,6 +103,7 @@ public class TestHelper {
             site.setMixLanguagesActive(mixLanguagesActive);
         }
         service.updateSystemSitePermissions(site);
+        ((JCRSiteNode)site).getSession().save();
         return site;
     }
 

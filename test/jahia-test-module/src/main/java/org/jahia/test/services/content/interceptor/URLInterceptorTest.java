@@ -75,13 +75,13 @@ public class URLInterceptorTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         site = TestHelper.createSite("test");
-
-        setSessionSite(site);
     }
 
     @Before
     public void setUp() throws RepositoryException {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        site = (JahiaSite) session.getNode("/sites/test");
+        setSessionSite(site);
         JCRNodeWrapper shared = session.getNode("/sites/"+site.getSiteKey()+"/contents");
         if (!shared.isCheckedOut()) {
             session.checkout(shared);
@@ -106,6 +106,7 @@ public class URLInterceptorTest extends JahiaTestCase {
         session.save();
         localizedSession.save();
         JCRSessionFactory.getInstance().closeAllSessions();
+        site = null;
     }
     
     @AfterClass

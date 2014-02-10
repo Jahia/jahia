@@ -87,12 +87,16 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         enabled = false;
                         break;
                     }
-                }
-
-                if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
-                    // the node is already published or it is locked (not for deletion)
-                    enabled = false;
-                    break;
+                } else {
+                    if (!selected.isNodeType("jmix:markedForDeletionRoot")) {
+                        enabled = false;
+                        break;
+                    }
+                    if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
+                        // the node is already published or it is locked (not for deletion)
+                        enabled = false;
+                        break;
+                    }
                 }
             }
         } else {
@@ -122,7 +126,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
                     updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
                 } else {
-                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
+                    updateTitle(getGwtToolbarItem().getTitle() + ": " + selection.get(0).getDisplayName());
                 }
             } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));

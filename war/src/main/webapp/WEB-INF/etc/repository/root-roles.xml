@@ -109,7 +109,7 @@
         </site-administrator>
         <server-administrator j:hidden="false"
                               j:nodeTypes="rep:root"
-                              j:permissionNames="jcr:all_default admin"
+                              j:permissionNames="repository-permissions admin publish"
                               j:privilegedAccess="true"
                               j:roleGroup="server-role"
                               jcr:primaryType="jnt:role">

@@ -488,6 +488,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         pathes.pop(), e.getMessage());
             }
             error++;
+        } catch (AccessDeniedException e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Cannot import " + pathes.pop() + getLocation(), e);
+            } else {
+                logger.warn("Cannot import \"{}\" due to \"{}\"",
+                        pathes.pop(), e.getMessage());
+            }
+            error++;
         } catch (RepositoryException re) {
             logger.error("Cannot import " + pathes.pop() + getLocation(), re);
             error++;

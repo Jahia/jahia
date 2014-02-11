@@ -154,6 +154,15 @@
 
     <function>
         <description>
+            Unescapes any Java literals found in the String.
+        </description>
+        <name>unescapeJava</name>
+        <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String unescapeJava(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>
             Unescapes any JavaScript literals found in the String.
         </description>
         <name>unescapeJavaScript</name>

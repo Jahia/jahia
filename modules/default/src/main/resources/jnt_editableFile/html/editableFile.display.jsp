@@ -24,9 +24,10 @@
     <fmt:param value="${currentNode.lock.lockOwner}"/>
 </fmt:message>
 </c:if>
+<c:set var="isResourceBundle" value="${jcr:isNodeType(currentNode, 'jnt:resourceBundleFile')}"/>
 <template:tokenizedForm disableXSSFiltering="true" allowsMultipleSubmits="true">
     <form name="sourceForm" id="sourceForm" method="POST" action="${postURL}">
-        <textarea id="sourceCode" name="sourceCode" editable="false"><c:out value="${currentNode.properties.sourceCode.string}" escapeXml="true"/></textarea>
+        <textarea id="sourceCode" name="sourceCode" editable="false"><c:out value="${isResourceBundle ? functions:unescapeJava(currentNode.properties.sourceCode.string) : currentNode.properties.sourceCode.string}" escapeXml="true"/></textarea>
     </form>
 </template:tokenizedForm>
 <c:choose>
@@ -49,12 +50,14 @@
         <c:set var="mode" value="jsp"/>
     </c:otherwise>
 </c:choose>
-<c:if test="${not locked and not jcr:isNodeType(currentNode, 'jnt:resourceBundleFile')}">
+<c:set var="saveEnabled" value="${not locked and not isResourceBundle}"/>
+<c:if test="${saveEnabled}">
     <button name="save" id="saveButton" onclick="saveSourceCode();" disabled><fmt:message key="label.save"/></button>
 </c:if>
 <script type="text/javascript">
     var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("sourceCode"),{mode:"${mode}",lineNumbers:true, matchBrackets:true, readOnly:${jcr:isNodeType(currentNode, 'jnt:resourceBundleFile') or locked}});
     myCodeMirror.setSize("100%","100%");
+    <c:if test="${saveEnabled}">
     myCodeMirror.on("change", function() {
         if ($('#saveButton').prop('disabled')) {
             $.get("<c:url value="${url.base}${currentNode.path}.lock.do?type=editSource"/>");
@@ -105,4 +108,5 @@
             }
         }
     });
+    </c:if>
 </script>

@@ -100,6 +100,8 @@ public class FileServlet extends HttpServlet {
 
     protected boolean cacheForLoggedUsers = true;
 
+    protected boolean cacheFromExternalProviders;
+
     protected String characterEncoding = null;
 
     protected MetricsLoggingService loggingService;
@@ -141,13 +143,15 @@ public class FileServlet extends HttpServlet {
                         res.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
                     }
-
+                    
                     Date lastModifiedDate = n.getLastModifiedAsDate();
                     long lastModified = lastModifiedDate != null ? lastModifiedDate.getTime() : 0;
                     String eTag = generateETag(n.getIdentifier(), lastModified);
                     if (lastModifiedEntry == null) {
                         lastModifiedEntry = new FileLastModifiedCacheEntry(eTag, lastModified);
-                        lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
+                        if (cacheFromExternalProviders || n.getProvider().isDefault()) {
+                            lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
+                        }
                     }
 
                     if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
@@ -335,7 +339,7 @@ public class FileServlet extends HttpServlet {
         fileEntry = new FileCacheEntry(lastModifiedEntry.getETag(), content.getProperty(
                 Constants.JCR_MIMETYPE).getString(), contentLength,
                 lastModifiedEntry.getLastModified());
-        if (contentLength <= cacheThreshold && isVisibleForGuest(node)) {
+        if (contentLength <= cacheThreshold && isVisibleForGuest(node) && (cacheFromExternalProviders || node.getProvider().isDefault())) {
             InputStream is = null;
             try {
                 is = binary.getStream();
@@ -410,6 +414,11 @@ public class FileServlet extends HttpServlet {
             cacheForLoggedUsers = new Boolean(value);
         }
 
+        value = config.getInitParameter("cache-from-external-providers");
+        if (value != null) {
+            cacheFromExternalProviders = new Boolean(value);
+        }
+
         try {
             cacheManager = FileCacheManager.getInstance();
         } catch (JahiaRuntimeException e) {
@@ -433,8 +442,8 @@ public class FileServlet extends HttpServlet {
         if (lastModifiedEntry != null) {
             // check presence of the 'If-None-Match' header
             String eTag = request.getHeader("If-None-Match");
-            if (eTag != null && eTag.equals(lastModifiedEntry.getETag())) {
-                return true;
+            if (eTag != null) {
+                return eTag.equals(lastModifiedEntry.getETag());
             }
             // check presence of the 'If-Modified-Since' header
             long modifiedSince = request.getDateHeader("If-Modified-Since");

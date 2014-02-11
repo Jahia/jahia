@@ -40,8 +40,11 @@
 
 package org.jahia.modules.defaultmodule;
 
+import org.jahia.ajax.gwt.helper.PublicationHelper;
+import org.jahia.api.Constants;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
@@ -64,6 +67,9 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.*;
 
+import static org.jahia.api.Constants.EDIT_WORKSPACE;
+import static org.jahia.api.Constants.LIVE_WORKSPACE;
+
 public class RolesHandler implements Serializable {
     private static final long serialVersionUID = 2485636561921483297L;
 
@@ -76,6 +82,9 @@ public class RolesHandler implements Serializable {
 
     @Autowired
     private transient JahiaGroupManagerService groupManagerService;
+
+    @Autowired
+    private transient JCRPublicationService publicationService;
 
     private String workspace;
 
@@ -222,6 +231,10 @@ public class RolesHandler implements Serializable {
             session.getNode(nodePath).grantRoles(principal, Collections.singleton(role));
         }
         session.save();
+        // Publish the node acls
+        if (session.getNode(nodePath).hasNode("j:acl")) {
+            publicationService.publishByMainId(session.getNode(nodePath).getNode("j:acl").getIdentifier());
+        }
     }
 
     public void revokeRole(String[] principals, MessageContext messageContext) throws Exception {
@@ -246,6 +259,10 @@ public class RolesHandler implements Serializable {
         }
 
         session.save();
+        // Publish the node acls
+        if (session.getNode(nodePath).hasNode("j:acl")) {
+            publicationService.publishByMainId(session.getNode(nodePath).getNode("j:acl").getIdentifier());
+        }
     }
 
     /**

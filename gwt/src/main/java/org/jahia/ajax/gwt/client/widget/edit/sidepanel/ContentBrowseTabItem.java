@@ -98,11 +98,12 @@ class ContentBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
-                    Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
+                    String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
+                    Log.debug("retrieving children of " + path);
                     List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
                     tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
+                            .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }

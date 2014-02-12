@@ -96,9 +96,10 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
-                    Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
+                    String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
+                    Log.debug("retrieving children of " + path);
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, false, null, null, false, false, listAsyncCallback);
+                            .lsLoad(path, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, false, null, null, false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }

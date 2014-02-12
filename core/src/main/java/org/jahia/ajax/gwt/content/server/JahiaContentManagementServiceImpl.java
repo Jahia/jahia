@@ -300,7 +300,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
+    public BasePagingLoadResult<GWTJahiaNode> lsLoad(String parentPath, List<String> nodeTypes, List<String> mimeTypes,
                                                      List<String> filters, List<String> fields, boolean checkSubChild,
                                                      int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes,
                                                      String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale)
@@ -310,7 +310,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
-                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(getWorkspace(), locale, true),
+                .ls(parentPath, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(getWorkspace(), locale, true),
                         showOnlyNodesWithTemplates, getUILocale())) {
             if (n.isMatchFilters()) {
                 filteredList.add(n);

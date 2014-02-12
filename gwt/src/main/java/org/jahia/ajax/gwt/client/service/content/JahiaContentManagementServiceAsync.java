@@ -264,7 +264,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void isValidSession(AsyncCallback<Integer> async);
 
-    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
+    void lsLoad(String parentPath, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 

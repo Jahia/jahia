@@ -328,7 +328,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     Integer isValidSession() throws GWTJahiaServiceException;
 
-    PagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale) throws GWTJahiaServiceException;
+    PagingLoadResult<GWTJahiaNode> lsLoad(String parentPath, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale) throws GWTJahiaServiceException;
 
     void markForDeletion(List<String> paths, String comment) throws GWTJahiaServiceException;
 

@@ -41,10 +41,12 @@
             if (uuids.length == 0) {
                  if (!$('#deleteRolesButton').hasClass("disabled")) {
                      $('#deleteRolesButton').addClass("disabled");
+                     $('#deleteRolesButton').attr("disabled", "disabled");
                  }
             } else {
                 if ($('#deleteRolesButton').hasClass("disabled")) {
                     $('#deleteRolesButton').removeClass("disabled");
+                    $('#deleteRolesButton').removeAttr("disabled");
                 }
             }
         }
@@ -90,8 +92,8 @@
             <i class="icon-plus  icon-white"></i>
             <span id="addRoleButtonLabel"><fmt:message key="rolesmanager.rolesAndPermissions.role.add" /></span>
         </button>
-            <button id="deleteRolesButton" class="btn btn-danger disabled" type="button" onclick="deleteRoles()">
-                <i class="icon-remove  icon-white"></i>
+            <button id="deleteRolesButton" class="btn btn-danger disabled" type="button" onclick="deleteRoles()" disabled="disabled">
+                <i class="icon-remove icon-white"></i>
                 <fmt:message key="rolesmanager.rolesAndPermissions.role.delete" />
             </button>
         </form>

@@ -150,19 +150,7 @@
     <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
         <param name="path" value="${rep.home}/index"/>
         <param name="indexingConfiguration" value="${rep.home}/indexing_configuration_version.xml"/>
-<<<<<<< .working
-<<<<<<< .working
-=======
-=======
-        <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->
->>>>>>> .merge-right.r48666
-        <param name="textFilterClasses" value=""/>
-<<<<<<< .working
->>>>>>> .merge-right.r48664
         
-=======
-
->>>>>>> .merge-right.r48666
         <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
         <param name="enableConsistencyCheck" value="${jahia.jackrabbit.searchIndex.enableConsistencyCheck}"/>
         <param name="forceConsistencyCheck" value="${jahia.jackrabbit.searchIndex.forceConsistencyCheck}"/>

@@ -72,6 +72,8 @@ import java.util.*;
 
 public class CreateButtonItem extends SaveButtonItem {
 
+    private boolean forceCreation = true;
+    
     private boolean useNamePopup = false;
 
     public void setUseNamePopup(boolean useNamePopup) {
@@ -173,7 +175,7 @@ public class CreateButtonItem extends SaveButtonItem {
         if (engine.isCreateInParentAndMoveBefore()) {
             JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, true, callback);
+            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, forceCreation, callback);
         }
     }
 
@@ -215,6 +217,10 @@ public class CreateButtonItem extends SaveButtonItem {
         binding.addButton(b);
         popup.add(f);
         popup.show();
+    }
+
+    public void setForceCreation(boolean forceCreation) {
+        this.forceCreation = forceCreation;
     }
 
 

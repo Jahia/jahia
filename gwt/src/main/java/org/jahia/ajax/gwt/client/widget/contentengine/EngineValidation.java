@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.service.GWTConstraintViolationException;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -85,6 +86,15 @@ public class EngineValidation {
 
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
+            if (item instanceof ContentTabItem) {
+                Field<String> nameField = ((ContentTabItem)item).getName();
+                if (nameField != null && !nameField.isValid()) {
+                    validateResult.allValid = false;
+                    validateResult.firstErrorTab = tab;
+                    validateResult.firstErrorField = nameField;
+                    break;
+                }
+            }
             if (item instanceof PropertiesTabItem) {
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
@@ -98,10 +108,11 @@ public class EngineValidation {
                                 validateResult.firstErrorField = field;
                             }
                             validateResult.allValid = false;
+                            break;
                         }
                     }
                     if (!validateResult.allValid) {
-                        continue;
+                        break;
                     }
                 }
 

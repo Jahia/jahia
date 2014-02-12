@@ -568,6 +568,16 @@
                                 </bean>
                             </list>
                         </property>
+                        <property name="creationButtons">
+                            <list>
+                                <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem">
+                                    <property name="forceCreation" value="false"/>
+                                </bean>
+                                <bean id="Engine.Button.CreateAndNew" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateAndNewButtonItem">
+                                    <property name="forceCreation" value="false"/>
+                                </bean>
+                            </list>
+                        </property>
                     </bean>
                 </entry>
                 <entry key="jnt:namespaceDefinition">

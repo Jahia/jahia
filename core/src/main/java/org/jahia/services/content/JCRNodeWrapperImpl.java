@@ -213,7 +213,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Map<String, List<String[]>> results = new LinkedHashMap<String, List<String[]>>();
 
-            Node n = objectNode;
+            Node n = this;
             try {
                 while (true) {
                     if (n.hasNode("j:acl")) {
@@ -474,8 +474,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean changeRoles(String principalKey, Map<String, String> roles) throws RepositoryException {
-        if (!objectNode.isCheckedOut() && objectNode.isNodeType(Constants.MIX_VERSIONABLE)) {
-            objectNode.getSession().getWorkspace().getVersionManager().checkout(localPathInProvider);
+        if (!isCheckedOut() && isNodeType(Constants.MIX_VERSIONABLE)) {
+            getSession().checkout(this);
         }
 
         List<String> gr = new ArrayList<String>();
@@ -581,8 +581,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean revokeAllRoles() throws RepositoryException {
-        if (objectNode.hasNode("j:acl")) {
-            Node acl = objectNode.getNode("j:acl");
+        if (hasNode("j:acl")) {
+            JCRNodeWrapper acl = getNode("j:acl");
             NodeIterator ni = acl.getNodes();
             while (ni.hasNext()) {
                 Node ace = ni.nextNode();
@@ -592,8 +592,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             if (!acl.hasNodes()) {
                 acl.remove();
-                if(objectNode.isNodeType("jmix:accessControlled")) {
-                    objectNode.removeMixin("jmix:accessControlled");
+                if(isNodeType("jmix:accessControlled")) {
+                    removeMixin("jmix:accessControlled");
                 }
             }
             return true;
@@ -622,8 +622,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @throws RepositoryException
      */
     public boolean getAclInheritanceBreak() throws RepositoryException {
-        if (objectNode.hasNode("j:acl")) {
-            Node acl = objectNode.getNode("j:acl");
+        if (hasNode("j:acl")) {
+            Node acl = getNode("j:acl");
             return acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean();
         }
         return false;
@@ -636,14 +636,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @throws RepositoryException
      */
     public Node getOrCreateAcl() throws RepositoryException {
-        if (objectNode.hasNode("j:acl")) {
-            return objectNode.getNode("j:acl");
+        if (hasNode("j:acl")) {
+            return getNode("j:acl");
         } else {
-            if (!objectNode.isCheckedOut()) {
-                objectNode.checkout();
+            if (!isCheckedOut()) {
+                checkout();
             }
-            objectNode.addMixin("jmix:accessControlled");
-            return objectNode.addNode("j:acl", "jnt:acl");
+            addMixin("jmix:accessControlled");
+            return addNode("j:acl", "jnt:acl");
         }
     }
 

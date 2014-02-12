@@ -126,7 +126,9 @@ public class AclListener extends DefaultEventListener {
                         logger.warn("Missing roles property for acl on " + ace.getPath());
                     }
                 } catch (ItemNotFoundException e) {
+                    // Item does not exist anymore, use empty roles set
                 } catch (InvalidItemStateException e) {
+                    // Item does not exist anymore, use empty roles set
                 }
 
                 QueryManager q = session.getWorkspace().getQueryManager();

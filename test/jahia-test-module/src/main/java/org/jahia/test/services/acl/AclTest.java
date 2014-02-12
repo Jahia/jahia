@@ -160,10 +160,6 @@ public class AclTest {
                 TestHelper.deleteSite(TESTSITE_NAME);
             }
 
-            JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            groupManager.deleteGroup(group1);
-            groupManager.deleteGroup(group2);
-
             JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
             userManager.deleteUser(user1);
             userManager.deleteUser(user2);

@@ -44,10 +44,12 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.*;
@@ -99,6 +101,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
+
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -941,6 +944,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 properties.convertException((NodeConstraintViolationException) e);
             }
             throw new GWTJahiaServiceException(e.getMessage());
+        } catch (NamespaceException e) {
+            throw new GWTJahiaServiceException(e.getMessage() != null ? Messages.getInternal(
+                    "label.gwt.error.jcr.namespace", getUILocale())
+                    + "\n"
+                    + Messages.getInternal("label.cause", getUILocale()) + ": " + e.getMessage()
+                    : Messages.getInternal("label.gwt.error.jcr.namespace", getUILocale()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause", getUILocale()) + e.getMessage());

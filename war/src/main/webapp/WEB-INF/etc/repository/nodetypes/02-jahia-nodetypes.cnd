@@ -955,8 +955,8 @@ extends = jnt:content
  - * (string) i18n
 
 [jnt:namespaceDefinition] > nt:base
- - j:prefix (string) = 'jnt' mandatory
- - j:uri (string) = 'http://www.jahia.org/jahia/nt/1.0' mandatory
+ - j:prefix (string) mandatory
+ - j:uri (string) mandatory
 
 
 //---------------------------------------------------------

@@ -570,6 +570,15 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="jnt:namespaceDefinition">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <ref bean="Engine.Tab.Content" />
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
             </map>
         </property>
 
@@ -677,7 +686,7 @@
                                             </bean>
                                         </property>
                                         <property name="titleKey" value="label.newNamespaceDefinition"/>
-                                        <property name="icon" value="newDefinition"/>
+                                        <property name="icon" value="newNamespace"/>
                                     </bean>
                                     <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>

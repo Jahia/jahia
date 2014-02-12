@@ -46,6 +46,7 @@ import org.jahia.settings.SettingsBean;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Locale;
 
 /**
  * @author Christophe Laprun
@@ -57,9 +58,12 @@ public class DefaultLanguageAnalyzer extends Analyzer {
         // check if we have a language specific analyzer configured for the default language specified in jahia.properties
         final LanguageCustomizingAnalyzerRegistry registry = LanguageCustomizingAnalyzerRegistry.getInstance();
         final SettingsBean settings = SettingsBean.getInstance();
-        final String defaultLanguageCode = settings.getDefaultLanguageCode();
-        final Analyzer specific = registry.getAnalyzer(defaultLanguageCode);
-        if(specific != null) {
+        final Locale defaultLocale = settings.getDefaultLocale();
+        Analyzer specific = registry.getAnalyzer(defaultLocale.toString());
+        if (specific == null) {
+            specific = registry.getAnalyzer(defaultLocale.getLanguage());
+        }
+        if (specific != null) {
             // if we've found one, use it
             analyzer = specific;
         }

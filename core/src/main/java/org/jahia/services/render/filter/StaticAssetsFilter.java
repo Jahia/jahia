@@ -265,6 +265,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         } else if (resource.getContextConfiguration().equals("page")) {
             if (renderContext.isEditMode()) {
+<<<<<<< .working
                 if (renderContext.getServletPath().endsWith("frame")) {
                     boolean doParse = true;
                     if (renderContext.getEditModeConfig().getSkipMainModuleTypesDomParsing() != null) {
@@ -280,8 +281,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
                         EndTag bodyEndTag = bodyElement.getEndTag();
                         outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1, "</div><");
+=======
+                // Add static div for edit mode
+                addJcropResources(renderContext, assets);
 
+                List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
+>>>>>>> .merge-right.r48653
+
+<<<<<<< .working
                         bodyElement = bodyElementList.get(0);
+=======
+                if (bodyElementList.size() > 0) {
+                    Element bodyElement = bodyElementList.get(bodyElementList.size() - 1);
+>>>>>>> .merge-right.r48653
 
                         StartTag bodyStartTag = bodyElement.getStartTag();
                         outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
@@ -362,8 +374,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             }
             out = outputDocument.toString();
+        } else if (resource.getContextConfiguration().equals("gwt")) {
+            if (renderContext.isEditMode()) {
+                addJcropResources(renderContext, assets);
+            }
         }
-
         // Clean all jahia:resource tags
         source = new Source(out);
         esiResourceTags = (new Source(out)).getAllStartTags("jahia:resource");
@@ -376,6 +391,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
+<<<<<<< .working
     private static boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
         if (!renderContext.isEditMode()) {
             return false;
@@ -388,6 +404,25 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return header.contains("msie") || header.contains("trident/7");
     }
 
+=======
+    private void addJcropResources(RenderContext renderContext, Map<String, Map<String, Map<String, String>>> assets) {
+        Map<String, Map<String, String>> javascript = assets.get("javascript");
+        if (javascript == null) {
+            assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
+        }
+        javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.min.js", null);
+        javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/jquery.Jcrop.min.js", null);
+        javascript.put(renderContext.getRequest().getContextPath() + "/modules/assets/javascript/clippy/jquery.clippy.min.js", null);
+
+        Map<String, Map<String, String>> css = assets.get("css");
+        if (css == null) {
+            assets.put("css", (css = new HashMap<String, Map<String, String>>()));
+        }
+        css.put(renderContext.getRequest().getContextPath() + "/modules/assets/css/jquery.Jcrop.min.css",
+                Collections.<String, String> emptyMap());
+    }
+
+>>>>>>> .merge-right.r48653
     public static String removeTempTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
             return CLEANUP_REGEXP.matcher(content).replaceAll("");

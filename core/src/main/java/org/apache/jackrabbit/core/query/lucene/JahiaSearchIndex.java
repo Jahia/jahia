@@ -56,11 +56,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
-<<<<<<< .working
-import org.apache.tika.parser.Parser;
-=======
 import org.apache.shiro.util.StringUtils;
->>>>>>> .merge-right.r48664
+import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -90,13 +87,9 @@ public class JahiaSearchIndex extends SearchIndex {
     private int batchSize = 100;
 
     private boolean addAclUuidInIndex = true;
-<<<<<<< .working
-
-=======
 
     private Set<String> typesUsingOptimizedACEIndexation = new HashSet<String>();
-    
->>>>>>> .merge-right.r48664
+
     public int getMaxClauseCount() {
         return maxClauseCount;
     }
@@ -324,12 +317,8 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setIndexFormatVersion(indexFormatVersion);
         indexer.setMaxExtractLength(getMaxExtractLength());
         indexer.setSupportSpellchecking(getSpellCheckerClass() != null);
-<<<<<<< .working
         indexer.setAddAclUuidInIndex(addAclUuidInIndex);
-=======
         indexer.setUseOptimizedACEIndexation(canUseOptimizedACEIndexation(node));
-        indexer.setAddAclUuidInIndex(addAclUuidInIndex);        
->>>>>>> .merge-right.r48664
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
@@ -342,7 +331,7 @@ public class JahiaSearchIndex extends SearchIndex {
      * @throws RepositoryException
      */
     private boolean canUseOptimizedACEIndexation(NodeState currentNode) throws RepositoryException {
-        final ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(JahiaNodeIndexer.getTypeNameAsString(currentNode.getNodeTypeName(), getContext().getNamespaceRegistry()));
+        final ExtendedNodeType nodeType = NodeTypeRegistry.getProviderNodeTypeRegistry().getNodeType(JahiaNodeIndexer.getTypeNameAsString(currentNode.getNodeTypeName(), getContext().getNamespaceRegistry()));
         for (String type : typesUsingOptimizedACEIndexation) {
             if (nodeType.isNodeType(type)) {
                 return true;
@@ -507,14 +496,6 @@ public class JahiaSearchIndex extends SearchIndex {
     public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
         this.addAclUuidInIndex = addAclUuidInIndex;
     }
-<<<<<<< .working
-
-    @Override
-    protected Parser createParser() {
-        // we disable binary indexing by Jackrabbit (is done by Jahia), so we do not need the parser
-        return null;
-    }
-=======
 
     /**
      * Return the list of types which can benefit of the optimized ACE indexation.
@@ -528,5 +509,9 @@ public class JahiaSearchIndex extends SearchIndex {
         this.typesUsingOptimizedACEIndexation = Sets.newHashSet(StringUtils.split(typesUsingOptimizedACEIndexation));
     }
 
->>>>>>> .merge-right.r48664
+    @Override
+    protected Parser createParser() {
+        // we disable binary indexing by Jackrabbit (is done by Jahia), so we do not need the parser
+        return null;
+    }
 }

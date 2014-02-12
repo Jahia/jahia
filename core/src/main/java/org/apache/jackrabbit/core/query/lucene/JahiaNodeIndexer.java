@@ -145,8 +145,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     private static final DateField dateType = new DateField();
 
-<<<<<<< .working
     private boolean addAclUuidInIndex = true;
+
+    private boolean useOptimizedACEIndexation = false;
 
     private transient String site;
 
@@ -155,28 +156,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
     protected JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
                                NamespaceMappings mappings, Executor executor, Parser parser, QueryHandlerContext context,
                                NodeTypeRegistry typeRegistry, NamespaceRegistry nameRegistry) {
-=======
-    private boolean useOptimizedACEIndexation = false;
-    private boolean addAclUuidInIndex = true;    
-    
-    /**
-     * Creates a new node indexer.
-     * 
-     * @param node
-     *            the node state to index.
-     * @param stateProvider
-     *            the persistent item state manager to retrieve properties.
-     * @param mappings
-     *            internal namespace mappings.
-     * @param executor
-     * @param parser
-     * @param context
-     *            the query handler context (for getting other services and registries)
-     */
-    public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
-            NamespaceMappings mappings, Executor executor, Parser parser,
-            QueryHandlerContext context) {
->>>>>>> .merge-right.r48664
         super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = typeRegistry;
         this.namespaceRegistry = nameRegistry;
@@ -201,11 +180,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     protected String getTypeNameAsString() throws RepositoryException {
         return getTypeNameAsString(nodeTypeName, namespaceRegistry);
-    }
-
-    protected static String getTypeNameAsString(Name nodeTypeName, NamespaceRegistry namespaceRegistry) throws
-            RepositoryException {
-        return namespaceRegistry.getPrefix(nodeTypeName.getNamespaceURI()) + ":" + nodeTypeName.getLocalName();
     }
 
     /**
@@ -708,20 +682,14 @@ public class JahiaNodeIndexer extends NodeIndexer {
             while (currentNode != null) {
                 ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
                 if (aclChildNode != null) {
-<<<<<<< .working
-                    acls.add(0, currentNode.getId().toString());
-=======
                     NodeState ns = (NodeState) stateProvider.getItemState(aclChildNode.getId());
                     StringBuilder ace = new StringBuilder(currentNode.getId().toString());
                     if (ns.getChildNodeEntries().size() == 1 && useOptimizedACEIndexation) {
-                        // One single ACE, and useOptimizedACEIndexation set : we can store the user and roles in the index
                         ChildNodeEntry childNodeEntry = ns.getChildNodeEntries().get(0);
                         PropertyId principalPropId = new PropertyId(childNodeEntry.getId(), J_ACE_PRINCIPAL);
                         PropertyState principal = (PropertyState) stateProvider.getItemState(principalPropId);
                         InternalValue internalValue = principal.getValues()[0];
                         final String principalValue = internalValue.getString();
-
-                        // Store only entries for a user
                         if (principalValue.startsWith("u:")) {
                             PropertyId grantPropId = new PropertyId(childNodeEntry.getId(), J_ACE_GRANT);
                             PropertyState grant = (PropertyState) stateProvider.getItemState(grantPropId);
@@ -730,20 +698,17 @@ public class JahiaNodeIndexer extends NodeIndexer {
                             PropertyState roles = (PropertyState) stateProvider.getItemState(rolesPropId);
 
                             ace.append("/");
-                            // Append all granted roles
                             if (grant.getValues()[0].getString().equals("GRANT")) {
                                 for (InternalValue value : roles.getValues()) {
                                     ace.append(value.getName().getLocalName()).append("/");
                                 }
                             }
-                            // And the user name at the end
                             ace.append(principalValue.substring(2));
                         }
                     }
 
                     acls.add(0, ace.toString());
 
->>>>>>> .merge-right.r48664
                     PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
                     try {
                         PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
@@ -787,7 +752,19 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
         this.addAclUuidInIndex = addAclUuidInIndex;
-<<<<<<< .working
+    }
+
+    /**
+     * Does this indexer use optimized ACE indexation. Set by the JahiaSearchIndex based
+     * on a list of node types allowing this optimization.
+     * @return
+     */
+    public boolean isUseOptimizedACEIndexation() {
+        return useOptimizedACEIndexation;
+    }
+
+    public void setUseOptimizedACEIndexation(boolean useOptimizedACEIndexation) {
+        this.useOptimizedACEIndexation = useOptimizedACEIndexation;
     }
 
     public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,
@@ -806,21 +783,4 @@ public class JahiaNodeIndexer extends NodeIndexer {
             throw new RuntimeException(e);
         }
     }
-=======
-    }
-
-    /**
-     * Does this indexer use optimized ACE indexation. Set by the JahiaSearchIndex based
-     * on a list of node types allowing this optimization.
-     * @return
-     */
-    public boolean isUseOptimizedACEIndexation() {
-        return useOptimizedACEIndexation;
-    }
-
-    public void setUseOptimizedACEIndexation(boolean useOptimizedACEIndexation) {
-        this.useOptimizedACEIndexation = useOptimizedACEIndexation;
-    }
-
->>>>>>> .merge-right.r48664
 }

@@ -40,6 +40,7 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -49,7 +50,11 @@ import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
+<<<<<<< .working
 import org.apache.lucene.analysis.Analyzer;
+=======
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
+>>>>>>> .merge-right.r48664
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -74,6 +79,11 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
+<<<<<<< .working
+=======
+import javax.jcr.security.Privilege;
+
+>>>>>>> .merge-right.r48664
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -172,6 +182,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         try {
                             boolean canRead = true;
                             if (isAclUuidInIndex()) {
+<<<<<<< .working
                                 String[] acls = infos.getAclUuid() != null ? 
                                         Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
                                 ArrayUtils.reverse(acls);
@@ -191,6 +202,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         break;
                                     }
                                 }
+=======
+                                canRead = checkIndexedAcl(checkedAcls, infos);
+>>>>>>> .merge-right.r48664
                             }
                             if (canRead
                                     && (!Constants.LIVE_WORKSPACE.equals(session
@@ -361,7 +375,60 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Util.closeOrRelease(reader);
         }
     }
-    
+
+    private boolean checkIndexedAcl(Map<String, Boolean> checkedAcls, IndexedNodeInfo infos) throws RepositoryException {
+        boolean canRead = true;
+
+        String[] acls = infos.getAclUuid() != null ?
+                Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
+        ArrayUtils.reverse(acls);
+
+        for (String acl : acls) {
+            if (acl.contains("/")) {
+                // ACL indexed contains a single user ACE, get the username
+                String singleUser = StringUtils.substringAfter(acl, "/");
+                acl =  StringUtils.substringBefore(acl, "/");
+                if (singleUser.contains("/")) {
+                    // Granted roles are specified in the indexed entry
+                    String roles = StringUtils.substringBeforeLast(singleUser, "/");
+                    singleUser = StringUtils.substringAfterLast(singleUser, "/");
+                    if (!singleUser.equals(session.getUserID())) {
+                        // If user does not match, skip this ACL
+                        continue;
+                    } else {
+                        // If user matches, check if one the roles gives the read permission
+                        for (String role : StringUtils.split(roles, '/')) {
+                            if (((JahiaAccessManager)session.getAccessControlManager()).matchPermission(Sets.newHashSet(Privilege.JCR_READ + "_" + session.getWorkspace().getName()),role, session)) {
+                                // User and role matches, read is granted
+                                return true;
+                            }
+                        }
+                    }
+                } else {
+                    if (!singleUser.equals(session.getUserID())) {
+                        // If user does not match, skip this ACL
+                        continue;
+                    }
+                    // Otherwise, do normal ACL check.
+                }
+            }
+            // Verify first if this acl has already been checked
+            Boolean aclChecked = checkedAcls.get(acl);
+            if (aclChecked == null) {
+                try {
+                    canRead = session.getAccessManager().canRead(null, new NodeId(acl));
+                    checkedAcls.put(acl, canRead);
+                } catch (RepositoryException e) {
+                }
+            } else {
+                canRead = aclChecked;
+            }
+            if (!canRead) {
+                return false;
+            }
+        } return canRead;
+    }
+
     /**
      * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
      * This can have a negative effect on performance, when setting rights on a node,

@@ -68,6 +68,8 @@ import com.google.gwt.core.client.RunAsyncCallback;
 @SuppressWarnings("serial")
 public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
     
+    private boolean noMarkForDeletion;
+    
     private boolean permanentlyDelete;
 
     private String referenceTitleKey;
@@ -88,10 +90,11 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         break;
                     }
                 } else {
-                    if (!selected.isNodeType("jmix:markedForDeletionRoot")) {
+                    if (!noMarkForDeletion && !selected.isNodeType("jmix:markedForDeletionRoot")) {
                         enabled = false;
                         break;
                     }
+    
                     if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
                         // the node is already published or it is locked (not for deletion)
                         enabled = false;
@@ -126,7 +129,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 if (selection.get(0).getInheritedNodeTypes().contains("jmix:nodeReference")) {
                     updateTitle(Messages.get(referenceTitleKey,referenceTitleKey));
                 } else {
-                    updateTitle(getGwtToolbarItem().getTitle() + ": " + selection.get(0).getDisplayName());
+                    updateTitle(getGwtToolbarItem().getTitle() + " : " + selection.get(0).getDisplayName());
                 }
             } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));
@@ -193,5 +196,9 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
         }
 
         return super.isNodeTypeAllowed(selectedNode);
+    }
+
+    public void setNoMarkForDeletion(boolean noMarkForDeletion) {
+        this.noMarkForDeletion = noMarkForDeletion;
     }
 }

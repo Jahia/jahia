@@ -96,7 +96,6 @@ public class TaggingTest {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Node siteNode = session.getNode("/sites/" + TESTSITE_NAME);
-                    session.checkout(siteNode);
                     siteNode.addNode("tags-content", "jnt:contentList");
                     session.save();
                     return null;
@@ -122,8 +121,6 @@ public class TaggingTest {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    session.getWorkspace().getVersionManager()
-                            .checkout("/sites/" + TESTSITE_NAME + "/tags");
                     NodeIterator nodeIterator = session
                             .getWorkspace()
                             .getQueryManager()
@@ -134,14 +131,12 @@ public class TaggingTest {
                     while (nodeIterator.hasNext()) {
                         Node node = nodeIterator.nextNode();
                         try {
-                            session.checkout(node);
                             node.remove();
                         } catch (PathNotFoundException e) {
                             // ignore -> it is a bug in Jackrabbit that produces
                             // duplicate results
                         }
                     }
-                    session.getWorkspace().getVersionManager().checkout("/sites/" + TESTSITE_NAME);
                     try {
                         session.getNode("/sites/" + TESTSITE_NAME + "/tags-content").remove();
                     } catch (PathNotFoundException e) {
@@ -193,7 +188,6 @@ public class TaggingTest {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
-                session.checkout(contentFolder);
                 contentFolder.addNode("content-0", "jnt:text");
                 session.save();
                 return null;
@@ -233,7 +227,6 @@ public class TaggingTest {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
-                session.checkout(contentFolder);
                 for (int i = 1; i <= 10; i++) {
                     contentFolder.addNode("content-" + i, "jnt:text");
                 }

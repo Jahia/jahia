@@ -93,7 +93,7 @@ public class SimpleSearchTest extends JahiaTestCase {
                         TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost",
                                 TestHelper.WEB_TEMPLATES, SettingsBean.getInstance()
                                         .getJahiaVarDiskPath()
-                                        + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                                        + "/prepackagedSites/acme.zip", "ACME.zip");
 //                        jcrService.publishByMainId(
 //                                session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home")
 //                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
@@ -114,7 +114,7 @@ public class SimpleSearchTest extends JahiaTestCase {
                         TestHelper.createSite(SECOND_TESTSITE_NAME, "127.0.0.1",
                                 TestHelper.WEB_TEMPLATES, SettingsBean.getInstance()
                                         .getJahiaVarDiskPath()
-                                        + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                                        + "/prepackagedSites/acme.zip", "ACME.zip");
 //                        jcrService.publishByMainId(
 //                                session.getNode(SECOND_SITECONTENT_ROOT_NODE + "/home")
 //                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
@@ -177,7 +177,7 @@ public class SimpleSearchTest extends JahiaTestCase {
                 logger.info("[" + (++i) + "]: " + hit.getLink());
             }
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    21, hits.size());
+                    19, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -206,7 +206,7 @@ public class SimpleSearchTest extends JahiaTestCase {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    21, hits.size());
+                    15, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -240,7 +240,7 @@ public class SimpleSearchTest extends JahiaTestCase {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    16, hits.size());
+                    13, hits.size());
 
             criteria.setFileType("pdf");
             hits = searchService.search(criteria, context).getResults();
@@ -281,19 +281,19 @@ public class SimpleSearchTest extends JahiaTestCase {
             criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
             hits = searchService.search(criteria, context).getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    6, hits.size());
+                    3, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil engineering");
             criteria.getTerms().get(0).setMatch(MatchType.EXACT_PHRASE);
             hits = searchService.search(criteria, context).getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    5, hits.size());
+                    3, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil -engineering");
             criteria.getTerms().get(0).setMatch(MatchType.AS_IS);
             hits = searchService.search(criteria, context).getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    2, hits.size());
+                    0, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil");
             criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
@@ -301,7 +301,7 @@ public class SimpleSearchTest extends JahiaTestCase {
             criteria.getTerms().get(1).setMatch(MatchType.WITHOUT_WORDS);
             hits = searchService.search(criteria, context).getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    2, hits.size());
+                    0, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -330,7 +330,7 @@ public class SimpleSearchTest extends JahiaTestCase {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: "
-                            + criteria.toString(), 21 * 2, hits.size());
+                            + criteria.toString(), 19 * 2, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }

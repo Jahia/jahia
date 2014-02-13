@@ -75,6 +75,7 @@ public class JahiaTestCase {
 
     private static Logger logger = Logger.getLogger(JahiaTestCase.class);
 
+<<<<<<< .working
     /**
      * Returns the <code>HttpServletRequest</code> object for the current call.
      * 
@@ -83,6 +84,10 @@ public class JahiaTestCase {
     protected static final HttpServletRequest getRequest() {
         return BaseTestController.getThreadLocalRequest();
     }
+=======
+    private final static String PORT = "7070";
+    private final static String BASE_URL = "http://localhost:" + PORT;
+>>>>>>> .merge-right.r48693
 
     /**
      * Returns the <code>HttpServletResponse</code> object for the current call.

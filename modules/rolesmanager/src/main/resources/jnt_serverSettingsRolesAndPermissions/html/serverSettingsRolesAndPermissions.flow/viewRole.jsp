@@ -15,7 +15,7 @@
 <jsp:useBean id="nowDate" class="java.util.Date"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 
-
+<template:addResources>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#form").submit(function() {
@@ -127,7 +127,15 @@
             $selectedOption.remove();
         }
     }
+    
+    function updatedSelectedTypes() {
+    	$('#selectedAvailableNodeTypes').empty();
+    	$('#nodeTypes option:selected').each(function() {
+    		$('#selectedAvailableNodeTypes').append("<li>" + $(this).text() + "</li>");
+    	});
+    }
 </script>
+</template:addResources>
 
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
@@ -186,11 +194,21 @@
                 <c:if test="${not empty handler.roleBean.roleType.availableNodeTypes}">
                     <div class="span4">
                         <label for="nodeTypes"><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes"/></label>
-                        <select multiple="true" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger')">
+                        <select multiple="true" size="20" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger'); updatedSelectedTypes();">
                             <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
                                 <option value="${nodeType.name}" ${nodeType.set ? 'selected="true"' : ''}>${nodeType.displayName}</option>
                             </c:forEach>
                         </select>
+                    </div>
+                    <div class="span4">
+                        <p><fmt:message key="label.selected"/></p>
+                        <ul id="selectedAvailableNodeTypes">
+                        <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
+                            <c:if test="${nodeType.set}">
+                                <li>${nodeType.displayName}</li>
+                            </c:if>
+                        </c:forEach>
+                        </ul>
                     </div>
                 </c:if>
             </div>

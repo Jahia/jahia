@@ -196,7 +196,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 box.getTextBox().setValidator(new Validator() {
                     @Override
                     public String validate(Field<?> field, String value) {
-                        if (!value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^+*\\-\\[\\]\\/\\|]*")) {
+                        if (!value.equals("*") && !value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^*+\\-\\[\\]\\/\\|]*")) {
                             return Messages.get("label.childName.error","the name cannot contain one of these characters * [ ] | - / + : or start with a number");
                         };
                         for (GWTJahiaNode n : store.getModels()) {

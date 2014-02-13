@@ -276,6 +276,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             actions.show();
             tab.setProcessed(true);
             readOnly = engine.getNode() != null && engine.getNode().isLocked();
+            if (codeField != null) {
+                codeField.setReadOnly(readOnly);
+            }
         }
     }
 

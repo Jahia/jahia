@@ -59,7 +59,7 @@ public class CodeMirrorField extends TextArea {
         super.onRender(target, index);
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
-                codeMirror = initEditor(getInputEl().dom, mode, readOnly);
+                codeMirror = initEditor(getInputEl().dom, mode, readOnly?"nocursor":"");
                 updateSize();
             }
         });
@@ -71,7 +71,7 @@ public class CodeMirrorField extends TextArea {
         updateSize();
     }
 
-    private native Object initEditor(Element textArea, String mode, boolean readOnly)/*-{
+    private native Object initEditor(Element textArea, String mode, String readOnly)/*-{
         var myCodeMirror = $wnd.CodeMirror.fromTextArea(textArea, {mode:mode, lineNumbers:true, matchBrackets:true, readOnly:readOnly});
         return myCodeMirror;
     }-*/;

@@ -65,6 +65,7 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -91,6 +92,8 @@ public class CacheFilterTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
+            SettingsBean.getInstance().setDisableJsessionIdParameter(true);
+
             JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
             JCRNodeWrapper siteNode = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());

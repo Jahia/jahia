@@ -116,28 +116,27 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] desc";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] DESC";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'en' ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) ORDER BY news.[jcr:created] desc";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
-                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.[jcr:created] DESC";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-// TODO: Uncomment, when we receive a Jackrabbit patch                 
-//                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND (NOT (news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')) ORDER BY news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
         } catch (Exception ex) {
@@ -157,20 +156,19 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (length(news.[desc]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
-                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > 100 OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.desc) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
 
-// TODO: uncomment when we install a Jackrabbit patch                
-//                query = "SELECT * FROM [jnt:news] as news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (length(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z')";
-//                q = queryManager.createQuery(query, Query.JCR_SQL2);
-//                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
-//                
-//                query = "SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')";
-//                q = queryManager.createQuery(query, Query.JCR_SQL2);
-//                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                query = "SELECT * FROM [jnt:news] as news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (length(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z')";
+                q = queryManager.createQuery(query, Query.JCR_SQL2);
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.[j:nodename]) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+
+                query = "SELECT news.* FROM [jnt:news] AS news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.[j:nodename]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')";
+                q = queryManager.createQuery(query, Query.JCR_SQL2);
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(news.[j:nodename]) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND (NOT (news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en'))", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
         } catch (Exception ex) {
@@ -190,27 +188,27 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE contains(news.*, 'ACME') ORDER BY news.[date]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.*, 'ACME') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND CONTAINS(news.*, 'ACME') AND (NOT news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en') ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.*, 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.*, 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND CONTAINS(news.*, 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE contains(news.[jcr:title], 'ACME') ORDER BY news.[date]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.[jcr:title], 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND CONTAINS(news.[jcr:title], 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.[jcr:title], 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE CONTAINS(news.[jcr:title], 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND CONTAINS(news.[jcr:title], 'ACME') AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE contains(news.[jcr:title], 'ACME') OR contains(news.[j:keywords], 'ACME') ORDER BY news.[date]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (CONTAINS(news.[jcr:title], 'ACME') OR CONTAINS(news.[j:keywords], 'ACME')) AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND (CONTAINS(news.[jcr:title], 'ACME') OR CONTAINS(news.[j:keywords], 'ACME')) AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE (CONTAINS(news.[jcr:title], 'ACME') OR CONTAINS(news.[j:keywords], 'ACME')) AND news.[jcr:language] = 'en' ORDER BY news.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (CONTAINS(news.[jcr:title], 'ACME') OR CONTAINS(news.[j:keywords], 'ACME')) AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND (CONTAINS(news.[jcr:title], 'ACME') OR CONTAINS(news.[j:keywords], 'ACME')) AND news.[jcr:language] = 'en' ORDER BY news.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jmix:keywords] as node WHERE contains(node.[j:keywords], 'ACME')";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
@@ -238,11 +236,11 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
 
                 query = "SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
         } catch (Exception ex) {

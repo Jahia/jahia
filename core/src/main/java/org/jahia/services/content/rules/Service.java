@@ -569,7 +569,7 @@ public class Service extends JahiaService {
     }
 
     public void moveToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException {
-        if (n.getNode().getParent().isNodeType(Constants.SPLIT_NODETYPE)) {
+        if (n.getNode().getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
             JCRNodeWrapper newNode = JCRAutoSplitUtils.applyAutoSplitRules(n.getNode());
             if (newNode != null) {
                 drools.retract(n);

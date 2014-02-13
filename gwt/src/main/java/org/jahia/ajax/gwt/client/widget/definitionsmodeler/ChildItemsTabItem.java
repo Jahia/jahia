@@ -65,6 +65,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -199,6 +200,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                         if (!value.equals("*") && !value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^*+\\-\\[\\]\\/\\|]*")) {
                             return Messages.get("label.childName.error","the name cannot contain one of these characters * [ ] | - / + : or start with a number");
                         };
+                        GWTJahiaNode n1 = engine.getNode();
                         for (GWTJahiaNode n : store.getModels()) {
                             if (n.getName().equals(value)) {
                                 return Messages.get("label.duplicate.name","this name already used, please select a new one");
@@ -713,7 +715,14 @@ public class ChildItemsTabItem extends EditEngineTabItem {
     private String computeUnstructuredItemName(GWTJahiaNode node) {
         String s1 = "";
         if (node.getNodeTypes().contains("jnt:unstructuredPropertyDefinition")) {
-            if (node.get("j:mutliple") != null) {
+            boolean isMultiple = false;
+            List<GWTJahiaNodeProperty> properties = propertiesEditors.get(node).getProperties();
+            for (GWTJahiaNodeProperty property : properties) {
+                if (property.getName().equals("j:multiple")) {
+                    isMultiple = property.getValues().get(0).getBoolean();
+                }
+            }
+            if (isMultiple) {
                 if (node.get("j:requiredType") instanceof String) {
                     int i = GWTJahiaNodePropertyType.MULTIPLE_OFFSET + getPropertyType((String) node.get("j:requiredType"));
                     s1 = "__prop__" + i;

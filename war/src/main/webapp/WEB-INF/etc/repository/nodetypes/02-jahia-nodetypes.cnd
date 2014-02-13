@@ -935,7 +935,6 @@ extends = jnt:content
    < 'String', 'URI', 'Binary', 'Long', 'Double',
      'Decimal', 'Boolean', 'Date', 'Name', 'Path',
      'Reference', 'WeakReference', 'undefined'
- - j:multiple (BOOLEAN) hidden
 
 [jnt:childNodeDefinition] > jnt:itemDefinition
  - j:requiredPrimaryTypes (NAME, choicelist[nodetypes='ALL;fromDependencies;useName']) = 'nt:base' mandatory multiple

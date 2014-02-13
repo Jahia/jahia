@@ -915,7 +915,7 @@ public class ContentTest {
         fields.add("jcr:lastModified");
         for (GWTJahiaNode rootNode : rootNodes) {
             assertGWTJahiaNode(rootNode, "/mounts");
-            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode,
+            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode.getPath(),
                     nodeTypes, new ArrayList<String>(),
                     new ArrayList<String>(), fields, session,
                     Locale.getDefault());
@@ -928,7 +928,7 @@ public class ContentTest {
                         mountLocations.contains(childNode.getPath()));
                 assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
                 List<GWTJahiaNode> childChildNodes = navigationHelper.ls(
-                        childNode, nodeTypes, new ArrayList<String>(),
+                        childNode.getPath(), nodeTypes, new ArrayList<String>(),
                         new ArrayList<String>(), fields, session,
                         Locale.getDefault());
                 for (GWTJahiaNode childChildNode : childChildNodes) {

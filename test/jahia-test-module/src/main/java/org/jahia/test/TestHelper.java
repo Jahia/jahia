@@ -43,6 +43,8 @@ package org.jahia.test;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
@@ -91,8 +93,9 @@ public class TestHelper {
     }
 
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
-        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
+        createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/" + name);
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
             site.setLanguages(languages);
         }
@@ -102,8 +105,7 @@ public class TestHelper {
         if (mixLanguagesActive != site.isMixLanguagesActive()) {
             site.setMixLanguagesActive(mixLanguagesActive);
         }
-        service.updateSystemSitePermissions(site);
-        ((JCRSiteNode)site).getSession().save();
+        session.save();
         return site;
     }
 

@@ -141,6 +141,10 @@ public final class GWTResourceBundleUtils {
         return lang;
     }
 
+    private static boolean isValidKey(String key) {
+        return key != null && key.length() > 0 && key.indexOf('<') == -1 && key.indexOf('=') == -1 && key.indexOf('>') == -1;
+    }
+
     public static GWTResourceBundle load(JCRNodeWrapper node, Locale uiLocale) {
         GWTResourceBundle gwtBundle = null;
         long timer = System.currentTimeMillis();
@@ -192,6 +196,28 @@ public final class GWTResourceBundleUtils {
         return gwtBundle;
     }
 
+    public static void lock(JCRNodeWrapper node) {
+        try {
+            boolean isFile = false;
+            if (!(isFile = node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FILE))
+                    && !node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER)) {
+                return;
+            }
+
+            final JCRNodeWrapper parent = isFile ? node.getParent() : node;
+            List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
+                    parent, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
+            for (JCRNodeWrapper rbFileNode : rbFileNodes) {
+                rbFileNode.lockAndStoreToken("engine");
+            }
+            parent.lockAndStoreToken("engine");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return;
+    }
+
     private static void populate(GWTResourceBundle gwtBundle, JCRNodeWrapper node,
             Set<String> languages) {
 
@@ -216,7 +242,9 @@ public final class GWTResourceBundleUtils {
             p.load(is);
             for (Object keyObj : p.keySet()) {
                 String key = keyObj.toString();
-                gwtBundle.setValue(key, lang, p.getProperty(key));
+                if (isValidKey(key)) {
+                    gwtBundle.setValue(key, lang, p.getProperty(key));
+                }
             }
         } catch (IOException e) {
             logger.error("Error reading content of the " + node.getPath()
@@ -284,36 +312,7 @@ public final class GWTResourceBundleUtils {
 
     }
 
-    public static void lock(JCRNodeWrapper node) {
-        GWTResourceBundle gwtBundle = null;
-        long timer = System.currentTimeMillis();
-        try {
-            boolean isFile = false;
-            if (!(isFile = node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FILE))
-                    && !node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FOLDER)) {
-                return;
-            }
-
-            gwtBundle = new GWTResourceBundle();
-
-            Set<String> languages = new HashSet<String>();
-            final JCRNodeWrapper parent = isFile ? node.getParent() : node;
-            List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
-                    parent, Constants.JAHIANT_RESOURCEBUNDLE_FILE);
-            for (JCRNodeWrapper rbFileNode : rbFileNodes) {
-                rbFileNode.lockAndStoreToken("engine");
-            }
-            parent.lockAndStoreToken("engine");
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return;
-    }
-
     public static void unlock(JCRNodeWrapper node) {
-        GWTResourceBundle gwtBundle = null;
-        long timer = System.currentTimeMillis();
         try {
             boolean isFile = false;
             if (!(isFile = node.isNodeType(Constants.JAHIANT_RESOURCEBUNDLE_FILE))
@@ -321,9 +320,6 @@ public final class GWTResourceBundleUtils {
                 return;
             }
 
-            gwtBundle = new GWTResourceBundle();
-
-            Set<String> languages = new HashSet<String>();
             final JCRNodeWrapper parent = isFile ? node.getParent() : node;
             List<JCRNodeWrapper> rbFileNodes = JCRContentUtils.getChildrenOfType(
                     parent, Constants.JAHIANT_RESOURCEBUNDLE_FILE);

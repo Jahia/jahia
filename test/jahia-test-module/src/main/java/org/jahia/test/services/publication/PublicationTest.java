@@ -381,7 +381,7 @@ public class PublicationTest {
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.markForDeletion("Deleted by unit test");
         englishEditSession.save();
-
+        getCleanSession();
         jcrService.publishByMainId(editContentList4.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         testNodeNotInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentList1_text1", "Text node 1 was deleted, should not be available in the live workspace anymore !");

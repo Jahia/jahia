@@ -386,7 +386,9 @@ public class VersioningTest extends JahiaTestCase {
             //Second publication
             logger.info("Versions before second publication (simple subpage removed)");
             displayVersions(editSession, stageNode, liveSession);
+            reopenSession();
             String labelForSecondPublication = publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier);
+            reopenSession();
             try {
                 liveSession.getNodeByUUID(subPageEditNodeIdentifier);
                 fail("should not have found subPage node");

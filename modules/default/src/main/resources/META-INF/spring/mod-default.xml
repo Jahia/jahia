@@ -13,6 +13,8 @@
 
     <bean class="org.jahia.modules.defaultmodule.LockAction"/>
 
+    <bean class="org.jahia.modules.defaultmodule.LockEditableFileAction"/>
+
     <bean class="org.jahia.modules.defaultmodule.UnlockAction"/>
 
     <bean class="org.jahia.modules.defaultmodule.StartWorkflowAction">

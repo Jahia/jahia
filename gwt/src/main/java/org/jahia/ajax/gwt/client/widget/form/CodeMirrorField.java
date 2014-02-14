@@ -52,6 +52,9 @@ public class CodeMirrorField extends TextArea {
 
     public void setMode(String mode) {
         this.mode = mode;
+        if (codeMirror != null) {
+            updateMode(mode);
+        }
     }
 
     @Override
@@ -132,6 +135,11 @@ public class CodeMirrorField extends TextArea {
     private native boolean isCodeMirrorDirty()/*-{
         var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
         return myCodeMirror.isClean();
+    }-*/;
+
+    private native void updateMode(String newMode)/*-{
+        var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
+        myCodeMirror.setOption("mode", newMode);
     }-*/;
 
 }

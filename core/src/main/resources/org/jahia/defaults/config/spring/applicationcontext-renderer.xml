@@ -2,7 +2,9 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
 
@@ -99,11 +101,10 @@
         <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
         <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
-        <property name="excludesFromAggregateAndCompress">
-            <list>
-            </list>
-        </property>
+        <property name="excludesFromAggregateAndCompress" ref="excludesFromAggregateAndCompress"/>
     </bean>
+    <util:list id="excludesFromAggregateAndCompress">
+    </util:list>
     <bean class="org.jahia.services.render.filter.FormTokenFilter">
         <property name="priority" value="11"/>
         <property name="description" value="Inject form tokens inside the request."/>

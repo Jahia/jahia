@@ -292,7 +292,8 @@ public class ImportExportTest {
 
                         return null;
                     }
-                });
+                }
+        );
         sf.closeAllSessions();
     }
 
@@ -341,56 +342,21 @@ public class ImportExportTest {
                         newPage.setProperty("jcr:title", "Added page to renamed page");
                         newPage.setProperty("j:templateName", "simple");
 
-                        JCRNodeWrapper textNode = childPage.getNode("child1/contentList0/contentList0_text2");
+                        JCRNodeWrapper textNode = childPage.getNode("contentList0/contentList0_text2");
                         if (!textNode.isCheckedOut()) {
                             session.getWorkspace().getVersionManager().checkout(textNode.getPath());
                         }
                         textNode.setProperty("jcr:title", "updated title");
-                        textNode = childPage.getNode("child0/contentList2/contentList2_text2");
+                        textNode = childPage.getNode("contentList2/contentList2_text2");
                         if (!textNode.isCheckedOut()) {
                             session.getWorkspace().getVersionManager().checkout(textNode.getPath());
                         }
                         textNode.rename("renamed-text-node");
                         session.save();
 
-                        // marked for deletion
-                        childPage = englishEditSiteHomeNode.getNode("child0/child1");
-                        if (!childPage.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager().checkout(childPage.getPath());
-                        }
-                        childPage.markForDeletion("marked for deletion in unit test");
-
-                        // remove
-                        childPage = englishEditSiteHomeNode.getNode("renamed-child");
-                        if (!childPage.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager().checkout(childPage.getPath());
-                        }
-                        childPage = englishEditSiteHomeNode.getNode("renamed-child/child2");
-                        childPage.remove();
-
-                        session.save();
-
-                        // reordering
-                        childPage = englishEditSiteHomeNode.getNode("child2");
-                        if (!childPage.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager().checkout(childPage.getPath());
-                        }
-                        childPage.orderBefore("child2", "child0");
-
-                        // move
-                        session.move(englishEditSiteHomeNode.getNode("child2/added-child-to-existing-subpage").getPath(),
-                                englishEditSiteHomeNode.getNode("renamed-child/child0").getPath() + "/moved-page");
-
-                        // copy
-                        childPage = englishEditSiteHomeNode.getNode("child0/child0");
-                        if (!childPage.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager().checkout(childPage.getPath());
-                        }
-                        childPage.copy(englishEditSiteHomeNode.getNode("child2/child1/child0"), "copied-node", false);
-                        session.save();
 
                         // set ACL
-                        childPage = englishEditSiteHomeNode.getNode("child2/child0/child1");
+                        childPage = englishEditSiteHomeNode.getNode("child2");
                         if (!childPage.isCheckedOut()) {
                             session.getWorkspace().getVersionManager().checkout(childPage.getPath());
                         }
@@ -406,7 +372,7 @@ public class ImportExportTest {
                         TaggingService tagService = (TaggingService) SpringContextSingleton
                                 .getBean("org.jahia.services.tags.TaggingService");
 
-                        childPage = englishEditSiteHomeNode.getNode("child2/child1/child1");
+                        childPage = englishEditSiteHomeNode.getNode("child2");
                         childPage.addMixin("jmix:tagged");
                         tagService.tag(childPage.getPath(), "impexptag", TESTSITE_NAME, true);
                         session.save();
@@ -448,7 +414,6 @@ public class ImportExportTest {
         sf.closeAllSessions();
         
         testExportImportWithUGCComplexChanges();
-        testNodeExportImportWithLive();
     }
 
     public void testExportImportWithUGCComplexChanges() throws Exception {
@@ -519,18 +484,6 @@ public class ImportExportTest {
                         }
                         childPage.orderBefore("contentListUGC_text4", "contentListUGC_text0");
 
-                        // move
-                        session.move(englishLiveSiteHomeNode.getNode("child2/added-ugc-child-to-existing-subpage").getPath(),
-                                englishLiveSiteHomeNode.getNode("renamed-child/child0").getPath() + "/moved-ugc-page");
-
-                        // copy
-                        childPage = englishLiveSiteHomeNode.getNode("child0/child0");
-                        if (!childPage.isCheckedOut()) {
-                            session.getWorkspace().getVersionManager().checkout(childPage.getPath());
-                        }
-                        childPage.copy(englishLiveSiteHomeNode.getNode("child2/child1/child0"), "copied-ugc-node", false);
-                        session.save();
-
                         // set ACL
                         childPage = englishLiveSiteHomeNode.getNode("added-ugc-child-with-subpage");
                         if (!childPage.isCheckedOut()) {
@@ -547,7 +500,7 @@ public class ImportExportTest {
                         TaggingService tagService = (TaggingService) SpringContextSingleton
                                 .getBean("org.jahia.services.tags.TaggingService");
 
-                        childPage = englishLiveSiteHomeNode.getNode("child2/child1/child2");
+                        childPage = englishLiveSiteHomeNode.getNode("child2");
                         childPage.addMixin("jmix:tagged");
                         tagService.tag(childPage.getPath(), "impexptagugc", TESTSITE_NAME, true);
                         session.save();
@@ -661,7 +614,7 @@ public class ImportExportTest {
             JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode("/" + SITECONTENT_ROOT_NODE);
             JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
 
-            TestHelper.createSubPages(englishEditSiteHomeNode, 3, 3, "Page title");
+            TestHelper.createSubPages(englishEditSiteHomeNode, 1, 3, "Page title");
             englishEditSession.save();
 
             fillPagesWithLists(englishEditSiteHomeNode);
@@ -884,19 +837,16 @@ public class ImportExportTest {
                                             : targetProperty.getValue().getString()))) + ")");
                     matches = false;
                 } else {
-                    Object sourceValue = sourceProperty.getValue();
-                    Object targetValue = targetProperty.getValue();
+                    String sourceValue = sourceProperty.getValue().getString();
+                    String targetValue = targetProperty.getValue().getString();
                     String sourceReferencePath = "";
                     String targetReferencePath = "";
                     if ("j:fullpath".equals(sourceEntry.getKey()) || "j:nodename".equals(sourceEntry.getKey())
                             || "j:title".equals(sourceEntry.getKey()) || "j:description".equals(sourceEntry.getKey())) {
-                        sourceValue = ((Value)sourceValue).getString().replace(sourceRootPath, "");
-                        targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
-                        sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
-                        targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
+                        targetValue = targetValue.replace(targetRootPath, sourceRootPath);
+                        targetValue = targetValue.replace(TARGET_TESTSITE_NAME, TESTSITE_NAME);
                     } else if ("jcr:createdBy".equals(sourceEntry.getKey()) && sourceProperty.getPath().contains("/components/")) {
-                        sourceValue = ((Value)sourceValue).getString().replace(sourceRootPath, "");
-                        targetValue = ((Value)targetValue).getString().replace(targetRootPath, "");
+                        targetValue = targetValue.replace(targetRootPath, sourceRootPath);
                         if (sourceValue.equals("root") && targetValue.equals("system") || sourceValue.equals("system") && targetValue.equals("root")) {
                             sourceValue = targetValue;
                         }
@@ -905,8 +855,8 @@ public class ImportExportTest {
                             sourceReferencePath = sourceSiteNode.getSession().getNodeByUUID(sourceProperty.getValue().getString())
                                     .getPath();
                             sourceValue = sourceReferencePath;
-                            sourceValue = ((String)sourceValue).replace(sourceRootPath, "");
-                            sourceValue = ((String)sourceValue).replace(TESTSITE_NAME, "");
+                            sourceValue = sourceValue.replace(sourceRootPath, "");
+                            sourceValue = sourceValue.replace(TESTSITE_NAME, "");
                         } catch (Exception e) {
                             logger.warn(sourceProperty.getPath() + "'s value leads to an exception: " + e.toString());
                             sourceReferencePath = ILLEGAL_STATE;
@@ -917,8 +867,8 @@ public class ImportExportTest {
                             targetReferencePath = targetSiteNode.getSession().getNodeByUUID(targetProperty.getValue().getString())
                                     .getPath();
                             targetValue = targetReferencePath;
-                            targetValue = ((String)targetValue).replace(targetRootPath, "");
-                            targetValue = ((String)targetValue).replace(TARGET_TESTSITE_NAME, "");
+                            targetValue = targetValue.replace(targetRootPath, "");
+                            targetValue = targetValue.replace(TARGET_TESTSITE_NAME, "");
                         } catch (Exception e) {
                             logger.warn(targetProperty.getPath() + "'s value leads to an exception: " + e.toString());
                             targetReferencePath = ILLEGAL_STATE;
@@ -1032,44 +982,6 @@ public class ImportExportTest {
         return propsList.toArray(new String[propsList.size()]);
     }
 
-    public void testNodeExportImportWithLive() throws Exception {
-        JCRSessionFactory sf = JCRSessionFactory.getInstance();
-        sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRSessionWrapper sessionNoLocale = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
-                        JCRNodeWrapper englishLiveSiteRootNode = sessionNoLocale.getNode("/" + SITECONTENT_ROOT_NODE);
-                        JCRNodeWrapper englishLiveSiteHomeNode = (JCRNodeWrapper) englishLiveSiteRootNode.getNode("home");
-
-                        nodeExportImportAndCheck(session, englishLiveSiteHomeNode.getNode("child2"), "/" + SITECONTENT_ROOT_NODE
-                                + "/home/child0/child0/child0");
-
-                        return null;
-                    }
-                });
-        sf.closeAllSessions();
-    }
-
-    private void nodeExportImportAndCheck(JCRSessionWrapper editSession, JCRNodeWrapper node, String parentPath) throws RepositoryException {
-        File createdZip = exportNode(node);
-        assertNotNull("Export failed - see console log for detailed exception", createdZip);
-
-        performNodeImport(createdZip, parentPath);
-
-        boolean stagingCheck = compareNodes(editSession.getNode(node.getPath()), editSession.getNode(parentPath + "/" + node.getName()),
-                node.getPath(), parentPath + "/" + node.getName());
-
-        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
-        boolean liveCheck = compareNodes(liveSession.getNode(node.getPath()), liveSession.getNode(parentPath + "/" + node.getName()),
-                node.getPath(), parentPath + "/" + node.getName());
-
-        assertTrue("Importing export to a new node does not lead to exact mirror", stagingCheck);
-        assertTrue("Importing export to a new node does not lead to exact mirror", liveCheck);
-
-    }
-
     private File exportNode(JCRNodeWrapper node) throws RepositoryException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
@@ -1127,7 +1039,7 @@ public class ImportExportTest {
                         JCRNodeWrapper englishSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);
                         JCRSiteNode site = englishSiteRootNode.getResolveSite();
                         ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-                        String prepackedZIPFile = SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/webtemplates.zip";
+                        String prepackedZIPFile = SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip";
                         String siteZIPName = "ACME.zip";
                         File siteZIPFile = null;
                         try {

@@ -106,6 +106,7 @@ public class UrlRewriteTest extends JahiaTestCase {
             engine.afterPropertiesSet();
         }
         JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES, null, null);
+        site = (JahiaSite) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath());
         Set<String> languages = new HashSet<String>();
         languages.add(DEFAULT_LANG);
         languages.add(SECOND_LANG);

@@ -108,6 +108,7 @@ public class LogoutTest extends JahiaTestCase {
         JahiaSite site = service.getSiteByKey(SITE_KEY);
         if (site == null) {
             site = TestHelper.createSite(SITE_KEY, "localhost", TestHelper.WEB_TEMPLATES, null, null);
+            site = (JahiaSite) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath());
         }
         Set<String> languages = new HashSet<String>();
         languages.add("en");

@@ -42,6 +42,7 @@ package org.jahia.test.services.content;
 
 import static org.junit.Assert.*;
 
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -90,6 +91,8 @@ public class MultiLanguageTest extends JahiaTestCase {
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME);
+        site = ((JCRSiteNode)JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath()));
+
         String defaultLanguage = site.getDefaultLanguage();
 
         JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));

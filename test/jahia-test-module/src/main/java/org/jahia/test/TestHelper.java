@@ -140,7 +140,7 @@ public class TestHelper {
                     ZipEntry z = null;
                     while ((z = zis.getNextEntry()) != null) {
                         if (siteZIPName.equalsIgnoreCase(z.getName())
-                                || "shared.zip".equals(z.getName())) {
+                                || "shared.zip".equals(z.getName()) || "users.zip".equals(z.getName())) {
                             File zipFile = File.createTempFile("import", ".zip");
                             os = new FileOutputStream(zipFile);
                             byte[] buf = new byte[4096];
@@ -216,7 +216,6 @@ public class TestHelper {
     
     public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         int pagesCreated = 0;
-        if (level <= 0) return pagesCreated;
         if (!currentNode.isCheckedOut()) {
             currentNode.checkout();
         }
@@ -228,7 +227,6 @@ public class TestHelper {
                         titlePrefix + Integer.toString(i));
             }
             pagesCreated++;
-            pagesCreated += createSubPages(newSubPage, level - 1, nbChildren, titlePrefix);
         }
         return pagesCreated;
     }

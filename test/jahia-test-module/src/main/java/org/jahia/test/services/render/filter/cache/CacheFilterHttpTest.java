@@ -372,7 +372,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @Test
     public void testRandomFlush() throws Exception {
         JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'"+SITECONTENT_ROOT_NODE+"')", Query.JCR_SQL2);
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'"+SITECONTENT_ROOT_NODE+"/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();
         NodeIterator nodes = q.execute().getNodes();
         while (nodes.hasNext()) {

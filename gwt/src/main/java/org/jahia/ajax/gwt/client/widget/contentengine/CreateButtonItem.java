@@ -216,6 +216,7 @@ public class CreateButtonItem extends SaveButtonItem {
         FormButtonBinding binding = new FormButtonBinding(f);
         binding.addButton(b);
         popup.add(f);
+        popup.setFocusWidget(name);
         popup.show();
     }
 

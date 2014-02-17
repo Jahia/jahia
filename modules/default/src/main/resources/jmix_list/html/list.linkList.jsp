@@ -19,22 +19,7 @@
     <ul>
         <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <li>
-                <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
-                <c:choose>
-                    <c:when test='${jcr:isNodeType(subchild, "nt:file")}'>
-                        <a href="<c:url value='${url.files}${subchild.path}'/>"><c:out
-                                value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
-                    </c:when>
-                    <c:when test='${jcr:isNodeType(subchild, "jmix:nodeReference")}'>
-                        <jcr:nodeProperty node="${subchild.properties['j:node'].node}" name="jcr:title" var="title"/>
-                        <a href="<c:url value='${url.base}${subchild.properties["j:node"].node.path}.html'/>"><c:out
-                                value="${not empty title && not empty title.string ? title.string : subchild.properties['j:node'].node.name}"/></a>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="<c:url value='${url.base}${subchild.path}.html'/>"><c:out
-                                value="${not empty title && not empty title.string ? title.string : subchild.name}"/></a>
-                    </c:otherwise>
-                </c:choose>
+                <template:module node="${subchild}" view="link" />
             </li>
         </c:forEach>
         <c:if test="${functions:length(moduleMap.currentList) == 0 and not empty moduleMap.emptyListMessage}">

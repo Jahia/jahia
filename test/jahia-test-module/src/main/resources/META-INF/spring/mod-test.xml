@@ -34,18 +34,19 @@
                 <value>org.jahia.test.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.test.services.content.MultiLanguageTest</value>
                 <value>org.jahia.test.services.content.ReferencesTest</value>
+                <value>org.jahia.test.services.content.impl.vfs.VFSContentStoreProviderTest</value>
                 <value>org.jahia.test.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
-                <value>org.jahia.test.services.content.impl.vfs.VFSContentStoreProviderTest</value>
                 <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.test.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>
+                <value>org.jahia.test.services.logging.ServiceLoggingTest</value>
                 <value>org.jahia.test.services.logout.LogoutTest</value>
                 <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>
-                <value>org.jahia.test.services.publication.PublicationTest</value>
                 <value>org.jahia.test.services.providers.ModulesProviderTest</value>
+                <value>org.jahia.test.services.publication.PublicationTest</value>
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>
                 <value>org.jahia.test.services.query.IndexOptionsTest</value>
                 <value>org.jahia.test.services.query.NativeSortTest</value>
@@ -55,6 +56,8 @@
                 <value>org.jahia.test.services.render.filter.ConditionalFilterTest</value>
                 <value>org.jahia.test.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.test.services.render.filter.URLFilterTest</value>
+                <value>org.jahia.test.services.render.filter.WrapperFilterTest</value>
+                <value>org.jahia.test.services.render.filter.cache.CacheFilterHttpTest</value>
                 <value>org.jahia.test.services.render.filter.cache.CacheFilterTest</value>
                 <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>

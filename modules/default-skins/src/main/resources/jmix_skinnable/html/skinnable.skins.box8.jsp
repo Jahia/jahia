@@ -5,7 +5,7 @@
 <template:addResources type="css" resources="box8.css"/>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
-<c:set var="wrappedContent" value="${fn:replace(wrappedContent, '<div class=\"clear\"></div>', '')}"/>
+
 <c:if test="${renderContext.editMode or not empty fn:trim(wrappedContent)}">
     <c:if test="${not empty title}">
         <div class="clear"></div>

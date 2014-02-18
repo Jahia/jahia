@@ -40,12 +40,9 @@
 
 package org.jahia.services.content.decorator;
 
-import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.lock.Lock;
@@ -70,7 +67,7 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
     }
 
     public JCRVersionHistory getContainingHistory() throws RepositoryException {
-        return (JCRVersionHistory) getProvider().getNodeWrapper((Node) getRealNode().getContainingHistory(), (JCRSessionWrapper) getSession());
+        return (JCRVersionHistory) getProvider().getNodeWrapper(getRealNode().getContainingHistory(), getSession());
     }
 
     public Calendar getCreated() throws RepositoryException {
@@ -81,7 +78,7 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
         Version[] versions = getRealNode().getSuccessors();
         JCRVersion[] jcrversions = new JCRVersion[versions.length];
         for (int i = 0; i < versions.length; i++) {
-            jcrversions[i] = (JCRVersion) getProvider().getNodeWrapper((Node) versions[i], (JCRSessionWrapper) getSession());
+            jcrversions[i] = (JCRVersion) getProvider().getNodeWrapper(versions[i], getSession());
         }
         return jcrversions;
     }
@@ -90,13 +87,13 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
         Version[] versions = getRealNode().getPredecessors();
         JCRVersion[] jcrversions = new JCRVersion[versions.length];
         for (int i = 0; i < versions.length; i++) {
-            jcrversions[i] = (JCRVersion) getProvider().getNodeWrapper((Node) versions[i], (JCRSessionWrapper) getSession());
+            jcrversions[i] = (JCRVersion) getProvider().getNodeWrapper(versions[i], getSession());
         }
         return jcrversions;
     }
 
     public JCRNodeWrapper getFrozenNode() throws RepositoryException {
-        return getProvider().getNodeWrapper(getRealNode().getFrozenNode(), (JCRSessionWrapper) getSession());
+        return getProvider().getNodeWrapper(getRealNode().getFrozenNode(), getSession());
     }
 
     public JCRVersion getLinearSuccessor() throws RepositoryException {
@@ -105,17 +102,17 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
     }
 
     public JCRVersion getLinearPredecessor() throws RepositoryException {
-        return (JCRVersion) getProvider().getNodeWrapper(getRealNode().getLinearPredecessor(), (JCRSessionWrapper) getSession());
+        final Version linearPredecessor = getRealNode().getLinearPredecessor();
+        return linearPredecessor != null ? (JCRVersion) getProvider().getNodeWrapper(linearPredecessor, getSession()) : null;
     }
 
     @Override
-    public Lock getLock()
-            throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, RepositoryException {
+    public Lock getLock() throws RepositoryException {
         throw new LockException("Version node are not locakble");
     }
 
     @Override
-    public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+    public void checkout() throws RepositoryException {
         throw new UnsupportedRepositoryOperationException("Version node could not be checkout");
     }
 }

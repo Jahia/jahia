@@ -111,8 +111,6 @@ public class HistoryPanel extends LayoutContainer {
                     BasePagingLoadConfig pagingLoadConfig = (BasePagingLoadConfig) loadConfig;
                     int limit = pagingLoadConfig.getLimit();
                     int offset = pagingLoadConfig.getOffset();
-                    Style.SortDir sortDir = pagingLoadConfig.getSortDir();
-                    String sortField = pagingLoadConfig.getSortField();
                     service.getContentHistory(node.getUUID(), offset, limit, callback);
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GWTJahiaContentHistoryEntry>(new ArrayList<GWTJahiaContentHistoryEntry>()));

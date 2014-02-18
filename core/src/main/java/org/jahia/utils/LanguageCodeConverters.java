@@ -108,7 +108,6 @@ public class LanguageCodeConverters {
             return loc;
         }
 
-        StringTokenizer codeTokens = new StringTokenizer(languageCode,"_");
         String[] codeParts = languageCode.split("_");
         String language = "";
         String country = "";

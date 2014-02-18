@@ -115,7 +115,7 @@ public class MissingPortletsValidator implements ImportValidator {
                 importedPortletDefinitionPaths.add(currentPath);
                 String context = atts.getValue("j:context");
                 try {
-                    ApplicationBean appBean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(context);
+                    ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(context);
                 } catch (Exception e) {
                     missingPortlets.add(currentPath);
                 }
@@ -131,7 +131,7 @@ public class MissingPortletsValidator implements ImportValidator {
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            Node portletInstanceNode = session.getNode(applicationRef);
+                            session.getNode(applicationRef);
                             return null;
                         }
                     });
@@ -149,7 +149,7 @@ public class MissingPortletsValidator implements ImportValidator {
                     try {
                         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                Node portletInstanceNode = session.getNode(nodeRef);
+                                session.getNode(nodeRef);
                                 return null;
                             }
                         });

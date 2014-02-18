@@ -190,9 +190,6 @@ public class PublicationManagerEngine extends Window {
         public void componentSelected(ButtonEvent ce) {
             final ListStore<GWTJahiaNode> store = m_tree.getStore();
             List<GWTJahiaNode> nodes = store.getModels();
-            final Map<String, GWTJahiaWorkflowDefinition> workflowDefinitionMap = new HashMap<String, GWTJahiaWorkflowDefinition>();
-            Map<String, Map<String, List<GWTJahiaNode>>> workflowDefinitionMapMap = new HashMap<String, Map<String, List<GWTJahiaNode>>>();
-
 
             List<GWTJahiaPublicationInfo> all = new ArrayList<GWTJahiaPublicationInfo>();
             for (GWTJahiaNode node : nodes) {

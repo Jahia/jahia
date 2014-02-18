@@ -205,7 +205,7 @@ public class ErrorFileDumper {
             executorService.shutdown();
             try {
                 if (!executorService.awaitTermination(millisecondsToWait, TimeUnit.MILLISECONDS)) {
-                    List<Runnable> droppedTasks = executorService.shutdownNow();
+                    executorService.shutdownNow();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -246,7 +246,7 @@ public class ErrorFileDumper {
             if (request != null) {
                 requestData = new HttpRequestData(request);
             }
-            Future<?> dumperFuture = executorService.submit(new FileDumperRunnable(t, requestData));
+            executorService.submit(new FileDumperRunnable(t, requestData));
             tasksSubmitted.incrementAndGet();
             lastCallToDump = System.currentTimeMillis();
         } else {

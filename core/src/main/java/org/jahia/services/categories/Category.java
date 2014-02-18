@@ -123,9 +123,8 @@ public class Category extends JahiaObject {
             throws JahiaException {
         Node categoriesRoot = categoryService.
                 getCategoriesRoot();
-        String uuid = null;
         try {
-            uuid = categoriesRoot.getUUID();
+            categoriesRoot.getUUID();
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }

@@ -294,7 +294,6 @@ public class JCRPublicationService extends JahiaService {
             userID = userID.substring(JahiaLoginModule.SYSTEM.length());
         }
 
-        VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (updateMetadata &&  destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
@@ -656,8 +655,6 @@ public class JCRPublicationService extends JahiaService {
                     " - cannot publish !");
             return cloneResult;
         }
-
-        final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
         try {
             Set<String> deniedPaths = new HashSet<String>();

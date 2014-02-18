@@ -123,13 +123,6 @@ public class TemplatesTabItem extends BrowseTabItem {
         });
 
 
-        // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(final Object gwtJahiaFolder, final AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-            }
-        };
-
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
         selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(tree);
 

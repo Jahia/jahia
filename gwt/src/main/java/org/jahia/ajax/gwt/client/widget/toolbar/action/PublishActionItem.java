@@ -159,15 +159,15 @@ public class PublishActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         LinkerSelectionContext ctx = linker.getSelectionContext();
-        if (!linker.getSelectionContext().getMultipleSelection().isEmpty()) {
+        if (!ctx.getMultipleSelection().isEmpty()) {
             final List<String> uuids = new ArrayList<String>();
-            List<GWTJahiaNode> jahiaNodes = linker.getSelectionContext().getMultipleSelection();
+            List<GWTJahiaNode> jahiaNodes = ctx.getMultipleSelection();
             if (jahiaNodes.size() > 1) {
                 for (GWTJahiaNode jahiaNode : jahiaNodes) {
                     uuids.add(jahiaNode.getUUID());
                 }
             } else {
-                uuids.add(linker.getSelectionContext().getSingleSelection().getUUID());
+                uuids.add(ctx.getSingleSelection().getUUID());
             }
             linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
             JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {

@@ -406,7 +406,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         StringBuilder pathBuilder = new StringBuilder(64);
         pathBuilder.append("/").append(JCRContentUtils.replaceColon(nt.getAlias())).append("/").append(templateType)
                 .append("/");
-        String path = pathBuilder.toString();
 
         // append node type name (without namespace prefix) + "."
         pathBuilder.append(nt.getName().contains(":") ? StringUtils.substringAfter(nt.getName(), ":") : nt.getName())

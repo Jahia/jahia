@@ -87,8 +87,7 @@ public class TokenizedFormTag extends BodyTagSupport {
         }
         try {
             String id = (String) pageContext.findAttribute("currentFormId");
-            Resource currentResource = (Resource) pageContext.getAttribute("currentResource",
-                                                                           PageContext.REQUEST_SCOPE);
+
             RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
             JspWriter out = pageContext.getOut();
 

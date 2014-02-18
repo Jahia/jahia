@@ -109,7 +109,6 @@ public class TagsTabItem extends EditEngineTabItem {
                     @Override
                     protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                         if (node != null) {
-                            final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
                             if (newValues.containsKey(TagsTabItem.this.locale)) {
                                 final GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(TagsTabItem.this.locale);
                                 final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();

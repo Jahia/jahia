@@ -99,7 +99,6 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
             // Action window config will only exist if there is an action request.
             if (actionWindowConfig != null) {
-                flushPortletCache(renderContext.getUser(), actionWindowConfig, renderContext.getMainResource().getWorkspace());
                 PortletWindowImpl portletWindow = new PortletWindowImpl(container, actionWindowConfig, portalURL);
                 //if (logger.isDebugEnabled()) {
                 logger.debug("Processing action request for window: "
@@ -160,20 +159,4 @@ public class PlutoProcessActionFilter extends AbstractFilter {
         }
         return previousOut;
     }
-
-    /**
-     * Flush the portlet Cache
-     * @param actionWindowConfig
-     * @throws org.jahia.exceptions.JahiaException
-     *
-     */
-    private void flushPortletCache(JahiaUser user, PortletWindowConfig actionWindowConfig, String workspaceName) throws JahiaException {
-        String cacheKey = null;
-        // Check if cache is available for this portlet
-        cacheKey = "portlet_instance_" + actionWindowConfig.getMetaInfo();
-        final EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo(), workspaceName);
-        if (entryPointInstance != null && entryPointInstance.getCacheScope() != null && entryPointInstance.getCacheScope().equals(MimeResponse.PRIVATE_SCOPE)) {
-            cacheKey += "_" + user.getUserKey();
-        }
-    }
-}
+ }

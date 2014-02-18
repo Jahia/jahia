@@ -615,7 +615,6 @@ public class SimpleJahiaJcrFacets {
                         // important if a lot of the counts are repeated (like zero counts would be).
                         queue.add(new SimpleFacets.CountPair<String, Integer>(terms[startTermIndex + i], c));
                         if (queue.size() >= maxsize) {
-                            min = queue.last().val;
                             break;
                         }
                     }
@@ -739,7 +738,6 @@ public class SimpleJahiaJcrFacets {
                         if (c > min) {
                             queue.add(new SimpleFacets.CountPair<String, Integer>(t.text(), c));
                             if (queue.size() >= maxsize) {
-                                min = queue.last().val;
                                 break;
                             }
                         }

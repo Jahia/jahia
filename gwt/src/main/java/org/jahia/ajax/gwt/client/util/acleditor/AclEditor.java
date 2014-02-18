@@ -316,8 +316,6 @@ public class AclEditor {
     }
 
     public void addNewAclPanel(final LayoutContainer c) {
-        final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-
         formPanel = new FormPanel();
         formPanel.setScrollMode(Style.Scroll.AUTO);
 

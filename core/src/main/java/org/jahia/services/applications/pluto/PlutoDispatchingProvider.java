@@ -111,7 +111,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest, workspaceName);
         jahiaContextRequest.setEntryPointInstance(entryPointInstance);
 
-        PortalRequestContext portalContext = new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
+        new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
 
         final String defName = entryPointInstance.getDefName();
         PortletWindowConfig windowConfig = PortletWindowConfig.fromId((defName.startsWith(".") ? "/" : "") + defName + "!" + windowID);

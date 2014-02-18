@@ -714,49 +714,6 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * Calls accept on the following contained QOM nodes:
-         * <ul>
-         * <li>Source</li>
-         * <li>Constraints</li>
-         * <li>Orderings</li>
-         * <li>Columns</li>
-         * </ul>
-         * 
-         * In MODIFY_MODE check if the nodes returned were modified, and if yes create a new QOM and return it, otherwise return the
-         * unchanged QOM.
-         */
-        @Override
-        public Object visit(QueryObjectModelTree node, Object data) throws Exception {
-            node.getSource().accept(this, data);
-
-            ConstraintImpl constraint = node.getConstraint();
-            Object newConstraint = null;
-            if (constraint != null) {
-                newConstraint = constraint.accept(this, data);
-            }
-            OrderingImpl[] orderings = node.getOrderings();
-            Object[] newOrderingObjects = new Object[orderings.length];
-            for (int i = 0; i < orderings.length; i++) {
-                newOrderingObjects[i] = orderings[i].accept(this, data);
-            }
-            ColumnImpl[] columns = node.getColumns();
-            Object[] newColumnObjects = new Object[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                newColumnObjects[i] = columns[i].accept(this, data);
-            }
-            if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = newConstraint != null && !newConstraint.equals(constraint)
-                        || newOrderingObjects != null && !newOrderingObjects.equals(orderings)
-                        || newColumnObjects != null && !newColumnObjects.equals(columns) ? getModificationInfo()
-                        .getQueryObjectModelFactory().createQuery(
-                                getModifiedSource(node.getSource(), getModificationInfo()),
-                                (Constraint) newConstraint, (Ordering[]) newOrderingObjects,
-                                (Column[]) newColumnObjects) : node;
-            }
-            return data;
-        }
-
-        /**
          * Calls accept on the dynamic operand in the lower-case node.
          * 
          * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the

@@ -338,6 +338,7 @@
                                         <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
                                             <property name="codePropertyName" value="sourceCode" />
                                             <property name="availableCodeMirrorModes" ref="availableCodeMirrorModes"/>
+                                            <property name="codeMirrorMode" value="null"/>
                                         </bean>
                                     </property>
                                 </bean>
@@ -1112,6 +1113,7 @@
     </bean>
 
     <util:map id="availableCodeMirrorModes">
+        <entry key="null" value=""/>
         <entry key="css" value="CSS"/>
         <entry key="text/x-java" value="Java"/>
         <entry key="javascript" value="JavaScript"/>

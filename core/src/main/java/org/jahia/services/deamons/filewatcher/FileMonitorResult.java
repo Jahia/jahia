@@ -102,18 +102,17 @@ public class FileMonitorResult implements FileListener {
             @SuppressWarnings("unchecked")
             @Override
             public Iterator<File> iterator() {
-                return IteratorUtils.chainedIterator(IteratorUtils.chainedIterator(getCreated().iterator(),
-                        getChanged().iterator()), getDeleted().iterator());
+                return IteratorUtils.chainedIterator(getDeleted().iterator(),
+                        IteratorUtils.chainedIterator(getChanged().iterator(), getCreated().iterator()));
             }
-
         };
     }
 
     public List<File> getAllAsList() {
         List<File> all = new LinkedList<File>();
-        all.addAll(created);
-        all.addAll(changed);
         all.addAll(deleted);
+        all.addAll(changed);
+        all.addAll(created);
 
         return all;
     }

@@ -43,10 +43,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.user.client.ui.DirectionalTextHelper;
 import com.google.gwt.user.client.ui.HTML;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -56,11 +55,12 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 /**
  * Action item to create a new templates set
  */
+@SuppressWarnings("serial")
 public class CompileActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
-        linker.loading("Compile module...");
-        JahiaContentManagementService.App.getInstance().compileAndDeploy(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback() {
+        linker.loading(Messages.get("label.compilingModule", "Compile module..."));
+        JahiaContentManagementService.App.getInstance().compileAndDeploy(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
                 linker.loaded();
                 Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleCompiled", "Module compiled"));
@@ -97,7 +97,6 @@ public class CompileActionItem extends BaseActionItem {
     @Override
     public void handleNewLinkerSelection() {
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
-        String s = siteNode.get("j:versionInfo");
         if (siteNode.get("j:sourcesFolder") != null) {
             setEnabled(true);
         } else {

@@ -211,7 +211,7 @@ class JahiaPasswordPolicyManager {
      * @throws RepositoryException
      *             in case of a JCR error
      */
-    public void update(final JahiaPasswordPolicy policy) throws RepositoryException {
+    public synchronized void update(final JahiaPasswordPolicy policy) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper policyNode = null;

@@ -531,9 +531,7 @@ public class JobListPanel extends LayoutContainer {
     }
 
     public void addTimeDetail(String labelKey, String labelDefaultValue, Object value) {
-        if (value == null) {
-            addDetail(labelKey, labelDefaultValue, value);
-        } else if (value instanceof Long) {
+        if (value instanceof Long) {
             Date date = new Date((Long) value);
             addDetail(labelKey, labelDefaultValue, date);
         } else {

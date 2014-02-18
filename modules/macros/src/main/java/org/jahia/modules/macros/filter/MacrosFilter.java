@@ -209,7 +209,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
         logger.info("No macro script found for macro \"{}\" using lookup \"{}\".",
                 macroName, "");
         if(!replaceByErrorMessageOnMissingMacros) {
-            scriptCache.put(macroName, macro);
+            scriptCache.put(macroName, null);
         }
         return null;
     }

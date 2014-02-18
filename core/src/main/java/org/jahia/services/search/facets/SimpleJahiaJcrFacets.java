@@ -1345,7 +1345,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Float parseAndAddGap(Float value, String gap) {
-        return new Float(value.floatValue() + Float.valueOf(gap).floatValue());
+        return value + Float.valueOf(gap);
       }
     }
     private static class DoubleRangeEndpointCalculator 
@@ -1358,7 +1358,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Double parseAndAddGap(Double value, String gap) {
-        return new Double(value.floatValue() + Double.valueOf(gap).floatValue());
+        return value + Double.valueOf(gap);
       }
     }
     private static class IntegerRangeEndpointCalculator 
@@ -1371,7 +1371,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Integer parseAndAddGap(Integer value, String gap) {
-        return new Integer(value.intValue() + Integer.valueOf(gap).intValue());
+        return value + Integer.valueOf(gap);
       }
     }
     private static class LongRangeEndpointCalculator 
@@ -1384,7 +1384,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Long parseAndAddGap(Long value, String gap) {
-        return new Long(value.intValue() + Long.valueOf(gap).intValue());
+        return value + Long.valueOf(gap);
       }
     }
     private static class DateRangeEndpointCalculator 

@@ -402,7 +402,7 @@ public class DocumentConverterService implements ApplicationContextAware {
      * @param officeManagerBeanName the officeManagerBeanName to set
      */
     public void setOfficeManagerBeanName(String officeManagerBeanName) {
-        this.officeManagerBeanName = officeManagerBeanName != null ? officeManagerBeanName.trim() : officeManagerBeanName;
+        this.officeManagerBeanName = officeManagerBeanName != null ? officeManagerBeanName.trim() : null;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

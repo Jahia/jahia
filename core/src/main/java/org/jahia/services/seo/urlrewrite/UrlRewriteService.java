@@ -475,7 +475,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     private List<Resource> addTo(Resource resource, List<Resource> resources) {
         if (resource != null) {
             if (resources == null) {
-                resources = new ArrayList<Resource>(resources.size());
+                resources = new ArrayList<Resource>();
             }
             if (!resources.contains(resource)) {
                 resources.add(resource);

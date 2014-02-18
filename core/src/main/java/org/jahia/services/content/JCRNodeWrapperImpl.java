@@ -1661,7 +1661,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (value == null) {
-            objectNode.setProperty(name, value);
+            objectNode.setProperty(name, (Value) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
         }
         return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, value), session, provider, epd);
@@ -1694,7 +1694,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (value == null) {
-            objectNode.setProperty(name, value);
+            objectNode.setProperty(name, (Value) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
         }
         return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, value, type), session, provider, epd);

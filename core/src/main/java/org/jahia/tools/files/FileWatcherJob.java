@@ -133,7 +133,7 @@ public class FileWatcherJob implements StatefulJob {
                     logger.error(e.getMessage(), e);
                 }
             } else {
-                Collection<File> foundFiles = FileUtils.listFilesAndDirs(folder, ignoreFilter != null ? new AndFileFilter(new AgeFileFilter(lastCheckTime, false), ignoreFilter) : ignoreFilter, FalseFileFilter.INSTANCE);
+                Collection<File> foundFiles = FileUtils.listFilesAndDirs(folder, ignoreFilter != null ? new AndFileFilter(new AgeFileFilter(lastCheckTime, false), ignoreFilter) : null, FalseFileFilter.INSTANCE);
                 files = (foundFiles instanceof List<?>) ? (List<File>) foundFiles : new LinkedList<File>(foundFiles);
             }
         }

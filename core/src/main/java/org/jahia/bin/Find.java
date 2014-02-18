@@ -336,7 +336,7 @@ public class Find extends BaseFindController {
         for (String column : columns) {
             try {
                 Value value = row.getValue(column);
-                jsonObject.put(escapeColon ? JCRContentUtils.replaceColon(column) : column, value != null ? value.getString() : value);
+                jsonObject.put(escapeColon ? JCRContentUtils.replaceColon(column) : column, value != null ? value.getString() : null);
             } catch (ItemNotFoundException infe) {
                 logger.warn("No value found for column " + column);
             } catch (PathNotFoundException pnfe) {

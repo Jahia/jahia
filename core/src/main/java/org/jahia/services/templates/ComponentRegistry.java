@@ -144,9 +144,9 @@ public class ComponentRegistry {
             for (ExtendedNodeType type : NodeTypeRegistry.getInstance().getNodeTypes(aPackage)) {
                 if (allowType(type, includeTypeList, excludeTypeList)) {
                     for (String s : constraints) {
-                        if (!finalComponents.containsKey(type) && type.isNodeType(s)) {
+                        if (!finalComponents.containsKey(type.getName()) && type.isNodeType(s)) {
                             finalComponents.put(type.getName(), type.getLabel(displayLocale));
-                            continue;
+                            break;
                         }
                     }
                 }

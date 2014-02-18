@@ -1091,9 +1091,9 @@ public class ExtendedNodeType implements NodeType {
      * @throws ConstraintViolationException
      */
     private void checkRemoveItemConstraints(String s) throws ConstraintViolationException {
-        ExtendedItemDefinition def = getPropertyDefinitionsAsMap().get(name);
+        ExtendedItemDefinition def = getPropertyDefinitionsAsMap().get(s);
         if (def == null) {
-            def = getChildNodeDefinitionsAsMap().get(name);
+            def = getChildNodeDefinitionsAsMap().get(s);
         }
         if (def != null) {
             if (def.isMandatory()) {

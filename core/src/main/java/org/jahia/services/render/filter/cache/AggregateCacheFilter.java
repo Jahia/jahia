@@ -1092,7 +1092,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
-        notCacheableFragment.clear();
+        flushNotCacheableFragment();
     }
 
     public void removeNotCacheableFragment(String key) {

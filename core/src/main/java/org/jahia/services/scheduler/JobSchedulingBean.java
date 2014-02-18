@@ -56,6 +56,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -65,7 +66,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Sergiy Shyrkov
  * @since JAHIA 6.5
  */
-public class JobSchedulingBean implements InitializingBean {
+public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
     private static Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
     
@@ -112,6 +113,11 @@ public class JobSchedulingBean implements InitializingBean {
                 }
             }
         }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        unscheduleJob();
     }
 
     protected Scheduler getScheduler() {
@@ -162,8 +168,7 @@ public class JobSchedulingBean implements InitializingBean {
 
     protected void scheduleJob(boolean deleteFirst) throws SchedulerException {
         if (deleteFirst) {
-            logger.info("Deleting job {}", jobDetail.getFullName());
-            getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+            unscheduleJob();
         }
         if (triggers.size() == 1) {
             logger.info("Scheduling {} job {} using {}", new String[] {
@@ -184,6 +189,11 @@ public class JobSchedulingBean implements InitializingBean {
                 getScheduler().scheduleJob(trigger);
             }
         }
+    }
+
+    private void unscheduleJob() throws SchedulerException {
+        logger.info("Deleting job {}", jobDetail.getFullName());
+        getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
     }
 
     public void setDisabled(boolean disabled) {

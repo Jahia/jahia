@@ -137,6 +137,9 @@ public class MarkForDeletionTest {
         }
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
+
+        reopenSession();
+
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
         reopenSession();
@@ -180,7 +183,9 @@ public class MarkForDeletionTest {
         
         JCRNodeWrapper liveNode = liveSession.getNode("/sites/markedForDeletionTest/contents/" + MEETING + 1);
         assertNotNull("Node is no longer existing in live workspace", liveNode);
-        
+
+        reopenSession();
+
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
         reopenSession();
@@ -227,8 +232,10 @@ public class MarkForDeletionTest {
         assertTrue("jmix:markedForDeletion not set", childNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION));
         assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
-        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));        
-                
+        assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
+
+        reopenSession();
+
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
         reopenSession();
@@ -301,7 +308,9 @@ public class MarkForDeletionTest {
         
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2"));
         assertNotNull("Node is already deleted", liveSession.getNode("/sites/markedForDeletionTest/pages/page2/page21"));
-        
+
+        reopenSession();
+
         jcrService.publishByMainId(parentNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
         reopenSession();
@@ -383,7 +392,9 @@ public class MarkForDeletionTest {
         assertFalse("marked for deletion comment should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_MESSAGE));
         assertFalse("j:deletionUser should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_USER));
         assertFalse("j:deletionDate should not be set on child", childNode.hasProperty(Constants.MARKED_FOR_DELETION_DATE));
-        
+
+        reopenSession();
+
         jcrService.publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         
         reopenSession();

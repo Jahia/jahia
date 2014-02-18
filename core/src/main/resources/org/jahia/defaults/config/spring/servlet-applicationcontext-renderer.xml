@@ -55,17 +55,13 @@
     <bean name="org.jahia.bin.AdministrationLayout" parent="abstractRender" class="org.jahia.bin.Edit">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="adminmode"/>
-        <property name="availableInProductionMode" value="true"/>
-        <property name="availableInDistantPublicationServerMode" value="true"/>
         <property name="workspace" value="default"/>
     </bean>
 
-    <bean name="org.jahia.bin.DashboardLayout" parent="abstractRender" class="org.jahia.bin.Edit">
+    <bean name="org.jahia.bin.DashboardLayout" parent="abstractRender" class="org.jahia.bin.Dashboard">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="dashboardmode"/>
-        <property name="availableInProductionMode" value="true"/>
-        <property name="availableInDistantPublicationServerMode" value="true"/>
-        <property name="workspace" value="default"/>
+        <property name="workspace" value="live"/>
     </bean>
 
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

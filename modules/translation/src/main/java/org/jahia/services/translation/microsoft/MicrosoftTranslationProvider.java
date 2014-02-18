@@ -198,7 +198,8 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
         }
         PostMethod method = new PostMethod(translateArrayUrl);
         method.setRequestHeader("Authorization", "Bearer " + accessToken);
-        String body = "<TranslateArrayRequest>" +
+        StringBuilder body = new StringBuilder();
+        body.append("<TranslateArrayRequest>" +
                 "<AppId />" +
                 "<From>" + srcLanguage + "</From>" +
                 "<Options>" +
@@ -209,16 +210,16 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
                 "<Uri xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
                 "<User xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\" />" +
                 "</Options>" +
-                "<Texts>";
+                "<Texts>");
         for (String text : texts) {
-            body += "<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">" + (isHtml ? StringEscapeUtils.escapeHtml(text) : text) + "</string>";
+            body.append("<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">" + (isHtml ? StringEscapeUtils.escapeHtml(text) : text) + "</string>");
         }
-        body += "</Texts>" +
+        body.append("</Texts>" +
                 "<To>" + destLanguage + "</To>" +
-                "</TranslateArrayRequest>";
+                "</TranslateArrayRequest>");
         int returnCode;
         try {
-            method.setRequestEntity(new StringRequestEntity(body, "text/xml", "UTF-8"));
+            method.setRequestEntity(new StringRequestEntity(body.toString(), "text/xml", "UTF-8"));
             returnCode = httpClientService.getHttpClient().executeMethod(method);
         } catch (Exception e) {
             throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));

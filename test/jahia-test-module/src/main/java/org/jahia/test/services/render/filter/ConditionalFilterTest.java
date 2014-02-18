@@ -62,6 +62,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -89,7 +91,7 @@ public class ConditionalFilterTest extends JahiaTestCase {
 
         setSessionSite(site);
 
-        session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        session = JCRSessionFactory.getInstance().getCurrentUserSession("default", Locale.ENGLISH);
         this.site = (JCRSiteNode) session.getNode("/sites/" + site.getSiteKey());
 
         JCRNodeWrapper shared = session.getNode("/sites/" + site.getSiteKey() + "/contents");

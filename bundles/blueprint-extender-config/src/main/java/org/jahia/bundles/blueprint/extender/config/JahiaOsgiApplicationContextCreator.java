@@ -90,6 +90,10 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
 
     public DelegatedExecutionOsgiBundleApplicationContext createApplicationContext(BundleContext bundleContext)
             throws Exception {
+        if (bundleContext == null) {
+            // Something goes wrong, bundle is probably stopping at the same time
+            return null;
+        }
         Bundle bundle = bundleContext.getBundle();
 
         boolean isJahiaModuleBundle = BundleUtils.isJahiaModuleBundle(bundle);
@@ -107,7 +111,7 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
             return null;
         }
 
-        OsgiBundleXmlApplicationContext ctx = new OsgiBundleXmlApplicationContext(config.getConfigurationLocations());
+        OsgiBundleXmlApplicationContext ctx = new JahiaOsgiBundleXmlApplicationContext(config.getConfigurationLocations());
         ApplicationContext parentContext = SpringContextSingleton.getInstance().getContext();
         ctx.setBundleContext(bundleContext);
         ctx.setPublishContextAsService(config.isPublishContextAsService());
@@ -122,9 +126,6 @@ public class JahiaOsgiApplicationContextCreator implements OsgiApplicationContex
                 ctx.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
             }
         }
-
-        logger.info("Started initialization of Spring application context for bundle {}",
-                OsgiStringUtils.nullSafeNameAndSymName(bundle));
 
         return ctx;
     }

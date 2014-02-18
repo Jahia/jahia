@@ -281,24 +281,24 @@ public class ContentTabItem extends PropertiesTabItem {
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                 }
                 if (selectedNode.isLocked() != null && selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
-                    String infos = "";
+                    StringBuilder infos = new StringBuilder();
                     if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
                         for (String s : selectedNode.getLockInfos().get(null)) {
-                            infos = Formatter.getLockLabel(s);
+                            infos.append(Formatter.getLockLabel(s));
                         }
                     } else {
                         for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
                             if (entry.getKey() != null) {
                                 if (infos.length() > 0) {
-                                    infos += "; ";
+                                    infos.append("; ");
                                 }
-                                infos += entry.getKey() + " : ";
+                                infos.append(entry.getKey()).append(" : ");
                                 int i = 0;
                                 for (String s : entry.getValue()) {
                                     if (i > 0) {
-                                        infos += ", ";
+                                        infos.append(", ");
                                     }
-                                    infos += Formatter.getLockLabel(s);
+                                    infos.append(Formatter.getLockLabel(s));
                                     i++;
                                 }
                             }

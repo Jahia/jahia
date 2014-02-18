@@ -213,11 +213,11 @@ public abstract class SaveButtonItem implements ButtonItem {
         try {
             throw throwable;
         } catch (final GWTCompositeConstraintViolationException cve) {
-            String nodeLevelMessages = "";
+            StringBuilder nodeLevelMessages = new StringBuilder();
             boolean hasFieldErrors = false;
             for (GWTConstraintViolationException violationException : cve.getErrors()) {
                 if (violationException.getPropertyName() == null || violationException.getPropertyName().equals("")) {
-                    nodeLevelMessages += "<br>" + violationException.getConstraintMessage();
+                    nodeLevelMessages.append("<br>").append(violationException.getConstraintMessage());
                 } else {
                     hasFieldErrors = true;
                 }
@@ -228,7 +228,7 @@ public abstract class SaveButtonItem implements ButtonItem {
                             "There are some validation errors!"
                                     + " Click on the information icon next to the"
                                     + " highlighted fields, correct the input and save again.") : "")
-                            + nodeLevelMessages,
+                            + nodeLevelMessages.toString(),
                     new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (fHasFieldErrors) {

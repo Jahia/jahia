@@ -40,7 +40,6 @@
 
 package org.jahia.services.content;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
@@ -54,7 +53,10 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.JahiaCndWriter;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -65,6 +67,7 @@ import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
+import org.jahia.utils.LuceneUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,9 +86,10 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
-import java.net.URLEncoder;
 import java.rmi.Naming;
 import java.util.*;
 
@@ -895,7 +899,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             if (q instanceof JahiaQueryObjectModelImpl) {
                 JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) q)
                         .getLuceneQueryFactory();
-                lqf.setLocale(session.getLocale());
+                lqf.setQueryLanguageAndLocale(LuceneUtils.extractLanguageOrNullFromStatement(sql), session.getLocale());
             }
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();

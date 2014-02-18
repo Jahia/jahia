@@ -290,15 +290,15 @@ public final class Messages {
      * 
      * @param key
      *            the key to perform lookup for
-     * @param locale
-     *            current locale
      * @param defaultValue
      *            the default value to return if the lookup has not found anything
+     * @param locale
+     *            current locale
      * @param args
      *            the arguments to replace placeholders with
      * @return the label for the requested key
      */
-    public static String getInternalWithArguments(String key, Locale locale, String defaultValue, Object... args) {
+    public static String getInternalWithArguments(String key, String defaultValue, Locale locale, Object... args) {
         return format(get(ResourceBundles.JAHIA_INTERNAL_RESOURCES, key, locale, defaultValue), locale, args);
     }
 

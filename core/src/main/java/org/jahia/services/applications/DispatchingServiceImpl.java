@@ -112,7 +112,7 @@ public class DispatchingServiceImpl extends DispatchingService {
             if(entryPointIDStr != null){
                 logger.error("Couldn't find application entry point with ID=" + entryPointIDStr);
             }else{
-               logger.debug("ID=" + entryPointIDStr+" --> no selected application.");
+               logger.debug(" --> no selected application.");
             }
             return "";
         }

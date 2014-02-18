@@ -383,11 +383,12 @@ public class EditLinker implements Linker {
 
     /**
      * Callback for the event of data update.
-     * 
+     *
      * @param paths
      *            the updated items paths
+     * @param refreshMainModule
      */
-    public void setSelectPathAfterDataUpdate(List<String> paths) {
+    public void setSelectPathAfterDataUpdate(List<String> paths, boolean refreshMainModule) {
         // no implementation so far
     }
 

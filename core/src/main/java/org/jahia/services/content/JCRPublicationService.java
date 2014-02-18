@@ -294,7 +294,6 @@ public class JCRPublicationService extends JahiaService {
             userID = userID.substring(JahiaLoginModule.SYSTEM.length());
         }
 
-        VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (updateMetadata &&  destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
@@ -656,8 +655,6 @@ public class JCRPublicationService extends JahiaService {
                     " - cannot publish !");
             return cloneResult;
         }
-
-        final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
         try {
             Set<String> deniedPaths = new HashSet<String>();
@@ -1055,14 +1052,7 @@ public class JCRPublicationService extends JahiaService {
             while (ni.hasNext()) {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
 
-                Value descriptorValue = sourceSession.getProviderSession(n.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-                if (descriptorValue == null) {
-                    continue;
-                }
-                boolean supportsPublication = descriptorValue.getBoolean();
-                if (!supportsPublication) {
-                    continue;
-                }
+                if (!supportsPublication(sourceSession, n)) continue;
 
                 if (languages != null && n.isNodeType("jnt:translation")) {
                     String translationLanguage = n.getProperty("jcr:language").getString();
@@ -1224,6 +1214,9 @@ public class JCRPublicationService extends JahiaService {
             } else {
                 try {
                     JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
+
+                    if (!supportsPublication(sourceSession, ref)) continue;
+
                     if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
                         PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
                                 includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
@@ -1242,6 +1235,14 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         }
+    }
+
+    private boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper ref) throws RepositoryException {
+        Value descriptorValue = sourceSession.getProviderSession(ref.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+        if (descriptorValue == null) {
+            return false;
+        }
+        return descriptorValue.getBoolean();
     }
 
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {

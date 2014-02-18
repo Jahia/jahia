@@ -40,6 +40,7 @@
 
 package org.jahia.osgi;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,6 +51,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
@@ -65,6 +67,8 @@ public final class BundleUtils {
     private static final Logger logger = LoggerFactory.getLogger(BundleUtils.class);
 
     private static Map<String, String[]> moduleForClass = new ConcurrentHashMap<String, String[]>();
+
+    private static Map<Bundle, AbstractApplicationContext> contextToStart = new HashMap<Bundle, AbstractApplicationContext>();
 
     private static Map<String, Map<String, JahiaTemplatesPackage>> modules = new ConcurrentHashMap<String, Map<String, JahiaTemplatesPackage>>(
             64);
@@ -307,4 +311,13 @@ public final class BundleUtils {
             pkg.setClassLoader(null);
         }
     }
+
+    public static AbstractApplicationContext getContextToStartForModule(Bundle bundle) {
+        return contextToStart.get(bundle);
+    }
+
+    public static void setContextToStartForModule(Bundle bundle, AbstractApplicationContext context) {
+        contextToStart.put(bundle,context);
+    }
+
 }

@@ -113,6 +113,7 @@ public class Constants {
     public static final String MIX_MIMETYPE = "mix:mimeType";
     public static final String MIX_REFERENCEABLE = "mix:referenceable";
     public static final String MIX_VERSIONABLE = "mix:versionable";
+    public static final String MIX_SIMPLEVERSIONABLE = "mix:simpleVersionable";
     public static final String MIX_CREATED = "mix:created";
     public static final String MIX_CREATED_BY = "mix:createdBy";
     public static final String MIX_LAST_MODIFIED = "mix:lastModified";

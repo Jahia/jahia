@@ -46,7 +46,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
@@ -123,7 +122,7 @@ public class CopyPasteEngine {
         data.put(Linker.REFRESH_MAIN,true);
         linker.refresh(data);
         onPastedPath();
-        linker.setSelectPathAfterDataUpdate(copiedPaths);
+        linker.setSelectPathAfterDataUpdate(copiedPaths, (Boolean) data.get(Linker.REFRESH_MAIN));
     }
 
     public List<GWTJahiaNode> getCopiedPaths() {
@@ -187,7 +186,8 @@ public class CopyPasteEngine {
                 for (GWTJahiaNode source : sources) {
                     boolean nodeAllowed = false;
                     for (String type : allowedTypes) {
-                        if (source.getNodeTypes().contains(type) || source.getInheritedNodeTypes().contains(type)) {
+                        if (source.isNodeType(type)
+                                || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) {
                             nodeAllowed = true;
                             break;
                         }
@@ -200,7 +200,22 @@ public class CopyPasteEngine {
         }
         return allowed;
     }
-    
+
+    public boolean canPasteAsReference() {
+        if (isCut()) {
+            return false;
+        }
+        List<GWTJahiaNode> sources = getCopiedPaths();
+        if (sources != null) {
+            for (GWTJahiaNode source : sources) {
+                if (source.isReference()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void updatePlaceholders() {
         for (PlaceholderModule module : placeholders) {
             module.updatePasteButton();

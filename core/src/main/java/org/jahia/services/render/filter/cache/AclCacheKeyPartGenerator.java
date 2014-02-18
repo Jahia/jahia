@@ -54,9 +54,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -79,6 +77,7 @@ import java.util.regex.Pattern;
 public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, InitializingBean {
     public static final String PER_USER = "_perUser_";
     public static final String MR_ACL = "_mraclmr_";
+    public static final String LOGGED_USER = "_logged_";
     public static final Pattern P_PATTERN = Pattern.compile("_p_");
     public static final Pattern DEP_ACLS_PATTERN = Pattern.compile("_depacl_");
     public static final Pattern ACLS_PATH_PATTERN = Pattern.compile("_p_");
@@ -165,22 +164,31 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 }
             }
 
+            Element element = permissionCache.get(node.getPath());
+            Boolean[] values;
+            if (element != null &&  element.getObjectValue() != null) {
+                values = (Boolean[]) element.getObjectValue();
+            } else {
+                values = new Boolean[3];
+                values[0] = node.hasProperty("j:requiredPermissionNames") || node.hasProperty("j:requiredPermissions");
+                values[1] = node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean();
+                values[2] = node.hasProperty("j:requireLoggedUser") && node.getProperty("j:requireLoggedUser").getBoolean();
+                permissionCache.put(new Element(node.getPath(), values));
+            }
+
             if ("true".equals(properties.get("cache.mainResource"))) {
                 aclsKeys.add(MR_ACL);
             } else {
-                Element element = permissionCache.get(node.getPath());
-                if (element != null && Boolean.TRUE.equals(element.getObjectValue())) {
+                if (values[0]) {
                     aclsKeys.add(MR_ACL);
-                } else if (element == null) {
-                    if (node.hasProperty("j:requiredPermissionNames") || node.hasProperty("j:requiredPermissions")) {
-                        permissionCache.put(new Element(node.getPath(), Boolean.TRUE));
-                        aclsKeys.add(MR_ACL);
-                    } else {
-                        permissionCache.put(new Element(node.getPath(), Boolean.FALSE));
-                    }
                 }
             }
-
+            if (values[1]) {
+                aclsKeys.add(renderContext.getSite().getPath());
+            }
+            if (values[2]) {
+                aclsKeys.add(LOGGED_USER);
+            }
 
             return StringUtils.join(aclsKeys, ",");
 
@@ -203,6 +211,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 try {
                     if (s.equals(MR_ACL)) {
                         aclKeys.add(getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false));
+                    } else if (s.equals(LOGGED_USER)) {
+                        aclKeys.add(Boolean.toString(renderContext.getUser().getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)));
                     } else if (s.startsWith("*")) {
                         aclKeys.add(getAclKeyPartForNode(renderContext, URLDecoder.decode(s.substring(1), "UTF-8"), renderContext.getUser(), new HashSet<String>(), true));
                     } else {
@@ -278,14 +288,16 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
 
         aclPathChecked.addAll(rolesForKey.keySet());
-        String r = "";
+        StringBuilder r = new StringBuilder();
         for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
             try {
-                r += URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
+                r.append(URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|");
             } catch (UnsupportedEncodingException e) {
+                // UTF-8 encoding should be supported
+                throw new RuntimeException(e);
             }
         }
-        return r;
+        return r.toString();
     }
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();

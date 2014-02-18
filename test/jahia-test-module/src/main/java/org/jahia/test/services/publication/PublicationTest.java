@@ -381,7 +381,7 @@ public class PublicationTest {
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.markForDeletion("Deleted by unit test");
         englishEditSession.save();
-
+        getCleanSession();
         jcrService.publishByMainId(editContentList4.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         testNodeNotInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentList1_text1", "Text node 1 was deleted, should not be available in the live workspace anymore !");
@@ -540,6 +540,7 @@ public class PublicationTest {
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
 
         englishEditSession.save();
+        getCleanSession();
         List<PublicationInfo> infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
@@ -549,16 +550,19 @@ public class PublicationTest {
         // Publish content
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
 
+        getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
 
         // Change un-internationalized property
+        editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.setProperty("align", "right");
         englishEditSession.save();
 
+        getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));

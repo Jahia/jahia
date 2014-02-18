@@ -52,7 +52,8 @@
         </li>
         <li><a href="#" onclick="$('#viewAvailableModulesForm').submit()"><fmt:message key="serverSettings.manageModules.availableModules"/></a></li>
     </ul>
-    <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post">
+    <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post"
+			   onsubmit="workInProgress('${i18nWaiting}');">
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
             <c:if test="${message.severity eq 'INFO'}">
                 <div class="alert alert-success">

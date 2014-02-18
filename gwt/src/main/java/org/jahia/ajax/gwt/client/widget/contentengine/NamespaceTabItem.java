@@ -45,11 +45,13 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Definition Tab Item
@@ -59,6 +61,7 @@ import java.util.List;
  * Date: 5/13/13
  * Time: 11:05 AM
  */
+@SuppressWarnings("serial")
 public class NamespaceTabItem extends ContentTabItem {
 
     @Override
@@ -134,6 +137,14 @@ public class NamespaceTabItem extends ContentTabItem {
             );
             add(namespaces);
             add(name);
+            name.setValidator(new Validator() {
+                @Override
+                public String validate(Field<?> field, String value) {
+                    return value == null || !value.matches("[A-Za-z0-9_]+") ? Messages.get(
+                            "label.error.invalidNodeTypeName", "The entered node type name is not valid."
+                                    + " The value should match the following pattern: [A-Za-z0-9_]+") : null;
+                }
+            });
         }
 
         @Override

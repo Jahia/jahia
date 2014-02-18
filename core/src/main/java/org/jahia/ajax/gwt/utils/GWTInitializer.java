@@ -146,7 +146,7 @@ public class GWTInitializer {
                 }
             } else {
                 if (request.getParameter("site") != null) {
-                    params.put(JahiaGWTParameters.SITE_UUID, StringEscapeUtils.escapeHtml(request.getParameter("site")));
+                    params.put(JahiaGWTParameters.SITE_UUID, StringEscapeUtils.escapeXml(request.getParameter("site")));
                 } else {
                     final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(Constants.SESSION_SITE);
                     if (attribute != null && !"".equals(attribute.getSiteKey())) {

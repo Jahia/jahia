@@ -48,7 +48,6 @@ import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.ExternalEventListener;
 import org.jahia.services.content.JCREventIterator;
 import org.jahia.services.seo.jcr.VanityUrlManager;
-import org.jahia.services.seo.jcr.VanityUrlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,7 +191,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
     }
 
-    private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propageToOtherClusterNodes) {
+    private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propagateToOtherClusterNodes) {
         Element element = !flushed.contains(path) ? depCache.get(path) : null;
         if (element != null) {
             if (logger.isDebugEnabled()) {
@@ -210,12 +209,15 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     aggregateCacheFilter.removeNotCacheableFragment(dep);
                 }
             }
-            cacheProvider.invalidate(path, propageToOtherClusterNodes);
+            cacheProvider.invalidate(path, propagateToOtherClusterNodes);
             depCache.remove(element.getObjectKey());
+        }
+        if (Boolean.getBoolean("cluster.activated")) {
+            cacheProvider.propagatePathFlushToCluster(path, propagateToOtherClusterNodes);
         }
     }
 
-    private void flushRegexpDependenciesOfPath(Cache depCache, String path, boolean propageToOtherClusterNodes) {
+    private void flushRegexpDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
             logger.debug("Flushing dependencies for path: {}", path);
         }
@@ -223,13 +225,15 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         List<String> keys = depCache.getKeys();
         for (String key : keys) {
             if(path.matches(key)) {
-                cacheProvider.invalidateRegexp(key, propageToOtherClusterNodes);
+                cacheProvider.invalidateRegexp(key, propagateToOtherClusterNodes);
             }
         }
-
+        if (Boolean.getBoolean("cluster.activated")) {
+            cacheProvider.propagateFlushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
+        }
     }
 
-    private void flushChildsDependenciesOfPath(Cache depCache, String path, boolean propageToOtherClusterNodes) {
+    private void flushChildsDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
             logger.debug("Flushing dependencies for path: {}", path);
         }
@@ -237,8 +241,11 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         List<String> keys = depCache.getKeys();
         for (String key : keys) {
             if(key.startsWith(path)) {
-                cacheProvider.invalidate(key, propageToOtherClusterNodes);
+                cacheProvider.invalidate(key, propagateToOtherClusterNodes);
             }
+        }
+        if (Boolean.getBoolean("cluster.activated")) {
+            cacheProvider.propagateChildrenDependenciesFlushToCluster(path, propagateToOtherClusterNodes);
         }
     }
 

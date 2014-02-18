@@ -48,7 +48,6 @@ import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.ExternalReferenceValue;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.i18n.Messages;
 
@@ -673,7 +672,7 @@ public class ExtendedNodeType implements NodeType {
                 }
                 List<InternalValue> list = new ArrayList<InternalValue>();
                 for (Value value : values) {
-                    if (value != null && !(value instanceof ExternalReferenceValue)) {
+                    if (value != null) {
                         // perform type conversion as necessary and create InternalValue
                         // from (converted) Value
                         InternalValue internalValue = null;
@@ -1092,9 +1091,9 @@ public class ExtendedNodeType implements NodeType {
      * @throws ConstraintViolationException
      */
     private void checkRemoveItemConstraints(String s) throws ConstraintViolationException {
-        ExtendedItemDefinition def = getPropertyDefinitionsAsMap().get(name);
+        ExtendedItemDefinition def = getPropertyDefinitionsAsMap().get(s);
         if (def == null) {
-            def = getChildNodeDefinitionsAsMap().get(name);
+            def = getChildNodeDefinitionsAsMap().get(s);
         }
         if (def != null) {
             if (def.isMandatory()) {

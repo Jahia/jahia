@@ -94,20 +94,20 @@ public class NavigationHelper {
      * @param uiLocale
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
+    public List<GWTJahiaNode> ls(String gwtParentPath, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession, Locale uiLocale)
             throws GWTJahiaServiceException {
-        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession,
+        return ls(gwtParentPath, nodeTypes, mimeTypes, nameFilters, fields, false, false, null, null, currentUserSession,
                 false, uiLocale);
     }
 
-    public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
+    public List<GWTJahiaNode> ls(String parentPath, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, boolean checkSubChild,
                                  boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex,
                                  JCRSessionWrapper currentUserSession, boolean showOnlyNodesWithTemplates, Locale uiLocale) throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
-            node = currentUserSession.getNode(gwtParentNode != null ? gwtParentNode.getPath() : "/");
+            node = currentUserSession.getNode(parentPath != null ? parentPath : "/");
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
         }
@@ -294,7 +294,8 @@ public class NavigationHelper {
                 if (openPaths == null) {
                     openPaths = selectedNodes;
                 } else {
-                    openPaths = new ArrayList<String>(openPaths);
+                    // copy the list to avoid ConcurrentModificationException, see QA-5200
+                    openPaths = new ArrayList<String>(openPaths);                    
                     openPaths.addAll(selectedNodes);
                 }
             }
@@ -313,7 +314,7 @@ public class NavigationHelper {
                                 }
                                 if (matchPath) {
                                     node.setExpandOnLoad(true);
-                                    List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild,
+                                    List<GWTJahiaNode> list = ls(node.getPath(), nodeTypes, mimeTypes, filters, fields, checkSubChild,
                                             displayHiddenTypes, hiddenTypes, hiddenRegex, currentUserSession, false, uiLocale);
                                     for (int j = 0; j < list.size(); j++) {
                                         node.insert(list.get(j), j);

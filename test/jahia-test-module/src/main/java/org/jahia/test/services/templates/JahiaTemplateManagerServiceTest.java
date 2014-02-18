@@ -78,7 +78,7 @@ public class JahiaTemplateManagerServiceTest {
     private final static String TEST_SITE_NAME = "templateManagerServiceTest";
     private final static String SITE_CONTENT_ROOT_NODE = "/sites/" + TEST_SITE_NAME;
 
-    private static List<String> excludedNodeName = Arrays.asList("j:versionInfo");
+    private static List<String> excludedNodeName = Arrays.asList("j:versionInfo", "templates","permissions");
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -118,8 +118,6 @@ public class JahiaTemplateManagerServiceTest {
     public void testDeploySimpleModule() throws RepositoryException {
         String moduleToBeDeployed = "article";
         deployModule(moduleToBeDeployed);
-        
-        testRolesOnComponent();
     }
 
     @Test
@@ -150,20 +148,6 @@ public class JahiaTemplateManagerServiceTest {
         assertModuleIsInstalledInSite(node, modulePath, SITE_CONTENT_ROOT_NODE, session);
     }
 
-    public void testRolesOnComponent() throws RepositoryException {
-        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-        JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-        JCRNodeWrapper componentNode = session.getNode(SITE_CONTENT_ROOT_NODE + "/components/jmix:structuredContent/jnt:article");
-        componentNode.revokeAllRoles();
-        componentNode.setAclInheritanceBreak(true);
-        session.save();
-        assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(componentNode.getPath(), "useComponent"))));
-        componentNode.grantRoles("u:user1", Collections.singleton("editor-in-chief"));
-        session.save();
-        assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(componentNode.getPath(), "useComponent"))));
-
-    }
-
     private void assertModuleIsInstalledInSite(JCRNodeWrapper node, String oldPrefix, String newPrefix, JCRSessionWrapper session) {
         if (!excludedNodeName.contains(node.getName())) {
             try {
@@ -181,21 +165,4 @@ public class JahiaTemplateManagerServiceTest {
         }
     }
 
-    class CheckPermission implements JCRCallback<Boolean> {
-        private String path;
-        private String permission;
-
-        CheckPermission(String path, String permission) {
-            this.path = path;
-            this.permission = permission;
-        }
-
-        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-            try {
-                return session.getNode(path).hasPermission(permission);
-            } catch (PathNotFoundException e) {
-                return false;
-            }
-        }
-    }
 }

@@ -136,13 +136,13 @@ public class EmailObfuscatorFilter extends AbstractFilter {
     }
 
     static String convertToHtmlEntity(String email) {
-        String toReturn = "";
+        StringBuilder toReturn = new StringBuilder();
 
         for (int i = 0; i < email.length(); i++) {
-            toReturn += "&#" + (int) email.charAt(i) + ";";
+            toReturn.append("&#").append( (int) email.charAt(i) ).append(";");
         }
 
-        return toReturn;
+        return toReturn.toString();
     }
 
 }

@@ -40,6 +40,7 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -49,6 +50,7 @@ import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.join.SelectorRow;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
@@ -65,6 +67,7 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.jahia.api.Constants;
 import org.jahia.services.search.facets.JahiaQueryParser;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +76,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
+import javax.jcr.security.Privilege;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -91,6 +95,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     private static Logger logger = LoggerFactory.getLogger(JahiaLuceneQueryFactoryImpl.class);   // <-- Added by jahia
 
     private Locale locale;
+    private String queryLanguage;
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
         super(session, index, bindVariables);
@@ -170,25 +175,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         try {
                             boolean canRead = true;
                             if (isAclUuidInIndex()) {
-                                String[] acls = infos.getAclUuid() != null ? 
-                                        Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
-                                ArrayUtils.reverse(acls);
-                                for (String acl : acls) {
-                                    Boolean aclChecked = checkedAcls.get(acl);
-                                    if (aclChecked == null) {
-                                        try {
-                                            canRead = session.getAccessManager()
-                                                    .canRead(null, new NodeId(acl));
-                                            checkedAcls.put(acl, canRead);
-                                        } catch (RepositoryException e) {
-                                        }
-                                    } else {
-                                        canRead = aclChecked;
-                                    }
-                                    if (!canRead) {
-                                        break;
-                                    }
-                                }
+                                canRead = checkIndexedAcl(checkedAcls, infos);
                             }
                             if (canRead
                                     && (!Constants.LIVE_WORKSPACE.equals(session
@@ -359,7 +346,60 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             Util.closeOrRelease(reader);
         }
     }
-    
+
+    private boolean checkIndexedAcl(Map<String, Boolean> checkedAcls, IndexedNodeInfo infos) throws RepositoryException {
+        boolean canRead = true;
+
+        String[] acls = infos.getAclUuid() != null ?
+                Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
+        ArrayUtils.reverse(acls);
+
+        for (String acl : acls) {
+            if (acl.contains("/")) {
+                // ACL indexed contains a single user ACE, get the username
+                String singleUser = StringUtils.substringAfter(acl, "/");
+                acl =  StringUtils.substringBefore(acl, "/");
+                if (singleUser.contains("/")) {
+                    // Granted roles are specified in the indexed entry
+                    String roles = StringUtils.substringBeforeLast(singleUser, "/");
+                    singleUser = StringUtils.substringAfterLast(singleUser, "/");
+                    if (!singleUser.equals(session.getUserID())) {
+                        // If user does not match, skip this ACL
+                        continue;
+                    } else {
+                        // If user matches, check if one the roles gives the read permission
+                        for (String role : StringUtils.split(roles, '/')) {
+                            if (((JahiaAccessManager)session.getAccessControlManager()).matchPermission(Sets.newHashSet(Privilege.JCR_READ + "_" + session.getWorkspace().getName()),role)) {
+                                // User and role matches, read is granted
+                                return true;
+                            }
+                        }
+                    }
+                } else {
+                    if (!singleUser.equals(session.getUserID())) {
+                        // If user does not match, skip this ACL
+                        continue;
+                    }
+                    // Otherwise, do normal ACL check.
+                }
+            }
+            // Verify first if this acl has already been checked
+            Boolean aclChecked = checkedAcls.get(acl);
+            if (aclChecked == null) {
+                try {
+                    canRead = session.getAccessManager().canRead(null, new NodeId(acl));
+                    checkedAcls.put(acl, canRead);
+                } catch (RepositoryException e) {
+                }
+            } else {
+                canRead = aclChecked;
+            }
+            if (!canRead) {
+                return false;
+            }
+        } return canRead;
+    }
+
     /**
      * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
      * This can have a negative effect on performance, when setting rights on a node,
@@ -514,12 +554,18 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
     }
 
-    public void setLocale(Locale locale) {
-        this.locale = locale;
+    public Locale getLocale() {
+        // if the query set a specific language, we should probably be using this one
+        if(queryLanguage != null) {
+            return LanguageCodeConverters.languageCodeToLocale(queryLanguage);
+        }
+
+        return locale;
     }
 
-    public Locale getLocale() {
-        return locale;
+    public void setQueryLanguageAndLocale(String queryLanguage, Locale locale) {
+        this.queryLanguage = queryLanguage;
+        this.locale = locale;
     }
 
     @Override
@@ -537,10 +583,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
     @Override
     protected Analyzer getTextAnalyzer() {
-        if(locale != null) {
-            // if we have a locale set up, use it to retrieve a potential language-specific Analyzer
+        if(locale != null || queryLanguage != null) {
+            // if we have a locale or the query specified a language, use it to retrieve a potential language-specific Analyzer
             final AnalyzerRegistry analyzerRegistry = index.getAnalyzerRegistry();
-            final String lang = locale.toString();
+            final String lang = getLocale().toString();
             if(analyzerRegistry.acceptKey(lang)) {
                 final Analyzer analyzer = analyzerRegistry.getAnalyzer(lang);
                 if(analyzer != null) {

@@ -530,8 +530,7 @@ public class VanityUrlManager {
                         break;
                     }
                 }
-                if (!(oldDefaultWillBeDeleted || toUpdate.entrySet().contains(
-                        oldDefaultVanityUrl))) {
+                if (!(oldDefaultWillBeDeleted || toUpdate.values().contains(oldDefaultVanityUrl))) {
                     removeDefaultMapping.add((String) oldDefaultMapping
                             .getValue().getKey());
                 }

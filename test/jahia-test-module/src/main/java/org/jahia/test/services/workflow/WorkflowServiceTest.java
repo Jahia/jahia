@@ -109,8 +109,6 @@ public class WorkflowServiceTest {
             logger.warn("Exception during test tearDown", ex);
         }
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        groupManagerService.deleteGroup(groupManagerService.lookupGroup(site.getSiteKey(), "taskUsersGroup"));
         userManagerService.deleteUser(userManagerService.lookupUser("johndoe"));
         userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe"));
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -147,7 +145,7 @@ public class WorkflowServiceTest {
         map.put("endDate", new WorkflowVariable());
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final WorkflowDefinition workflow = workflowList.iterator().next();
+        final WorkflowDefinition workflow = service.getPossibleWorkflowForType(stageNode, true, "publish", Locale.ENGLISH);
         assertNotNull("Worflow should not be null", workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
@@ -198,8 +196,8 @@ public class WorkflowServiceTest {
         assertTrue(forUser.size() > 0);
         final HashMap<String, Object> emptyMap = new HashMap<String, Object>();
         WorkflowTask workflowTask = forUser.get(0);
-        service.completeTask(workflowTask.getId(), user, PROVIDER, workflowTask.getOutcomes().contains(
-                "accept") ? "accept" : "reject", emptyMap);
+        service.completeTask(workflowTask.getId(), user, PROVIDER,
+                "reject", emptyMap);
         assertTrue(service.getTasksForUser(user, Locale.ENGLISH).size() < forUser.size());
         getCleanStageNode();
         assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).equals(actionSet));
@@ -240,6 +238,7 @@ public class WorkflowServiceTest {
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "accept", emptyMap);
         //assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
+        getCleanStageNode();
         assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).equals(actionSet));
         // Assign john smoe to the next task
         actionSet = service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH);
@@ -345,6 +344,7 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "accept", emptyMap);
         //assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
 
+        getCleanStageNode();
         activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH, null);
         actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -355,9 +355,10 @@ public class WorkflowServiceTest {
         forUser = service.getTasksForUser(johndoe, Locale.ENGLISH);
         assertTrue(forUser.size() > 0);
         workflowTask = forUser.get(0);
-        service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "publish", emptyMap);
+        service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "reject", emptyMap);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
 
+        getCleanStageNode();
         assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).isEmpty());
     }
 
@@ -394,8 +395,10 @@ public class WorkflowServiceTest {
         List<WorkflowTask> forUser = service.getTasksForUser(johndoe, Locale.ENGLISH);
         assertTrue(forUser.size() > 0);
         WorkflowTask workflowTask = forUser.get(0);
-        service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "accept", emptyMap);
+        service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "reject", emptyMap);
+        getCleanStageNode();
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
+        getCleanStageNode();
         assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).isEmpty());
     }
 
@@ -434,6 +437,7 @@ public class WorkflowServiceTest {
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), johndoe, PROVIDER, "reject", emptyMap);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
+        getCleanStageNode();
         assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH, null).isEmpty());
     }
 

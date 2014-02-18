@@ -40,6 +40,7 @@
 
 package org.jahia.bundles.url.jahiawar;
 
+import org.apache.commons.io.IOUtils;
 import org.jahia.utils.osgi.BundleUtils;
 import org.jahia.utils.osgi.ManifestValueClause;
 import org.junit.Assert;
@@ -52,7 +53,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -75,12 +78,10 @@ public class HandlerTest {
         System.setProperty("org.jahia.bundles.url.jahiawar.excludedImportPackages", "templates-wise=org.jahia.modules.docspace.rules");
         System.setProperty("org.jahia.bundles.url.jahiawar.excludedExportPackages", "templates-wise=org.jahia.modules.social");
 
-        URL jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", new Handler());
-        System.out.println("Processing URL " + jahiaWarURL + "...");
-        JarInputStream jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        Map<String,String[]> contentChecks = new HashMap<String,String[]>();
+
+        JarInputStream jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", contentChecks);
         Attributes mainAttributes = jarInputStream.getManifest().getMainAttributes();
-        dumpManifest(jarInputStream);
-        dumpJarEntries(jarInputStream);
 
         Assert.assertEquals("Bundle-SymbolicName", "forum", mainAttributes.getValue("Bundle-SymbolicName"));
         Assert.assertEquals("Bundle-Name", "Jahia Forum", mainAttributes.getValue("Bundle-Name"));
@@ -100,22 +101,12 @@ public class HandlerTest {
                 "org.jahia.services.render.scripting"
         });
 
-        List<ManifestValueClause> exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.modules.forum.actions"
-        });
-
         URI firstModuleURI = new URI("jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war");
         String modulePath = firstModuleURI.getPath();
 
         // now let's try with another module
-        jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", new Handler());
-        System.out.println("");
-        System.out.println("Processing URL " + jahiaWarURL + "...");
-        jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", contentChecks);
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
-        dumpManifest(jarInputStream);
-        dumpJarEntries(jarInputStream);
 
         importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));
         assertPackagesPresent("Missing expected package {0} in Import-Package header clause", importPackageHeaderClauses, new String[]{
@@ -123,33 +114,12 @@ public class HandlerTest {
                 "org.jahia.services.workflow.jbpm"
         });
 
-        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.modules.translation.initializers"
-        });
 
-
-        jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/ldap/1.3/ldap-1.3.war", new Handler());
-        System.out.println("");
-        System.out.println("Processing URL " + jahiaWarURL + "...");
-        jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/ldap/1.3/ldap-1.3.war", contentChecks);
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
-        dumpManifest(jarInputStream);
-        dumpJarEntries(jarInputStream);
 
-        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.params.valves",
-                "org.jahia.services.usermanager"
-        });
-
-        jahiaWarURL = new URL(null, "jahiawar:https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/social/1.5/social-1.5.war", new Handler());
-        System.out.println("");
-        System.out.println("Processing URL " + jahiaWarURL + "...");
-        jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/social/1.5/social-1.5.war", contentChecks);
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
-        dumpManifest(jarInputStream);
-        dumpJarEntries(jarInputStream);
 
         importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));
         assertPackagesPresent("Missing expected package {0} in Import-Package header clause", importPackageHeaderClauses, new String[]{
@@ -157,12 +127,25 @@ public class HandlerTest {
                 "org.jahia.services.content.rules"
         });
 
-        exportPackageHeaderClauses = BundleUtils.getHeaderClauses("Export-Package", mainAttributes.getValue("Export-Package"));
-        assertPackagesPresent("Missing expected package {0} in Export-Package header clauses", exportPackageHeaderClauses, new String[]{
-                "org.jahia.modules.social",
-                "org.jahia.modules.social.choicelist",
-                "org.jahia.modules.social.taglib",
-        });
+        URL abtestingWarURL = this.getClass().getClassLoader().getResource("abtesting-1.0-SNAPSHOT.war");
+        jarInputStream = processWar(abtestingWarURL.toExternalForm(), contentChecks);
+        mainAttributes = jarInputStream.getManifest().getMainAttributes();
+
+        URL jahiaOneTemplatesWarURL = this.getClass().getClassLoader().getResource("jahiaone-templates-1.0-SNAPSHOT.war");
+        contentChecks.put("META-INF/definitions.cnd", new String[] { "!richtext[ckeditor.customConfig='$context/modules/jahiaone-templates/javascript/ckconfig.js']", "richtext" });
+        contentChecks.put("genericnt_navbar/html/navbar.menu.groovy", new String[] { "renderContext.site.home", "!currentNode.resolveSite.home" });
+        jarInputStream = processWar(jahiaOneTemplatesWarURL.toExternalForm(), contentChecks);
+        mainAttributes = jarInputStream.getManifest().getMainAttributes();
+
+    }
+
+    private JarInputStream processWar(String warUrl, Map<String,String[]> contentChecks) throws IOException {
+        URL jahiaWarURL = new URL(null, "jahiawar:" + warUrl, new Handler());
+        System.out.println("Processing URL " + jahiaWarURL + "...");
+        JarInputStream jarInputStream = new JarInputStream(jahiaWarURL.openStream());
+        dumpManifest(jarInputStream);
+        dumpJarEntries(jarInputStream, contentChecks);
+        return jarInputStream;
     }
 
     private void dumpManifest(JarInputStream jarInputStream) throws IOException {
@@ -173,20 +156,39 @@ public class HandlerTest {
         System.out.println(stringWriter.toString());
     }
 
-    private void dumpJarEntries(JarInputStream jarInputStream) throws IOException {
+    private void dumpJarEntries(JarInputStream jarInputStream, Map<String,String[]> contentChecks) throws IOException {
         JarEntry jarEntry;
         System.out.println("JAR contents:");
         System.out.println("-------------");
         while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
-            System.out.println(jarEntry.getName());
+            displayEntryInfo(null, jarEntry);
+            if (contentChecks != null && contentChecks.keySet().contains(jarEntry.getName())) {
+                String[] contentsToFind = contentChecks.get(jarEntry.getName());
+                String entryContent = IOUtils.toString(jarInputStream);
+                for (String contentToFind : contentsToFind) {
+                    if (contentToFind.startsWith("!")) {
+                        contentToFind = contentToFind.substring(1);
+                        Assert.assertTrue("Content " + contentToFind + " found in entry " + jarEntry.getName(), !entryContent.contains(contentToFind));
+                    } else {
+                        Assert.assertTrue("Content " + contentToFind + " not found in entry " + jarEntry.getName(), entryContent.contains(contentToFind));
+                    }
+                }
+            }
             if (jarEntry.getName().endsWith(".jar")) {
                 JarInputStream embeddedJar = new JarInputStream(jarInputStream);
                 JarEntry embeddedJarEntry = null;
                 while ((embeddedJarEntry = embeddedJar.getNextJarEntry()) != null) {
-                    System.out.println("    " + embeddedJarEntry.getName());
+                    displayEntryInfo("    ",embeddedJarEntry);
                 }
             }
         }
+    }
+
+    private void displayEntryInfo(String padding, JarEntry jarEntry) {
+        if (padding == null) {
+            padding = "";
+        }
+        System.out.println(padding + jarEntry.getName() + " size=" + jarEntry.getSize() + " compressedSize=" + jarEntry.getCompressedSize());
     }
 
     private boolean clauseListContainsPackage(List<ManifestValueClause> manifestValueClauses, String packageName) {

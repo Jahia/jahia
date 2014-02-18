@@ -271,24 +271,26 @@ public class ModuleHelper {
         }
     }
 
-    public void saveAndCommitModule(String moduleId, String message, JCRSessionWrapper session)
+    public boolean saveAndCommitModule(String moduleId, String message, JCRSessionWrapper session)
             throws RepositoryException, IOException {
         SourceControlManagement scm = null;
         File sources = getSources(moduleId, session);
         try {
-            scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(sources);
+            scm = templateManagerService.getTemplatePackageById(moduleId).getSourceControl();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 
         if (scm != null) {
-            scm.update();
             templateManagerService.regenerateImportFile(moduleId, sources, session);
-            scm.commit(message);
+            if (scm.checkCommit()) {
+                scm.commit(message);
+                return true;
+            }
         } else {
             throw new IOException("No SCM configured");
         }
-
+        return false;
     }
 
     public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session)
@@ -340,8 +342,8 @@ public class ModuleHelper {
 
                 PomUtils.updateForgeUrl(pomFile, forgeUrl);
 
-                SourceControlManagement scm = templateManagerService.getSourceControlFactory()
-                        .getSourceControlManagement(sources);
+                SourceControlManagement scm = pack.getSourceControl();
+
                 if (scm != null) {
                     scm.add(pomFile);
                     scm.commit("Updated distribution server information");
@@ -376,8 +378,7 @@ public class ModuleHelper {
             if (pack != null && templateManagerService.checkValidSources(pack, sources)) {
                 File pomFile = new File(sources, "pom.xml");
                 PomUtils.updateDistributionManagement(pomFile, repositoryId, repositoryUrl);
-                SourceControlManagement scm = templateManagerService.getSourceControlFactory()
-                        .getSourceControlManagement(sources);
+                SourceControlManagement scm = pack.getSourceControl();
                 if (scm != null) {
                     scm.add(pomFile);
                     scm.commit("Updated distribution server information");
@@ -390,8 +391,7 @@ public class ModuleHelper {
             BundleException {
         File sources = getSources(moduleId, session);
 
-        SourceControlManagement scm = templateManagerService.getSourceControlFactory().getSourceControlManagement(
-                sources);
+        SourceControlManagement scm = templateManagerService.getTemplatePackageById(moduleId).getSourceControl();
         if (scm != null) {
             templateManagerService.regenerateImportFile(moduleId, sources, session);
             scm.update();

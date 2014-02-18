@@ -40,6 +40,7 @@
 
 package org.apache.jackrabbit.core.query.lucene;
 
+import com.google.common.collect.Sets;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -55,8 +56,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
+import org.apache.shiro.util.StringUtils;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
 import javax.jcr.Node;
@@ -74,6 +78,7 @@ public class JahiaSearchIndex extends SearchIndex {
     private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";
 
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
+    private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
 
     private int maxClauseCount = 1024;
 
@@ -82,6 +87,8 @@ public class JahiaSearchIndex extends SearchIndex {
     private int batchSize = 100;
 
     private boolean addAclUuidInIndex = true;
+
+    private Set<String> typesUsingOptimizedACEIndexation = new HashSet<String>();
 
     public int getMaxClauseCount() {
         return maxClauseCount;
@@ -192,14 +199,25 @@ public class JahiaSearchIndex extends SearchIndex {
                         }
                     }
                 }
-                // if acl node is added for the first time we need to add our ACL_UUID field 
-                // to parent's and all affected subnodes' index documents 
-                if (isAddAclUuidInIndex() && JNT_ACL.equals(node.getNodeTypeName())) {
+                if (isAddAclUuidInIndex()) {
                     try {
-                        NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
-                                .getParentId());
-                        addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                        recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                        // if acl node is added for the first time we need to add our ACL_UUID field
+                        // to parent's and all affected subnodes' index documents
+                        if (JNT_ACL.equals(node.getNodeTypeName())) {
+                            NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
+                                    .getParentId());
+                            addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                            recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                        }
+                        // if an acl is modified, we need to reindex all its subnodes only if we use the optimized ACE
+                        if (JNT_ACE.equals(node.getNodeTypeName())) {
+                            NodeState acl = (NodeState) itemStateManager.getItemState(node.getParentId());
+                            NodeState nodeParent = (NodeState) itemStateManager.getItemState(acl.getParentId());
+                            if (canUseOptimizedACEIndexation(nodeParent)) {
+                                addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                                recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                            }
+                        }
                     } catch (ItemStateException e) {
                         log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                     }
@@ -300,9 +318,26 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setMaxExtractLength(getMaxExtractLength());
         indexer.setSupportSpellchecking(getSpellCheckerClass() != null);
         indexer.setAddAclUuidInIndex(addAclUuidInIndex);
+        indexer.setUseOptimizedACEIndexation(canUseOptimizedACEIndexation(node));
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
+    }
+
+    /**
+     * Check if this node state can use the optimized ACE indexation, based on the configured nodetypes
+     * @param currentNode
+     * @return
+     * @throws RepositoryException
+     */
+    private boolean canUseOptimizedACEIndexation(NodeState currentNode) throws RepositoryException {
+        final ExtendedNodeType nodeType = NodeTypeRegistry.getProviderNodeTypeRegistry().getNodeType(JahiaNodeIndexer.getTypeNameAsString(currentNode.getNodeTypeName(), getContext().getNamespaceRegistry()));
+        for (String type : typesUsingOptimizedACEIndexation) {
+            if (nodeType.isNodeType(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 //    /**
@@ -460,6 +495,18 @@ public class JahiaSearchIndex extends SearchIndex {
 
     public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
         this.addAclUuidInIndex = addAclUuidInIndex;
+    }
+
+    /**
+     * Return the list of types which can benefit of the optimized ACE indexation.
+     * @return
+     */
+    public Set<String> getTypesUsingOptimizedACEIndexation() {
+        return typesUsingOptimizedACEIndexation;
+    }
+
+    public void setTypesUsingOptimizedACEIndexation(String typesUsingOptimizedACEIndexation) {
+        this.typesUsingOptimizedACEIndexation = Sets.newHashSet(StringUtils.split(typesUsingOptimizedACEIndexation));
     }
 
     @Override

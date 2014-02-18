@@ -40,8 +40,6 @@
 
 package org.jahia.ajax.gwt.client.widget.calendar;
 
-import java.util.Date;
-
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -64,6 +62,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 
+import java.util.Date;
+
 /**
  * @author Khue Nguyen
  */
@@ -83,10 +83,10 @@ public class CalendarPicker extends DatePicker {
 
     public CalendarPicker(Date date) {
         super();
-        if (date==null){
+        if (date == null) {
             date = new Date();
         }
-        this.setValue(date,true);
+        this.setValue(date, true);
         DateWrapper dateWrapper = new DateWrapper(this.getValue());
         hour = new HourModel(dateWrapper.getHours());
         minute = new MinuteModel(dateWrapper.getMinutes());
@@ -110,8 +110,8 @@ public class CalendarPicker extends DatePicker {
 
     public int getSelectedHour() {
         HourModel hourModel = this.hour;
-        if (!this.hours.getSelection().isEmpty()){
-            hourModel = (HourModel)this.hours.getSelection().get(0);
+        if (!this.hours.getSelection().isEmpty()) {
+            hourModel = (HourModel) this.hours.getSelection().get(0);
         }
         return Integer.parseInt(hourModel.getValue());
     }
@@ -133,8 +133,8 @@ public class CalendarPicker extends DatePicker {
 
     public int getSelectedMinute() {
         MinuteModel minuteModel = this.minute;
-        if (!this.minutes.getSelection().isEmpty()){
-            minuteModel = (MinuteModel)this.minutes.getSelection().get(0);
+        if (!this.minutes.getSelection().isEmpty()) {
+            minuteModel = (MinuteModel) this.minutes.getSelection().get(0);
         }
         return Integer.parseInt(minuteModel.getValue());
     }
@@ -153,22 +153,22 @@ public class CalendarPicker extends DatePicker {
     /**
      * Sets the value of the date field.
      *
-     * @param date the date
+     * @param date         the date
      * @param supressEvent true to spress the select event
      */
     public void setValue(Date date, boolean supressEvent) {
-      super.setValue(date,supressEvent);
-      if (date != null){
-          this.setMinute(date.getMinutes());
-          this.setHour(date.getHours());
-      }
+        super.setValue(date, supressEvent);
+        if (date != null) {
+            this.setMinute(date.getMinutes());
+            this.setHour(date.getHours());
+        }
     }
 
-    protected void initHours(){
+    protected void initHours() {
 
         Date date = getValue();
         DateWrapper dateWrapper = null;
-        if (date!=null){
+        if (date == null) {
             dateWrapper = new DateWrapper();
         } else {
             dateWrapper = new DateWrapper(date);
@@ -182,30 +182,30 @@ public class CalendarPicker extends DatePicker {
         if (GXT.isIE) {
             hoursPanel.setWidth(175);
         }
-        
+
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.setLayout(new FitLayout());
         hPanel.setHorizontalAlign(Style.HorizontalAlignment.LEFT);
         hPanel.setStyleName("x-date-bottom");
 
         hours = new ComboBox() {
-          @Override
+            @Override
             protected void onRender(Element parent, int index) {
                 super.onRender(parent, index);
                 getListView().addStyleName("x-datetime-selector");
-            }  
+            }
         };
         hours.setDisplayField("display");
         hours.setMinListWidth(40);
         hours.setWidth(40);
-        hours.setStore(getHours(0,23));
+        hours.setStore(getHours(0, 23));
         hours.setValue(hour != null ? hour : new HourModel(dateWrapper.getHours()));
         hours.setForceSelection(true);
         hours.setTriggerAction(TriggerAction.ALL);
         hours.addSelectionChangedListener(new SelectionChangedListener<HourModel>() {
             public void selectionChanged(SelectionChangedEvent se) {
                 HourModel hourModel = (HourModel) se.getSelection().get(0);
-                if (hourModel!=null){
+                if (hourModel != null) {
                     hour = new HourModel(Integer.parseInt(hourModel.getValue()));
                 }
             }
@@ -214,7 +214,7 @@ public class CalendarPicker extends DatePicker {
         hours.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
                 HourModel hourModel = (HourModel) be.getValue();
-                if (hourModel!=null){
+                if (hourModel != null) {
                     hour = new HourModel(Integer.parseInt(hourModel.getValue()));
                 }
             }
@@ -226,16 +226,16 @@ public class CalendarPicker extends DatePicker {
         hPanel.add(sep, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE));
 
         minutes = new ComboBox() {
-          @Override
+            @Override
             protected void onRender(Element parent, int index) {
                 super.onRender(parent, index);
                 getListView().addStyleName("x-datetime-selector");
-            }  
+            }
         };
         minutes.setDisplayField("display");
         minutes.setMinListWidth(40);
         minutes.setWidth(40);
-        minutes.setStore(getMinutes(0,59));
+        minutes.setStore(getMinutes(0, 59));
         minutes.setValue(minute != null ? minute : new MinuteModel(dateWrapper.getMinutes()));
         minutes.setForceSelection(true);
         minutes.setTriggerAction(TriggerAction.ALL);
@@ -244,7 +244,7 @@ public class CalendarPicker extends DatePicker {
         minutes.addSelectionChangedListener(new SelectionChangedListener<MinuteModel>() {
             public void selectionChanged(SelectionChangedEvent se) {
                 MinuteModel minuteModel = (MinuteModel) se.getSelection().get(0);
-                if (minuteModel!=null){
+                if (minuteModel != null) {
                     minute = new MinuteModel(Integer.parseInt(minuteModel.getValue()));
                 }
             }
@@ -252,14 +252,14 @@ public class CalendarPicker extends DatePicker {
         minutes.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
                 MinuteModel minuteModel = (MinuteModel) be.getValue();
-                if (minuteModel!=null){
+                if (minuteModel != null) {
                     minute = new MinuteModel(Integer.parseInt(minuteModel.getValue()));
                 }
             }
         });
-        
+
         hPanel.add(minutes);
-        
+
         hoursPanel.add(hPanel, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE));
     }
 
@@ -268,20 +268,20 @@ public class CalendarPicker extends DatePicker {
         super.onRender(target, index);
         initHours();
         Node lastChild = DOM.getChild(getElement(), 3);
-        getElement().insertBefore(hoursPanel.getElement(),lastChild);
+        getElement().insertBefore(hoursPanel.getElement(), lastChild);
         el().addEventsSunk(Event.ONCLICK | Event.MOUSEEVENTS);
     }
 
     @Override
     protected void doAttachChildren() {
-      super.doAttachChildren();
-      ComponentHelper.doAttach(hoursPanel);
+        super.doAttachChildren();
+        ComponentHelper.doAttach(hoursPanel);
     }
 
     @Override
     protected void doDetachChildren() {
-      super.doDetachChildren();
-      ComponentHelper.doDetach(hoursPanel);
+        super.doDetachChildren();
+        ComponentHelper.doDetach(hoursPanel);
     }
 
     private class HourModel extends BaseModel {
@@ -290,13 +290,13 @@ public class CalendarPicker extends DatePicker {
             super();
         }
 
-        public HourModel(int value){
+        public HourModel(int value) {
             super();
-            set("value",String.valueOf(value));
-            if (value<10){
-                set("display","0" + value);
+            set("value", String.valueOf(value));
+            if (value < 10) {
+                set("display", "0" + value);
             } else {
-                set("display",value);
+                set("display", value);
             }
         }
 
@@ -305,7 +305,7 @@ public class CalendarPicker extends DatePicker {
         }
 
         public String toString() {
-          return getValue();
+            return getValue();
         }
     }
 
@@ -315,13 +315,13 @@ public class CalendarPicker extends DatePicker {
             super();
         }
 
-        public MinuteModel(int value){
+        public MinuteModel(int value) {
             super();
-            set("value",String.valueOf(value));
-            if (value<10){
-                set("display","0" + value);
+            set("value", String.valueOf(value));
+            if (value < 10) {
+                set("display", "0" + value);
             } else {
-                set("display",value);
+                set("display", value);
             }
         }
 
@@ -330,22 +330,22 @@ public class CalendarPicker extends DatePicker {
         }
 
         public String toString() {
-          return getValue();
+            return getValue();
         }
 
     }
 
-    private ListStore<HourModel> getHours(int startHour, int endHour){
+    private ListStore<HourModel> getHours(int startHour, int endHour) {
         ListStore<HourModel> hours = new ListStore<HourModel>();
-        for (int i=startHour; i<=endHour; i++){
+        for (int i = startHour; i <= endHour; i++) {
             hours.add(new HourModel(i));
         }
         return hours;
     }
 
-    private ListStore<MinuteModel> getMinutes(int startMinute, int endMinute){
+    private ListStore<MinuteModel> getMinutes(int startMinute, int endMinute) {
         ListStore<MinuteModel> minutes = new ListStore<MinuteModel>();
-        for (int i=startMinute; i<=endMinute; i++){
+        for (int i = startMinute; i <= endMinute; i++) {
             minutes.add(new MinuteModel(i));
         }
         return minutes;
@@ -360,5 +360,5 @@ public class CalendarPicker extends DatePicker {
     protected void onHide() {
         super.onHide();
     }
-    
+
 }

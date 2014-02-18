@@ -264,18 +264,19 @@ public class Web_App_Xml {
         int size = nodesList.size();
         if (size > 0) {
 
-            Node nodeItem = null;
-            String name = "";
-            String descr = "";
+            Node nodeItem;
+            String name;
+            String descr;
 
-            Node childNode = null;
+            Node childNode;
 
-            Security_Role role = null;
+            Security_Role role;
 
             for (int i = 0; i < size; i++) {
 
                 name = "";
-                nodeItem = (Node) nodesList.get(i);
+                descr = "";
+                nodeItem = nodesList.get(i);
 
                 childNode = XMLParser.nextChildOfTag(nodeItem, "role-name");
                 if (childNode != null) {
@@ -287,13 +288,8 @@ public class Web_App_Xml {
                     descr = childNode.getFirstChild().getNodeValue().trim();
                 }
 
-                if (descr == null) {
-                    descr = "";
-                }
-
-                if (name != null && (name.length() > 0)) {
+                if (name.length() > 0) {
                     role = new Security_Role(name, descr);
-                    // System.out.println(" found role : name = " + role.getName() );
                     roles.add(role);
                 }
             }
@@ -355,10 +351,6 @@ public class Web_App_Xml {
                     servletsrc = XMLParser.nextChildOfTag(nodeItem, "jsp-file")
                             .getFirstChild().getNodeValue().trim();
                     servletType = JSP_TYPE;
-                }
-
-                if (descr == null) {
-                    descr = "";
                 }
 
                 if ((displayName != null) && (displayName.length() > 0)

@@ -84,6 +84,7 @@ public class LastModifiedListener extends DefaultEventListener {
             final Set<Session> sessions = new HashSet<Session>();
             final Set<String> nodes = new HashSet<String>();
             final Set<String> addedNodes = new HashSet<String>();
+            final Set<String> reorderedNodes = new HashSet<String>();
             final List<String> autoPublishedIds;
 
             if (workspace.equals("default")) {
@@ -119,11 +120,24 @@ public class LastModifiedListener extends DefaultEventListener {
 //                            if(!path.contains("j:translation")) {
 //                                nodes.add(StringUtils.substringBeforeLast(path,"/"));
 //                            }
+                        } else if (Event.NODE_MOVED == event.getType()) {
+                            // in the case of a real node move, we won't track this as we want to have last modification
+                            // properties on moved nodes so we only handle the reordering case.
+                            if (event.getInfo().get("srcChildRelPath") != null) {
+                                // this case is a node reordering in it's parent
+                                reorderedNodes.add(path);
+                            }
+                            nodes.add(StringUtils.substringBeforeLast(path,"/"));
                         } else {
                             nodes.add(StringUtils.substringBeforeLast(path,"/"));
                         }
                     }
-                    nodes.removeAll(addedNodes);
+                    if (reorderedNodes.size() > 0) {
+                        addedNodes.removeAll(reorderedNodes);
+                    }
+                    if (addedNodes.size() > 0) {
+                        nodes.removeAll(addedNodes);
+                    }
                     if (!nodes.isEmpty() || !addedNodes.isEmpty()) {
                         if(logger.isDebugEnabled()) {
                             logger.debug("Updating lastModified date for existing nodes : "+

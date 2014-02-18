@@ -44,6 +44,7 @@ import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.framework.util.MapToDictionary;
 import org.apache.jasper.servlet.JspServlet;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
@@ -58,6 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -114,24 +116,29 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
 
     @Override
     public Object addingService(ServiceReference reference) {
-        HttpService httpService = (HttpService) super.addingService(reference);
+        try {
+            HttpService httpService = (HttpService) super.addingService(reference);
 
-        long timer = System.currentTimeMillis();
+            long timer = System.currentTimeMillis();
 
-        HttpContext httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle),
-                httpService.createDefaultHttpContext());
+            HttpContext httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle),
+                    httpService.createDefaultHttpContext());
 
-        int resourceCount = registerStaticResources(httpService, httpContext);
+            int resourceCount = registerStaticResources(httpService, httpContext);
 
-        // register servlets for JSPs
-        int jspCount = registerJsps(httpService, httpContext);
+            // register servlets for JSPs
+            int jspCount = registerJsps(httpService, httpContext);
 
-        if (resourceCount > 0 || jspCount > 0) {
-            logger.info("Bundle {} registered {} JSPs and {} static resources in {} ms", new Object[] { bundleName,
-                    jspCount, resourceCount, System.currentTimeMillis() - timer });
+            if (resourceCount > 0 || jspCount > 0) {
+                logger.info("Bundle {} registered {} JSPs and {} static resources in {} ms", new Object[] { bundleName,
+                        jspCount, resourceCount, System.currentTimeMillis() - timer });
+            }
+
+            return httpService;
+        } catch (Exception e) {
+            logger.error("Error when adding service",e);
+            return super.addingService(reference);
         }
-
-        return httpService;
     }
 
     protected int registerJsps(HttpService httpService, HttpContext httpContext) {
@@ -221,6 +228,9 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
 
     @Override
     public void removedService(ServiceReference reference, Object service) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         HttpService httpService = (HttpService) service;
         int count = 0;
         for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {

@@ -60,13 +60,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
@@ -91,7 +89,6 @@ import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.ajax.gwt.helper.SearchHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.ExternalReferenceValue;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -732,9 +729,7 @@ public class ContentTest {
                 + " : Referenced external node is not available !",
                 refProperty.getNode());
 
-        Value testFileValue = new ExternalReferenceValue(
-                testFile1.getIdentifier(), PropertyType.WEAKREFERENCE);
-        refNode.setProperty(SIMPLE_REFERENCE_PROPERTY_NAME, testFileValue);
+        refNode.setProperty(SIMPLE_REFERENCE_PROPERTY_NAME, testFile1);
 
         session.save();
 
@@ -881,10 +876,6 @@ public class ContentTest {
         assertFalse(providerRoot
                 + " : multiple reference property should no longer exist !",
                 refNode.hasProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME));
-        assertFalse(
-                providerRoot
-                        + " : node should no longer have the jmix:externalReference node mixin node type",
-                refNode.isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE));
     }
 
     @Test
@@ -924,7 +915,7 @@ public class ContentTest {
         fields.add("jcr:lastModified");
         for (GWTJahiaNode rootNode : rootNodes) {
             assertGWTJahiaNode(rootNode, "/mounts");
-            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode,
+            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode.getPath(),
                     nodeTypes, new ArrayList<String>(),
                     new ArrayList<String>(), fields, session,
                     Locale.getDefault());
@@ -937,7 +928,7 @@ public class ContentTest {
                         mountLocations.contains(childNode.getPath()));
                 assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
                 List<GWTJahiaNode> childChildNodes = navigationHelper.ls(
-                        childNode, nodeTypes, new ArrayList<String>(),
+                        childNode.getPath(), nodeTypes, new ArrayList<String>(),
                         new ArrayList<String>(), fields, session,
                         Locale.getDefault());
                 for (GWTJahiaNode childChildNode : childChildNodes) {

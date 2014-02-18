@@ -200,7 +200,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
     public void invoke(Object context)
             throws PipelineException {
         // Initialize the per-thread state for this thread
-        state.set(new Integer(0));
+        state.set(0);
 
         // Invoke the first Valve in this pipeline for this request
         invokeNext(context);
@@ -209,13 +209,12 @@ public class GenericPipeline implements Pipeline, ValveContext {
     public void invokeNext(Object context)
             throws PipelineException {
         // Identify the current subscript for the current request thread
-        Integer current = (Integer) state.get();
-        int valvePos = current.intValue();
+        int valvePos = state.get();
 
         if (valvePos < valves.length) {
             // Invoke the requested Valve for the current request
             // thread and increment its thread-local state.
-            state.set(new Integer(valvePos + 1));
+            state.set(valvePos + 1);
             valves[valvePos].invoke(context, this);
         }
 

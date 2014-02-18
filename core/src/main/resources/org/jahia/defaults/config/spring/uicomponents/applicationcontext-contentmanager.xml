@@ -541,7 +541,6 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                 </list>
                             </property>
@@ -571,7 +570,6 @@
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Rename"/>
-                        <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                     </list>
                 </property>

@@ -286,17 +286,17 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                                             ",height=" + imageSize[1];
                                 }
                             }
-                            String urlParams="";
+                            StringBuilder urlParams = new StringBuilder();
                             for (int i=0; i < urlParameters.size(); i++) {
                                 if (i==0) {
-                                    urlParams += "?";
+                                    urlParams.append("?");
                                 }
-                                urlParams += urlParameters.get(i);
+                                urlParams.append(urlParameters.get(i));
                                 if (i < urlParameters.size()-1) {
-                                    urlParams += "&";
+                                    urlParams.append("&");
                                 }
                             }
-                            String url1 = url + urlParams;
+                            String url1 = url + urlParams.toString();
 
                             openWindow(url1, "customizedpreview", windowFeatures);
                         }

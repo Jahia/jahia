@@ -123,13 +123,6 @@ public class TemplatesTabItem extends BrowseTabItem {
         });
 
 
-        // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(final Object gwtJahiaFolder, final AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-            }
-        };
-
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
         selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(tree);
 
@@ -148,7 +141,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                     fields.add(GWTJahiaNode.CHILDREN_INFO);
                     fields.add(GWTJahiaNode.ICON);
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad(gwtJahiaNode, displayedDetailTypes, null, null, fields, false, 0, 0, false,
+                            .lsLoad(gwtJahiaNode.getPath(), displayedDetailTypes, null, null, fields, false, 0, 0, false,
                                     hiddenDetailTypes, null, false, false, new AsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
                                 @Override
                                 public void onFailure(Throwable caught) {

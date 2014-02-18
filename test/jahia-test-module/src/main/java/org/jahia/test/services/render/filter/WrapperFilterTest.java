@@ -40,8 +40,11 @@
 
 package org.jahia.test.services.render.filter;
 
-import static junit.framework.Assert.assertTrue; 
+import static junit.framework.Assert.assertTrue;
 
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.RenderContext;
@@ -78,8 +81,9 @@ public class WrapperFilterTest extends JahiaTestCase {
     private JCRNodeWrapper node;
 
     @Before
-    protected void setUp() throws Exception {
-        JahiaSite site = TestHelper.createSite("test");
+    public void setUp() throws Exception {
+        JahiaSite site = TestHelper.createSite("test", "localhost" + System.currentTimeMillis(), TestHelper.WEB_TEMPLATES, null, null,
+                new String[] {"jahia-test-module"});
         
         setSessionSite(site);
 
@@ -99,9 +103,8 @@ public class WrapperFilterTest extends JahiaTestCase {
     }
 
     @After
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         TestHelper.deleteSite("test");
-        node.remove();
         session.save();
     }
 
@@ -114,8 +117,10 @@ public class WrapperFilterTest extends JahiaTestCase {
         context.setSite(site);
         Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
-
-        resource.pushWrapper("wrapper.fullpage");
+        ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
+        context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
+        context.setServletPath("/cms/render");
+        resource.pushWrapper("wrappertest");
 
         RenderChain chain = new RenderChain();
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();

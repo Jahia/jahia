@@ -52,13 +52,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
@@ -420,6 +420,9 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     @SuppressWarnings("unchecked")
     @Override
     public synchronized void unregisterProvider(JahiaGroupManagerProvider provider) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         logger.info("Unregistering group provider {}", provider.getKey());
         
         if (providerMap.remove(provider.getKey()) != null) {

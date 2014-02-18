@@ -125,10 +125,10 @@ public class JSessionIDTest extends JahiaTestCase {
         SettingsBean.getInstance().setDisableJsessionIdParameter(removeJsessionId);
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 
-        GetMethod displayLoginMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/administration");
+        GetMethod displayLoginMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/start");
         int statusCode = httpClient.executeMethod(displayLoginMethod);
         
-        assertEquals("Method failed: " + displayLoginMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);
+        assertEquals("Method failed: " + displayLoginMethod.getStatusLine(), HttpStatus.SC_UNAUTHORIZED, statusCode);
         
         String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
 

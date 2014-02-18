@@ -96,7 +96,7 @@ public final class Jahia {
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2014  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2013 Jahia Solutions Group SA" ;
+    public final static String COPYRIGHT_TXT = "2014 Jahia Solutions Group SA" ;
 
     static private boolean maintenance = false;
 
@@ -420,7 +420,7 @@ public final class Jahia {
     public static String getFullProductVersion() {
         StringBuilder version = new StringBuilder(32);
 
-        version.append("Jahia ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] r").append(Jahia.getBuildNumber());
+        version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] r").append(Jahia.getBuildNumber());
         if (isEnterpriseEdition()) {
             version.append(".").append(Jahia.getEEBuildNumber());
         }

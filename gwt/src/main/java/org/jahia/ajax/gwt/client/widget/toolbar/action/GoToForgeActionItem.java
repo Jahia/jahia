@@ -94,7 +94,6 @@ public class GoToForgeActionItem extends BaseActionItem {
 
                     final String finalUrl = forgeModulePageUrl;
 
-                    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(finalUrl));
                     MainModule.getInstance().goToExternalUrl(finalUrl);
 
                     w.hide();

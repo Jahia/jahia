@@ -227,7 +227,6 @@ public class TrashboardEngine extends LayoutContainer {
         column.setRenderer(new GridCellRenderer() {
             public Object render(final ModelData modelData, String property, ColumnData columnData, int rowIndex, int colIndex,
                                  ListStore listStore, Grid grid) {
-                GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) modelData;
                 Button button = new Button(Messages.get("label.information", "Information"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {

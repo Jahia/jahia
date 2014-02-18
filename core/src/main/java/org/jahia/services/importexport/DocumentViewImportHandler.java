@@ -488,6 +488,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         pathes.pop(), e.getMessage());
             }
             error++;
+        } catch (AccessDeniedException e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Cannot import " + pathes.pop() + getLocation(), e);
+            } else {
+                logger.warn("Cannot import \"{}\" due to \"{}\"",
+                        pathes.pop(), e.getMessage());
+            }
+            error++;
         } catch (RepositoryException re) {
             logger.error("Cannot import " + pathes.pop() + getLocation(), re);
             error++;
@@ -754,11 +762,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 roles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
             }
         }
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (String role : roles) {
-            s += role + " ";
+            s.append(role).append(" ");
         }
-        return s.trim();
+        return s.toString().trim();
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {

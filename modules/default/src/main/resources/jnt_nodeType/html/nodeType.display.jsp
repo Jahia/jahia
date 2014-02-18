@@ -3,16 +3,20 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="css" resources="admin-bootstrap.css,admin-server-settings.css"/>
 
-<h4>${currentNode.name}</h4>
+<div class="page-header">
+    <h1>${currentNode.name}</h1>
+</div>
 
-<p><fmt:message key="mix_title.jcr_title" />: ${currentNode.properties['jcr:title'].string}</p>
-<p><fmt:message key="jnt_nodeType.jcr_description" />: ${currentNode.properties['jcr:description'].string}</p>
+<div class="box-1">
+<p><strong><fmt:message key="mix_title.jcr_title" /></strong>: ${currentNode.properties['jcr:title'].string}</p>
+<p><strong><fmt:message key="jnt_nodeType.jcr_description" /></strong>: ${currentNode.properties['jcr:description'].string}</p>
 <template:include view="details" />
 
 <p>
-<fmt:message key="label.engineTab.definitions.properties" />:
-<table cellspacing="0" cellpadding="5" border="0">
+<strong><fmt:message key="label.engineTab.definitions.properties" />:</strong>
+<table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
         <th><fmt:message key="label.name" /></th>
@@ -33,8 +37,8 @@
 </p>
 
 <p>
-<fmt:message key="label.engineTab.definitions.nodes" />:
-<table cellspacing="0" cellpadding="5" border="0">
+<strong><fmt:message key="label.engineTab.definitions.nodes" />:</strong>
+<table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
         <th><fmt:message key="label.name" /></th>
@@ -49,3 +53,4 @@
     </tbody>
 </table>
 </p>
+</div>

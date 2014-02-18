@@ -43,6 +43,9 @@ package org.jahia.test;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -90,8 +93,9 @@ public class TestHelper {
     }
 
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
-        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
+        createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/" + name);
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
             site.setLanguages(languages);
         }
@@ -101,7 +105,7 @@ public class TestHelper {
         if (mixLanguagesActive != site.isMixLanguagesActive()) {
             site.setMixLanguagesActive(mixLanguagesActive);
         }
-        service.updateSystemSitePermissions(site);
+        session.save();
         return site;
     }
 
@@ -136,7 +140,7 @@ public class TestHelper {
                     ZipEntry z = null;
                     while ((z = zis.getNextEntry()) != null) {
                         if (siteZIPName.equalsIgnoreCase(z.getName())
-                                || "shared.zip".equals(z.getName())) {
+                                || "users.zip".equals(z.getName())) {
                             File zipFile = File.createTempFile("import", ".zip");
                             os = new FileOutputStream(zipFile);
                             byte[] buf = new byte[4096];
@@ -145,7 +149,7 @@ public class TestHelper {
                                 os.write(buf, 0, r);
                             }
                             os.close();
-                            if ("shared.zip".equals(z.getName())) {
+                            if ("users.zip".equals(z.getName())) {
                                 sharedZIPFile = zipFile;
                             } else {
                                 siteZIPFile = zipFile;
@@ -212,7 +216,6 @@ public class TestHelper {
     
     public static int createSubPages(Node currentNode, int level, int nbChildren, String titlePrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         int pagesCreated = 0;
-        if (level <= 0) return pagesCreated;
         if (!currentNode.isCheckedOut()) {
             currentNode.checkout();
         }
@@ -224,7 +227,6 @@ public class TestHelper {
                         titlePrefix + Integer.toString(i));
             }
             pagesCreated++;
-            pagesCreated += createSubPages(newSubPage, level - 1, nbChildren, titlePrefix);
         }
         return pagesCreated;
     }

@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.core.client.Scheduler;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -68,6 +69,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.form.CodeMirrorField;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +86,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     private String codePropertyName;
     private String stubType;
     private String codeMirrorMode = "jsp";
+    private Map<String, String> availableCodeMirrorModes;
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;
@@ -270,13 +273,46 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                     }
                 });
             } else {
+                if (availableCodeMirrorModes != null && availableCodeMirrorModes.size() > 0) {
+                    actions.add(getModeCombo());
+                }
+                
                 initEditor(tab);
             }
             actions.add(indentButton);
             actions.show();
             tab.setProcessed(true);
             readOnly = engine.getNode() != null && engine.getNode().isLocked();
+            if (codeField != null) {
+                codeField.setReadOnly(readOnly);
+            }
         }
+    }
+
+    private ComboBox<GWTJahiaValueDisplayBean> getModeCombo() {
+        ComboBox<GWTJahiaValueDisplayBean> modes = new ComboBox<GWTJahiaValueDisplayBean>();
+        modes.setTypeAhead(true);
+        modes.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
+        modes.setTriggerAction(ComboBox.TriggerAction.ALL);
+        modes.setForceSelection(true);
+        modes.setStore(new ListStore<GWTJahiaValueDisplayBean>());
+        modes.setDisplayField("display");
+        for (Map.Entry<String, String> m : availableCodeMirrorModes.entrySet()) {
+            GWTJahiaValueDisplayBean option = new GWTJahiaValueDisplayBean(m.getKey(), m.getValue());
+            modes.getStore().add(option);
+            if (codeMirrorMode != null && codeMirrorMode.equals(m.getKey())) {
+                ArrayList<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();
+                selection.add(option);
+                modes.setSelection(selection);
+            }
+        }
+        modes.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                codeField.setMode(se.getSelectedItem().getValue());
+            }
+        });
+        return modes;
     }
 
     private void initEditor(final AsyncTabItem tab) {
@@ -326,6 +362,10 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
     public void setCodeMirrorMode(String codeMirrorMode) {
         this.codeMirrorMode = codeMirrorMode;
+    }
+
+    public void setAvailableCodeMirrorModes(Map<String, String> availableCodeMirrorModes) {
+        this.availableCodeMirrorModes = availableCodeMirrorModes;
     }
 
 }

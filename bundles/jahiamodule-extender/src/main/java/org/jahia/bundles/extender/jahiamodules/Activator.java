@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
@@ -65,6 +66,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -93,21 +95,21 @@ public class Activator implements BundleActivator {
     private CndBundleObserver cndBundleObserver = null;
     private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
     private BundleListener bundleListener = null;
-    private Set<Bundle> installedBundles = new HashSet<Bundle>();
-    private Set<Bundle> initializedBundles = new HashSet<Bundle>();
-    private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
+    private Set<Bundle> installedBundles;
+    private Set<Bundle> initializedBundles;
+    private Map<Bundle, JahiaTemplatesPackage> registeredBundles;
     private Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
     private JahiaTemplateManagerService templatesService;
     private TemplatePackageRegistry templatePackageRegistry = null;
     private TemplatePackageDeployer templatePackageDeployer = null;
 
     private Map<BundleURLScanner, BundleObserver<URL>> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver<URL>>();
-    private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
-    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
+    private Map<String,List<Bundle>> toBeParsed;
+    private Map<String,List<Bundle>> toBeStarted;
 
     private BundleStarter bundleStarter;
 
-    private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
+    private Map<Bundle, ModuleState> moduleStates;
 
     @Override
     public void start(final BundleContext context) throws Exception {
@@ -123,6 +125,14 @@ public class Activator implements BundleActivator {
         RulesBundleObserver rulesBundleObserver = new RulesBundleObserver();
         extensionObservers.put(DSL_SCANNER, rulesBundleObserver);
         extensionObservers.put(DRL_SCANNER, rulesBundleObserver);
+
+        // Get all module state information from the service
+        registeredBundles = templatesService.getRegisteredBundles();
+        installedBundles = templatesService.getInstalledBundles();
+        initializedBundles = templatesService.getInitializedBundles();
+        toBeParsed = templatesService.getToBeParsed();
+        toBeStarted = templatesService.getToBeStarted();
+        moduleStates = templatesService.getModuleStates();
 
         BundleScriptResolver bundleScriptResolver = (BundleScriptResolver) SpringContextSingleton.getBean("BundleScriptResolver");
 
@@ -179,11 +189,13 @@ public class Activator implements BundleActivator {
 
         // parse existing bundles
         for (Bundle bundle : context.getBundles()) {
-            parseBundle(bundle, false);
+            // Parse bundle if activator has not seen them before
+            if (!registeredBundles.containsKey(bundle)) {
+                parseBundle(bundle, false);
+            }
         }
 
         registerShellCommands(context);
-        templatesService.setModuleStates(moduleStates);
 
         JCRModuleListener l = (JCRModuleListener) SpringContextSingleton.getBean("org.jahia.services.templates.JCRModuleListener");
         l.setListener(new JCRModuleListener.Listener() {
@@ -194,6 +206,9 @@ public class Activator implements BundleActivator {
                 }
             }
         });
+
+        // If activator was stopped, restart modules that were stopped at the same time
+        startDependantBundles(context.getBundle().getSymbolicName());
 
         logger.info("== Jahia Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
 
@@ -242,7 +257,6 @@ public class Activator implements BundleActivator {
                             starting(bundle);
                             break;
                         case BundleEvent.STARTED:
-                            setModuleState(bundle,ModuleState.State.STARTED, null);
                             start(bundle);
                             break;
                         case BundleEvent.STOPPING:
@@ -280,12 +294,21 @@ public class Activator implements BundleActivator {
 
         context.removeBundleListener(bundleListener);
 
+        // Stop all modules and put them in waiting to be started state
+        final String symbolicName = context.getBundle().getSymbolicName();
         for (Bundle bundle : new HashSet<Bundle>(registeredBundles.keySet())) {
+            if (getModuleState(bundle).getState() == ModuleState.State.STARTED) {
+                stopping(bundle);
+                if (toBeStarted.get(symbolicName) == null) {
+                    toBeStarted.put(symbolicName, new ArrayList<Bundle>());
+                }
+                toBeStarted.get(symbolicName).add(bundle);
+                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_STARTED, bundle.getSymbolicName());
+            }
             unresolve(bundle);
         }
 
         bundleListener = null;
-        registeredBundles.clear();
 
         for (ServiceRegistration serviceRegistration : serviceRegistrations) {
             try {
@@ -293,6 +316,11 @@ public class Activator implements BundleActivator {
             } catch (IllegalStateException e) {
                 logger.warn(e.getMessage());
             }
+        }
+
+        // Ensure all trackers are correctly closed - should be empty now
+        for (ServiceTracker tracker : bundleHttpServiceTrackers.values()) {
+            tracker.close();
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
@@ -563,7 +591,11 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         setModuleState(bundle, ModuleState.State.STARTED, null);
-        
+
+        if (BundleUtils.getContextToStartForModule(bundle) != null) {
+            BundleUtils.getContextToStartForModule(bundle).refresh();
+        }
+
         startDependantBundles(jahiaTemplatesPackage.getId());
         startDependantBundles(jahiaTemplatesPackage.getName());
     }
@@ -594,11 +626,14 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopping(Bundle bundle) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
         JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
-        if (jahiaTemplatesPackage == null) {
+        if (jahiaTemplatesPackage == null || !jahiaTemplatesPackage.isActiveVersion()) {
             return;
         }
 
@@ -607,13 +642,22 @@ public class Activator implements BundleActivator {
                 toBeStarted.put(bundle.getSymbolicName(), new ArrayList<Bundle>());
             }
             toBeStarted.get(bundle.getSymbolicName()).add(dependant.getBundle());
-            setModuleState(dependant.getBundle(), ModuleState.State.WAITING_TO_BE_STARTED, bundle.getSymbolicName());
+            setModuleState(dependant.getBundle(), ModuleState.State.STOPPING, bundle.getSymbolicName());
             stopping(dependant.getBundle());
+            setModuleState(dependant.getBundle(), ModuleState.State.WAITING_TO_BE_STARTED, bundle.getSymbolicName());
         }
 
         templatePackageRegistry.unregister(jahiaTemplatesPackage);
         jahiaTemplatesPackage.setActiveVersion(false);
         templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
+
+        if (jahiaTemplatesPackage.getContext() != null) {
+            jahiaTemplatesPackage.getContext().close();
+            final ModuleState state = getModuleState(bundle);
+            BundleUtils.setContextToStartForModule(bundle,jahiaTemplatesPackage.getContext());
+            jahiaTemplatesPackage.setContext(null);
+        }
+        jahiaTemplatesPackage.setClassLoader(null);
 
         // scan for resource and call observers
         for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
@@ -629,15 +673,15 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished stopping Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+
+        setModuleState(bundle, ModuleState.State.STOPPED, null);
     }
 
     private synchronized void stopped(Bundle bundle) {
-        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
-        if (jahiaTemplatesPackage != null) {
-            if (jahiaTemplatesPackage.getContext() != null) {
-                jahiaTemplatesPackage.setContext(null);
+        for (List<Bundle> list : toBeStarted.values()) {
+            if (list.contains(bundle)) {
+                list.remove(bundle);
             }
-            jahiaTemplatesPackage.setClassLoader(null);
         }
     }
 
@@ -651,9 +695,11 @@ public class Activator implements BundleActivator {
             if (bundleHttpServiceTrackers.containsKey(bundle)) {
                 bundleHttpServiceTrackers.remove(bundle).close();
             }
-            ServiceTracker bundleServiceTracker = new BundleHttpResourcesTracker(bundle);
-            bundleServiceTracker.open(true);
-            bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
+            if (bundle.getBundleContext() != null) {
+                ServiceTracker bundleServiceTracker = new BundleHttpResourcesTracker(bundle);
+                bundleServiceTracker.open(true);
+                bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
+            }
         } else {
             logger.debug("No HTTP resources found for bundle {}", displayName);
         }

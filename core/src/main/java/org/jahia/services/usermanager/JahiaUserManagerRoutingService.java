@@ -41,6 +41,7 @@
 package org.jahia.services.usermanager;
 
 import org.apache.commons.collections.list.UnmodifiableList;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.slf4j.Logger;
@@ -307,6 +308,9 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
     @SuppressWarnings("unchecked")
     @Override
     public synchronized void unregisterProvider(JahiaUserManagerProvider provider) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         logger.info("Unregistering user provider {}", provider.getKey());
         
         if (providerMap.remove(provider.getKey()) != null) {

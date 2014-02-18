@@ -83,7 +83,6 @@ public class LogoutTest extends JahiaTestCase {
     
     private static JahiaSite defaultSite = null;
     
-    private static boolean isSiteForServername = false;    
     private static boolean seoRulesEnabled = false;
     private static boolean seoRemoveCmsPrefix = false;
 
@@ -108,6 +107,7 @@ public class LogoutTest extends JahiaTestCase {
         JahiaSite site = service.getSiteByKey(SITE_KEY);
         if (site == null) {
             site = TestHelper.createSite(SITE_KEY, "localhost", TestHelper.WEB_TEMPLATES, null, null);
+            site = (JahiaSite) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath());
         }
         Set<String> languages = new HashSet<String>();
         languages.add("en");
@@ -119,9 +119,6 @@ public class LogoutTest extends JahiaTestCase {
         setSessionSite(site);
                 
         JahiaSite siteForServerName = service.getSiteByServerName(getRequest().getServerName());
-        if (siteForServerName != null && !siteForServerName.equals(site)) {
-            isSiteForServername = true;
-        }
 
         // Add two page and publish one
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
@@ -191,13 +188,13 @@ public class LogoutTest extends JahiaTestCase {
     @Test
     public void logoutEditPrivate() throws Exception {
         String returnUrl = perform("/cms/render/default/en/sites/"+SITE_KEY+"/home/privPage.html");
-        assertEquals("Logout from default unPublished page failed ", (isSiteForServername ? "" : "/sites/" + SITE_KEY) + "/home.html", returnUrl);
+        assertEquals("Logout from default unPublished page failed ", "/sites/" + SITE_KEY + "/home.html", returnUrl);
     }
 
     @Test
     public void logoutUserDashboard() throws Exception {
         String returnUrl = perform("/en/users/root.user-home.html");
-        assertEquals("Logout from user dashboard page failed ", (isSiteForServername ? "" : "/sites/" + SITE_KEY) + "/home.html", returnUrl);
+        assertEquals("Logout from user dashboard page failed ", "/sites/" + SITE_KEY + "/home.html", returnUrl);
     }
 
     @Test

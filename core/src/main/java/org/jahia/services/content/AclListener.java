@@ -62,41 +62,52 @@ public class AclListener extends DefaultEventListener {
                 Event.PROPERTY_REMOVED;
     }
 
-    public void onEvent(EventIterator events) {
+    public void onEvent(final EventIterator events) {
         JCRSessionWrapper session = ((JCREventIterator) events).getSession();
-        Set<String> aceIdentifiers = new HashSet<String>();
-        Set<String> addedExtPermIds = new HashSet<String>();
-        Set<List<String>> removedExtPermissions = new HashSet<List<String>>();
-        Set<String> removedRoles = new HashSet<String>();
+        final Set<String> aceIdentifiers = new HashSet<String>();
+        final Set<String> addedExtPermIds = new HashSet<String>();
+        final Set<List<String>> removedExtPermissions = new HashSet<List<String>>();
+        final Set<String> removedRoles = new HashSet<String>();
         try {
-            while (events.hasNext()) {
-                Event next = events.nextEvent();
-                if (next.getPath().contains("/j:acl/")) {
-                    if (next.getType() == Event.PROPERTY_ADDED || next.getType() == Event.PROPERTY_CHANGED) {
-                        JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(next.getIdentifier());
-                        if (nodeByIdentifier.isNodeType("jnt:ace") && !nodeByIdentifier.isNodeType("jnt:externalAce") && nodeByIdentifier.getProperty("j:aceType").getValue().getString().equals("GRANT")) {
-                            aceIdentifiers.add(next.getIdentifier());
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper systemSession) throws RepositoryException {
+                    while (events.hasNext()) {
+                        Event next = events.nextEvent();
+                        if (next.getPath().contains("/j:acl/")) {
+                            if (next.getType() == Event.PROPERTY_ADDED || next.getType() == Event.PROPERTY_CHANGED) {
+                                try {
+                                    JCRNodeWrapper nodeByIdentifier = systemSession.getNodeByIdentifier(next.getIdentifier());
+                                    if (nodeByIdentifier.isNodeType("jnt:ace") && !nodeByIdentifier.isNodeType("jnt:externalAce") && nodeByIdentifier.getProperty("j:aceType").getValue().getString().equals("GRANT")) {
+                                        aceIdentifiers.add(next.getIdentifier());
+                                    }
+                                } catch (ItemNotFoundException e) {
+                                    logger.error("unable to read node " + next.getPath());
+                                }
+                            } else if (next.getType() == Event.NODE_REMOVED) {
+                                aceIdentifiers.add(next.getIdentifier());
+                            }
+                        } else if (next.getPath().startsWith("/roles/")) {
+                            if (next.getType() == Event.NODE_ADDED) {
+                                String identifier = next.getIdentifier();
+                                JCRNodeWrapper nodeByIdentifier = systemSession.getNodeByIdentifier(identifier);
+                                if (nodeByIdentifier.isNodeType("jnt:externalPermissions")) {
+                                    addedExtPermIds.add(identifier);
+                                }
+                            } else if (next.getType() == Event.NODE_REMOVED) {
+                                String path = next.getPath();
+                                if (path.endsWith("-access")) {
+                                    removedExtPermissions.add(Arrays.asList(StringUtils.substringAfterLast(StringUtils.substringBeforeLast(path, "/"), "/"), StringUtils.substringAfterLast(path, "/")));
+                                } else {
+                                    removedRoles.add(StringUtils.substringAfterLast(path, "/"));
+                                }
+                            }
                         }
-                    } else if (next.getType() == Event.NODE_REMOVED) {
-                        aceIdentifiers.add(next.getIdentifier());
                     }
-                } else if (next.getPath().startsWith("/roles/")) {
-                    if (next.getType() == Event.NODE_ADDED) {
-                        String identifier = next.getIdentifier();
-                        JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(identifier);
-                        if (nodeByIdentifier.isNodeType("jnt:externalPermissions")) {
-                            addedExtPermIds.add(identifier);
-                        }
-                    } else if (next.getType() == Event.NODE_REMOVED) {
-                        String path = next.getPath();
-                        if (path.endsWith("-access")) {
-                            removedExtPermissions.add(Arrays.asList(StringUtils.substringAfterLast(StringUtils.substringBeforeLast(path, "/"), "/"), StringUtils.substringAfterLast(path, "/")));
-                        } else {
-                            removedRoles.add(StringUtils.substringAfterLast(path, "/"));
-                        }
-                    }
+                    return null;
                 }
-            }
+            });
+
 
             for (String aceIdentifier : aceIdentifiers) {
                 Set<String> roles = new HashSet<String>();
@@ -115,7 +126,9 @@ public class AclListener extends DefaultEventListener {
                         logger.warn("Missing roles property for acl on " + ace.getPath());
                     }
                 } catch (ItemNotFoundException e) {
-                } catch (InvalidItemStateException e) {                    
+                    // Item does not exist anymore, use empty roles set
+                } catch (InvalidItemStateException e) {
+                    // Item does not exist anymore, use empty roles set
                 }
 
                 QueryManager q = session.getWorkspace().getQueryManager();

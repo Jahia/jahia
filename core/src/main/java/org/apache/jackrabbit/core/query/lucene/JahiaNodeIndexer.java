@@ -95,6 +95,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final String ACL_UUID = "_:ACL_UUID".intern();
     public static final Name J_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "acl");
     public static final Name J_ACL_INHERITED = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "inherit");
+    public static final Name J_ACE_PRINCIPAL = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "principal");
+    public static final Name J_ACE_GRANT = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "aceType");
+    public static final Name J_ACE_ROLES = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "roles");
 
     public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
 
@@ -144,6 +147,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     private boolean addAclUuidInIndex = true;
 
+    private boolean useOptimizedACEIndexation = false;
+
     private transient String site;
 
     private transient Map<String, ExtendedPropertyDefinition> fieldNameToPropDef = new HashMap<String, ExtendedPropertyDefinition>(17);
@@ -177,6 +182,13 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return getTypeNameAsString(nodeTypeName, namespaceRegistry);
     }
 
+    /**
+     * Convert name object to jcr-name string
+     * @param nodeTypeName the name
+     * @param namespaceRegistry the namespace registry
+     * @return
+     * @throws RepositoryException
+     */
     protected static String getTypeNameAsString(Name nodeTypeName, NamespaceRegistry namespaceRegistry) throws
             RepositoryException {
         return namespaceRegistry.getPrefix(nodeTypeName.getNamespaceURI()) + ":" + nodeTypeName.getLocalName();
@@ -670,7 +682,33 @@ public class JahiaNodeIndexer extends NodeIndexer {
             while (currentNode != null) {
                 ChildNodeEntry aclChildNode = currentNode.getChildNodeEntry(J_ACL, 1);
                 if (aclChildNode != null) {
-                    acls.add(0, currentNode.getId().toString());
+                    NodeState ns = (NodeState) stateProvider.getItemState(aclChildNode.getId());
+                    StringBuilder ace = new StringBuilder(currentNode.getId().toString());
+                    if (ns.getChildNodeEntries().size() == 1 && useOptimizedACEIndexation) {
+                        ChildNodeEntry childNodeEntry = ns.getChildNodeEntries().get(0);
+                        PropertyId principalPropId = new PropertyId(childNodeEntry.getId(), J_ACE_PRINCIPAL);
+                        PropertyState principal = (PropertyState) stateProvider.getItemState(principalPropId);
+                        InternalValue internalValue = principal.getValues()[0];
+                        final String principalValue = internalValue.getString();
+                        if (principalValue.startsWith("u:")) {
+                            PropertyId grantPropId = new PropertyId(childNodeEntry.getId(), J_ACE_GRANT);
+                            PropertyState grant = (PropertyState) stateProvider.getItemState(grantPropId);
+
+                            PropertyId rolesPropId = new PropertyId(childNodeEntry.getId(), J_ACE_ROLES);
+                            PropertyState roles = (PropertyState) stateProvider.getItemState(rolesPropId);
+
+                            ace.append("/");
+                            if (grant.getValues()[0].getString().equals("GRANT")) {
+                                for (InternalValue value : roles.getValues()) {
+                                    ace.append(value.getName().getLocalName()).append("/");
+                                }
+                            }
+                            ace.append(principalValue.substring(2));
+                        }
+                    }
+
+                    acls.add(0, ace.toString());
+
                     PropertyId propId = new PropertyId(aclChildNode.getId(), J_ACL_INHERITED);
                     try {
                         PropertyState ps = (PropertyState) stateProvider.getItemState(propId);
@@ -714,6 +752,19 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
         this.addAclUuidInIndex = addAclUuidInIndex;
+    }
+
+    /**
+     * Does this indexer use optimized ACE indexation. Set by the JahiaSearchIndex based
+     * on a list of node types allowing this optimization.
+     * @return
+     */
+    public boolean isUseOptimizedACEIndexation() {
+        return useOptimizedACEIndexation;
+    }
+
+    public void setUseOptimizedACEIndexation(boolean useOptimizedACEIndexation) {
+        this.useOptimizedACEIndexation = useOptimizedACEIndexation;
     }
 
     public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,

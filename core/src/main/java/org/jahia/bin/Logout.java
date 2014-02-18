@@ -214,8 +214,17 @@ public class Logout implements Controller {
                         URLResolver r = urlResolverFactory.createURLResolver(currentUrl, request.getServerName(), request);
                         if (r.getPath().startsWith("/sites/")) {
                             JCRNodeWrapper n = r.getNode();
+                            // test that we do not get the site node, in that case, redirect to homepage
+                            if (n.isNodeType("jnt:virtualsite")) {
+                                n = ((JCRSiteNode) n).getHome();
+                            }
+                            if (n == null) {
+                                // this can occur if the homepage of the site is not set
+                                redirect = request.getContextPath() + "/";
+                            } else {
                             redirect = prefix + r.getServletPart() + "/" + r.getWorkspace() + "/"
                                     + resolveLanguage(request, n.getResolveSite()) + n.getPath() + ".html";
+                            }
                         } else {
                             redirect = request.getContextPath() + "/";
                         }

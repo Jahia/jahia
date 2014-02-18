@@ -125,9 +125,7 @@
 	</bean>
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"
-          class="org.jahia.services.templates.TemplatePackageRegistry">
-        <property name="jcrStoreService" ref="JCRStoreService" />
-    </bean>
+          class="org.jahia.services.templates.TemplatePackageRegistry"/>
 
     <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService"
           parent="jahiaServiceTemplate">

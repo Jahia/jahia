@@ -172,18 +172,14 @@ public class JahiaPasswordPolicyService extends JahiaService {
             throw new JahiaRuntimeException(e);
         }
         if (defPolicy == null) {
-            synchronized (JahiaPasswordPolicyService.class) {
-                if (defPolicy == null) {
-                    // no def policy found --> creating one
-                    JahiaPasswordPolicy copy = (JahiaPasswordPolicy) defaultPasswordPolicy.clone();
-                    try {
-                        policyMgr.update(copy);
-                    } catch (RepositoryException e) {
-                        throw new JahiaRuntimeException(e);
-                    }
-                    defPolicy = copy;
-                }
+            // no def policy found --> creating one
+            JahiaPasswordPolicy copy = (JahiaPasswordPolicy) defaultPasswordPolicy.clone();
+            try {
+                policyMgr.update(copy);
+            } catch (RepositoryException e) {
+                throw new JahiaRuntimeException(e);
             }
+            defPolicy = copy;
         }
 
         return defPolicy;

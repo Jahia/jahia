@@ -52,6 +52,9 @@ public class CodeMirrorField extends TextArea {
 
     public void setMode(String mode) {
         this.mode = mode;
+        if (codeMirror != null) {
+            updateMode(mode);
+        }
     }
 
     @Override
@@ -59,7 +62,7 @@ public class CodeMirrorField extends TextArea {
         super.onRender(target, index);
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
-                codeMirror = initEditor(getInputEl().dom, mode, readOnly);
+                codeMirror = initEditor(getInputEl().dom, mode, readOnly?"nocursor":"");
                 updateSize();
             }
         });
@@ -71,7 +74,7 @@ public class CodeMirrorField extends TextArea {
         updateSize();
     }
 
-    private native Object initEditor(Element textArea, String mode, boolean readOnly)/*-{
+    private native Object initEditor(Element textArea, String mode, String readOnly)/*-{
         var myCodeMirror = $wnd.CodeMirror.fromTextArea(textArea, {mode:mode, lineNumbers:true, matchBrackets:true, readOnly:readOnly});
         return myCodeMirror;
     }-*/;
@@ -132,6 +135,11 @@ public class CodeMirrorField extends TextArea {
     private native boolean isCodeMirrorDirty()/*-{
         var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
         return myCodeMirror.isClean();
+    }-*/;
+
+    private native void updateMode(String newMode)/*-{
+        var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
+        myCodeMirror.setOption("mode", newMode);
     }-*/;
 
 }

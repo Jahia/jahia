@@ -70,7 +70,7 @@ public class StoreHistory extends JahiaController {
 
         HistoryTrackerBean bean = (HistoryTrackerBean) SpringContextSingleton.getBean("org.jahia.services.render.filter.HistoryTrackerBean." + name);
         String identifier = getParameter(request, "i");
-        bean.addHistoryNode(request.getSession(),identifier);
+        bean.addHistoryNode(session,identifier);
         return null;
     }
 }

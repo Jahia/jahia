@@ -44,6 +44,7 @@ import java.text.Collator;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
@@ -67,9 +68,25 @@ import javax.servlet.http.HttpServletRequest;
 public class LanguageCodeConverters {
 
     public static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}(_[A-Z]{2})?");
+    final static String JAVA7_LOCALE_LANGUAGE = "([a-zA-Z]{2,8})";
+    final static String JAVA7_LOCALE_COUNTRY = "([a-zA-Z]{2}|[0-9]{3})";
+    final static String JAVA7_LOCALE_VARIANT = "(?:_|-)([0-9a-zA-Z\\_\\-\\#]*)";
+    public final static String JAVA7_LOCALE_TOSTRING = JAVA7_LOCALE_LANGUAGE + "?_?" + JAVA7_LOCALE_COUNTRY + "?(?:" + JAVA7_LOCALE_VARIANT + ")?";
+    final static Pattern JAVA7_LOCALE_TOSTRING_PATTERN = Pattern.compile(JAVA7_LOCALE_TOSTRING);
+
     private static List<Locale> availableBundleLocales;
     
     private static Map<String, Locale> locales = new ConcurrentHashMap<String, Locale>();
+
+    /**
+     * Tests if the language code is valid or not, according to the Locale.toString() format.
+     * @param languageCode
+     * @return
+     */
+    public static boolean isValidLanguageCode(String languageCode) {
+        Matcher java7LocaleToStringMatcher = JAVA7_LOCALE_TOSTRING_PATTERN.matcher(languageCode);
+        return java7LocaleToStringMatcher.matches();
+    }
     
     /**
      * Converts string such as
@@ -91,12 +108,31 @@ public class LanguageCodeConverters {
             return loc;
         }
 
-        StringTokenizer codeTokens = new StringTokenizer(languageCode,"_");
+        String[] codeParts = Patterns.UNDERSCORE.split(languageCode);
         String language = "";
         String country = "";
-        String variant = "";
+        StringBuilder variant = new StringBuilder();
 
-        if (codeTokens.hasMoreTokens()) {
+        if (codeParts.length > 0 && codeParts[0].length() > 0) {
+            language = codeParts[0];
+        }
+
+        if (codeParts.length > 1 && codeParts[1].length() > 0) {
+            country = codeParts[1];
+        }
+
+        if (codeParts.length > 2 && codeParts[2].length() > 0) {
+            variant.append(codeParts[2]);
+        }
+
+        if (codeParts.length > 3) {
+            for (int i=3; i < codeParts.length; i++) {
+                variant.append("_").append(codeParts[i]);
+            }
+        }
+
+        /*
+        if (!languageCode.startsWith("_") && codeTokens.hasMoreTokens()) {
             language = codeTokens.nextToken();
         }
         if (codeTokens.hasMoreTokens()) {
@@ -105,8 +141,9 @@ public class LanguageCodeConverters {
         if (codeTokens.hasMoreTokens()) {
             variant = codeTokens.nextToken();
         }
+        */
 
-        loc = newLocale(language, country, variant);
+        loc = newLocale(language, country, variant.toString());
         locales.put(languageCode, loc);
         
         return loc;
@@ -275,7 +312,6 @@ public class LanguageCodeConverters {
 
     public static Locale resolveLocaleForGuest(HttpServletRequest request) {
         List<Locale> availableBundleLocales = getAvailableBundleLocales();
-        @SuppressWarnings("unchecked")
         Enumeration<Locale> browserLocales = request.getLocales();
         Locale resolvedLocale = availableBundleLocales != null && !availableBundleLocales.isEmpty() ? availableBundleLocales.get(0) : Locale.ENGLISH;
         while (browserLocales != null && browserLocales.hasMoreElements()) {

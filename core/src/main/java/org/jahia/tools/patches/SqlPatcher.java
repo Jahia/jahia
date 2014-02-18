@@ -107,7 +107,7 @@ public final class SqlPatcher {
     private Resource[] getPatches() throws IOException {
         String folder = "/WEB-INF/var/patches/sql/" + DatabaseUtils.getDatabaseType();
         if (ctx.getResource(folder).exists()) {
-            return ctx.getResources(folder + "/*.sql");
+            return ctx.getResources(folder + "/**/*.sql");
         } else {
             return new Resource[] {};
         }

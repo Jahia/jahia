@@ -268,7 +268,6 @@ public class FileUploader extends Window {
                             mask(Messages.get("message.uploading", "Uploading..."), "x-mask-loading");
                             submit.setEnabled(false);
                             final List<Field[]> list = new ArrayList<Field[]>(exists);
-                            final List<Field[]> list2 = new ArrayList<Field[]>(exists);
                             exists.clear();
                             removeAll();
                             List<String[]> uploadeds = new ArrayList<String[]>();
@@ -276,7 +275,6 @@ public class FileUploader extends Window {
                                 final String tmpName = (String) exist[0].getValue();
                                 // selected index correspond to the action: ie. 3=versioning
                                 final int operation = ((SimpleComboBox) exist[1]).getSelectedIndex();
-                                final String key = exist[1].getName();
                                 final String newName = (String) exist[2].getValue();
                                 uploadeds.add(new String[] { location.getPath(), tmpName, Integer.toString(operation), newName });
                             }
@@ -291,7 +289,7 @@ public class FileUploader extends Window {
                     layout();
                 } else {
                     if (selectFileAfterDataUpdate != null) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + selectFileAfterDataUpdate));
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(location.getPath() + "/" + selectFileAfterDataUpdate), false);
                     }
                     endUpload(unzip, linker);
                 }

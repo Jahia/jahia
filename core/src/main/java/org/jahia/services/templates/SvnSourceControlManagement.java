@@ -44,9 +44,17 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.xml.XMLParser;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -102,8 +110,11 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void commit(String message) throws IOException {
+        boolean commitRequired = checkCommit();
+        if (commitRequired) {
+            checkExecutionResult(executeCommand(executable, new String[]{"commit","-m",message}));
+        }
         invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, new String[]{"commit","-m",message}));
     }
 
     @Override
@@ -148,11 +159,8 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public String getURI() throws IOException {
-        ExecutionResult result = executeCommand(executable, new String[]{"info"});
-        String url = (String) CollectionUtils.find(readLines(result.out), URL_PREDICATE);
-        if (url != null) {
-            url = StringUtils.substringAfter(url,"URL:").trim();
-        }
+        ExecutionResult result = executeCommand(executable, new String[]{"info", "--xml"});
+        String url = StringUtils.substringBetween(result.out,"<url>","</url>").trim();
         return "scm:svn:"+url;
     }
 

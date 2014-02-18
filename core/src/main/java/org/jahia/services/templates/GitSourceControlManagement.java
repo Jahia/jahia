@@ -82,16 +82,13 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     @Override
     public void commit(String message) throws IOException {
-        invalidateStatusCache();
-        Map<String, Status> statusMap = createStatusMap(false);
-        boolean commitRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
-                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
-                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+        boolean commitRequired = checkCommit();
         if (commitRequired) {
             String branch = executeCommand(executable, new String[]{"symbolic-ref"," --short ","HEAD"}).out.trim();
             checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m", message }));
             checkExecutionResult(executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin",branch}));
         }
+        invalidateStatusCache();
     }
 
     @Override
@@ -101,7 +98,8 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     private Map<String, Status> createStatusMap(boolean folder) throws IOException {
         Map<String, Status> newMap = new HashMap<String, Status>();
-        String relPath = readLines(executeCommand(executable, new String[]{"rev-parse", "--show-prefix"}).out).get(0);
+        List<String> paths = readLines(executeCommand(executable, new String[]{"rev-parse", "--show-prefix"}).out);
+        String relPath = paths.isEmpty()?"":paths.get(0);
         ExecutionResult result = executeCommand(executable, new String[]{"status","--porcelain"});
         for (String line : readLines(result.out)) {
             if (StringUtils.isBlank(line)) {

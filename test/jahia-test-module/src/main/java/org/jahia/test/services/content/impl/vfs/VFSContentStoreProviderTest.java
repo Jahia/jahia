@@ -194,10 +194,10 @@ public class VFSContentStoreProviderTest {
         fields.add("jcr:lastModified");
         for (GWTJahiaNode rootNode : rootNodes) {
             assertGWTJahiaNode(rootNode, "/mounts");
-            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
+            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode.getPath(), nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
             for (GWTJahiaNode childNode : childNodes) {
                 assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
-                List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
+                List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode.getPath(), nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session, Locale.getDefault());
             }
         }
     }
@@ -375,7 +375,7 @@ public class VFSContentStoreProviderTest {
             ValueFactory valueFactory = englishEditSession.getValueFactory();
 
             List<Value> values = new ArrayList<Value>();
-            values.add(new ExternalReferenceValue(vfsTestFile2.getIdentifier(), PropertyType.WEAKREFERENCE));
+            values.add(session.getValueFactory().createValue(vfsTestFile2,true));
 
             is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 

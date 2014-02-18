@@ -167,7 +167,7 @@ public final class ProcessHelper {
         CommandLine cmd = new CommandLine(command);
 
         if (arguments != null && arguments.length > 0) {
-            cmd.addArguments(arguments);
+            cmd.addArguments(arguments, false);
         }
 
         if (parameterSubstitutionMap != null && !parameterSubstitutionMap.isEmpty()) {

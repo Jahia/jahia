@@ -204,7 +204,7 @@ The following example creates an index aggregate on jnt:file that includes the c
     a particular implementation could be used to add new stop words to the analyzer.
     -->
     <!--<analyzer-registry>
-        <en_US class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+        <en_US class="org.apache.lucene.analysis.standard.StandardAnalyzer" useASCIIFoldingFilter="true">
             <customizer class=" org.apache.jackrabbit.core.query.lucene.AnalyzerCustomizer$NoOpAnalyzerCustomizer">
                 <foo>bar</foo>
                 <foo>bar2</foo>

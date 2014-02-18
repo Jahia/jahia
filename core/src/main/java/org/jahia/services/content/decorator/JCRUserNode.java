@@ -97,7 +97,7 @@ public class JCRUserNode extends JCRNodeDecorator {
     @Override
     public PropertyIterator getProperties() throws RepositoryException {
         final Locale locale = getSession().getLocale();
-        return new LazyPropertyIterator(this, locale, null,null) {
+        return new LazyPropertyIterator(this, locale) {
             @Override
             protected PropertyIterator getPropertiesIterator() {
                 if (propertyIterator == null) {

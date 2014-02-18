@@ -475,6 +475,21 @@ public class QueryServiceImpl extends QueryService {
          */
         @Override
         public Object visit(PropertyExistenceImpl node, Object data) throws Exception {
+            if (getModificationInfo().getMode() == INITIALIZE_MODE) {
+                if (Constants.JCR_LANGUAGE.equals(node.getPropertyName())) {
+                    Selector selector = getSelector(getOriginalSource(),
+                            node.getSelectorName());
+                    Set<String> languages = getLanguagesPerSelector().get(
+                            selector.getSelectorName());
+                    if (languages == null) {
+                        languages = new HashSet<String>();
+                        getLanguagesPerSelector().put(selector.getSelectorName(), languages);
+                    }
+
+                    languages.add(NO_LOCALE);
+                }
+            }
+        	
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
@@ -699,49 +714,6 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * Calls accept on the following contained QOM nodes:
-         * <ul>
-         * <li>Source</li>
-         * <li>Constraints</li>
-         * <li>Orderings</li>
-         * <li>Columns</li>
-         * </ul>
-         * 
-         * In MODIFY_MODE check if the nodes returned were modified, and if yes create a new QOM and return it, otherwise return the
-         * unchanged QOM.
-         */
-        @Override
-        public Object visit(QueryObjectModelTree node, Object data) throws Exception {
-            node.getSource().accept(this, data);
-
-            ConstraintImpl constraint = node.getConstraint();
-            Object newConstraint = null;
-            if (constraint != null) {
-                newConstraint = constraint.accept(this, data);
-            }
-            OrderingImpl[] orderings = node.getOrderings();
-            Object[] newOrderingObjects = new Object[orderings.length];
-            for (int i = 0; i < orderings.length; i++) {
-                newOrderingObjects[i] = orderings[i].accept(this, data);
-            }
-            ColumnImpl[] columns = node.getColumns();
-            Object[] newColumnObjects = new Object[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                newColumnObjects[i] = columns[i].accept(this, data);
-            }
-            if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = newConstraint != null && !newConstraint.equals(constraint)
-                        || newOrderingObjects != null && !newOrderingObjects.equals(orderings)
-                        || newColumnObjects != null && !newColumnObjects.equals(columns) ? getModificationInfo()
-                        .getQueryObjectModelFactory().createQuery(
-                                getModifiedSource(node.getSource(), getModificationInfo()),
-                                (Constraint) newConstraint, (Ordering[]) newOrderingObjects,
-                                (Column[]) newColumnObjects) : node;
-            }
-            return data;
-        }
-
-        /**
          * Calls accept on the dynamic operand in the lower-case node.
          * 
          * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
@@ -936,12 +908,10 @@ public class QueryServiceImpl extends QueryService {
                             if (newLanguageCodes.contains(NO_LOCALE)) {
                                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                                         .getNodeType(selector.getNodeTypeName());
-                                boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? isFulltextIncludingMultilingualProperties(
-                                        nodeType, selector) : false;
                                 ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
                                         nodeType, selector, propertyName) : null;
                                 if (!Constants.JAHIANT_FILE.equals(selector.getNodeTypeName())
-                                        && ((propDef != null && propDef.isInternationalized()) || isFulltextIncludingMultilingualProperties)) {
+                                        && propDef != null && propDef.isInternationalized()) {
                                     newLanguageCodes.remove(NO_LOCALE);
                                 }
                             }
@@ -1051,25 +1021,6 @@ public class QueryServiceImpl extends QueryService {
                 }
             }
             return propDef;
-        }
-
-        private boolean isFulltextIncludingMultilingualProperties(ExtendedNodeType nodeType,
-                Selector selector) throws RepositoryException {
-            boolean isFulltextIncludingMultilingualProperties = true;
-            if (Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-                isFulltextIncludingMultilingualProperties = false;
-            } else if (!Constants.NT_BASE.equals(nodeType.getName())
-                    && !Constants.JAHIANT_CONTENT.equals(nodeType.getName())) {
-                isFulltextIncludingMultilingualProperties = false;
-                for (ExtendedPropertyDefinition propDef : nodeType.getPropertyDefinitionsAsMap()
-                        .values()) {
-                    if (propDef.isInternationalized()) {
-                        isFulltextIncludingMultilingualProperties = true;
-                        break;
-                    }
-                }
-            }
-            return isFulltextIncludingMultilingualProperties;
         }
 
         private String getCommonChildNodeTypes(String parentPath, Set<String> commonNodeTypes)

@@ -60,6 +60,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.util.Version;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,31 +81,31 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     /**
      * Language to Analyzer map.
      */
-    private final Map<String, AnalyzerWrapper> languageToAnalyzer = new ConcurrentHashMap<String, AnalyzerWrapper>();
+    private final Map<String, Analyzer> languageToAnalyzer = new ConcurrentHashMap<String, Analyzer>();
 
     private IndexingConfiguration configuration;
     private Analyzer defaultAnalyzer;
 
     private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
 
-    static final LanguageCustomizingAnalyzerRegistry getInstance() {
+    public static final LanguageCustomizingAnalyzerRegistry getInstance() {
         return instance;
     }
 
     private LanguageCustomizingAnalyzerRegistry() {
-        languageToAnalyzer.put("ar", new AnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("br", new AnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("cjk", new AnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("cn", new AnalyzerWrapper(new ChineseAnalyzer()));
-        languageToAnalyzer.put("cz", new AnalyzerWrapper(new CzechAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("de", new AnalyzerWrapper(new GermanAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("el", new AnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("en", new AnalyzerWrapper(new SnowballAnalyzer(Version.LUCENE_30, "English", StopAnalyzer.ENGLISH_STOP_WORDS_SET)));
-        languageToAnalyzer.put("fa", new AnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("fr", new AnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("nl", new AnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("ru", new AnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30)));
-        languageToAnalyzer.put("th", new AnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30)));
+        languageToAnalyzer.put("ar", new AnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("br", new AnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("cjk", new AnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("cn", new AnalyzerWrapper(new ChineseAnalyzer(), true));
+        languageToAnalyzer.put("cz", new AnalyzerWrapper(new CzechAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("de", new AnalyzerWrapper(new GermanAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("el", new AnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("en", new AnalyzerWrapper(new SnowballAnalyzer(Version.LUCENE_30, "English", StopAnalyzer.ENGLISH_STOP_WORDS_SET), true));
+        languageToAnalyzer.put("fa", new AnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("fr", new AnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("nl", new AnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("ru", new AnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("th", new AnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30), true));
     }
 
     @Override
@@ -129,7 +130,7 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
     public Analyzer getAnalyzer(String key) {
         if (key != null) {
             // first attempt to get the exact match
-            AnalyzerWrapper analyzer = languageToAnalyzer.get(key);
+            Analyzer analyzer = languageToAnalyzer.get(key);
             if (analyzer == null) {
                 // if we didn't get an exact match, attempt to see if we're dealing with a language variant
                 final int underscore = key.indexOf('_');
@@ -157,8 +158,8 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
         return key instanceof String;
     }
 
-    void addAnalyzer(String key, Analyzer analyzer) {
-        languageToAnalyzer.put(key, new AnalyzerWrapper(analyzer));
+    void addAnalyzer(String key, Analyzer analyzer, Boolean useASCIIFoldingFilter) {
+        languageToAnalyzer.put(key, new AnalyzerWrapper(analyzer, useASCIIFoldingFilter));
     }
 
     public void setDefaultAnalyzer(Analyzer defaultAnalyzer) {
@@ -177,13 +178,30 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
      */
     private class AnalyzerWrapper extends Analyzer {
         private final Analyzer wrappee;
+        private final boolean useFilter;
 
-        public AnalyzerWrapper(Analyzer wrappee) {
+        public AnalyzerWrapper(Analyzer wrappee, Boolean useASCIIFoldingFilter) {
             this.wrappee = wrappee;
+            useFilter = useASCIIFoldingFilter != null && useASCIIFoldingFilter;
         }
 
         @Override
         public TokenStream tokenStream(String fieldName, Reader reader) {
+            final Analyzer analyzer = getAnalyzer(fieldName);
+
+            TokenStream result = analyzer.tokenStream(fieldName, reader);
+            return useFilter ? new ASCIIFoldingFilter(result) : result;
+        }
+
+        @Override
+        public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+            final Analyzer analyzer = getAnalyzer(fieldName);
+
+            TokenStream result = analyzer.reusableTokenStream(fieldName, reader);
+            return useFilter ? new ASCIIFoldingFilter(result) : result;
+        }
+
+        private Analyzer getAnalyzer(String fieldName) {
             // first look at indexing configuration to see if a property analyzer has been set for this field
             Analyzer analyzer = configuration.getPropertyAnalyzer(fieldName);
             if (analyzer == null) {
@@ -195,10 +213,7 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
                     analyzer = defaultAnalyzer;
                 }
             }
-
-            TokenStream result = analyzer.tokenStream(fieldName, reader);
-            result = new ASCIIFoldingFilter(result);
-            return result;
+            return analyzer;
         }
     }
 }

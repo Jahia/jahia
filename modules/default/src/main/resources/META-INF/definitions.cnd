@@ -170,7 +170,7 @@
 - buttonClass (string) indexed=no
 
 [jnt:gotoManager] > jnt:content, mix:title, jmix:siteComponent, jmix:studioOnly
- - type (string, choicelist[resourceBundle]) = content indexed=no < content,document,unitedContent,roles
+ - type (string, choicelist[resourceBundle]) = content indexed=no < content,document,unitedContent
 
 [jnt:listSites] > jnt:content, mix:title, jmix:siteComponent, jmix:list, jmix:studioOnly
  - edit (boolean)

@@ -44,10 +44,12 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.*;
@@ -99,6 +101,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
+
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -297,7 +300,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    public BasePagingLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
+    public BasePagingLoadResult<GWTJahiaNode> lsLoad(String parentPath, List<String> nodeTypes, List<String> mimeTypes,
                                                      List<String> filters, List<String> fields, boolean checkSubChild,
                                                      int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes,
                                                      String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale)
@@ -307,7 +310,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : navigation
-                .ls(parentNode, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(getWorkspace(), locale, true),
+                .ls(parentPath, nodeTypes, mimeTypes, filters, fields, checkSubChild, displayHiddenTypes, hiddenTypes, hiddenRegex, retrieveCurrentSession(getWorkspace(), locale, true),
                         showOnlyNodesWithTemplates, getUILocale())) {
             if (n.isMatchFilters()) {
                 filteredList.add(n);
@@ -941,6 +944,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 properties.convertException((NodeConstraintViolationException) e);
             }
             throw new GWTJahiaServiceException(e.getMessage());
+        } catch (NamespaceException e) {
+            throw new GWTJahiaServiceException(e.getMessage() != null ? Messages.getInternal(
+                    "label.gwt.error.jcr.namespace", getUILocale())
+                    + "\n"
+                    + Messages.getInternal("label.cause", getUILocale()) + ": " + e.getMessage()
+                    : Messages.getInternal("label.gwt.error.jcr.namespace", getUILocale()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause", getUILocale()) + e.getMessage());
@@ -1484,7 +1493,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void saveModule(String moduleId, String message) throws GWTJahiaServiceException {
         try {
-            moduleHelper.saveAndCommitModule(moduleId, message, retrieveCurrentSession(null));
+            if (!moduleHelper.saveAndCommitModule(moduleId, message, retrieveCurrentSession(null))) {
+                throw new GWTJahiaServiceException("Nothing to commit");
+            }
         } catch (Exception e) {
             logger.error("Cannot synchronize module into sources", e);
             throw new GWTJahiaServiceException(e.getMessage());

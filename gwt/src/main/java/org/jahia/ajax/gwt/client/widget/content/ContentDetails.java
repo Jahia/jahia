@@ -188,24 +188,24 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             } else {
                 selectedNodes = (List<GWTJahiaNode>) selectedItem;
             }
-            String heading;
+            StringBuilder heading = new StringBuilder();
             if (selectedNodes.size() == 0) {
-                heading = "&nbsp;";
+                heading.append("&nbsp;");
             } else {
-                heading = "";
+                heading.append("");
             }
             for (GWTJahiaNode node : selectedNodes) {
                 if (heading.length() + node.getName().length() < 100) {
-                    heading += node.getName() + ",";
+                    heading.append(node.getName()).append(",");
                 } else {
-                    heading += "... ";
+                    heading.append("... ");
                     break;
                 }
             }
             if (selectedNodes.size() > 0) {
-                heading = heading.substring(0, heading.length() - 1);
+                heading.deleteCharAt(heading.length() - 1);
             }
-            m_component.setHeadingHtml(heading);
+            m_component.setHeadingHtml(heading.toString());
             if (selectedNodes.size() == 1) {
                 final GWTJahiaNode node = selectedNodes.get(0);
                 service.initializeEditEngine(node.getPath(), false,

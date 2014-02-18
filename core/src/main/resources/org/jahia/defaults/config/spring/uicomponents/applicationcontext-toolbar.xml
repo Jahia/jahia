@@ -778,7 +778,6 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.deletePermanently"/>
                 <property name="permanentlyDelete" value="true"/>
-                <property name="allowedNodeTypes" value="jmix:markedForDeletionRoot"/>
                 <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
             </bean>
         </property>
@@ -791,6 +790,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem">
                 <property name="referenceTitleKey" value="label.deletePermanently"/>
                 <property name="permanentlyDelete" value="true"/>
+                <property name="noMarkForDeletion" value="true"/>
                 <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
             </bean>
         </property>

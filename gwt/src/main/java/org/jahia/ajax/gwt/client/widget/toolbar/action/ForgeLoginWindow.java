@@ -75,15 +75,12 @@ public class ForgeLoginWindow extends Window {
     protected void onRender(Element element, int index) {
         super.onRender(element, index);
 
-        String versionInfo = JahiaGWTParameters.getSiteNode().get("j:versionInfo");
-
         setLayout(new FitLayout());
         setHeadingHtml(Messages.get("label.login", "Login"));
         setModal(true);
         setWidth(500);
         setHeight(150);
 
-        final List<Integer> versionNumbers = JahiaGWTParameters.getSiteNode().get("j:versionNumbers");
         final FormPanel formPanel = new FormPanel();
         formPanel.setHeaderVisible(false);
         formPanel.setLabelWidth(150);

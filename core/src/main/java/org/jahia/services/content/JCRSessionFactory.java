@@ -91,7 +91,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
     private LocalValidatorFactoryBean validatorFactoryBean;
-    private ThreadLocal<String> currentSitePath = new ThreadLocal<String>();
 
     private JCRSessionFactory() {
     }

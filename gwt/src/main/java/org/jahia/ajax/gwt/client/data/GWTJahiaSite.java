@@ -60,7 +60,7 @@ public class GWTJahiaSite extends BaseModelData implements Serializable {
     }
 
     public void setSiteId (int siteId) {
-        set("siteId", new Integer(siteId));
+        set("siteId", Integer.valueOf(siteId));
     }
 
     public String getSiteName () {

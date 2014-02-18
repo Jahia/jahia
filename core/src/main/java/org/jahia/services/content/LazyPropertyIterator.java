@@ -59,40 +59,24 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     protected PropertyIterator i18nPropertyIterator;
     protected Property tempNext = null;
     protected String fallbackLocale;
-    protected Set<String> externalSharedPropertyNames = new HashSet<String>();
-    protected Set<String> externalI18NPropertyNames = new HashSet<String>();;
-    protected PropertyIterator externalSharedPropertyNameIterator;
-    protected PropertyIterator externalI18NPropertyNameIterator;
 
     public LazyPropertyIterator(JCRNodeWrapper node) {
         this.node = node;
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, Set<String> sharedPropertyNames, Set<String> i18PropertyNames) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale) {
         this.node = node;
         this.locale = locale;
-        if (sharedPropertyNames != null) {
-            this.externalSharedPropertyNames = sharedPropertyNames;
-        }
-        if (i18PropertyNames != null) {
-            this.externalI18NPropertyNames = i18PropertyNames;
-        }
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern, Set<String> sharedPropertyNames, Set<String> i18PropertyNames) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern) {
         this.node = node;
         this.locale = locale;
         this.pattern = pattern;
-        if (sharedPropertyNames != null) {
-            this.externalSharedPropertyNames = sharedPropertyNames;
-        }
-        if (i18PropertyNames != null) {
-            this.externalI18NPropertyNames = i18PropertyNames;
-        }
     }
 
     public int size() {
-        return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize() + externalI18NPropertyNames.size() + externalSharedPropertyNames.size());
+        return (int) (getPropertiesIterator().getSize() + getI18NPropertyIterator().getSize());
     }
 
     protected PropertyIterator getPropertiesIterator() {
@@ -133,26 +117,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         return i18nPropertyIterator;
     }
 
-    protected PropertyIterator getExternalSharedPropertyNameIterator() {
-        if (externalSharedPropertyNameIterator == null) {
-            externalSharedPropertyNameIterator = new LazyExternalRefPropertyIterator(node, externalSharedPropertyNames, pattern);
-        }
-        return externalSharedPropertyNameIterator;
-    }
-
-    protected PropertyIterator getExternalI18NPropertyNameIterator() {
-        if (externalI18NPropertyNameIterator == null) {
-            externalI18NPropertyNameIterator = new LazyExternalRefPropertyIterator(node, externalI18NPropertyNames, pattern);
-        }
-        return externalI18NPropertyNameIterator;
-    }
-
-
     public boolean isEmpty() {
         return getPropertiesIterator().getSize() == 0 &&
-                getI18NPropertyIterator().getSize() == 0 &&
-                getExternalSharedPropertyNameIterator().getSize() == 0 &&
-                getExternalI18NPropertyNameIterator().getSize() == 0;
+                getI18NPropertyIterator().getSize() == 0;
     }
 
     public Property nextProperty() {
@@ -170,8 +137,6 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                     return nextProperty();
                 }
                 return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
-            } else if (getExternalSharedPropertyNameIterator().hasNext()) {
-                return getExternalSharedPropertyNameIterator().nextProperty();
             } else if (getI18NPropertyIterator().hasNext()) {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
@@ -181,8 +146,6 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                         return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
                     }
                 } while (true);
-            } else if (getExternalI18NPropertyNameIterator().hasNext()) {
-                return getExternalI18NPropertyNameIterator().nextProperty();
             } else {
                 return null;
             }
@@ -197,12 +160,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         for (int i=0; i < skipNum; i++) {
             if (getPropertiesIterator().hasNext()) {
                 getPropertiesIterator().skip(1);
-            } else if (getExternalSharedPropertyNameIterator().hasNext()) {
-                getExternalSharedPropertyNameIterator().skip(1);
             } else if (getI18NPropertyIterator().hasNext()) {
                 getI18NPropertyIterator().skip(1);
-            } else {
-                getExternalI18NPropertyNameIterator().skip(1);
             }
         }
     }
@@ -213,9 +172,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
 
     public long getPosition() {
         return getPropertiesIterator().getPosition() +
-                getExternalSharedPropertyNameIterator().getPosition() +
-                getI18NPropertyIterator().getPosition() +
-                getExternalI18NPropertyNameIterator().getPosition();
+                getI18NPropertyIterator().getPosition();
     }
 
     public boolean hasNext() {
@@ -231,9 +188,6 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 }
                 tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
                 return true;
-            } else if (getExternalSharedPropertyNameIterator().hasNext()) {
-                tempNext = getExternalSharedPropertyNameIterator().nextProperty();
-                return true;
             } else if (getI18NPropertyIterator().hasNext()) {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
@@ -244,9 +198,6 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                         return true;
                     }
                 } while (true);
-            } else if (getExternalI18NPropertyNameIterator().hasNext()) {
-                tempNext = getExternalI18NPropertyNameIterator().nextProperty();
-                return true;
             } else {
                 return false;
             }

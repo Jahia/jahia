@@ -615,7 +615,6 @@ public class SimpleJahiaJcrFacets {
                         // important if a lot of the counts are repeated (like zero counts would be).
                         queue.add(new SimpleFacets.CountPair<String, Integer>(terms[startTermIndex + i], c));
                         if (queue.size() >= maxsize) {
-                            min = queue.last().val;
                             break;
                         }
                     }
@@ -739,7 +738,6 @@ public class SimpleJahiaJcrFacets {
                         if (c > min) {
                             queue.add(new SimpleFacets.CountPair<String, Integer>(t.text(), c));
                             if (queue.size() >= maxsize) {
-                                min = queue.last().val;
                                 break;
                             }
                         }
@@ -1347,7 +1345,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Float parseAndAddGap(Float value, String gap) {
-        return new Float(value.floatValue() + Float.valueOf(gap).floatValue());
+        return value + Float.valueOf(gap);
       }
     }
     private static class DoubleRangeEndpointCalculator 
@@ -1360,7 +1358,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Double parseAndAddGap(Double value, String gap) {
-        return new Double(value.floatValue() + Double.valueOf(gap).floatValue());
+        return value + Double.valueOf(gap);
       }
     }
     private static class IntegerRangeEndpointCalculator 
@@ -1373,7 +1371,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Integer parseAndAddGap(Integer value, String gap) {
-        return new Integer(value.intValue() + Integer.valueOf(gap).intValue());
+        return value + Integer.valueOf(gap);
       }
     }
     private static class LongRangeEndpointCalculator 
@@ -1386,7 +1384,7 @@ public class SimpleJahiaJcrFacets {
       }
       @Override
       public Long parseAndAddGap(Long value, String gap) {
-        return new Long(value.intValue() + Long.valueOf(gap).intValue());
+        return value + Long.valueOf(gap);
       }
     }
     private static class DateRangeEndpointCalculator 

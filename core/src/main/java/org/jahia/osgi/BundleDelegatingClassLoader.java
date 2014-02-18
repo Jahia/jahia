@@ -128,7 +128,7 @@ class BundleDelegatingClassLoader extends ClassLoader implements BundleReference
             // This is caused by a dependent class failure,
             // so make sure we search for the right one.
             String cname = ncdfe.getMessage().replace('/', '.');
-            NoClassDefFoundError e = new NoClassDefFoundError(name + " not found from bundle ["
+            NoClassDefFoundError e = new NoClassDefFoundError(cname + " not found from bundle ["
                     + backingBundle + "]");
             e.initCause(ncdfe);
             throw e;

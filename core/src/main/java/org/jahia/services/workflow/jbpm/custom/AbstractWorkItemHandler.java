@@ -40,6 +40,7 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.springframework.beans.factory.DisposableBean;
@@ -68,6 +69,8 @@ public abstract class AbstractWorkItemHandler implements WorkItemHandler, Initia
 
     @Override
     public void destroy() throws Exception {
-        workflowProvider.unregisterWorkItemHandler(name);
+    	if (JahiaContextLoaderListener.isRunning()) {
+    		workflowProvider.unregisterWorkItemHandler(name);
+    	}
     }
 }

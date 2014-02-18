@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -97,11 +98,12 @@ class ContentBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
-                    Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
+                    String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
+                    Log.debug("retrieving children of " + path);
                     List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
                     tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
+                            .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }
@@ -194,6 +196,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
 
     @Override
     public boolean needRefresh(Map<String, Object> data) {
+        data.put(Linker.REFRESH_MAIN, false);
         if (data.containsKey("node")) {
             GWTJahiaNode node = (GWTJahiaNode) data.get("node");
             if (node.getNodeTypes().contains("jnt:contentFolder")

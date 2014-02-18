@@ -133,6 +133,21 @@ public abstract class SourceControlManagement {
     }
 
     /**
+     * Check if a commit is required
+     * @return true if commit is required, false if no change
+     * @throws IOException if merge conflict is still there
+     */
+    public boolean checkCommit() throws IOException {
+        Map<String, Status> statusMap = createStatusMap();
+        if (statusMap.values().contains(Status.UNMERGED)) {
+            throw new IOException("Commit : remaining conflicts need to be resolved");
+        }
+        return statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
+                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
+                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+    }
+
+    /**
      * Performs a commit into the SCM.
      * 
      * @param message

@@ -68,6 +68,8 @@ import com.google.gwt.core.client.RunAsyncCallback;
 @SuppressWarnings("serial")
 public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
     
+    private boolean noMarkForDeletion;
+    
     private boolean permanentlyDelete;
 
     private String referenceTitleKey;
@@ -87,12 +89,17 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         enabled = false;
                         break;
                     }
-                }
-
-                if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
-                    // the node is already published or it is locked (not for deletion)
-                    enabled = false;
-                    break;
+                } else {
+                    if (!noMarkForDeletion && !selected.isNodeType("jmix:markedForDeletionRoot")) {
+                        enabled = false;
+                        break;
+                    }
+    
+                    if (selected.get("everPublished") != null && ((Boolean)selected.get("everPublished"))) {
+                        // the node is already published or it is locked (not for deletion)
+                        enabled = false;
+                        break;
+                    }
                 }
             }
         } else {
@@ -189,5 +196,9 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
         }
 
         return super.isNodeTypeAllowed(selectedNode);
+    }
+
+    public void setNoMarkForDeletion(boolean noMarkForDeletion) {
+        this.noMarkForDeletion = noMarkForDeletion;
     }
 }

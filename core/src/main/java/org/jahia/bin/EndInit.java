@@ -81,8 +81,8 @@ public class EndInit extends HttpServlet {
             out.append("\n--------------------------------------------------------------------------------------------------" +
             "\n  D E V E L O P M E N T   M O D E   A C T I V E" +
             "\n" +
-            "\n  In development mode, Jahia will allow JSPs to be modified, modules to be re-deployed and other" +
-            "\n  modifications to happen immediately, but these DO have a performance impact. It is strongly " +
+            "\n  In development mode, Digital Factory will allow JSPs to be modified, modules to be re-deployed and" +
+            "\n  other modifications to happen immediately, but these DO have a performance impact. It is strongly " +
             "\n  recommended to switch to production mode when running performance tests or going live. The " +
             "\n  setting to change modes is called operatingMode in the jahia.properties configuration file.");
         } else if (SettingsBean.getInstance().isDistantPublicationServerMode()) {
@@ -116,7 +116,7 @@ public class EndInit extends HttpServlet {
     @Override
     public void destroy() {
         super.destroy();
-        logger.info("Jahia is shutting down, please wait...");
+        logger.info("Digital Factory is shutting down, please wait...");
     }
 
     @Override

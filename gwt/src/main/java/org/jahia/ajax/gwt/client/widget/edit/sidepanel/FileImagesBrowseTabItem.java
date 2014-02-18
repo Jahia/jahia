@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -95,9 +96,10 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 if (gwtJahiaFolder != null) {
-                    Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
+                    String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
+                    Log.debug("retrieving children of " + path);
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, false, null, null, false, false, listAsyncCallback);
+                            .lsLoad(path, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, false, null, null, false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }
@@ -245,6 +247,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
     @Override
     public boolean needRefresh(Map<String, Object> data) {
+        data.put(Linker.REFRESH_MAIN, false);
         if (data.containsKey("node")) {
             GWTJahiaNode node = (GWTJahiaNode) data.get("node");
             if (node.getNodeTypes().contains("jnt:folder")

@@ -45,6 +45,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -58,6 +59,7 @@ import org.apache.nutch.crawl.Injector;
 import org.apache.nutch.fetcher.Fetcher;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -82,6 +84,8 @@ import org.junit.Test;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -123,11 +127,31 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
 
     private LogToJUnitOutputAppender appender = null;
 
+    private static void extract(JahiaTemplatesPackage p, org.springframework.core.io.Resource r, File f) throws Exception {
+        if (r.contentLength() == 0) {
+            f.mkdirs();
+            for (org.springframework.core.io.Resource resource : p.getResources(r.getURI().getPath())) {
+                extract(p, resource, new File(f, resource.getFilename()));
+            }
+        } else {
+            final FileOutputStream output = new FileOutputStream(f);
+            IOUtils.copy(r.getInputStream(), output);
+            output.close();
+        }
+    }
+
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
             conf = CrawlDBTestUtil.createConfiguration();
             conf.setClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
+
+            File f = File.createTempFile("plugins","");
+            f.delete();
+            final JahiaTemplatesPackage templatePackageById = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("jahia-test-module");
+            extract(templatePackageById, templatePackageById.getResource("/plugins"), f);
+
+            conf.setStrings("plugin.folders", f.getPath());
             Thread.currentThread().setContextClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
             fs = FileSystem.get(conf);
             fs.delete(testdir, true);

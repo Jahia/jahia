@@ -37,12 +37,6 @@
             <c:set var="label" value="label.repositoryexplorer"/>
             <c:set var="icon" value="repositoryExplorer"/>
         </c:if>
-        <c:if test="${gotoType eq 'roles'}">
-            <c:set var="conf" value="rolesmanager"/>
-            <c:set var="requiredPermission" value="rolesManager"/>
-            <c:set var="label" value="label.serverroles"/>
-            <c:set var="icon" value="roleManager"/>
-        </c:if>
         <c:if test="${multisite}">
             <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
             <ul class="gotomanager">

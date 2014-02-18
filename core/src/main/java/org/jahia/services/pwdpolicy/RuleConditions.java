@@ -55,6 +55,8 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
  */
 public final class RuleConditions {
 
+    public static final long MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
+
     /**
      * Check if the expiration period for the password is reached.
      * 
@@ -75,8 +77,8 @@ public final class RuleConditions {
                     .getUser());
 
             if (lastChangeTimestamp > 0) {
-                success = (System.currentTimeMillis() - lastChangeTimestamp) <= expPeriod
-                        * 24 * 60 * 60 * 1000L;
+                success = (System.currentTimeMillis() - lastChangeTimestamp) <= (long) expPeriod
+                        * MILLISECONDS_PER_DAY;
             }
 
             return success;
@@ -106,10 +108,10 @@ public final class RuleConditions {
             if (lastChangeTimestamp > 0) {
                 // check if the password is more than ageDays old and less than
                 // maxDays
-                success = ((System.currentTimeMillis() - lastChangeTimestamp) <= ageDays
-                        * 24 * 60 * 60 * 1000L)
-                        || (System.currentTimeMillis() - lastChangeTimestamp) > maxDays
-                                * 24 * 60 * 60 * 1000L;
+                success = ((System.currentTimeMillis() - lastChangeTimestamp) <= (long) ageDays
+                        * MILLISECONDS_PER_DAY)
+                        || (System.currentTimeMillis() - lastChangeTimestamp) > (long) maxDays
+                        * MILLISECONDS_PER_DAY;
             }
 
             return success;

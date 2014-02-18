@@ -577,6 +577,13 @@ public abstract class AbstractFilter implements RenderFilter {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        int result = this.getClass().getName().hashCode();
+        result = 31 * result + priority;
+        return result;
+    }
+
     /**
      *
      * @param previousOut Result from the previous filter

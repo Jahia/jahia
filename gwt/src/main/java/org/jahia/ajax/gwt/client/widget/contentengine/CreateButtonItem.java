@@ -72,6 +72,8 @@ import java.util.*;
 
 public class CreateButtonItem extends SaveButtonItem {
 
+    private boolean forceCreation = true;
+    
     private boolean useNamePopup = false;
 
     public void setUseNamePopup(boolean useNamePopup) {
@@ -152,7 +154,7 @@ public class CreateButtonItem extends SaveButtonItem {
                                     + " " + node.getName());
                     engine.close();
 
-                    engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
+                    engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_MAIN, true);
                     data.put("node", node);
@@ -173,7 +175,7 @@ public class CreateButtonItem extends SaveButtonItem {
         if (engine.isCreateInParentAndMoveBefore()) {
             JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, true, callback);
+            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, forceCreation, callback);
         }
     }
 
@@ -214,7 +216,12 @@ public class CreateButtonItem extends SaveButtonItem {
         FormButtonBinding binding = new FormButtonBinding(f);
         binding.addButton(b);
         popup.add(f);
+        popup.setFocusWidget(name);
         popup.show();
+    }
+
+    public void setForceCreation(boolean forceCreation) {
+        this.forceCreation = forceCreation;
     }
 
 

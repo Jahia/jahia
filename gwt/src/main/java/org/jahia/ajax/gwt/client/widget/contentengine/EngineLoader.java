@@ -93,7 +93,7 @@ public class EngineLoader {
                     new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore,
                             container);
                 } else if (t == EDIT) {
-                    final AbstractContentEngine contentEngine = new EditContentEngine(node, linker, container);
+                    new EditContentEngine(node, linker, container);
                 }
                 container.showEngine();
                 Hover.getInstance().removeAll();

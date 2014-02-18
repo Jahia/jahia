@@ -88,10 +88,10 @@ public class GWTResourceBundle extends BaseModelData {
             return DEFAULT_LANG_SET;
         } else {
             Set<String> languages = new HashSet<String>();
-            Iterator entries = getEntryMap().entrySet().iterator();
+            Iterator<Map.Entry<String, GWTResourceBundleEntry>> entries = getEntryMap().entrySet().iterator();
 
             while (entries.hasNext()) {
-                languages.addAll(((GWTResourceBundleEntry) ((Map.Entry) entries.next()).getValue()).getValues().getProperties().keySet());
+                languages.addAll(entries.next().getValue().getValues().getProperties().keySet());
 
             }
             return languages;

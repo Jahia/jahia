@@ -66,11 +66,13 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import java.io.*;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
+    private static Logger corruptedFilesLogger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class.getName()+".CorruptedFiles");
 
     private Resource archive;
     private NoCloseZipInputStream zis;
@@ -151,78 +153,86 @@ public class FilesAclImportHandler extends DefaultHandler {
                 }
                 String createdBy = attributes.getValue("dav:creationuser");
                 String lastModifiedBy = attributes.getValue("dav:modificationuser");
+                final String itemType = "file".equals(attributes.getValue("jahia:itemType")) || StringUtils.isNotBlank(attributes.getValue("dav:getcontenttype")) ? "file" : "folder";
+                final boolean binaryAvailable = content != null && !contentFound;
+                final boolean isCorruptedFile = !binaryAvailable && "file".equals(itemType);
 
-                checkoutNode(f);
-                if (content == null && !contentFound) {
-                    f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:folder", null, created, createdBy,
-                            lastModified, lastModifiedBy);
+                if (isCorruptedFile) {
+                    logger.error(MessageFormat.format("Impossible to import the file {0} as its binary is missing", path));
+                    corruptedFilesLogger.error(path);
                 } else {
-                    f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:file", null, created, createdBy, lastModified, lastModifiedBy);
-                    if (content != null) {
-                        f.getFileContent().uploadFile(content, attributes.getValue("dav:getcontenttype"));
+                    checkoutNode(f);
+                    if (!binaryAvailable) {
+                        f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:folder", null, created, createdBy,
+                                lastModified, lastModifiedBy);
                     } else {
-                        f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
-                    }
-                }
-                if (acl != null && acl.length() > 0) {
-                    StringTokenizer st = new StringTokenizer(acl, "|");
-                    while (st.hasMoreElements()) {
-                        String s = st.nextToken();
-                        int beginIndex = s.lastIndexOf(":");
-
-                        String principal = s.substring(0, beginIndex);
-
-                        Set<String> grantedRoles = new HashSet<String>();
-                        Set<String> removedRoles = new HashSet<String>();
-                        String perm = s.substring(beginIndex + 1);
-                        if (perm.charAt(0) == 'r') {
-                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
-                                grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
-                            } else {
-                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
-                            }
+                        f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:file", null, created, createdBy, lastModified, lastModifiedBy);
+                        if (content != null) {
+                            f.getFileContent().uploadFile(content, attributes.getValue("dav:getcontenttype"));
                         } else {
-                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
-                                removedRoles.addAll(LegacyImportHandler.READ_ROLES);
-                            } else {
-                                removedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
-                            }
+                            f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
                         }
-                        if (perm.charAt(1) == 'w') {
-                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
-                                grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
-                            } else {
-                                grantedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
-                            }
-                        } else {
-                            if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
-                                removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
-                            } else {
-                                removedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
-                            }
-                        }
+                    }
+                    if (acl != null && acl.length() > 0) {
+                        StringTokenizer st = new StringTokenizer(acl, "|");
+                        while (st.hasMoreElements()) {
+                            String s = st.nextToken();
+                            int beginIndex = s.lastIndexOf(":");
 
-                        if (!grantedRoles.isEmpty()) {
-                            f.grantRoles(principal, grantedRoles);
-                        }
-                        if (!removedRoles.isEmpty()) {
-                            f.denyRoles(principal, removedRoles);
+                            String principal = s.substring(0, beginIndex);
+
+                            Set<String> grantedRoles = new HashSet<String>();
+                            Set<String> removedRoles = new HashSet<String>();
+                            String perm = s.substring(beginIndex + 1);
+                            if (perm.charAt(0) == 'r') {
+                                if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
+                                    grantedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                                } else {
+                                    grantedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
+                                }
+                            } else {
+                                if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_READ_ROLES)) {
+                                    removedRoles.addAll(LegacyImportHandler.READ_ROLES);
+                                } else {
+                                    removedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_READ_ROLES);
+                                }
+                            }
+                            if (perm.charAt(1) == 'w') {
+                                if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
+                                    grantedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                                } else {
+                                    grantedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
+                                }
+                            } else {
+                                if (CollectionUtils.isEmpty(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES)) {
+                                    removedRoles.addAll(LegacyImportHandler.WRITE_ROLES);
+                                } else {
+                                    removedRoles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
+                                }
+                            }
+
+                            if (!grantedRoles.isEmpty()) {
+                                f.grantRoles(principal, grantedRoles);
+                            }
+                            if (!removedRoles.isEmpty()) {
+                                f.denyRoles(principal, removedRoles);
+                            }
                         }
                     }
-                }
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    String attUri = attributes.getURI(i);
-                    String attName = attributes.getLocalName(i);
-                    if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
-                            || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
-                        try {
-                            setPropertyField(f.getPrimaryNodeType(), localName, f, getMappedProperty(f.getPrimaryNodeType(), attributes.getQName(i)), attributes.getValue(i));
-                        } catch (RepositoryException e) {
-                            logger.warn("Error importing " + localName + " " + path, e);
+                    for (int i = 0; i < attributes.getLength(); i++) {
+                        String attUri = attributes.getURI(i);
+                        String attName = attributes.getLocalName(i);
+                        if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
+                                || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
+                            try {
+                                setPropertyField(f.getPrimaryNodeType(), localName, f, getMappedProperty(f.getPrimaryNodeType(), attributes.getQName(i)), attributes.getValue(i));
+                            } catch (RepositoryException e) {
+                                logger.warn("Error importing " + localName + " " + path, e);
+                            }
                         }
                     }
+                    session.save(JCRObservationManager.IMPORT);
                 }
-                session.save(JCRObservationManager.IMPORT);
             } catch (Exception e) {
                 logger.error("error", e);
             } finally {

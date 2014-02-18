@@ -202,14 +202,15 @@ public class Utils {
     public static String replace(String str, final String token,
                                  final String replaceValue) {
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int i = str.indexOf(token);
         while (i != -1) {
-            result += str.substring(0, i) + replaceValue;
+            result.append(str.substring(0, i)).append(replaceValue);
             str = str.substring(i + token.length(), str.length());
             i = str.indexOf(token);
         }
-        return result + str;
+        result.append(str);
+        return result.toString();
     }
 
     /**

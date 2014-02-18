@@ -137,6 +137,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
+    private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
+    private Set<Bundle> installedBundles = new HashSet<Bundle>();
+    private Set<Bundle> initializedBundles = new HashSet<Bundle>();
+    private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
+    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
     private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
@@ -204,11 +209,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void stop() throws JahiaException {
-        logger.info("Stopping JahiaTemplateManagerService ...");
-
-        templatePackageRegistry.reset();
-
-        logger.info("... JahiaTemplateManagerService stopped successfully");
+        // do nothing
     }
 
     public void onApplicationEvent(final ApplicationEvent event) {
@@ -315,7 +316,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                 if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm = null;
-                    scm = scmHelper.getSourceControlFactory().getSourceControlManagement(sources);
+                    scm = pack.getSourceControl();
                     if (scm != null) {
                         scm.update();
                         scm.commit("Release");
@@ -409,7 +410,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         SourceControlManagement scm = null;
         try {
-            scm = scmHelper.getSourceControlFactory().getSourceControlManagement(sources);
+            scm = getTemplatePackageById(moduleId).getSourceControl();
         } catch (Exception e) {
             logger.error("Cannot get SCM", e);
         }
@@ -1064,6 +1065,26 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public Map<Bundle, ModuleState> getModuleStates() {
         return moduleStates;
+    }
+
+    public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {
+        return registeredBundles;
+    }
+
+    public Set<Bundle> getInstalledBundles() {
+        return installedBundles;
+    }
+
+    public Set<Bundle> getInitializedBundles() {
+        return initializedBundles;
+    }
+
+    public Map<String, List<Bundle>> getToBeParsed() {
+        return toBeParsed;
+    }
+
+    public Map<String, List<Bundle>> getToBeStarted() {
+        return toBeStarted;
     }
 
     /**

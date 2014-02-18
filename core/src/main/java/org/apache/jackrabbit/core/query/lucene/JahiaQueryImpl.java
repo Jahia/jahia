@@ -46,12 +46,13 @@ import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.commons.query.QueryNodeFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.jahia.api.Constants;
+import org.jahia.utils.LuceneUtils;
 
 import javax.jcr.query.InvalidQueryException;
 
 public class JahiaQueryImpl extends QueryImpl {
     private Constraint constraint = null;
-    private String statement = null;    
+    private String statement = null;
 
     public JahiaQueryImpl(SessionContext sessionContext, SearchIndex index,
                           PropertyTypeRegistry propReg, String statement, String language,
@@ -75,21 +76,14 @@ public class JahiaQueryImpl extends QueryImpl {
 
     @Override
     protected Analyzer getTextAnalyzer() {
-        // extract language code from statement if available, might be availabe in the form jcr:language = 'lang'
-        int langIndex = statement.indexOf(Constants.JCR_LANGUAGE);
-        if (langIndex >= 0) {
-            int begLang = statement.indexOf('\'', langIndex);
-            if (begLang >= 0) {
-                begLang = begLang + 1; // move past '
-                int endLang = statement.indexOf('\'', begLang);
-                if (endLang > 0 && endLang < statement.length()) {
-                    final String lang = statement.substring(begLang, endLang).trim();
-                    final Analyzer analyzer = index.getAnalyzerRegistry().getAnalyzer(lang);
-                    return analyzer != null ? analyzer : super.getTextAnalyzer();
-                }
-            }
+        final String lang = LuceneUtils.extractLanguageOrNullFromStatement(statement);
+
+        if (lang != null) {
+            final Analyzer analyzer = index.getAnalyzerRegistry().getAnalyzer(lang);
+            return analyzer != null ? analyzer : super.getTextAnalyzer();
         }
 
         return super.getTextAnalyzer();
     }
+
 }

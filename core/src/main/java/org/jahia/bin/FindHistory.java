@@ -249,8 +249,6 @@ public class FindHistory extends BaseFindController {
         JSONArray results = new JSONArray();
 
         try {
-
-            Set<String> alreadyIncludedIdentifiers = new HashSet<String>();
             Map<String, String> alreadyIncludedPropertyValues = null;
             if (removeDuplicatePropertyValues) {
                 alreadyIncludedPropertyValues = new HashMap<String, String>();

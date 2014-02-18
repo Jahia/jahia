@@ -235,7 +235,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
                     if(logger.isDebugEnabled()) {
                         logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
-                                     " saved template = "+templateNode.serialize()+", previousTemplate set to null");
+                                     " saved template = "+(templateNode != null ? templateNode.serialize() : "none")+", previousTemplate set to null");
                     }
                     node = node.getNode(path);
                     pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
@@ -338,7 +338,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     renderContext.getRequest().setAttribute("previousTemplate", null);
                     if(logger.isDebugEnabled()) {
                         logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
-                                     " saved template = "+templateNode.serialize()+", previousTemplate set to null");
+                                     " saved template = "+(templateNode != null ? templateNode.serialize() : "none")+", previousTemplate set to null");
                     }
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
@@ -359,7 +359,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
 
         if (node == null && logger.isDebugEnabled()) {
-            logger.debug("Can not find the area node for path " + path + " with templates " + templateNode +
+            logger.debug("Can not find the area node for path " + path + " with templates " + (templateNode != null ? templateNode.serialize() : "none") +
                          "rendercontext " + renderContext + " main resource " + mainResource +
                          " current resource " + currentResource);
         }
@@ -372,7 +372,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             if(logger.isDebugEnabled()) {
-                        logger.debug("Restoring previous template "+templateNode.serialize());
+                        logger.debug("Restoring previous template "+(templateNode != null ? templateNode.serialize() : "none"));
                     }
             templateNode = null;
             level = null;

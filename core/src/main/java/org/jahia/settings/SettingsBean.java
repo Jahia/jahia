@@ -63,6 +63,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
+import org.apache.jackrabbit.core.stats.StatManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
@@ -456,6 +457,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
             
             System.setProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
+            
+            System.setProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
             
             checkIndexConsistencyIfNeeded();
             

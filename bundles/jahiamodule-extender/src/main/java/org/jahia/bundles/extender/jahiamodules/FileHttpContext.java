@@ -81,9 +81,12 @@ public class FileHttpContext implements HttpContext {
         URL[] urls = EMPTY_URL_ARRAY;
         String sourceFolder = (String) bundle.getHeaders().get("Jahia-Source-Folders");
         if (StringUtils.isNotEmpty(sourceFolder)) {
-            List<URL> sourceURLs = new ArrayList<URL>();
+            File pomFile = new File(sourceFolder, "pom.xml");
+            if (!pomFile.exists()) {
+                return null;
+            }
             try {
-                final Model model = PomUtils.read(new File(sourceFolder, "pom.xml"));
+                final Model model = PomUtils.read(pomFile);
                 String s = model.getVersion();
                 if (s == null) {
                     s = model.getParent().getVersion();
@@ -96,6 +99,7 @@ public class FileHttpContext implements HttpContext {
                 return null;
             }
 
+            List<URL> sourceURLs = new ArrayList<URL>();
             File resourceFolderFile = new File(sourceFolder, "src/main/resources");
             if (resourceFolderFile.exists()) {
                 try {

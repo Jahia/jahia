@@ -541,6 +541,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     public void setDefaultLanguage(String defaultLanguage) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
         } catch (RepositoryException e) {
             logger.error("Cannot get site property",e);
@@ -556,6 +559,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      */
     public void setLanguages(Set<String> languages) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             List<Value> l = new ArrayList<Value>();
             for (String s : languages) {
                 if (LanguageCodeConverters.LANGUAGE_PATTERN.matcher(s).matches()) {
@@ -574,6 +580,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             List<Value> l = new ArrayList<Value>();
             for (String s : mandatoryLanguages) {
                 l.add(getSession().getValueFactory().createValue(s));
@@ -592,6 +601,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      */
     public void setMixLanguagesActive(boolean mixLanguagesActive) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE,mixLanguagesActive);
             this.mixLanguagesActive = mixLanguagesActive;
         } catch (RepositoryException e) {
@@ -601,6 +613,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     public void setAllowsUnlistedLanguages(Boolean allowsUnlistedLanguages) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty("j:allowsUnlistedLanguages",allowsUnlistedLanguages);
             this.allowsUnlistedLanguages = allowsUnlistedLanguages;
         } catch (RepositoryException e) {
@@ -646,6 +661,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setDescription(String description) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty("j:description",description);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -660,6 +678,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setInactiveLanguages(Set<String> inactiveLanguages) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             List<Value> l = new ArrayList<Value>();
             for (String s : inactiveLanguages) {
                 l.add(getSession().getValueFactory().createValue(s));
@@ -679,6 +700,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setInactiveLiveLanguages(Set<String> inactiveLiveLanguages) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             List<Value> l = new ArrayList<Value>();
             for (String s : inactiveLiveLanguages) {
                 l.add(getSession().getValueFactory().createValue(s));
@@ -693,6 +717,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setInstalledModules(List<String> installedModules) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             List<Value> l = new ArrayList<Value>();
             for (String s : installedModules) {
                 l.add(getSession().getValueFactory().createValue(s));
@@ -707,6 +734,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setAllowsUnlistedLanguages(boolean allowsUnlistedLanguages) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty("j:allowsUnlistedLanguages",allowsUnlistedLanguages);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -719,6 +749,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setServerName(String name) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty("j:serverName", name);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -728,6 +761,9 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setTitle(String value) {
         try {
+            if (getSession().getWorkspace().getName().equals("live")) {
+                throw new UnsupportedOperationException("Get site in default workspace");
+            }
             setProperty("j:title", value);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

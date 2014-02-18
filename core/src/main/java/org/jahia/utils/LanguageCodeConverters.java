@@ -108,7 +108,7 @@ public class LanguageCodeConverters {
             return loc;
         }
 
-        String[] codeParts = languageCode.split("_");
+        String[] codeParts = Patterns.UNDERSCORE.split(languageCode);
         String language = "";
         String country = "";
         String variant = "";
@@ -312,7 +312,6 @@ public class LanguageCodeConverters {
 
     public static Locale resolveLocaleForGuest(HttpServletRequest request) {
         List<Locale> availableBundleLocales = getAvailableBundleLocales();
-        @SuppressWarnings("unchecked")
         Enumeration<Locale> browserLocales = request.getLocales();
         Locale resolvedLocale = availableBundleLocales != null && !availableBundleLocales.isEmpty() ? availableBundleLocales.get(0) : Locale.ENGLISH;
         while (browserLocales != null && browserLocales.hasMoreElements()) {

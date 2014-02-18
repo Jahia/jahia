@@ -111,10 +111,7 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
     </bean>
 
-    <bean name="CacheHelper" class="org.jahia.ajax.gwt.helper.CacheHelper">
-        <property name="cacheFactory" ref="JahiaCacheService"/>
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
-    </bean>
+    <bean name="CacheHelper" class="org.jahia.ajax.gwt.helper.CacheHelper"/>
 
     <bean name="SchedulerHelper" class="org.jahia.ajax.gwt.helper.SchedulerHelper" init-method="start">
         <property name="scheduler" ref="SchedulerService"/>

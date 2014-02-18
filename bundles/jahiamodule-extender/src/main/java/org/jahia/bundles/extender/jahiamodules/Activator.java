@@ -50,11 +50,14 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.*;
 import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
@@ -636,6 +639,8 @@ public class Activator implements BundleActivator {
         if (jahiaTemplatesPackage == null || !jahiaTemplatesPackage.isActiveVersion()) {
             return;
         }
+        
+        flushOutputCachesForModule(bundle, jahiaTemplatesPackage);
 
         for (JahiaTemplatesPackage dependant : templatePackageRegistry.getDependantModules(jahiaTemplatesPackage)) {
             if (!toBeStarted.containsKey(bundle.getSymbolicName())) {
@@ -675,6 +680,35 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished stopping Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
 
         setModuleState(bundle, ModuleState.State.STOPPED, null);
+    }
+
+    private void flushOutputCachesForModule(Bundle bundle, JahiaTemplatesPackage pkg) {
+        if (pkg.getInitialImports().isEmpty()) {
+            // check for initial imports
+            Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
+            if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
+                importXMLEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
+                if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
+                    // no templates -> no need to flush caches
+                    return;
+                }
+            }
+        }
+        try {
+            List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList();
+            Set<String> pathsToFlush = new HashSet<String>();
+            for (JCRSiteNode site : sitesNodeList) {
+                Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
+                if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
+                    pathsToFlush.add(site.getPath());
+                }
+            }
+            if (!pathsToFlush.isEmpty()) {
+                CacheHelper.flushOutputCachesForPaths(pathsToFlush, true);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     private synchronized void stopped(Bundle bundle) {

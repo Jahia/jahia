@@ -86,7 +86,7 @@ public class JahiaExcerptProvider implements ExcerptProvider {
      */
     public String getExcerpt(NodeId id, int maxFragments, int maxFragmentSize)
             throws IOException {
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         try {
             NodeState nodeState = (NodeState) ism.getItemState(id);
             String separator = "";
@@ -100,15 +100,15 @@ public class JahiaExcerptProvider implements ExcerptProvider {
                     InternalValue[] values = propState.getValues();
                     for (InternalValue value : values) {
                         text.append(separator);
-                        String s = "###"+(propStateName.getLocalName().equals(TAG_TYPE)?TAG_TYPE:CATEGORY_TYPE)+"#";
+                        StringBuilder s = new StringBuilder("###"+(propStateName.getLocalName().equals(TAG_TYPE)?TAG_TYPE:CATEGORY_TYPE)+"#");
                         if (query.toString().contains(value.getString())) {
-                            s +="<span class=\"searchHighlightedText\">";
+                            s.append("<span class=\"searchHighlightedText\">");
                         }
-                        s += value.getString();
+                        s.append(value.getString());
                         if (query.toString().contains(value.getString())) {
-                            s+="</span>";
+                            s.append("</span>");
                         }
-                        s += "###";
+                        s.append("###");
                         separator = ",";
                         text.append(s);
                     }

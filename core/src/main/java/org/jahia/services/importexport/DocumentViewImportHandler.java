@@ -762,11 +762,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 roles.addAll(LegacyImportHandler.CUSTOM_FILES_WRITE_ROLES);
             }
         }
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (String role : roles) {
-            s += role + " ";
+            s.append(role).append(" ");
         }
-        return s.trim();
+        return s.toString().trim();
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {

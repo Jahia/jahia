@@ -111,7 +111,7 @@ public class LanguageCodeConverters {
         String[] codeParts = Patterns.UNDERSCORE.split(languageCode);
         String language = "";
         String country = "";
-        String variant = "";
+        StringBuilder variant = new StringBuilder();
 
         if (codeParts.length > 0 && codeParts[0].length() > 0) {
             language = codeParts[0];
@@ -122,12 +122,12 @@ public class LanguageCodeConverters {
         }
 
         if (codeParts.length > 2 && codeParts[2].length() > 0) {
-            variant = codeParts[2];
+            variant.append(codeParts[2]);
         }
 
         if (codeParts.length > 3) {
             for (int i=3; i < codeParts.length; i++) {
-                variant += "_" + codeParts[i];
+                variant.append("_").append(codeParts[i]);
             }
         }
 
@@ -143,7 +143,7 @@ public class LanguageCodeConverters {
         }
         */
 
-        loc = newLocale(language, country, variant);
+        loc = newLocale(language, country, variant.toString());
         locales.put(languageCode, loc);
         
         return loc;

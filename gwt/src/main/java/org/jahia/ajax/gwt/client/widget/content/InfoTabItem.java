@@ -102,7 +102,7 @@ public class InfoTabItem extends EditEngineTabItem {
                     Long s = selectedNode.getSize();
                     if (s != null) {
                         flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
-                                Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
+                                Formatter.getFormattedSize(s) + " (" + s.toString() + " bytes)"));
                     }
                 }
                 Date date = selectedNode.get("jcr:lastModified");
@@ -111,35 +111,35 @@ public class InfoTabItem extends EditEngineTabItem {
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                 }
                 if (selectedNode.isLocked() != null && selectedNode.isLocked() && selectedNode.getLockInfos() != null) {
-                    String infos = "";
+                    StringBuilder infos = new StringBuilder();
                     if (selectedNode.getLockInfos().containsKey(null) && selectedNode.getLockInfos().size() == 1) {
                         for (String s : selectedNode.getLockInfos().get(null)) {
-                            infos = Formatter.getLockLabel(s);
+                            infos.append(Formatter.getLockLabel(s));
                         }
                     } else {
                         for (Map.Entry<String, List<String>> entry : selectedNode.getLockInfos().entrySet()) {
                             if (entry.getKey() != null) {
                                 if (infos.length() > 0) {
-                                    infos += "; ";
+                                    infos.append("; ");
                                 }
-                                infos += entry.getKey() + " : ";
+                                infos.append(entry.getKey()).append(" : ");
                                 int i = 0;
                                 for (String s : entry.getValue()) {
                                     if (i > 0) {
-                                        infos += ", ";
+                                        infos.append(", ");
                                     }
-                                    infos += Formatter.getLockLabel(s);
+                                    infos.append(Formatter.getLockLabel(s));
                                     i++;
                                 }
                             }
                         }
                     }
                     flowPanel.add(new HTML(
-                            "<b>" + Messages.get("info.lock.label") + ":</b> " + infos));
+                            "<b>" + Messages.get("info.lock.label") + ":</b> " + infos.toString()));
                 }
 
                 flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
-                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + (selectedNode.getTags() != null ? selectedNode.getTags() : "")));
             } else {
                 int numberFiles = 0;
                 int numberFolders = 0;

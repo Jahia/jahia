@@ -88,11 +88,11 @@ public class ChangePasswordAction extends Action {
                 PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(user, passwd, true);
                 if (!evalResult.isSuccess()) {
                     EngineMessages policyMsgs = evalResult.getEngineMessages();
-                    String res = "";
+                    StringBuilder res = new StringBuilder();
                     for (EngineMessage message : policyMsgs.getMessages()) {
-                        res += (message.isResource() ? Messages.getInternalWithArguments(message.getKey(), renderContext.getUILocale(), message.getValues()) : message.getKey())+"\n";
+                        res.append((message.isResource() ? Messages.getInternalWithArguments(message.getKey(), renderContext.getUILocale(), message.getValues()) : message.getKey())+"\n");
                     }
-                    json.put("errorMessage", res);
+                    json.put("errorMessage", res.toString());
                 } else {
                     // change password
                     user.setPassword(passwd);

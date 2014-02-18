@@ -96,7 +96,7 @@ public abstract class AbstractHit<T> implements Hit<T> {
                                 || excerptValue.getString().contains(
                                 "###" + JahiaExcerptProvider.CATEGORY_TYPE
                                         + "#")) {
-                            String r = "";
+                            StringBuilder r = new StringBuilder();
                             String separator = "";
                             String type = "";
                             for (String s : Patterns.COMMA.split(excerptValue
@@ -119,15 +119,15 @@ public abstract class AbstractHit<T> implements Hit<T> {
                                     v = getTitle();
                                 }
                                 if (!type.equals(s2)) {
-                                    r += s2 + ":";
+                                    r.append(s2).append(":");
                                     type = s2;
                                     separator = "";
                                 }
-                                r += separator + v;
+                                r.append(separator).append(v);
                                 separator = ", ";
 
                             }
-                            setExcerpt(r);
+                            setExcerpt(r.toString());
                             break;
                         } else if (!StringUtils.isEmpty(excerptValue.getString())) {
                             setExcerpt(excerptValue.getString());

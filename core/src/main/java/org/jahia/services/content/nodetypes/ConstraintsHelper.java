@@ -65,7 +65,7 @@ public class ConstraintsHelper {
     }
 
     public static String getConstraints(List<ExtendedNodeType> nodeType, String targetChildName) {
-        String constraints = "";
+        StringBuilder constraints = new StringBuilder();
         Set<String> nodeTypeNames = new HashSet<String>();
 
         if (targetChildName == null) {
@@ -76,7 +76,10 @@ public class ConstraintsHelper {
                     if (!s.equals(Constants.JAHIANT_TRANSLATION) &&
                             !s.equals(Constants.JAHIANT_REFERENCEINFIELD) &&
                             !nodeTypeNames.contains(s)) {
-                        constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
+                        if (constraints.length() > 0) {
+                            constraints.append(' ');
+                        }
+                        constraints.append(s);
                         nodeTypeNames.add(s);
                     }
                 }
@@ -102,7 +105,10 @@ public class ConstraintsHelper {
                                     !typeName.equals("jnt:vanityUrls") &&
                                     !typeName.equals("jnt:acl") &&
                                     !nodeTypeNames.contains(typeName)) {
-                                constraints = (StringUtils.isEmpty(constraints)) ? typeName : constraints + " " + typeName;
+                                if (constraints.length() > 0) {
+                                    constraints.append(' ');
+                                }
+                                constraints.append(typeName);
                                 nodeTypeNames.add(typeName);
                             }
                         }
@@ -110,7 +116,7 @@ public class ConstraintsHelper {
                 }
             }
         }
-        return constraints;
+        return constraints.toString();
     }
 
     /**

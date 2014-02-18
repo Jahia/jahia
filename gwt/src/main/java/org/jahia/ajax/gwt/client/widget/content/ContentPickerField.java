@@ -90,20 +90,19 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         super();
         setPropertyEditor(new PropertyEditor<List<GWTJahiaNode>>() {
             public String getStringValue(List<GWTJahiaNode> value) {
-                String s = "";
+                StringBuilder s = new StringBuilder();
                 for (Iterator<GWTJahiaNode> it = value.iterator(); it.hasNext();) {
                     GWTJahiaNode currentNode = it.next();
                     if (currentNode.get("j:url") != null) {
-                        s += currentNode.get("j:url");
+                        s.append(currentNode.get("j:url"));
                     } else {
-                        s += currentNode.getName();
+                        s.append(currentNode.getName());
                     }
                     if (it.hasNext()) {
-                        s += ", ";
+                        s.append(", ");
                     }
                 }
-                return s;
-                //return value.toString();
+                return s.toString();
             }
 
             public List<GWTJahiaNode> convertStringValue(String value) {
@@ -121,14 +120,14 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         setValue(new ArrayList<GWTJahiaNode>());
         propertyEditor = new PropertyEditor<List<GWTJahiaNode>>() {
             public String getStringValue(List<GWTJahiaNode> value) {
-                String result = "";
+                StringBuilder result = new StringBuilder();
                 for (GWTJahiaNode gwtJahiaNode : value) {
                     if(!"".equals(result)) {
-                        result = result + ",";
+                        result.append(",");
                     }
-                    result = result + gwtJahiaNode.getDisplayName();
+                    result.append(gwtJahiaNode.getDisplayName());
                 }
-                return result;
+                return result.toString();
             }
 
             public List<GWTJahiaNode> convertStringValue(String value) {

@@ -198,11 +198,11 @@ public class PathStorage {
 
     public void savePaths() {
         if (storage != null) {
-            String openPaths = "";
+            StringBuilder openPaths = new StringBuilder();
             for (String s : openPath) {
-                openPaths += s + "|";
+                openPaths.append(s).append("|");
             }
-            storage.setItem("openPath-"+storageName, openPaths);
+            storage.setItem("openPath-"+storageName, openPaths.toString());
         }
     }
 

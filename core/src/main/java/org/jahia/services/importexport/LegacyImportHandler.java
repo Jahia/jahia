@@ -270,12 +270,12 @@ public class LegacyImportHandler extends DefaultHandler {
                         } else {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Not imported field " + localName + ", definition not found");
-                                String s = "";
+                                StringBuilder s = new StringBuilder();
                                 for (String def : getCurrentContentType().getChildNodeDefinitionsAsMap().keySet())
-                                    s += def + ", ";
+                                    s.append(def).append(", ");
                                 logger.debug("Allowed sub definitions: " + (s.length() > 0 ? s : "none"));
                                 for (String def : getCurrentContentType().getPropertyDefinitionsAsMap().keySet())
-                                    s += def + ", ";
+                                    s.append(def).append(", ");
                                 logger.debug("Allowed properties: " + (s.length() > 0 ? s : "none"));
                             }
                             currentCtx.peek().pushSkip();

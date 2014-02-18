@@ -207,30 +207,30 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 container.getPanel().setHeadingHtml(heading);
                 if (node.isLocked()) {
-                    String infos = "";
+                    StringBuilder infos = new StringBuilder();
                     if (node.getLockInfos().containsKey(null) && node.getLockInfos().size() == 1) {
                         for (String s : node.getLockInfos().get(null)) {
-                            infos = Formatter.getLockLabel(s);
+                            infos.append(Formatter.getLockLabel(s));
                         }
                     } else {
                         for (Map.Entry<String, List<String>> entry : node.getLockInfos().entrySet()) {
                             if (entry.getKey() != null) {
                                 if (infos.length() > 0) {
-                                    infos += "; ";
+                                    infos.append("; ");
                                 }
-                                infos += entry.getKey() + " : ";
+                                infos.append(entry.getKey()).append(" : ");
                                 int i = 0;
                                 for (String s : entry.getValue()) {
                                     if (i > 0) {
-                                        infos += ", ";
+                                        infos.append(", ");
                                     }
-                                    infos += Formatter.getLockLabel(s);
+                                    infos.append(Formatter.getLockLabel(s));
                                     i++;
                                 }
                             }
                         }
                     }
-                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by", "[ locked by {0} ]", new String[]{infos});
+                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by", "[ locked by {0} ]", new String[]{infos.toString()});
                     container.getPanel().setHeadingHtml(heading);
                 } else if (node.getLockInfos() != null) {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");

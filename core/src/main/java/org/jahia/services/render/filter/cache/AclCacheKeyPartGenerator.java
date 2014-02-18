@@ -288,14 +288,16 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
 
         aclPathChecked.addAll(rolesForKey.keySet());
-        String r = "";
+        StringBuilder r = new StringBuilder();
         for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
             try {
-                r += URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|";
+                r.append(URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|");
             } catch (UnsupportedEncodingException e) {
+                // UTF-8 encoding should be supported
+                throw new RuntimeException(e);
             }
         }
-        return r;
+        return r.toString();
     }
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();

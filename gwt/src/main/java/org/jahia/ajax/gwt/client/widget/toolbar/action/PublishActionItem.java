@@ -202,7 +202,7 @@ public class PublishActionItem extends BaseActionItem {
             if (unpublishable.isEmpty()) {
                 PublicationWorkflow.create(result, linker, checkForUnpublication);
             } else {
-                String message = "";
+                StringBuilder message = new StringBuilder();
 
                 Map<Integer, List<String>> unpublishableMap = new HashMap<Integer, List<String>>();
                 for (GWTJahiaPublicationInfo info : unpublishable) {
@@ -217,21 +217,21 @@ public class PublishActionItem extends BaseActionItem {
                     Integer status = entry.getKey();
                     List<String> values = entry.getValue();
                     final String labelKey = GWTJahiaPublicationInfo.statusToLabel.get(status);
-                    message += Messages.get("label.publication." + labelKey, labelKey) + " : " + values.get(0);
+                    message.append(Messages.get("label.publication." + labelKey, labelKey)).append(" : ").append(values.get(0));
                     if (values.size() > 10) {
                         for (int i = 1; i < 10; i++) {
-                            message += ", " + values.get(i);
+                            message.append(", ").append(values.get(i));
                         }
-                        message += ", ...";
+                        message.append(", ...");
                     } else {
                         for (int i = 1; i < values.size(); i++) {
-                            message += ", " + values.get(i);
+                            message.append(", ").append(values.get(i));
                         }
                     }
                 }
                 if (!result.isEmpty()) {
-                    message += "<br/>" + Messages.get("message.continue");
-                    MessageBox.confirm(Messages.get("label.publish", "Publication"), message, new Listener<MessageBoxEvent>() {
+                    message.append("<br/>").append(Messages.get("message.continue"));
+                    MessageBox.confirm(Messages.get("label.publish", "Publication"), message.toString(), new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                                 PublicationWorkflow.create(result, linker, checkForUnpublication);
@@ -239,7 +239,7 @@ public class PublishActionItem extends BaseActionItem {
                         }
                     });
                 } else {
-                    MessageBox.info(Messages.get("label.publish", "Publication"), message, null);
+                    MessageBox.info(Messages.get("label.publish", "Publication"), message.toString(), null);
                 }
             }
         }

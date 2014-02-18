@@ -213,6 +213,11 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return key != null ? key.hashCode() : 0;
+    }
+
     public void afterPropertiesSet() throws Exception {
         if (parent != null) {
             if (parent instanceof String) {

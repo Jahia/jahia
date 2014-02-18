@@ -102,6 +102,13 @@ public class GWTJahiaNodeProperty implements Serializable {
         }
     }
 
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (values != null ? values.hashCode() : 0);
+        return result;
+    }
+
     public boolean isMultiple() {
         return multiple;
     }

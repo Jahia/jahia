@@ -358,6 +358,11 @@ public class LanguageCodeConverters {
                 return false;
             }
         }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
     }
 
     public static LocaleDisplayNameComparator getLocaleDisplayNameComparator(Locale locale) {

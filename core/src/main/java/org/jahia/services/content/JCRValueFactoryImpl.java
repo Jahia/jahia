@@ -180,5 +180,14 @@ public class JCRValueFactoryImpl extends AbstractValueFactory {
                 return false;
             }
         }
+
+        @Override
+        public int hashCode() {
+            try {
+                return value != null ? value.getString().hashCode() : 0;
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

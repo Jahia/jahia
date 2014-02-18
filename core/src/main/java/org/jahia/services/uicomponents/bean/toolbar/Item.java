@@ -302,6 +302,11 @@ public class Item implements Serializable, BeanNameAware, InitializingBean {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     public void setPosition(int position) {
         this.position = position;
     }

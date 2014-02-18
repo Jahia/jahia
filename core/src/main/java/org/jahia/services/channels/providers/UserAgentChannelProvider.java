@@ -145,4 +145,9 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
         if (!(obj instanceof UserAgentChannelProvider)) return false;
         return ((UserAgentChannelProvider) obj).getBeanName().equals(beanName);    
     }
+
+    @Override
+    public int hashCode() {
+        return beanName != null ? beanName.hashCode() : 0;
+    }
 }

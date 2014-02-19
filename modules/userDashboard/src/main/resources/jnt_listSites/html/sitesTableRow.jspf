@@ -1,11 +1,4 @@
 <c:forEach items="${moduleMap.currentList}" var="node" begin="${moduleMap.begin}" end="${moduleMap.end}">
-    <tr>
-        <td class="listsiteicon">
-            <c:if test="${(currentNode.properties.export.boolean or currentNode.properties.delete.boolean) and jcr:hasPermission(node,'adminVirtualSites')}">
-                <input class="sitecheckbox" type="checkbox" name="${node.name}" />
-            </c:if>
-            ${node.displayableName}
-        </td>
         <c:choose>
             <c:when test="${currentNode.properties.typeOfContent.string eq 'contents'}">
                 <c:set var="page" value="/contents"/>
@@ -19,6 +12,7 @@
         </c:choose>
         <c:choose>
             <c:when test="${not empty node and (jcr:hasPermission(node,'editModeAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
+                <tr>
                 <c:set var="siteId" value="${node.properties['j:siteId'].long}"/>
                 <c:if test="${currentNode.properties.administrationlink.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                     <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
@@ -49,6 +43,9 @@
                            value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                 </c:if>
                 <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
+                <td>
+                    ${node.displayableName}
+                </td>
                 <td>
                     <c:choose>
                         <c:when test="${currentNode.properties.edit.boolean && jcr:hasPermission(node,'editModeAccess') && !renderContext.settings.readOnlyMode && !renderContext.settings.distantPublicationServerMode && not remotelyPublished}">
@@ -105,6 +102,27 @@
                         </c:otherwise>
                     </c:choose>
                 </td>
+                <td>
+                    <c:set var="conf" value="filemanager"/>
+                    <c:set var="requiredPermission" value="fileManager"/>
+                    <c:set var="label" value="label.filemanager"/>
+                    <c:set var="multisite" value="false"/>
+                    <a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}" target="_blank">
+                        <img src="${url.context}/icons/search.png" width="16" height="16" alt=" "
+                             role="presentation" style="position:relative; top: 4px; margin-right:2px; " />
+                    </a>
+                </td>
+                <td>
+                    <c:set var="conf" value="editorialcontentmanager"/>
+                    <c:set var="requiredPermission" value="editorialContentManager"/>
+                    <c:set var="label" value="label.contentmanager"/>
+                    <c:set var="multisite" value="false"/>
+                    <a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}" target="_blank">
+                        <img src="${url.context}/icons/search.png" width="16" height="16" alt=" "
+                             role="presentation" style="position:relative; top: 4px; margin-right:2px; " />
+                    </a>
+                </td>
+
                 <c:if test="${currentNode.properties.editproperties.boolean && jcr:hasPermission(node,'adminVirtualSites')}">
                     <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative; top: 4px; margin-right:2px; "/><a
@@ -149,6 +167,7 @@
                         </div>
                     </div>
                 </c:if>
+                </tr>
             </c:when>
             <c:otherwise>
                 <c:set var="editModeAccessNode"
@@ -232,26 +251,4 @@
                 </c:if>
             </c:otherwise>
         </c:choose>
-        </td>
-        <td>
-            <c:set var="conf" value="filemanager"/>
-            <c:set var="requiredPermission" value="fileManager"/>
-            <c:set var="label" value="label.filemanager"/>
-            <c:set var="multisite" value="false"/>
-            <a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}" target="_blank">
-                <img src="${url.context}/icons/search.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative; top: 4px; margin-right:2px; " />
-            </a>
-        </td>
-        <td>
-            <c:set var="conf" value="editorialcontentmanager"/>
-            <c:set var="requiredPermission" value="editorialContentManager"/>
-            <c:set var="label" value="label.contentmanager"/>
-            <c:set var="multisite" value="false"/>
-            <a href="${url.context}/engines/manager.jsp?conf=${conf}&site=${node.identifier}" target="_blank">
-                <img src="${url.context}/icons/search.png" width="16" height="16" alt=" "
-                     role="presentation" style="position:relative; top: 4px; margin-right:2px; " />
-            </a>
-        </td>
-    </tr>
 </c:forEach>

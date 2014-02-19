@@ -32,40 +32,41 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
+
             $('#userTasks_table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
                 "iDisplayLength":10,
                 "sPaginationType": "bootstrap",
                 "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
             });
+
+            console.log("blablabla 1");
         });
     </script>
 </template:addResources>
 
 <script type="text/javascript">
     var ready = true;
+    console.log("blablabla 2");
     <c:choose>
-    <c:when test="${not empty modeDispatcherId}">
-    <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
-    <c:forEach items="${param}" var="p">
-    <c:param name="${p.key}" value="${p.value}"/>
-    </c:forEach>
-    </c:url>
-    <c:set var="identifierName" value="\#${modeDispatcherId}"/>
-    </c:when>
-    <c:otherwise>
-    <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
-    <c:forEach items="${param}" var="p">
-    <c:param name="${p.key}" value="${p.value}"/>
-    </c:forEach>
-    </c:url>
-    <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
-    </c:otherwise>
+        <c:when test="${not empty modeDispatcherId}">
+            <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
+                <c:forEach items="${param}" var="p">
+                    <c:param name="${p.key}" value="${p.value}"/>
+                </c:forEach>
+            </c:url>
+            <c:set var="identifierName" value="\#${modeDispatcherId}"/>
+        </c:when>
+        <c:otherwise>
+            <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
+                <c:forEach items="${param}" var="p">
+                    <c:param name="${p.key}" value="${p.value}"/>
+                </c:forEach>
+            </c:url>
+            <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
+        </c:otherwise>
     </c:choose>
+    console.log("blablabla 3");
     function sendNewStatus(uuid, task, state, finalOutcome) {
         if (ready) {
             ready = false;
@@ -88,6 +89,8 @@
             }
         }
     };
+
+    console.log("blablabla 4");
     function sendNewAssignee(uuid, task, key) {
         if (ready) {
             ready = false;
@@ -100,7 +103,7 @@
             }, "json");
         }
     };
-
+    console.log("blablabla 5");
     function switchTaskDisplay(identifier) {
         $(".taskdetail").each(function () {
             if (!$(this).is("#taskdetail_" + identifier)) {
@@ -109,6 +112,8 @@
         });
         $("#taskdetail_" + identifier).slideToggle("medium");
     }
+
+    console.log("blablabla end");
 
 </script>
 

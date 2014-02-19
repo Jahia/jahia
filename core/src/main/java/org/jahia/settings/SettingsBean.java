@@ -161,6 +161,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaImportsDiskPath;
     private String jahiaModulesDiskPath;
+    private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
 
     public String getJahiaDatabaseScriptsPath() {
@@ -337,6 +338,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             jahiaImportsDiskPath = convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaModulesDiskPath = convertContexted (getString("jahiaModulesDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
+
+            modulesSourcesDiskPath = convertContexted(getString("modulesSourcesDiskPath"), pathResolver);
             
             // jahia real path...
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
@@ -839,6 +842,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String getTmpContentDiskPath() {
     return tmpContentDiskPath;
   }
+
+    public String getModulesSourcesDiskPath() {
+        return modulesSourcesDiskPath;
+    }
+
     public boolean isProcessingServer() {
         return isProcessingServer;
     }

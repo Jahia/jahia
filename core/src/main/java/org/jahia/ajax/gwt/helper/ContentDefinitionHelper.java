@@ -872,14 +872,11 @@ public class ContentDefinitionHelper {
 
             List<GWTJahiaNodeType> roots = new ArrayList<GWTJahiaNodeType>();
             for (Map.Entry<ExtendedNodeType, List<ExtendedNodeType>> entry : r.entrySet()) {
-                if (entry.getValue().size() > 1) {
-                    GWTJahiaNodeType nt = getGWTJahiaNodeType(entry.getKey() != null ? entry.getKey() : NodeTypeRegistry.getInstance().getNodeType("nt:base"), uiLocale);
-                    roots.add(nt);
-                    for (ExtendedNodeType type : entry.getValue()) {
-                        nt.add(getGWTJahiaNodeType(type, uiLocale));
-                    }
-                } else {
-                    roots.add(getGWTJahiaNodeType(entry.getValue().get(0), uiLocale));
+                GWTJahiaNodeType nt = getGWTJahiaNodeType(entry.getKey() != null ? entry.getKey() : NodeTypeRegistry
+                        .getInstance().getNodeType("nt:base"), uiLocale);
+                roots.add(nt);
+                for (ExtendedNodeType type : entry.getValue()) {
+                    nt.add(getGWTJahiaNodeType(type, uiLocale));
                 }
             }
 

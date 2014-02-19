@@ -64,11 +64,11 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         if (nonSplittedUsers.contains(username)) {
             return builder.append(usersRootNode).append("/").append(username).toString();
         }
-        int userNameHashcode = Math.abs(username.hashCode());
+        int userNameHashcode = username.hashCode();
         String firstFolder = getFolderName(userNameHashcode).toLowerCase();
-        userNameHashcode = Math.round(userNameHashcode/100);
+        userNameHashcode = userNameHashcode / 100;
         String secondFolder = getFolderName(userNameHashcode).toLowerCase();
-        userNameHashcode = Math.round(userNameHashcode/100);
+        userNameHashcode = userNameHashcode / 100;
         String thirdFolder = getFolderName(userNameHashcode).toLowerCase();
         return builder.append(usersRootNode).append("/").append(firstFolder).append("/").append(secondFolder).append(
                 "/").append(thirdFolder).append("/").append(JCRContentUtils.escapeLocalNodeName(
@@ -76,8 +76,8 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
     }
 
     private String getFolderName(int userNameHashcode) {
-        int i = (userNameHashcode % 100);
-        return Character.toString((char) ('a' + Math.round(i / 10)))+Character.toString((char)('a'+ (i%10)));
+        int i = Math.abs(userNameHashcode % 100);
+        return Character.toString((char) ('a' + (i / 10))) + Character.toString((char) ('a' + (i % 10)));
     }
 
     public void setNonSplittedUsers(List<String> nonSplittedUsers) {

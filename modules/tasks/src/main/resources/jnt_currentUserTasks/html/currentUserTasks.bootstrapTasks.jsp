@@ -116,7 +116,7 @@
     console.log("blablabla end");
 
 </script>
-
+<template:include view="hidden.header"/>
 <h1>Bootstrap tasks</h1>
 <div id="tasklist">
     <div id="${user.UUID}">

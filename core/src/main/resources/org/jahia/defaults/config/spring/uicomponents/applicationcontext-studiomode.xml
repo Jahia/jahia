@@ -1027,6 +1027,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>
+                                    <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Copy"/>

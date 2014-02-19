@@ -466,3 +466,65 @@
     <td>
     </td>
 </tr>
+<tr id="privacy">
+    <td>Privacy </td>
+    <td></td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+</tr>
+<tr id="privacy_form" class="hide">
+    <td>Privacy </td>
+    <td>
+        <div class="switch-wrapper">
+            <div class="control-group">
+                <label class="control-label" for="names_privacy">Name : </label>
+                <div class="controls">
+                    <input id="names_privacy" type="checkbox" name="names_privacy" data-size="mini" data-on-text="public" data-off-text="private" checked>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="organization_privacy">Organization : </label>
+                <div class="controls">
+                    <input id="organization_privacy" type="checkbox" name="organization_privacy" data-size="mini" data-on-text="public" data-off-text="private" checked>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="function_privacy">Function : </label>
+                <div class="controls">
+                    <input id="function_privacy" type="checkbox" name="function_privacy" data-size="mini" data-on-text="public" data-off-text="private" >
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="address_privacy">Address : </label>
+                <div class="controls">
+                    <input id="address_privacy" type="checkbox" name="address_privacy" data-size="mini" data-on-text="public" data-off-text="private" checked>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="social_privacy">Social : </label>
+                <div class="controls">
+                    <input id="social_privacy" type="checkbox" name="social_privacy" data-size="mini" data-on-text="public" data-off-text="private" >
+                </div>
+            </div>
+            <%--<div>Organisation : <input type="checkbox" name="organization" data-size="mini" data-on-text="public" data-off-text="private" checked></div>
+            <div>Function : <input type="checkbox" name="function" data-size="mini" data-on-text="public" data-off-text="private" checked></div>
+            <div>Address : <input type="checkbox" name="address" data-size="mini" data-on-text="public" data-off-text="private" checked></div>
+            <div>Social : <input type="checkbox" name="social" data-size="mini" data-on-text="public" data-off-text="private" checked></div>--%>
+            <script type="text/javascript">
+                $("[name='names_privacy']").bootstrapSwitch();
+                $("[name='organization_privacy']").bootstrapSwitch();
+                $("[name='function_privacy']").bootstrapSwitch();
+                $("[name='address_privacy']").bootstrapSwitch();
+                $("[name='social_privacy']").bootstrapSwitch();
+            </script>
+        </div>
+    </td>
+    <td>
+        <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">
+            <fmt:message key="label.clickToEdit"/>
+        </button>
+    </td>
+</tr>

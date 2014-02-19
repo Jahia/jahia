@@ -1,0 +1,78 @@
+/******************************************************************************
+*  User Detail Page                                                           *
+*******************************************************************************/
+
+
+
+/* Upper Page */
+
+.detailshead{
+    display:block;
+}
+
+.secondhead{
+    display:block;
+}
+
+/* Image */
+
+.image_edit_button
+{
+    margin-top:40px;
+}
+
+.image_form_inputs
+{
+    margin-top:8px;
+}
+
+/* About text and form */
+
+.about_form{
+    position: absolute;
+    z-index: 900;
+}
+
+.about_edit_button{
+    padding:10px;
+}
+
+a:visited {
+    color: #0254EB
+}
+
+a.morelink {
+    color: #0254EB;
+    text-decoration:none;
+    outline: none;
+    padding-left: 10px;
+}
+
+a.lesslink {
+    color: #0254EB;
+    text-decoration:none;
+    outline: none;
+    padding-left: 10px;
+}
+
+.more{
+    height:115px;
+    display:block;
+    padding :10px;
+    overflow:hidden;
+    text-align:justify;
+}
+
+/* Table Down the page */
+
+.formtable{
+    margin-top:20px;
+}
+
+/*privacy*/
+
+.switch-wrapper {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+}

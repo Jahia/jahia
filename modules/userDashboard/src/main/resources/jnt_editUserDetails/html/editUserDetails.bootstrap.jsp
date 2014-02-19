@@ -47,21 +47,27 @@
 %>
 <%@ include file="../../getUser.jspf"%>
 
+<%-- CSS --%>
 <template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="dashboardUserProfile.css"/>
+<template:addResources type="css" resources="bootstrap-switch.css"/>
+<template:addResources type="css" resources="timepicker.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+
+<%-- Javascripts --%>
+<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
+<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.jeditable.js"/>
-<template:addResources type="javascript" resources="ajaxreplace.js"/>
+<template:addResources type="javascript" resources="bootstrap-switch.js"/>
+
+<%--<template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="timepicker.js,jquery.jeditable.datepicker.js"/>
-<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>--%>
 
-<template:addResources type="css" resources="timepicker.css"/>
-<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
-<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addCacheDependency node="${user}"/>
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>
@@ -96,40 +102,25 @@
 <template:addResources>
     <script type="text/javascript">
 
-        //More text functions
+        //Less text functions
         function hideMoreText()
         {
-            var showChar = 100;
-            var ellipsestext = "...";
-            var moretext = "more";
-            var lesstext = "less";
-            $('.more').each(function() {
-                var content = $(this).html();
 
-                if(content.length > showChar) {
-
-                    var c = content.substr(0, showChar);
-                    var h = content.substr(showChar-1, content.length - showChar);
-
-                    var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
-
-                    $(this).html(html);
-                }
-
+            $('div.more').css({
+                'height': '115px'
             });
+            $('.morelink').show();
+            $('.lesslink').hide();
+        }
 
-            $(".morelink").click(function(){
-                if($(this).hasClass("less")) {
-                    $(this).removeClass("less");
-                    $(this).html(moretext);
-                } else {
-                    $(this).addClass("less");
-                    $(this).html(lesstext);
-                }
-                $(this).parent().prev().toggle();
-                $(this).prev().toggle();
-                return false;
+        //More text functions
+        function showMoreText()
+        {
+            $('div.more').css({
+                'height': 'auto'
             });
+            $('.lesslink').show();
+            $('.morelink').hide();
         }
 
 
@@ -141,11 +132,19 @@
             }
         }
 
-        function switchRow(elementId){
-            var thisField = this;
-            errorOnSave(thisField);
+        function switchRow(elementId)
+        {
+            console.log('elementId = '+elementId);
+
+            //building css element id
             elementId="#"+elementId;
+            console.log('css elementId = '+elementId);
+
+            //building css form id
             var elementFormId = elementId+"_form";
+            console.log('css formElementId = '+elementFormId);
+
+            //Checking which element to show and which element to hide
             if( $(elementId).is(":visible"))
             {
                 $(elementId).hide();
@@ -156,7 +155,6 @@
                 $(elementFormId).hide();
                 $(elementId).show();
             }
-
         }
         function ajaxReloadCallback(jcrId) {
             if (jcrId == 'preferredLanguage') {
@@ -295,96 +293,101 @@
                 }
             });
         }
-        $(document).ready(hideMoreText);
+
         //$(document).ready(initEditUserDetails);
     </script>
 </template:addResources>
 
 <%--<span class="label"><fmt:message key='jnt_user.j_picture'/></span>--%>
+
 <fieldset class="well">
-    <div class="row">
+    <div class="row detailshead">
         <div class="span2">
-            <div>
-                <c:if test="${currentNode.properties['j:picture'].boolean}">
-                    <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+            <c:if test="${currentNode.properties['j:picture'].boolean}">
+                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                <div id="image" class='image'>
                     <c:choose>
                         <c:when test="${empty picture}">
-                            <div class='image'>
                                 <div class='itemImage itemImageLeft'>
                                     <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
                                          alt="" border="0"/></div>
-                            </div>
-                            <div class="clear"></div>
                         </c:when>
                         <c:otherwise>
-                            <div class='image'>
                                 <div class='itemImage itemImageLeft'><img class="userProfileImage"
                                                                           src="${picture.node.thumbnailUrls['avatar_120']}"
                                                                           alt="${fn:escapeXml(person)}"/></div>
-                            </div>
-                            <div class="clear"></div>
                         </c:otherwise>
                     </c:choose>
-                </c:if>
-            </div>
-            <div>
-                <c:if test="${currentNode.properties['j:organization'].boolean}">
-                    <c:if test="${empty fields['j:organization'] and user:isPropertyEditable(user,'j:organization')}">
+                    <div class="image_edit_button">
+                        <button class="btn btn-primary" type="button" onclick="switchRow('image')">
+                            <fmt:message key="label.clickToEdit"/>
+                        </button>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </c:if>
+            <div id="image_form" class="hide">
+                <div class="image_form_preview">
+                    <c:choose>
+                        <c:when test="${empty picture}">
+                            <div class='itemImage itemImageLeft'>
+                                <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                     alt="" border="0"/></div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class='itemImage itemImageLeft'><img class="userProfileImage"
+                                                                      src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                                      alt="${fn:escapeXml(person)}"/></div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="image_form_inputs">
+                    <label for="uploadedImage" value="Upload an Image"/>
+                    <input id="uploadedImage" type="text" name="uploadedImage" maxlength="15" size="15"/>
+                    <button>Browse</button>
+                    <button class="btn btn-primary" type="button" onclick="switchRow('image')">
                         <fmt:message key="label.clickToEdit"/>
-                    </c:if>
-                    <c:if test="${!empty fields['j:organization']}">
-                        <h3>${fn:escapeXml(fields['j:organization'])}</h3>
-                    </c:if>
-                </c:if>
-                <c:if test="${currentNode.properties['j:function'].boolean}">
-                    <c:if test="${empty fields['j:function'] and user:isPropertyEditable(user,'j:function')}">
-                        <fmt:message key="label.clickToEdit"/>
-                    </c:if>
-                    <c:if test="${!empty fields['j:function']}">
-                        <h4>${fn:escapeXml(fields['j:function'])}</h4>
-                    </c:if>
-                </c:if>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="span10" style="height:120px">
-            <div class="row">
-                <div id="about" class="comment more">
-                    <div class="span8">
-                        <c:if test="${currentNode.properties['j:about'].boolean}">
-                            <h3><fmt:message key='jnt_user.j_about'/></h3>
-                            ${fields['j:about']}
-                        </c:if>
+        <div class="span10 secondhead">
+            <c:if test="${currentNode.properties['j:about'].boolean}">
+                <div id="about" class="row">
+                    <div class="comment more">
+                        <h3><fmt:message key='jnt_user.j_about'/></h3>
+                        ${fields['j:about']}
                     </div>
-                    <div class="span2">
-                        <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                    <a href="#" class="morelink" onclick="showMoreText()">... more</a>
+                    <a href="#" class="lesslink hide" onclick="hideMoreText()">less</a>
+                    <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                        <div class="about_edit_button">
                             <button class="btn btn-primary" type="button" onclick="switchRow('about')">
                                 <fmt:message key="label.clickToEdit"/>
                             </button>
-                        </c:if>
-                    </div>
+                        </div>
+                    </c:if>
                 </div>
-                <div id="about_form" class="about_form hide">
-                    <div class="span8">
+                <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                    <div id="about_form" class="row hide">
                         <div id="about_editor">
-                            Test sans span ${fields['j:about']}
+                            ${fields['j:about']}
                         </div>
                         <script type="text/javascript">
                             var editor = $( '#about_editor' ).ckeditor();
                         </script>
-                    </div>
-                    <div class="span2">
-                        <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                        <div id="about_save_button">
                             <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('about')">
                                 Save changes
                             </button>
-                        </c:if>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </c:if>
+            </c:if>
         </div>
     </div>
 
-    <div class="formtable row">
+    <div class="row formtable">
         <div class="span2"></div>
         <div class="span10">
             <form class="form-horizontal user-profile-table">
@@ -397,4 +400,6 @@
         </div>
         <div class="span2"></div>
     </div>
+
+
 </fieldset>

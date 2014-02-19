@@ -95,24 +95,78 @@ public class LuceneUtils {
     }
 
     /**
-     * Extracts the language code that might be available in the form of a <code>jcr:language = 'lang'</code> constraint from the given query statement.
+     * Extracts the language code that might be available in the form of a <code>jcr:language</code> constraint from the given query statement.
+     * More specifically, the following cases should be properly handled:
+     *
+     * <ul>
+     * <li><code>jcr:language = 'en'</code>  (in that case analyzer should be English)</li>
+     * <li><code>jcr:language = "en"</code>  (in that case analyzer should be English)</li>
+     * <li><code>jcr:language is null</code> (in that case analyzer cannot be determined by query language - take the default)</li>
+     * <li><code>jcr:language is null and jcr:language = 'en'</code> (in that case the query language specific analyzer should be English, but it is set only on the second
+     * jcr:language constraint)</li>
+     * <li><code>jcr:language &lt;&gt; 'en'</code> (in that case analyzer cannot be determined by query language - take the default)</li>
+     * <li><code>jcr:language = 'fr' or jcr:language='en'</code> (in that case analyzer can also not be determined by query language - take the default)</li>
+     * </ul>
      *
      * @param statement the query statement from which to extract a potential language code
      * @return the language code associated with the jcr:language constraint if it exists in the specified query statement or <code>null</code> otherwise.
      */
     public static String extractLanguageOrNullFromStatement(String statement) {
+        // do we have one or more jcr:language constraints in the statement?
         int langIndex = statement.indexOf(Constants.JCR_LANGUAGE);
-        if (langIndex >= 0) {
-            int begLang = statement.indexOf('\'', langIndex);
-            if (begLang >= 0) {
-                begLang = begLang + 1; // move past '
-                int endLang = statement.indexOf('\'', begLang);
-                if (endLang > 0 && endLang < statement.length()) {
-                    return statement.substring(begLang, endLang).trim();
+        String languageCandidate = null;
+        while (langIndex >= 0) {
+            // check if there's an equals sign after jcr:language
+            int equalsIndex = statement.indexOf('=', langIndex);
+            if (equalsIndex >= 0) {
+                // check whether we have a language quoted in single or double quotes
+                char quoteChar = '\''; // quote character to use for language identification
+                boolean hasQuote = false; // did we find a quote character after equals?
+                int begLang = statement.indexOf(quoteChar, langIndex);
+
+                if(begLang < 0) {
+                    // if we didn't find a single quote, try a double one
+                    begLang = statement.indexOf('\"', langIndex);
+
+                    if (begLang >= 0) {
+                        // we found a double quote, so use that as quote character
+                        quoteChar = '\"';
+                        hasQuote = true;
+                    }
+                }
+                else {
+                    hasQuote = true;
+                }
+
+                if (hasQuote) {
+                    // we found a quote character so look for a matching one that would enclose a language code
+                    begLang = begLang + 1; // move past quote character
+                    int endLang = statement.indexOf(quoteChar, begLang);
+                    if (endLang > 0 && endLang < statement.length()) {
+
+                        // we found a matching closing quote but we need to check that we didn't already identify a language quote
+                        if(languageCandidate != null) {
+                            // if we already had a candidate language code, we can't decide which to use so return null
+                            // case: jcr:language = 'fr' or jcr:language='en'
+                            return null;
+                        }
+
+                        // extract language code candidate
+                        languageCandidate = statement.substring(begLang, endLang).trim();
+
+                        // next index to use to look for the next jcr:language
+                        langIndex = endLang;
+
+                        // look for next jcr:language instance
+                        continue;
+                    }
                 }
             }
+
+            // look for the next jcr:language statement if it exists
+            langIndex = statement.indexOf(Constants.JCR_LANGUAGE, langIndex + Constants.JCR_LANGUAGE.length());
         }
 
-        return null;
+        return languageCandidate;
     }
 }

@@ -62,4 +62,48 @@ public class LuceneUtilsTest {
         field = LuceneUtils.getFullTextFieldName("foo", null);
         Assert.assertNull(LuceneUtils.extractLanguageOrNullFrom(field));
     }
+
+    @Test
+    public void testExtractLanguageFromStatement() {
+        /**
+         * Extracts the language code that might be available in the form of a <code>jcr:language</code> constraint from the given query statement.
+         * More specifically, the following cases should be properly handled:
+         *
+         * <ul>
+         * <li><code>jcr:language = 'en'</code>  (in that case analyzer should be English)</li>
+         * <li><code>jcr:language = "en"</code>  (in that case analyzer should be English)</li>
+         * <li><code>jcr:language is null</code> (in that case analyzer cannot be determined by query language - take the default)</li>
+         * <li><code>jcr:language is null and jcr:language = 'en'</code> (in that case the query language specific analyzer should be English, but it is set only on the second
+         * jcr:language constraint)</li>
+         * <li><code>jcr:language &lt;&gt; 'en'</code> (in that case analyzer cannot be determined by query language - take the default)</li>
+         * <li><code>jcr:language = 'fr' or jcr:language='en'</code> (in that case analyzer can also not be determined by query language - take the default)</li>
+         * </ul>
+         *
+         * @param statement the query statement from which to extract a potential language code
+         * @return the language code associated with the jcr:language constraint if it exists in the specified query statement or <code>null</code> otherwise.
+         */
+        String statement = "foo bar jcr:language baz blah \t \n jcr:language  =      '   en \t'       asdf asdn   ";
+        Assert.assertEquals("en", LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "foo bar jcr:language baz blah \t \n jcr:language  =      \"   en \t\"       asdf asdn   ";
+        Assert.assertEquals("en", LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "jcr:language='en'";
+        Assert.assertEquals("en", LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "jcr:language=\"en\"";
+        Assert.assertEquals("en", LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "   foo bar    jcr:language is null baz asdf";
+        Assert.assertNull(LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "foo bar jcr:language is null and jcr:language = 'en'   asdaf   ";
+        Assert.assertEquals("en", LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "   foo bar    jcr:language <   > 'en'   baz asdf";
+        Assert.assertNull(LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "   foo bar    jcr:language = 'fr' or jcr:language='en'   baz asdf";
+        Assert.assertNull(LuceneUtils.extractLanguageOrNullFromStatement(statement));
+    }
 }

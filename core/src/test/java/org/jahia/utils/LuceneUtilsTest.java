@@ -105,5 +105,8 @@ public class LuceneUtilsTest {
 
         statement = "   foo bar    jcr:language = 'fr' or jcr:language='en'   baz asdf";
         Assert.assertNull(LuceneUtils.extractLanguageOrNullFromStatement(statement));
+
+        statement = "    faijdsfsd asdfasd ([jcr:language] = \"en\" or [jcr:language] is null) and [someOtherProperty] = \"test\" foo bar    ";
+        Assert.assertEquals("en", LuceneUtils.extractLanguageOrNullFromStatement(statement));
     }
 }

@@ -964,6 +964,7 @@
                             <property name="folderTypes">
                                 <list>
                                     <value>jnt:contentFolder</value>
+                                    <value>jnt:templatesFolder</value>
                                     <value>jnt:navMenuAvailableFolder</value>
                                     <value>nt:folder</value>
                                     <value>jmix:navMenuItem</value>
@@ -977,6 +978,7 @@
                             </property>
                             <property name="displayGridForTypes">
                                 <list>
+                                    <value>jnt:templatesFolder</value>
                                     <value>jnt:folder</value>
                                     <value>jnt:contentFolder</value>
                                 </list>

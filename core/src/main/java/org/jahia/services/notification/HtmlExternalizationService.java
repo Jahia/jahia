@@ -163,8 +163,8 @@ public class HtmlExternalizationService {
                             if (!href.startsWith(prefix)) {
                                 href = prefix + "/" + StringUtils.substringAfter(after, "/");
                             }
+                            styleSheetContent = StringUtils.join(IOUtils.readLines(pack.getResource(StringUtils.substringAfter(after, "/")).getInputStream()),'\n');
                         }
-                        styleSheetContent = StringUtils.join(IOUtils.readLines(pack.getResource(StringUtils.substringAfter(after, "/")).getInputStream()),'\n');
                     } else {
                         styleSheetContent = httpClientService.getResourceAsString(href);
                     }

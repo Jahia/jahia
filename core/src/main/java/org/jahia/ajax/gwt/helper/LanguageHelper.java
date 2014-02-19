@@ -51,6 +51,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
@@ -70,11 +71,11 @@ public class LanguageHelper {
      * @param currentLocale
      * @return
      */
-    public List<GWTJahiaLanguage> getLanguages(JCRSiteNode site, JahiaUser user, Locale currentLocale) {
+    public List<GWTJahiaLanguage> getLanguages(@NotNull JCRSiteNode site, JahiaUser user, Locale currentLocale) {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            if (site != null && !site.isNodeType("jnt:module") && site.getLanguages() != null && site.getLanguages().size()>0)  {
+            if (!site.isNodeType("jnt:module") && site.getLanguages() != null && site.getLanguages().size()>0)  {
                 final Set<String> languageSettings = site.getLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
                 final Set<String> activeLanguages = site.getActiveLiveLanguages();

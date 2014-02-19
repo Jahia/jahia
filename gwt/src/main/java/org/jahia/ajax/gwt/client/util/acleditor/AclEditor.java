@@ -94,7 +94,10 @@ public class AclEditor {
     public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups, List<AclEditor> rolesEditors) {
         this.acl = acl;
         this.context = aclContext;
-        this.rolesEditors = rolesEditors != null ? rolesEditors : new ArrayList<AclEditor>();
+        if (rolesEditors == null) {
+            rolesEditors = new ArrayList<AclEditor>();
+        }
+        this.rolesEditors = rolesEditors;
         final Map<String, List<String>> map = acl.getAvailableRoles();
         if ((roleGroups == null || roleGroups.isEmpty()) && (roles == null || roles.isEmpty())) {
             displayedRoles = new ArrayList<String>();

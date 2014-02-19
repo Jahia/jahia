@@ -143,14 +143,12 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
         InternalTaskData taskData = new TaskDataImpl();
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
-        if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
+        if (session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
             taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
             String deploymentId = (String) session.getEnvironment().get("deploymentId");
             taskData.setDeploymentId(deploymentId);
         }
-        if (session != null && (session instanceof KieSession)) {
-            taskData.setProcessSessionId(((KieSession) session).getId());
-        }
+        taskData.setProcessSessionId(session.getId());
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
         Long parentId = (Long) workItem.getParameter("ParentId");

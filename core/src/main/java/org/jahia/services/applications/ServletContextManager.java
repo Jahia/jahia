@@ -171,26 +171,31 @@ public class ServletContextManager implements ServletContextAware {
     public WebAppContext getApplicationContext (ApplicationBean appBean)
             throws JahiaException {
 
+        if (appBean == null) {
+            String errMsg = "Error getting application bean for application";
+            logger.debug (errMsg);
+
+            throw new JahiaException (errMsg, errMsg,
+                    JahiaException.ERROR_SEVERITY,
+                    JahiaException.APPLICATION_ERROR);
+        }
+
         if (logger.isDebugEnabled()) {
             logger.debug ("Requested for context : " + appBean.getContext());
         }
 
-        if (appBean != null && appBean.getContext() == null) {
+        if (appBean.getContext() == null) {
             return null;
         }
         WebAppContext appContext = mRegistry.get (appBean.getContext());
         if (appContext == null) {
-            synchronized (mRegistry) {
-                if (appContext == null) {
-                    // try to load from disk
-                    appContext = loadContextInfoFromDisk (appBean.getID(), appBean.getContext());
-                    if (appContext == null) {
-                        // create a fake Application Context to avoid loading from disk the next time.
-                        appContext = new WebAppContext(appBean.getContext());
-                    }
-                    mRegistry.put (appBean.getContext(), appContext);
-                }
+            // try to load from disk
+            appContext = loadContextInfoFromDisk (appBean.getID(), appBean.getContext());
+            if (appContext == null) {
+                // create a fake Application Context to avoid loading from disk the next time.
+                appContext = new WebAppContext(appBean.getContext());
             }
+            mRegistry.put (appBean.getContext(), appContext);
         }
         return appContext;
     }

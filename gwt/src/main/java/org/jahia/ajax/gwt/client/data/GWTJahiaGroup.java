@@ -116,4 +116,9 @@ public class GWTJahiaGroup extends GWTJahiaValueDisplayBean implements GWTJahiaP
     public boolean equals(Object obj) {
         return obj instanceof GWTJahiaGroup && getGroupKey().equals(((GWTJahiaGroup)obj).getGroupKey());
     }
+
+    @Override
+    public int hashCode() {
+        return getGroupKey() != null ? getGroupKey().hashCode() : 0;
+    }
 }

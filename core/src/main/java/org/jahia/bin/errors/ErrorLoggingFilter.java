@@ -141,7 +141,7 @@ public class ErrorLoggingFilter implements Filter {
             StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(new ErrorFileDumper.HttpRequestData(request), t, lastMailedExceptionOccurences, lastMailedException);
 
             ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null,
-                    "Server Error: " + t.getMessage(), msgBodyWriter
+                    "Server Error: " + (t != null ? t.getMessage() : ""), msgBodyWriter
                             .toString());
 
             logger.debug("Mail was sent successfully.");

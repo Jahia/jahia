@@ -55,7 +55,9 @@ import org.jahia.exceptions.JahiaArchiveFileException;
 import org.jahia.exceptions.JahiaException;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -69,15 +71,19 @@ import java.util.zip.ZipInputStream;
 public class JahiaArchiveFileHandler {
 
     private static org.slf4j.Logger logger =
-        org.slf4j.LoggerFactory.getLogger(JahiaArchiveFileHandler.class);
+            org.slf4j.LoggerFactory.getLogger(JahiaArchiveFileHandler.class);
 
     private static final String CLASS_NAME = JahiaArchiveFileHandler.class.
-                                             getName();
+            getName();
 
-    /** The full path to the file **/
+    /**
+     * The full path to the file *
+     */
     private String m_FilePath;
 
-    /** The JarFile object **/
+    /**
+     * The JarFile object *
+     */
     private JarFile m_JarFile;
 
     private String basePath;
@@ -86,10 +92,10 @@ public class JahiaArchiveFileHandler {
      * Constructor
      *
      * @param path, the full path to the file
-     * @exception IOException
+     * @throws IOException
      */
-    public JahiaArchiveFileHandler (String path)
-        throws IOException {
+    public JahiaArchiveFileHandler(String path)
+            throws IOException {
 
         m_FilePath = path;
         File f = new File(path);
@@ -103,7 +109,7 @@ public class JahiaArchiveFileHandler {
         } catch (java.lang.NullPointerException e) {
             logger.error("NullPointerException " + f.getAbsolutePath(), e);
             throw new IOException(CLASS_NAME +
-                                  " NullPointerException occurred ");
+                    " NullPointerException occurred ");
         }
 
         if (m_JarFile == null) {
@@ -120,10 +126,9 @@ public class JahiaArchiveFileHandler {
 
     /**
      * Decompresses the file in it's current location
-     *
      */
-    public void unzip ()
-        throws JahiaException {
+    public void unzip()
+            throws JahiaException {
 
         try {
 
@@ -143,7 +148,7 @@ public class JahiaArchiveFileHandler {
 
             try {
 
-                while ( (ze = zis.getNextEntry()) != null) {
+                while ((ze = zis.getNextEntry()) != null) {
                     zeName = ze.getName();
                     path = parentPath + genPathFile(zeName);
                     File fo = new File(path);
@@ -171,9 +176,9 @@ public class JahiaArchiveFileHandler {
             logger.error(" fail unzipping " + ioe.getMessage(), ioe);
 
             throw new JahiaException("JahiaArchiveFileHandler",
-                                     "faile processing unzip",
-                                     JahiaException.SERVICE_ERROR,
-                                     JahiaException.ERROR_SEVERITY, ioe);
+                    "faile processing unzip",
+                    JahiaException.SERVICE_ERROR,
+                    JahiaException.ERROR_SEVERITY, ioe);
 
         }
 
@@ -184,25 +189,25 @@ public class JahiaArchiveFileHandler {
      *
      * @param path
      */
-    public Map<String,String> unzip (String path)
-        throws JahiaException {
+    public Map<String, String> unzip(String path)
+            throws JahiaException {
         return unzip(path, true);
     }
 
-    public Map<String,String> unzip(String path, PathFilter pathFilter) throws JahiaException {
+    public Map<String, String> unzip(String path, PathFilter pathFilter) throws JahiaException {
         return unzip(path, true, pathFilter, null);
     }
 
-    public Map<String,String> unzip (String path, boolean overwrite)
-    throws JahiaException {
+    public Map<String, String> unzip(String path, boolean overwrite)
+            throws JahiaException {
         return unzip(path, overwrite, PathFilter.ALL, null);
     }
-    
-    public Map<String,String> unzip (String path, boolean overwrite, PathFilter pathFilter, String pathPrefix)
-        throws JahiaException {
 
-        Map<String,String> unzippedFiles = new TreeMap<String,String>();
-        Map<File,Long> timestamps = new HashMap<File,Long>();
+    public Map<String, String> unzip(String path, boolean overwrite, PathFilter pathFilter, String pathPrefix)
+            throws JahiaException {
+
+        Map<String, String> unzippedFiles = new TreeMap<String, String>();
+        Map<File, Long> timestamps = new HashMap<File, Long>();
 
         pathFilter = pathFilter != null ? pathFilter : PathFilter.ALL;
 
@@ -219,7 +224,7 @@ public class JahiaArchiveFileHandler {
 
             try {
 
-                while ( (ze = zis.getNextEntry()) != null) {
+                while ((ze = zis.getNextEntry()) != null) {
 
                     zeName = ze.getName();
 
@@ -265,11 +270,11 @@ public class JahiaArchiveFileHandler {
             logger.error(" fail unzipping " + ioe.getMessage(), ioe);
 
             throw new JahiaException(CLASS_NAME, "faile processing unzip",
-                                     JahiaException.SERVICE_ERROR,
-                                     JahiaException.ERROR_SEVERITY, ioe);
+                    JahiaException.SERVICE_ERROR,
+                    JahiaException.ERROR_SEVERITY, ioe);
 
         }
-        
+
         // preserve last modified time stamps
         for (Map.Entry<File, Long> tst : timestamps.entrySet()) {
             try {
@@ -278,7 +283,7 @@ public class JahiaArchiveFileHandler {
                 logger.warn("Unable to set last mofified date for file {}. Cause: {}", tst.getKey(), e.getMessage());
             }
         }
-        
+
         return unzippedFiles;
 
     }
@@ -290,15 +295,15 @@ public class JahiaArchiveFileHandler {
      * @param entryName, the entry name
      * @return (File) fo, a File Handler to the file ( It's a temporary file )
      */
-    public File extractFile (String entryName)
-        throws IOException, JahiaArchiveFileException {
+    public File extractFile(String entryName)
+            throws IOException, JahiaArchiveFileException {
 
         File tmpFile = null;
 
         // Create a temporary file and write the content of the file in it
         ZipEntry entry = m_JarFile.getEntry(entryName);
 
-        if ( (entry != null) && !entry.isDirectory()) {
+        if ((entry != null) && !entry.isDirectory()) {
 
             InputStream ins = m_JarFile.getInputStream(entry);
 
@@ -307,7 +312,7 @@ public class JahiaArchiveFileHandler {
 
                 if (tmpFile == null || !tmpFile.canWrite()) {
                     throw new IOException(
-                        "extractFile error creating temporary file");
+                            "extractFile error creating temporary file");
                 }
                 FileOutputStream outs = new FileOutputStream(tmpFile);
                 copyStream(ins, outs);
@@ -325,9 +330,8 @@ public class JahiaArchiveFileHandler {
 
     /**
      * Extracts the content of the specifdied archive entry as a text.
-     * 
-     * @param entryName
-     *            the archive entry name
+     *
+     * @param entryName the archive entry name
      * @return the content of the specifdied archive entry as a text
      */
     public String extractContent(String entryName) throws IOException,
@@ -349,11 +353,11 @@ public class JahiaArchiveFileHandler {
      * all its contents are extracted too.
      *
      * @param entryName, the name of an entry in the jar
-     * @param destPath, the path to the destination folder
+     * @param destPath,  the path to the destination folder
      */
-    public void extractEntry (String entryName,
-                              String destPath)
-        throws JahiaException {
+    public void extractEntry(String entryName,
+                             String destPath)
+            throws JahiaException {
 
         try {
 
@@ -366,8 +370,8 @@ public class JahiaArchiveFileHandler {
                 strBuf.append(" in the jar file ");
 
                 throw new JahiaException(CLASS_NAME, strBuf.toString(),
-                                         JahiaException.SERVICE_ERROR,
-                                         JahiaException.ERROR_SEVERITY);
+                        JahiaException.SERVICE_ERROR,
+                        JahiaException.ERROR_SEVERITY);
 
             }
 
@@ -375,12 +379,12 @@ public class JahiaArchiveFileHandler {
             if (destDir == null || !destDir.isDirectory() || !destDir.canWrite()) {
 
                 logger.error(" cannot access to the destination dir " +
-                             destPath);
+                        destPath);
 
                 throw new JahiaException(CLASS_NAME,
-                    " cannot access to the destination dir ",
-                                         JahiaException.SERVICE_ERROR,
-                                         JahiaException.ERROR_SEVERITY);
+                        " cannot access to the destination dir ",
+                        JahiaException.SERVICE_ERROR,
+                        JahiaException.ERROR_SEVERITY);
             }
 
             String path = null;
@@ -392,47 +396,46 @@ public class JahiaArchiveFileHandler {
             ZipEntry ze = null;
             String zeName = null;
 
-            while ( (ze = zis.getNextEntry()) != null &&
-                          !ze.getName().equalsIgnoreCase(entryName)) {
+            while ((ze = zis.getNextEntry()) != null &&
+                    !ze.getName().equalsIgnoreCase(entryName)) {
                 // loop until the requested entry
                 zis.closeEntry();
             }
 
             try {
+                if (ze != null) {
+                    if (ze.isDirectory()) {
 
-                if (ze.isDirectory()) {
+                        while (ze != null) {
+                            zeName = ze.getName();
+                            path = destPath + File.separator + genPathFile(zeName);
+                            File fo = new File(path);
+                            if (ze.isDirectory()) {
+                                fo.mkdirs();
+                            } else {
 
-                    while (ze != null) {
+                                FileOutputStream outs = new FileOutputStream(fo);
+                                copyStream(zis, outs);
+                                //outs.flush();
+                                //outs.close();
+                            }
+                            zis.closeEntry();
+                            ze = zis.getNextEntry();
+
+                        }
+                    } else {
+
                         zeName = ze.getName();
                         path = destPath + File.separator + genPathFile(zeName);
+
                         File fo = new File(path);
-                        if (ze.isDirectory()) {
-                            fo.mkdirs();
-                        } else {
-
-                            FileOutputStream outs = new FileOutputStream(fo);
-                            copyStream(zis, outs);
-                            //outs.flush();
-                            //outs.close();
-                        }
-                        zis.closeEntry();
-                        ze = zis.getNextEntry();
-
+                        FileOutputStream outs = new FileOutputStream(fo);
+                        copyStream(zis, outs);
+                        //outs.flush();
+                        //outs.close();
                     }
-                } else {
-
-                    zeName = ze.getName();
-                    path = destPath + File.separator + genPathFile(zeName);
-
-                    File fo = new File(path);
-                    FileOutputStream outs = new FileOutputStream(fo);
-                    copyStream(zis, outs);
-                    //outs.flush();
-                    //outs.close();
                 }
-
             } finally {
-
                 // Important !!!
                 zf.close();
                 fis.close();
@@ -445,8 +448,8 @@ public class JahiaArchiveFileHandler {
             logger.error(" fail unzipping " + ioe.getMessage(), ioe);
 
             throw new JahiaException(CLASS_NAME, "faile processing unzip",
-                                     JahiaException.SERVICE_ERROR,
-                                     JahiaException.ERROR_SEVERITY, ioe);
+                    JahiaException.SERVICE_ERROR,
+                    JahiaException.ERROR_SEVERITY, ioe);
 
         }
 
@@ -458,7 +461,7 @@ public class JahiaArchiveFileHandler {
      * @param entryName the entry name
      * @return (ZipEntry) the entry
      */
-    public ZipEntry getEntry (String entryName) {
+    public ZipEntry getEntry(String entryName) {
 
         return m_JarFile.getEntry(entryName);
 
@@ -470,8 +473,8 @@ public class JahiaArchiveFileHandler {
      * @param (String) entryName the entry name
      * @return (boolean) true if the entry exists and is a a directory
      */
-    public boolean isDirectory (String entryName) {
-        return ( (m_JarFile.getEntry(entryName) != null) &&
+    public boolean isDirectory(String entryName) {
+        return ((m_JarFile.getEntry(entryName) != null) &&
                 m_JarFile.getEntry(entryName).isDirectory());
     }
 
@@ -481,16 +484,15 @@ public class JahiaArchiveFileHandler {
      * @param (String) entryName the entry name
      * @return (boolean) true if exist
      */
-    public boolean entryExists (String entryName) {
+    public boolean entryExists(String entryName) {
         return (m_JarFile.getEntry(entryName) != null);
     }
 
     /**
      * Close the Zip file. Important to close the JarFile object
      * to be able to delete it from disk.
-     *
      */
-    public void closeArchiveFile () {
+    public void closeArchiveFile() {
 
         try {
             m_JarFile.close();
@@ -504,9 +506,8 @@ public class JahiaArchiveFileHandler {
     /**
      * Generates a file path for a gived entry name
      * Parses "/" char and replaces them with File.separator char
-     *
      */
-    protected String genPathFile (String entryName) {
+    protected String genPathFile(String entryName) {
 
         StringBuffer sb = new StringBuffer(entryName.length());
         for (int i = 0; i < entryName.length(); i++) {
@@ -524,20 +525,20 @@ public class JahiaArchiveFileHandler {
     /**
      * Copy an InputStream to an OutPutStream
      *
-     * @param ins An InputStream.
+     * @param ins  An InputStream.
      * @param outs An OutputStream.
-     * @exception IOException.
+     * @throws IOException.
      */
-    protected void copyStream (InputStream ins,
-                               OutputStream outs)
-        throws IOException {
+    protected void copyStream(InputStream ins,
+                              OutputStream outs)
+            throws IOException {
         int bufferSize = 1024;
         byte[] writeBuffer = new byte[bufferSize];
 
         BufferedOutputStream bos =
-            new BufferedOutputStream(outs, bufferSize);
+                new BufferedOutputStream(outs, bufferSize);
         int bufferRead;
-        while ( (bufferRead = ins.read(writeBuffer)) != -1)
+        while ((bufferRead = ins.read(writeBuffer)) != -1)
             bos.write(writeBuffer, 0, bufferRead);
         bos.flush();
         bos.close();
@@ -546,6 +547,6 @@ public class JahiaArchiveFileHandler {
     }
 
     public String getPath() {
-    	return m_JarFile.getName();
+        return m_JarFile.getName();
     }
 } // End Class JahiaArchiveFileHandler

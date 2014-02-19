@@ -116,4 +116,9 @@ public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements GWTJahiaPr
     public boolean equals(Object obj) {
         return obj instanceof GWTJahiaUser && getUserKey().equals(((GWTJahiaUser)obj).getUserKey());
     }
+
+    @Override
+    public int hashCode() {
+        return getUserKey() != null ? getUserKey().hashCode() : 0;
+    }
 }

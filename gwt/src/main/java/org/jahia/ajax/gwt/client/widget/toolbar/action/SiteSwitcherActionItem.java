@@ -202,7 +202,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                                     }
                                 } else if (finalEditLinker != null && !finalEditLinker.getMainModule().getPath().startsWith(siteNode.getPath() + "/")) {
                                     MainModule.staticGoTo((String) siteNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);
-                                } else {
+                                } else if (finalEditLinker != null) {
                                     finalEditLinker.handleNewMainSelection();
                                 }
                             }

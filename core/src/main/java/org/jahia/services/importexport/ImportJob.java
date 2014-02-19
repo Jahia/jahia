@@ -112,7 +112,9 @@ public class ImportJob extends BackgroundJob {
                         f.remove();
                         session.save();
                     } finally {
-                        file.delete();
+                        if (file != null) {
+                            file.delete();
+                        }
                     }
                 }
             } else {

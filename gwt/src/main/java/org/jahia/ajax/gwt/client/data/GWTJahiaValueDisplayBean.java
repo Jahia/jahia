@@ -85,6 +85,9 @@ public class GWTJahiaValueDisplayBean extends BaseModelData implements Serializa
                 || (getValue() != null && obj != null && getValue().equals(
                         ((GWTJahiaValueDisplayBean) obj).getValue()));
     }
-    
-    
+
+    @Override
+    public int hashCode() {
+        return getValue() != null ? getValue().hashCode() : 0;
+    }
 }

@@ -404,7 +404,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 if (r.firstErrorField != null) {
                     r.firstErrorField.focus();
                 }
-                r.firstErrorTab.layout();
+                if (r.firstErrorTab != null) {
+                    r.firstErrorTab.layout();
+                }
             } else {
 
                 // we temporarily deactivate the button to prevent double clicks while saving...

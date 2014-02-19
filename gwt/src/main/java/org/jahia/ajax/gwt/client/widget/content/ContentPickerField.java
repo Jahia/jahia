@@ -42,14 +42,12 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.ListModelPropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.TwinTriggerField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -67,11 +65,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
  * User: toto
  * Date: Dec 1, 2008
  * Time: 6:37:07 PM
- *
  */
 public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
 //    protected El clear;
@@ -91,7 +87,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         setPropertyEditor(new PropertyEditor<List<GWTJahiaNode>>() {
             public String getStringValue(List<GWTJahiaNode> value) {
                 StringBuilder s = new StringBuilder();
-                for (Iterator<GWTJahiaNode> it = value.iterator(); it.hasNext();) {
+                for (Iterator<GWTJahiaNode> it = value.iterator(); it.hasNext(); ) {
                     GWTJahiaNode currentNode = it.next();
                     if (currentNode.get("j:url") != null) {
                         s.append(currentNode.get("j:url"));
@@ -122,7 +118,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
             public String getStringValue(List<GWTJahiaNode> value) {
                 StringBuilder result = new StringBuilder();
                 for (GWTJahiaNode gwtJahiaNode : value) {
-                    if(!"".equals(result)) {
+                    if (result.length() > 0) {
                         result.append(",");
                     }
                     result.append(gwtJahiaNode.getDisplayName());
@@ -154,7 +150,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                         config, multiple);
 
                         w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
-                        int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
+                        int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
 
                         w.setModal(true);
                         w.setSize(900, windowHeight);
@@ -176,7 +172,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                         bar.add(ok);
 
                         contentPicker.setSaveButton(ok);
-                        if (getValue() == null || getValue().size() ==0) {
+                        if (getValue() == null || getValue().size() == 0) {
                             ok.setEnabled(false);
                         }
 

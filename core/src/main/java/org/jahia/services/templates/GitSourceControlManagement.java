@@ -253,28 +253,51 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     @Override
     public String update() throws IOException {
-        String out = null;
-        executeCommand(executable, new String[] { "stash", "clear" });
+        StringBuilder out = new StringBuilder();
+        out.append("[").append(executable).append(" stash clear").append("]:\n");
+        ExecutionResult result = executeCommand(executable, new String[] { "stash", "clear" });
+        out.append(result.out);
+        out.append("\n");
+        if (StringUtils.isNotEmpty(result.err)) {
+            out.append(result.err).append("\n");
+        }
 
         Map<String, Status> statusMap = createStatusMap(false);
         boolean stashRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
                 || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
                 || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
         if (stashRequired) {
-            executeCommand(executable, new String[]{"stash"});
+            out.append("[").append(executable).append(" stash").append("]:\n");
+            result = executeCommand(executable, new String[]{"stash"});
+            out.append(result.out);
+            out.append("\n");
+            if (StringUtils.isNotEmpty(result.err)) {
+                out.append(result.err).append("\n");
+            }
         }
+        out.append("[").append(executable).append(" pull --rebase").append("]:\n");
         ExecutionResult pullResult = executeCommand(executable, new String[]{"pull","--rebase"});
+        out.append(pullResult.out);
+        out.append("\n");
+        if (StringUtils.isNotEmpty(pullResult.err)) {
+            out.append(pullResult.err).append("\n");
+        }
         ExecutionResult stashPopResult = null;
         if (stashRequired) {
+            out.append("[").append(executable).append(" stash pop").append("]:\n");
             stashPopResult = executeCommand(executable, new String[]{"stash","pop"});
+            out.append(stashPopResult.out);
+            out.append("\n");
+            if (StringUtils.isNotEmpty(stashPopResult.err)) {
+                out.append(stashPopResult.err).append("\n");
+            }
         }
         invalidateStatusCache();
         checkExecutionResult(pullResult);
-        out = pullResult.out;
         if (stashPopResult != null) {
             checkExecutionResult(stashPopResult);
         }
         
-        return out;
+        return out.toString();
     }
 }

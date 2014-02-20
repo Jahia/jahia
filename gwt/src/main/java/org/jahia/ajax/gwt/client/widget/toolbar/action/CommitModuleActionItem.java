@@ -49,13 +49,14 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,12 +64,13 @@ import java.util.Map;
 /**
  * Action item to create a new templates set
  */
+@SuppressWarnings("serial")
 public class CommitModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
         final Window wnd = new Window();
-        wnd.setWidth(550);
-        wnd.setHeight(300);
+        wnd.setWidth(450);
+        wnd.setHeight(200);
         wnd.setModal(true);
         wnd.setBlinkModal(true);
         wnd.setHeadingHtml(Messages.get("label.commitModule", "Commit module"));
@@ -77,11 +79,13 @@ public class CommitModuleActionItem extends BaseActionItem {
         final FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
         form.setFrame(false);
-        form.setLabelWidth(125);
+        form.setLabelAlign(LabelAlign.TOP);
+        form.setFieldWidth(415);
 
         final TextArea message = new TextArea();
         message.setName("sources");
-        message.setFieldLabel(Messages.get("label.comments", "Comments"));
+        message.setFieldLabel(Messages.get("label.comment", "Comment"));
+        message.setHeight(80);
 
         form.add(message);
 
@@ -89,7 +93,7 @@ public class CommitModuleActionItem extends BaseActionItem {
             public void componentSelected(ButtonEvent event) {
                 wnd.hide();
                 linker.loading(Messages.get("message.moduleSaving", "Saving module..."));
-                JahiaContentManagementService.App.getInstance().saveModule(JahiaGWTParameters.getSiteKey(), message.getValue(), new BaseAsyncCallback() {
+                JahiaContentManagementService.App.getInstance().saveModule(JahiaGWTParameters.getSiteKey(), message.getValue(), new BaseAsyncCallback<Object>() {
                     public void onSuccess(Object result) {
                         linker.loaded();
                         Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleSave", "Module saved"));
@@ -120,6 +124,7 @@ public class CommitModuleActionItem extends BaseActionItem {
 
         wnd.add(form);
         wnd.layout();
+        wnd.setFocusWidget(message);
 
         wnd.show();
     }

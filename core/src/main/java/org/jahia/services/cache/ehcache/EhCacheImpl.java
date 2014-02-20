@@ -59,6 +59,7 @@ import java.util.*;
  *
  * @author Serge Huber
  */
+@SuppressWarnings("rawtypes")
 public class EhCacheImpl implements CacheImplementation, CacheStatistics {
 
     final private static Logger logger = LoggerFactory.getLogger(EhCacheImpl.class);
@@ -86,6 +87,7 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
         }
     }
 
+    @Deprecated
     public boolean containsKey(Object key) {
         // we cannot use EHCache's isKeyInCache because the element might have expired, so we use
         // an actual retrieval to test for expiration.
@@ -95,7 +97,7 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
     public Object get(Object key) {
         Element element = ehCache.get(key);
         if (element != null) {
-            return element.getValue();
+            return element.getObjectValue();
         } else {
             return null;
         }
@@ -236,7 +238,7 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
         if (element == null) {
             currentKeys = new HashSet();
         } else {
-            currentKeys = (Set) element.getValue();
+            currentKeys = (Set) element.getObjectValue();
         }
         if (currentKeys == null) {
             currentKeys = new HashSet();
@@ -258,7 +260,7 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
         Element element = ehCacheGroups.get(groupName);
         Set currentKeys = null;
         if (element != null) {
-            currentKeys = (Set) element.getValue();
+            currentKeys = (Set) element.getObjectValue();
         }
         if (currentKeys == null) {
             return;

@@ -419,8 +419,8 @@ public class RenderService {
                 .append(templateName != null ? templateName : "default").toString();
 
         List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
-        if (templatesCache.containsKey(key)) {
-            List<String> nodeIds =  templatesCache.get(key);
+        List<String> nodeIds =  templatesCache.get(key);
+        if (nodeIds != null) {
             for (String nodeId : nodeIds) {
                 JCRNodeWrapper node = session.getNodeByIdentifier(nodeId);
                 nodes.add(node);
@@ -437,7 +437,7 @@ public class RenderService {
             query += " order by [j:priority] desc";
             QueryWrapper q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
             QueryResultWrapper result = q.execute();
-            List<String> nodeIds = new ArrayList<String>();
+            nodeIds = new ArrayList<String>();
             for (JCRNodeWrapper wrapper : result.getNodes()) {
                 nodes.add(wrapper);
                 nodeIds.add(wrapper.getIdentifier());

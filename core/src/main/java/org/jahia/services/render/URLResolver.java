@@ -433,14 +433,8 @@ public class URLResolver {
             return resolvedNodes.get(cacheKey);
         }
         JCRNodeWrapper node = null;
-        String nodePath = null;
-        siteInfo = null;
-        if (nodePathCache.containsKey(cacheKey)) {
-            nodePath = nodePathCache.get(cacheKey);
-        }
-        if ( siteInfoCache.containsKey(cacheKey)) {
-            siteInfo = siteInfoCache.get(cacheKey);
-        }
+        String nodePath = nodePathCache.get(cacheKey);
+        siteInfo = siteInfoCache.get(cacheKey);
         if (nodePath == null || siteInfo == null) {
             nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale,
                     new JCRCallback<String>() {

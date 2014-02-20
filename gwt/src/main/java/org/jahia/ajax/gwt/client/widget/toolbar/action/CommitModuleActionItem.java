@@ -96,7 +96,7 @@ public class CommitModuleActionItem extends BaseActionItem {
                 JahiaContentManagementService.App.getInstance().saveModule(JahiaGWTParameters.getSiteKey(), message.getValue(), new BaseAsyncCallback<Object>() {
                     public void onSuccess(Object result) {
                         linker.loaded();
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleSave", "Module saved"));
+                        Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleSaved", "Module saved"));
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("event","commit");
                         linker.refresh(data);

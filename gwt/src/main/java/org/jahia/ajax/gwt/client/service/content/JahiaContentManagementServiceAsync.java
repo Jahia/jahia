@@ -345,7 +345,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void unzip(List<String> paths, AsyncCallback async);
 
-    void updateModule(String moduleId, AsyncCallback asyncCallback);
+    void updateModule(String moduleId, AsyncCallback<String> asyncCallback);
 
     void addToSourceControl(String moduleId, GWTJahiaNode node, AsyncCallback asyncCallback);
 

@@ -252,8 +252,9 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void update() throws IOException {
-        executeCommand(executable, new String[]{"stash","clear"});
+    public String update() throws IOException {
+        String out = null;
+        executeCommand(executable, new String[] { "stash", "clear" });
 
         Map<String, Status> statusMap = createStatusMap(false);
         boolean stashRequired = statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
@@ -269,8 +270,11 @@ public class GitSourceControlManagement extends SourceControlManagement {
         }
         invalidateStatusCache();
         checkExecutionResult(pullResult);
+        out = pullResult.out;
         if (stashPopResult != null) {
             checkExecutionResult(stashPopResult);
         }
+        
+        return out;
     }
 }

@@ -279,8 +279,9 @@ public abstract class SourceControlManagement {
     /**
      * Performs SCM update.
      * 
+     * @return the output of the SCM update command if available
      * @throws IOException
      *             in case of SCM errors
      */
-    public abstract void update() throws IOException;
+    public abstract String update() throws IOException;
 }

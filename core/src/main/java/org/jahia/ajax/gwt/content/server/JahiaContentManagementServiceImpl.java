@@ -1499,14 +1499,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new GWTJahiaServiceException("Nothing to commit");
             }
         } catch (Exception e) {
-            logger.error("Cannot synchronize module into sources", e);
+            if (e.getMessage() == null && e.getMessage().equals("Nothing to commit")) {
+                logger.error("Cannot synchronize module into sources", e);
+            }
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void updateModule(String moduleId) throws GWTJahiaServiceException {
+    public String updateModule(String moduleId) throws GWTJahiaServiceException {
         try {
-            moduleHelper.updateModule(moduleId, retrieveCurrentSession(null));
+            return moduleHelper.updateModule(moduleId, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot update module", e);
             throw new GWTJahiaServiceException(e.getMessage());

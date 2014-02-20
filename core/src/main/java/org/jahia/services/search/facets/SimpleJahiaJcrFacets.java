@@ -283,15 +283,16 @@ public class SimpleJahiaJcrFacets {
 
         String[] facetQs = params.getParams(FacetParams.FACET_QUERY);
         if (null != facetQs && 0 != facetQs.length) {
-            Integer mincount = params.getFieldInt("", FacetParams.FACET_MINCOUNT);
-            if (mincount == null) {
-                Boolean zeros = params.getFieldBool("", FacetParams.FACET_ZEROS);
-                // mincount = (zeros!=null && zeros) ? 0 : 1;
-                mincount = (zeros != null && !zeros) ? 1 : 0;
-                // current default is to include zeros.
-            }            
             for (String q : facetQs) {
                 try {
+                    Integer minCount = params.getFieldInt(q, FacetParams.FACET_MINCOUNT);
+                    if (minCount == null) {
+                        Boolean zeros = params.getFieldBool(q, FacetParams.FACET_ZEROS);
+                        // mincount = (zeros!=null && zeros) ? 0 : 1;
+                        minCount = (zeros != null && !zeros) ? 1 : 0;
+                        // current default is to include zeros.
+                    }
+                    q = params.getFieldParam(q, "query");
                     parseParams(FacetParams.FACET_QUERY, q);
                 
                     QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
@@ -299,7 +300,7 @@ public class SimpleJahiaJcrFacets {
                     Query qobj = qp.parse(q);
                     long count = OpenBitSet.intersectionCount(getDocIdSet(qobj, ""),
                             base);
-                    if (count >= mincount) {
+                    if (count >= minCount) {
                         res.add(key, count);
                     }
                 }
@@ -847,11 +848,11 @@ public class SimpleJahiaJcrFacets {
           (SolrException.ErrorCode.BAD_REQUEST,
               "Can not date facet on a field which is not a DateField: " + f);
       }
-      Integer mincount = params.getFieldInt(f, FacetParams.FACET_MINCOUNT);
-      if (mincount == null) {
+      Integer minCount = params.getFieldInt(f, FacetParams.FACET_MINCOUNT);
+      if (minCount == null) {
           Boolean zeros = params.getFieldBool(f, FacetParams.FACET_ZEROS);
           // mincount = (zeros!=null && zeros) ? 0 : 1;
-          mincount = (zeros != null && !zeros) ? 1 : 0;
+          minCount = (zeros != null && !zeros) ? 1 : 0;
           // current default is to include zeros.
       }
       
@@ -885,8 +886,6 @@ public class SimpleJahiaJcrFacets {
       final DateMathParser dmp = new DateMathParser(DateField.UTC, Locale.US);
       dmp.setNow(NOW);
       
-      final int minCount = params.getFieldInt(f,FacetParams.FACET_MINCOUNT, 0);
-
       String[] iStrs = params.getFieldParams(f,FacetParams.FACET_DATE_INCLUDE);
       // Legacy support for default of [lower,upper,edge] for date faceting
       // this is not handled by FacetRangeInclude.parseParam because

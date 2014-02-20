@@ -10,19 +10,12 @@ List<JobDetail> allJobs = service.getAllJobs();
 pageContext.setAttribute("allJobs", allJobs);
 List<Object> jobs = new LinkedList<Object>();
 pageContext.setAttribute("jobs", jobs);
-int limitCount = 0;
 
 for (JobDetail job : allJobs) {
     if (jobGroup != null && jobGroup.length() > 0 && !job.getGroup().equals(jobGroup)) {
         continue;
     }
     if (!String.valueOf(job.getJobDataMap().get("status")).equals("added") && scheduler.getTriggersOfJob(job.getName(), job.getGroup()).length == 0) {
-        if (limitCount > 1000) {
-            // we do not display more than 1000 jobs
-            break;
-        }
-        limitCount++;
-         
         jobs.add(new Object[] {job, null});
     }
 }

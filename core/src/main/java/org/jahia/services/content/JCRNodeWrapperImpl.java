@@ -76,7 +76,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.query.*;
+import javax.jcr.query.Query;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
@@ -99,7 +99,7 @@ import static org.jahia.api.Constants.*;
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
 
-    public static final String[] TRANSLATION_NODES_PATTERN = new String[] { "j:translation_*" };
+    public static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
@@ -115,13 +115,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:sharedRefPropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
     public static final Pattern EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN = Pattern.compile(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
-    
+
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
 
     private static boolean doCopy(JCRNodeWrapper source, JCRNodeWrapper dest, String name,
-            boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
-            int maxBatch, MutableInt batchCount, boolean isTopObject) throws RepositoryException {
+                                  boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
+                                  int maxBatch, MutableInt batchCount, boolean isTopObject) throws RepositoryException {
         if (source instanceof JCRNodeWrapperImpl) {
             return ((JCRNodeWrapperImpl) source).internalCopy(dest, name, allowsExternalSharedNodes, references,
                     ignoreNodeTypes, maxBatch, batchCount, isTopObject);
@@ -140,7 +140,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         setItem(objectNode);
         if (path != null) {
             if (path.endsWith("/") && !path.equals("/")) {
-                path = StringUtils.substringBeforeLast(path , "/");
+                path = StringUtils.substringBeforeLast(path, "/");
             }
             try {
                 this.localPath = objectNode.getPath();
@@ -149,7 +149,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     this.localPath = path;
                 }
                 // In case we are accessing versionned node, this ensure that localPath contain the expected localPath
-                if(this.localPath.startsWith("/jcr:system")) {
+                if (this.localPath.startsWith("/jcr:system")) {
                     this.localPath = path;
                     this.localPathInProvider = path;
                 }
@@ -238,7 +238,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     }
                                 } else {
                                     for (Value role : roles) {
-                                        results.get(principal).add(new String[]{n.getPath(), "EXTERNAL", role.getString() + "/"+ace.getProperty("j:externalPermissionsName").getString()});
+                                        results.get(principal).add(new String[]{n.getPath(), "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
                                     }
                                 }
                             }
@@ -293,7 +293,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException {
-        Map<String,List<JCRNodeWrapper>> res = new HashMap<String,List<JCRNodeWrapper>>();
+        Map<String, List<JCRNodeWrapper>> res = new HashMap<String, List<JCRNodeWrapper>>();
         NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
                 "select * from [" + Constants.JAHIANT_ROLE + "] as r where isdescendantnode(r,['/roles'])",
                 Query.JCR_SQL2).execute().getNodes();
@@ -436,7 +436,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     position++;
                 }
             }
-            if(!"/".equals(getProvider().getMountPoint())) {
+            if (!"/".equals(getProvider().getMountPoint())) {
                 final JCRSiteNode resolveSite = getResolveSite();
                 final BitSet permissionsAsBitSet = resolveSite.getPermissionsAsBitSet();
                 b.or(permissionsAsBitSet);
@@ -592,7 +592,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             if (!acl.hasNodes()) {
                 acl.remove();
-                if(isNodeType("jmix:accessControlled")) {
+                if (isNodeType("jmix:accessControlled")) {
                     removeMixin("jmix:accessControlled");
                 }
             }
@@ -793,17 +793,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getUrl() {
         try {
-        if (isNodeType(Constants.JAHIANT_FILE)) {
-            return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + Text.escapePath(getCanonicalPath());
-        } else {
-            String path = JCRSessionFactory.getInstance().getCurrentServletPath();
-            if (path == null) {
-                path = "/cms/render";
+            if (isNodeType(Constants.JAHIANT_FILE)) {
+                return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + Text.escapePath(getCanonicalPath());
+            } else {
+                String path = JCRSessionFactory.getInstance().getCurrentServletPath();
+                if (path == null) {
+                    path = "/cms/render";
+                }
+                return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + Text.escapePath(getPath()) + ".html";
             }
-            return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + Text.escapePath(getPath()) + ".html";
-        }
         } catch (RepositoryException e) {
-            logger.error("Cannot get type",e);
+            logger.error("Cannot get type", e);
             return null;
         }
     }
@@ -831,8 +831,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeIterator ni = objectNode.getNodes();
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                    String name = node.getName();
-                    if (!name.equals("jcr:content") && node.isNodeType("jnt:resource")) {
+                String name = node.getName();
+                if (!name.equals("jcr:content") && node.isNodeType("jnt:resource")) {
                     names.add(name);
                 }
             }
@@ -846,7 +846,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getThumbnailUrl(String name) {
-        return getUrl() + "?t=" +name;
+        return getUrl() + "?t=" + name;
     }
 
     /**
@@ -989,8 +989,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     && nameGlobs == null
                                     || key.length() > pos + 1
                                     && (namePattern != null
-                                            && ChildrenCollectorFilter.matches(key.substring(pos + 1), namePattern) || nameGlobs != null
-                                            && ChildrenCollectorFilter.matches(key.substring(pos + 1), nameGlobs))) {
+                                    && ChildrenCollectorFilter.matches(key.substring(pos + 1), namePattern) || nameGlobs != null
+                                    && ChildrenCollectorFilter.matches(key.substring(pos + 1), nameGlobs))) {
                                 JCRStoreProvider storeProvider = entry.getValue();
                                 String root = storeProvider.getRelativeRoot();
                                 final Node node = session.getProviderSession(storeProvider).getNode(
@@ -1024,34 +1024,34 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         return new NodeIteratorImpl(list.iterator(), list.size());
     }
-    
+
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
-            Map<String, String> res = new HashMap<String, String>();
-            PropertyIterator pi = getProperties();
-            if (pi != null) {
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    if (p.getType() == PropertyType.BINARY) {
-                        continue;
-                    }
-                    if (!p.isMultiple()) {
-                        res.put(p.getName(), p.getString());
-                    } else {
-                        Value[] vs = p.getValues();
-                        StringBuffer b = new StringBuffer();
-                        for (int i = 0; i < vs.length; i++) {
-                            Value v = vs[i];
-                            b.append(v.getString());
-                            if (i + 1 < vs.length) {
-                                b.append(" ");
-                            }
+        Map<String, String> res = new HashMap<String, String>();
+        PropertyIterator pi = getProperties();
+        if (pi != null) {
+            while (pi.hasNext()) {
+                Property p = pi.nextProperty();
+                if (p.getType() == PropertyType.BINARY) {
+                    continue;
+                }
+                if (!p.isMultiple()) {
+                    res.put(p.getName(), p.getString());
+                } else {
+                    Value[] vs = p.getValues();
+                    StringBuffer b = new StringBuffer();
+                    for (int i = 0; i < vs.length; i++) {
+                        Value v = vs[i];
+                        b.append(v.getString());
+                        if (i + 1 < vs.length) {
+                            b.append(" ");
                         }
-                        res.put(p.getName(), b.toString());
                     }
+                    res.put(p.getName(), b.toString());
                 }
             }
-        return res;
         }
+        return res;
+    }
 
     /**
      * {@inheritDoc}
@@ -1219,7 +1219,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return isNodeType(Constants.NT_FILE);
         } catch (RepositoryException e) {
-            logger.error("Cannot get type",e);
+            logger.error("Cannot get type", e);
             return false;
         }
     }
@@ -1231,7 +1231,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return isNodeType(Constants.JAHIANT_PORTLET);
         } catch (RepositoryException e) {
-            logger.error("Cannot get type",e);
+            logger.error("Cannot get type", e);
             return false;
         }
     }
@@ -1377,7 +1377,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
         boolean b = false;
         b = checkI18NNode(locale);
-        if(!b && fallback) {
+        if (!b && fallback) {
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
                 b = checkI18NNode(fallbackLocale);
@@ -1512,7 +1512,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private JCRPropertyWrapper internalGetPropertyI18nWithDefFallback(String name,
-            ExtendedPropertyDefinition epd, Locale locale, Pattern pathPattern) throws RepositoryException {
+                                                                      ExtendedPropertyDefinition epd, Locale locale, Pattern pathPattern) throws RepositoryException {
         Node localizedNode = null;
         try {
             localizedNode = getI18N(locale);
@@ -1643,13 +1643,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 && PropertyType.UNDEFINED != epd.getRequiredType()
                 && value.getType() != epd.getRequiredType()
                 && !(value.getType() == PropertyType.WEAKREFERENCE
-                        && epd.getRequiredType() == PropertyType.REFERENCE)) {
+                && epd.getRequiredType() == PropertyType.REFERENCE)) {
             // if the type doesn't match the required type, we attempt a conversion.
             value = getSession().getValueFactory().createValue(value.getString(), epd.getRequiredType());
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
-            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
+            throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
@@ -1682,7 +1682,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), value)) {
-            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
+            throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
@@ -1719,7 +1719,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         && PropertyType.UNDEFINED != epd.getRequiredType()
                         && values[i].getType() != epd.getRequiredType()
                         && !(values[i].getType() == PropertyType.WEAKREFERENCE
-                                && epd.getRequiredType() == PropertyType.REFERENCE)) {
+                        && epd.getRequiredType() == PropertyType.REFERENCE)) {
                     values[i] = getSession().getValueFactory()
                             .createValue(values[i].getString(), epd.getRequiredType());
                 }
@@ -1727,7 +1727,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
-            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
+            throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
@@ -1763,7 +1763,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {
-            throw new ConstraintViolationException("Invalid value for : "+epd.getName());
+            throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
@@ -1941,7 +1941,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         if (objectNode instanceof NodeImpl) {
-            return ((NodeImpl)objectNode).hasProperty(((SessionImpl)objectNode.getSession()).getQName(propertyName));
+            return ((NodeImpl) objectNode).hasProperty(((SessionImpl) objectNode.getSession()).getQName(propertyName));
         }
         return objectNode.hasProperty(propertyName);
     }
@@ -2017,7 +2017,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             localPathInProvider = StringUtils.substringAfter(localPathInProvider, mountPoint);
         }
         this.localPath = localPathInProvider;
-        
+
         this.objectNode = getSession().getProviderSession(getProvider()).getNode(localPathInProvider);
         if ((nodePositionFound) && (parent.getPrimaryNodeType().hasOrderableChildNodes())) {
             parent.orderBefore(newName, nextNodeName);
@@ -2061,7 +2061,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
-        return copy(dest,name,allowsExternalSharedNodes,references,null,0,new MutableInt(0));
+        return copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0));
     }
 
     /**
@@ -2069,7 +2069,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
-        boolean copy = copy(dest,name,allowsExternalSharedNodes,references,ignoreNodeTypes,maxBatch,new MutableInt(0));
+        boolean copy = copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, new MutableInt(0));
         ReferencesHelper.resolveCrossReferences(getSession(), references, false);
         return copy;
     }
@@ -2109,7 +2109,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 batchCount.setValue(0);
             } catch (ConstraintViolationException e) {
                 // save on the next node when next node is needed (like content node for files)
-                batchCount.setValue(maxBatch -1);
+                batchCount.setValue(maxBatch - 1);
             }
         }
 
@@ -2123,7 +2123,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 copy = dest.addNode(name, typeName);
             } catch (ConstraintViolationException e) {
-                logger.error("Cannot copy node",e);
+                logger.error("Cannot copy node", e);
                 return false;
             }
         }
@@ -2132,8 +2132,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeType[] mixin = objectNode.getMixinNodeTypes();
             for (NodeType aMixin : mixin) {
                 if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
-                copy.addMixin(aMixin.getName());
-            }
+                    copy.addMixin(aMixin.getName());
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Error adding mixin types to copy", e);
@@ -2212,14 +2212,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             JCRNodeWrapper parent = getParent();
             if (parent instanceof JCRNodeWrapperImpl) {
-                ((JCRNodeWrapperImpl)parent).checkLock();
+                ((JCRNodeWrapperImpl) parent).checkLock();
             }
             if (!getSession().getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && provider.getMountPoint().equals("/")) {
                 getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                 if (hasProperty("j:lastPublished")) {
                     if (!parent.isNodeType("jmix:deletedChildren")) {
                         parent.addMixin("jmix:deletedChildren");
-                        parent.setProperty("j:deletedChildren", new String[] { getIdentifier() });
+                        parent.setProperty("j:deletedChildren", new String[]{getIdentifier()});
                     } else {
                         parent.getProperty("j:deletedChildren").addValue(getIdentifier());
                     }
@@ -2442,7 +2442,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (getSession().getUser() != null) {
             unlock(type, getSession().getUser().getName());
         } else {
-            unlock(type,getSession().getUserID());
+            unlock(type, getSession().getUserID());
         }
     }
 
@@ -2597,7 +2597,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public Map<String, List<String>> getLockInfos() throws RepositoryException {
-        Map<String,List<String>> locks = new HashMap<String, List<String>>();
+        Map<String, List<String>> locks = new HashMap<String, List<String>>();
         List<String> lockInfos = getLockInfos(objectNode);
         if (!lockInfos.isEmpty()) {
             locks.put(null, lockInfos);
@@ -2614,7 +2614,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private List<String> getLockOwners(Node node) throws RepositoryException {
-        List<String> types= getLockInfos(node);
+        List<String> types = getLockInfos(node);
 
         List<String> r = new ArrayList<String>();
         for (String type : types) {
@@ -2802,7 +2802,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!objectNode.hasNode(s)) {
             return false;
         }
-        
+
         if (Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !s.startsWith("j:translation")) {
             final JCRNodeWrapper wrapper;
             try {
@@ -2812,7 +2812,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             return wrapper.checkValidity();
         }
-        
+
         return true;
     }
 
@@ -3020,7 +3020,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (isNodeType(Constants.JAHIANT_TRANSLATION) && !propertyName.equals("jcr:language")) {
             result = getParent().getApplicablePropertyDefinition(propertyName);
-            if (result!=null) {
+            if (result != null) {
                 applicablePropertyDefinition.put(propertyName, result);
                 return result;
             }
@@ -3185,8 +3185,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      *
-     * @throws UnsupportedRepositoryOperationException
-     *          as long as Jahia doesn't support it
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -3216,8 +3215,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      *
-     * @throws UnsupportedRepositoryOperationException
-     *          as long as Jahia doesn't support it
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
         // shortcut if node isn't referenceable
@@ -3231,8 +3229,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      *
-     * @throws UnsupportedRepositoryOperationException
-     *          as long as Jahia doesn't support it
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -3271,8 +3268,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      *
-     * @throws UnsupportedRepositoryOperationException
-     *          as long as Jahia doesn't support it
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -3331,11 +3327,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean checkValidity() {
-        if (getPath().startsWith("/sites")) {
-            final JCRSessionWrapper jcrSessionWrapper = getSession();
-            try {
+        try {
+            if (getPath().startsWith("/sites")) {
+                final JCRSessionWrapper jcrSessionWrapper = getSession();
                 if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName()) &&
-                    !JCRStoreService.getInstance().getNoValidityCheckTypes().contains(getPrimaryNodeTypeName())) {
+                        !JCRStoreService.getInstance().getNoValidityCheckTypes().contains(getPrimaryNodeTypeName())) {
                     boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
                     if (isLocaleDefined) {
                         if (objectNode.hasProperty("j:published") && !objectNode.getProperty(
@@ -3361,12 +3357,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                     return result;
                 }
-                if (getProvider().isDefault()) {
-                    return !objectNode.hasProperty("j:isExternalProviderRoot");
-                }
-            } catch (RepositoryException e) {
-                return false;
             }
+            if (getProvider().isDefault()) {
+                return !objectNode.hasProperty("j:isExternalProviderRoot");
+            }
+        } catch (RepositoryException e) {
+            return false;
         }
         return true;
     }
@@ -3397,7 +3393,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
                 boolean b = checkI18nAndMandatoryPropertiesForLocale(locale);
-                if(!b && siteNode != null && siteNode.isMixLanguagesActive()) {
+                if (!b && siteNode != null && siteNode.isMixLanguagesActive()) {
                     b = checkI18nAndMandatoryPropertiesForLocale(LanguageCodeConverters.getLocaleFromCode(siteNode.getDefaultLanguage()));
                 }
                 return b;
@@ -3434,7 +3430,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)
             throws RepositoryException {
         Node i18n = null;
-        if (hasI18N(locale,false)) {
+        if (hasI18N(locale, false)) {
             i18n = getI18N(locale, false);
         }
         for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
@@ -3455,13 +3451,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         try {
             String path = getCanonicalPath();
-            path = path.startsWith("/modulesFileSystem/")?path.replace("/modulesFileSystem/","/modules/"):path;
+            path = path.startsWith("/modulesFileSystem/") ? path.replace("/modulesFileSystem/", "/modules/") : path;
 
             if (path.startsWith("/sites/") || path.startsWith("/modules/")) {
-                int index = path.indexOf('/', path.indexOf('/',1)+1);
+                int index = path.indexOf('/', path.indexOf('/', 1) + 1);
                 if (index == -1) {
                     JCRNodeWrapper node = provider.getService().decorate(this);
-                    if (node instanceof JCRSiteNode)  {
+                    if (node instanceof JCRSiteNode) {
                         return (site = (JCRSiteNode) node);
                     }
                 }
@@ -3510,7 +3506,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBundle(title) : title) : getUnescapedName();
     }
-    
+
     public String getUnescapedName() {
         String name = getName();
         return name != null ? JCRContentUtils.unescapeLocalNodeName(name) : null;
@@ -3526,7 +3522,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     return Messages.interpolateResourceBundleMacro(title,
                             locale != null ? locale : session.getFallbackLocale(),
                             ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
-                                    module));
+                                    module)
+                    );
                 } catch (Exception e) {
                     // ignore
                     return title;
@@ -3560,6 +3557,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return title;
     }
+
     public void flushLocalCaches() {
         hasPropertyCache.clear();
     }
@@ -3604,16 +3602,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (comment != null && comment.length() > 0) {
             objectNode.setProperty(MARKED_FOR_DELETION_MESSAGE, comment);
         }
-        
+
         // mark all child nodes as deleted
         markNodesForDeletion(this);
 
         if (session.hasPendingChanges()) {
             objectNode.getSession().save();
         }
-        
+
         lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug("markForDeletion for node {} took {} ms", getPath(),
                     (System.currentTimeMillis() - timer));
@@ -3621,9 +3619,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private static void markNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
-        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+        for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
             JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
-            
+
             child.getSession().checkout(child);
 
             if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
@@ -3635,14 +3633,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (!child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
                 child.addMixin(JAHIAMIX_MARKED_FOR_DELETION);
             }
-            
+
             if (child.getSession().hasPendingChanges()) {
                 child.getSession().save();
             }
-            
+
             // set lock
             child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
-            
+
             // recurse into children
             markNodesForDeletion(child);
         }
@@ -3655,7 +3653,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         checkout();
-        
+
         // remove lock
         if (isNodeType("jmix:lockable")) {
             try {
@@ -3670,7 +3668,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
                 removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
             }
-            
+
             // unmark all child nodes
             unmarkNodesForDeletion(this);
         }
@@ -3680,11 +3678,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     (System.currentTimeMillis() - timer));
         }
     }
-    
+
     private static void unmarkNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
-        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+        for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
             JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
-            
+
             child.getSession().checkout(child);
 
             // do unlock
@@ -3696,7 +3694,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             child.getPath());
                 }
             }
-            
+
             // remove mixin
             if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION)) {
                 child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION);
@@ -3706,8 +3704,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
                 child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
             }
-            
-            
+
+
             // recurse into children
             unmarkNodesForDeletion(child);
         }

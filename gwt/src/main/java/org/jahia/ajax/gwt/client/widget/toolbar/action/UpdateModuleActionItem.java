@@ -82,6 +82,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                         showUpdateResult(result, false);                        
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("event","update");
+                        data.put(Linker.REFRESH_ALL,"true");
                         linker.refresh(data);
                     }
 

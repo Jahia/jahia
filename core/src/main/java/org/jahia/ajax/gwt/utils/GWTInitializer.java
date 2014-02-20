@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.utils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.jahia.services.templates.ModuleBuildHelper;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
@@ -115,8 +114,11 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.SERVLET_PATH, (request.getAttribute("servletPath") == null) ? request.getServletPath() : (String) request.getAttribute("servletPath"));
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
-        params.put(JahiaGWTParameters.DEVELOPMENT_MODE, SettingsBean.getInstance().isDevelopmentMode()?"true":"false");
-        params.put(JahiaGWTParameters.MODULES_SOURCES_DISK_PATH, SettingsBean.getInstance().getModulesSourcesDiskPath());
+        boolean devMode = SettingsBean.getInstance().isDevelopmentMode();
+        params.put(JahiaGWTParameters.DEVELOPMENT_MODE, devMode ? "true" : "false");
+        if (devMode) {
+            params.put(JahiaGWTParameters.MODULES_SOURCES_DISK_PATH, StringEscapeUtils.escapeJavaScript(SettingsBean.getInstance().getModulesSourcesDiskPath()));
+        }
         JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         if (user != null) {
             String name = user.getUsername();

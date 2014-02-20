@@ -52,12 +52,17 @@ import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.TwinTriggerField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -138,62 +143,69 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         if (disabled || isReadOnly()) {
             return;
         }
-        JahiaContentManagementService.App.getInstance()
-                .getManagerConfiguration(configuration, null, new BaseAsyncCallback<GWTManagerConfiguration>() {
-                    public void onSuccess(GWTManagerConfiguration config) {
-                        PermissionsUtils.loadPermissions(config.getPermissions());
-                        final Window w = new Window();
-                        w.setLayout(new FitLayout());
-                        w.setId("JahiaGxtContentPickerWindow");
-                        final ContentPicker contentPicker =
-                                new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
-                                        config, multiple);
 
-                        w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
-                        int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
+        if (configuration.equals("userpicker")) {
+            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_USERS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
+        } else if (configuration.equals("usergrouppicker")) {
+            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_TABS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
+        } else {
+            JahiaContentManagementService.App.getInstance()
+                    .getManagerConfiguration(configuration, null, new BaseAsyncCallback<GWTManagerConfiguration>() {
+                        public void onSuccess(GWTManagerConfiguration config) {
+                            PermissionsUtils.loadPermissions(config.getPermissions());
+                            final Window w = new Window();
+                            w.setLayout(new FitLayout());
+                            w.setId("JahiaGxtContentPickerWindow");
+                            final ContentPicker contentPicker =
+                                    new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
+                                            config, multiple);
 
-                        w.setModal(true);
-                        w.setSize(900, windowHeight);
-                        w.setResizable(true);
-                        w.setMaximizable(true);
-                        w.setBodyBorder(false);
+                            w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
+                            int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
 
-                        final ButtonBar bar = new ButtonBar();
-                        bar.setAlignment(Style.HorizontalAlignment.CENTER);
+                            w.setModal(true);
+                            w.setSize(900, windowHeight);
+                            w.setResizable(true);
+                            w.setMaximizable(true);
+                            w.setBodyBorder(false);
 
-                        final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent event) {
-                                List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
-                                setValue(selection);
-                                w.hide();
+                            final ButtonBar bar = new ButtonBar();
+                            bar.setAlignment(Style.HorizontalAlignment.CENTER);
+
+                            final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent event) {
+                                    List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
+                                    setValue(selection);
+                                    w.hide();
+                                }
+                            });
+                            ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
+                            bar.add(ok);
+
+                            contentPicker.setSaveButton(ok);
+                            if (getValue() == null || getValue().size() == 0) {
+                                ok.setEnabled(false);
                             }
-                        });
-                        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
-                        bar.add(ok);
 
-                        contentPicker.setSaveButton(ok);
-                        if (getValue() == null || getValue().size() == 0) {
-                            ok.setEnabled(false);
+                            final Button cancel =
+                                    new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+                                        public void componentSelected(ButtonEvent event) {
+                                            w.hide();
+                                        }
+                                    });
+                            cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
+
+                            bar.add(cancel);
+                            w.add(contentPicker);
+                            w.setBottomComponent(bar);
+                            w.show();
                         }
 
-                        final Button cancel =
-                                new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
-                                    public void componentSelected(ButtonEvent event) {
-                                        w.hide();
-                                    }
-                                });
-                        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
-
-                        bar.add(cancel);
-                        w.add(contentPicker);
-                        w.setBottomComponent(bar);
-                        w.show();
-                    }
-
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("Error while loading user permission", throwable);
-                    }
-                });
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error("Error while loading user permission", throwable);
+                        }
+                    });
+        }
     }
 
     protected void onTwinTriggerClick(ComponentEvent ce) {
@@ -215,30 +227,52 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         super.setValue(value);
     }
 
-//    @Override public void onComponentEvent(ComponentEvent ce) {
-//        super.onComponentEvent(ce);
-//        int type = ce.getEventTypeInt();
-//        if (ce.getTarget() == clear.dom && type == Event.ONCLICK && !readOnly) {
-//            onClearClick(ce);
-//        }
-//    }
-//
-//    @Override
-//    protected Size adjustInputSize() {
-//        return new Size(trigger.getWidth() * 2, 0);
-//    }
-//
-//    @Override protected void onResize(int width, int height) {
-//        super.onResize(width, height);
-//        clear.setX(trigger.getX()+17);
-//    }
-//
-//    @Override protected void onRender(Element target, int index) {
-//        super.onRender(target, index);
-//        clear = new El(DOM.createImg());
-//        clear.dom.setClassName("x-form-trigger " + clearStyle);
-//        clear.dom.setPropertyString("src", GXT.BLANK_IMAGE_URL);
-//        el().appendChild(clear.dom);
-//    }
+    private class UserPickerAdder implements UserGroupAdder {
+        @Override
+        public void addUsers(List<GWTJahiaUser> users) {
+            List<String> l = new ArrayList<String>();
+            for (GWTJahiaUser user : users) {
+                l.add(user.getKey());
+            }
+            mask();
+            JahiaContentManagementService.App.getInstance().getNodesForUsers(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                @Override
+                public void onApplicationFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                    unmask();
+                }
+
+                @Override
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    setValue(result);
+                    unmask();
+                }
+            });
+        }
+
+        @Override
+        public void addGroups(List<GWTJahiaGroup> groups) {
+            List<String> l = new ArrayList<String>();
+            for (GWTJahiaGroup group : groups) {
+                l.add(group.getKey());
+            }
+            mask();
+            JahiaContentManagementService.App.getInstance().getNodesForGroups(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                @Override
+                public void onApplicationFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                    unmask();
+                }
+
+                @Override
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    setValue(result);
+                    unmask();
+                }
+            });
+
+        }
+    }
+
 }
 

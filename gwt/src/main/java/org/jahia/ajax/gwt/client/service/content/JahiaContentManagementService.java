@@ -469,6 +469,10 @@ public interface JahiaContentManagementService extends RemoteService {
 
     RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;
 
+    List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException;
+
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;
 

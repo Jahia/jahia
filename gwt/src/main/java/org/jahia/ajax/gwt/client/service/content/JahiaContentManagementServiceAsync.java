@@ -389,4 +389,9 @@ public interface JahiaContentManagementServiceAsync {
     void getProviderFactoriesType(AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getNamespaces(AsyncCallback<List<String>> async);
+
+    void getNodesForUsers(List<String> userKeys, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void getNodesForGroups(List<String> groupKeys, AsyncCallback<List<GWTJahiaNode>> async);
+
 }

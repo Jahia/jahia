@@ -809,12 +809,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -825,21 +825,38 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>pdfbox</artifactId>
-                    <groupId>org.apache.pdfbox</groupId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
                     <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Override the pdfbox dependency from tika-parsers to use a newer one -->
+        <!-- POI dependencies we are overriding from Tika -->
         <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>1.8.3</version>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.10-FINAL</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.10-FINAL</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.10-FINAL</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- End of POI dependencies -->
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>

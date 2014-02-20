@@ -20,3 +20,4 @@
 <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
 
 <template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" config="portletdefinitionmanager" embedded="true" />
+

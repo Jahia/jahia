@@ -12,6 +12,7 @@ try {
     pageContext.setAttribute("ds", ds);
     pageContext.setAttribute("info", conn.getMetaData());
 %>
+<h2><fmt:message key="serverSettings.dbSettings"/></h2>
 <table class="table table-striped table-bordered table-hover">
     <tbody>
     <tr>

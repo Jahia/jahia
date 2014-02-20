@@ -37,6 +37,7 @@
 
     }
 </script>
+<h2><fmt:message key="serverSettings.manageForges"/></h2>
 <table class="table table-bordered table-striped table-hover">
     <thead>
     <tr>

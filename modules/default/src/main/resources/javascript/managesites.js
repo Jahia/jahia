@@ -1,3 +1,19 @@
+function deleteSiteBootstrap() {
+    if ($('.sitecheckbox:checked').length == 0) {
+        $('#nothing-selected').modal('show');
+        return;
+    }
+
+    $(".addedInput").remove();
+    $(".addedLI").remove();
+
+    $(".sitecheckbox:checked").each(function (index) {
+        $('<li class="addedLI">' + $(this).attr('name') + '</li>').appendTo("#dialog-delete-confirm-body")
+        $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#deleteSiteForm")
+    });
+
+    $("#dialog-delete-confirm").modal('show')
+}
 
 function deleteSite() {
     if ($(".sitecheckbox:checked").length == 0) {

@@ -68,6 +68,7 @@
 </template:addResources>
 
 <template:include view="hidden.header"/>
+
 <c:if test="${not empty moduleMap.currentList}">
     <fieldset class="well">
         <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userContent_table">

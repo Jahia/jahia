@@ -1,43 +1,23 @@
-function deleteSite() {
-    if ($(".sitecheckbox:checked").length == 0) {
-        $("#nothing-selected").dialog({
-             resizable:false,
-             height:180,
-             modal:true,
-             zIndex:1200,
-             buttons:{
-                 "Ok":function () {
-                     $(this).dialog("close");
-                 }
-             }
-         });
+function deleteSiteBootstrap() {
+    if ($('.sitecheckbox:checked').length == 0) {
+        $('#nothing-selected').modal('show');
         return;
     }
 
     $(".addedInput").remove();
+    $(".addedLI").remove();
 
     $(".sitecheckbox:checked").each(function (index) {
+        $('<li class="addedLI">' + $(this).attr('name') + '</li>').appendTo("#dialog-delete-confirm-body")
         $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#deleteSiteForm")
     });
 
-    $("#dialog-delete-confirm").dialog({
-        resizable:false,
-        height:180,
-        modal:true,
-        zIndex:1200,
-        buttons:{
-            "Ok":function () {
-                $(this).dialog("close");
-                showLoading();
-                $('#deleteSiteForm').ajaxSubmit(function() {
-                    window.location.reload();
-                })
-            },
-            "Cancel":function () {
-                $(this).dialog("close");
-            }
-        }
-    });
+    $("#dialog-delete-confirm").modal('show')
+}
+
+function modalSiteEditProperties(node) {
+    $("#editSiteDiv"+node).modal('show');
+    return false;
 }
 
 function editProperties(id) {
@@ -80,16 +60,16 @@ function createSite() {
 function exportSite(url,live) {
     if ($(".sitecheckbox:checked").length == 0) {
         $("#nothing-selected").dialog({
-             resizable:false,
-             height:180,
-             modal:true,
-             zIndex:1200,
-             buttons:{
-                 "Ok":function () {
-                     $(this).dialog("close");
-                 }
-             }
-         });
+            resizable:false,
+            height:180,
+            modal:true,
+            zIndex:1200,
+            buttons:{
+                "Ok":function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
         return;
     }
 

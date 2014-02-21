@@ -60,102 +60,148 @@
     </script>
 </template:addResources>
 
-<script type="text/javascript">
-    var ready = true;
+<div id="currentUserTasks${currentNode.identifier}">
+    <c:if test="${currentResource.workspace eq 'live'}">
+    <script type="text/javascript">
+        $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
+    </script>
+    </c:if>
 
-    <c:choose>
-        <c:when test="${not empty modeDispatcherId}">
-            <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
-                <c:forEach items="${param}" var="p">
-                    <c:param name="${p.key}" value="${p.value}"/>
-                </c:forEach>
-            </c:url>
-            <c:set var="identifierName" value="\#${modeDispatcherId}"/>
-        </c:when>
-        <c:otherwise>
-            <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
-                <c:forEach items="${param}" var="p">
-                    <c:param name="${p.key}" value="${p.value}"/>
-                </c:forEach>
-            </c:url>
-            <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
-        </c:otherwise>
-    </c:choose>
+    <c:if test="${currentResource.workspace ne 'live'}">
+        <c:set var="user" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
-    function sendNewStatus(uuid, task, state, finalOutcome) {
-        if (ready) {
-            ready = false;
-            $(".taskaction-complete").addClass("taskaction-disabled");
-            $(".taskaction").addClass("taskaction-disabled");
-            post = function () {
-                $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                    $('${identifierName}').load('${reloadurl}',null,function() {
+    <c:if test="${empty user or not jcr:isNodeType(user, 'jnt:user')}">
+        <jcr:node var="user" path="${renderContext.user.localPath}"/>
+    </c:if>
+
+    <form name="myform" method="post">
+        <input type="hidden" name="jcrNodeType" value="jnt:task">
+        <input type="hidden" name="jcrRedirectTo" value="<c:url value='${url.base}${renderContext.mainResource.node.path}'/>">
+        <input type="hidden" name="jcrNewNodeOutputFormat" value="<c:url value='${renderContext.mainResource.template}.html'/>">
+        <input type="hidden" name="state">
+    </form>
+
+    <script type="text/javascript">
+        var ready = true;
+
+        <c:choose>
+            <c:when test="${not empty modeDispatcherId}">
+                <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
+                    <c:forEach items="${param}" var="p">
+                        <c:param name="${p.key}" value="${p.value}"/>
+                    </c:forEach>
+                </c:url>
+                <c:set var="identifierName" value="\#${modeDispatcherId}"/>
+            </c:when>
+            <c:otherwise>
+                <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
+                    <c:forEach items="${param}" var="p">
+                        <c:param name="${p.key}" value="${p.value}"/>
+                    </c:forEach>
+                </c:url>
+                <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
+            </c:otherwise>
+        </c:choose>
+
+        function sendNewStatus(uuid, task, state, finalOutcome) {
+            if (ready) {
+                ready = false;
+                $(".taskaction-complete").addClass("taskaction-disabled");
+                $(".taskaction").addClass("taskaction-disabled");
+                post = function () {
+                    $.post('<c:url value="${url.basePreview}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                        $('${identifierName}').load('${reloadurl}',null,function() {
+                            $("#taskdetail_"+uuid).css("display","block");
+                        });
+                    }, "json");
+                }
+
+                if ($("#taskDataForm_"+uuid).size() > 0) {
+                    $("#taskDataForm_"+uuid).ajaxSubmit( {
+                        success: post
+                    });
+                } else {
+                    post()
+                }
+            }
+        };
+
+        function sendNewAssignee(uuid, task, key) {
+            if (ready) {
+                ready = false;
+                $(".taskaction-complete").addClass("taskaction-disabled");
+                $(".taskaction").addClass("taskaction-disabled");
+                $.post('<c:url value="${url.basePreview}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                    $('${identifierName}').load('${reloadurl}',null,function(){
                         $("#taskdetail_"+uuid).css("display","block");
                     });
                 }, "json");
             }
+        };
 
-            if ($("#taskDataForm_"+uuid).size() > 0) {
-                $("#taskDataForm_"+uuid).ajaxSubmit( {
-                    success: post
-                });
-            } else {
-                post()
-            }
-        }
-    };
+        function switchTaskDisplay(identifier) {
+            $(".taskdetail").each(function () {
+                if (!$(this).is("#taskdetail_" + identifier)) {
+                    $(this).slideUp("medium");
+                }
+            });
+            $("#taskdetail_" + identifier).slideToggle("medium");
+        };
 
-    function sendNewAssignee(uuid, task, key) {
-        if (ready) {
-            ready = false;
-            $(".taskaction-complete").addClass("taskaction-disabled");
-            $(".taskaction").addClass("taskaction-disabled");
-            $.post('<c:url value="${url.base}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                $('${identifierName}').load('${reloadurl}',null,function(){
-                    $("#taskdetail_"+uuid).css("display","block");
-                });
-            }, "json");
-        }
-    };
+    </script>
 
-    function switchTaskDisplay(identifier) {
-        $(".taskdetail").each(function () {
-            if (!$(this).is("#taskdetail_" + identifier)) {
-                $(this).slideUp("medium");
-            }
-        });
-        $("#taskdetail_" + identifier).slideToggle("medium");
-    };
+        <template:include view="hidden.header"/>
 
-</script>
-
-<template:include view="hidden.header"/>
-
-<h1>Bootstrap tasks</h1>
-<div id="tasklist">
-    <div id="${user.UUID}">
-        <c:set value="${currentNode.properties['displayState'].boolean}" var="dispState"/>
-        <c:set value="${currentNode.properties['displayDueDate'].boolean}" var="dispDueDate"/>
-        <c:set value="${currentNode.properties['displayLastModifiedDate'].boolean}" var="dispLastModifiedDate"/>
-        <c:set value="${currentNode.properties['displayAssignee'].boolean}" var="dispAssignee"/>
-        <c:set value="${currentNode.properties['displayCreator'].boolean}" var="dispCreator"/>
-        <fieldset class="well">
-            <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userTasks_table">
-                <thead>
-                <tr>
-                    <th><fmt:message key="mix_title.jcr_title"/></th>
-                    <th><fmt:message key="label.owner"/></th>
-                    <th><fmt:message key="mix_createdBy.jcr_createdBy"/></th>
-                    <th><fmt:message key="jnt_task.state"/></th>
-                </tr>
-                </thead>
-                <tbody>
-                <%@include file="userTasksTableRow.jspf" %>
-                </tbody>
-            </table>
-        </fieldset>
-        <div class="clear">
-
+        <h1>Bootstrap tasks</h1>
+        <div id="tasklist">
+            <div id="${user.UUID}">
+                <c:set value="${currentNode.properties['displayState'].boolean}" var="dispState"/>
+                <c:set value="${currentNode.properties['displayDueDate'].boolean}" var="dispDueDate"/>
+                <c:set value="${currentNode.properties['displayLastModifiedDate'].boolean}" var="dispLastModifiedDate"/>
+                <c:set value="${currentNode.properties['displayAssignee'].boolean}" var="dispAssignee"/>
+                <c:set value="${currentNode.properties['displayCreator'].boolean}" var="dispCreator"/>
+                <fieldset class="well">
+                    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userTasks_table">
+                        <thead>
+                        <tr>
+                            <th><fmt:message key="mix_title.jcr_title"/></th>
+                            <c:if test="${dispAssignee}">
+                                <th>
+                                    <fmt:message key="label.owner"/>
+                                </th>
+                            </c:if>
+                            <c:if test="${dispCreator}">
+                                <th>
+                                    <fmt:message key="mix_createdBy.jcr_createdBy"/>
+                                </th>
+                            </c:if>
+                            <c:if test="${dispState}">
+                                <th>
+                                    <fmt:message key="jnt_task.state"/>
+                                </th>
+                            </c:if>
+                            <c:choose>
+                                <c:when test="${dispDueDate}">
+                                    <th id="DueDate" scope="col">
+                                        <fmt:message key="jnt_task.dueDate"/>
+                                    </th>
+                                </c:when>
+                                <c:when test="${dispLastModifiedDate}">
+                                    <th id="LastModifiedDate" scope="col">
+                                        <fmt:message key="jnt_task.lastModifiedDate"/>
+                                    </th>
+                                </c:when>
+                            </c:choose>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <%@include file="userTasksTableRow.jspf" %>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+            <div class="clear"></div>
         </div>
-    </div>
+        <template:include view="hidden.footer"/>
+    </c:if>
 </div>

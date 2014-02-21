@@ -51,12 +51,17 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.jahia.utils.StringOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Source control management central factory class responsible for checking out a remote SCM repository content and instantiating
  * {@link SourceControlManagement} helpers for SCM operations on module's sources.
  */
 public class SourceControlFactory {
+    
+    private static final Logger logger = LoggerFactory.getLogger(SourceControlFactory.class);
+    
     private Map<String, String> sourceControlExecutables;
 
     /**
@@ -164,7 +169,15 @@ public class SourceControlFactory {
                 executor.setStreamHandler(new PumpStreamHandler(new StringOutputStream(), new StringOutputStream()));
                 executor.execute(new CommandLine(entry.getValue()), System.getenv());
             } catch (ExecuteException e) {
+                // ignore this one as the command always returns error code 1
             } catch (IOException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Unable to execute the " + entry.getKey() + " SCM executable: " + entry.getValue()
+                            + ". The SCM provider will be disabled. Cause: " + e.getMessage(), e);
+                } else {
+                    logger.info("Cannot find a valid " + entry.getKey() + " SCM executable at: " + entry.getValue()
+                            + ". The SCM provider will be skipped.");
+                }
                 continue;
             }
             this.sourceControlExecutables.put(entry.getKey(), entry.getValue());

@@ -63,10 +63,21 @@ a.lesslink {
     text-align:justify;
 }
 
+
+
 /* Table Down the page */
 
 .formtable{
     margin-top:20px;
+}
+
+/*  Password */
+#passwordError{
+    color:indianred;
+}
+
+#passwordSuccess{
+    color:seagreen;
 }
 
 /*privacy*/
@@ -76,3 +87,15 @@ a.lesslink {
     position: relative;
     top: 3px;
 }
+.wait{
+border:none;
+padding:15px;
+background-color:#000;
+-webkit-border-radius:10px;
+-moz-border-radius:10px;
+opacity: .5;
+color:#fff;
+}
+
+
+

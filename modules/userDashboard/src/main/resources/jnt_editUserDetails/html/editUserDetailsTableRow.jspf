@@ -151,23 +151,24 @@
         Social
     </td>
     <td>
+
         <c:if test="${currentNode.properties['j:facebookID'].boolean}">
             <c:choose>
                 <c:when test="${!empty fields['j:facebookID']}">
-                    <img src="${url.context}/icons/fb_logo_20_20.png"/>&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
                 </c:when>
                 <c:otherwise>
-                    <img src="${url.context}/icons/fb_logo_off_20_20.png"/>&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
                 </c:otherwise>
             </c:choose>
         </c:if>
         <c:if test="${currentNode.properties['j:skypeID'].boolean}">
             <c:choose>
                 <c:when test="${!empty fields['j:skypeID']}">
-                    <img src="${url.context}/icons/skype_logo_20_20.png"/>&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
                 </c:when>
                 <c:otherwise>
-                    <img src="${url.context}/icons/skype_logo_off_20_20.png"/>&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
                 </c:otherwise>
             </c:choose>
         </c:if>
@@ -175,10 +176,10 @@
         <c:if test="${currentNode.properties['j:twitterID'].boolean}">
             <c:choose>
                 <c:when test="${!empty fields['j:twitterID']}">
-                    <img src="${url.context}/icons/twitter_logo_20_20.png"/>&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
                 </c:when>
                 <c:otherwise>
-                    <img src="${url.context}/icons/twitter_logo_off_20_20.png"/>&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
                 </c:otherwise>
             </c:choose>
         </c:if>
@@ -186,10 +187,10 @@
         <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
             <c:choose>
                 <c:when test="${!empty fields['j:linkedinID']}">
-                    <img src="${url.context}/icons/in_logo_20_20.png"/>&nbsp;&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
                 </c:when>
                 <c:otherwise>
-                    <img src="${url.context}/icons/in_logo_off_20_20.png"/>&nbsp;&nbsp;&nbsp;
+                    <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
                 </c:otherwise>
             </c:choose>
         </c:if>
@@ -247,17 +248,21 @@
     </td>
     <td>
         <div class="row-fluid">
-            <div class="span3">
-                <div><c:if test="${!empty fields['j:address']}">${fn:escapeXml(fields['j:address'])}</c:if></div>
-                <div><c:if test="${!empty fields['j:zipCode']}">${fn:escapeXml(fields['j:zipCode'])}</c:if></div>
-                <div><c:if test="${!empty fields['j:city']}">${fn:escapeXml(fields['j:city'])}</c:if></div>
-                <div><c:if test="${!empty fields['j:country']}">${fn:escapeXml(fields['j:country'])}</c:if></div>
-            </div>
-            <div class="span4">
-                <div><c:if test="${!empty fields['j:phoneNumber']}">${fn:escapeXml(fields['j:phoneNumber'])}</c:if></div>
-                <div><c:if test="${!empty fields['j:mobileNumber']}">${fn:escapeXml(fields['j:mobileNumber'])}</c:if></div>
-                <div><c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if></div>
-            </div>
+            <c:if test="${(!empty fields['j:address']) or (!empty fields['j:zipCode']) or (!empty fields['j:city']) or (!empty fields['j:country'])}">
+                <div class="span3">
+                    <div><c:if test="${!empty fields['j:address']}">${fn:escapeXml(fields['j:address'])}</c:if></div>
+                    <div><c:if test="${!empty fields['j:zipCode']}">${fn:escapeXml(fields['j:zipCode'])}</c:if></div>
+                    <div><c:if test="${!empty fields['j:city']}">${fn:escapeXml(fields['j:city'])}</c:if></div>
+                    <div><c:if test="${!empty fields['j:country']}">${fn:escapeXml(fields['j:country'])}</c:if></div>
+                </div>
+            </c:if>
+            <c:if test="${(!empty fields['j:phoneNumber']) or (!empty fields['j:mobileNumber']) or (!empty fields['j:email'])}">
+                <div class="span4">
+                    <div><c:if test="${!empty fields['j:phoneNumber']}">${fn:escapeXml(fields['j:phoneNumber'])}</c:if></div>
+                    <div><c:if test="${!empty fields['j:mobileNumber']}">${fn:escapeXml(fields['j:mobileNumber'])}</c:if></div>
+                    <div><c:if test="${!empty fields['j:email']}">${fn:escapeXml(fields['j:email'])}</c:if></div>
+                </div>
+            </c:if>
         </div>
     </td>
     <td>
@@ -331,6 +336,7 @@
         Password
     </td>
     <td>
+        <div id="passwordSuccess" class="hide"></div>
     </td>
     <td>
         <button class="btn btn-primary" type="button" onclick="switchRow('password')">
@@ -342,7 +348,7 @@
     <td>
         Password Form
     </td>
-    <td id="password_form">
+    <td>
         <c:if test="${currentNode.properties['password'].boolean and !(user.properties['j:external'].boolean)}">
             <c:forEach items="${param}" var="p">
                 <c:if test="${not empty ps}">
@@ -352,39 +358,58 @@
                     <c:set var="ps" value="?${p.key}=${p.value}"/>
                 </c:if>
             </c:forEach>
-            <div class="control-group">
-                <label class="control-label" for="passwordField"><fmt:message key="label.password"/> : </label>
-                <div class="controls">
-                    <input type="password" id="passwordField" name="password"/>
-                </div>
-                <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/> : </label>
-                <div class="controls">
-                    <input type="password" id="passwordconfirm" name="passwordconfirm"/>
-                </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('password')">
-                        <fmt:message key="label.clickToEdit"/>
-                    </button>
-                </div>
+            <label class="control-label" for="passwordField"><fmt:message key="label.password"/> : </label>
+            <div class="controls">
+                <input type="password" id="passwordField" name="password"/>
             </div>
+            <div id="passwordError" class="controls hide"></div>
+
+            <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/> : </label>
+            <div class="controls">
+                <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="button" onclick="changePassword()">
+                    <fmt:message key="label.clickToEdit"/>
+                </button>
+            </div>
+
             <script type="text/javascript">
-                function changePassword
+                function changePassword()
                 {
+                    console.log('In change password JS ...');
                     //passwords checks
-                    if ($("#password").val() == "") {
+                    if ($("#passwordField").val() == "") {
                         alert("<fmt:message key='serverSettings.user.errors.password.mandatory'/>");
                         return false;
                     }
-                    if ($("#password").val() != $("#passwordconfirm").val()) {
+                    if ($("#passwordField").val() != $("#passwordconfirm").val()) {
                         alert("<fmt:message key='serverSettings.user.errors.password.not.matching'/>");
                         return false;
                     }
-                    $.post('<c:url value="${url.base}${user.path}.changePassword.do"/>',
-                            $(this).serializeArray(), function(data) {
-                                alert(data['errorMessage']);
-                                if (data['result']=='success') {
+                    console.log('Checks Done ...');
+
+                    var params = {password: $("#passwordField").val()};
+
+                    console.log('password is : '+params.password+' calling ajax post');
+
+                    $.post( '<c:url value="${url.base}${user.path}.changePassword.do"/>', { password: $("#passwordField").val(), passwordconfirm:  $("#passwordconfirm").val()},
+                            function(result)
+                            {
+                                if(result['result'] != 'success')
+                                {
+                                    $('#passwordError').html(result['errorMessage']);
+                                    $('#passwordError').fadeIn('slow').delay(4000).fadeOut('slow');
+                                    $('#passwordField').focus();
                                 }
-                            }, 'json');
+                                else
+                                {
+                                    switchRow('password');
+                                    $('#passwordSuccess').html(result['errorMessage']);
+                                    $('#passwordSuccess').fadeIn('slow').delay(4000).fadeOut('slow');
+                                }
+                            },
+                            'json');
                 }
             </script>
         </c:if>
@@ -478,49 +503,32 @@
 <tr id="privacy_form" class="hide">
     <td>Privacy </td>
     <td>
-        <div class="switch-wrapper">
-            <div class="control-group">
-                <label class="control-label" for="names_privacy">Name : </label>
-                <div class="controls">
-                    <input id="names_privacy" type="checkbox" name="names_privacy" data-size="mini" data-on-text="public" data-off-text="private" checked>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="organization_privacy">Organization : </label>
-                <div class="controls">
-                    <input id="organization_privacy" type="checkbox" name="organization_privacy" data-size="mini" data-on-text="public" data-off-text="private" checked>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="function_privacy">Function : </label>
-                <div class="controls">
-                    <input id="function_privacy" type="checkbox" name="function_privacy" data-size="mini" data-on-text="public" data-off-text="private" >
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="address_privacy">Address : </label>
-                <div class="controls">
-                    <input id="address_privacy" type="checkbox" name="address_privacy" data-size="mini" data-on-text="public" data-off-text="private" checked>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="social_privacy">Social : </label>
-                <div class="controls">
-                    <input id="social_privacy" type="checkbox" name="social_privacy" data-size="mini" data-on-text="public" data-off-text="private" >
-                </div>
-            </div>
-            <%--<div>Organisation : <input type="checkbox" name="organization" data-size="mini" data-on-text="public" data-off-text="private" checked></div>
-            <div>Function : <input type="checkbox" name="function" data-size="mini" data-on-text="public" data-off-text="private" checked></div>
-            <div>Address : <input type="checkbox" name="address" data-size="mini" data-on-text="public" data-off-text="private" checked></div>
-            <div>Social : <input type="checkbox" name="social" data-size="mini" data-on-text="public" data-off-text="private" checked></div>--%>
-            <script type="text/javascript">
-                $("[name='names_privacy']").bootstrapSwitch();
-                $("[name='organization_privacy']").bootstrapSwitch();
-                $("[name='function_privacy']").bootstrapSwitch();
-                $("[name='address_privacy']").bootstrapSwitch();
-                $("[name='social_privacy']").bootstrapSwitch();
-            </script>
-        </div>
+        <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
+        <c:set var="publicPropertiesAsString" value=""/>
+        <c:forEach items="${publicProperties}" var="value">
+            <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
+        </c:forEach>
+        <c:forTokens
+                items="j:title,j:firstName,j:lastName,j:gender,j:organization,j:function,j:birthDate,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,j:about,preferredLanguage"
+                delims="," var="key" varStatus="loopStatus">
+            <script type="text/javascript">visibilityNumber++;</script>
+            <c:if test="${currentNode.properties[key].boolean}">
+                    <div class="control-group">
+                        <label class="control-label" for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> : </label>
+                        <div class="controls switch-wrapper">
+                            <input  onchange="editVisibility(visibilityNumber)" data-size="mini" data-on-text=" public " data-off-text=" private " type="checkbox" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />&nbsp;
+                        </div>
+                    </div>
+            </c:if>
+        </c:forTokens>
+        <script type="text/javascript">
+            // Activating the checking buttons
+            var currentvisibility=0;
+            for(currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
+            {
+                $("#publicProperties"+currentvisibility).bootstrapSwitch();
+            }
+        </script>
     </td>
     <td>
         <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">

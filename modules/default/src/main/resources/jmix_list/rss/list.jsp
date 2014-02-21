@@ -33,7 +33,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>${fn:escapeXml(title)}</title>
-        <link><c:url value="${url.server}${url.base}${currentNode.path}.html" context="/"/></link>
+        <link><c:url value="${url.server}${url.context}${url.base}${currentNode.path}.html" /></link>
         <description>${fn:escapeXml(description)}</description>
         <generator>Jahia <%= Jahia.VERSION + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
         <c:forEach items="${moduleMap.currentList}" var="subchild">

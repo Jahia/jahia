@@ -55,7 +55,7 @@ VERSION:2.0
 BEGIN:VTODO
 <c:set var="assignee" value="${currentNode.properties['assigneeUserKey'].string}" /><%= getUserContentLine((String)pageContext.getAttribute("assignee"), "ATTENDEE")%><c:if test="${not empty currentNode.properties['priority'].string}">PRIORITY:${priorities[currentNode.properties['priority'].string]}
 </c:if><c:set var="creator" value="${currentNode.properties['jcr:createdBy'].string}" /><%= getUserContentLine((String)pageContext.getAttribute("creator"), "ORGANIZER")%>DTSTAMP:<fmt:formatDate value="${currentNode.properties['jcr:created'].date.time}" pattern="yyyyMMdd'T'HHmmss'Z'" timeZone="GMT" />
-URL;VALUE=URI:<c:url value="${url.server}${url.baseLive}${renderContext.user.localPath}.user-tasks.html"/>
+URL;VALUE=URI:<c:url value="${url.server}${url.context}${url.baseLive}${renderContext.user.localPath}.user-tasks.html"/>
 SUMMARY:${currentNode.properties['jcr:title'].string}
 <c:if test="${not empty currentNode.properties['description'].string}">DESCRIPTION:${currentNode.properties['description'].string}
 </c:if>DUE:<fmt:formatDate value="${currentNode.properties['dueDate'].date.time}" pattern="yyyyMMdd'T'HHmmss'Z'" timeZone="GMT" />

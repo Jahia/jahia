@@ -40,6 +40,7 @@
 
 package org.jahia.services.templates;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -172,6 +173,10 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         executeCommand(executable, new String[]{"add","pom.xml"});
         executeCommand(executable, new String[]{"commit","-m","Initial commit"});
         if (r.exitValue > 0) {
+            File svnDir = new File(workingDirectory.getPath() + "/.svn");
+            if (svnDir.exists()) {
+                FileUtils.deleteDirectory(svnDir);
+            }
             throw new IOException(r.err);
         }
     }

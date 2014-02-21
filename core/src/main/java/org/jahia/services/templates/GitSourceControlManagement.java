@@ -40,17 +40,26 @@
 
 package org.jahia.services.templates;
 
+import net.sf.saxon.type.StringConverter;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 /**
  * Git based source control management service.
- * 
+ *
  * @author Thomas Draier
  */
 public class GitSourceControlManagement extends SourceControlManagement {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(GitSourceControlManagement.class);
 
     /**
      * Initializes an instance of this class.
@@ -188,14 +197,50 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     protected void sendToSCM(File workingDirectory, String url) throws IOException {
+        List<String[]> commands = Arrays.asList(
+                new String[]{"init"},
+                new String[]{"add","."},
+                new String[]{"commit","-a","-m","First commit"},
+                new String[]{"remote","add","origin",url},
+                new String[]{"-c", "core.askpass=true","fetch"},
+                new String[]{"merge","origin/master"},
+                new String[]{"-c", "core.askpass=true","push","-u","origin","master"});
+
         this.rootFolder = workingDirectory;
-        executeCommand(executable, new String[]{"init"});
-        executeCommand(executable, new String[]{"add","."});
-        executeCommand(executable, new String[]{"commit","-a","-m","First commit"});
-        executeCommand(executable, new String[]{"remote","add","origin",url});
-        executeCommand(executable, new String[]{"-c", "core.askpass=true","fetch"});
-        executeCommand(executable, new String[]{"merge","origin/master"});
-        executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin","master"});
+        for (String[] command : commands) {
+            logger.debug("executing command : {}", Arrays.toString(command));
+            ExecutionResult res = executeCommand(executable, command);
+            if (res.exitValue > 0) {
+                // an issue occurs during first commit
+                // clean up
+                executeCommand(executable,new String[]{"merge", "--abort"});
+                File gitDir = new File(workingDirectory.getPath() + "/.git");
+                if (gitDir.exists()) {
+                    FileUtils.deleteDirectory(gitDir);
+                }
+                logger.error("unable to init git repository {} : {}", url, res.err);
+                if (!StringUtils.isEmpty(res.out)) {
+                    logger.error(res.out);
+                }
+                StringBuilder message = new StringBuilder();
+                if (!StringUtils.isEmpty(res.err)) {
+                    if (StringUtils.contains(res.err,"tree files would be overwritten")) {
+                        // tree issue, unable to merge existing content
+                        message.append("Unable to send sources to a non empty repository");
+                    } else if (StringUtils.contains(res.err,"Repository not found")) {
+                        // repo not found
+                        message.append("Repository not found");
+                    } else {
+                        message.append("Repository not accessible, see the log for more information");
+                    }
+                } else {
+                    message.append("Repository not accessible, see the log for more information");
+                }
+                throw new IOException("Unable to init git repository. " + message.toString());
+            }
+        }
+
+
     }
 
     protected void initWithWorkingDirectory(File workingDirectory) throws IOException {
@@ -255,7 +300,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
     public String update() throws IOException {
         StringBuilder out = new StringBuilder();
         out.append("[").append(executable).append(" stash clear").append("]:\n");
-        ExecutionResult result = executeCommand(executable, new String[] { "stash", "clear" });
+        ExecutionResult result = executeCommand(executable, new String[]{"stash", "clear"});
         out.append(result.out);
         out.append("\n");
         if (StringUtils.isNotEmpty(result.err)) {
@@ -297,7 +342,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         if (stashPopResult != null) {
             checkExecutionResult(stashPopResult);
         }
-        
+
         return out.toString();
     }
 }

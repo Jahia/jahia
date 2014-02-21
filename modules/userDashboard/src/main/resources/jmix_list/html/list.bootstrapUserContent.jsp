@@ -21,6 +21,7 @@
 
 <template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="javascript" resources="moment-with-langs.min.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
@@ -31,12 +32,36 @@
         });
     </script>
     <script type="text/javascript">
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+            "date-pages-pre": function ( a ) {
+                var ukDatea = $(a).text().split('by');
+                var momentread = moment(ukDatea[0].trim(), "DD, MMMM YYYY HH:mm");
+                return  momentread;
+            },
+
+            "date-pages-asc": function ( a, b ) {
+                return (a.diff(b) < 0) ? -1 : ((a.diff(b)>0)?1:0);
+            },
+
+            "date-pages-desc": function ( a, b ) {
+                return (a.diff(b) < 0) ? 1 : ((a.diff(b)>0)?-1:0);
+            }
+        } );
+
         $(document).ready(function () {
             $('#userContent_table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
                 "iDisplayLength":10,
                 "sPaginationType": "bootstrap",
-                "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
+                "bFilter":true,
+                "aaSorting": [],
+                "aoColumns": [
+                    null,
+                    null,
+                    {"sType":"date-pages" },
+                    {"sType":"date-pages" },
+                    {"sType":"date-pages" }
+                ]
             });
         });
     </script>

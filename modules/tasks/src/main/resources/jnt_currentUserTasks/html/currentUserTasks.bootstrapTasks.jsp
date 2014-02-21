@@ -1,31 +1,48 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
-<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
-<%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
-<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
 <%--@elvariable id="scriptInfo" type="java.lang.String"--%>
-<%--@elvariable id="task" type="org.jahia.services.workflow.WorkflowTask"--%>
-<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
-<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="workspace" type="java.lang.String"--%>
-<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,workInProgress.js"/>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="task" type="org.jahia.services.workflow.WorkflowTask"--%>
+
+<template:addResources type="css" resources="contribute.min.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,workInProgress.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
+
+<template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
+<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
+
+
+<template:addResources type="css" resources="tasks.css"/>
+<template:addResources type="css" resources="contentlist.css"/>
+
+<template:addResources type="javascript" resources="tasks.js"/>
+<template:addResources type="javascript" resources="ajaxreplace.js"/>
+<template:addResources type="javascript" resources="jquery.form.js"/>
+
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
 <template:addResources>
@@ -39,15 +56,13 @@
                 "sPaginationType": "bootstrap",
                 "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
             });
-
-            console.log("blablabla 1");
         });
     </script>
 </template:addResources>
 
 <script type="text/javascript">
     var ready = true;
-    console.log("blablabla 2");
+
     <c:choose>
         <c:when test="${not empty modeDispatcherId}">
             <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
@@ -66,7 +81,7 @@
             <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
         </c:otherwise>
     </c:choose>
-    console.log("blablabla 3");
+
     function sendNewStatus(uuid, task, state, finalOutcome) {
         if (ready) {
             ready = false;
@@ -90,7 +105,6 @@
         }
     };
 
-    console.log("blablabla 4");
     function sendNewAssignee(uuid, task, key) {
         if (ready) {
             ready = false;
@@ -103,7 +117,7 @@
             }, "json");
         }
     };
-    console.log("blablabla 5");
+
     function switchTaskDisplay(identifier) {
         $(".taskdetail").each(function () {
             if (!$(this).is("#taskdetail_" + identifier)) {
@@ -111,12 +125,12 @@
             }
         });
         $("#taskdetail_" + identifier).slideToggle("medium");
-    }
-
-    console.log("blablabla end");
+    };
 
 </script>
+
 <template:include view="hidden.header"/>
+
 <h1>Bootstrap tasks</h1>
 <div id="tasklist">
     <div id="${user.UUID}">

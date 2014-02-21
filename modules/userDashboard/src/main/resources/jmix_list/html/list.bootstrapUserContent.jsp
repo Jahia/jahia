@@ -48,11 +48,31 @@
         <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userContent_table">
             <thead>
             <tr>
-                <th><fmt:message key='label.name'/></th>
-                <th><fmt:message key='label.site'/></th>
-                <th><fmt:message key='mix_created'/></th>
-                <th><fmt:message key='jmix_contentmetadata.j_lastModificationDate'/></th>
-                <th><fmt:message key='jmix_contentmetadata.j_lastPublishingDate'/></th>
+                <th>
+                    <img src="/icons/siteManager.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key='label.site'/>
+                </th>
+                <th>
+                    <img src="/icons/copy.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key='jnt_imageReferenceLink.j_linknode'/>
+                </th>
+                <th>
+                    <img src="/icons/editMode.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key='mix_created'/>
+                </th>
+                <th>
+                    <img src="/icons/contribute.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key='jmix_contentmetadata.j_lastModificationDate'/>
+                </th>
+                <th>
+                    <img src="/icons/publicationAction.png" width="16" height="16" alt=" "
+                         role="presentation" style="position:relative;"/>
+                    <fmt:message key='jmix_contentmetadata.j_lastPublishingDate'/>
+                </th>
             </tr>
             </thead>
             <tbody>

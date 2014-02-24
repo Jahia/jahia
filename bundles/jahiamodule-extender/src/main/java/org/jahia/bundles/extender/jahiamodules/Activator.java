@@ -682,7 +682,7 @@ public class Activator implements BundleActivator {
         setModuleState(bundle, ModuleState.State.STOPPED, null);
     }
 
-    private void flushOutputCachesForModule(Bundle bundle, JahiaTemplatesPackage pkg) {
+    private void flushOutputCachesForModule(Bundle bundle, final JahiaTemplatesPackage pkg) {
         if (pkg.getInitialImports().isEmpty()) {
             // check for initial imports
             Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
@@ -695,17 +695,23 @@ public class Activator implements BundleActivator {
             }
         }
         try {
-            List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList();
-            Set<String> pathsToFlush = new HashSet<String>();
-            for (JCRSiteNode site : sitesNodeList) {
-                Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
-                if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
-                    pathsToFlush.add(site.getPath());
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList(session);
+                    Set<String> pathsToFlush = new HashSet<String>();
+                    for (JCRSiteNode site : sitesNodeList) {
+                        Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
+                        if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
+                            pathsToFlush.add(site.getPath());
+                        }
+                    }
+                    if (!pathsToFlush.isEmpty()) {
+                        CacheHelper.flushOutputCachesForPaths(pathsToFlush, true);
+                    }
+                    return null;
                 }
-            }
-            if (!pathsToFlush.isEmpty()) {
-                CacheHelper.flushOutputCachesForPaths(pathsToFlush, true);
-            }
+            });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

@@ -41,21 +41,21 @@ a:visited {
     color: #0254EB
 }
 
-a.morelink {
+a#aboutMeMoreLink {
     color: #0254EB;
     text-decoration:none;
     outline: none;
     padding-left: 10px;
 }
 
-a.lesslink {
+a#aboutMeLessLink {
     color: #0254EB;
     text-decoration:none;
     outline: none;
     padding-left: 10px;
 }
 
-.more{
+#aboutMeBlock{
     height:115px;
     display:block;
     padding :10px;
@@ -63,10 +63,15 @@ a.lesslink {
     text-align:justify;
 }
 
-
+/*
+#aboutMeText{
+    display:block;
+    padding :10px;
+    overflow:hidden;
+    text-align:justify;
+}*/
 
 /* Table Down the page */
-
 .formtable{
     margin-top:20px;
 }
@@ -81,21 +86,17 @@ a.lesslink {
 }
 
 /*privacy*/
-
 .switch-wrapper {
     display: inline-block;
     position: relative;
     top: 3px;
 }
-.wait{
-border:none;
-padding:15px;
-background-color:#000;
--webkit-border-radius:10px;
--moz-border-radius:10px;
-opacity: .5;
-color:#fff;
+
+#birthDate
+{
+    display:block;
 }
+
 
 
 

@@ -47,288 +47,258 @@
 %>
 <%@ include file="../../getUser.jspf"%>
 
-<%-- CSS --%>
-<template:addResources type="css" resources="userProfile.css"/>
-<template:addResources type="css" resources="dashboardUserProfile.css"/>
-<template:addResources type="css" resources="timepicker.css"/>
-<template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<%-- CSS inclusions --%>
+<template:addResources type="css" resources="bootstrap-datetimepicker.min.css"/>
 <template:addResources type="css" resources="bootstrap-switch.css"/>
+<template:addResources type="css" resources="dashboardUserProfile.css"/>
 
-<%-- Javascripts --%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.jeditable.js,jquery.blockUI.js,workInProgress.js"/>
-<template:addResources type="javascript" resources="jquery.blockUI.js,workInProgress.js"/>
-<template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
-<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
-<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
-<template:addResources type="javascript" resources="ajaxreplace.js"/>
-<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
-<template:addResources type="javascript" resources="timepicker.js,jquery.jeditable.datepicker.js"/>
-<template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${currentResource.locale}.js"/>
+<%-- Javascripts inclusions --%>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootstrap-switch.js"/>
+<template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
+<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addCacheDependency node="${user}"/>
+
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>
-<jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle" var="title"/>
-<c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
-    <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
-</c:if>
-<c:if test="${empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
-    <c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
-</c:if>
-<c:if test="${empty title and empty fields['j:firstName'] and not empty fields['j:lastName']}">
-    <c:set var="person" value="${fields['j:lastName']}"/>
-</c:if>
-<c:if test="${empty title and not empty fields['j:firstName'] and empty fields['j:lastName']}">
-    <c:set var="person" value="${fields['j:firstName']}"/>
-</c:if>
-<c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
-    <c:set var="person" value=""/>
-</c:if>
 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
-<c:if test="${not empty birthDate}">
-    <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy" var="birthYear"/>
-    <fmt:formatDate value="${now}" pattern="yyyy" var="currentYear"/>
-</c:if>
-<c:if test="${not empty birthDate}">
-    <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="editBirthDate"/>
-</c:if>
-<fmt:formatDate value="${now}" pattern="dd/MM/yyyy" var="editNowDate"/>
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>
 <template:addResources>
 <script type="text/javascript">
-    /* User Picture */
-    function updatePhoto()
-    {
-        /*$.post($(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'), )*/
-        $(".userPicture${currentNode.identifier}").editable('', {
-            type : 'ajaxupload',
-            target: $(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
-            callback : function (data, status,original) {
-                var datas;
-                var initData = $(original).attr('init:data');
-                if (initData != null) {
-                    datas = $.parseJSON(initData);
-                }
-                if (datas == null) {
-                    datas = {};
-                }
-                datas['jcrMethodToCall'] = 'put';
-                var callableUrl = $(original).attr('jcr:url');
-                datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
-                $.post($(original).attr('jcr:url'), datas, function(result) {
-                    ajaxReloadCallback();
-                }, "json");
-                $(".userPicture${currentNode.identifier}").html(original.revert);
+/* User Picture */
+var currentElement = "";
+var currentForm = "";
+function updatePhoto()
+{
+    /*$.post($(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'), )*/
+    $(".userPicture${currentNode.identifier}").editable('', {
+        type : 'ajaxupload',
+        target: $(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
+        callback : function (data, status,original) {
+            var datas;
+            var initData = $(original).attr('init:data');
+            if (initData != null) {
+                datas = $.parseJSON(initData);
             }
-        });
-    }
-
-    /* About me functions */
-    /**
-     * @Author : Jahia(rahmed)
-     * This function Hide the extra part of the about text when the user finish to read it
-     */
-    function hideMoreText()
-    {
-
-        $('div.more').css({
-            'height': '115px'
-        });
-        $('.morelink').show();
-        $('.lesslink').hide();
-    }
-
-    /**
-     * @Author : Jahia(rahmed)
-     * This function Show the extra part of the about text so the user can read it
-     */
-    function showMoreText()
-    {
-        $('div.more').css({
-            'height': 'auto'
-        });
-        $('.lesslink').show();
-        $('.morelink').hide();
-    }
-
-    /* Privacy properties functions */
-    /**
-    * @Author : Jahia(rahmed)
-    * This function post on the privacy properties in order to update JCR
-    * The post is in string in order to allow multiple values on publicProperties as the Jahia API
-    * Doesn't allow the JSON table attributes.
-    * propertiesNumber is the number of properties in the loop
-    *
-    */
-    function editVisibility(propertieNumber)
-    {
-        //loop counter
-        var currentPropertieIndex=0;
-
-        //data to Post
-        var dataToPost="jcrMethodToCall=put";
-
-        //Looping on properties and filling the data
-        for(currentPropertieIndex=0;currentPropertieIndex<propertieNumber;currentPropertieIndex++)
-        {
-            if($('#publicProperties'+currentPropertieIndex).bootstrapSwitch('state') == true)
-            {
-                //Parsing the ":" to "%3A" while adding data
-                dataToPost+='&j%3ApublicProperties='+$("#publicProperties"+currentPropertieIndex).val().replace(":","%3A");
+            if (datas == null) {
+                datas = {};
             }
+            datas['jcrMethodToCall'] = 'put';
+            var callableUrl = $(original).attr('jcr:url');
+            datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
+            $.post($(original).attr('jcr:url'), datas, function(result) {
+                ajaxReloadCallback();
+            }, "json");
+            $(".userPicture${currentNode.identifier}").html(original.revert);
         }
-        //posting the properties visibility to JCR
-        $.post("<c:url value='${url.basePreview}${user.path}'/>",dataToPost);
+    });
+}
+
+/* About me functions */
+/**
+ * @Author : Jahia(rahmed)
+ * This function Hide the extra part of the about text when the user finish to read it
+ */
+function hideMoreText()
+{
+
+    $('#aboutMeText').css({
+        'height': 'auto',
+        'overflow': 'hidden'
+    });
+    $('#aboutMeBlock').css({
+        'height': '115px'
+    });
+    $('#aboutMeLessLink').hide();
+    $('#aboutMeMoreLink').show();
+
+}
+
+/**
+ * @Author : Jahia(rahmed)
+ * This function Show the extra part of the about text so the user can read it
+ */
+function showMoreText()
+{
+    $('#aboutMeText').css({
+        'height': '115px',
+        'overflow': 'auto'
+    });
+    $('#aboutMeBlock').css({
+        'height': '155px'
+    });
+    $('#aboutMeMoreLink').hide();
+    $('#aboutMeLessLink').show();
+    /*$('.lesslink').show();
+    $('.morelink').hide();*/
+}
+
+/* Privacy properties functions */
+/**
+ * @Author : Jahia(rahmed)
+ * This function post on the privacy properties in order to update JCR
+ * The post is in string in order to allow multiple values on publicProperties as the Jahia API
+ * Doesn't allow the JSON table attributes.
+ * propertiesNumber is the number of properties in the loop
+ *
+ */
+function editVisibility(propertieNumber)
+{
+    //loop counter
+    var currentPropertieIndex=0;
+
+    //data to Post
+    var dataToPost="jcrMethodToCall=put";
+
+    //Looping on properties and filling the data
+    for(currentPropertieIndex=0;currentPropertieIndex<propertieNumber;currentPropertieIndex++)
+    {
+        if($('#publicProperties'+currentPropertieIndex).bootstrapSwitch('state') == true)
+        {
+            //Parsing the ":" to "%3A" while adding data
+            dataToPost+='&j%3ApublicProperties='+$("#publicProperties"+currentPropertieIndex).val().replace(":","%3A");
+        }
+    }
+    //posting the properties visibility to JCR
+    $.post("<c:url value='${url.basePreview}${user.path}'/>",dataToPost);
+}
+
+/* General Table form functions */
+
+/**
+ * @Author : Jahia(rahmed)
+ * This function switch a row from the display view to the form view
+ * elementId : id of the row to switch
+ */
+function switchRow(elementId)
+{
+    //building css element id
+    elementId="#"+elementId;
+
+    //building css form id
+    var elementFormId = elementId+"_form";
+
+    //Checking which element to show and which element to hide
+    if( $(elementId).is(":visible"))
+    {
+        if(currentForm!='')
+        {
+            $(currentForm).hide();
+            $(currentElement).show();
+        }
+        //Hide the display row
+        $(elementId).hide();
+        //Show the form
+        $(elementFormId).show();
+    }
+    else
+    {
+        //Hide the Form
+        $(elementFormId).hide();
+        //Show the display Row
+        $(elementId).show();
+    }
+    currentElement = elementId;
+    currentForm = elementFormId;
+}
+
+function ajaxReloadCallback(jcrId)
+{
+    if (jcrId == 'preferredLanguage')
+    {
+        console.log('language change detected');
+        window.location.reload();
+    } else
+    {
+        $('#editDetailspage').parent().load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
+    }
+}
+
+/**
+ * @Author : Jahia(rahmed)
+ * This function make a JSON Post of all the form entries (textInputs, select and ckeditors) contained in a Row
+ * rowId: the Id of the from which post the form entries
+ */
+function saveChangesByRowId(rowId)
+{
+    var data;
+    var reloadType='other';
+
+    //initializing data table
+    var initData = $(this).attr('init:data');
+    if (initData != null)
+    {
+        data = $.parseJSON(initData);
+    }
+    if (data == null)
+    {
+        data = {};
     }
 
-    /* General Table form functions */
+    //presetting the jcr method
+    data['jcrMethodToCall'] = 'put';
+    var divId = "#"+rowId+'_form';
 
-    /**
-     * @Author : Jahia(rahmed)
-     * This function switch a row from the display view to the form view
-     * elementId : id of the row to switch
-     */
-    function switchRow(elementId)
-    {
-        //building css element id
-        elementId="#"+elementId;
-
-        //building css form id
-        var elementFormId = elementId+"_form";
-
-        //Checking which element to show and which element to hide
-        if( $(elementId).is(":visible"))
+    //getting the form selects
+    $(divId+' select').each(function() {
+        if(this.name=='preferredLanguage')
         {
-            $(elementId).hide();
-            $(elementFormId).show();
+            reloadType='preferredLanguage';
+            data[this.name]=this.value;
         }
         else
         {
-            $(elementFormId).hide();
-            $(elementId).show();
-        }
-    }
-
-    function ajaxReloadCallback(jcrId)
-    {
-
-        /*alert('tempo');*/
-        console.log('in callback');
-        if (jcrId == 'preferredLanguage')
-        {
-            console.log('language change detected');
-            window.location.reload();
-        } else
-        {
-            console.log('other change detected');
-            $('#editDetailspage').parent().load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
-        }
-    }
-
-    function wait(){
-        if($(".modal").is(":visible"))
-        {
-            $(".modal").hide();
-        }
-        else
-        {
-            $(".modal").show();
-        }
-    }
-
-
-    /**
-     * @Author : Jahia(rahmed)
-     * This function make a JSON Post of all the form entries (textInputs, select and ckeditors) contained in a Row
-     * rowId: the Id of the from which post the form entries
-     */
-    function saveChangesByRowId(rowId)
-    {
-        console.log('getting in save changes !');
-        var data;
-        var reloadType='other';
-
-        //initializing data table
-        var initData = $(this).attr('init:data');
-        if (initData != null)
-        {
-            data = $.parseJSON(initData);
-        }
-        if (data == null)
-        {
-            data = {};
-        }
-
-        //presetting the jcr method
-        data['jcrMethodToCall'] = 'put';
-        var divId = "#"+rowId+'_form';
-
-        console.log('getting selects');
-        //getting the form selects
-        $(divId+' select').each(function() {
-            if(this.name=='preferredLanguage')
-            {
-                reloadType='preferredLanguage';
-                data[this.name]=this.value;
-            }
-            else
-            {
-                data['j:'+this.name]=this.value;
-            }
-
-        });
-
-        console.log('getting inputs');
-        //getting the form inputs
-        $(divId+' input').each(function() {
             data['j:'+this.name]=this.value;
-        });
-
-        console.log('getting ckEditors');
-        //getting the ckeditors
-        var editorId = rowId+"_editor";
-        var editor = CKEDITOR.instances[editorId];
-        if(editor != null)
-        {
-            data['j:'+rowId]=editor.getData();
         }
 
-        //calling ajax POST
-        var thisField = this;
+    });
 
+    //getting the form inputs
+    $(divId+' input').each(function() {
+        data['j:'+this.name]=this.value;
+    });
 
-        /*console.log('posting : '+jsonSubmitted);*/
-        $.post("<c:url value='${url.basePreview}${user.path}'/>",data,null,"json").done(function(){
-            /*console.log('before work in progress');
-            $('#indicator').show();
-            setTimeout("update", 10);
-            window.setInterval(ajaxReloadCallback(reloadType),15000);
-            $('#indicator').hide();
-            console.log('after work in progress');*/
-            /*wait();
-            setTimeout(function(){ajaxReloadCallback(reloadType)},1000);*/
-            ajaxReloadCallback(reloadType);
-        });
-        console.log('getting out save changes !');
+    //getting the ckeditors
+    var editorId = rowId+"_editor";
+    var editor = CKEDITOR.instances[editorId];
+    if(editor != null)
+    {
+        data['j:'+rowId]=editor.getData();
     }
-    var visibilityNumber = 0;
 
+    //calling ajax POST
+    var thisField = this;
+    $.post("<c:url value='${url.basePreview}${user.path}'/>",data,null,"json").done(function(){ajaxReloadCallback(reloadType);});
+}
+var visibilityNumber = 0;
+$(document).ready(function(){
+    // Activating the more/less links */
+    if($('#aboutMeText').height()>$('#aboutMeBlock').height())
+    {
+        $('#aboutMeMoreLink').show();
+    }
+
+    // Activating the checking buttons
+    var currentvisibility=0;
+    for(currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
+    {
+        $("#publicProperties"+currentvisibility).bootstrapSwitch();
+    }
+
+    //Activating the Date-Picker
+    $('#birthDate').datetimepicker({
+        format: 'yyyy-MM-dd',
+        pickTime: false,
+        language: '${currentResource.locale}'
+    });
+});
 </script>
 </template:addResources>
-<div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-header">
-        <h1>Processing...</h1>
-    </div>
-    <div class="modal-body">
-        <div class="progress progress-striped active">
-            <div class="bar" style="width: 100%;"></div>
-        </div>
-    </div>
-</div>
 <fieldset class="well" id="editDetailspage">
     <div class="row detailshead">
         <div class="span2">
@@ -384,12 +354,12 @@
         <div class="span10 secondhead">
             <c:if test="${currentNode.properties['j:about'].boolean}">
                 <div id="about" class="row">
-                    <div class="comment more">
+                    <div id="aboutMeBlock" class="comment more">
                         <h3><fmt:message key='jnt_user.j_about'/></h3>
-                            ${fields['j:about']}
+                        <div id="aboutMeText">${fields['j:about']}</div>
                     </div>
-                    <a href="#" class="morelink" onclick="showMoreText()">... more</a>
-                    <a href="#" class="lesslink hide" onclick="hideMoreText()">less</a>
+                    <a href="#" id="aboutMeMoreLink" class="hide" onclick="showMoreText()">... more</a>
+                    <a href="#" id="aboutMeLessLink" class="hide" onclick="hideMoreText()">less</a>
                     <c:if test="${user:isPropertyEditable(user,'j:about')}">
                         <div class="about_edit_button">
                             <button class="btn btn-primary" type="button" onclick="switchRow('about')">

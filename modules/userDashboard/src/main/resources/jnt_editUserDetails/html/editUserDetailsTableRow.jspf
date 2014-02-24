@@ -25,7 +25,7 @@
         </button>
     </td>
 <tr>
-<tr id="names_form" class="hide">
+<tr id="names_form" class="hide hiddableForm">
     <td>
         <div>Name form</div>
     </td>
@@ -103,10 +103,9 @@
                 ${fn:escapeXml(fields['j:function'])}
             </c:if>
         </c:if>
-        at
         <c:if test="${currentNode.properties['j:organization'].boolean}">
             <c:if test="${!empty fields['j:organization']}">
-                ${fn:escapeXml(fields['j:organization'])}
+                at ${fn:escapeXml(fields['j:organization'])}
             </c:if>
         </c:if>
     </td>
@@ -116,7 +115,7 @@
         </button>
     </td>
 <tr>
-<tr id="profession_form" class="hide">
+<tr id="profession_form" class="hide hiddableForm">
     <td>
         pro Form
     </td>
@@ -201,7 +200,7 @@
         </button>
     </td>
 <tr>
-<tr id="social_form" class="hide">
+<tr id="social_form" class="hide hiddableForm">
     <td>
         Social Form
     </td>
@@ -271,7 +270,7 @@
         </button>
     </td>
 </tr>
-<tr id="address_form" class="hide">
+<tr id="address_form" class="hide hiddableForm">
     <td>
         Adress form
     </td>
@@ -344,7 +343,7 @@
         </button>
     </td>
 </tr>
-<tr id="password_form" class="hide">
+<tr id="password_form" class="hide hiddableForm">
     <td>
         Password Form
     </td>
@@ -426,7 +425,7 @@
                 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
                 <c:if test="${not empty birthDate}">
                     <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
-                    <fmt:formatDate value="${birthDate.date.time}" pattern="MM/dd/yyyy" var="dateforCal"/>
+                    <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy-MM-dd" var="dateforCal"/>
                 </c:if>
                 <span><fmt:message key="jnt_user.j_birthDate"/> : </span>
                 <span>${displayBirthDate}</span>
@@ -455,16 +454,16 @@
         </button>
     </td>
 </tr>
-<tr id="other_form" class="hide">
+<tr id="other_form" class="hide hiddableForm">
     <td>Other </td>
     <td>
         <div class="control-group">
             <c:if test="${user:isPropertyEditable(user,'j:birthDate')}">
                 <div class="control-group">
                     <label class="control-label" for="birthDate"><fmt:message key="jnt_user.j_birthDate"/>:</label>
-                    <div class="controls input-append date" id="birthDate" style="display:block;" data-date="${dateforCal}" data-date-format="dd/mm/yyyy">
+                    <div class="controls input-append date" id="birthDate">
                         <input class="span2" size="16" type="datetime-local" name="birthDate" value="${dateforCal}"/>
-                        <span class="add-on" onclick="$('.datepicker').datepicker('show')"><i class="icon-th"></i></span>
+                        <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-th"></i></span>
                     </div>
                 </div>
             </c:if>
@@ -500,7 +499,7 @@
         </button>
     </td>
 </tr>
-<tr id="privacy_form" class="hide">
+<tr id="privacy_form" class="hide hiddableForm">
     <td>Privacy </td>
     <td>
         <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
@@ -521,14 +520,6 @@
                     </div>
             </c:if>
         </c:forTokens>
-        <script type="text/javascript">
-            // Activating the checking buttons
-            var currentvisibility=0;
-            for(currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
-            {
-                $("#publicProperties"+currentvisibility).bootstrapSwitch();
-            }
-        </script>
     </td>
     <td>
         <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">

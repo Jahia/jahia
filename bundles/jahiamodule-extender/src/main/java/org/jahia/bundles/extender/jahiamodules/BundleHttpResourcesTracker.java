@@ -41,8 +41,11 @@
 package org.jahia.bundles.extender.jahiamodules;
 
 import org.apache.commons.collections.EnumerationUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.framework.util.MapToDictionary;
+import org.apache.jasper.JasperException;
+import org.apache.jasper.JspCompilationContext;
 import org.apache.jasper.servlet.JspServlet;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.osgi.BundleUtils;
@@ -160,7 +163,6 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
 
     /**
      * Utility method to register a JSP servlet
-     *
      * @param httpService
      * @param httpContext
      * @param bundle
@@ -194,6 +196,22 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
             logger.error("Error registering JSPs for bundle " + bundleName, e);
         } catch (NamespaceException e) {
             logger.error("Error registering JSPs for bundle " + bundleName, e);
+        }
+    }
+
+    public static void flushJspCache(Bundle bundle, String jspFile) {
+        try {
+            File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
+                    bundle.getSymbolicName()+"-"+bundle.getBundleId());
+            if (jspFile != null) {
+                JspCompilationContext jspCompilationContext = new JspCompilationContext(jspFile, false, null, JahiaContextLoaderListener.getServletContext(), null, null);
+                String javaPath = jspCompilationContext.getJavaPath();
+                String classPath = StringUtils.substringBeforeLast(javaPath,".java") + ".class";
+                FileUtils.deleteQuietly(new File(scratchDirFile, javaPath));
+                FileUtils.deleteQuietly(new File(scratchDirFile, classPath));
+            }
+        } catch (JasperException e) {
+            e.printStackTrace();
         }
     }
 

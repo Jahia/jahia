@@ -7,7 +7,7 @@
     <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ModuleManagementFlowHandler"/>
 
     <on-start>
-        <evaluate expression="flowHandler.initModules()" />
+        <evaluate expression="flowHandler.initModules(flowRequestContext)" />
     </on-start>
 
     <decision-state id="moreAnswersNeeded">
@@ -103,14 +103,18 @@
     <action-state id="startModule">
         <evaluate
                 expression="JahiaTemplateManagerService.activateModuleVersion(requestParameters.module,requestParameters.version)"/>
-        <transition to="moduleStarted"/>
+        <transition to="moduleStarted">
+            <evaluate expression="flowHandler.hasAModuleBeenStarted(flowRequestContext)"/>
+        </transition>
     </action-state>
 
     <end-state id="moduleStarted"/>
 
     <action-state id="stopModule">
         <evaluate expression="JahiaTemplateManagerService.stopModule(requestParameters.module)"/>
-        <transition to="moduleStopped"/>
+        <transition to="moduleStopped">
+            <evaluate expression="flowHandler.hasAModuleBeenStopped(flowRequestContext)"/>
+        </transition>
     </action-state>
 
     <end-state id="moduleStopped"/>

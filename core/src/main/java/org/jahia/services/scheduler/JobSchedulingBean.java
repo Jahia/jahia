@@ -48,6 +48,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ComparatorUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
@@ -84,7 +85,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
     private List<Trigger> triggers = new LinkedList<Trigger>();
 
-    public void afterPropertiesSet() throws Exception {
+   public void afterPropertiesSet() throws Exception {
         if (disabled) {
             return;
         }
@@ -97,27 +98,22 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
             return;
         }
 
-        
-        if (overwriteExisting) {
+        JobDetail existingJobDetail = getScheduler().getJobDetail(jobDetail.getName(), jobDetail.getGroup());
+        if (overwriteExisting || existingJobDetail == null) {
+            deleteJob();
+            createJob(true);
             scheduleJob(true);
-        } else {
-            JobDetail existingJobDetail = getScheduler().getJobDetail(jobDetail.getName(),
-                    jobDetail.getGroup());
-            if (existingJobDetail == null) {
-                // job data is not present -> schedule the job as a new one
-                scheduleJob(false);
-            } else {
-                // job data exists -> check if the triggers have changed
-                if (needToRescheduleTheJob()) {
-                    scheduleJob(true);
-                }
-            }
+        } else if (needToRescheduleTheJob()) {
+            // job data exists -> check if the triggers have changed
+            scheduleJob(true);
         }
     }
 
     @Override
     public void destroy() throws Exception {
-        unscheduleJob();
+        if (JahiaContextLoaderListener.isRunning()) {
+            unscheduleJob();
+        }
     }
 
     protected Scheduler getScheduler() {
@@ -166,34 +162,38 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
         return false;
     }
 
+    protected void createJob(boolean deleteFirst)  throws SchedulerException {
+        getScheduler().addJob(jobDetail, deleteFirst);
+    }
+
     protected void scheduleJob(boolean deleteFirst) throws SchedulerException {
         if (deleteFirst) {
             unscheduleJob();
         }
-        if (triggers.size() == 1) {
+        if (triggers.size() == 0) {
+            logger.info("Job has no triggers configured. Only the JobDetail data will be stored.");
+        }
+        for (Trigger trigger : triggers) {
+            trigger.setJobName(jobDetail.getName());
+            trigger.setJobGroup(jobDetail.getGroup());
             logger.info("Scheduling {} job {} using {}", new String[] {
                     isRamJob ? "RAM" : "persistent", jobDetail.getFullName(),
-                    getTriggerInfo(triggers.get(0)) });
-            getScheduler().scheduleJob(jobDetail, triggers.get(0));
-        } else {
-            if (triggers.size() == 0) {
-                logger.info("Job has no triggers configured. Only the JobDetail data will be stored.");
-            }
-            getScheduler().addJob(jobDetail, true);
-            for (Trigger trigger : triggers) {
-                trigger.setJobName(jobDetail.getName());
-                trigger.setJobGroup(jobDetail.getGroup());
-                logger.info("Scheduling {} job {} using {}", new String[] {
-                        isRamJob ? "RAM" : "persistent", jobDetail.getFullName(),
-                        getTriggerInfo(trigger) });
-                getScheduler().scheduleJob(trigger);
-            }
+                    getTriggerInfo(trigger) });
+            getScheduler().scheduleJob(trigger);
         }
     }
 
-    private void unscheduleJob() throws SchedulerException {
+    protected void deleteJob() throws SchedulerException {
         logger.info("Deleting job {}", jobDetail.getFullName());
         getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+    }
+
+    protected void unscheduleJob() throws SchedulerException {
+        logger.info("Deleting job {}", jobDetail.getFullName());
+        Trigger[] triggers = getScheduler().getTriggersOfJob(jobDetail.getName(), jobDetail.getGroup());
+        for (Trigger trigger : triggers) {
+            getScheduler().unscheduleJob(trigger.getName(), trigger.getGroup());
+        }
     }
 
     public void setDisabled(boolean disabled) {

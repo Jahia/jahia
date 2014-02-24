@@ -43,6 +43,7 @@ package org.jahia.services.templates;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -167,7 +168,7 @@ public abstract class SourceControlManagement {
             return new ExecutionResult(res, resultOut.toString(), resultErr.toString());
         } catch (Exception e) {
             throw new IOException(
-                    "Failed to execute command " + command + (arguments != null ? (" " + arguments) : ""), e);
+                    "Failed to execute command " + command + (arguments != null ? (" " + Arrays.toString(arguments)) : ""), e);
         }
     }
 

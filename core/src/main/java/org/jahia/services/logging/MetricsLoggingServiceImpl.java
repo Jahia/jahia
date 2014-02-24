@@ -111,7 +111,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
             templateParameters[i++] = arg;
         }
         if (template == null) {
-            metricsLogger.trace("Couldn't find template for " + logTemplate + " and args " + templateParameters);
+            metricsLogger.trace("Couldn't find template for " + logTemplate + " and args " + Arrays.toString(templateParameters));
         } else {
             metricsLogger.trace(template, templateParameters);
         }

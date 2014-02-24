@@ -83,6 +83,7 @@
                     </select>
                 </div>
             </c:if>
+            <div style="clear:both;"></div>
         </div>
         <div class="form-actions">
             <button onclick="saveChangesByRowId('names')" class="btn btn-primary">Save changes</button>
@@ -134,6 +135,7 @@
                     <input name="organization" type="text" value="<c:if test="${!empty fields['j:organization']}">${fn:escapeXml(fields['j:organization'])}</c:if>"/>
                 </div>
             </c:if>
+            <div style="clear:both;"></div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('profession')">
                     <fmt:message key="label.clickToEdit"/>
@@ -230,6 +232,7 @@
                     <input name="twitterID" type="text" value="<c:if test="${!empty fields['j:twitterID']}">${fn:escapeXml(fields['j:twitterID'])}</c:if>"/>
                 </div>
             </c:if>
+            <div style="clear:both;"></div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('social')">
                     <fmt:message key="label.clickToEdit"/>
@@ -436,8 +439,8 @@
             <div>
                 <span><fmt:message key="jnt_user.preferredLanguage"/> : </span>
                 <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
-                <c:set var="prefLocale" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
-                <span>${functions:displayLocaleNameWith(prefLocale, prefLocale)}</span>
+                <c:set var="prefLang" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
+                <span>${functions:displayLocaleNameWith(prefLang, prefLang)}</span>
             </div>
         </c:if>
 
@@ -468,13 +471,19 @@
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
+
+                <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
+                           var="adLocale" varStatus="status">
+                </c:forEach>
                 <div class="control-group">
                     <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/> : </label>
                     <div class="controls">
                         <select name="preferredLanguage">
                             <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
                                        var="adLocale" varStatus="status">
-                                <option value="${function:toLocale(adLocale)}">${functions:displayLocaleNameWith(adLocale, adLocale)}</option>
+                                <option value="${function:toLocale(adLocale)}" <c:if test="${function:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
+                                    ${functions:displayLocaleNameWith(adLocale, adLocale)}
+                                </option>
                             </c:forEach>
                         </select>
                     </div>
@@ -507,16 +516,28 @@
         <c:forEach items="${publicProperties}" var="value">
             <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
         </c:forEach>
+        <script type="text/javascript">
+            var currentPropertieState;
+        </script>
         <c:forTokens
                 items="j:title,j:firstName,j:lastName,j:gender,j:organization,j:function,j:birthDate,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:picture,j:about,preferredLanguage"
                 delims="," var="key" varStatus="loopStatus">
             <script type="text/javascript">visibilityNumber++;</script>
             <c:if test="${currentNode.properties[key].boolean}">
-                    <div class="control-group">
+                    <script type="text/javascript">
+                        currentPropertieState = $("#publicProperties"+${loopStatus.index}).bootstrapSwitch('state');
+                    </script>
+                    <div class="row control-group">
                         <label class="control-label" for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> : </label>
-                        <div class="controls switch-wrapper">
-                            <input  onchange="editVisibility(visibilityNumber)" data-size="mini" data-on-text=" public " data-off-text=" private " type="checkbox" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />&nbsp;
+                        <div id="bootstrapSwitches" class="controls switch-wrapper">
+                            <input data-size="mini" data-on-text=" public " data-off-text=" private " type="checkbox" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />&nbsp;
+
                         </div>
+                        <div class="switchIconsDiv">
+                            <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display:none;"></i>
+                            <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display:none;"></i>
+                        </div>
+                        <div style="clear:both;"></div>
                     </div>
             </c:if>
         </c:forTokens>

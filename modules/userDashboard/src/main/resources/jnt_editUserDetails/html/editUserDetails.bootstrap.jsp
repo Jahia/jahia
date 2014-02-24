@@ -147,16 +147,28 @@ function showMoreText()
  * propertiesNumber is the number of properties in the loop
  *
  */
-function editVisibility(propertieNumber)
-{
-    //loop counter
-    var currentPropertieIndex=0;
 
+function editVisibilityRizak(propertiesNumber,idNumber, value)
+{
+    console.log("inside editVisibility");
     //data to Post
     var dataToPost="jcrMethodToCall=put";
 
+    var changeId = '#publicProperties'+idNumber;
+    console.log('change Id : '+changeId);
+
+    var doneImageId='';
+
+    if(value == true)
+    {
+        doneImageId='#switchOn'+idNumber;
+    }
+    else
+    {
+        doneImageId='#switchOff'+idNumber;
+    }
     //Looping on properties and filling the data
-    for(currentPropertieIndex=0;currentPropertieIndex<propertieNumber;currentPropertieIndex++)
+    for(var currentPropertieIndex=0;currentPropertieIndex<propertiesNumber;currentPropertieIndex++)
     {
         if($('#publicProperties'+currentPropertieIndex).bootstrapSwitch('state') == true)
         {
@@ -164,8 +176,16 @@ function editVisibility(propertieNumber)
             dataToPost+='&j%3ApublicProperties='+$("#publicProperties"+currentPropertieIndex).val().replace(":","%3A");
         }
     }
+//    $(doneImageId).attr("disabled","disabled");
     //posting the properties visibility to JCR
     $.post("<c:url value='${url.basePreview}${user.path}'/>",dataToPost);
+    console.log('fading '+doneImageId);
+
+        //$(doneImageId).show();
+        $('.switchIcons').hide();
+        $(doneImageId).fadeIn('slow').delay(1000).fadeOut('slow');
+//    $(doneImageId).removeAttribute("disabled");
+
 }
 
 /* General Table form functions */
@@ -260,7 +280,18 @@ function saveChangesByRowId(rowId)
 
     //getting the form inputs
     $(divId+' input').each(function() {
-        data['j:'+this.name]=this.value;
+        console.log('name = '+this.name);
+        console.log('value = '+this.value);
+        console.log('value.length() '+this.value.length);
+
+        if(this.name == 'birthDate' && this.value.length == 0 )
+        {
+            //TODO With the New Jahia API
+        }
+        else
+        {
+            data['j:'+this.name]=this.value;
+        }
     });
 
     //getting the ckeditors
@@ -289,6 +320,32 @@ $(document).ready(function(){
     {
         $("#publicProperties"+currentvisibility).bootstrapSwitch();
     }
+    for(currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
+    {
+        $('#publicProperties'+currentvisibility).on('switchChange', function (e, data)
+        {
+
+
+            var $element = $(data.el),value = data.value;
+            console.log(e, $element, value);
+
+            var elementId=$element.attr("id");
+            var number = parseInt(elementId.replace("publicProperties",''));
+            console.log('number: '+number);
+            editVisibilityRizak(visibilityNumber,number,value);
+            /*console.log("id element: "+$element.id);
+            console.log("id value: "+value.id);
+            console.log("id value[2]: "+value[2]);
+            console.log("id e: "+e.id);
+            console.log("id e[2]: "+e[2]);*/
+
+
+           // editVisibilityRizak(visibilityNumber,currentvisibility);
+        });
+
+    }
+
+
 
     //Activating the Date-Picker
     $('#birthDate').datetimepicker({
@@ -301,7 +358,7 @@ $(document).ready(function(){
 </template:addResources>
 <fieldset class="well" id="editDetailspage">
     <div class="row detailshead">
-        <div class="span2">
+        <div id="imageRow" class="span2">
             <c:if test="${currentNode.properties['j:picture'].boolean}">
                 <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
                 <div id="image" class='image'>
@@ -351,11 +408,11 @@ $(document).ready(function(){
                 </div>
             </div>
         </div>
-        <div class="span10 secondhead">
+        <div id="aboutMeRow" class="span10 secondhead">
             <c:if test="${currentNode.properties['j:about'].boolean}">
                 <div id="about" class="row">
                     <div id="aboutMeBlock" class="comment more">
-                        <h3><fmt:message key='jnt_user.j_about'/></h3>
+                        <h3 id="aboutMeTitle"><fmt:message key='jnt_user.j_about'/></h3>
                         <div id="aboutMeText">${fields['j:about']}</div>
                     </div>
                     <a href="#" id="aboutMeMoreLink" class="hide" onclick="showMoreText()">... more</a>

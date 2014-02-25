@@ -282,15 +282,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     boolean found = false;
                     boolean notMainResource = false;
 
-                    Set<String> allPaths = new HashSet<String>();
-                    @SuppressWarnings("unchecked")
-                    Set<String> storedAllPaths = (Set<String>) renderContext.getRequest().getAttribute("org.jahia.area.stack.cache");
-                    if(storedAllPaths!=null) {
-                        allPaths.addAll(storedAllPaths);
-                    }
-                    for (Resource resource : renderContext.getResourcesStack()) {
-                        allPaths.add(resource.getNode().getPath());
-                    }
+                    Set<String> allPaths = renderContext.getRenderedPaths();
                     for (JCRNodeWrapper node : nodes) {
                         if (!path.equals("*") && node.hasNode(path) && !allPaths.contains(node.getPath()+"/"+path)) {
                             notMainResource = mainResource.getNode() != node && !node.getPath().startsWith(renderContext.getMainResource().getNode().getPath());

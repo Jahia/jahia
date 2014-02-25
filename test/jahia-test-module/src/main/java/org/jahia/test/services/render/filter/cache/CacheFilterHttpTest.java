@@ -40,8 +40,9 @@
 
 package org.jahia.test.services.render.filter.cache;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
-
+import net.sf.ehcache.Element;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -51,6 +52,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
@@ -69,7 +71,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -95,7 +96,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             JCRSessionWrapper session = jcrService.getSessionFactory()
                     .getCurrentUserSession();
 
-            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule("jahia-test-module", SITECONTENT_ROOT_NODE, session.getUser().getUsername());;
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule("jahia-test-module", SITECONTENT_ROOT_NODE, session.getUser().getUsername());
+
             final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
             final JCRUser userAB = userManagerProvider.createUser("userAB", "password", new Properties());
             final JCRUser userAC = userManagerProvider.createUser("userAC", "password", new Properties());
@@ -154,10 +156,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         depCache.removeAll();
         AggregateCacheFilter.flushNotCacheableFragment();
         CacheFilterCheckFilter.clear();
+        cache.getCacheConfiguration().setEternal(true);
+        depCache.getCacheConfiguration().setEternal(true);
     }
 
     @After
     public void tearDown() {
+        ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
+        Ehcache cache = cacheProvider.getCache();
+        Ehcache depCache = cacheProvider.getDependenciesCache();
+        cache.getCacheConfiguration().setEternal(false);
+        depCache.getCacheConfiguration().setEternal(false);
     }
 
     @Test
@@ -219,7 +228,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         checkAcl(userBC, new boolean[]{false, true, false, true, false, false, true, true});
         checkAcl(userAC, new boolean[]{false, true, false, false, true, true, false, true});
 
-        JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
         try {
             n.revokeRolesForPrincipal("g:groupA");
@@ -236,7 +245,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             checkAcl(root2, new boolean[]{true, true, true, true, true, true, true, true});
             checkAcl(userAB2, new boolean[]{false, true, true, false, false, true, true, false});
             checkAcl(userBC2, new boolean[]{false, true, false, true, false, true, true, true});
-            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false , true});
+            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false, true});
         } finally {
             n.revokeRolesForPrincipal("g:groupB");
             n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
@@ -350,18 +359,18 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         getContent(url, "root", "root1234", null);
 
         try {
-            JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
             JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/maincontent/simple-text");
             try {
                 n.setProperty("text", "text content updated");
                 session.save();
                 String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
                 Matcher m = Pattern.compile("text content updated").matcher(newvalue);
-                assertTrue("Value has not been updated",m.find());
-                assertTrue("References have not been flushed",m.find());
+                assertTrue("Value has not been updated", m.find());
+                assertTrue("References have not been flushed", m.find());
                 assertTrue("References have not been flushed", m.find());
             } finally {
-                n.setProperty("text","text content");
+                n.setProperty("text", "text content");
                 session.save();
             }
         } catch (Exception e) {
@@ -371,34 +380,71 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testRandomFlush() throws Exception {
-        JCRSessionWrapper session =JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'"+SITECONTENT_ROOT_NODE+"/home')", Query.JCR_SQL2);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();
         NodeIterator nodes = q.execute().getNodes();
         while (nodes.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-            if (!next.getName().equals("long")) {
+            if (!next.getName().equals("long") && !next.getName().equals("error")) {
                 paths.add(next.getPath());
             }
         }
 
         List<String> users = Arrays.asList("userAB", "userAC", "userBC");
-        Map<String,String> m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<String, String>();
         for (String user : users) {
             for (String path : paths) {
                 m.put(user + path, getContent(getUrl(path), user, "password", null));
             }
         }
 
-        List<String> l = ModuleCacheProvider.getInstance().getCache().getKeys();
+        final Cache cache = ModuleCacheProvider.getInstance().getCache();
+        List<String> keysBefore = cache.getKeys();
+
+        Map<String, Object> cacheCopy = new HashMap<String, Object>();
+        for (String s : keysBefore) {
+            final Element element = cache.get(s);
+            if (element != null) {
+                cacheCopy.put(s, element.getObjectValue());
+            }
+        }
+
         for (int j = 0; j < 10; j++) {
-            List<String> toFlush = randomizeFlush(l, 10);
+            System.out.println("flush " + j);
+            List<String> toFlush = randomizeFlush(keysBefore, 10);
             for (String user : users) {
                 for (String path : paths) {
+                    System.out.println(user + " - " + path);
                     if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
                         fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
                     }
+                    checkCacheContent(cache, cacheCopy, toFlush);
                 }
+            }
+            List<String> keysAfter = cache.getKeys();
+            Collections.sort(keysBefore);
+            Collections.sort(keysAfter);
+            if (!keysBefore.equals(keysAfter)) {
+                List<String> onlyInBefore = new ArrayList<String>(keysBefore);
+                onlyInBefore.removeAll(keysAfter);
+                List<String> onlyInAfter = new ArrayList<String>(keysAfter);
+                onlyInAfter.removeAll(keysBefore);
+                fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
+            }
+            checkCacheContent(cache, cacheCopy, toFlush);
+        }
+    }
+
+    private void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
+        List<String> keysNow = cache.getKeys();
+        for (String s : keysNow) {
+            CacheEntry c1 = ((CacheEntry) cacheCopy.get(s));
+            final Element element = cache.get(s);
+            if (element != null && c1 != null) {
+                CacheEntry c2 = ((CacheEntry) element.getObjectValue());
+                assertEquals("Cache fragment different for : " + s + " after flushing : " + toFlush, c1.getObject(), c2.getObject());
+                assertEquals("Cache properties different for : " + s + " after flushing : " + toFlush, c1.getExtendedProperties(), c2.getExtendedProperties());
             }
         }
     }

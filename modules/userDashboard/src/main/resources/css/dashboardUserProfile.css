@@ -1,79 +1,87 @@
 /******************************************************************************
 *  User Detail Page                                                           *
 *******************************************************************************/
-
-
-
 /* Upper Page */
 
-.detailshead{
-    display:block;
-}
-
-.secondhead{
+#detailshead{
     display:block;
 }
 
 /* Image */
+#image{
+    height:130px;
+}
+#imageRow{
+    height:215px;
+}
 
 .image_edit_button
 {
     margin-top:40px;
 }
-
 .image_form_inputs
 {
     margin-top:8px;
 }
 
 /* About text and form */
-
-.about_form{
+#aboutMeDiv{
+    display:block;
+    height:190px;
+    margin-left: 60px;
+    position:relative;
+}
+#about{
+    height:150px;
+}
+h3#aboutMeTitle{
+    margin-top:0;
+}
+#aboutMeBlock{
+    height:115px;
+    display:block;
+    padding :0 10px 10px;
+    overflow:hidden;
+    text-align:justify;
+}
+a#aboutMeMoreLink {
+    text-decoration:none;
+    outline: none;
+    color: #0254EB;
+    /*display:block;*/
+    padding-left: 10px;
+    margin-top:5px;
+}
+#about_form{
     position: absolute;
     z-index: 900;
 }
 
 .about_edit_button{
-    padding:10px;
-}
 
+    position:absolute;
+    bottom:-6px;
+    left:-20px;
+}
+a#aboutMeLessLink {
+    text-decoration:none;
+    outline: none;
+    color: #0254EB;
+    padding-right: 10px;
+    margin-top:5px;
+}
 a:visited {
     color: #0254EB
 }
-
-a#aboutMeMoreLink {
-    color: #0254EB;
-    text-decoration:none;
-    outline: none;
-    padding-left: 10px;
-}
-
-a#aboutMeLessLink {
-    color: #0254EB;
-    text-decoration:none;
-    outline: none;
-    padding-left: 10px;
-}
-
-#aboutMeBlock{
-    height:115px;
-    display:block;
-    padding :10px;
-    overflow:hidden;
-    text-align:justify;
-}
-
-/*
 #aboutMeText{
     display:block;
-    padding :10px;
     overflow:hidden;
     text-align:justify;
-}*/
+}
 
 /* Table Down the page */
 .formtable{
-    margin-top:20px;
+    margin-top:30px;
 }
 
 /*  Password */
@@ -97,6 +105,39 @@ a#aboutMeLessLink {
     display:block;
 }
 
+#bootstrapSwitches
+{
+    margin-left:0;
+}
 
+.switches-control-group
+{
+    margin-bottom:0;
+}
 
+.form-horizontal .switches-control-group
+{
+    margin-bottom:8px;
+}
 
+label.switch{
+    margin-bottom: 0;
+}
+
+.switchIconsDiv{
+    float:left;
+    height: 10px;
+    width: 20px;
+    position:relative;
+    left:120px;
+    top:5px;
+}
+
+.switchesSpans{
+    width:auto;
+    margin-top:30px;
+}
+
+#editDetailsForm input, #editDetailsForm select{
+    margin-bottom:5px;
+}

@@ -8,12 +8,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="function" uri="http://www.jahia.org/tags/functions" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
+<%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%!
     final String PUBLICPROPERTIES_PROPERTY = "j:publicProperties";
@@ -38,7 +38,6 @@
             return publicProperties;
         }
     }
-
     String getPublicPropertiesData(PageContext pageContext, String propertyName) throws RepositoryException {
         HashSet<String> publicProperties = getPublicProperties(pageContext);
         publicProperties.add("&quot;" + propertyName + "&quot;");
@@ -64,7 +63,9 @@
 
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>
+
 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
+
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>
@@ -73,6 +74,12 @@
 /* User Picture */
 var currentElement = "";
 var currentForm = "";
+
+/**
+ * @Author : Jahia(rahmed)
+ * This function Upload a picture the user picked and update his user picture with it
+ * The picture to upload is directly picked from the form
+ */
 function updatePhoto()
 {
     /*$.post($(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'), )*/
@@ -106,7 +113,6 @@ function updatePhoto()
  */
 function hideMoreText()
 {
-
     $('#aboutMeText').css({
         'height': 'auto',
         'overflow': 'hidden'
@@ -121,7 +127,7 @@ function hideMoreText()
 
 /**
  * @Author : Jahia(rahmed)
- * This function Show the extra part of the about text so the user can read it
+ * This function Show the extra part of the about text so the user can read it (scroll view)
  */
 function showMoreText()
 {
@@ -130,62 +136,58 @@ function showMoreText()
         'overflow': 'auto'
     });
     $('#aboutMeBlock').css({
-        'height': '155px'
+        'height': '160px',
+        'overflow': 'auto'
     });
     $('#aboutMeMoreLink').hide();
     $('#aboutMeLessLink').show();
-    /*$('.lesslink').show();
-    $('.morelink').hide();*/
 }
 
 /* Privacy properties functions */
 /**
  * @Author : Jahia(rahmed)
- * This function post on the privacy properties in order to update JCR
+ * This function post the privacy properties in order to update JCR
  * The post is in string in order to allow multiple values on publicProperties as the Jahia API
  * Doesn't allow the JSON table attributes.
- * propertiesNumber is the number of properties in the loop
- *
+ * propertiesNumber: the number of properties in the loop
+ * idNumber: The id of the switch triggering the update (for the check image near the switch)
+ * propertiesNumber: The updated state by the switch (for the check image near the switch)
  */
-
-function editVisibilityRizak(propertiesNumber,idNumber, value)
+function editVisibility(propertiesNumber,idNumber, value)
 {
-    console.log("inside editVisibility");
     //data to Post
-    var dataToPost="jcrMethodToCall=put";
+    var dataToPost = "jcrMethodToCall=put";
 
-    var changeId = '#publicProperties'+idNumber;
-    console.log('change Id : '+changeId);
-
-    var doneImageId='';
+    //the image to put near the switch once the post is successful
+    var doneImageId = '';
 
     if(value == true)
     {
-        doneImageId='#switchOn'+idNumber;
+        doneImageId = '#switchOn'+idNumber;
     }
     else
     {
-        doneImageId='#switchOff'+idNumber;
+        doneImageId = '#switchOff'+idNumber;
     }
+
     //Looping on properties and filling the data
     for(var currentPropertieIndex=0;currentPropertieIndex<propertiesNumber;currentPropertieIndex++)
     {
+        //replacing the list of public properties by the list of all the switches in true state
         if($('#publicProperties'+currentPropertieIndex).bootstrapSwitch('state') == true)
         {
             //Parsing the ":" to "%3A" while adding data
-            dataToPost+='&j%3ApublicProperties='+$("#publicProperties"+currentPropertieIndex).val().replace(":","%3A");
+            dataToPost += '&j%3ApublicProperties='+$("#publicProperties"+currentPropertieIndex).val().replace(":","%3A");
         }
     }
-//    $(doneImageId).attr("disabled","disabled");
     //posting the properties visibility to JCR
-    $.post("<c:url value='${url.basePreview}${user.path}'/>",dataToPost);
-    console.log('fading '+doneImageId);
-
-        //$(doneImageId).show();
+    $.post("<c:url value='${url.basePreview}${user.path}'/>",dataToPost,function (){
+        //hiding all the others images near the switches
         $('.switchIcons').hide();
-        $(doneImageId).fadeIn('slow').delay(1000).fadeOut('slow');
-//    $(doneImageId).removeAttribute("disabled");
 
+        //showing the image near the switch
+        $(doneImageId).fadeIn('slow').delay(1000).fadeOut('slow');
+    });
 }
 
 /* General Table form functions */
@@ -202,7 +204,8 @@ function switchRow(elementId)
 
     //building css form id
     var elementFormId = elementId+"_form";
-
+    console.log('elementId : '+elementId);
+    console.log('elementFormId : '+elementFormId);
     //Checking which element to show and which element to hide
     if( $(elementId).is(":visible"))
     {
@@ -231,7 +234,6 @@ function ajaxReloadCallback(jcrId)
 {
     if (jcrId == 'preferredLanguage')
     {
-        console.log('language change detected');
         var windowToRefresh = window.parent;
         if(windowToRefresh == undefined)
             windowToRefresh = window;
@@ -266,7 +268,6 @@ function saveChangesByRowId(rowId)
     //presetting the jcr method
     data['jcrMethodToCall'] = 'put';
     var divId = "#"+rowId+'_form';
-
     //getting the form selects
     $(divId+' select').each(function() {
         if(this.name=='preferredLanguage')
@@ -283,10 +284,6 @@ function saveChangesByRowId(rowId)
 
     //getting the form inputs
     $(divId+' input').each(function() {
-        console.log('name = '+this.name);
-        console.log('value = '+this.value);
-        console.log('value.length() '+this.value.length);
-
         if(this.name == 'birthDate' && this.value.length == 0 )
         {
             //TODO With the New Jahia API
@@ -309,6 +306,43 @@ function saveChangesByRowId(rowId)
     var thisField = this;
     $.post("<c:url value='${url.basePreview}${user.path}'/>",data,null,"json").done(function(){ajaxReloadCallback(reloadType);});
 }
+
+/**
+ * @Author : Jahia(rahmed)
+ * This function changes the user Password calling the action changePassword.do
+ * The new password is picked directly from the password change form in this page.
+ */
+function changePassword()
+{
+    //passwords checks
+    if ($("#passwordField").val() == "") {
+        alert("<fmt:message key='serverSettings.user.errors.password.mandatory'/>");
+        return false;
+    }
+    if ($("#passwordField").val() != $("#passwordconfirm").val()) {
+        alert("<fmt:message key='serverSettings.user.errors.password.not.matching'/>");
+        return false;
+    }
+    var params = {password: $("#passwordField").val()};
+    $.post( '<c:url value="${url.base}${user.path}.changePassword.do"/>', { password: $("#passwordField").val(), passwordconfirm:  $("#passwordconfirm").val()},
+            function(result)
+            {
+                if(result['result'] != 'success')
+                {
+                    $('#passwordError').html(result['errorMessage']);
+                    $('#passwordError').fadeIn('slow').delay(4000).fadeOut('slow');
+                    $('#passwordField').focus();
+                }
+                else
+                {
+                    switchRow('password');
+                    $('#passwordSuccess').html(result['errorMessage']);
+                    $('#passwordSuccess').fadeIn('slow').delay(4000).fadeOut('slow');
+                }
+            },
+            'json');
+}
+
 var visibilityNumber = 0;
 $(document).ready(function(){
     // Activating the more/less links */
@@ -327,28 +361,15 @@ $(document).ready(function(){
     {
         $('#publicProperties'+currentvisibility).on('switchChange', function (e, data)
         {
-
-
+            //getting the switch form element and its value
             var $element = $(data.el),value = data.value;
-            console.log(e, $element, value);
-
             var elementId=$element.attr("id");
+            //getting the switch number contained in its css id by removing the text part
             var number = parseInt(elementId.replace("publicProperties",''));
-            console.log('number: '+number);
-            editVisibilityRizak(visibilityNumber,number,value);
-            /*console.log("id element: "+$element.id);
-            console.log("id value: "+value.id);
-            console.log("id value[2]: "+value[2]);
-            console.log("id e: "+e.id);
-            console.log("id e[2]: "+e[2]);*/
-
-
-           // editVisibilityRizak(visibilityNumber,currentvisibility);
+            //calling the change visibility function with the number total of visibility switches, the number of the visibility to change and the state to put
+            editVisibility(visibilityNumber,number,value);
         });
-
     }
-
-
 
     //Activating the Date-Picker
     $('#birthDate').datetimepicker({
@@ -360,8 +381,8 @@ $(document).ready(function(){
 </script>
 </template:addResources>
 <fieldset class="well" id="editDetailspage">
-    <div class="row detailshead">
-        <div id="imageRow" class="span2">
+    <div id="detailsHead" class="row">
+        <div id="imageDiv" class="span2">
             <c:if test="${currentNode.properties['j:picture'].boolean}">
                 <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
                 <div id="image" class='image'>
@@ -372,9 +393,11 @@ $(document).ready(function(){
                                      alt="" border="0"/></div>
                         </c:when>
                         <c:otherwise>
-                            <div class='itemImage itemImageLeft'><img class="userProfileImage"
-                                                                      src="${picture.node.thumbnailUrls['avatar_120']}"
-                                                                      alt="${fn:escapeXml(person)}"/></div>
+                            <div class='itemImage itemImageLeft'>
+                                <img class="userProfileImage"
+                                     src="${picture.node.thumbnailUrls['avatar_120']}"
+                                     alt="${fn:escapeXml(person)}"/>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                     <div class="image_edit_button">
@@ -411,15 +434,15 @@ $(document).ready(function(){
                 </div>
             </div>
         </div>
-        <div id="aboutMeRow" class="span10 secondhead">
+        <div id="aboutMeDiv" class="span10">
             <c:if test="${currentNode.properties['j:about'].boolean}">
                 <div id="about" class="row">
                     <div id="aboutMeBlock" class="comment more">
                         <h3 id="aboutMeTitle"><fmt:message key='jnt_user.j_about'/></h3>
-                        <div id="aboutMeText">${fields['j:about']}</div>
+                           <div id="aboutMeText"> ${user.properties['j:about'].string}</div>
                     </div>
                     <a href="#" id="aboutMeMoreLink" class="hide" onclick="showMoreText()">... more</a>
-                    <a href="#" id="aboutMeLessLink" class="hide" onclick="hideMoreText()">less</a>
+                    <div class="pull-right"><a href="#" id="aboutMeLessLink" class="hide" onclick="hideMoreText()">less</a></div>
                     <c:if test="${user:isPropertyEditable(user,'j:about')}">
                         <div class="about_edit_button">
                             <button class="btn btn-primary" type="button" onclick="switchRow('about')">
@@ -434,7 +457,7 @@ $(document).ready(function(){
                                 ${fields['j:about']}
                         </div>
                         <script type="text/javascript">
-                            var editor = $( '#about_editor' ).ckeditor();
+                        var editor = $( '#about_editor' ).ckeditor();
                         </script>
                         <div id="about_save_button">
                             <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('about')">
@@ -449,12 +472,8 @@ $(document).ready(function(){
     <div class="row formtable">
         <div class="span2"></div>
         <div class="span10">
-            <form class="form-horizontal user-profile-table" onsubmit="return false;">
-                <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="editUserDetails_table">
-                    <tbody>
-                    <%@include file="editUserDetailsTableRow.jspf" %>
-                    </tbody>
-                </table>
+            <form id="editDetailsForm" class="form-horizontal user-profile-table" onsubmit="return false;">
+                    <%@include file="editUserDetailsRows.jspf" %>
             </form>
         </div>
         <div class="span2"></div>

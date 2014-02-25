@@ -1,8 +1,8 @@
-<tr id="names" >
-    <td>
+<div class="row" id="names">
+    <div class="span1">
         Name
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <c:if test="${currentNode.properties['j:title'].boolean}">
             <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
         </c:if>
@@ -17,85 +17,86 @@
                 ${fn:escapeXml(user.properties['j:lastName'].string)}&nbsp;
             </c:if>
         </c:if>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('names')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="names_form" class="hide hiddableForm">
-    <td>
+    </div>
+</div>
+<div id="names_form" class="row hide">
+    <div class="span1">
         <div>Name form</div>
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <div class="control-group">
-                <c:if test="${currentNode.properties['j:title'].boolean}">
-                    <label class="control-label" for="title">Title : </label>
-                    <div class="controls">
-                        <select name="title">
-                            <option value=""></option>
-                            <c:forEach items="${titleInit}"
-                                       varStatus="status"
-                                       var="title">
-                                <c:choose>
-                                    <c:when test="${(fn:escapeXml(user.properties['j:title'].string)) eq  (title.value.string)}">
-                                        <option name="title" value="${title.value.string}" selected="selected">${title.displayName}</option>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option name="title" value="${title.value.string}">${title.displayName}</option>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </c:if>
-                <c:if test="${currentNode.properties['j:firstName'].boolean}">
-                    <label class="control-label" for="firstname">Firstname : </label>
-                    <div class="controls">
-                        <input name="firstName" type="text" value="<c:if test="${!empty user.properties['j:firstName']}">${fn:escapeXml(user.properties['j:firstName'].string)}</c:if>"/>
-                    </div>
-                </c:if>
-                <c:if test="${currentNode.properties['j:lastName'].boolean}">
-                    <label class="control-label" for="lastName">Lastname : </label>
-                    <div class="controls">
-                        <input name="lastName" type="text" value="<c:if test="${!empty user.properties['j:lastName']}">${fn:escapeXml(user.properties['j:lastName'].string)}</c:if>"/>
-                    </div>
-                </c:if>
-                <c:if test="${currentNode.properties['j:gender'].boolean}">
-                    <label class="control-label" for="gender">Gender : </label>
-                    <div class="controls">
-                        <select name="gender">
-                            <c:forEach items="${genderInit}"
-                                       varStatus="status"
-                                       var="gender">
-                                <c:choose>
-                                    <c:when test="${(fn:escapeXml(user.properties['j:gender'])) eq  (gender.value.string)}">
-                                        <option name="gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option name="gender" value="${gender.value.string}" >${gender.displayName}</option>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </c:if>
-                <div style="clear:both;"></div>
-            </div>
+            <c:if test="${currentNode.properties['j:title'].boolean}">
+                <label class="control-label" for="title">Title : </label>
+                <div class="controls">
+                    <select name="title">
+                        <option value=""></option>
+                        <c:forEach items="${titleInit}"
+                                   varStatus="status"
+                                   var="title">
+                            <c:choose>
+                                <c:when test="${(fn:escapeXml(user.properties['j:title'].string)) eq  (title.value.string)}">
+                                    <option name="title" value="${title.value.string}" selected="selected">${title.displayName}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option name="title" value="${title.value.string}">${title.displayName}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
+                </div>
+            </c:if>
+            <c:if test="${currentNode.properties['j:firstName'].boolean}">
+                <label class="control-label" for="firstname">Firstname : </label>
+                <div class="controls">
+                    <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
+                    <input name="firstName" type="text" value="${firstNameValue}"/>
+                </div>
+            </c:if>
+            <c:if test="${currentNode.properties['j:lastName'].boolean}">
+                <label class="control-label" for="lastName">Lastname : </label>
+                <div class="controls">
+                    <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
+                    <input name="lastName" type="text" value="${lastNameValue}"/>
+                </div>
+            </c:if>
+            <c:if test="${currentNode.properties['j:gender'].boolean}">
+                <label class="control-label" for="gender">Gender : </label>
+                <div class="controls">
+                    <select name="gender">
+                        <c:forEach items="${genderInit}"
+                                   varStatus="status"
+                                   var="gender">
+                            <c:choose>
+                                <c:when test="${(fn:escapeXml(user.properties['j:gender'])) eq  (gender.value.string)}">
+                                    <option name="gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option name="gender" value="${gender.value.string}" >${gender.displayName}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
+                </div>
+            </c:if>
+            <div style="clear:both;"></div>
             <div class="form-actions">
-                <button onclick="saveChangesByRowId('names')" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn">Cancel</button>
+                <button onclick="saveChangesByRowId('names')" class="btn btn-primary"><fmt:message key="save"/></button>
+                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
-    </td>
-    <td>
-    </td>
-</tr>
-<tr id="profession">
-    <td>
+        </div>
+    </div>
+    <div class="span2"></div>
+</div>
+<div id="profession" class="row">
+    <div class="span1">
         Profession
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <c:if test="${currentNode.properties['j:function'].boolean}">
             <c:if test="${!empty user.properties['j:function']}">
                 ${fn:escapeXml(user.properties['j:function'].string)}
@@ -106,50 +107,50 @@
                 at ${fn:escapeXml(user.properties['j:organization'].string)}
             </c:if>
         </c:if>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('profession')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="profession_form" class="hide hiddableForm">
-    <td>
+    </div>
+</div>
+<div id="profession_form" class="row hide hiddableForm">
+    <div class="span1">
         pro Form
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <div class="control-group">
             <c:if test="${currentNode.properties['j:function'].boolean}">
                 <label class="control-label" for="function">Function : </label>
                 <div class="controls">
-                    <input name="function" type="text" value="<c:if test="${!empty fields['j:function']}">${fn:escapeXml(user.properties['j:function'].string)}</c:if>"/>
+                    <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
+                    <input name="function" type="text" value="${functionValue}"/>
                 </div>
             </c:if>
-
             <c:if test="${currentNode.properties['j:organization'].boolean}">
                 <label class="control-label" for="organization">Organization : </label>
                 <div class="controls">
-                    <input name="organization" type="text" value="<c:if test="${!empty fields['j:organization']}">${fn:escapeXml(user.properties['j:organization'].string)}</c:if>"/>
+                    <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
+                    <input name="organization" type="text" value="${organizationValue}"/>
                 </div>
             </c:if>
             <div style="clear:both;"></div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('profession')">
-                    <fmt:message key="label.clickToEdit"/>
+                    <fmt:message key="save"/>
                 </button>
+                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
         </div>
-    </td>
-    <td>
-
-    </td>
-</tr>
-<tr id="social">
-    <td>
+    </div>
+    <div class="span2">
+    </div>
+</div>
+<div id="social" class="row">
+    <div class="span1">
         Social
-    </td>
-    <td>
-
+    </div>
+    <div class="span7">
         <c:if test="${currentNode.properties['j:facebookID'].boolean}">
             <c:choose>
                 <c:when test="${!empty user.properties['j:facebookID']}">
@@ -192,60 +193,65 @@
                 </c:otherwise>
             </c:choose>
         </c:if>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('social')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="social_form" class="hide hiddableForm">
-    <td>
+    </div>
+</div>
+<div id="social_form" class="row hide hiddableForm">
+    <div class="span1">
         Social Form
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <div class="control-group">
             <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                 <label class="control-label" for="facebookID">Facebook Id : </label>
                 <div class="controls">
-                    <input name="facebookID" type="text" value="<c:if test="${!empty user.properties['j:facebookID']}">${fn:escapeXml(user.properties['j:facebookID'].string)}</c:if>"/>
+                    <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
+                    <input name="facebookID" type="text" value="${facebookIDValue}"/>
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
                 <label class="control-label" for="linkedinID">Linkedin Id : </label>
                 <div class="controls">
-                    <input name="linkedinID" type="text" value="<c:if test="${!empty user.properties['j:linkedinID']}">${fn:escapeXml(user.properties['j:linkedinID'].string)}</c:if>"/>
+                    <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
+                    <input name="linkedinID" type="text" value="${linkedinIDValue}"/>
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['j:skypeID'].boolean}">
                 <label class="control-label" for="skypeID">Skype Id : </label>
                 <div class="controls">
-                    <input name="skypeID" type="text" value="<c:if test="${!empty user.properties['j:skypeID']}">${fn:escapeXml(user.properties['j:skypeID'].string)}</c:if>"/>
+                    <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
+                    <input name="skypeID" type="text" value="${skypeIDValue}"/>
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['j:twitterID'].boolean}">
                 <label class="control-label" for="twitterID">Twitter Id : </label>
                 <div class="controls">
-                    <input name="twitterID" type="text" value="<c:if test="${!empty user.properties['j:twitterID']}">${fn:escapeXml(user.properties['j:twitterID'].string)}</c:if>"/>
+                    <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
+                    <input name="twitterID" type="text" value="${twitterIDValue}"/>
                 </div>
             </c:if>
             <div style="clear:both;"></div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('social')">
-                    <fmt:message key="label.clickToEdit"/>
+                    <fmt:message key="save"/>
                 </button>
+                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
         </div>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
 
-    </td>
-</tr>
-<tr id="address">
-    <td>
+    </div>
+</div>
+<div id="address" class="row">
+    <div class="span1">
         Address
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <div class="row-fluid">
             <c:if test="${(!empty user.properties['j:address']) or (!empty user.properties['j:zipCode']) or (!empty user.properties['j:city']) or (!empty user.properties['j:country'])}">
                 <div class="span3">
@@ -263,91 +269,98 @@
                 </div>
             </c:if>
         </div>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('address')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="address_form" class="hide hiddableForm">
-    <td>
+    </div>
+</div>
+<div id="address_form" class="row hide hiddableForm">
+    <div class="span1">
         Adress form
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <div class="control-group">
             <c:if test="${user:isPropertyEditable(user,'j:address')}">
-                    <label class="control-label" for="address"><fmt:message key='jnt_user.j_address'/> : </label>
-                    <div class="controls">
-                        <input type="text" name="address" value="<c:if test="${!empty user.properties['j:address']}">${fn:escapeXml(user.properties['j:address'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="address"><fmt:message key='jnt_user.j_address'/> : </label>
+                <div class="controls">
+                    <c:set var="addressValue" value="${not empty user.properties['j:address'] ? fn:escapeXml(user.properties['j:address'].string) : ''}"/>
+                    <input type="text" name="address" value="${addressValue}"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:zipCode')}">
-                    <label class="control-label" for="zipCode"><fmt:message key='jnt_user.j_zipCode'/> : </label>
-                    <div class="controls">
-                        <input type="text" name="zipCode" value="<c:if test="${!empty user.properties['j:zipCode']}">${fn:escapeXml(user.properties['j:zipCode'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="zipCode"><fmt:message key='jnt_user.j_zipCode'/> : </label>
+                <div class="controls">
+                    <c:set var="zipCodeValue" value="${not empty user.properties['j:zipCode'] ? fn:escapeXml(user.properties['j:zipCode'].string) : ''}"/>
+                    <input type="text" name="zipCode" value="${zipCodeValue}"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:city')}">
-                    <label class="control-label" for="city"><fmt:message key='jnt_user.j_city'/> : </label>
-                    <div class="controls">
-                        <input type="text" name="city" value="<c:if test="${!empty user.properties['j:city']}">${fn:escapeXml(user.properties['j:city'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="city"><fmt:message key='jnt_user.j_city'/> : </label>
+                <div class="controls">
+                    <c:set var="cityValue" value="${not empty user.properties['j:city'] ? fn:escapeXml(user.properties['j:city'].string) : ''}"/>
+                    <input type="text" name="city" value="${cityValue}"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:country')}">
-                    <label class="control-label" for="country"><fmt:message key='jnt_user.j_country'/> : </label>
-                    <div class="controls">
-                        <input type="text" name="country" value="<c:if test="${!empty user.properties['j:country']}">${fn:escapeXml(user.properties['j:country'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="country"><fmt:message key='jnt_user.j_country'/> : </label>
+                <div class="controls">
+                    <c:set var="countryValue" value="${not empty user.properties['j:country'] ? fn:escapeXml(user.properties['j:country'].string) : ''}"/>
+                    <input type="text" name="country" value="${countryValue}"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:phoneNumber')}">
-                    <label class="control-label" for="phoneNumber"><fmt:message key='jnt_user.j_phoneNumber'/> : </label>
-                    <div class="controls">
-                        <input type="text" name="phoneNumber" value="<c:if test="${!empty user.properties['j:phoneNumber']}">${fn:escapeXml(user.properties['j:phoneNumber'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="phoneNumber"><fmt:message key='jnt_user.j_phoneNumber'/> : </label>
+                <div class="controls">
+                    <c:set var="phoneNumberValue" value="${not empty user.properties['j:phoneNumber'] ? fn:escapeXml(user.properties['j:phoneNumber'].string) : ''}"/>
+                    <input type="text" name="phoneNumber" value="${phoneNumberValue}"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:mobileNumber')}">
-                    <label class="control-label" for="mobileNumber"><fmt:message key='jnt_user.j_mobileNumber'/> : </label>
-                    <div class="controls">
-                        <input type="text" name="mobileNumber" value="<c:if test="${!empty user.properties['j:mobileNumber']}">${fn:escapeXml(user.properties['j:mobileNumber'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="mobileNumber"><fmt:message key='jnt_user.j_mobileNumber'/> : </label>
+                <div class="controls">
+                    <c:set var="mobileNumberValue" value="${not empty user.properties['j:mobileNumber'] ? fn:escapeXml(user.properties['j:mobileNumber'].string) : ''}"/>
+                    <input type="text" name="mobileNumber" value="${mobileNumberValue}"/>
+                </div>
             </c:if>
             <c:if test="${user:isPropertyEditable(user,'j:email')}">
-                    <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/> : </label>
-                    <div class="controls">
-                        <input type="text" name="email" value="<c:if test="${!empty user.properties['j:email']}">${fn:escapeXml(user.properties['j:email'].string)}</c:if>"/>
-                    </div>
+                <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/> : </label>
+                <div class="controls">
+                    <c:set var="emailValue" value="${not empty user.properties['j:email'] ? fn:escapeXml(user.properties['j:email'].string) : ''}"/>
+                    <input type="text" name="email" value="${emailValue}"/>
+                </div>
             </c:if>
-        </div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('address')">
-                    <fmt:message key="label.clickToEdit"/>
+                    <fmt:message key="save"/>
                 </button>
+                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
         </div>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
 
-    </td>
-</tr>
-<tr id="password">
-    <td>
+    </div>
+</div>
+<div id="password" class="row">
+    <div class="span1">
         Password
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <div id="passwordSuccess" class="hide"></div>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('password')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="password_form" class="hide hiddableForm">
-    <td>
+    </div>
+</div>
+<div id="password_form" class="row hide hiddableForm">
+    <div class="span1">
         Password Form
-    </td>
-    <td>
+    </div>
+    <div class="span7">
         <c:if test="${currentNode.properties['password'].boolean and !(user.properties['j:external'].boolean)}">
             <c:forEach items="${param}" var="p">
                 <c:if test="${not empty ps}">
@@ -369,18 +382,19 @@
             </div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="changePassword()">
-                    <fmt:message key="label.clickToEdit"/>
+                    <fmt:message key="save"/>
                 </button>
+                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
         </c:if>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
 
-    </td>
-</tr>
-<tr id="other">
-    <td>Other </td>
-    <td>
+    </div>
+</div>
+<div id="other" class="row">
+    <div class="span1">Other </div>
+    <div class="span7">
         <c:if test="${currentNode.properties['j:birthDate'].boolean}">
             <div>
                 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
@@ -392,7 +406,6 @@
                 <span>${displayBirthDate}</span>
             </div>
         </c:if>
-
         <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
             <div>
                 <span><fmt:message key="jnt_user.preferredLanguage"/> : </span>
@@ -401,35 +414,37 @@
                 <span>${function:displayLocaleNameWith(prefLang, prefLang)}</span>
             </div>
         </c:if>
-
         <c:if test="${currentNode.properties['age'].boolean}">
             <div>
                 <span><fmt:message key="jnt_user.age"/>:&nbsp;</span>
                 <span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></span>
             </div>
         </c:if>
-    </td>
-    <td>
+    </div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('other')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="other_form" class="hide hiddableForm">
-    <td>Other </td>
-    <td>
+    </div>
+</div>
+<div id="other_form" class="row hide hiddableForm">
+    <div class="span1">Other </div>
+    <div class="span7">
         <div class="control-group">
             <c:if test="${user:isPropertyEditable(user,'j:birthDate')}">
                 <div class="control-group">
-                    <label class="control-label" for="birthDate"><fmt:message key="jnt_user.j_birthDate"/>:</label>
+                    <label class="control-label" for="birthDate">
+                        <fmt:message key="jnt_user.j_birthDate"/>:
+                    </label>
                     <div class="controls input-append date" id="birthDate">
                         <input class="span2" size="16" type="datetime-local" name="birthDate" value="${dateforCal}"/>
-                        <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+                        <span class="add-on">
+                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                        </span>
                     </div>
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
-
                 <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
                            var="adLocale" varStatus="status">
                 </c:forEach>
@@ -437,10 +452,9 @@
                     <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/> : </label>
                     <div class="controls">
                         <select name="preferredLanguage">
-                            <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
-                                       var="adLocale" varStatus="status">
+                            <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
                                 <option value="${function:toLocale(adLocale)}" <c:if test="${function:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
-                                    ${function:displayLocaleNameWith(adLocale, adLocale)}
+                                        ${function:displayLocaleNameWith(adLocale, adLocale)}
                                 </option>
                             </c:forEach>
                         </select>
@@ -449,26 +463,27 @@
             </c:if>
             <div class="form-actions">
                 <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('other')">
-                    <fmt:message key="label.clickToEdit"/>
+                    <fmt:message key="save"/>
                 </button>
+                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
         </div>
-    </td>
-    <td>
-    </td>
-</tr>
-<tr id="privacy">
-    <td>Privacy </td>
-    <td></td>
-    <td>
+    </div>
+    <div class="span2">
+    </div>
+</div>
+<div id="privacy" class="row">
+    <div class="span1">Privacy </div>
+    <div class="span7"></div>
+    <div class="span2">
         <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">
             <fmt:message key="label.clickToEdit"/>
         </button>
-    </td>
-</tr>
-<tr id="privacy_form" class="hide hiddableForm">
-    <td>Privacy </td>
-    <td>
+    </div>
+</div>
+<div id="privacy_form" class="row hide hiddableForm">
+    <div class="span1">Privacy </div>
+    <div class="span7">
         <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
         <c:set var="publicPropertiesAsString" value=""/>
         <c:forEach items="${publicProperties}" var="value">
@@ -476,22 +491,19 @@
         </c:forEach>
         <div class="row">
             <div class="switchesSpans span4">
-                <fieldset class="well" id="part1">
-        <c:forTokens
-                items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,preferredLanguage,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
-                delims="," var="key" varStatus="loopStatus">
-            <script type="text/javascript">visibilityNumber++;</script>
+                    <c:forTokens
+                            items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,preferredLanguage,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
+                            delims="," var="key" varStatus="loopStatus">
+                    <script type="text/javascript">visibilityNumber++;</script>
 
-            <c:if test="${currentNode.properties[key].boolean}">
+                    <c:if test="${currentNode.properties[key].boolean}">
                     <script type="text/javascript">
                         currentPropertieState = $("#publicProperties"+${loopStatus.index}).bootstrapSwitch('state');
                     </script>
-                <c:if test="${loopStatus.count eq 9}">
-                        </fieldset>
-                    </div>
-                    <div class="switchesSpans span4" >
-                        <fieldset class="well" id="part2">
-                </c:if>
+                    <c:if test="${loopStatus.count eq 9}">
+            </div>
+            <div class="switchesSpans span4" >
+                    </c:if>
                     <div class="row control-group switches-control-group">
                         <label class="control-label switch" for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> : </label>
                         <div id="bootstrapSwitches" class="controls switch-wrapper">
@@ -504,15 +516,11 @@
                         </div>
                         <div style="clear:both;"></div>
                     </div>
-            </c:if>
-        </c:forTokens>
-                    </fieldset>
-               </div>
+                    </c:if>
+                    </c:forTokens>
+            </div>
         </div>
-    </td>
-    <td>
-        <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </td>
-</tr>
+    </div>
+    <div class="span2">
+    </div>
+</div>

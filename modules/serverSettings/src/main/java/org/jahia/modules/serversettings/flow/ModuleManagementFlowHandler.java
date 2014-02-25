@@ -464,13 +464,13 @@ public class ModuleManagementFlowHandler implements Serializable {
         final Object moduleHasBeenStarted = requestContext.getExternalContext().getSessionMap().get(
                 "moduleHasBeenStarted");
         if(moduleHasBeenStarted !=null) {
-            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStarted).code("serverSettings.manageModules.module.state.started").arg(moduleHasBeenStarted).build());
+            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStarted).code("serverSettings.manageModules.module.started").arg(moduleHasBeenStarted).build());
             requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStarted");
         }
         final Object moduleHasBeenStopped = requestContext.getExternalContext().getSessionMap().get(
                 "moduleHasBeenStopped");
         if(moduleHasBeenStopped !=null) {
-            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStopped).code("serverSettings.manageModules.module.state.stopped").arg(moduleHasBeenStopped).build());
+            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStopped).code("serverSettings.manageModules.module.stopped").arg(moduleHasBeenStopped).build());
             requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStopped");
         }
     }

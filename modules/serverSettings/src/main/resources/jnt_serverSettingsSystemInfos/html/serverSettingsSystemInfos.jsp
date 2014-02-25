@@ -5,7 +5,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<h2><fmt:message key="serverSettings.systemInfo.systemProperties"/></h2>
+<h2><fmt:message key="serverSettings.systemInfos"/></h2>
 
 <div>
     <% pageContext.setAttribute("systemProperties", new TreeMap(System.getProperties())); %>

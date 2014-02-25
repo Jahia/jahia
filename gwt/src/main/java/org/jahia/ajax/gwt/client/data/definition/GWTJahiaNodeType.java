@@ -157,6 +157,11 @@ public class GWTJahiaNodeType extends BaseTreeModel implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        return getName() != null ? getName().hashCode() : 0;
+    }
+
+    @Override
     public String toString() {
         return getLabel() + "(" + getName() + ")";
     }

@@ -161,6 +161,12 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
         return super.equals(o);
     }
 
+    @Override
+    public int hashCode() {
+        // Same as super.hashCode();
+        return super.hashCode();
+    }
+
     public void remove() {
         getDeclaringNodeType().removeNodeDefinition(this);
     }

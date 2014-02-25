@@ -81,6 +81,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Depends>default,profile</Jahia-Depends>
+                        <Export-Package>org.jahia.modules.tasks.rules</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -43,17 +43,19 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.LoadListener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.dnd.DragSource;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -63,6 +65,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
+import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
@@ -78,8 +81,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected transient LayoutContainer contentContainer;
     protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected transient ListStore<GWTJahiaNode> contentStore;
-    protected transient DisplayGridDragSource displayGridSource;
+    protected transient DragSource displayGridSource;
     protected transient Grid<GWTJahiaNode> grid;
+    protected transient ThumbsListView  listView;
     private List<String> displayGridForTypes;
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
@@ -101,7 +105,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                     String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
                     Log.debug("retrieving children of " + path);
                     List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
-                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
+                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                     JahiaContentManagementService.App.getInstance()
                             .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
                 } else {
@@ -133,10 +137,6 @@ class ContentBrowseTabItem extends BrowseTabItem {
                 return 0;
             }
         }));
-        NodeColumnConfigList displayColumns = new NodeColumnConfigList(config.getTableColumns(), true);
-        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
-        grid.setAutoExpandColumn(displayColumns.getAutoExpand());
-        contentContainer.add(grid);
 
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
@@ -171,9 +171,51 @@ class ContentBrowseTabItem extends BrowseTabItem {
         });
 
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
-        grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
+
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
+        contentVBoxData.setFlex(2);
+
+        if (config.getTableColumns().size() == 1)  {
+            listView = new ThumbsListView(true);
+            listView.setStyleAttribute("overflow-x", "hidden");
+            listView.setStore(contentStore);
+            contentStore.setSortField("display");
+            listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>() {
+                public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
+                    Window w = new Window();
+                    GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
+
+                    final String text = "Preview of " + node.getDisplayName();
+                    w.setHeadingHtml(text);
+                    w.setScrollMode(Style.Scroll.AUTO);
+                    w.setModal(true);
+                    w.setClosable(true);
+                    w.setMaximizable(true);
+                    w.setSize(Math.max(Integer.parseInt((String) node.get("j:width")) + 60, 400), Math.max(Integer.parseInt((String) node.get("j:height")) + 80, 50));
+                    w.setBlinkModal(true);
+                    w.setPlain(true);
+                    w.setToolTip(text);
+                    w.setLayout(new CenterLayout());
+                    w.add(new Image(listView.getSelectionModel().getSelectedItem().getUrl()));
+                    w.show();
+                }
+            });
+            listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
+            contentContainer.add(listView);
+
+        }  else {
+            NodeColumnConfigList displayColumns = new NodeColumnConfigList(config.getTableColumns(), true);
+            grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+            grid.setAutoExpandColumn(displayColumns.getAutoExpand());
+            contentContainer.add(grid);
+
+
+            grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
+
+        }
+
+        contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
         tab.setId("JahiaGxtContentBrowseTab");
@@ -184,7 +226,12 @@ class ContentBrowseTabItem extends BrowseTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
         if (linker.getConfig().isEnableDragAndDrop()) {
-            displayGridSource = new DisplayGridDragSource(grid);
+            if (grid != null) {
+                displayGridSource = new DisplayGridDragSource(grid);
+            }
+            if (listView != null) {
+                displayGridSource = new ImageDragSource(listView);
+            }
             displayGridSource.addDNDListener(editLinker.getDndListener());
         }
     }

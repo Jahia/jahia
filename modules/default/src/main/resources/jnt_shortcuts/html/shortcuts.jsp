@@ -28,7 +28,7 @@
             </li>
             <li>
                 <a class="loginFormTopLogoutShortcuts"
-                   href='${url.logout}'><span><fmt:message
+                   href="<c:url value='${url.logout}'/>"><span><fmt:message
                         key="logout"/></span></a>
             </li>
             <c:if test="${!empty url.myProfile}">

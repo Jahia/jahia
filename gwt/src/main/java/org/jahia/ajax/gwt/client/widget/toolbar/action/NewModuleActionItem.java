@@ -120,6 +120,15 @@ public class NewModuleActionItem extends BaseActionItem {
         final TextField<String> sources = new TextField<String>();
         sources.setName("sources");
         sources.setFieldLabel(Messages.get("label.sources.folder", "Sources folder (optional - will be created with new sources)"));
+        sources.setEmptyText(JahiaGWTParameters.getModulesSourcesDiskPath());
+        sources.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (!sources.isDirty()) {
+                    sources.setRawValue(JahiaGWTParameters.getModulesSourcesDiskPath());
+                }
+            }
+        });
         form.add(sources);
         dialog.add(form);
 

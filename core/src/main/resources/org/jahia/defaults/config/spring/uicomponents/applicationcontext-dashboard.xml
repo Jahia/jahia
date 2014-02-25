@@ -2,8 +2,8 @@
 
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://camel.apache.org/schema/spring"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring-2.0-M1.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="dashboardmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="requiredPermission" value="actions"/>
@@ -21,22 +21,28 @@
                             <property name="titleKey" value="label.mode"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Live"/>
-                                    <ref bean="Toolbar.Item.Preview"/>
-                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.Studio"/>
-                                    <ref bean="Toolbar.Item.Admin"/>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="titleKey" value="label.administration"/>
+                                        <property name="icon" value="admin"/>
+                                        <property name="visibility" value="administrationAccess"/>
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                                                <property name="configurationName" value="adminmode"/>
+                                                <property name="enforcedWorkspace" value="default"/>
+                                                <property name="forceRootChange" value="true"/>
+                                            </bean>
+                                        </property>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>
-                        <ref bean="studiomode.managers.menu"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="icon" value="start"/>
                             <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Start"/>
                                     <ref bean="Toolbar.Item.Logout"/>
                                 </list>
                             </property>
@@ -75,7 +81,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                 <bean id="sidePanelTab.dashboardModules" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="dashboardModules"/>
-                    <property name="icon" value="dashboardModules"/>
+                    <property name="icon" value="start"/>
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -84,7 +90,7 @@
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
                             <property name="settingsTemplateRoot" value="dashboard-modules-base"/>
-                            <property name="label" value="dashboardModules.tab.title"/>
+                            <property name="label" value="userDashboardSettings.tab.title"/>
                             <property name="settingPath" value="$user"/>
                         </bean>
                     </property>

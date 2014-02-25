@@ -42,21 +42,23 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.sites.JahiaSitesService;
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Choice list initializer that looks up child nodes of the specified one
@@ -64,7 +66,7 @@ import java.util.*;
  *
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 17 nov. 2009
+ * Created : 17 nov. 2009
  */
 public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(NodesChoiceListInitializerImpl.class);
@@ -84,7 +86,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 nodetype = s[1];
             }
             try {
-                JCRSiteNode site = null;
+                JCRSiteNode site;
                 JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextParent");
                 if (contextNode == null) {
                     contextNode = (JCRNodeWrapper) context.get("contextNode");
@@ -94,22 +96,18 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 } else {
                     final JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
                     if (defaultSite != null) {
-                        site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode("/sites/"+ defaultSite.getSiteKey());
+                        site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode("/sites/" + defaultSite.getSiteKey());
                     } else {
                         site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode(JCRContentUtils.getSystemSitePath());
                     }
+                    contextNode = site;
                 }
                 String path = s[0];
                 String returnType = "";
                 if (s.length > 2) {
                     returnType = s[2];
                 }
-                Locale fallbackLocale = null;
-                if (site != null) {
-                    fallbackLocale = site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
-                            site.getDefaultLanguage()) : null;
-                    path = path.replace("$currentSite", site.getPath());
-                }
+                path = path.replace("$currentSite", site.getPath());
                 boolean subTree = false;
                 if (path.endsWith("//*")) {
                     path = StringUtils.substringBeforeLast(path, "//*");
@@ -126,6 +124,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 }
                 addSubnodes(listValues, nodetype, node, subTree, returnType);
             } catch (PathNotFoundException e) {
+                logger.debug("Cannot find node " + e.getMessage(), e);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -139,8 +138,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
             if (nodeWrapper.isNodeType(nodetype)) {
                 String displayName = nodeWrapper.getDisplayableName();
-                listValues.add(new ChoiceListValue(displayName, 
-                        "name".equals(returnType)?nodeWrapper.getName():nodeWrapper.getIdentifier()));
+                listValues.add(new ChoiceListValue(displayName, "name".equals(returnType) ? nodeWrapper.getName() : nodeWrapper.getIdentifier()));
             }
             if (subTree) {
                 addSubnodes(listValues, nodetype, nodeWrapper, subTree, returnType);

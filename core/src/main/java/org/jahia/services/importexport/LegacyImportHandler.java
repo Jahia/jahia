@@ -1182,7 +1182,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                 }
                                 n.setProperty(propertyName, values.toArray(new Value[values.size()]));
                                 if (logger.isDebugEnabled())
-                                    logger.debug("Setting on node " + n.getPath() + " property " + propertyName + " with value=" + values.toArray(new Value[values.size()]));
+                                    logger.debug("Setting on node " + n.getPath() + " property " + propertyName + " with value=" + values);
                             }
                             break;
                         }

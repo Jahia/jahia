@@ -52,13 +52,18 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.CacheInfo;
 import org.jahia.services.cache.ehcache.CacheManagerInfo;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Sets;
+
 import java.lang.management.ManagementFactory;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -211,7 +216,49 @@ public final class CacheHelper {
         }
         cache.put(new Element("FLUSH_OUTPUT_CACHES", Boolean.TRUE));
     }
+
+    public static void flushOutputCachesForPath(String path, boolean flushSubtree) {
+        flushOutputCachesForPaths(Sets.newHashSet(path), flushSubtree);
+    }
     
+    public static void flushOutputCachesForPaths(Set<String> paths, boolean flushSubtree) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing dependencies for paths: {}", paths);
+        }
+        ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance(); 
+        Cache cache = cacheProvider.getDependenciesCache();
+        for (String path : paths) {
+            Element element = cache.get(path);
+            if (element != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Flushing path: {}", path);
+                }
+                cacheProvider.invalidate(path);
+                cache.remove(element.getObjectKey());
+            }
+        }
+        if (flushSubtree) {
+            @SuppressWarnings("rawtypes")
+            List keys = cache.getKeys();
+            for (Object key : keys) {
+                String stringKey = key.toString();
+                if (isKeyMatched(stringKey, paths)) {
+                    cacheProvider.invalidate(stringKey);
+                    cache.remove(key);
+                }
+            }
+        }
+    }
+    
+    private static boolean isKeyMatched(String stringKey, Set<String> paths) {
+        for (String path : paths) {
+            if (stringKey.equals(path) || stringKey.startsWith(path + '/')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @SuppressWarnings("deprecation")
     private static CacheInfo getCacheInfo(Cache cache, boolean withConfig, boolean withSizeInBytes) {
         CacheInfo info = new CacheInfo(cache);

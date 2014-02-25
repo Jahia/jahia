@@ -377,7 +377,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         NodeIterator nodes = q.execute().getNodes();
         while (nodes.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-            paths.add(next.getPath());
+            if (!next.getName().equals("long")) {
+                paths.add(next.getPath());
+            }
         }
 
         List<String> users = Arrays.asList("userAB", "userAC", "userBC");

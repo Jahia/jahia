@@ -77,14 +77,7 @@ public abstract class AbstractView extends TopRightComponent {
 
     public AbstractView(final GWTManagerConfiguration config) {
         typeStore = new ListStore<ModelData>();
-        BaseModelData data = new BaseModelData() {
-            @Override
-            public boolean equals(Object obj) {
-                Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                return o1.equals(o2);
-            }
-        };
+        BaseModelData data = new TypeModelData();
         data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, Messages.get("label.all","All"));
         typeStore.add(data);
         configuration = config;
@@ -173,18 +166,7 @@ public abstract class AbstractView extends TopRightComponent {
     private void updateTypeStore(List<GWTJahiaNode> nodes) {
         if (typeStore != null) {
             for (GWTJahiaNode o : nodes) {
-                BaseModelData data = new BaseModelData() {
-                    @Override
-                    public boolean equals(Object obj) {
-                        Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                        Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
-                        if (o1 == o2)
-                            return true;
-                        if (o1 == null || o2 == null)
-                            return false;
-                        return o1.equals(o2);
-                    }
-                };
+                BaseModelData data = new TypeModelData();
                 data.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, o.get(GWTJahiaNode.PRIMARY_TYPE_LABEL));
                 if (!typeStore.contains(data)) {
                     typeStore.add(data);
@@ -310,5 +292,24 @@ public abstract class AbstractView extends TopRightComponent {
     }
 
 
+    private static class TypeModelData extends BaseModelData {
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof  TypeModelData)) {
+                return false;
+            }
+            Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+            Object o2 = ((ModelData) obj).get(GWTJahiaNode.PRIMARY_TYPE_LABEL);
+            if (o1 == o2)
+                return true;
+            if (o1 == null || o2 == null)
+                return false;
+            return o1.equals(o2);
+        }
 
+        @Override
+        public int hashCode() {
+            return get(GWTJahiaNode.PRIMARY_TYPE_LABEL) != null ? get(GWTJahiaNode.PRIMARY_TYPE_LABEL).hashCode() : 0;
+        }
+    }
 }

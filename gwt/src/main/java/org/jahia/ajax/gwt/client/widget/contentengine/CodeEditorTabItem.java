@@ -274,6 +274,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 });
             } else {
                 if (availableCodeMirrorModes != null && availableCodeMirrorModes.size() > 0) {
+                    actions.add(new Label(Messages.get("label.selectSyntaxHighlighting", "Select syntax highlighting")
+                            + ": "));
                     actions.add(getModeCombo());
                 }
                 
@@ -298,7 +300,11 @@ public class CodeEditorTabItem extends EditEngineTabItem {
         modes.setStore(new ListStore<GWTJahiaValueDisplayBean>());
         modes.setDisplayField("display");
         for (Map.Entry<String, String> m : availableCodeMirrorModes.entrySet()) {
-            GWTJahiaValueDisplayBean option = new GWTJahiaValueDisplayBean(m.getKey(), m.getValue());
+            String label = m.getValue();
+            if (label == null || label.length() == 0) {
+                label = Messages.get("label.none", "none");
+            }
+            GWTJahiaValueDisplayBean option = new GWTJahiaValueDisplayBean(m.getKey(), label);
             modes.getStore().add(option);
             if (codeMirrorMode != null && codeMirrorMode.equals(m.getKey())) {
                 ArrayList<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();

@@ -64,6 +64,7 @@ import javax.jcr.RepositoryException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,12 +78,12 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     private transient static Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.SessionFactory sessionFactoryBean;
-    private volatile long processedCount = 0;
-    private volatile long ignoredCount = 0;
-    private volatile long insertedCount = 0;
-    private volatile long processedSinceLastReport = 0;
-    private volatile long timeSinceLastReport = 0;
-    private volatile long latestTimeProcessed = 0;
+    private AtomicLong processedCount = new AtomicLong(0);
+    private AtomicLong ignoredCount = new AtomicLong(0);
+    private AtomicLong insertedCount = new AtomicLong(0);
+    private AtomicLong processedSinceLastReport = new AtomicLong(0);
+    private AtomicLong timeSinceLastReport = new AtomicLong(0);
+    private AtomicLong latestTimeProcessed = new AtomicLong(0);
     private volatile String lastUUIDProcessed = null;
     private volatile String lastPropertyProcessed = null;
     private volatile String lastActionProcessed = null;
@@ -116,16 +117,16 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     }
 
     private void initTimestamps(Session session) {
-        timeSinceLastReport = System.currentTimeMillis();
-        latestTimeProcessed = getMostRecentTimeInHistory(session);
+        timeSinceLastReport.set(System.currentTimeMillis());
+        latestTimeProcessed.set(getMostRecentTimeInHistory(session));
     }
 
     public void process(Exchange exchange) throws Exception {
         final String message = (String) exchange.getIn().getBody();
         final Matcher matcher = PATTERN.matcher(message);
         if (matcher.matches()) {
-            processedCount++;
-            processedSinceLastReport++;
+            long processedCount = this.processedCount.incrementAndGet();
+            processedSinceLastReport.incrementAndGet();
 //            final String ipAddress = matcher.group(3);
 //            final String httpSessionId = matcher.group(4);
 //            final String nodeType = matcher.group(7);
@@ -141,7 +142,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             }
 
             if (VIEWED_ACTION_NAME.equals(action)) {
-                ignoredCount++;
+                ignoredCount.incrementAndGet();
                 return;
             }
 
@@ -157,7 +158,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Ignoring property " + propertyName + " as configured.");
                 }
-                ignoredCount++;
+                ignoredCount.incrementAndGet();
                 return;
             }
 
@@ -180,7 +181,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                         }
                     });
                     if (matchingNodeType != null) {
-                        ignoredCount++;
+                        ignoredCount.incrementAndGet();
                         if (logger.isDebugEnabled()) {
                             logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
                         }
@@ -191,7 +192,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Couldn't find node " + nodeIdentifier + " will not insert log entry. This could be due to parsing an old log.");
                     }
-                    ignoredCount++;
+                    ignoredCount.incrementAndGet();
                     return;
                 }
 
@@ -201,21 +202,21 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             String whatDidWeDo = "inserted";
             boolean shouldSkipInsertion = false;
             try {
-                if (latestTimeProcessed == 0) {
+                if (latestTimeProcessed.get() == 0L) {
                     initTimestamps(session);
                 }
                 final Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS").parse(matcher.group(1));
-                if (latestTimeProcessed > date.getTime()) {
+                if (latestTimeProcessed.get() > date.getTime()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping content history entry since it's date {} is older than last processed date", date);
                     }
-                    ignoredCount++;
+                    ignoredCount.incrementAndGet();
                     whatDidWeDo = "skipped";
                     shouldSkipInsertion = true;
                 } else {
                     // if the time is the same, we have to check for existing entries (or maybe it would be faster to
                     // delete and re-create them ?)
-                    if (latestTimeProcessed == date.getTime()) {
+                    if (latestTimeProcessed.get() == date.getTime()) {
 
                         // we will now check if the UUID, property name and actions are equal to the last processed
                         // action, in order to avoid performing duplicate checks in the database if we can avoid them.
@@ -244,7 +245,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                                 if (logger.isDebugEnabled()) {
                                     logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
                                 }
-                                ignoredCount++;
+                                ignoredCount.incrementAndGet();
                                 whatDidWeDo = "skipped";
                                 shouldSkipInsertion = true;
                             }
@@ -284,8 +285,8 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                     session.save(historyEntry);
                     session.flush();
                     session.getTransaction().commit();
-                    insertedCount++;
-                    latestTimeProcessed = date.getTime();
+                    insertedCount.incrementAndGet();
+                    latestTimeProcessed.set(date.getTime());
                     lastUUIDProcessed = nodeIdentifier;
                     lastPropertyProcessed = propertyName;
                     lastActionProcessed = action;
@@ -303,11 +304,11 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
             if (processedCount % 2000 == 0) {
                 long nowTime = System.currentTimeMillis();
-                double elapsedTimeInSeconds = ((double) (nowTime - timeSinceLastReport)) / 1000.0;
-                double rate = ((double) processedSinceLastReport) / elapsedTimeInSeconds;
+                double elapsedTimeInSeconds = ((double) (nowTime - timeSinceLastReport.get())) / 1000.0;
+                double rate = ((double) processedSinceLastReport.get()) / elapsedTimeInSeconds;
                 logger.info("Total count of processed content history messages: {}. Ignored: {}. Inserted: {}. Rate={} msgs/sec.", new Object[]{processedCount, ignoredCount, insertedCount, rate});
-                processedSinceLastReport = 0;
-                timeSinceLastReport = nowTime;
+                this.processedSinceLastReport.set(0);
+                timeSinceLastReport.set(nowTime);
             }
         }
     }

@@ -247,6 +247,10 @@ public class AclListener extends DefaultEventListener {
     private void createOrUpdateExternalACE(JCRSessionWrapper session, JCRNodeWrapper ace, String principal, String role, JCRNodeWrapper externalPermissions) throws RepositoryException {
         String path = externalPermissions.getProperty("j:path").getString();
         path = path.replaceFirst("^currentSite", ace.getResolveSite().getPath());
+        if (!session.nodeExists(path)) {
+            logger.debug("Cannot create or update external ACE " + externalPermissions.getName() + " because the node " + path + "doesn't exist.");
+            return;
+        }
         logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() +" on " + path);
         JCRNodeWrapper refNode = session.getNode(path);
         if (!refNode.hasNode("j:acl")) {

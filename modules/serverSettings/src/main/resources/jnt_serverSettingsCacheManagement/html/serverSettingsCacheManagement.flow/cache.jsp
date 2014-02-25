@@ -15,6 +15,8 @@
 <%--@elvariable id="cacheManager" type="org.jahia.modules.serversettings.flow.CacheManagerHandler"--%>
 <template:addResources type="javascript" resources="jquery.js,jquery.fancybox.pack.js,admin-bootstrap.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css,tablecloth.css"/>
+<h2><fmt:message key="serverSettings.cacheManagement"/></h2>
+
 <template:addResources type="inline">
     <c:if test="${cacheManagement.showConfig}">
         <script type="text/javascript">
@@ -106,7 +108,7 @@
 
 <c:forEach items="${cacheManagers}" var="entry" varStatus="managerStatus">
     <c:set var="manager" value="${entry.value}"/>
-    <h2>Cache Manager: ${manager.name}
+    <h2><fmt:message key="serverSettings.cache.cacheManager"/>: ${manager.name}
         <c:if test="${cacheManagement.showConfig}">
             &nbsp;
             <a class="btn btn-info configLink" title="<fmt:message key='serverSettings.cache.configLink.title'/>" href="#managerconfig-${managerStatus.index}">

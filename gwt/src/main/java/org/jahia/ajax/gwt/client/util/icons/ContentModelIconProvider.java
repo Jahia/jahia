@@ -110,7 +110,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
             public String getUrl() {
                 String url = icon;
                 String suffix = ".png";
-                if (icon.contains(".")) {
+                if (icon != null && icon.contains(".")) {
                     url = icon.substring(0, icon.indexOf("."));
                     suffix = icon.substring(icon.indexOf("."));
                 }

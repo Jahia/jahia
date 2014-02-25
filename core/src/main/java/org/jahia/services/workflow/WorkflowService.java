@@ -888,11 +888,11 @@ public class WorkflowService implements BeanPostProcessor {
 
     private Map<String, WorkflowRule> recurseOnRules(final JCRNodeWrapper n)
             throws RepositoryException {
-        if (cache.containsKey(n.getPath())) {
-            return cache.get(n.getPath());
+        Map<String, WorkflowRule> results = cache.get(n.getPath());
+        if (results != null) {
+            return results;
         }
 
-        Map<String, WorkflowRule> results;
         if ("/".equals(n.getPath())) {
             results = new HashMap<String, WorkflowRule>();
             Map<String, WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();

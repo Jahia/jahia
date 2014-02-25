@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
-<c:url var="searchUrl" value="${url.server}${url.base}${renderContext.site.path}/search-results.html?src_terms%5b0%5d.term={searchTerms}">
+<c:url var="searchUrl" value="${url.server}${url.context}${url.base}${renderContext.site.path}/search-results.html?src_terms%5b0%5d.term={searchTerms}">
     <c:param name="src_originSiteKey" value="${renderContext.site.siteKey}"/>
     <c:param name="src_terms[0].fields.siteContent" value="true"/>
     <c:param name="src_terms[0].fields.tags" value="true"/>

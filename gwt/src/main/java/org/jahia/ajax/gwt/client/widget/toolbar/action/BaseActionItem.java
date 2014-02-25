@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -66,6 +67,7 @@ import java.util.Map;
  * Date: 4 avr. 2008
  * Time: 13:32:32
  */
+@SuppressWarnings("serial")
 public abstract class BaseActionItem implements ActionItem {
     private GWTJahiaToolbarItem gwtToolbarItem;
 
@@ -283,10 +285,8 @@ public abstract class BaseActionItem implements ActionItem {
      * @return
      */
     public String getPropertyValue(GWTJahiaToolbarItem gwtToolbarItem, String propertyName) {
-        Map properties = gwtToolbarItem.getProperties();
-        GWTJahiaProperty property = properties != null ? (GWTJahiaProperty) properties
-                .get(propertyName)
-                : null;
+        Map<String, GWTJahiaProperty> properties = gwtToolbarItem.getProperties();
+        GWTJahiaProperty property = properties != null ? properties.get(propertyName) : null;
         return property != null ? property.getValue() : null;
     }
 
@@ -328,10 +328,12 @@ public abstract class BaseActionItem implements ActionItem {
         }
         if (menuItem != null) {
             menuItem.setText(title);
+            menuItem.setToolTip(title);
             menuItem.getParentMenu().recalculate();
         }
         if (contextMenuItem != null) {
             contextMenuItem.setText(title);
+            contextMenuItem.setToolTip(title);
             contextMenuItem.getParentMenu().recalculate();
         }
     }

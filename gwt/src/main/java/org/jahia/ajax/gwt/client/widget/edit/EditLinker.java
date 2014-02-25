@@ -164,15 +164,18 @@ public class EditLinker implements Linker {
      * @param updateSidePanel
      * @param updateToolbar
      */
-    public void switchConfig(GWTEditConfiguration config, String newPath, boolean updateSidePanel, boolean updateToolbar) {
+    public void switchConfig(GWTEditConfiguration config, String newPath, boolean updateSidePanel, boolean updateToolbar, String enforcedWorkspace, boolean forceRootChange) {
         this.config = config;
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
         JahiaGWTParameters.setSitesMap(config.getSitesMap());
         JahiaGWTParameters.setChannels(config.getChannels());
+        if(enforcedWorkspace!=null) {
+            JahiaGWTParameters.setWorkspace(enforcedWorkspace);
+        }
         PermissionsUtils.loadPermissions(config.getPermissions());
 
-        mainModule.setConfig(config, newPath);
+        mainModule.setConfig(config, newPath, forceRootChange);
         if (updateSidePanel) {
             sidePanel.setConfig(config);
         }

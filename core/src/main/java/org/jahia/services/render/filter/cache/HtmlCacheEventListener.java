@@ -174,7 +174,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
 
                 if (flushForVanityUrl) {
-                    path = StringUtils.substringBeforeLast(path, VanityUrlManager.VANITYURLMAPPINGS_NODE);
+                    path = StringUtils.substringBeforeLast(path, "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE);
                     flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
                         flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);

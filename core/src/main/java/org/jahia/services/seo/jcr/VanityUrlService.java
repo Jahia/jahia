@@ -246,8 +246,9 @@ public class VanityUrlService {
     public List<VanityUrl> findExistingVanityUrls(final String url, final String site,
             final String workspace) throws RepositoryException {
         final String cacheKey = getCacheByUrlKey(url, site, workspace);
-        if (cacheByUrl.containsKey(cacheKey)) {
-            return (List<VanityUrl>) cacheByUrl.get(cacheKey);
+        List<VanityUrl> result = (List<VanityUrl>) cacheByUrl.get(cacheKey);
+        if (result != null) {
+            return result;
         }
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace,
                 new JCRCallback<List<VanityUrl>>() {

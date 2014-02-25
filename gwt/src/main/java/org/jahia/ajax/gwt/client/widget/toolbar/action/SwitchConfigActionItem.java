@@ -64,6 +64,8 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     private String configurationName;
     private boolean updateSidePanel =true;
     private boolean updateToolbar =true;
+    private String enforcedWorkspace = "default";
+    private boolean forceRootChange = false;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -113,7 +115,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                         linker.loaded();
                         Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {}", new Object[]{ Messages.get("label.noAvailableSites")} ));
                     } else {
-                        ((EditLinker)linker).switchConfig(gwtEditConfiguration, null, updateSidePanel, updateToolbar);
+                        ((EditLinker)linker).switchConfig(gwtEditConfiguration, null, updateSidePanel, updateToolbar, enforcedWorkspace, forceRootChange);
                     }
                 }
 
@@ -138,5 +140,13 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
             toggleButton.setAllowDepress(false);
         }
         return toggleButton;
+    }
+
+    public void setEnforcedWorkspace(String enforcedWorkspace) {
+        this.enforcedWorkspace = enforcedWorkspace;
+    }
+
+    public void setForceRootChange(boolean forceRootChange) {
+        this.forceRootChange = forceRootChange;
     }
 }

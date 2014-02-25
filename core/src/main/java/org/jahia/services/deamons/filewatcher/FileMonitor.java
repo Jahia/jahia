@@ -68,6 +68,7 @@ public class FileMonitor implements Serializable {
         private final FileMonitor fm;
         private boolean isFile;
         private long timestamp;
+        private long length;
 
         private FileMonitorAgent(FileMonitor fm, File file) {
             this.fm = fm;
@@ -79,6 +80,7 @@ public class FileMonitor implements Serializable {
 
             if (this.exists) {
                 this.timestamp = this.file.lastModified();
+                this.length = this.file.length();
                 this.isFile = file.isFile();
             }
         }
@@ -88,6 +90,7 @@ public class FileMonitor implements Serializable {
             if (this.exists && !this.file.exists()) {
                 this.exists = this.file.exists();
                 this.timestamp = -1;
+                this.length = 0;
 
                 // Fire delete event
 
@@ -101,8 +104,10 @@ public class FileMonitor implements Serializable {
 
                 // Check the timestamp to see if it has been modified
                 long lastModified = this.file.lastModified();
-                if (this.timestamp != lastModified) {
+                long length = this.file.length();
+                if (this.timestamp != lastModified || this.length != length) {
                     this.timestamp = lastModified;
+                    this.length = length;
                     // Fire change event
 
                     // Don't fire if it's a folder because new file children
@@ -115,6 +120,7 @@ public class FileMonitor implements Serializable {
             } else if (!this.exists && this.file.exists()) {
                 this.exists = this.file.exists();
                 this.timestamp = this.file.lastModified();
+                this.length = this.file.length();
                 // Don't fire if it's a folder because new file children
                 // and deleted files in a folder have their own event triggered.
                 if (!this.file.isDirectory()) {

@@ -387,18 +387,21 @@ public class ModuleHelper {
         }
     }
 
-    public void updateModule(String moduleId, JCRSessionWrapper session) throws IOException, RepositoryException,
+    public String updateModule(String moduleId, JCRSessionWrapper session) throws IOException, RepositoryException,
             BundleException {
+        String output = null;
         File sources = getSources(moduleId, session);
 
         SourceControlManagement scm = templateManagerService.getTemplatePackageById(moduleId).getSourceControl();
         if (scm != null) {
             templateManagerService.regenerateImportFile(moduleId, sources, session);
-            scm.update();
+            output = scm.update();
             templateManagerService.compileAndDeploy(moduleId, sources, session);
         } else {
             throw new IOException("No SCM configured");
         }
+        
+        return output;
     }
 
 }

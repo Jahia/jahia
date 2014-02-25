@@ -15,7 +15,7 @@
                     <me j:applyOn="jnt:user"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
-                                j:titleKey="label.aboutMe"
+                                j:titleKey="userDashboard.myprofile"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">

@@ -1723,13 +1723,14 @@
     }
     .x-trigger-wrap-focus .x-form-spinner-clickdown{
         background-position:-153px -12px;
-    }.x-btn{
+    }
+    .x-btn{
          cursor:pointer;
          white-space: nowrap;
-     }
+    }
     .x-btn button{
         border:0 none;
-        background:transparent;
+        background-color:transparent;
         padding-left:3px;
         padding-right:3px;
         cursor:pointer;

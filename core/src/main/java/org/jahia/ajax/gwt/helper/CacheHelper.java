@@ -40,66 +40,24 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.slf4j.Logger;
-import org.jahia.services.cache.CacheFactory;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
-import java.util.List;
-
 /**
- * 
+ * Cache helper class. 
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- *        Created : 16 sept. 2010
  */
 public class CacheHelper implements ApplicationListener<ApplicationEvent> {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheHelper.class);
-    private ModuleCacheProvider cacheProvider;
-    private CacheFactory cacheFactory;
-    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
-    }
-
-    public void setCacheFactory(CacheFactory cacheFactory) {
-        this.cacheFactory = cacheFactory;
-    }
 
     public void flush(String path, boolean flushSubtree) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path : " + path);
-        }
-        Cache cache = cacheProvider.getDependenciesCache();
-        Element element = cache.get(path);
-        if (element != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Flushing path : " + path);
-            }
-            cacheProvider.invalidate(path);
-            cache.remove(element.getKey());
-        }
-        if (flushSubtree) {
-            List keys = cache.getKeys();
-            for (Object key : keys) {
-                if (key.toString().startsWith(path)) {
-                    cacheProvider.invalidate(key.toString());
-                    cache.remove(key);
-                }
-            }
-        }
+        org.jahia.services.cache.CacheHelper.flushOutputCachesForPath(path, flushSubtree);
     }
 
     public void flushAll() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing all caches");
-        }
-        cacheProvider.flushCaches();
-        cacheFactory.flushAllCaches();
+        org.jahia.services.cache.CacheHelper.flushAllCaches(true);
     }
 
     public void onApplicationEvent(ApplicationEvent event) {

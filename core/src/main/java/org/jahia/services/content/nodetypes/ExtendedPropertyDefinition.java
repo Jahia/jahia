@@ -325,6 +325,12 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
         return super.equals(o);
     }
 
+    @Override
+    public int hashCode() {
+        // Same as super.hashCode();
+        return super.hashCode();
+    }
+
     /**
      * Remove definition from declaring node type
      */

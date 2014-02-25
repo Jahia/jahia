@@ -206,18 +206,17 @@ public class FacetHandler {
         final String columnPropertyName = column.getValue().getPropertyName();
         final String propertyName = columnPropertyName + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
 
-        // only set facet type if the facet is not a query
-        final boolean isNotQuery = !facetOptions.contains(FacetParams.FACET_QUERY);
-        if (isNotQuery) {
-            // we can assert the facet type by checking whether the the options String contains date or range, otherwise, the type is field
-            String facetType = FacetParams.FACET_FIELD; // default facet type
-            if (facetOptions.contains("date")) {
-                facetType = FacetParams.FACET_DATE;
-            } else if (facetOptions.contains("range")) {
-                facetType = FacetParams.FACET_RANGE;
-            }
-            parameters.add(facetType, propertyName);
+        // we can assert the facet type by checking whether the the options String contains date or range, otherwise, the type is field
+        final boolean isQuery = facetOptions.contains(FacetParams.FACET_QUERY);
+        String facetType = FacetParams.FACET_FIELD; // default facet type
+        if (isQuery) {
+            facetType = FacetParams.FACET_QUERY;
+        } else if (facetOptions.contains("date")) {
+            facetType = FacetParams.FACET_DATE;
+        } else if (facetOptions.contains("range")) {
+            facetType = FacetParams.FACET_RANGE;
         }
+        parameters.add(facetType, propertyName);
 
         // populate parameters
         // each parameter name/value pair is separated from the next one by & so split on this
@@ -254,7 +253,7 @@ public class FacetHandler {
         }
 
         // only add node type parameter if we're not dealing with a query
-        if (isNotQuery) {
+        if (!isQuery) {
             parameters.add(getFullParameterName(propertyName, getFacetOption("nodetype")), nodeType);
         }
 
@@ -269,7 +268,7 @@ public class FacetHandler {
                         unparsedQuery = QueryParser.escape(fieldNameInIndex) + ":" + unparsedQuery;
                     }
                 }
-                parameters.add(FacetParams.FACET_QUERY, unparsedQuery);
+                parameters.add(getFullParameterName(propertyName, "query"), unparsedQuery);
             }
         }
     }

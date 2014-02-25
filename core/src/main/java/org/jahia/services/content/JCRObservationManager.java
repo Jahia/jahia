@@ -521,7 +521,12 @@ public class JCRObservationManager implements ObservationManager {
             
             return event.equals(((EventWrapper)o).event);
         }
-        
+
+        @Override
+        public int hashCode() {
+            return event != null ? event.hashCode() : 0;
+        }
+
         @Override
         public String toString() {
             return event.toString();

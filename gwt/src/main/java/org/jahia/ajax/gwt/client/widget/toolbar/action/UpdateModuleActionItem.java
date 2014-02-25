@@ -40,10 +40,17 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -58,6 +65,7 @@ import java.util.Map;
 /**
  * Action item to create a new templates set
  */
+@SuppressWarnings("serial")
 public class UpdateModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
@@ -68,18 +76,19 @@ public class UpdateModuleActionItem extends BaseActionItem {
         if (siteNode.get("j:sourcesFolder") != null) {
             if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
                 linker.loading(Messages.get("label.sourceControl.update.module", "Updating module..."));
-                JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback() {
-                    public void onSuccess(Object result) {
+                JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<String>() {
+                    public void onSuccess(String result) {
                         linker.loaded();
-                        Info.display(Messages.get("label.information", "Information"),Messages.get("label.sourceControl.module.updated", "Module updated") );
+                        showUpdateResult(result, false);                        
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("event","update");
+                        data.put(Linker.REFRESH_ALL,"true");
                         linker.refresh(data);
                     }
 
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        Info.display(Messages.get("label.error", "Error"), caught.getMessage());
+                        showUpdateResult(caught.getMessage(), true);                        
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("event","update");
                         linker.refresh(data);
@@ -172,5 +181,48 @@ public class UpdateModuleActionItem extends BaseActionItem {
         } else {
             setEnabled(false);
         }
+    }
+    
+    private void showUpdateResult(String output, boolean isError) {
+        final Window wnd = new Window();
+        wnd.setWidth(450);
+        wnd.setHeight(250);
+        wnd.setModal(true);
+        wnd.setBlinkModal(true);
+        wnd.setHeadingHtml(Messages.get("label.updateModule", "Update module"));
+        wnd.setLayout(new FitLayout());
+
+        final FormPanel form = new FormPanel();
+        form.setHeaderVisible(false);
+        form.setFrame(false);
+        form.setLabelAlign(LabelAlign.TOP);
+        form.setFieldWidth(415);
+
+        final TextArea message = new TextArea();
+        message.setName("status");
+        message.setFieldLabel(Messages.get("label.status", "Status")
+                + " - "
+                + (isError ? Messages.get("label.error", "Error") : Messages.get("label.sourceControl.module.updated",
+                        "Module updated")));
+        message.setHeight(120);
+        message.setValue(output);
+        message.setReadOnly(true);
+
+        form.add(message);
+
+        Button btnClose = new Button(Messages.get("label.close", "Close"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                wnd.hide();
+            }
+        });
+        form.addButton(btnClose);
+        form.setButtonAlign(Style.HorizontalAlignment.CENTER);
+
+        wnd.add(form);
+        wnd.layout();
+        wnd.setFocusWidget(message);
+
+        wnd.show();
+        
     }
  }

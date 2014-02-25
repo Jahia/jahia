@@ -51,6 +51,7 @@ import java.util.Set;
  * 
  */
 public interface CacheImplementation<K, V> {
+    @Deprecated
     boolean containsKey(K key);
 
     V get(K key);

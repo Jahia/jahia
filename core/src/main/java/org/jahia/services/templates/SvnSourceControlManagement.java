@@ -40,21 +40,12 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.xml.XMLParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -62,13 +53,6 @@ import java.util.*;
  */
 public class SvnSourceControlManagement extends SourceControlManagement {
 
-    private static final Predicate URL_PREDICATE = new Predicate() {
-        @Override
-        public boolean evaluate(Object object) {
-            return object.toString().startsWith("URL:");
-        }
-    };
-    
     /**
      * Initializes an instance of this class.
      * @param executable the SVN executable
@@ -128,10 +112,10 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             String path = line.substring(8);
             char firstColumn = line.charAt(0);
             Status status = null;
-            if (firstColumn == 'A') {
-                status = Status.ADDED;
-            } else if (firstColumn == 'C') {
+            if (firstColumn == 'C' || line.charAt(1) == 'C' || line.charAt(6) == 'C') {
                 status = Status.UNMERGED;
+            } else if (firstColumn == 'A') {
+                status = Status.ADDED;
             } else if (firstColumn == 'D' || firstColumn == '!') {
                 status = Status.DELETED;
             } else if (firstColumn == 'M') {
@@ -187,8 +171,12 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         }
         executeCommand(executable, new String[]{"add","src"});
         executeCommand(executable, new String[]{"add","pom.xml"});
-        executeCommand(executable, new String[]{"commit","-m","First commit"});
+        executeCommand(executable, new String[]{"commit","-m","Initial commit"});
         if (r.exitValue > 0) {
+            File svnDir = new File(workingDirectory.getPath() + "/.svn");
+            if (svnDir.exists()) {
+                FileUtils.deleteDirectory(svnDir);
+            }
             throw new IOException(r.err);
         }
     }
@@ -258,14 +246,21 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         } else {
             args.add(file.getPath().substring(rootPath.length() + 1));
         }
-        executeCommand(executable, args.toArray(new String[args.size()]));
-        invalidateStatusCache();
+        try {
+            executeCommand(executable, args.toArray(new String[args.size()]));
+        } finally {
+            invalidateStatusCache();
+        }
     }
 
     @Override
-    public void update() throws IOException {
-        invalidateStatusCache();
-        checkExecutionResult(executeCommand(executable, new String[]{"update","--non-interactive"}));
+    public String update() throws IOException {
+        try {
+            ExecutionResult result = executeCommand(executable, new String[]{"update","--non-interactive"});
+            checkExecutionResult(result);
+            return result.out;
+        } finally {
+            invalidateStatusCache();
+        }
     }
-    
 }

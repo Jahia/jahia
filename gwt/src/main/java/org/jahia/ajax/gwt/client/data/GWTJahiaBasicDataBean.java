@@ -92,5 +92,9 @@ public class GWTJahiaBasicDataBean extends BaseModelData implements Serializable
         return getValue() == null && that.getValue() == null || getValue() != null && that.getValue() != null
                 && getValue().equals(that.getValue());
     }
-    
+
+    @Override
+    public int hashCode() {
+        return getValue() != null ? getValue().hashCode() : 0;
+    }
 }

@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Rendering controller for the edit mode.
- * User: toto
+ * User: rincevent
  * Date: Aug 19, 2009
  * Time: 4:15:21 PM
  *

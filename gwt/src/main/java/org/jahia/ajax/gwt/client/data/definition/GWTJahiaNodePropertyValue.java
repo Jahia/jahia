@@ -106,6 +106,13 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
         }
     }
 
+    @Override
+    public int hashCode() {
+        int result = value != null ? value.hashCode() : 0;
+        result = 31 * result + type;
+        return result;
+    }
+
     public int getType() {
         return type;
     }

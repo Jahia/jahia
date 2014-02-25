@@ -66,6 +66,8 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         }
         int userNameHashcode = Math.abs(username.hashCode());
         String firstFolder = getFolderName(userNameHashcode).toLowerCase();
+        // Warning : The useless call to Math.round() converts int to float and back to int but changes the value,
+        // due to float low precision - removing this call would change path of all users !
         userNameHashcode = Math.round(userNameHashcode/100);
         String secondFolder = getFolderName(userNameHashcode).toLowerCase();
         userNameHashcode = Math.round(userNameHashcode/100);
@@ -76,7 +78,8 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
     }
 
     private String getFolderName(int userNameHashcode) {
-        int i = (userNameHashcode % 100);
+        // Additional Math.abs just in case of userNameHashcode==Integer.MIN_VALUE
+        int i = Math.abs(userNameHashcode % 100);
         return Character.toString((char) ('a' + Math.round(i / 10)))+Character.toString((char)('a'+ (i%10)));
     }
 

@@ -75,7 +75,7 @@
 </form>
 
 <div id="detailActiveVersion">
-    <h2>${activeVersion.name}&nbsp;${activeVersion.version}</h2>
+    <h2><fmt:message key="serverSettings.manageModules"/> - ${activeVersion.name}&nbsp;${activeVersion.version}</h2>
     <p>
         ${fn:escapeXml(bundleInfo['Bundle-Description'])}
     </p>

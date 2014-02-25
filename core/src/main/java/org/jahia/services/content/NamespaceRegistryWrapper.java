@@ -178,14 +178,14 @@ public class NamespaceRegistryWrapper implements NamespaceRegistry {
 
     public String getURI(String s) throws NamespaceException, RepositoryException {
         if (!prefixToNs.containsKey(s)) {
-            throw new NamespaceException();
+            throw new NamespaceException("URI "+s+" is not a registered namespace URI in this system");
         }
         return (String) prefixToNs.get(s);
     }
 
     public String getPrefix(String s) throws NamespaceException, RepositoryException {
         if (!nsToPrefix.containsKey(s)) {
-            throw new NamespaceException();
+            throw new NamespaceException("Prefix "+s+" is not a registered namespace prefix in this system");
         }
         return (String) nsToPrefix.get(s);
     }

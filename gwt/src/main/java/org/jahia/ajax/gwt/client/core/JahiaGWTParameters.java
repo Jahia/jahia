@@ -80,6 +80,7 @@ public class JahiaGWTParameters {
     public static final String STUDIO_VISUAL_URL = "studioVisualUrl";
     public static final String BASE_URL = "baseUrl";
     public static final String DEVELOPMENT_MODE = "developmentMode";
+    public static final String MODULES_SOURCES_DISK_PATH = "modulesSourcesDiskPath";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -111,6 +112,10 @@ public class JahiaGWTParameters {
 
     public static boolean isDevelopmentMode() {
         return "true".equals(jahiaParamDictionary.get(DEVELOPMENT_MODE));
+    }
+
+    public static String getModulesSourcesDiskPath() {
+        return jahiaParamDictionary.get(MODULES_SOURCES_DISK_PATH);
     }
 
     public static String getPathInfo() {
@@ -259,6 +264,7 @@ public class JahiaGWTParameters {
     }
 
     public static void setWorkspace(String newWorkspace) {
+        baseUrl = baseUrl.replaceFirst(workspace, newWorkspace);
         workspace = newWorkspace;
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();

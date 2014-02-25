@@ -232,7 +232,10 @@ function ajaxReloadCallback(jcrId)
     if (jcrId == 'preferredLanguage')
     {
         console.log('language change detected');
-        window.location.reload();
+        var windowToRefresh = window.parent;
+        if(windowToRefresh == undefined)
+            windowToRefresh = window;
+        windowToRefresh.location.reload();
     } else
     {
         $('#editDetailspage').parent().load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');

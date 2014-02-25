@@ -459,8 +459,20 @@ public class ModuleManagementFlowHandler implements Serializable {
         return modules;
     }
 
-    public void initModules() {
+    public void initModules(RequestContext requestContext) {
         forgeService.loadModules();
+        final Object moduleHasBeenStarted = requestContext.getExternalContext().getSessionMap().get(
+                "moduleHasBeenStarted");
+        if(moduleHasBeenStarted !=null) {
+            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStarted).code("serverSettings.manageModules.module.state.started").arg(moduleHasBeenStarted).build());
+            requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStarted");
+        }
+        final Object moduleHasBeenStopped = requestContext.getExternalContext().getSessionMap().get(
+                "moduleHasBeenStopped");
+        if(moduleHasBeenStopped !=null) {
+            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStopped).code("serverSettings.manageModules.module.state.stopped").arg(moduleHasBeenStopped).build());
+            requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStopped");
+        }
     }
 
     public List<Module> getForgeModules() {
@@ -489,5 +501,21 @@ public class ModuleManagementFlowHandler implements Serializable {
      */
     public void logError(Exception e) {
         logger.error(e.getMessage(), e);
+    }
+
+    public void hasAModuleBeenStarted(RequestContext requestContext) {
+        logger.debug("Testing if a module has been started");
+        if (requestContext.getRequestParameters().get("module")!=null) {
+            requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStarted",
+                requestContext.getRequestParameters().get("module"));
+        }
+    }
+
+    public void hasAModuleBeenStopped(RequestContext requestContext) {
+        logger.debug("Testing if a module has been started");
+        if (requestContext.getRequestParameters().get("module")!=null) {
+            requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStopped",
+                    requestContext.getRequestParameters().get("module"));
+        }
     }
 }

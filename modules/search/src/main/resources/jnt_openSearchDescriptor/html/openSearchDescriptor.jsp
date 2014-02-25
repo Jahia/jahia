@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
-<c:set var="descriptorUrl" value="${url.server}${url.templateTypes['xml']}"/>
+<c:set var="descriptorUrl" value="${url.server}${url.context}${url.templateTypes['xml']}"/>
 <c:set var="title" value="${functions:default(currentNode.propertiesAsString['jcr:title'], 'Jahia search')}"/>
 <template:addResources>
 <link rel="search" type="application/opensearchdescription+xml" href="${fn:escapeXml(descriptorUrl)}" title="${fn:escapeXml(title)}" />

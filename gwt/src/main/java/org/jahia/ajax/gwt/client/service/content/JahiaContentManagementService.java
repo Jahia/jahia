@@ -419,7 +419,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void unzip(List<String> paths) throws GWTJahiaServiceException;
 
-    void updateModule(String moduleId) throws GWTJahiaServiceException;
+    String updateModule(String moduleId) throws GWTJahiaServiceException;
 
     void addToSourceControl(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException;
 
@@ -468,6 +468,10 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTJahiaNodeProperty translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
 
     RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException;
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

@@ -1,5 +1,5 @@
 <div id="namesRow">
-    <h2><fmt:message key="mySettings.name"/></h2>
+    <h2><i class="icon-user"></i>&nbsp;<fmt:message key="mySettings.name"/></h2>
     <div class="row" id="names">
         <div class="span4">
             <c:if test="${currentNode.properties['j:title'].boolean}">
@@ -92,7 +92,7 @@
     </div>
 </div>
 <div id="professionRows">
-    <h2><fmt:message key="mySettings.profession"/></h2>
+    <h2><i class="icon-briefcase"></i>&nbsp;<fmt:message key="mySettings.profession"/></h2>
     <div id="profession" class="row">
         <div class="span4">
             <c:if test="${currentNode.properties['j:function'].boolean}">
@@ -145,12 +145,12 @@
     </div>
 </div>
 <div id="socialRows">
-    <h2><fmt:message key="mySettings.social"/></h2>
+    <h2><i class="icon-globe"></i>&nbsp;<fmt:message key="mySettings.social"/></h2>
     <div id="social" class="row">
         <div class="span4">
             <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                 <c:choose>
-                    <c:when test="${!empty user.properties['j:facebookID']}">
+                    <c:when test="${not empty user.properties['j:facebookID'].string}">
                         <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
                     </c:when>
                     <c:otherwise>
@@ -160,7 +160,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:skypeID'].boolean}">
                 <c:choose>
-                    <c:when test="${!empty user.properties['j:skypeID']}">
+                    <c:when test="${!empty user.properties['j:skypeID'].string}">
                         <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
                     </c:when>
                     <c:otherwise>
@@ -171,7 +171,7 @@
 
             <c:if test="${currentNode.properties['j:twitterID'].boolean}">
                 <c:choose>
-                    <c:when test="${!empty user.properties['j:twitterID']}">
+                    <c:when test="${!empty user.properties['j:twitterID'].string}">
                         <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
                     </c:when>
                     <c:otherwise>
@@ -182,7 +182,7 @@
 
             <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
                 <c:choose>
-                    <c:when test="${!empty user.properties['j:linkedinID']}">
+                    <c:when test="${!empty user.properties['j:linkedinID'].string}">
                         <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
                     </c:when>
                     <c:otherwise>
@@ -244,7 +244,7 @@
     </div>
 </div>
 <div id="AddressRows">
-<h2><fmt:message key="mySettings.address"/></h2>
+<h2><i class="icon-enveloppe"></i>&nbsp;<fmt:message key="mySettings.address"/></h2>
 <div id="address" class="row">
     <div class="span4">
         <div class="row-fluid">
@@ -387,7 +387,7 @@
     </div>
 </div>
 <div id="otherRows">
-    <h2> <fmt:message key="mySettings.other"/> </h2>
+    <h2> <i class="icon-info-sign"></i>&nbsp;<fmt:message key="mySettings.other"/> </h2>
     <div id="other" class="row">
         <div class="span4">
             <c:if test="${currentNode.properties['j:birthDate'].boolean}">

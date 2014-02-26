@@ -54,12 +54,13 @@
 <%-- Javascripts inclusions --%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
-<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addCacheDependency node="${user}"/>
+
 
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>
@@ -118,7 +119,8 @@ function hideMoreText()
         'overflow': 'hidden'
     });
     $('#aboutMeBlock').css({
-        'height': '115px'
+        'height': '115px',
+        overflow:'hidden'
     });
     $('#aboutMeLessLink').hide();
     $('#aboutMeMoreLink').show();
@@ -133,7 +135,9 @@ function showMoreText()
 {
     $('#aboutMeText').css({
         'height': '115px',
-        'overflow': 'auto'
+        'overflow': 'auto',
+        'padding-right':'5px'
+
     });
     $('#aboutMeBlock').css({
         'height': '160px',
@@ -204,8 +208,6 @@ function switchRow(elementId)
 
     //building css form id
     var elementFormId = elementId+"_form";
-    console.log('elementId : '+elementId);
-    console.log('elementFormId : '+elementFormId);
     //Checking which element to show and which element to hide
     if( $(elementId).is(":visible"))
     {
@@ -277,18 +279,16 @@ function saveChangesByRowId(rowId)
         }
         else
         {
-            data['j:'+this.name]=this.value;
+            if(!(this.name == 'title' && this.value.length == 0))
+            {
+                data['j:'+this.name]=this.value;
+            }
         }
-
     });
 
     //getting the form inputs
     $(divId+' input').each(function() {
-        if(this.name == 'birthDate' && this.value.length == 0 )
-        {
-            //TODO With the New Jahia API
-        }
-        else
+        if(!(this.name == 'birthDate' && this.value.length == 0 ))
         {
             data['j:'+this.name]=this.value;
         }
@@ -380,7 +380,7 @@ $(document).ready(function(){
 });
 </script>
 </template:addResources>
-<fieldset class="well" id="editDetailspage">
+<div id="editDetailspage">
     <div id="detailsHead" class="row">
         <div id="imageDiv" class="span2">
             <c:if test="${currentNode.properties['j:picture'].boolean}">
@@ -400,11 +400,11 @@ $(document).ready(function(){
                             </div>
                         </c:otherwise>
                     </c:choose>
-                    <div class="image_edit_button">
+                    <%--<div class="image_edit_button">
                         <button class="btn btn-primary" type="button" onclick="switchRow('image')">
                             <fmt:message key="label.clickToEdit"/>
                         </button>
-                    </div>
+                    </div>--%>
                 </div>
                 <div class="clear"></div>
             </c:if>
@@ -441,8 +441,8 @@ $(document).ready(function(){
                         <h3 id="aboutMeTitle"><fmt:message key='jnt_user.j_about'/></h3>
                            <div id="aboutMeText"> ${user.properties['j:about'].string}</div>
                     </div>
-                    <a href="#" id="aboutMeMoreLink" class="hide" onclick="showMoreText()">... more</a>
-                    <div class="pull-right"><a href="#" id="aboutMeLessLink" class="hide" onclick="hideMoreText()">less</a></div>
+                    <a href="#" id="aboutMeMoreLink" class="hide" onclick="showMoreText()"><fmt:message key="mySettings.readMore"/></a>
+                    <div class="pull-right"><a href="#" id="aboutMeLessLink" class="hide" onclick="hideMoreText()"><fmt:message key="mySettings.readLess"/></a></div>
                     <c:if test="${user:isPropertyEditable(user,'j:about')}">
                         <div class="about_edit_button">
                             <button class="btn btn-primary" type="button" onclick="switchRow('about')">
@@ -460,8 +460,11 @@ $(document).ready(function(){
                         var editor = $( '#about_editor' ).ckeditor();
                         </script>
                         <div id="about_save_button">
-                            <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('about')">
-                                Save changes
+                            <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')">
+                                <fmt:message key="cancel"/>
+                            </button>
+                            <button class="btn btn-success  pull-right" type="button" onclick="saveChangesByRowId('about')">
+                                <fmt:message key="save"/>
                             </button>
                         </div>
                     </div>
@@ -478,4 +481,4 @@ $(document).ready(function(){
         </div>
         <div class="span2"></div>
     </div>
-</fieldset>
+</div>

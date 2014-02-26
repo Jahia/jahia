@@ -40,79 +40,23 @@
 
 package org.jahia.services.query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.query.qom.ChildNodeJoinCondition;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.DynamicOperand;
-import javax.jcr.query.qom.EquiJoinCondition;
-import javax.jcr.query.qom.FullTextSearch;
-import javax.jcr.query.qom.Join;
-import javax.jcr.query.qom.JoinCondition;
-import javax.jcr.query.qom.Literal;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.PropertyExistence;
-import javax.jcr.query.qom.PropertyValue;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelConstants;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Selector;
-import javax.jcr.query.qom.Source;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.spi.commons.query.qom.AbstractQOMNode;
-import org.apache.jackrabbit.spi.commons.query.qom.AndImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.BindVariableValueImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.ChildNodeImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.ChildNodeJoinConditionImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.ComparisonImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.ConstraintImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.DefaultQOMTreeVisitor;
-import org.apache.jackrabbit.spi.commons.query.qom.DescendantNodeImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.DescendantNodeJoinConditionImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.DynamicOperandImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.EquiJoinConditionImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.FullTextSearchImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.FullTextSearchScoreImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.JoinConditionImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.JoinImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.LengthImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.LiteralImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.LowerCaseImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.NodeLocalNameImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.NodeNameImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.NotImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.OrImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.OrderingImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.PropertyExistenceImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.PropertyValueImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.QOMTreeVisitor;
-import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
-import org.apache.jackrabbit.spi.commons.query.qom.SameNodeImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.SameNodeJoinConditionImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.StaticOperandImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.UpperCaseImpl;
+import org.apache.jackrabbit.spi.commons.query.qom.*;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.query.qom.*;
+import java.util.*;
 
 /**
  * The default implementation of Jahia's QueryService.

@@ -365,6 +365,13 @@ public class JCRObservationManager implements ObservationManager {
         return lastOp.get();
     }
 
+    /**
+     * Check if the denoted path is in a mounted folder
+     *
+     * @param path
+     * @return
+     * @throws RepositoryException
+     */
     public static boolean isExtensionNode(String path) throws RepositoryException {
         for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
             // Handle extension nodes, return visible uuid

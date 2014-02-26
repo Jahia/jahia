@@ -1531,6 +1531,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    /**
+     * Call to send conflict resolved on a node to the source control
+     * @param moduleId : module id involved
+     * @param node : node with conflict
+     * @throws GWTJahiaServiceException
+     */
     public void markConflictAsResolved(String moduleId, GWTJahiaNode node) throws GWTJahiaServiceException {
         try {
             contentManager.markConflictAsResolved(moduleId, node, retrieveCurrentSession(null));
@@ -1540,6 +1546,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    /**
+     * Call to compile and deploy a module
+     * @param moduleId : module to compile and deploy
+     * @throws GWTJahiaServiceException
+     */
     public void compileAndDeploy(String moduleId) throws GWTJahiaServiceException {
         try {
             moduleHelper.compileAndDeploy(moduleId, retrieveCurrentSession(null));

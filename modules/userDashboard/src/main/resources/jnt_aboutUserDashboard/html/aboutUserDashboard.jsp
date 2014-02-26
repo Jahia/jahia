@@ -58,7 +58,12 @@
 <template:addCacheDependency node="${user}"/>
 
 <jsp:useBean id="now" class="java.util.Date"/>
-<%--<c:set var="publicProperties" value="<%=getPublicProperties(pageContext)%>"/>--%>
+
+<jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
+<c:set var="publicPropertiesAsString" value=""/>
+<c:forEach items="${publicProperties}" var="value">
+    <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
+</c:forEach>
 
 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
 <jcr:propertyInitializers node="${user}" name="j:gender" var="genderInit"/>
@@ -69,13 +74,13 @@
         $(document).ready(function(){
 
             $(".btnMoreAbout").click(function(){
-                $(".aboutMeText").animate( { height:"100%" }, { queue:false, duration:500 });
+                $(".aboutMeText").css( { height:"100%",maxHeight: "500px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
                 $(".btnMoreAbout").hide();
                 $(".btnLessAbout").show();
             });
 
             $(".btnLessAbout").click(function(){
-                $(".aboutMeText").animate( { height:"100px" }, { queue:false, duration:500 });
+                $(".aboutMeText").css( { height:"100px", overflow: "hidden" }, { queue:false, duration:500 });
                 $(".btnLessAbout").hide();
                 $(".btnMoreAbout").show();
             });
@@ -94,385 +99,412 @@
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane active well" id="private">
-        <div class="media">
-            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                <c:choose>
-                    <c:when test="${empty picture}">
-                        <img class="img-polaroid pull-left media-object" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                            alt="" border="0"/>
-                    </c:when>
-                    <c:otherwise>
-                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
-                            alt="${fn:escapeXml(person)}"/>
-                    </c:otherwise>
-                </c:choose>
-            <div class="media-body">
-                    <h4 class="media-heading">
+    <div class="tab-pane active" id="private">
+        <div class="alert alert-info">
+            <div class="row-fluid">
+                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                <div class="span2">
+                    <c:choose>
+                        <c:when test="${empty picture}">
+                            <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                alt="" border="0"/>
+                        </c:when>
+                        <c:otherwise>
+                            <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                alt="${fn:escapeXml(person)}"/>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="span10">
+                    <h1>
                         <fmt:message key='jnt_user.j_about'/>
-                    </h4>
-                    <div class="aboutMeText lead" style="height: 100px">
-                        ${user.properties['j:about'].string}
-                    </div>
+                    </h1>
+                     <div class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
+                         ${user.properties['j:about'].string}
+                     </div>
                     <br />
-                    <button class="btn btn-small btn-primary btnMoreAbout"><fmt:message key='mySettings.readMore'/></button>
-                    <button class="btn btn-small btn-primary hide btnLessAbout"><fmt:message key='mySettings.readLess'/></button>
+                    <button class="btn btn-small btn-primary btnMoreAbout">
+                        <fmt:message key='mySettings.readMore'/>
+                    </button>
+                    <button class="btn btn-small btn-primary hide btnLessAbout">
+                        <fmt:message key='mySettings.readLess'/>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="row-fluid">
             <div class="span2"></div>
             <div class="span8">
-                <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.name'/>
-                            </td>
-                            <td>
-                                <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
-                                ${user.properties['j:firstName'].string}&nbsp;
-                                ${user.properties['j:lastName'].string}&nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.profession'/>
-                            </td>
-                            <td>
-                                ${user.properties['j:function'].string}
-                                <c:if test="${(!empty user.properties['j:organization'])}">
-                                    &nbsp;<fmt:message key='mySettings.at'/>&nbsp;
-                                </c:if>
-                                ${user.properties['j:organization'].string}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.social'/>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${!empty user.properties['j:facebookID']}">
-                                        <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
-                                    </c:otherwise>
-                                </c:choose>
-                                <c:choose>
-                                    <c:when test="${!empty user.properties['j:skypeID']}">
-                                        <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                                    </c:otherwise>
-                                </c:choose>
-                                <c:choose>
-                                    <c:when test="${!empty user.properties['j:twitterID']}">
-                                        <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                                    </c:otherwise>
-                                </c:choose>
-                                <c:choose>
-                                    <c:when test="${!empty user.properties['j:linkedinID']}">
-                                        <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.address'/>
-                            </td>
-                            <td>
-                                <div class="row-fluid">
-                                    <c:if test="${(!empty user.properties['j:phoneNumber']) or (!empty user.properties['j:mobileNumber']) or (!empty user.properties['j:email'])}">
-                                        <div class="pull-left">
-                                            <div>
-                                                <fmt:message key='mySettings.addressForm.email'/>&nbsp;:&nbsp;
-                                                <c:if test="${!empty user.properties['j:email']}">
-                                                    ${user.properties['j:email'].string}
-                                                </c:if>
-                                            </div>
-                                            <div>
-                                                <fmt:message key='mySettings.addressForm.mobile'/>&nbsp;:&nbsp;
-                                                <c:if test="${!empty user.properties['j:mobileNumber']}">
-                                                    ${user.properties['j:mobileNumber'].string}
-                                                </c:if>
-                                            </div>
-                                            <div>
-                                                <fmt:message key='mySettings.addressForm.phone'/>&nbsp;:&nbsp;
-                                                <c:if test="${!empty user.properties['j:phoneNumber']}">
-                                                    ${user.properties['j:phoneNumber'].string}
-                                                </c:if>
-                                            </div>
-                                        </div>
-                                    </c:if>
-                                    <c:if test="${(!empty user.properties['j:address']) or (!empty user.properties['j:zipCode']) or (!empty user.properties['j:city']) or (!empty user.properties['j:country'])}">
-                                        <div class="pull-right">
-                                            <div class="pull-left">
-                                                <fmt:message key='mySettings.addressForm.address'/>&nbsp;:&nbsp;
-                                                <div class="pull-right">
-                                                    <c:if test="${!empty user.properties['j:address']}">
-                                                        ${user.properties['j:address'].string}
-                                                    </c:if>
-                                                    <br />
-                                                    <c:if test="${!empty user.properties['j:zipCode']}">
-                                                        ${user.properties['j:zipCode'].string}
-                                                    </c:if>
-                                                    <br />
-                                                    <c:if test="${!empty user.properties['j:city']}">
-                                                        ${user.properties['j:city'].string}
-                                                    </c:if>
-                                                    <br />
-                                                    <c:if test="${!empty user.properties['j:country']}">
-                                                        ${user.properties['j:country'].string}
-                                                    </c:if>
-                                                </div>
-                                            </div>
-                                        </div>
+                <h2><i class="icon-user"></i>&nbsp;<fmt:message key='mySettings.name'/></h2>
+                <div class="box-1">
+                    <c:if test="${(!empty user.properties['j:title'].string)}">
+                        <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
+                    </c:if>
+                    <c:if test="${(!empty user.properties['j:firstName'].string)}">
+                        ${user.properties['j:firstName'].string}&nbsp;
+                    </c:if>
+                    <c:if test="${(!empty user.properties['j:lastName'].string)}">
+                        ${user.properties['j:lastName'].string}&nbsp;
+                    </c:if>
+                </div>
+                <h2><i class="icon-briefcase"></i>&nbsp;<fmt:message key='mySettings.profession'/></h2>
+                <div class="box-1">
+                    <c:if test="${(!empty user.properties['j:function'].string)}">
+                        ${user.properties['j:function'].string}
+                    </c:if>
+                    <c:if test="${(!empty user.properties['j:organization'].string)}">
+                        &nbsp;<fmt:message key='mySettings.at'/>&nbsp;
+                        ${user.properties['j:organization'].string}
+                    </c:if>
+                </div>
+                <h2><i class="icon-globe"></i>&nbsp;<fmt:message key='mySettings.social'/></h2>
+                <div class="box-1">
+                    <c:choose>
+                        <c:when test="${!empty user.properties['j:facebookID'].string}">
+                            <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${!empty user.properties['j:skypeID'].string}">
+                            <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${!empty user.properties['j:twitterID'].string}">
+                            <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${!empty user.properties['j:linkedinID'].string}">
+                            <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <h2><i class="icon-envelope"></i>&nbsp;<fmt:message key='mySettings.address'/></h2>
+                <div class="box-1">
+                    <div class="row-fluid">
+                        <c:if test="${(!empty user.properties['j:phoneNumber'].string) or (!empty user.properties['j:mobileNumber'].string) or (!empty user.properties['j:email'].string)}">
+                            <div class="pull-left">
+                                <div>
+                                    <strong><fmt:message key='mySettings.addressForm.email'/>&nbsp;:</strong>
+                                    <c:if test="${!empty user.properties['j:email'].string}">
+                                        &nbsp;${user.properties['j:email'].string}
                                     </c:if>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key="jnt_user.j_gender.other"/>
-                            </td>
-                            <td>
                                 <div>
-                                    <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
-                                    <c:if test="${not empty birthDate}">
-                                        <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                                    <strong><fmt:message key='mySettings.addressForm.phone'/>&nbsp;:</strong>
+                                    <c:if test="${!empty user.properties['j:phoneNumber'].string}">
+                                        &nbsp;${user.properties['j:phoneNumber'].string}
                                     </c:if>
-                                    <span><fmt:message key="jnt_user.j_birthDate"/> : </span>
-                                    <span>${displayBirthDate}</span>
                                 </div>
                                 <div>
-                                    <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
-                                    <c:set var="prefLang" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
-                                    <span><fmt:message key="jnt_user.preferredLanguage"/> : </span>
-                                    <span>${functions:displayLocaleNameWith(prefLang, prefLang)}</span>
+                                    <strong><fmt:message key='mySettings.addressForm.mobile'/>&nbsp;:</strong>
+                                    <c:if test="${!empty user.properties['j:mobileNumber'].string}">
+                                        &nbsp;${user.properties['j:mobileNumber'].string}
+                                    </c:if>
                                 </div>
-                                <div>
-                                    <span><fmt:message key="jnt_user.age"/>&nbsp;:</span>
-                                    <span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></span>
+                            </div>
+                        </c:if>
+                        <c:if test="${(!empty user.properties['j:address']) or (!empty user.properties['j:zipCode']) or (!empty user.properties['j:city']) or (!empty user.properties['j:country'])}">
+                            <div class="pull-right">
+                                <div class="pull-left">
+                                    <strong><fmt:message key='mySettings.addressForm.address'/>&nbsp;:</strong>&nbsp;
+                                    <div class="pull-right">
+                                        <c:if test="${!empty user.properties['j:address'].string}">
+                                            ${user.properties['j:address'].string}
+                                        </c:if>
+                                        <br />
+                                        <c:if test="${!empty user.properties['j:zipCode'].string}">
+                                            ${user.properties['j:zipCode'].string}
+                                        </c:if>
+                                        <br />
+                                        <c:if test="${!empty user.properties['j:city'].string}">
+                                            ${user.properties['j:city'].string}
+                                        </c:if>
+                                        <br />
+                                        <c:if test="${!empty user.properties['j:country'].string}">
+                                            ${user.properties['j:country'].string}
+                                        </c:if>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </div>
+                        </c:if>
+                    </div>
+                </div>
+                <h2><i class="icon-info-sign"></i>&nbsp;<fmt:message key="jnt_user.j_gender.other"/></h2>
+                <div class="box-1">
+                    <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
+                    <div>
+                        <strong><fmt:message key="jnt_user.age"/>&nbsp;:</strong>
+                        <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/>
+                    </div>
+                    <div>
+                        <c:if test="${not empty birthDate}">
+                            <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                        </c:if>
+                        <strong><fmt:message key="jnt_user.j_birthDate"/>&nbsp;:</strong>
+                        &nbsp;${displayBirthDate}
+                    </div>
+                    <div>
+                        <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
+                        <c:set var="prefLang" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
+                        <strong><fmt:message key="jnt_user.preferredLanguage"/>&nbsp;:</strong>
+                        &nbsp;${functions:displayLocaleNameWith(prefLang, prefLang)}
+                    </div>
+                </div>
             </div>
             <div class="span2"></div>
         </div>
     </div>
-    <div class="tab-pane well" id="public">
-        <div class="media">
-            <c:if test="${publicProperties.properties['j:picture']}">
-                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                <c:choose>
-                    <c:when test="${empty picture}">
-                        <img class="img-polaroid pull-left media-object" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                             alt="" border="0"/>
-                    </c:when>
-                    <c:otherwise>
-                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
-                             alt="${fn:escapeXml(person)}"/>
-                    </c:otherwise>
-                </c:choose>
-            </c:if>
-            <div class="media-body">
-                <c:if test="${currentNode.properties['j:about'].boolean}">
-                    <h4 class="media-heading">
-                        <fmt:message key='jnt_user.j_about'/>
-                    </h4>
-                    <div class="aboutMeText lead" style="height: 100px">
-                        ${user.properties['j:about'].string}
+    <div class="tab-pane" id="public">
+        <c:if test="${fn:contains(publicPropertiesAsString, 'j:picture') and fn:contains(publicPropertiesAsString, 'j:about')}">
+            <div class="alert alert-info">
+                <div class="row-fluid">
+                    <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                    <div class="span2">
+                        <c:choose>
+                            <c:when test="${empty picture}">
+                                <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                     alt="" border="0"/>
+                            </c:when>
+                            <c:otherwise>
+                                <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                     alt="${fn:escapeXml(person)}"/>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
-                    <br />
-                    <button class="btn btn-small btn-primary btnMoreAbout"><fmt:message key='mySettings.readMore'/></button>
-                    <button class="btn btn-small btn-primary hide btnLessAbout"><fmt:message key='mySettings.readLess'/></button>
+                    <div class="span10">
+                        <h1>
+                            <fmt:message key='jnt_user.j_about'/>
+                        </h1>
+                        <div class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
+                            ${user.properties['j:about'].string}
+                        </div>
+                        <br />
+                        <button class="btn btn-small btn-primary btnMoreAbout">
+                            <fmt:message key='mySettings.readMore'/>
+                        </button>
+                        <button class="btn btn-small btn-primary hide btnLessAbout">
+                            <fmt:message key='mySettings.readLess'/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <div class="row-fluid">
+            <div class="span2">
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:picture') and !fn:contains(publicPropertiesAsString, 'j:about')}">
+                    <div class="alert alert-info">
+                        <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                        <c:choose>
+                            <c:when test="${empty picture}">
+                                <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                     alt="" border="0"/>
+                            </c:when>
+                            <c:otherwise>
+                                <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                     alt="${fn:escapeXml(person)}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </c:if>
             </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span2"></div>
             <div class="span8">
-                <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.name'/>
-                            </td>
-                            <td>
-                                <c:if test="${currentNode.properties['j:title'].boolean}">
-                                    <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
+                <c:if test="${!fn:contains(publicPropertiesAsString, 'j:picture') and fn:contains(publicPropertiesAsString, 'j:about')}">
+                    <div class="alert alert-info">
+                        <h1>
+                            <fmt:message key='jnt_user.j_about'/>
+                        </h1>
+                        <div class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
+                            ${user.properties['j:about'].string}
+                        </div>
+                        <br />
+                        <button class="btn btn-small btn-primary btnMoreAbout">
+                            <fmt:message key='mySettings.readMore'/>
+                        </button>
+                        <button class="btn btn-small btn-primary hide btnLessAbout">
+                            <fmt:message key='mySettings.readLess'/>
+                        </button>
+                    </div>
+                </c:if>
+
+
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:title') or fn:contains(publicPropertiesAsString, 'j:firstName') or fn:contains(publicPropertiesAsString, 'j:lastName')}">
+                    <h2><i class="icon-user"></i>&nbsp;<fmt:message key='mySettings.name'/></h2>
+                    <div class="box-1">
+                        <c:if test="${(!empty user.properties['j:title'].string)}">
+                            <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
+                        </c:if>
+                        <c:if test="${(!empty user.properties['j:firstName'].string)}">
+                            ${user.properties['j:firstName'].string}&nbsp;
+                        </c:if>
+                        <c:if test="${(!empty user.properties['j:lastName'].string)}">
+                            ${user.properties['j:lastName'].string}&nbsp;
+                        </c:if>
+                        <c:if test="${fn:contains(publicPropertiesAsString, '')}">
+                            <div class="pull-right">
+                                <strong><fmt:message key='mySettings.gender'/>&nbsp;:</strong>
+                                &nbsp;${user.properties['j:gender'].string}
+                            </div>
+                        </c:if>
+                    </div>
+                </c:if>
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:function') or fn:contains(publicPropertiesAsString, 'j:organization')}">
+                    <h2><i class="icon-briefcase"></i>&nbsp;<fmt:message key='mySettings.profession'/></h2>
+                    <div class="box-1">
+                        <c:if test="${(!empty user.properties['j:function'].string)}">
+                            ${user.properties['j:function'].string}
+                        </c:if>
+                        <c:if test="${(!empty user.properties['j:organization'].string)}">
+                            &nbsp;<fmt:message key='mySettings.at'/>&nbsp;
+                            ${user.properties['j:organization'].string}
+                        </c:if>
+                    </div>
+                </c:if>
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:facebookID') or fn:contains(publicPropertiesAsString, 'j:skypeID') or fn:contains(publicPropertiesAsString, 'j:twitterID') or fn:contains(publicPropertiesAsString, 'j:linkedinID')}">
+                    <h2><i class="icon-globe"></i>&nbsp;<fmt:message key='mySettings.social'/></h2>
+                    <div class="box-1">
+                        <c:if test="${fn:contains(publicPropertiesAsString, 'j:facebookID')}">
+                            <c:choose>
+                                <c:when test="${!empty user.properties['j:facebookID'].string}">
+                                    <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                        <c:if test="${fn:contains(publicPropertiesAsString, 'j:skypeID')}">
+                            <c:choose>
+                                <c:when test="${!empty user.properties['j:skypeID'].string}">
+                                    <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                        <c:if test="${fn:contains(publicPropertiesAsString, 'j:twitterID')}">
+                            <c:choose>
+                                <c:when test="${!empty user.properties['j:twitterID'].string}">
+                                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                        <c:if test="${fn:contains(publicPropertiesAsString, 'j:linkedinID')}">
+                            <c:choose>
+                                <c:when test="${!empty user.properties['j:linkedinID'].string}">
+                                    <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </div>
+                </c:if>
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:phoneNumber') or fn:contains(publicPropertiesAsString, 'j:mobileNumber')
+                            or fn:contains(publicPropertiesAsString, 'j:email')}">
+                    <h2><i class="icon-envelope"></i>&nbsp;<fmt:message key='mySettings.address'/></h2>
+                    <div class="box-1">
+                        <div class="row-fluid">
+                            <div class="pull-left">
+                                <c:if test="${fn:contains(publicPropertiesAsString, 'j:email')}">
+                                    <div>
+                                        <c:if test="${!empty user.properties['j:email']}">
+                                        <strong><fmt:message key='mySettings.addressForm.email'/>&nbsp;:</strong>
+                                            <c:if test="${(!empty user.properties['j:email'].string)}">
+                                                &nbsp;${user.properties['j:email'].string}
+                                            </c:if>
+                                        </c:if>
+                                    </div>
                                 </c:if>
-                                <c:if test="${currentNode.properties['j:firstName'].boolean}">
-                                    ${user.properties['j:firstName'].string}&nbsp;
-                                </c:if>
-                                <c:if test="${currentNode.properties['j:lastName'].boolean}">
-                                    ${user.properties['j:lastName'].string}&nbsp;
-                                </c:if>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.profession'/>
-                            </td>
-                            <td>
-                                <c:if test="${currentNode.properties['j:function'].boolean}">
-                                    ${user.properties['j:function'].string}
-                                </c:if>
-                                <c:if test="${(!empty user.properties['j:organization'])}">
-                                    &nbsp;<fmt:message key='mySettings.at'/>&nbsp;
-                                </c:if>
-                                <c:if test="${currentNode.properties['j:organization'].boolean}">
-                                    ${user.properties['j:organization'].string}
-                                </c:if>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.social'/>
-                            </td>
-                            <td>
-                                <c:if test="${currentNode.properties['j:facebookID'].boolean}">
-                                    <c:choose>
-                                        <c:when test="${!empty user.properties['j:facebookID']}">
-                                            <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:if>
-                                <c:if test="${currentNode.properties['j:skypeID'].boolean}">
-                                    <c:choose>
-                                        <c:when test="${!empty user.properties['j:skypeID']}">
-                                            <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:if>
-                                <c:if test="${currentNode.properties['j:twitterID'].boolean}">
-                                    <c:choose>
-                                        <c:when test="${!empty user.properties['j:twitterID']}">
-                                            <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:if>
-                                <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
-                                    <c:choose>
-                                        <c:when test="${!empty user.properties['j:linkedinID']}">
-                                            <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:if>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key='mySettings.address'/>
-                            </td>
-                            <td>
-                                <div class="row-fluid">
-                                    <c:if test="${(!empty user.properties['j:address']) or (!empty user.properties['j:zipCode']) or (!empty user.properties['j:city']) or (!empty user.properties['j:country'])}">
-                                        <div class="pull-left">
-                                            <div>
-                                                <fmt:message key='mySettings.addressForm.email'/>&nbsp;:&nbsp;
-                                                <c:if test="${!empty user.properties['j:email']}">
-                                                    ${user.properties['j:email'].string}
-                                                </c:if>
-                                            </div>
-                                            <div>
-                                                <fmt:message key='mySettings.addressForm.mobile'/>&nbsp;:&nbsp;
-                                                <c:if test="${!empty user.properties['j:mobileNumber']}">
-                                                    ${user.properties['j:mobileNumber'].string}
-                                                </c:if>
-                                            </div>
-                                            <div>
-                                                <fmt:message key='mySettings.addressForm.phone'/>&nbsp;:&nbsp;
-                                                <c:if test="${!empty user.properties['j:phoneNumber']}">
-                                                    ${user.properties['j:phoneNumber'].string}
-                                                </c:if>
-                                            </div>
-                                        </div>
-                                    </c:if>
-                                    <c:if test="${(!empty user.properties['j:phoneNumber']) or (!empty user.properties['j:mobileNumber']) or (!empty user.properties['j:email'])}">
-                                        <div class="pull-right">
-                                            <div class="pull-left">
-                                                <fmt:message key='mySettings.addressForm.address'/>&nbsp;:&nbsp;
-                                                <div class="pull-right">
-                                                    <c:if test="${!empty user.properties['j:address']}">
-                                                        ${user.properties['j:address'].string}
-                                                    </c:if>
-                                                    <br />
-                                                    <c:if test="${!empty user.properties['j:zipCode']}">
-                                                        ${user.properties['j:zipCode'].string}
-                                                    </c:if>
-                                                    <br />
-                                                    <c:if test="${!empty user.properties['j:city']}">
-                                                        ${user.properties['j:city'].string}
-                                                    </c:if>
-                                                    <br />
-                                                    <c:if test="${!empty user.properties['j:country']}">
-                                                        ${user.properties['j:country'].string}
-                                                    </c:if>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <c:if test="${fn:contains(publicPropertiesAsString, 'j:phoneNumber')}">
+                                <div>
+                                    <c:if test="${!empty user.properties['j:phoneNumber']}">
+                                    <strong><fmt:message key='mySettings.addressForm.phone'/>&nbsp;:</strong>
+                                        <c:if test="${(!empty user.properties['j:phoneNumber'].string)}">
+                                            &nbsp;${user.properties['j:phoneNumber'].string}
+                                        </c:if>
                                     </c:if>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <fmt:message key="jnt_user.j_gender.other"/>
-                            </td>
-                            <td>
-                                <c:if test="${currentNode.properties['j:birthDate'].boolean}">
-                                    <div>
-                                        <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
-                                        <c:if test="${not empty birthDate}">
-                                            <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
-                                            <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy-MM-dd" var="dateforCal"/>
+                                </c:if>
+                                <c:if test="${fn:contains(publicPropertiesAsString, 'j:mobileNumber')}">
+                                <div>
+                                    <c:if test="${!empty user.properties['j:mobileNumber']}">
+                                    <strong><fmt:message key='mySettings.addressForm.mobile'/>&nbsp;:</strong>
+                                        <c:if test="${(!empty user.properties['j:mobileNumber'].string)}">
+                                            &nbsp;${user.properties['j:mobileNumber'].string}
                                         </c:if>
-                                        <span><fmt:message key="jnt_user.j_birthDate"/> : </span>
-                                        <span>${displayBirthDate}</span>
-                                    </div>
+                                    </c:if>
+                                </div>
                                 </c:if>
-                                <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
-                                    <div>
-                                        <span><fmt:message key="jnt_user.preferredLanguage"/> : </span>
-                                        <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
-                                        <c:set var="prefLang" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
-                                        <span>${functions:displayLocaleNameWith(prefLang, prefLang)}</span>
+                            </div>
+                            <div class="pull-right">
+                                <div class="pull-left">
+                                    <strong><fmt:message key='mySettings.addressForm.address'/>&nbsp;:</strong>&nbsp;
+                                    <div class="pull-right">
+                                        <c:if test="${!empty user.properties['j:address'].string}">
+                                            ${user.properties['j:address'].string}
+                                        </c:if>
+                                        <br />
+                                        <c:if test="${!empty user.properties['j:zipCode'].string}">
+                                            ${user.properties['j:zipCode'].string}
+                                        </c:if>
+                                        <br />
+                                        <c:if test="${!empty user.properties['j:city'].string}">
+                                            ${user.properties['j:city'].string}
+                                        </c:if>
+                                        <br />
+                                        <c:if test="${!empty user.properties['j:country'].string}">
+                                            ${user.properties['j:country'].string}
+                                        </c:if>
                                     </div>
-                                </c:if>
-                                <c:if test="${currentNode.properties['age'].boolean}">
-                                    <div>
-                                        <span><fmt:message key="jnt_user.age"/>&nbsp;:</span>
-                                        <span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></span>
-                                    </div>
-                                </c:if>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+                <c:if test="${fn:contains(publicPropertiesAsString, 'j:birthDate') or fn:contains(publicPropertiesAsString, 'preferredLanguage')}">
+                    <h2><i class="icon-info-sign"></i>&nbsp;<fmt:message key="jnt_user.j_gender.other"/></h2>
+                    <div class="box-1">
+                        <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
+                        <c:if test="${not empty birthDate}">
+                            <div>
+                                <strong><fmt:message key="jnt_user.age"/>&nbsp;:</strong>
+                                <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/>
+                            </div>
+                            <div>
+                                <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                                <strong><fmt:message key="jnt_user.j_birthDate"/>&nbsp;:</strong>
+                                &nbsp;${displayBirthDate}
+                            </div>
+                        </c:if>
+                        <div>
+                            <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
+                            <c:set var="prefLang" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
+                            <c:if test="${!empty user.properties['preferredLanguage'].string}">
+                                <strong><fmt:message key="jnt_user.preferredLanguage"/>&nbsp;:</strong>
+                                &nbsp;${functions:displayLocaleNameWith(prefLang, prefLang)}
+                            </c:if>
+                        </div>
+                    </div>
+                </c:if>
             </div>
             <div class="span2"></div>
         </div>

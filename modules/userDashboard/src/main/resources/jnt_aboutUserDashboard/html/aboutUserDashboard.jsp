@@ -198,19 +198,19 @@
                         <c:if test="${(!empty user.properties['j:phoneNumber'].string) or (!empty user.properties['j:mobileNumber'].string) or (!empty user.properties['j:email'].string)}">
                             <div class="pull-left">
                                 <div>
-                                    <strong><fmt:message key='mySettings.addressForm.email'/>&nbsp;:</strong>
+                                    <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
                                     <c:if test="${!empty user.properties['j:email'].string}">
                                         &nbsp;${user.properties['j:email'].string}
                                     </c:if>
                                 </div>
                                 <div>
-                                    <strong><fmt:message key='mySettings.addressForm.phone'/>&nbsp;:</strong>
+                                    <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
                                     <c:if test="${!empty user.properties['j:phoneNumber'].string}">
                                         &nbsp;${user.properties['j:phoneNumber'].string}
                                     </c:if>
                                 </div>
                                 <div>
-                                    <strong><fmt:message key='mySettings.addressForm.mobile'/>&nbsp;:</strong>
+                                    <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
                                     <c:if test="${!empty user.properties['j:mobileNumber'].string}">
                                         &nbsp;${user.properties['j:mobileNumber'].string}
                                     </c:if>
@@ -220,7 +220,7 @@
                         <c:if test="${(!empty user.properties['j:address']) or (!empty user.properties['j:zipCode']) or (!empty user.properties['j:city']) or (!empty user.properties['j:country'])}">
                             <div class="pull-right">
                                 <div class="pull-left">
-                                    <strong><fmt:message key='mySettings.addressForm.address'/>&nbsp;:</strong>&nbsp;
+                                    <strong><fmt:message key='jnt_user.j_address'/>&nbsp;:</strong>&nbsp;
                                     <div class="pull-right">
                                         <c:if test="${!empty user.properties['j:address'].string}">
                                             ${user.properties['j:address'].string}
@@ -427,7 +427,7 @@
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:email')}">
                                     <div>
                                         <c:if test="${!empty user.properties['j:email']}">
-                                        <strong><fmt:message key='mySettings.addressForm.email'/>&nbsp;:</strong>
+                                        <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
                                             <c:if test="${(!empty user.properties['j:email'].string)}">
                                                 &nbsp;${user.properties['j:email'].string}
                                             </c:if>
@@ -437,7 +437,7 @@
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:phoneNumber')}">
                                 <div>
                                     <c:if test="${!empty user.properties['j:phoneNumber']}">
-                                    <strong><fmt:message key='mySettings.addressForm.phone'/>&nbsp;:</strong>
+                                    <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
                                         <c:if test="${(!empty user.properties['j:phoneNumber'].string)}">
                                             &nbsp;${user.properties['j:phoneNumber'].string}
                                         </c:if>
@@ -447,7 +447,7 @@
                                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:mobileNumber')}">
                                 <div>
                                     <c:if test="${!empty user.properties['j:mobileNumber']}">
-                                    <strong><fmt:message key='mySettings.addressForm.mobile'/>&nbsp;:</strong>
+                                    <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
                                         <c:if test="${(!empty user.properties['j:mobileNumber'].string)}">
                                             &nbsp;${user.properties['j:mobileNumber'].string}
                                         </c:if>
@@ -457,7 +457,7 @@
                             </div>
                             <div class="pull-right">
                                 <div class="pull-left">
-                                    <strong><fmt:message key='mySettings.addressForm.address'/>&nbsp;:</strong>&nbsp;
+                                    <strong><fmt:message key='jnt_user.j_address'/>&nbsp;:</strong>&nbsp;
                                     <div class="pull-right">
                                         <c:if test="${!empty user.properties['j:address'].string}">
                                             ${user.properties['j:address'].string}

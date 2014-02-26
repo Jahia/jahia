@@ -56,32 +56,34 @@ import java.util.Map;
  */
 public interface QueryResultWrapper extends QueryResult {
 
-    public List<FacetField> getFacetFields();
+    List<FacetField> getFacetFields();
 
-    public List<FacetField> getFacetDates();
+    List<FacetField> getFacetDates();
 
-    public List<RangeFacet> getRangeFacets();
+    List<RangeFacet> getRangeFacets();
 
-    public FacetField getFacetField(String name);
+    FacetField getFacetField(String name);
 
-    public FacetField getFacetDate(String name);
+    FacetField getFacetDate(String name);
 
-    public RangeFacet getRangeFacet(String name);
+    RangeFacet getRangeFacet(String name);
 
-    public boolean isFacetFieldsEmpty(List<FacetField> facetFields);
+    boolean isFacetFieldsEmpty(List<FacetField> facetFields);
 
-    public Map<String, Long> getFacetQuery();
+    boolean isRangeFacetsEmpty(List<RangeFacet> rangeFacets);
 
-    public List<FacetField> getLimitingFacets();
+    Map<String, Long> getFacetQuery();
+
+    List<FacetField> getLimitingFacets();
 
     /**
      * Check if the queryResultWrapper contains any facet results
      *
      * @return true is queryResultWrapper doesn't contains any facet results
      */
-    public boolean isFacetResultsEmpty();
+    boolean isFacetResultsEmpty();
 
-    public long getApproxCount();
+    long getApproxCount();
 
     @Override
     JCRNodeIteratorWrapper getNodes() throws RepositoryException;

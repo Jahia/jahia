@@ -1073,6 +1073,14 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return updateMixinAvailable;
     }
 
+    /**
+     * Get weak references of a node
+     * @param node node
+     * @param propertyName name of the property
+     * @param session session
+     * @return an iterator
+     * @throws RepositoryException
+     */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
         return null;
     }

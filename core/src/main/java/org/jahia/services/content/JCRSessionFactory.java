@@ -373,8 +373,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         String mountPoint = p.getMountPoint();
 
         providerList.add(p);
-        providers = null;
         Collections.sort(providerList);
+        providers = null;
 
         if (mountPoint != null) {
             if (p.isDynamicallyMounted()) {
@@ -404,6 +404,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         addProvider(p);
     }
 
+    /**
+     * Unregister a provider
+     * @param key the key of the provider
+     */
     public void removeProvider(String key) {
         JCRStoreProvider p = getProviders().get(key);
         if (p == null) {
@@ -411,7 +415,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         }
         providerList.remove(p);
         providers = null;
-        if (p != null && p.getMountPoint() != null) {
+        if (p.getMountPoint() != null) {
             mountPoints.remove(p.getMountPoint());
             dynamicMountPoints.remove(p.getMountPoint());
             allMountPoints.remove(p.getMountPoint());

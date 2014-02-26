@@ -115,7 +115,7 @@ public class MultipleIterator<T extends RangeIterator> implements RangeIterator 
         throw new UnsupportedOperationException();
     }
 
-    public int getIteratorIndex() {
+    private int getIteratorIndex() {
         while (!iterators.get(iteratorIndex).hasNext() && iteratorIndex < iterators.size()-1) {
             iteratorIndex++;
         }

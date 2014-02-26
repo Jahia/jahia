@@ -90,8 +90,7 @@ public class QueryResultAdapter implements QueryResult {
         /**
          * Initializes an instance of this class.
          *
-         * @param decoratedRow
-         *            the row to be decorated
+         * @param decoratedRow the row to be decorated
          */
         RowDecorator(Row decoratedRow) {
             super();
@@ -117,7 +116,7 @@ public class QueryResultAdapter implements QueryResult {
                         try {
                             return wrap(row.getNode((String) selector));
                         } catch (RepositoryException e) {
-                            throw new RuntimeException(e);
+                            throw new UnsupportedOperationException(e);
                         }
                     }
                 });
@@ -127,9 +126,9 @@ public class QueryResultAdapter implements QueryResult {
         }
 
         private String getDerivedPath(String originalPath) throws RepositoryException {
-            originalPath = originalPath.replaceFirst(getProvider().getRelativeRoot(), "");
+            String path = originalPath.replaceFirst(getProvider().getRelativeRoot(), "");
             String mountPoint = getProvider().getMountPoint();
-            return mountPoint.equals("/") ? originalPath : mountPoint + originalPath;
+            return mountPoint.equals("/") ? path : mountPoint + path;
         }
 
         public String getPath() throws RepositoryException {
@@ -152,25 +151,25 @@ public class QueryResultAdapter implements QueryResult {
             if (columnName.equals(JcrConstants.JCR_PATH)) {
                 return new StringValue(getPath());
             }
-            Value result = row.getValue(columnName);
-            if (result == null && session.getLocale() != null) {
+            Value valueResult = row.getValue(columnName);
+            if (valueResult == null && session.getLocale() != null) {
                 JCRPropertyWrapper property = null;
                 if (!columnName.startsWith("rep:spellcheck(")
                         && !columnName.startsWith("rep:excerpt(")
                         && !(row.getNode() != null && row.getNode().hasProperty(columnName))) {
-                    JCRNodeWrapper node = getNode();
+                    JCRNodeWrapper valueNode = getNode();
                     try {
-                        property = node.getProperty(columnName);
+                        property = valueNode.getProperty(columnName);
                     } catch (RepositoryException e) {
                         // no match
                     }
                 }
                 if (property != null && !property.isMultiple()) {
-                    result = property.getValue();
+                    valueResult = property.getValue();
                 }
             }
 
-            return result;
+            return valueResult;
         }
 
         public Value[] getValues() throws RepositoryException {
@@ -178,7 +177,6 @@ public class QueryResultAdapter implements QueryResult {
         }
 
         private JCRNodeWrapper wrap(Node node) throws RepositoryException {
-            JCRSessionWrapper session = getSession();
             if (node != null && session.getLocale() != null && node.hasProperty(Constants.JCR_LANGUAGE)) {
                 String language = node.getProperty(Constants.JCR_LANGUAGE).getString();
                 if (!getSessionLanguage().equals(language)) {
@@ -228,7 +226,7 @@ public class QueryResultAdapter implements QueryResult {
     }
 
     public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
-        final NodeIterator ni ;
+        final NodeIterator ni;
         if (result.getSelectorNames().length <= 1) {
             ni = result.getNodes();
 
@@ -240,8 +238,7 @@ public class QueryResultAdapter implements QueryResult {
                     try {
                         return row.getNode(result.getSelectorNames()[0]);
                     } catch (RepositoryException e) {
-                        throw new RuntimeException(
-                                "Unable to access the node in " + row, e);
+                        throw new UnsupportedOperationException("Unable to access the node in " + row, e);
                     }
                 }
             };
@@ -265,10 +262,9 @@ public class QueryResultAdapter implements QueryResult {
     }
 
     /**
-     * get
+     * Get the facet field for a name
      *
-     * @param name
-     *            the name of the
+     * @param name the name of the facet field to get
      * @return the FacetField by name or null if it does not exist
      */
     public FacetField getFacetField(String name) {

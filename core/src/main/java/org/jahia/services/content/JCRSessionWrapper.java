@@ -1248,6 +1248,13 @@ public class JCRSessionWrapper implements Session {
         return thisSessionTrace;
     }
 
+    /**
+     * Get weak references of a node
+     * @param node node
+     * @param propertyName name of the property
+     * @return an iterator
+     * @throws RepositoryException
+     */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName) throws RepositoryException {
         List<PropertyIterator> propertyIterators = new ArrayList<PropertyIterator>();
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {

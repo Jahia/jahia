@@ -62,9 +62,9 @@ import java.util.Map;
  *
  * @author Thomas Draier
  */
-public class QueryResultWrapperImpl implements QueryResultWrapper {
+public final class QueryResultWrapperImpl implements QueryResultWrapper {
 
-    private static QueryResultWrapperImpl EMPTY = new QueryResultWrapperImpl();
+    private final static QueryResultWrapperImpl EMPTY = new QueryResultWrapperImpl();
     
     private List<QueryResultAdapter> queryResults;
     private long limit;
@@ -133,7 +133,10 @@ public class QueryResultWrapperImpl implements QueryResultWrapper {
         return !queryResults.isEmpty() ? queryResults.get(0).getSelectorNames() : ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
-    public class MultipleRowIterator extends MultipleIterator<RowIterator> implements RowIterator {
+    /**
+     * Iterator aggregating multiple row iterators
+     */
+    public static class MultipleRowIterator extends MultipleIterator<RowIterator> implements RowIterator {
 
         public MultipleRowIterator(List<RowIterator> iterators, long limit) {
             super(iterators, limit);
@@ -238,10 +241,30 @@ public class QueryResultWrapperImpl implements QueryResultWrapper {
         return true;
     }
 
+    @Override
+    public boolean isRangeFacetsEmpty(List<RangeFacet> rangeFacets) {
+        if (rangeFacets.isEmpty()){
+            return true;
+        }else{
+            for (RangeFacet facetField: rangeFacets) {
+                List<RangeFacet.Count> counts = facetField.getCounts();
+                for (RangeFacet.Count count : counts) {
+                    if (count.getCount() != 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isFacetResultsEmpty(){
         return (this.getFacetFields() == null || isFacetFieldsEmpty(this.getFacetFields())) &&
                 (this.getFacetDates() == null || isFacetFieldsEmpty(this.getFacetDates())) &&
+                (this.getRangeFacets() == null || isRangeFacetsEmpty(this.getRangeFacets())) &&
                 (this.getFacetQuery() == null || this.getFacetQuery().isEmpty());
     }
 

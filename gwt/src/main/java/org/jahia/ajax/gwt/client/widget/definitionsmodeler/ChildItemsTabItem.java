@@ -656,7 +656,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     itemDefinition.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
                 }
             }
-            Collections.sort(this.children, new Comparator<ModelData>() {
+
+            Comparator<ModelData> nodeComparator = new Comparator<ModelData>() {
                 @Override
                 public int compare(ModelData o1, ModelData o2) {
                     GWTJahiaNode c1 = null;
@@ -684,7 +685,11 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
                     throw new IllegalArgumentException();
                 }
-            });
+            };
+
+            Collections.sort(node.getChildren(), nodeComparator);
+            Collections.sort(this.children, nodeComparator);
+
             if (node != null) {
                 for (GWTJahiaNode child : this.removedChildren) {
                     node.remove(child);

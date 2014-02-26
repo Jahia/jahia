@@ -197,6 +197,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     protected void sendToSCM(File workingDirectory, String url) throws IOException {
+        int  MERGE_COMMAND_INDEX = 5;
         List<String[]> commands = Arrays.asList(
                 new String[]{"init"},
                 new String[]{"add","."},
@@ -210,7 +211,10 @@ public class GitSourceControlManagement extends SourceControlManagement {
         for (String[] command : commands) {
             logger.debug("executing command : {}", Arrays.toString(command));
             ExecutionResult res = executeCommand(executable, command);
-            if (res.exitValue > 0) {
+
+            // if the remote repo is empty, the merge orgin/master fail but we have to continue
+            // the merge is only used for repo with existing content
+            if (!Arrays.equals(command,commands.get(MERGE_COMMAND_INDEX)) && res.exitValue > 0) {
                 // an issue occurs during first commit
                 // clean up
                 executeCommand(executable,new String[]{"merge", "--abort"});

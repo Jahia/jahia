@@ -193,7 +193,7 @@ public class Resource {
     }
 
     public String getPath() {
-        return node.getPath() + "." + template + "." + templateType;
+        return node.getPath() + "." + getTemplate() + "." + templateType;
     }
 
     @Override
@@ -205,7 +205,7 @@ public class Resource {
             logger.error("Error while retrieving node primary node type name", e);
         }
         return "Resource{" + "node=" + node.getPath() + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + "', template='" +
-                template + "', configuration='" + contextConfiguration + "'}";
+                getTemplate() + "', configuration='" + contextConfiguration + "'}";
     }
 
     public void addOption(String wrapper, ExtendedNodeType nodeType) {
@@ -277,7 +277,7 @@ public class Resource {
     public int hashCode() {
         int result = node != null ? node.hashCode() : 0;
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
-        result = 31 * result + (template != null ? template.hashCode() : 0);
+        result = 31 * result + (getTemplate() != null ? getTemplate().hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
         result = 31 * result + (options != null ? options.hashCode() : 0);
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);

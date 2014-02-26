@@ -28,7 +28,7 @@
 #aboutMeDiv{
     display:block;
     height:190px;
-    margin-left: 60px;
+    margin-left: 45px;
     position:relative;
 }
 #about{
@@ -133,11 +133,33 @@ label.switch{
     top:5px;
 }
 
-.switchesSpans{
+#privacy_form .switchesSpans{
     width:auto;
     margin-top:30px;
+    margin-left:0;
 }
 
 #editDetailsForm input, #editDetailsForm select{
     margin-bottom:5px;
+}
+
+.editFields{
+    background:#DFE8F6; padding-top:20px; margin-bottom:20px; margin-top:20px;
+}
+
+.down-right
+{
+    bottom: -0px;
+    left: -0px;
+    position: absolute;
+}
+
+.absolute-parent{
+    position:relative;
+}
+
+.hiddableForm
+{
+    margin-top:20px;
+    padding-top:20px;
 }

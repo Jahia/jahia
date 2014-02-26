@@ -1,257 +1,252 @@
-<div class="row" id="names">
-    <div class="span1">
-        Name
-    </div>
-    <div class="span7">
-        <c:if test="${currentNode.properties['j:title'].boolean}">
-            <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
-        </c:if>
-
-        <c:if test="${currentNode.properties['j:firstName'].boolean}">
-            <c:if test="${!empty fields['j:firstName']}">
-                ${fn:escapeXml(user.properties['j:firstName'].string)}&nbsp;
-            </c:if>
-        </c:if>
-        <c:if test="${currentNode.properties['j:lastName'].boolean}">
-            <c:if test="${!empty user.properties['j:lastName']}">
-                ${fn:escapeXml(user.properties['j:lastName'].string)}&nbsp;
-            </c:if>
-        </c:if>
-    </div>
-    <div class="span2">
-        <button class="btn btn-primary" type="button" onclick="switchRow('names')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </div>
-</div>
-<div id="names_form" class="row hide">
-    <div class="span1">
-        <div>Name form</div>
-    </div>
-    <div class="span7">
-        <div class="control-group">
+<div id="namesRow">
+    <h2><fmt:message key="mySettings.name"/></h2>
+    <div class="row" id="names">
+        <div class="span4">
             <c:if test="${currentNode.properties['j:title'].boolean}">
-                <label class="control-label" for="title">Title : </label>
-                <div class="controls">
-                    <select name="title">
-                        <option value=""></option>
-                        <c:forEach items="${titleInit}"
-                                   varStatus="status"
-                                   var="title">
-                            <c:choose>
-                                <c:when test="${(fn:escapeXml(user.properties['j:title'].string)) eq  (title.value.string)}">
-                                    <option name="title" value="${title.value.string}" selected="selected">${title.displayName}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option name="title" value="${title.value.string}">${title.displayName}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </select>
-                </div>
+                <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
             </c:if>
+
             <c:if test="${currentNode.properties['j:firstName'].boolean}">
-                <label class="control-label" for="firstname">Firstname : </label>
-                <div class="controls">
-                    <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
-                    <input name="firstName" type="text" value="${firstNameValue}"/>
-                </div>
+                <c:if test="${!empty fields['j:firstName']}">
+                    ${fn:escapeXml(user.properties['j:firstName'].string)}&nbsp;
+                </c:if>
             </c:if>
             <c:if test="${currentNode.properties['j:lastName'].boolean}">
-                <label class="control-label" for="lastName">Lastname : </label>
-                <div class="controls">
-                    <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
-                    <input name="lastName" type="text" value="${lastNameValue}"/>
-                </div>
+                <c:if test="${!empty user.properties['j:lastName']}">
+                    ${fn:escapeXml(user.properties['j:lastName'].string)}&nbsp;
+                </c:if>
             </c:if>
-            <c:if test="${currentNode.properties['j:gender'].boolean}">
-                <label class="control-label" for="gender">Gender : </label>
-                <div class="controls">
-                    <select name="gender">
-                        <c:forEach items="${genderInit}"
-                                   varStatus="status"
-                                   var="gender">
-                            <c:choose>
-                                <c:when test="${(fn:escapeXml(user.properties['j:gender'])) eq  (gender.value.string)}">
-                                    <option name="gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option name="gender" value="${gender.value.string}" >${gender.displayName}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </select>
-                </div>
-            </c:if>
-            <div style="clear:both;"></div>
-            <div class="form-actions">
-                <button onclick="saveChangesByRowId('names')" class="btn btn-primary"><fmt:message key="save"/></button>
-                <button type="button" class="btn"><fmt:message key="cancel"/></button>
-            </div>
+        </div>
+        <div class="span4">
+            <button class="btn btn-primary" type="button" onclick="switchRow('names')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
         </div>
     </div>
-    <div class="span2"></div>
-</div>
-<div id="profession" class="row">
-    <div class="span1">
-        Profession
-    </div>
-    <div class="span7">
-        <c:if test="${currentNode.properties['j:function'].boolean}">
-            <c:if test="${!empty user.properties['j:function']}">
-                ${fn:escapeXml(user.properties['j:function'].string)}
-            </c:if>
-        </c:if>
-        <c:if test="${currentNode.properties['j:organization'].boolean}">
-            <c:if test="${!empty user.properties['j:organization']}">
-                at ${fn:escapeXml(user.properties['j:organization'].string)}
-            </c:if>
-        </c:if>
-    </div>
-    <div class="span2">
-        <button class="btn btn-primary" type="button" onclick="switchRow('profession')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </div>
-</div>
-<div id="profession_form" class="row hide hiddableForm">
-    <div class="span1">
-        pro Form
-    </div>
-    <div class="span7">
-        <div class="control-group">
-            <c:if test="${currentNode.properties['j:function'].boolean}">
-                <label class="control-label" for="function">Function : </label>
-                <div class="controls">
-                    <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
-                    <input name="function" type="text" value="${functionValue}"/>
+    <div id="names_form" class="row hide alert-info hiddableForm">
+            <div class="span2">
+            </div>
+            <div class="span6">
+                <div class="control-group">
+                    <c:if test="${currentNode.properties['j:title'].boolean}">
+                        <label class="control-label" for="title"><fmt:message key="mySettings.title"/> : </label>
+                        <div class="controls">
+                            <select name="title">
+                                <option value=""></option>
+                                <c:forEach items="${titleInit}"
+                                           varStatus="status"
+                                           var="title">
+                                    <c:choose>
+                                        <c:when test="${(fn:escapeXml(user.properties['j:title'].string)) eq  (title.value.string)}">
+                                            <option name="title" value="${title.value.string}" selected="selected">${title.displayName}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option name="title" value="${title.value.string}">${title.displayName}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </c:if>
+                    <c:if test="${currentNode.properties['j:firstName'].boolean}">
+                        <label class="control-label" for="firstname"><fmt:message key="mySettings.firstName"/> : </label>
+                        <div class="controls">
+                            <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
+                            <input name="firstName" type="text" value="${firstNameValue}"/>
+                        </div>
+                    </c:if>
+                    <c:if test="${currentNode.properties['j:lastName'].boolean}">
+                        <label class="control-label" for="lastName"><fmt:message key="mySettings.lastName"/> : </label>
+                        <div class="controls">
+                            <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
+                            <input name="lastName" type="text" value="${lastNameValue}"/>
+                        </div>
+                    </c:if>
+                    <c:if test="${currentNode.properties['j:gender'].boolean}">
+                        <label class="control-label" for="gender"><fmt:message key="mySettings.gender"/> : </label>
+                        <div class="controls">
+                            <select name="gender">
+                                <c:forEach items="${genderInit}"
+                                           varStatus="status"
+                                           var="gender">
+                                    <c:choose>
+                                        <c:when test="${(fn:escapeXml(user.properties['j:gender'])) eq  (gender.value.string)}">
+                                            <option name="gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option name="gender" value="${gender.value.string}" >${gender.displayName}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </c:if>
+                    <div style="clear:both;"></div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
+                        <button onclick="saveChangesByRowId('names')" class="btn btn-success"><fmt:message key="save"/></button>
+                    </div>
                 </div>
+            </div>
+            <div class="span2"></div>
+    </div>
+</div>
+<div id="professionRows">
+    <h2><fmt:message key="mySettings.profession"/></h2>
+    <div id="profession" class="row">
+        <div class="span4">
+            <c:if test="${currentNode.properties['j:function'].boolean}">
+                <c:if test="${!empty user.properties['j:function']}">
+                    ${fn:escapeXml(user.properties['j:function'].string)}
+                </c:if>
             </c:if>
             <c:if test="${currentNode.properties['j:organization'].boolean}">
-                <label class="control-label" for="organization">Organization : </label>
-                <div class="controls">
-                    <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
-                    <input name="organization" type="text" value="${organizationValue}"/>
-                </div>
+                <c:if test="${!empty user.properties['j:organization']}">
+                    at ${fn:escapeXml(user.properties['j:organization'].string)}
+                </c:if>
             </c:if>
-            <div style="clear:both;"></div>
-            <div class="form-actions">
-                <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('profession')">
-                    <fmt:message key="save"/>
-                </button>
-                <button type="button" class="btn"><fmt:message key="cancel"/></button>
-            </div>
+        </div>
+        <div class="span4">
+            <button class="btn btn-primary" type="button" onclick="switchRow('profession')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
         </div>
     </div>
-    <div class="span2">
+    <div id="profession_form" class="row hide hiddableForm alert-info">
+        <div class="span2">
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <c:if test="${currentNode.properties['j:function'].boolean}">
+                    <label class="control-label" for="function"><fmt:message key="mySettings.function"/> : </label>
+                    <div class="controls">
+                        <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
+                        <input name="function" type="text" value="${functionValue}"/>
+                    </div>
+                </c:if>
+                <c:if test="${currentNode.properties['j:organization'].boolean}">
+                    <label class="control-label" for="organization"><fmt:message key="mySettings.organization"/> : </label>
+                    <div class="controls">
+                        <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
+                        <input name="organization" type="text" value="${organizationValue}"/>
+                    </div>
+                </c:if>
+                <div style="clear:both;"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
+                    <button class="btn btn-success" type="button" onclick="saveChangesByRowId('profession')">
+                        <fmt:message key="save"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="span2">
+        </div>
     </div>
 </div>
-<div id="social" class="row">
-    <div class="span1">
-        Social
-    </div>
-    <div class="span7">
-        <c:if test="${currentNode.properties['j:facebookID'].boolean}">
-            <c:choose>
-                <c:when test="${!empty user.properties['j:facebookID']}">
-                    <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
-                </c:when>
-                <c:otherwise>
-                    <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
-                </c:otherwise>
-            </c:choose>
-        </c:if>
-        <c:if test="${currentNode.properties['j:skypeID'].boolean}">
-            <c:choose>
-                <c:when test="${!empty user.properties['j:skypeID']}">
-                    <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
-                </c:when>
-                <c:otherwise>
-                    <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                </c:otherwise>
-            </c:choose>
-        </c:if>
-
-        <c:if test="${currentNode.properties['j:twitterID'].boolean}">
-            <c:choose>
-                <c:when test="${!empty user.properties['j:twitterID']}">
-                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
-                </c:when>
-                <c:otherwise>
-                    <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
-                </c:otherwise>
-            </c:choose>
-        </c:if>
-
-        <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
-            <c:choose>
-                <c:when test="${!empty user.properties['j:linkedinID']}">
-                    <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                </c:when>
-                <c:otherwise>
-                    <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                </c:otherwise>
-            </c:choose>
-        </c:if>
-    </div>
-    <div class="span2">
-        <button class="btn btn-primary" type="button" onclick="switchRow('social')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </div>
-</div>
-<div id="social_form" class="row hide hiddableForm">
-    <div class="span1">
-        Social Form
-    </div>
-    <div class="span7">
-        <div class="control-group">
+<div id="socialRows">
+    <h2><fmt:message key="mySettings.social"/></h2>
+    <div id="social" class="row">
+        <div class="span4">
             <c:if test="${currentNode.properties['j:facebookID'].boolean}">
-                <label class="control-label" for="facebookID">Facebook Id : </label>
-                <div class="controls">
-                    <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
-                    <input name="facebookID" type="text" value="${facebookIDValue}"/>
-                </div>
-            </c:if>
-            <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
-                <label class="control-label" for="linkedinID">Linkedin Id : </label>
-                <div class="controls">
-                    <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
-                    <input name="linkedinID" type="text" value="${linkedinIDValue}"/>
-                </div>
+                <c:choose>
+                    <c:when test="${!empty user.properties['j:facebookID']}">
+                        <img src="<c:url value='${url.currentModule}/img/fb_logo_20_20.png' />"/>&nbsp;&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<c:url value='${url.currentModule}/img/fb_logo_off_20_20.png'/>"/>&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
             </c:if>
             <c:if test="${currentNode.properties['j:skypeID'].boolean}">
-                <label class="control-label" for="skypeID">Skype Id : </label>
-                <div class="controls">
-                    <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
-                    <input name="skypeID" type="text" value="${skypeIDValue}"/>
-                </div>
+                <c:choose>
+                    <c:when test="${!empty user.properties['j:skypeID']}">
+                        <img src="<c:url value='${url.currentModule}/img/skype_logo_20_20.png' />"/>&nbsp;&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<c:url value='${url.currentModule}/img/skype_logo_off_20_20.png' />"/>&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
             </c:if>
+
             <c:if test="${currentNode.properties['j:twitterID'].boolean}">
-                <label class="control-label" for="twitterID">Twitter Id : </label>
-                <div class="controls">
-                    <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
-                    <input name="twitterID" type="text" value="${twitterIDValue}"/>
-                </div>
+                <c:choose>
+                    <c:when test="${!empty user.properties['j:twitterID']}">
+                        <img src="<c:url value='${url.currentModule}/img/twitter_logo_20_20.png' />"/>&nbsp;&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<c:url value='${url.currentModule}/img/twitter_logo_off_20_20.png' />"/>&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
             </c:if>
-            <div style="clear:both;"></div>
-            <div class="form-actions">
-                <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('social')">
-                    <fmt:message key="save"/>
-                </button>
-                <button type="button" class="btn"><fmt:message key="cancel"/></button>
-            </div>
+
+            <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
+                <c:choose>
+                    <c:when test="${!empty user.properties['j:linkedinID']}">
+                        <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+        </div>
+        <div class="span4">
+            <button class="btn btn-primary" type="button" onclick="switchRow('social')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
         </div>
     </div>
-    <div class="span2">
-
+    <div id="social_form" class="row hide hiddableForm alert-info">
+        <div class="span2">
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <c:if test="${currentNode.properties['j:facebookID'].boolean}">
+                    <label class="control-label" for="facebookID"><fmt:message key="mySettings.facebookID"/> : </label>
+                    <div class="controls">
+                        <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
+                        <input name="facebookID" type="text" value="${facebookIDValue}"/>
+                    </div>
+                </c:if>
+                <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
+                    <label class="control-label" for="linkedinID"><fmt:message key="mySettings.linkedinID"/> : </label>
+                    <div class="controls">
+                        <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
+                        <input name="linkedinID" type="text" value="${linkedinIDValue}"/>
+                    </div>
+                </c:if>
+                <c:if test="${currentNode.properties['j:skypeID'].boolean}">
+                    <label class="control-label" for="skypeID"><fmt:message key="mySettings.skypeID"/> : </label>
+                    <div class="controls">
+                        <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
+                        <input name="skypeID" type="text" value="${skypeIDValue}"/>
+                    </div>
+                </c:if>
+                <c:if test="${currentNode.properties['j:twitterID'].boolean}">
+                    <label class="control-label" for="twitterID"><fmt:message key="mySettings.twitterID"/> : </label>
+                    <div class="controls">
+                        <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
+                        <input name="twitterID" type="text" value="${twitterIDValue}"/>
+                    </div>
+                </c:if>
+                <div style="clear:both;"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
+                    <button class="btn btn-success" type="button" onclick="saveChangesByRowId('social')">
+                        <fmt:message key="save"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="span2">
+        </div>
     </div>
 </div>
+<div id="AddressRows">
+<h2><fmt:message key="mySettings.address"/></h2>
 <div id="address" class="row">
-    <div class="span1">
-        Address
-    </div>
-    <div class="span7">
+    <div class="span4">
         <div class="row-fluid">
             <c:if test="${(!empty user.properties['j:address']) or (!empty user.properties['j:zipCode']) or (!empty user.properties['j:city']) or (!empty user.properties['j:country'])}">
                 <div class="span3">
@@ -270,17 +265,16 @@
             </c:if>
         </div>
     </div>
-    <div class="span2">
+    <div class="span4">
         <button class="btn btn-primary" type="button" onclick="switchRow('address')">
             <fmt:message key="label.clickToEdit"/>
         </button>
     </div>
 </div>
-<div id="address_form" class="row hide hiddableForm">
-    <div class="span1">
-        Adress form
+<div id="address_form" class="row hide hiddableForm alert-info">
+    <div class="span2">
     </div>
-    <div class="span7">
+    <div class="span6">
         <div class="control-group">
             <c:if test="${user:isPropertyEditable(user,'j:address')}">
                 <label class="control-label" for="address"><fmt:message key='jnt_user.j_address'/> : </label>
@@ -332,10 +326,10 @@
                 </div>
             </c:if>
             <div class="form-actions">
-                <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('address')">
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
+                <button class="btn btn-success" type="button" onclick="saveChangesByRowId('address')">
                     <fmt:message key="save"/>
                 </button>
-                <button type="button" class="btn"><fmt:message key="cancel"/></button>
             </div>
         </div>
     </div>
@@ -343,184 +337,223 @@
 
     </div>
 </div>
-<div id="password" class="row">
-    <div class="span1">
-        Password
-    </div>
-    <div class="span7">
-        <div id="passwordSuccess" class="hide"></div>
-    </div>
-    <div class="span2">
-        <button class="btn btn-primary" type="button" onclick="switchRow('password')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </div>
 </div>
-<div id="password_form" class="row hide hiddableForm">
-    <div class="span1">
-        Password Form
+<div id="passwordRows">
+<h2><fmt:message key="label.password"/></h2>
+    <div id="password" class="row">
+        <div class="span4">
+            ****** &nbsp; <span id="passwordSuccess" class="hide"></span>
+        </div>
+        <div class="span4">
+            <button class="btn btn-primary" type="button" onclick="switchRow('password')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
+        </div>
     </div>
-    <div class="span7">
-        <c:if test="${currentNode.properties['password'].boolean and !(user.properties['j:external'].boolean)}">
-            <c:forEach items="${param}" var="p">
-                <c:if test="${not empty ps}">
-                    <c:set var="ps" value="${ps}&${p.key}=${p.value}"/>
-                </c:if>
-                <c:if test="${empty ps}">
-                    <c:set var="ps" value="?${p.key}=${p.value}"/>
-                </c:if>
-            </c:forEach>
-            <label class="control-label" for="passwordField"><fmt:message key="label.password"/> : </label>
-            <div class="controls">
-                <input type="password" id="passwordField" name="password"/>
-            </div>
-            <div id="passwordError" class="controls hide"></div>
+    <div id="password_form" class="row hide hiddableForm alert-info">
+        <div class="span2">
+        </div>
+        <div class="span6">
+            <c:if test="${currentNode.properties['password'].boolean and !(user.properties['j:external'].boolean)}">
+                <c:forEach items="${param}" var="p">
+                    <c:if test="${not empty ps}">
+                        <c:set var="ps" value="${ps}&${p.key}=${p.value}"/>
+                    </c:if>
+                    <c:if test="${empty ps}">
+                        <c:set var="ps" value="?${p.key}=${p.value}"/>
+                    </c:if>
+                </c:forEach>
+                <label class="control-label" for="passwordField"><fmt:message key="label.password"/> : </label>
+                <div class="controls">
+                    <input type="password" id="passwordField" name="password"/>
+                </div>
+                <div id="passwordError" class="controls hide"></div>
 
-            <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/> : </label>
-            <div class="controls">
-                <input type="password" id="passwordconfirm" name="passwordconfirm"/>
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-primary" type="button" onclick="changePassword()">
-                    <fmt:message key="save"/>
-                </button>
-                <button type="button" class="btn"><fmt:message key="cancel"/></button>
-            </div>
-        </c:if>
-    </div>
-    <div class="span2">
+                <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/> : </label>
+                <div class="controls">
+                    <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
+                    <button class="btn btn-success" type="button" onclick="changePassword()">
+                        <fmt:message key="save"/>
+                    </button>
+                </div>
+            </c:if>
+        </div>
+        <div class="span2">
 
+        </div>
     </div>
 </div>
-<div id="other" class="row">
-    <div class="span1">Other </div>
-    <div class="span7">
-        <c:if test="${currentNode.properties['j:birthDate'].boolean}">
-            <div>
-                <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
-                <c:if test="${not empty birthDate}">
-                    <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
-                    <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy-MM-dd" var="dateforCal"/>
-                </c:if>
-                <span><fmt:message key="jnt_user.j_birthDate"/> : </span>
-                <span>${displayBirthDate}</span>
-            </div>
-        </c:if>
-        <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
-            <div>
-                <span><fmt:message key="jnt_user.preferredLanguage"/> : </span>
-                <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
-                <c:set var="prefLang" value="${function:toLocale(function:default(prefLang.string, 'en'))}"/>
-                <span>${function:displayLocaleNameWith(prefLang, prefLang)}</span>
-            </div>
-        </c:if>
-        <c:if test="${currentNode.properties['age'].boolean}">
-            <div>
-                <span><fmt:message key="jnt_user.age"/>:&nbsp;</span>
-                <span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></span>
-            </div>
-        </c:if>
-    </div>
-    <div class="span2">
-        <button class="btn btn-primary" type="button" onclick="switchRow('other')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </div>
-</div>
-<div id="other_form" class="row hide hiddableForm">
-    <div class="span1">Other </div>
-    <div class="span7">
-        <div class="control-group">
-            <c:if test="${user:isPropertyEditable(user,'j:birthDate')}">
-                <div class="control-group">
-                    <label class="control-label" for="birthDate">
-                        <fmt:message key="jnt_user.j_birthDate"/>:
-                    </label>
-                    <div class="controls input-append date" id="birthDate">
-                        <input class="span2" size="16" type="datetime-local" name="birthDate" value="${dateforCal}"/>
-                        <span class="add-on">
-                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                        </span>
-                    </div>
+<div id="otherRows">
+    <h2> <fmt:message key="mySettings.other"/> </h2>
+    <div id="other" class="row">
+        <div class="span4">
+            <c:if test="${currentNode.properties['j:birthDate'].boolean}">
+                <div>
+                    <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
+                    <c:if test="${not empty birthDate}">
+                        <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                        <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy-MM-dd" var="dateforCal"/>
+                    </c:if>
+                    <span><fmt:message key="jnt_user.j_birthDate"/> : </span>
+                    <span>${displayBirthDate}</span>
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
-                <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
-                           var="adLocale" varStatus="status">
-                </c:forEach>
-                <div class="control-group">
-                    <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/> : </label>
-                    <div class="controls">
-                        <select name="preferredLanguage">
-                            <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
-                                <option value="${function:toLocale(adLocale)}" <c:if test="${function:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
-                                        ${function:displayLocaleNameWith(adLocale, adLocale)}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </div>
+                <div>
+                    <span><fmt:message key="jnt_user.preferredLanguage"/> : </span>
+                    <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
+                    <c:set var="prefLang" value="${function:toLocale(function:default(prefLang.string, 'en'))}"/>
+                    <span>${function:displayLocaleNameWith(prefLang, prefLang)}</span>
                 </div>
             </c:if>
-            <div class="form-actions">
-                <button class="btn btn-primary" type="button" onclick="saveChangesByRowId('other')">
-                    <fmt:message key="save"/>
-                </button>
-                <button type="button" class="btn"><fmt:message key="cancel"/></button>
-            </div>
+            <c:if test="${currentNode.properties['age'].boolean}">
+                <div>
+                    <span><fmt:message key="jnt_user.age"/>:&nbsp;</span>
+                    <span><utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/></span>
+                </div>
+            </c:if>
+        </div>
+        <div class="span4">
+            <button class="btn btn-primary" type="button" onclick="switchRow('other')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
         </div>
     </div>
-    <div class="span2">
-    </div>
-</div>
-<div id="privacy" class="row">
-    <div class="span1">Privacy </div>
-    <div class="span7"></div>
-    <div class="span2">
-        <button class="btn btn-primary" type="button" onclick="switchRow('privacy')">
-            <fmt:message key="label.clickToEdit"/>
-        </button>
-    </div>
-</div>
-<div id="privacy_form" class="row hide hiddableForm">
-    <div class="span1">Privacy </div>
-    <div class="span7">
-        <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
-        <c:set var="publicPropertiesAsString" value=""/>
-        <c:forEach items="${publicProperties}" var="value">
-            <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
-        </c:forEach>
-        <div class="row">
-            <div class="switchesSpans span4">
-                    <c:forTokens
-                            items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,preferredLanguage,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID"
-                            delims="," var="key" varStatus="loopStatus">
-                    <script type="text/javascript">visibilityNumber++;</script>
-
-                    <c:if test="${currentNode.properties[key].boolean}">
-                    <script type="text/javascript">
-                        currentPropertieState = $("#publicProperties"+${loopStatus.index}).bootstrapSwitch('state');
-                    </script>
-                    <c:if test="${loopStatus.count eq 9}">
-            </div>
-            <div class="switchesSpans span4" >
-                    </c:if>
-                    <div class="row control-group switches-control-group">
-                        <label class="control-label switch" for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> : </label>
-                        <div id="bootstrapSwitches" class="controls switch-wrapper">
-                            <input data-size="mini" data-on-text=" public " data-off-text=" private " type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />&nbsp;
-
+    <div id="other_form" class="row hide hiddableForm alert-info">
+        <div class="span2"> </div>
+        <div class="span6">
+            <div class="control-group">
+                <c:if test="${user:isPropertyEditable(user,'j:birthDate')}">
+                    <div class="control-group">
+                        <label class="control-label" for="birthDate">
+                            <fmt:message key="jnt_user.j_birthDate"/>:
+                        </label>
+                        <div class="controls input-append date" id="birthDate">
+                            <input class="span2" size="16" type="datetime-local" name="birthDate" value="${dateforCal}"/>
+                            <span class="add-on">
+                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                            </span>
                         </div>
-                        <div class="switchIconsDiv">
-                            <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display:none;"></i>
-                            <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display:none;"></i>
-                        </div>
-                        <div style="clear:both;"></div>
                     </div>
-                    </c:if>
-                    </c:forTokens>
+                </c:if>
+                <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
+                    <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
+                               var="adLocale" varStatus="status">
+                    </c:forEach>
+                    <div class="control-group">
+                        <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/> : </label>
+                        <div class="controls">
+                            <select name="preferredLanguage">
+                                <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
+                                    <option value="${function:toLocale(adLocale)}" <c:if test="${function:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
+                                            ${function:displayLocaleNameWith(adLocale, adLocale)}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                </c:if>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
+                    <button class="btn btn-success" type="button" onclick="saveChangesByRowId('other')">
+                        <fmt:message key="save"/>
+                    </button>
+                </div>
             </div>
         </div>
+        <div class="span2">
+        </div>
     </div>
-    <div class="span2">
+</div>
+<div id="privacyRows">
+    <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
+    <c:forEach items="${publicProperties}" var="value">
+        <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
+    </c:forEach>
+    <h2><fmt:message key="mySettings.privacy"/></h2>
+    <div id="privacy" class="row">
+        <div class="span4 left-side">
+            <div class="row">
+                <div class="span2">
+                    <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
+                            delims="," var="key" varStatus="loopStatus">
+                            <c:set var="bundleKey" value="mySettings.${fn:replace(key,'j:','')}"/>
+                            <c:if test="${loopStatus.count eq 9}">
+                                </div>
+                                <div class="span2">
+                            </c:if>
+                            <div>
+                                <fmt:message key="${bundleKey}"/> :
+                                <c:choose>
+                                    <c:when test="${fn:contains(publicPropertiesAsString, key)}">
+                                        <fmt:message key='jnt_user.profile.public'/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:message key='jnt_user.profile.nonpublic'/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                    </c:forTokens>
+                </div>
+            </div>
+        </div>
+        <div class="span4 absolute-parent">
+            <button class="btn btn-primary down-right" type="button" onclick="switchRow('privacy')">
+                <fmt:message key="label.clickToEdit"/>
+            </button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('.absolute-parent').css({
+            'height': $('.left-side').height()+'px'
+        });
+    </script>
+    <div id="privacy_form" class="row hide hiddableForm alert-info">
+        <div class="span2"></div>
+        <div class="span6">
+            <c:set var="publicPropertiesAsString" value=""/>
+            <c:forEach items="${publicProperties}" var="value">
+                <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
+            </c:forEach>
+            <div class="row">
+                <div class="switchesSpans span4">
+                        <c:forTokens
+                                items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,preferredLanguage"
+                                delims="," var="key" varStatus="loopStatus">
+                        <script type="text/javascript">visibilityNumber++;</script>
+
+                        <c:if test="${currentNode.properties[key].boolean}">
+                        <script type="text/javascript">
+                            currentPropertieState = $("#publicProperties"+${loopStatus.index}).bootstrapSwitch('state');
+                        </script>
+                        <c:if test="${loopStatus.count eq 9}">
+                </div>
+                <div class="switchesSpans span4" >
+                        </c:if>
+                        <div class="row control-group switches-control-group">
+                            <label class="control-label switch" for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> : </label>
+                            <div id="bootstrapSwitches" class="controls switch-wrapper">
+                                <input data-size="mini" data-on-text=" public " data-off-text=" private " type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />&nbsp;
+
+                            </div>
+                            <div class="switchIconsDiv">
+                                <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display:none;"></i>
+                                <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display:none;"></i>
+                            </div>
+                            <div style="clear:both;"></div>
+                        </div>
+                        </c:if>
+                        </c:forTokens>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn" onclick="ajaxReloadCallback('Back')"><fmt:message key="backToPreviousPage"/></button>
+            </div>
+        </div>
+        <div class="span2">
+        </div>
     </div>
 </div>

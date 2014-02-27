@@ -90,8 +90,12 @@ public class PasteActionItem extends BaseActionItem {
             b = lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) &&PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
         }
 
-        if (linker instanceof EditLinker) {
-            b = b && CopyPasteEngine.getInstance().checkNodeType(((EditLinker)linker).getSelectedModule().getNodeTypes());
+        if (b && linker instanceof EditLinker) {
+            String nodeTypes = "";
+            for (String nodeType : linker.getSelectionContext().getSingleSelection().getNodeTypes()) {
+                nodeTypes += nodeTypes.equals("")?nodeType:","+nodeType;
+            }
+            b = b && CopyPasteEngine.getInstance().checkNodeType(nodeTypes);
         }
 
         setEnabled(b);

@@ -67,8 +67,8 @@ public class ImageMagickImage implements Image {
 
     @Override
     protected void finalize() throws Throwable {
-        super.finalize();
         file.delete();
+        super.finalize();
     }
 
     public Integer getHeight() {

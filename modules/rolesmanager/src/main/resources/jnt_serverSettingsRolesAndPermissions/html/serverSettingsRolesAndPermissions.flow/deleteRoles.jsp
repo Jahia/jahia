@@ -21,8 +21,8 @@
         });
     </script>
 </template:addResources>
+<h2><fmt:message key="rolesmanager.rolesAndPermissions.role.delete" /></h2>
 <div class="box-1">
-    <h2><fmt:message key="rolesmanager.rolesAndPermissions.role.delete" /></h2>
     <fmt:message key="rolesmanager.rolesAndPermissions.role.delete.confirm" />
 </div>
 

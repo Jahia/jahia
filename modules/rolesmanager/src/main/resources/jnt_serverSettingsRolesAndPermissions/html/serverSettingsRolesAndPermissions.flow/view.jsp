@@ -73,9 +73,9 @@
         }
     </script>
 </template:addResources>
-<div class="box-1">
+   <h2><fmt:message key="rolesmanager.rolesAndPermissions"/></h2>
+   <div class="box-1">
     <fieldset>
-        <h2><fmt:message key="rolesmanager.rolesAndPermissions"/></h2>
         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" id="roleForm" onsubmit="setRoleType()">
         <select id="roleTypeCombo">
             <c:forEach items="${handler.roleTypes.values}" var="roleType">

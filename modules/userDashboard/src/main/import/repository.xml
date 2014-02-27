@@ -15,7 +15,7 @@
                     <me j:applyOn="jnt:user"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
-                                j:titleKey="userDashboard.myprofile"
+                                j:titleKey="mySettings.about"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
@@ -112,11 +112,11 @@
                                          j:skypeID="true"
                                          j:title="true"
                                          j:twitterID="true"
-                                  j:view="bootstrap"
-                                  jcr:mixinTypes="jmix:renderable"
+                                         j:view="bootstrap"
+                                         jcr:mixinTypes="jmix:renderable"
                                          jcr:primaryType="jnt:editUserDetails"
                                          password="true"
-                                  preferredLanguage="true"/>
+                                         preferredLanguage="true"/>
                         </pagecontent>
                     </profile>
                 </dashboard-modules-base>

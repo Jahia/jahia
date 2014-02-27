@@ -171,16 +171,18 @@ public class SidePanel extends ContentPanel {
     }
 
     private void updateRefreshButton() {
-        boolean needRefresh = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).isNeedManualRefresh();
-        if (needRefresh && !refreshButton.getStyleName().contains("x-tool-refresh-red")) {
-            refreshButton.setToolTip(Messages.get("label.refresh.modify"));
-            refreshButton.removeStyleName("x-tool-refresh");
-            refreshButton.addStyleName("x-tool-refresh-red");
-            refreshButton.getToolTip().show();
-        } else if (!needRefresh && refreshButton.getStyleName().contains("x-tool-refresh-red")) {
-            refreshButton.removeStyleName("x-tool-refresh-red");
-            refreshButton.addStyleName("x-tool-refresh");
-            refreshButton.removeToolTip();
+        if (tabPanel.getSelectedItem() != null) {
+            boolean needRefresh = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).isNeedManualRefresh();
+            if (needRefresh && !refreshButton.getStyleName().contains("x-tool-refresh-red")) {
+                refreshButton.setToolTip(Messages.get("label.refresh.modify"));
+                refreshButton.removeStyleName("x-tool-refresh");
+                refreshButton.addStyleName("x-tool-refresh-red");
+                refreshButton.getToolTip().show();
+            } else if (!needRefresh && refreshButton.getStyleName().contains("x-tool-refresh-red")) {
+                refreshButton.removeStyleName("x-tool-refresh-red");
+                refreshButton.addStyleName("x-tool-refresh");
+                refreshButton.removeToolTip();
+            }
         }
     }
 
@@ -244,16 +246,18 @@ public class SidePanel extends ContentPanel {
      *            the refresh data
      */
     public void refresh(Map<String, Object> data) {
-        SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
+        if (tabPanel.getSelectedItem() != null) {
+            SidePanelTabItem selected = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem"));
 
-        for (SidePanelTabItem tab : tabs) {
-            if (tab == selected) {
-                tab.refresh(data);
-            } else {
-                tab.markForAutoRefresh(data);
+            for (SidePanelTabItem tab : tabs) {
+                if (tab == selected) {
+                    tab.refresh(data);
+                } else {
+                    tab.markForAutoRefresh(data);
+                }
             }
+            updateRefreshButton();
         }
-        updateRefreshButton();
     }
 
     /**

@@ -45,6 +45,7 @@ import javax.jcr.Session;
 
 import org.apache.jackrabbit.webdav.simple.DefaultItemFilter;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
 
 /**
  * WebDAV resource filter that disables directory listing completely if activated in <code>jahia.properties</code> or delegates to the
@@ -53,6 +54,7 @@ import org.jahia.settings.SettingsBean;
  * @author Sergiy Shyrkov
  */
 public class JahiaItemFilter extends DefaultItemFilter {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaItemFilter.class);
 
     private Boolean directoryListingDisabled;
 
@@ -67,7 +69,7 @@ public class JahiaItemFilter extends DefaultItemFilter {
                     .valueOf(SettingsBean.getInstance().getPropertiesFile()
                             .getProperty("repositoryDirectoryListingDisabled", "false"));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

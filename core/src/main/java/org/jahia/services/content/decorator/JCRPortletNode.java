@@ -50,6 +50,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
@@ -64,6 +65,8 @@ import java.util.HashMap;
  * 
  */
 public class JCRPortletNode extends JCRNodeDecorator {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRPortletNode.class);
+
     public JCRPortletNode(JCRNodeWrapper node) {
         super(node);
     }
@@ -93,7 +96,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
                         nodeByUUID.setProperty("j:definition", strings[1]);
                         session.save();
                     } catch (JahiaException e1) {
-                        e1.printStackTrace();
+                        logger.error(e1.getMessage(),e1);
                     }
                     return null;
                 }
@@ -122,7 +125,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
             String app = contextName + "!" + defName;
             setProperty("j:application", app);
         } catch (JahiaException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -143,9 +146,9 @@ public class JCRPortletNode extends JCRNodeDecorator {
         try {
             results.putAll(getAvailablePermissions(getContextName(), getDefinitionName()));
         } catch (JahiaException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return results;
     }

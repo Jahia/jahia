@@ -40,10 +40,14 @@
 
 package org.jahia.services.workflow;
 
+import org.slf4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkflowObservationManager {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowObservationManager.class);
+
     private WorkflowService service;
     private List<WorkflowListener> listeners = new ArrayList<WorkflowListener>();
 
@@ -57,7 +61,7 @@ public class WorkflowObservationManager {
             try {
                 listener.workflowStarted(wf);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -68,7 +72,7 @@ public class WorkflowObservationManager {
             try {
                 listener.workflowEnded(wf);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -79,7 +83,7 @@ public class WorkflowObservationManager {
             try {
                 listener.newTaskCreated(task);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -90,7 +94,7 @@ public class WorkflowObservationManager {
             try {
                 listener.taskEnded(task);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

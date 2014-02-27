@@ -520,7 +520,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                             nodeTypesDBService.saveCndFile(systemId+".cnd",out.toString());
                             NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(out.toString()),systemId+".cnd");
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage(),e);
                         }
                     }
                     needUpdate = true;

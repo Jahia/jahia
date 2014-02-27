@@ -131,7 +131,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
 
             } catch (IOException e) {
 
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
             }
         }
         return providerNodeTypeRegistry;

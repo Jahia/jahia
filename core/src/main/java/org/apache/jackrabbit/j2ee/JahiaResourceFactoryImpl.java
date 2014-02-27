@@ -54,6 +54,7 @@ import org.apache.jackrabbit.webdav.simple.ResourceFactoryImpl;
 import org.apache.jackrabbit.webdav.version.*;
 import org.apache.jackrabbit.webdav.version.report.Report;
 import org.apache.jackrabbit.webdav.version.report.ReportInfo;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import java.io.IOException;
@@ -63,6 +64,7 @@ import java.util.List;
  * Custom resource factory
  */
 public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
 
     public JahiaResourceFactoryImpl(LockManager lockMgr, ResourceConfig resourceConfig) {
         super(lockMgr, resourceConfig);
@@ -224,7 +226,7 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
                     destNode.checkout();
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             resource.move(destination);
         }

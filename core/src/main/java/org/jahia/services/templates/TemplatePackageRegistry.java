@@ -165,7 +165,7 @@ public class TemplatePackageRegistry {
         if (modulesWithViewsPerComponents.containsKey(component)) {
             jahiaTemplatesPackages = modulesWithViewsPerComponents.get(component);
         } else {
-            jahiaTemplatesPackages = new HashSet<JahiaTemplatesPackage>();
+            jahiaTemplatesPackages = new TreeSet<JahiaTemplatesPackage>(TEMPLATE_PACKAGE_COMPARATOR);
             modulesWithViewsPerComponents.put(component, jahiaTemplatesPackages);
         }
         jahiaTemplatesPackages.add(module);

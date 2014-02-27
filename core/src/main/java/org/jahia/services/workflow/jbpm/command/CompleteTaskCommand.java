@@ -49,6 +49,7 @@ import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.jbpm.BaseCommand;
 import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.kie.api.task.model.Task;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
@@ -58,6 +59,8 @@ import java.util.Map;
 * Complete a task previously assigned
 */
 public class CompleteTaskCommand extends BaseCommand<Object> {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CompleteTaskCommand.class);
+
     private JBPM6WorkflowProvider jbpm6WorkflowProvider;
     private final String taskId;
     private final String outcome;
@@ -95,7 +98,7 @@ public class CompleteTaskCommand extends BaseCommand<Object> {
                     }
                 });
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 

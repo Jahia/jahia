@@ -44,6 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import java.util.List;
  * @author Sergiy Shyrkov
  */
 public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Serializable {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaNamingStrategy.class);
 
     /**
      * A convenient singleton instance
@@ -85,7 +87,7 @@ public class JahiaNamingStrategy extends ImprovedNamingStrategy implements Seria
                 }
                 sqlReservedWords = reservedWordList.toArray(new String[reservedWordList.size()]);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
             } finally {
                 IOUtils.closeQuietly(bufferedReader);
             }

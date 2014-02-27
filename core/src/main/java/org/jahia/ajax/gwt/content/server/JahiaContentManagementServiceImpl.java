@@ -844,7 +844,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             try {
                 result.put(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()), getUser(), getLocale()));
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
             }
         }
 

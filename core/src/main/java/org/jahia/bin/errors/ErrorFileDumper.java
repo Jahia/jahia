@@ -55,6 +55,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
+import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -80,6 +81,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * IMPORTANT NOTE : As this code gets called by log4j appenders, please do not use Log4J loggers in this code !
  */
 public class ErrorFileDumper {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorFileDumper.class);
 
     public static final FastDateFormat DATE_FORMAT_DIRECTORY = FastDateFormat.getInstance("yyyy_MM_dd");
 
@@ -180,7 +182,7 @@ public class ErrorFileDumper {
                 performDumpToFile(t, requestData);
                 tasksSubmitted.decrementAndGet();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -208,7 +210,7 @@ public class ErrorFileDumper {
                     executorService.shutdownNow();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             executorService = null;
             System.out.println("...done shutting down error file dumper executor service.");

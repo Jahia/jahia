@@ -211,7 +211,7 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
                 FileUtils.deleteQuietly(new File(scratchDirFile, classPath));
             }
         } catch (JasperException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 

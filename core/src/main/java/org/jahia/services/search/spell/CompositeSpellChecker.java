@@ -306,7 +306,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             try {
                 spellChecker.setStringDistance((StringDistance) Class.forName(SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.jackrabbit.searchIndex.spellChecker.distanceImplementation")).newInstance());
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
             }
             refreshSpellChecker();
         }

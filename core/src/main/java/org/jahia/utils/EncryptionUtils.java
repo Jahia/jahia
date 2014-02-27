@@ -49,6 +49,7 @@ import org.jasypt.digest.ByteDigester;
 import org.jasypt.digest.PooledByteDigester;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
@@ -57,7 +58,8 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * @author Sergiy Shyrkov
  */
 public final class EncryptionUtils {
-    
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EncryptionUtils.class);
+
     public static class EncryptedPasswordFactoryBean extends AbstractFactoryBean<String> {
 
         private String password;
@@ -176,7 +178,7 @@ public final class EncryptionUtils {
                 try {
                     password = br.readLine();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(),e);
                 }
             }
         }

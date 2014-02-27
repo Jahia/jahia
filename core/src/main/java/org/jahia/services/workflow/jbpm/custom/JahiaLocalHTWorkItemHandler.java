@@ -59,6 +59,7 @@ import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,6 +74,7 @@ import java.util.List;
  * - "en" is used as a language instead of "en-UK"
  */
 public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaLocalHTWorkItemHandler.class);
 
     private Pipeline peopleAssignmentPipeline = null;
 
@@ -179,7 +181,7 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
         try {
             peopleAssignmentPipeline.invoke(peopleAssignmentContext);
         } catch (PipelineException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return task;

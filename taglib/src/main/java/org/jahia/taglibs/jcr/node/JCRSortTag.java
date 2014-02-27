@@ -44,6 +44,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -62,6 +63,7 @@ import java.util.*;
  * 
  */
 public class JCRSortTag extends AbstractJCRTag {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSortTag.class);
 
     private static final long serialVersionUID = 8801219769991582550L;
 
@@ -177,7 +179,7 @@ public class JCRSortTag extends AbstractJCRTag {
                         }
                     }
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
 
             }

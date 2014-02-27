@@ -50,6 +50,8 @@ import org.jdom2.transform.XSLTransformException;
 import org.jdom2.transform.XSLTransformer;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.List;
@@ -58,7 +60,8 @@ import java.util.List;
  * A class to perform needed transformations on Spring configuration files.
  */
 public class SpringFileTransformer {
-    
+    private static final Logger logger = LoggerFactory.getLogger(SpringFileTransformer.class);
+
     public static Document transform(Document document) {
 
         InputStream stylesheetInputStream = null;
@@ -77,10 +80,10 @@ public class SpringFileTransformer {
             Document resultingDocument = transformer.transform(document);
             return resultingDocument != null ? resultingDocument : document;
         } catch (XSLTransformException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return document;
         } catch (JDOMException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return document;
         } finally {
             IOUtils.closeQuietly(stylesheetInputStream);

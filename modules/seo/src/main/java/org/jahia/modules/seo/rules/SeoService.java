@@ -144,7 +144,7 @@ public class SeoService {
                 node.setProperty("j:url", url);
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 

@@ -50,7 +50,7 @@ import java.util.Map;
 import java.io.InputStream;
 
 /**
- * User: toto
+ * A node representing a mount point for an external data provider
  * Date: Dec 8, 2008
  * Time: 2:19:40 PM
  */
@@ -103,15 +103,21 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         if (provider != null) {
             JCRSessionWrapper sessionWrapper = (JCRSessionWrapper) getSession();
             return provider.getNodeWrapper(sessionWrapper.getProviderSession(provider).getRootNode(), sessionWrapper);
+        } else {
+            throw new RepositoryException("No provider found for mount point " + getPath() + " of type " + getPrimaryNodeTypeName());
         }
-        return null;
     }
 
     private JCRStoreProvider getMountProvider() throws RepositoryException {
         JCRStoreProvider provider;
         Map<String, JCRStoreProvider> dynamicMountPoints = getProvider().getSessionFactory().getDynamicMountPoints();
         if (!dynamicMountPoints.containsKey(getPath())) {
-            provider = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName()).mountProvider(this);
+            ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName());
+            if (providerFactory == null) {
+                logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
+                return null;
+            }
+            provider = providerFactory.mountProvider(this);
         } else {
             provider = dynamicMountPoints.get(getPath());
         }

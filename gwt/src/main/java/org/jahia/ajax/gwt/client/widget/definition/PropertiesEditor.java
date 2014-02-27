@@ -292,7 +292,6 @@ public class PropertiesEditor extends FormPanel {
                 }
 
                 final PropertyAdapterField adapterField = new PropertyAdapterField(field, definition, gwtJahiaNodeProperty);
-                adapterField.setName(nodeType.getName());
                 adapterField.setWidth("98%");
                 adapterField.setStyleAttribute("padding-left", "0");
                 fields.put(field.getName(), adapterField);
@@ -423,7 +422,7 @@ public class PropertiesEditor extends FormPanel {
                 FieldSet fs = (FieldSet) c.getParent();
                 Set<Component> compToRemove = new HashSet<Component>();
                 for (Component co : fs.getItems()) {
-                    if (co instanceof AdapterField && ((AdapterField) co).getName().equals(removeMixin)) {
+                    if (co instanceof PropertyAdapterField && ((PropertyAdapterField) co).getDefinition().getDeclaringNodeType().equals(removeMixin)) {
                         compToRemove.add(co);
                     }
                 }

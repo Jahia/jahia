@@ -45,6 +45,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
@@ -222,20 +223,28 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     QueryResult queryResult = query.execute();
                     NodeIterator queryResultNodes = queryResult.getNodes();
                     while (queryResultNodes.hasNext()) {
-                        JCRNodeWrapper next = (JCRNodeWrapper) queryResultNodes.next();
+                        JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
+                        if (mountPointNodeWrapper instanceof JCRMountPointNode) {
+                            JCRMountPointNode mountPointNode = (JCRMountPointNode) mountPointNodeWrapper;
+                            if (!mountPointNode.checkMountPointValidity()) {
+                                logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
+                                        "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                continue;
+                            }
+                        }
                         try {
-                            next.getNodes();
+                            mountPointNodeWrapper.getNodes();
                         } catch (RepositoryException e) {
                             logger.warn(
-                                    "Issue while trying to mount an external provider ("+next.getPath()+") upon startup, all references " +
-                                    "to file coming from this mount won't be available until it is fixed", e);
+                                    "Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
+                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e);
                         }
                     }
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            throw new JahiaInitializationException("Cannot register permissions",e);
+            throw new JahiaInitializationException("Cannot register permissions", e);
         }
     }
 

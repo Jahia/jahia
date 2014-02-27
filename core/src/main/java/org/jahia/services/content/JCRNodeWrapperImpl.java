@@ -2129,10 +2129,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         try {
-            NodeType[] mixin = objectNode.getMixinNodeTypes();
-            for (NodeType aMixin : mixin) {
-                if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
-                    copy.addMixin(aMixin.getName());
+            if (copy.getProvider().isUpdateMixinAvailable()) {
+                NodeType[] mixin = objectNode.getMixinNodeTypes();
+                for (NodeType aMixin : mixin) {
+                    if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
+                        copy.addMixin(aMixin.getName());
+                    }
                 }
             }
         } catch (RepositoryException e) {
@@ -2173,8 +2175,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         while (props.hasNext()) {
             Property property = props.nextProperty();
+            boolean b = !property.getDefinition().getDeclaringNodeType().isMixin() || destinationNode.getProvider().isUpdateMixinAvailable();
             try {
-                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName()) && b) {
                     if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             Value[] values = property.getValues();

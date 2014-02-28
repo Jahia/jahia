@@ -290,7 +290,7 @@
                                     <rich-text jcr:primaryType="jnt:bigText">
                                         <j:translation_fr jcr:language="fr"
                                              jcr:primaryType="jnt:translation"
-                                             text="&lt;p&gt;mon texte riche&lt;/p&gt;&#xA;"/>
+                                             text=""/>
                                     </rich-text>
                                 </pagecontent>
                             </forges>

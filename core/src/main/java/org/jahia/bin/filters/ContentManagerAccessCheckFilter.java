@@ -142,7 +142,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
         }
 
         JCRNodeWrapper site;
-        if (!cfg.equals("repositoryexplorer")) {
+        if (!cfg.equals("repositoryexplorer") && !cfg.equals("categorymanager")) {
             site = getSite(request);
             if (site == null) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);

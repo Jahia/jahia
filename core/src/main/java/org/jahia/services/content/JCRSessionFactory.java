@@ -87,6 +87,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ServletContext servletContext;
     private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
+    private ThreadLocal<Locale> fallbackLocale = new ThreadLocal<Locale>();
     private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
@@ -137,7 +138,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale) throws RepositoryException {
-        return getCurrentUserSession(workspace, locale, null);
+        return getCurrentUserSession(workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale,Locale fallbackLocale) throws RepositoryException {
@@ -212,7 +213,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     protected JCRSessionWrapper getSystemSession(String username, String workspace, Locale locale) throws RepositoryException {
-        return login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, null);
+        return login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
     protected JCRSessionWrapper getUserSession(String username, String workspace) throws RepositoryException {
@@ -220,7 +221,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     protected JCRSessionWrapper getUserSession(String username, String workspace, Locale locale) throws RepositoryException {
-        return login(JahiaLoginModule.getCredentials(username), workspace, locale, null);
+        return login(JahiaLoginModule.getCredentials(username), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
     public String[] getDescriptorKeys() {
@@ -494,6 +495,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setCurrentLocale(Locale locale) {
         currentLocale.set(locale);
+    }
+
+    public Locale getFallbackLocale() {
+        return fallbackLocale.get();
+    }
+
+    public void setFallbackLocale(Locale locale) {
+        fallbackLocale.set(locale);
     }
 
     public JahiaUser getCurrentAliasedUser() {

@@ -441,6 +441,15 @@ public class URLResolver {
                         public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0,
                                     path.lastIndexOf("/*")) : path);
+
+                            String siteName = StringUtils.substringBetween(nodePath,"/sites/","/");
+                            if (siteName != null && session.itemExists("/sites/"+siteName)) {
+                                siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/"+siteName));
+
+                                if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
+                                    session.setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
+                                }
+                            }
                             if (logger.isDebugEnabled()) {
                                 logger.debug(cacheKey + " has not been found in the cache, still looking for node " +
                                              nodePath);
@@ -473,17 +482,10 @@ public class URLResolver {
             siteInfoCache.remove(cacheKey);
             throw new RepositoryException("could not resolve site for "+path+" in workspace "+ workspace + " in language "+locale);
         }
-        JCRSessionWrapper userSession = siteInfo != null
-                && siteInfo.getDefaultLanguage() != null
-                && siteInfo.isMixLanguagesActive() ? JCRSessionFactory
-                .getInstance().getCurrentUserSession(workspace,
-                        locale)
-                : JCRSessionFactory
-                .getInstance()
-                .getCurrentUserSession(
-                        workspace,
-                        locale,
-                        null);
+        if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
+            JCRSessionFactory.getInstance().setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
+        }
+        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale);
         if (userSession.getVersionDate() == null)
             userSession.setVersionDate(versionDate);
         if (userSession.getVersionLabel() == null)

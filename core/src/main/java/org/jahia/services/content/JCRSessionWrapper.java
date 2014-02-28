@@ -1126,6 +1126,10 @@ public class JCRSessionWrapper implements Session {
         return fallbackLocale;
     }
 
+    public void setFallbackLocale(Locale fallbackLocale) {
+        this.fallbackLocale = fallbackLocale;
+    }
+
     public Date getVersionDate() {
         return versionDate;
     }

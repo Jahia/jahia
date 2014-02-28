@@ -45,6 +45,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
@@ -433,6 +434,18 @@ public class JCRTagUtils {
 
     public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context) {
         return JCRContentUtils.findDisplayableNode(node, context);
+    }
+
+    public static JCRNodeWrapper findDisplayableNodeInSite(JCRNodeWrapper node, RenderContext context,JCRSiteNode siteNode) {
+        if(siteNode!=null) {
+            JCRSiteNode old = context.getSite();
+            context.setSite(siteNode);
+            final JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, context);
+            context.setSite(old);
+            return displayableNode;
+        } else {
+            return JCRContentUtils.findDisplayableNode(node, context);
+        }
     }
 
     public static boolean isAllowedChildNodeType(JCRNodeWrapper node, String nodeType) throws RepositoryException {

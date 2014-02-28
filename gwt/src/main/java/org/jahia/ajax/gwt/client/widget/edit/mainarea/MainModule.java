@@ -595,7 +595,7 @@ public class MainModule extends Module {
     public static void popState(String location, String config) {
         MainModule m = getInstance();
         if (!config.equals(m.getConfig().getName())) {
-            m.getEditLinker().switchConfig(m.configs.get(config), location + "##", true, true);
+            m.getEditLinker().switchConfig(m.configs.get(config), location + "##", true, true, null, false);
         } else {
             m.goToUrl(location + "##", false, false, false);
         }
@@ -691,10 +691,10 @@ public class MainModule extends Module {
      * @param config
      * @param newPath
      */
-    public void setConfig(GWTEditConfiguration config, String newPath) {
+    public void setConfig(GWTEditConfiguration config, String newPath, boolean forceRootChange) {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
 
-        boolean changedRoot = !config.getSitesLocation().equals(this.config.getSitesLocation());
+        boolean changedRoot = forceRootChange || !config.getSitesLocation().equals(this.config.getSitesLocation());
 
         if (newPath != null) {
             newLocation = newPath;

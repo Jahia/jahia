@@ -1,6 +1,10 @@
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
     <tr>
         <td>
+            <c:set var="siteNode" value="${subchild.resolveSite}"/>
+            <c:out value="${not empty siteNode && not empty siteNode.displayableName ? siteNode.displayableName : subchild.name}"/>
+        </td>
+        <td>
             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
             <c:choose>
                 <c:when test='${jcr:isNodeType(subchild, "nt:file")}'>
@@ -19,36 +23,27 @@
             </c:choose>
         </td>
         <td>
-            <c:set var="siteNode" value="${subchild.resolveSite}"/>
-            <c:out value="${not empty siteNode && not empty siteNode.displayableName ? siteNode.displayableName : subchild.name}"/>
-        </td>
-        <td>
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:createdBy" var="createdBy"/>
-            <fmt:message key="metadata.createdBy"/>&nbsp;
-            <c:out value="${not empty createdBy && not empty createdBy.string ? createdBy.string : subchild.name}"/>&nbsp;
-            <fmt:message key="metadata.on"/>&nbsp;
-            <fmt:formatDate value="${not empty created && not empty created.time ? created.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;
+            <em><fmt:formatDate value="${not empty created && not empty created.time ? created.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;</em>
+            <fmt:message key="by"/>&nbsp;
+            <strong><c:out value="${not empty createdBy && not empty createdBy.string ? createdBy.string : subchild.name}"/>&nbsp;</strong>
         </td>
         <td>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModifiedBy" var="modifiedBy"/>
-            <fmt:message key="metadata.modifiedBy"/>&nbsp;
-            <c:out value="${not empty modifiedBy && not empty modifiedBy.string ? modifiedBy.string : subchild.name}"/>&nbsp;
-            <fmt:message key="metadata.on"/>&nbsp;
-            <fmt:formatDate value="${not empty modified && not empty modified.time ? modified.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;
+            <em><fmt:formatDate value="${not empty modified && not empty modified.time ? modified.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;</em>
+            <fmt:message key="by"/>&nbsp;
+            <strong><c:out value="${not empty modifiedBy && not empty modifiedBy.string ? modifiedBy.string : subchild.name}"/>&nbsp;</strong>
         </td>
         <td>
             <jcr:nodeProperty node="${subchild}" name="j:lastPublished" var="published"/>
             <jcr:nodeProperty node="${subchild}" name="j:lastPublishedBy" var="publishedBy"/>
-
-            <%--<c:out value="${not empty published && not empty published.string ? published.string : subchild.name}"/>&nbsp;--%>
             <c:choose>
                 <c:when test="${not empty published}">
-                    <fmt:message key="metadata.publishedBy"/>&nbsp;
-                    <c:out value="${not empty publishedBy && not empty publishedBy.string ? publishedBy.string : subchild.name}"/>&nbsp;
-                    <fmt:message key="metadata.on"/>&nbsp;
-                    <fmt:formatDate value="${not empty published && not empty published.time ? published.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;
+                        <em><fmt:formatDate value="${not empty published && not empty published.time ? published.time : subchild.name}" pattern="dd, MMMM yyyy HH:mm"/>&nbsp;</em>
+                        <fmt:message key="by"/>&nbsp;
+                        <strong><c:out value="${not empty publishedBy && not empty publishedBy.string ? publishedBy.string : subchild.name}"/>&nbsp;</strong>
                 </c:when>
                 <c:otherwise>
                     <fmt:message key="metadata.neverPublished"/>

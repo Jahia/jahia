@@ -595,22 +595,18 @@
 
     <bean id="Toolbar.Item.Start" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="dashboardmode"/>
+                <property name="enforcedWorkspace" value="live"/>
+                <property name="forceRootChange" value="true"/>
+            </bean>
         </property>
-        <property name="titleKey" value="label.start"/>
+        <property name="titleKey" value="userDashboardSettings.tab.title"/>
         <property name="icon" value="start"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
             </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/start"/>
-                </bean>
-            </list>
         </property>
     </bean>
 

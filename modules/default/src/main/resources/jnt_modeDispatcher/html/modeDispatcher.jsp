@@ -15,7 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <div id="item-${currentNode.identifier}">
-    <c:if test="${renderContext.editMode}">
+    <c:if test="${not renderContext.editModeConfigName eq 'dashboardmode' and renderContext.editMode}">
         Loaded with AJAX call
         <c:if test="${not empty currentNode.properties.mode.string}">
             from mode ${currentNode.properties.mode.string}
@@ -25,7 +25,7 @@
         </c:forEach>
         <template:module path="*"/>
     </c:if>
-    <c:if test="${not renderContext.editMode}">
+    <c:if test="${not renderContext.editMode or renderContext.editModeConfigName eq 'dashboardmode'}">
         <c:choose>
             <c:when test="${renderContext.ajaxRequest}">
                 <c:set var="modeDispatcherId" value="item-${currentNode.identifier}" scope="request"/>

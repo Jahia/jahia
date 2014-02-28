@@ -397,7 +397,7 @@ public class TemplatePackageRegistry {
      *         repository
      */
     public JahiaTemplatesPackage lookupById(String moduleId) {
-        if (moduleId == null || packagesByName == null) return null;
+        if (moduleId == null || packagesById == null) return null;
         return packagesById.containsKey(moduleId) ? packagesById.get(moduleId)
                 : null;
     }

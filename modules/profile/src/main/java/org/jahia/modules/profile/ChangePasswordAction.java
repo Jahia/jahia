@@ -67,13 +67,10 @@ public class ChangePasswordAction extends Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String passwd = req.getParameter("password").trim();
         JSONObject json = new JSONObject();
-
         if (!resource.getNode().hasPermission("jcr:write_default") || !resource.getNode().isNodeType("jnt:user")) {
             return new ActionResult(HttpServletResponse.SC_FORBIDDEN, null, null);
         }
-
         if ("".equals(passwd)) {
-
             String userMessage = Messages.get("resources.JahiaServerSettings","serverSettings.user.errors.password.mandatory", renderContext.getUILocale());
             json.put("errorMessage", userMessage);
         } else {
@@ -101,7 +98,6 @@ public class ChangePasswordAction extends Action {
                 }
             }
         }
-
         return new ActionResult(HttpServletResponse.SC_OK, null, json);
     }
 }

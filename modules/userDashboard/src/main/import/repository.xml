@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <userDashboard j:dependencies="default"
+        <userDashboard j:dependencies="bootstrap default"
                        j:installedModules="userDashboard"
                        j:moduleType="module"
                        j:title="Jahia User Dashboard"
@@ -15,7 +15,7 @@
                     <me j:applyOn="jnt:user"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
-                                j:titleKey="label.aboutMe"
+                                j:titleKey="mySettings.about"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
@@ -34,11 +34,7 @@
                                           j:type="jnt:page"
                                           j:view="bootstrapUserContent"
                                           jcr:mixinTypes="jmix:renderable"
-                                          jcr:primaryType="jnt:userContentRetrieval">
-                                    <j:translation_en jcr:language="en"
-                                                      jcr:mixinTypes="mix:title"
-                                                      jcr:primaryType="jnt:translation"/>
-                                </my-pages>
+                                          jcr:primaryType="jnt:userContentRetrieval"/>
                         </pagecontent>
                     </pages>
                     <web-projects j:applyOn="jnt:user"
@@ -46,54 +42,86 @@
                                 j:hiddenTemplate="false"
                                 j:titleKey="system.myWebProjects"
                                 jcr:mixinTypes="jmix:rbTitle"
-                                j:requiredPermissionNames="jcr:write_default"
                                 jcr:primaryType="jnt:contentTemplate">
                         <pagecontent j:id="user-sites"
                                      jcr:mixinTypes="jmix:customSkin"
                                      jcr:primaryType="jnt:contentList">
-                                <my-sites jcr:mixinTypes="jmix:skinnable jmix:style"
-                               jcr:primaryType="jnt:contentList">
-                                <j:translation_en jcr:language="en"
-                                                  jcr:mixinTypes="mix:title"
-                                                  jcr:primaryType="jnt:translation"
-                                                  jcr:title="##resourceBundle(system.myWebProjects)##"/>
-                                <ajax-mode-dispatcher-live j:contextNodePath="/sites"
-                                                           j:invertCondition="true"
-                                                           j:requireLoggedUser="false"
-                                                           j:requirePrivilegedUser="false"
-                                                           j:requiredPermissionNames="jcr:read_default"
-                                                           jcr:mixinTypes="jmix:requiredPermissions"
-                                                           jcr:primaryType="jnt:modeDispatcher"
-                                                           mode="live">
-                                    <websites-list-in-edit-mode contribute="true"
-                                                                edit="true"
-                                                       j:view="bootstrapSites"
-                                                                jcr:mixinTypes="jmix:renderable"
-                                                                jcr:primaryType="jnt:listSites"
-                                                                live="true"
-                                                                preview="true"/>
-                                    </ajax-mode-dispatcher-live>
-                                <ajax-mode-dispatcher-preview j:contextNodePath="/sites"
-                                                              j:invertCondition="false"
-                                                              j:requireLoggedUser="false"
-                                                              j:requirePrivilegedUser="false"
-                                                              j:requiredPermissionNames="jcr:read_default"
-                                                              jcr:mixinTypes="jmix:requiredPermissions"
-                                                              jcr:primaryType="jnt:modeDispatcher"
-                                                              mode="preview">
-                                    <websites-list-in-edit-mode contribute="true"
-                                                                        edit="true"
-                                                                        j:view="bootstrapSites"
-                                                                jcr:mixinTypes="jmix:renderable"
-                                                                jcr:primaryType="jnt:listSites"
-                                                                live="true"
-                                                                preview="true"/>
-                                    </ajax-mode-dispatcher-preview>
-                            </my-sites>
+                            <ajax-mode-dispatcher-live j:contextNodePath="/sites"
+                                                       j:invertCondition="true"
+                                                       j:requireLoggedUser="false"
+                                                       j:requirePrivilegedUser="false"
+                                                       j:requiredPermissionNames="jcr:read_default"
+                                                       jcr:mixinTypes="jmix:requiredPermissions"
+                                                       jcr:primaryType="jnt:modeDispatcher"
+                                                       mode="live">
+                                    <websites-list-in-edit-mode administrationlink="false"
+                                                    contribute="true"
+                                                    delete="false"
+                                                    details="false"
+                                                            edit="true"
+                                                    editproperties="false"
+                                                    export="false"
+                                                            j:view="bootstrapSites"
+                                                            jcr:mixinTypes="jmix:renderable"
+                                                            jcr:primaryType="jnt:listSites"
+                                                            live="true"
+                                                            preview="true"/>
+                            </ajax-mode-dispatcher-live>
+                            <ajax-mode-dispatcher-preview j:contextNodePath="/sites"
+                                                          j:invertCondition="false"
+                                                          j:requireLoggedUser="false"
+                                                          j:requirePrivilegedUser="false"
+                                                          j:requiredPermissionNames="jcr:read_default"
+                                                          jcr:mixinTypes="jmix:requiredPermissions"
+                                                          jcr:primaryType="jnt:modeDispatcher"
+                                                          mode="preview">
+                                    <websites-list-in-edit-mode administrationlink="false"
+                                                    contribute="true"
+                                                    delete="false"
+                                                    details="false"
+                                                            edit="true"
+                                                    editproperties="false"
+                                                    export="false"
+                                                            j:view="bootstrapSites"
+                                                            jcr:mixinTypes="jmix:renderable"
+                                                            jcr:primaryType="jnt:listSites"
+                                                            live="true"
+                                                            preview="true"/>
+                            </ajax-mode-dispatcher-preview>
                         </pagecontent>
                     </web-projects>
+                    <profile j:applyOn="jnt:user"
+                           j:defaultTemplate="false"
+                           j:hiddenTemplate="false"
+                           j:titleKey="system.mySettings"
+                           jcr:mixinTypes="jmix:rbTitle"
+                           jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <editDetails age="true"
+                                         j:about="true"
+                                         j:birthDate="true"
+                                         j:email="true"
+                                         j:facebookID="true"
+                                         j:firstName="true"
+                                         j:function="true"
+                                         j:gender="true"
+                                         j:lastName="true"
+                                         j:linkedinID="true"
+                                         j:organization="true"
+                                         j:picture="true"
+                                         j:skypeID="true"
+                                         j:title="true"
+                                         j:twitterID="true"
+                                         j:view="bootstrap"
+                                         jcr:mixinTypes="jmix:renderable"
+                                         jcr:primaryType="jnt:editUserDetails"
+                                         password="true"
+                                         preferredLanguage="true"/>
+                        </pagecontent>
+                    </profile>
                 </dashboard-modules-base>
             </templates>
+                
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>

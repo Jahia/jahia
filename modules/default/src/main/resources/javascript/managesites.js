@@ -1,4 +1,3 @@
-
 function deleteSite() {
     if ($(".sitecheckbox:checked").length == 0) {
         $("#nothing-selected").dialog({

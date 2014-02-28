@@ -264,6 +264,7 @@ public class JahiaGWTParameters {
     }
 
     public static void setWorkspace(String newWorkspace) {
+        baseUrl = baseUrl.replaceFirst(workspace, newWorkspace);
         workspace = newWorkspace;
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();

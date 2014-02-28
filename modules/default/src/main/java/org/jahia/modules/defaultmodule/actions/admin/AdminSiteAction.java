@@ -74,9 +74,9 @@ public abstract class AdminSiteAction extends AdminAction {
                 return ActionResult.BAD_REQUEST;
             }
 
-            JahiaSite site = sitesService.getSiteByKey(node.getName());
+            JahiaSite site = sitesService.getSiteByKey(node.getName(), session);
 
-            return doExecute(req,renderContext, site,session, parameters);
+            return doExecute(req, renderContext, site, session, parameters);
         } else {
             JCRNodeWrapper node = resource.getNode();
 

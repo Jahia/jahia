@@ -259,8 +259,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                             || node.getQuickPublicationInfo().getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE)) {
                 classes += "notPublished ";
             }
-            if (!PermissionsUtils.isPermitted("editModeAccess", node) && !PermissionsUtils.isPermitted("jcr:write_default", node)) {
-                classes += "accessForbidden ";
+            if (!PermissionsUtils.isPermitted("jcr:write_default", node)) {
+                classes += "readOnly ";
             }
             if (classes.length() > 0) {
                 v = "<span class=\""+classes+"\">" + v + "</span>";

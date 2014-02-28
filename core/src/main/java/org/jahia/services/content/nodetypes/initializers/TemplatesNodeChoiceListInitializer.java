@@ -153,10 +153,10 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             if (!ok) {
                 // check the current value of the page template, if it's the current template node, we will have
                 // to let it pass anyway.
-                if (context.get("contextNode") != null && node.hasProperty("j:templateNode")) {
+                if (context.get("contextNode") != null && node.hasProperty("j:templateName")) {
                     try {
-                        if (node.getProperty("j:templateNode").getNode() != null &&
-                                node.getProperty("j:templateNode").getNode().getIdentifier().equals(templateNode.getIdentifier())) {
+                        if (node.getProperty("j:templateName").getString() != null &&
+                                node.getProperty("j:templateName").getString().equals(templateNode.getName())) {
                             ok = true;
                         }
                     } catch (ItemNotFoundException infe) {

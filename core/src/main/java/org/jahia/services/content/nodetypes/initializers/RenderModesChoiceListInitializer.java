@@ -40,6 +40,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -60,19 +61,20 @@ public class RenderModesChoiceListInitializer implements ChoiceListInitializer, 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         List<ChoiceListValue> list = new ArrayList<ChoiceListValue>();
 
+        boolean excludeEdit = "noGWT".equals(param);
         addMappings(list, (ApplicationContext) servletContext.getAttribute(
-                        "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet"));
+                        "org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet"), excludeEdit);
 
-        addMappings(list, SpringContextSingleton.getInstance().getContext());
+        addMappings(list, SpringContextSingleton.getInstance().getContext(), excludeEdit);
 
         return list;
     }
 
-    private void addMappings(List<ChoiceListValue> list, ApplicationContext ctx) {
+    private void addMappings(List<ChoiceListValue> list, ApplicationContext ctx, boolean excludeEdit) {
         if (ctx != null) {
             for (SimpleUrlHandlerMapping mapping : ctx.getBeansOfType(SimpleUrlHandlerMapping.class).values()) {
                 for (Map.Entry<String, ?> entry : mapping.getUrlMap().entrySet()) {
-                    if (entry.getKey().endsWith("/**") && entry.getValue() instanceof Render) {
+                    if (entry.getKey().endsWith("/**") && entry.getValue() instanceof Render && (!excludeEdit || !(entry.getValue() instanceof Edit))) {
                         String key = entry.getKey().substring(1,entry.getKey().lastIndexOf('/'));
                         if (!key.equals("render")) {
                             list.add(new ChoiceListValue(key,key));

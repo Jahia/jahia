@@ -219,7 +219,7 @@ public class ConflictResolver {
         boolean isNode1Frozen = node1.isNodeType(Constants.NT_FROZENNODE);
         List<Diff> diffs = new ArrayList<Diff>();
 
-        ListOrderedMap uuids1 = getChildEntries(node1, node2.getSession());
+        ListOrderedMap uuids1 = getChildEntries(node1, node1.getSession());
         ListOrderedMap uuids2 = getChildEntries(node2, node2.getSession());
 
         if (!uuids1.values().equals(uuids2.values())) {
@@ -240,19 +240,17 @@ public class ConflictResolver {
             // Ordering
             Map<String, String> oldOrdering = getOrdering(uuids1, removed);
             Map<String, String> newOrdering = getOrdering(uuids2, Collections.<String>emptyList());
-
-            // Reordering
+            if (node1.getPrimaryNodeType().hasOrderableChildNodes()) {
+                // Reordering
             if (!newOrdering.equals(oldOrdering)) {
                 for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
                     String uuid = entry.getKey();
-                    if (!added.contains(uuid)) {
-                        diffs.add(new ChildNodeReorderedDiff(uuid, newOrdering
-                                .get(uuid), addPath(basePath,
-                                (String) uuids2.get(uuid)), (String) uuids2
-                                .get(newOrdering.get(uuid)), newOrdering));
+                    if (!added.contains(uuid) && !added.contains(entry.getValue()) && !newOrdering.get(uuid).equals(oldOrdering.get(uuid))) {
+                        diffs.add(new ChildNodeReorderedDiff(uuid, entry.getValue(),
+                                addPath(basePath, (String) uuids2.get(uuid)), (String) uuids2.get(newOrdering.get(uuid)), newOrdering));
                     }
                 }
-            }
+            }}
 
             // Removed nodes
             for (String s : removed) {
@@ -348,7 +346,9 @@ public class ConflictResolver {
             String propName = prop2.getName();
 
             if (propName.equals(Constants.JCR_MIXINTYPES)) {
-                propName = Constants.JCR_FROZENMIXINTYPES;
+                if (isNode1Frozen) {
+                    propName = Constants.JCR_FROZENMIXINTYPES;
+                }
             } else if (ignore.contains(propName)) {
                 continue;
             }

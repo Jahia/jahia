@@ -509,7 +509,7 @@
  - j:dependencies (string) protected multiple nofulltext
  + * (nt:base)
 
-[jnt:versionInfo] > nt:base
+[jnt:versionInfo] > nt:base, jmix:observable
  - j:version
  - j:deployementDate (date)
  - j:sourcesFolder (string)
@@ -834,6 +834,8 @@ extends = jnt:content
  - sourceCode (string) itemtype = codeEditor
 
 [jnt:cssFile] > jnt:editableFile
+
+[jnt:lessFile] > jnt:editableFile
 
 [jnt:cssFolder] > jnt:folder
 

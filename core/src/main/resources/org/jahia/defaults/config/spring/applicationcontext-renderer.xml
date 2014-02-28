@@ -320,6 +320,7 @@
                 <value>/modules/assets/javascript/codemirror/mode/xml/xml.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/javascript/javascript.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/css/css.js</value>
+                <value>/modules/assets/javascript/codemirror/mode/less/less.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/clike/clike.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/htmlmixed/htmlmixed.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/htmlembedded/htmlembedded.js</value>

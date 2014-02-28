@@ -135,6 +135,12 @@ public class QueryWrapper implements Query {
         }
     }
 
+    /**
+     * Get the query for a specific provider
+     * @param jcrStoreProvider
+     * @return
+     * @throws RepositoryException
+     */
     protected Query getQuery(JCRStoreProvider jcrStoreProvider) throws RepositoryException {
         Query query = null;
         QueryManager qm = jcrStoreProvider.getQueryManager(session);
@@ -205,9 +211,13 @@ public class QueryWrapper implements Query {
     private Constraint convertPath(Constraint constraint, String mountPoint, QueryObjectModelFactory f) throws RepositoryException {
         if (constraint instanceof ChildNode) {
             String root = ((ChildNode)constraint).getParentPath();
+            if (mountPoint.equals(root)) {
+                // Path constraint is the mount point -> create new constraint on root child nodes only
+                return f.childNode(((ChildNode)constraint).getSelectorName(), "/");
+            }
             if (mountPoint.startsWith(root)) {
-                // Mount point in under path constraint -> remove constraint
-                return null;
+                // Mount point in under path constraint -> do not search
+                throw new ConstraintViolationException();
             }
             if (root.startsWith(mountPoint)) {
                 // Path constraint is under mount point -> create new constraint with local path
@@ -248,7 +258,7 @@ public class QueryWrapper implements Query {
             try {
                 c2 = convertPath(((Or) constraint).getConstraint2(), mountPoint, f);
             } catch (ConstraintViolationException e) {
-                return convertPath(((Or) constraint).getConstraint1(), mountPoint, f);
+                return c1;
             }
             if (c1 == null || c2 == null) {
                 return null;
@@ -286,18 +296,28 @@ public class QueryWrapper implements Query {
             }
             QueryResultAdapter queryResult = new QueryResultAdapter(query.execute(), entry.getKey(), session);
             results.add(queryResult);
-            long resultCount = getResultCount(queryResult);
-            if (queryLimit >= 0) {
-                if (resultCount >= queryLimit) {
-                    break;
+            if (it.hasNext() && (queryLimit >= 0 || queryOffset > 0)) {
+                // If we have another provider query and either a limit or offset set, we need to recalculate them.
+                long resultCount = getResultCount(queryResult);
+                if (queryLimit >= 0) {
+                    if (resultCount >= queryLimit) {
+                        // limit has already been reached -> return.
+                        break;
+                    }
+                    // reduce the limit for the next query
+                    queryLimit -= resultCount;
                 }
-                queryLimit -= resultCount;
-            }
-            if (resultCount == 0 && queryOffset > 0) {
-                Query noLimitQuery = getQuery(entry.getKey());
-                queryOffset -= getResultCount(new QueryResultAdapter(noLimitQuery.execute(), entry.getKey(), session));
-            } else {
-                queryOffset = 0;
+                if (queryOffset > 0) {
+                    if (resultCount == 0) {
+                        // There were no results in the first query - it may be because the offset was greater than the
+                        // full result count. We need to get the full result count to calculate the offset for the next provider.
+                        Query noLimitNoOffsetQuery = getQuery(entry.getKey());
+                        queryOffset -= getResultCount(new QueryResultAdapter(noLimitNoOffsetQuery.execute(), entry.getKey(), session));
+                    } else {
+                        // Results found already - next query start from 0
+                        queryOffset = 0;
+                    }
+                }
             }
         }
         return QueryResultWrapperImpl.wrap(results, limit);

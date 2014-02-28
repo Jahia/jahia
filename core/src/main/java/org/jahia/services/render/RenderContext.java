@@ -80,6 +80,7 @@ public class RenderContext {
     private Locale uiLocale;
 
     private Stack<Resource> resourcesStack = new Stack<Resource>();
+    private Set<String> renderedPaths = new HashSet<String>();
 
     private boolean isContributionMode = false;
     private boolean isEditMode = false;
@@ -232,6 +233,10 @@ public class RenderContext {
 
 	public void setContentType(String contentType) {
     	this.contentType = contentType;
+    }
+
+    public Set<String> getRenderedPaths() {
+        return renderedPaths;
     }
 
     public Stack<Resource> getResourcesStack() {

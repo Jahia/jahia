@@ -45,6 +45,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
 import org.jahia.services.mail.MailServiceImpl;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 
 import javax.mail.Message;
@@ -59,6 +60,8 @@ import java.util.Collection;
  *        Created : 14 sept. 2010
  */
 public class JBPMMailSession implements DisposableBean {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailSession.class);
+
     private MailServiceImpl mailService;
     private ProducerTemplate template;
     
@@ -103,7 +106,7 @@ public class JBPMMailSession implements DisposableBean {
                     template.send("seda:mailUsers?multipleConsumers=true",
                             exchange);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
         }

@@ -58,6 +58,7 @@ import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -67,6 +68,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * high load is running on the system.
  */
 public class ThreadMonitor {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ThreadMonitor.class);
 
     public static final String THREAD_MONITOR_DEACTIVATED = "ThreadMonitor deactivated.";
 
@@ -106,9 +108,9 @@ public class ThreadMonitor {
                     out.flush();
                 }
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } finally {
                 if (targetFile != null) {
                     IOUtils.closeQuietly(out);
@@ -183,7 +185,7 @@ public class ThreadMonitor {
         try {
             parseMBeanInfo();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -330,7 +332,7 @@ public class ThreadMonitor {
                 long dumpTime = System.currentTimeMillis() - startTime;
                 out("Wrote thread dump to file " + dumpFile.getAbsolutePath() + " in " + dumpTime + " ms");
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -362,7 +364,7 @@ public class ThreadMonitor {
                 dump.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -447,7 +449,7 @@ public class ThreadMonitor {
             try {
                 writer.write(THREAD_MONITOR_DEACTIVATED);
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
             }
             return;
         }
@@ -456,14 +458,14 @@ public class ThreadMonitor {
             try {
                 writer.write("Thread info generation already in progress in another thread.");
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
             }
             return;
         }
         try {
             writer.write(getFullThreadInfo());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             releaseAlreadyDumping();
         }

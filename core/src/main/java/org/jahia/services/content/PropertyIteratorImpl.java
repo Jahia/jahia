@@ -47,11 +47,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 /**
- * 
- * User: toto
- * Date: Feb 8, 2010
- * Time: 5:47:58 PM
- * 
+ * Iterator on properties
  */
 public class PropertyIteratorImpl implements PropertyIterator {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertyIteratorImpl.class);
@@ -65,6 +61,9 @@ public class PropertyIteratorImpl implements PropertyIterator {
         this.jcrStoreProvider = jcrStoreProvider;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Property nextProperty() {
         try {
             return jcrStoreProvider.getPropertyWrapper(iterator.nextProperty(), session);
@@ -74,26 +73,44 @@ public class PropertyIteratorImpl implements PropertyIterator {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void skip(long skipNum) {
         iterator.skip(skipNum);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public long getSize() {
         return iterator.getSize();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public long getPosition() {
         return iterator.getPosition();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasNext() {
         return iterator.hasNext();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object next() {
         return nextProperty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void remove() {
         iterator.remove();
     }

@@ -79,7 +79,16 @@ public class BaseAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, "url", new URLGenerator(context, resource));
         }
 
+        boolean added = context.getRenderedPaths().add(resource.getNode().getPath());
+        chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
         return null;
     }
 
+    @Override
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        if (renderContext.getRequest().getAttribute("resourceAddedInRenderedPath").equals(true)) {
+            renderContext.getRenderedPaths().remove(resource.getNode().getPath());
+        }
+        return super.execute(previousOut, renderContext, resource, chain);
+    }
 }

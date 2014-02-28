@@ -390,6 +390,16 @@ public class MainModule extends Module {
     }
 
     public boolean needRefresh(Map<String, Object> data) {
+        List<String> paths = (List<String>) data.get("publishedNodes");
+        if (paths != null) {
+            for (String s : paths) {
+                List<Module> modules = ModuleHelper.getModulesByPath().get(s);
+                if (modules != null && !modules.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 

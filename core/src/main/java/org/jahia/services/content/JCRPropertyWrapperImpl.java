@@ -45,6 +45,7 @@ import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -65,6 +66,7 @@ import java.util.List;
  * @author toto
  */
 public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPropertyWrapper {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRPropertyWrapperImpl.class);
 
     private JCRNodeWrapper node;
     private Property property;
@@ -83,7 +85,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
                 this.name = property.getName();
                 this.def = def;
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

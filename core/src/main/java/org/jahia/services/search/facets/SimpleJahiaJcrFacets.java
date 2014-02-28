@@ -292,16 +292,17 @@ public class SimpleJahiaJcrFacets {
                         minCount = (zeros != null && !zeros) ? 1 : 0;
                         // current default is to include zeros.
                     }
-                    q = params.getFieldParam(q, "query");
-                    parseParams(FacetParams.FACET_QUERY, q);
-                
-                    QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
-                    qp.setLowercaseExpandedTerms(false);
-                    Query qobj = qp.parse(q);
-                    long count = OpenBitSet.intersectionCount(getDocIdSet(qobj, ""),
-                            base);
-                    if (count >= minCount) {
-                        res.add(key, count);
+                    for (String query : params.getFieldParams(q, "query")) {
+                        parseParams(FacetParams.FACET_QUERY, query);
+
+                        QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
+                        qp.setLowercaseExpandedTerms(false);
+                        Query qobj = qp.parse(query);
+                        long count = OpenBitSet.intersectionCount(getDocIdSet(qobj, ""),
+                                base);
+                        if (count >= minCount) {
+                            res.add(key, count);
+                        }
                     }
                 }
                 catch (Exception e) {

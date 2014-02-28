@@ -1375,22 +1375,25 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
-        boolean b = false;
-        b = checkI18NNode(locale);
+        return hasI18N(locale,fallback, true);
+    }
+
+    private boolean hasI18N(Locale locale, boolean fallback, boolean checkPublication) throws RepositoryException {
+        boolean b = checkI18NNode(locale, checkPublication);
         if (!b && fallback) {
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
-                b = checkI18NNode(fallbackLocale);
+                b = checkI18NNode(fallbackLocale, checkPublication);
             }
         }
         return b;
     }
 
-    private boolean checkI18NNode(Locale locale) throws RepositoryException {
+    private boolean checkI18NNode(Locale locale, boolean checkPublication) throws RepositoryException {
         boolean b = false;
         if ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
                 "j:translation_" + locale)) {
-            if (Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName())) {
+            if (checkPublication && Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName())) {
                 final Node node = objectNode.getNode("j:translation_" + locale);
                 b = !node.hasProperty("j:published") || node.getProperty("j:published").getBoolean();
             } else {
@@ -2129,10 +2132,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         try {
-            NodeType[] mixin = objectNode.getMixinNodeTypes();
-            for (NodeType aMixin : mixin) {
-                if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
-                    copy.addMixin(aMixin.getName());
+            if (copy.getProvider().isUpdateMixinAvailable()) {
+                NodeType[] mixin = objectNode.getMixinNodeTypes();
+                for (NodeType aMixin : mixin) {
+                    if (!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
+                        copy.addMixin(aMixin.getName());
+                    }
                 }
             }
         } catch (RepositoryException e) {
@@ -2173,8 +2178,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         while (props.hasNext()) {
             Property property = props.nextProperty();
+            boolean b = !property.getDefinition().getDeclaringNodeType().isMixin() || destinationNode.getProvider().isUpdateMixinAvailable();
             try {
-                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName()) && b) {
                     if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             Value[] values = property.getValues();
@@ -3334,20 +3340,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         !JCRStoreService.getInstance().getNoValidityCheckTypes().contains(getPrimaryNodeTypeName())) {
                     boolean isLocaleDefined = jcrSessionWrapper.getLocale() != null;
                     if (isLocaleDefined) {
-                        if (objectNode.hasProperty("j:published") && !objectNode.getProperty(
-                                "j:published").getBoolean()) {
+                        if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
+                            // Node is completely unpublished
                             return false;
-                        } else if (hasI18N(jcrSessionWrapper.getLocale(), false)) {
-                            if (JCRContentUtils.isLanguageInvalid(objectNode,
-                                    jcrSessionWrapper.getLocale().toString())) {
-                                return false;
-                            }
-                            JCRSiteNode siteNode = getResolveSite();
-                            if (!siteNode.isMixLanguagesActive()) {
-                                Node i18n = getI18N(jcrSessionWrapper.getLocale(), false);
-                                if (i18n.hasProperty("j:published") && !i18n.getProperty("j:published").getBoolean()) {
+                        } else {
+                            if (hasI18N(jcrSessionWrapper.getLocale(), true)) {
+                                // Translation exists and is published
+                                if (JCRContentUtils.isLanguageInvalid(objectNode, jcrSessionWrapper.getLocale().toString())) {
                                     return false;
                                 }
+                            } else if (hasI18N(jcrSessionWrapper.getLocale(), true, false)) {
+                                // Translation has not been found because it has been unpublished
+                                return false;
                             }
                         }
                     }

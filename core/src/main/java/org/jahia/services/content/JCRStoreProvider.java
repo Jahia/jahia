@@ -520,7 +520,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                             nodeTypesDBService.saveCndFile(systemId+".cnd",out.toString());
                             NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(out.toString()),systemId+".cnd");
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error(e.getMessage(),e);
                         }
                     }
                     needUpdate = true;
@@ -1073,6 +1073,14 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return updateMixinAvailable;
     }
 
+    /**
+     * Get weak references of a node
+     * @param node node
+     * @param propertyName name of the property
+     * @param session session
+     * @return an iterator
+     * @throws RepositoryException
+     */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
         return null;
     }

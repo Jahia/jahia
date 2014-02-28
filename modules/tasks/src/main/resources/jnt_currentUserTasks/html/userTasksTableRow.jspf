@@ -5,7 +5,7 @@
                 <strong>&nbsp;${fn:escapeXml(task.displayableName)}</strong>
             </a>
             <c:if test="${not empty task.properties['targetNode'].node}">
-                <c:set value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" var="displayableNode"/>
+                <c:set value="${jcr:findDisplayableNodeInSite(task.properties['targetNode'].node, renderContext, task.properties['targetNode'].node.resolveSite)}" var="displayableNode"/>
                 &nbsp;-&nbsp;
                 <span>
                     <a href="<c:url value='${url.base}${displayableNode.path}.html'/>">
@@ -31,7 +31,7 @@
                     <p>${task.properties['description'].string}</p>
                 </c:if>
                 <template:tokenizedForm>
-                    <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.base}'/>${task.path}">
+                    <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.basePreview}'/>${task.path}">
                     </form>
                 </template:tokenizedForm>
                     <c:set var="assignable" value="true" />

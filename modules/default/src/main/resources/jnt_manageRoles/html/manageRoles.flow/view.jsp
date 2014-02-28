@@ -25,7 +25,7 @@
     }
 </script>
 
-
+<h2><fmt:message key="default.manageRoles"/></h2>
 <form action="${flowExecutionUrl}" method="POST" id="roleForm">
     <input id="event" type="hidden" name="_event" value="on">
     <input id="role" type="hidden" name="role" />

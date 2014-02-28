@@ -220,7 +220,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     }
                 } catch (UnsupportedEncodingException e) {
                 } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
             keyPart = StringUtils.join(aclKeys, "|");

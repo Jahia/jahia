@@ -188,6 +188,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
         if (propertyName == null) {
             Iterable<Node> referringNodes = ((org.apache.jackrabbit.core.query.QueryManagerImpl)session.getWorkspace().getQueryManager())

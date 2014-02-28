@@ -677,7 +677,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             try {
                                 child.getRealNode().setProperty(attrName, values.toArray(new Value[values.size()]));
                             } catch (RepositoryException e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
                             }
                         }
                     } else {

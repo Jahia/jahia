@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.noggit.JSONUtil;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.slf4j.Logger;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +65,7 @@ import java.util.*;
  */
 
 public class TokenizedFormTag extends BodyTagSupport {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(TokenizedFormTag.class);
 
     private static final long serialVersionUID = -1427914171244787502L;
 
@@ -139,7 +141,7 @@ public class TokenizedFormTag extends BodyTagSupport {
 
             out.print(outputDocument.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         pageContext.removeAttribute("hasCaptcha",PageContext.REQUEST_SCOPE);

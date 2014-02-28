@@ -71,10 +71,10 @@ public class ImageJImage implements Image {
 
     @Override
     protected void finalize() throws Throwable {
-        super.finalize();
         if (ip != null) {
             ip.close();
         }
+        super.finalize();
     }
 
     public void dispose() {

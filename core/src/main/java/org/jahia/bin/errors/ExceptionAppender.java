@@ -42,6 +42,7 @@ package org.jahia.bin.errors;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 
@@ -53,6 +54,7 @@ import java.io.IOException;
  * Time: 3:40:31 PM
  */
 public class ExceptionAppender extends AppenderSkeleton {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ExceptionAppender.class);
 
     private boolean alreadyDumping = false;
 
@@ -74,7 +76,7 @@ public class ExceptionAppender extends AppenderSkeleton {
                     ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } finally {
                 alreadyDumping = false;
             }

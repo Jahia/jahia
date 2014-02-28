@@ -223,7 +223,7 @@
 
 [jnt:modeDispatcher] > jnt:content, jmix:layoutComponentContent, jmix:studioOnly
  orderable
- - mode (string,choicelist[renderModes])
+ - mode (string,choicelist[renderModes='noGWT'])
  + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:workspaceSwitch] > jnt:content, jmix:layoutComponentContent, jmix:studioOnly

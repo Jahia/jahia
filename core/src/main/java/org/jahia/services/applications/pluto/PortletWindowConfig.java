@@ -42,6 +42,7 @@ package org.jahia.services.applications.pluto;
 
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 
@@ -53,6 +54,7 @@ import javax.jcr.RepositoryException;
  * 
  */
 public class PortletWindowConfig {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(PortletWindowConfig.class);
 
     public static String fromId(EntryPointInstance entryPointInstance) {
         final String defName = entryPointInstance.getDefName();
@@ -65,7 +67,7 @@ public class PortletWindowConfig {
             EntryPointInstance entryPointInstance = new EntryPointInstance(nodeWrapper.getUUID(), nodeWrapper.getContextName(), nodeWrapper.getDefinitionName(), nodeWrapper.getName());
             return fromId(entryPointInstance);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return null;
         }
     }

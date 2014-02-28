@@ -21,6 +21,7 @@
                             <property name="titleKey" value="label.mode"/>
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.EditMode"/>
                                     <ref bean="Toolbar.Item.Studio"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                                         <property name="titleKey" value="label.administration"/>

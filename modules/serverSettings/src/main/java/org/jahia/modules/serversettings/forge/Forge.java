@@ -44,12 +44,15 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.impl.dv.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.validation.ValidationContext;
 
 import java.io.Serializable;
 
 public class Forge implements Serializable {
+    private static final Logger logger = LoggerFactory.getLogger(Forge.class);
 
     private static final long serialVersionUID = 2031426003900898977L;
     String url;
@@ -110,7 +113,7 @@ public class Forge implements Serializable {
                         .source("testUrl")
                         .code("serverSettings.manageForges.error.httpError").arg(e.getMessage())
                         .build());
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
     }

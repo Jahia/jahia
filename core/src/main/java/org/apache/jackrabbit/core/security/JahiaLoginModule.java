@@ -48,6 +48,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.slf4j.Logger;
 
 import javax.jcr.Credentials;
 import javax.jcr.SimpleCredentials;
@@ -68,6 +69,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  */
 public class JahiaLoginModule implements LoginModule {
+     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaLoginModule.class);
+
     public static final String SYSTEM = " system ";
     public static final String GUEST = " guest ";
 
@@ -141,7 +144,7 @@ public class JahiaLoginModule implements LoginModule {
         } catch (UnsupportedCallbackException e) {
             // ignore
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return !principals.isEmpty();
     }

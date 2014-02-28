@@ -137,7 +137,7 @@ public class ForgeService {
             });
 
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 
@@ -180,7 +180,7 @@ public class ForgeService {
                 }
             });
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 
@@ -274,7 +274,7 @@ public class ForgeService {
                         return f;
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
                 }
 
 

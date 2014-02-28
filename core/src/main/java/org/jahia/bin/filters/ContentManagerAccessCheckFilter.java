@@ -142,18 +142,26 @@ public class ContentManagerAccessCheckFilter implements Filter,
         }
 
         JCRNodeWrapper site;
-        if (!cfg.equals("repositoryexplorer")) {
-            site = getSite(request);
-            if (site == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-        } else {
+        if (cfg.equals("repositoryexplorer")) {
             try {
                 site = JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+        } else if (cfg.equals("categorymanager")) {
+            try {
+                site = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/systemsite");
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+        } else {
+            site = getSite(request);
+            if (site == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
         }

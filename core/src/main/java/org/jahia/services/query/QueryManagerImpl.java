@@ -51,7 +51,6 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.qom.Column;
 import javax.jcr.query.qom.Constraint;
@@ -82,7 +81,7 @@ public class QueryManagerImpl implements QueryManagerWrapper {
     private class QOMFactoryInvocationHandler implements InvocationHandler {
         private final QueryObjectModelFactory underlying;
 
-        QOMFactoryInvocationHandler(QueryObjectModelFactory underlying, QueryManagerImpl queryManagerImpl) {
+        QOMFactoryInvocationHandler(QueryObjectModelFactory underlying) {
             super();
             this.underlying = underlying;
         }
@@ -188,7 +187,7 @@ public class QueryManagerImpl implements QueryManagerWrapper {
 
             return (QueryObjectModelFactory) Proxy.newProxyInstance(qomFactory.getClass().getClassLoader(),
                     new Class[] { QueryObjectModelFactory.class },
-                    new QOMFactoryInvocationHandler(qomFactory, this));
+                    new QOMFactoryInvocationHandler(qomFactory));
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }

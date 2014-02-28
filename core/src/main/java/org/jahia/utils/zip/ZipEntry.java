@@ -341,6 +341,24 @@ class ZipEntry implements ZipConstants, Cloneable {
                d.getSeconds() >> 1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ZipEntry zipEntry = (ZipEntry) o;
+
+        if (name != null ? !name.equals(zipEntry.name) : zipEntry.name != null) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Returns the hash code value for this entry.
      */

@@ -42,6 +42,7 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.slf4j.Logger;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -61,6 +62,7 @@ import java.io.IOException;
  */
 @SuppressWarnings("serial")
 public class DropDownFromBundleFileTag extends AbstractJahiaTag {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(DropDownFromBundleFileTag.class);
     private String bundleName;
     private String var;
 
@@ -90,7 +92,7 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
                     }
                     writer.println("</select>");
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
             else {

@@ -203,7 +203,7 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
         try {
             File scratchDirFile = new File(new File(System.getProperty("java.io.tmpdir"), "jahia-jsps"),
                     bundle.getSymbolicName()+"-"+bundle.getBundleId());
-            if (jspFile != null) {
+            if (jspFile != null && jspFile.length() > 0) {
                 JspCompilationContext jspCompilationContext = new JspCompilationContext(jspFile, false, null, JahiaContextLoaderListener.getServletContext(), null, null);
                 String javaPath = jspCompilationContext.getJavaPath();
                 String classPath = StringUtils.substringBeforeLast(javaPath,".java") + ".class";
@@ -211,7 +211,7 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
                 FileUtils.deleteQuietly(new File(scratchDirFile, classPath));
             }
         } catch (JasperException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
     }
 

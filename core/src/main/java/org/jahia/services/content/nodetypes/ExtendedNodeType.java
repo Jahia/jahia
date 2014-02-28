@@ -488,7 +488,7 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<String, ExtendedNodeDefinition> getChildNodeDefinitionsAsMap() {
         if (allNodes == null) {
-            allNodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
+            LinkedHashMap<String, ExtendedNodeDefinition> allNodesMap = new LinkedHashMap<String, ExtendedNodeDefinition>();
             ExtendedNodeType[] supertypes = getSupertypes();
             for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
@@ -499,19 +499,19 @@ public class ExtendedNodeType implements NodeType {
                     s.setOverride(true);
                 }
                 c.keySet().removeAll(over.keySet());
-                allNodes.putAll(c);
+                allNodesMap.putAll(c);
             }
-
-            allNodes.putAll(nodes);
+            allNodesMap.putAll(nodes);
+            this.allNodes = Collections.unmodifiableMap(allNodesMap);
         }
 
-        return Collections.unmodifiableMap(allNodes);
+        return allNodes;
     }
 
     public Map<String,ExtendedNodeDefinition> getUnstructuredChildNodeDefinitions() {
         if (allUnstructuredNodes == null) {
-            allUnstructuredNodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
-            allUnstructuredNodes.putAll(unstructuredNodes);
+            LinkedHashMap<String, ExtendedNodeDefinition> allUnstructuredNodesMap = new LinkedHashMap<String, ExtendedNodeDefinition>();
+            allUnstructuredNodesMap.putAll(unstructuredNodes);
 
             ExtendedNodeType[] supertypes = getSupertypes();
             for (int i = supertypes.length-1; i >=0 ; i--) {
@@ -523,10 +523,11 @@ public class ExtendedNodeType implements NodeType {
                     s.setOverride(true);
                 }
                 c.keySet().removeAll(over.keySet());
-                allUnstructuredNodes.putAll(c);
+                allUnstructuredNodesMap.putAll(c);
             }
+            this.allUnstructuredNodes = Collections.unmodifiableMap(allUnstructuredNodesMap);
         }
-        return Collections.unmodifiableMap(allUnstructuredNodes);
+        return allUnstructuredNodes;
     }
 
     public ExtendedNodeDefinition[] getChildNodeDefinitions() {

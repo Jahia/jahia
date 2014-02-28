@@ -327,6 +327,41 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="jnt:lessFile">
+                    <bean parent="studioBaseEngineConfiguration">
+                        <property name="engineTabs">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                                    <property name="id" value="codeEditor"/>
+                                    <property name="titleKey" value="label.engineTab.codeEditor"/>
+                                    <property name="tabItem">
+                                        <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CodeEditorTabItem">
+                                            <property name="codePropertyName" value="sourceCode" />
+                                            <property name="codeMirrorMode" value="text/x-less"/>
+                                        </bean>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="creationButtons">
+                            <list>
+                                <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CreateResourceButtonItem" >
+                                    <property name="fileExtension" value="less"/>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="editionButtons">
+                            <list>
+                                <ref bean="Engine.Button.Update" />
+                            </list>
+                        </property>
+                        <property name="commonButtons">
+                            <list>
+                                <ref bean="Engine.Button.Cancel" />
+                            </list>
+                        </property>
+                    </bean>
+                </entry>
                 <entry key="jnt:editableFile">
                     <bean parent="studioBaseEngineConfiguration">
                         <property name="engineTabs">
@@ -1118,6 +1153,7 @@
     <util:map id="availableCodeMirrorModes">
         <entry key="null" value=""/>
         <entry key="css" value="CSS"/>
+        <entry key="text/x-less" value="Less"/>
         <entry key="text/x-java" value="Java"/>
         <entry key="javascript" value="JavaScript"/>
         <entry key="jsp" value="JavaServer Pages"/>

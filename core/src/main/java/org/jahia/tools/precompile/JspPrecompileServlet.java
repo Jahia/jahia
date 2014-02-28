@@ -44,6 +44,7 @@ import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.utils.StringResponseWrapper;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +66,7 @@ import javax.servlet.http.HttpServletResponse;
  * generates a report HTML output - if no special param is passed, the servlet generates a page with links for the above described purposes
  */
 public class JspPrecompileServlet extends HttpServlet {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JspPrecompileServlet.class);
     private static final long serialVersionUID = 7291760429380775493L;
     private static final String JSP_NAME_PARAM = "jsp_name";
     private static final String COMPILE_TYPE_PARAM = "compile_type";
@@ -286,7 +288,7 @@ public class JspPrecompileServlet extends HttpServlet {
                 compile(jspPath, aRequest, responseWrapper, i);
                 System.out.println(" OK.");
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 System.out.println(" ERROR.");
                 buggyJsps.add(jspPath);
             }

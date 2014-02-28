@@ -298,7 +298,7 @@ public class Connection extends URLConnection {
                             }
                         }
                     } catch (JDOMException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(),e);
                     }
 
                     tempEntryInputStream.close();

@@ -41,6 +41,7 @@
 package org.jahia.services.content;
 
 import org.jahia.api.Constants;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import java.util.Iterator;
@@ -53,6 +54,8 @@ import java.util.NoSuchElementException;
  * @author Sergiy Shyrkov
  */
 public class NodeIteratorWrapper implements JCRNodeIteratorWrapper {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(NodeIteratorWrapper.class);
+
     private NodeIterator ni;
     private JCRNodeWrapper nextNode = null;
     private JCRSessionWrapper session;
@@ -98,7 +101,7 @@ public class NodeIteratorWrapper implements JCRNodeIteratorWrapper {
                     break;
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 // continue
             }
         } while (true);

@@ -42,6 +42,7 @@ package org.jahia.services.preferences.generic;
 
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 
@@ -51,6 +52,7 @@ import javax.jcr.RepositoryException;
  * Time: 16:30:31
  */
 public class GenericJahiaPreference extends JCRNodeDecorator {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(GenericJahiaPreference.class);
 
     public GenericJahiaPreference(JCRNodeWrapper node) {
         super(node);
@@ -87,7 +89,7 @@ public class GenericJahiaPreference extends JCRNodeDecorator {
         try {
             return super.toString() + " ,[prefName=" + getPrefName() + ",prefValue" + getPrefValue() + "]";
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return super.toString();
     }

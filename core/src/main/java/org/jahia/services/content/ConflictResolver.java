@@ -63,7 +63,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE,
-            Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE,
+            Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE,
             Constants.JCR_FROZENMIXINTYPES, Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION,
             Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS,
             Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, "j:locktoken", "j:lockTypes", "jcr:lockOwner",

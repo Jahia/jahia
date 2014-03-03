@@ -57,6 +57,18 @@
         <ResourcesModuleName>org.jahia.ajax.gwt.module.resources.DevResources</ResourcesModuleName>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jahia.modules</groupId>
+                <artifactId>jaxrs-osgi-extender-bom</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -930,6 +942,48 @@
                                     <version>2.0.0.20130123-133441</version>
                                 </artifactItem>
 
+                                <!-- JAX-RS OSGi Extender dependencies -->
+                                <!-- Jersey and dependencies, versions are defined in jaxrs-osgi-extender-bom -->
+                                <dependency>
+                                    <groupId>org.glassfish.jersey.bundles</groupId>
+                                    <artifactId>jaxrs-ri</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.hk2</groupId>
+                                    <artifactId>hk2-api</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.hk2</groupId>
+                                    <artifactId>hk2-locator</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.hk2</groupId>
+                                    <artifactId>hk2-utils</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.hk2.external</groupId>
+                                    <artifactId>asm-all-repackaged</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+                                    <artifactId>jersey-guava</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.hk2</groupId>
+                                    <artifactId>osgi-resource-locator</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.jboss.spec.javax.annotation</groupId>
+                                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.jersey.media</groupId>
+                                    <artifactId>jersey-media-multipart</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.jvnet.mimepull</groupId>
+                                    <artifactId>mimepull</artifactId>
+                                </dependency>
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>

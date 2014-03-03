@@ -203,10 +203,14 @@
     <bean id="Toolbar.Item.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.editMode"/>
         <property name="icon" value="editMode"/>
-        <property name="requiredPermission" value="editModeAccess"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="editmode"/>
+            </bean>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="operatingMode" value="development,production"/>
             </bean>
         </property>
     </bean>
@@ -245,21 +249,6 @@
                 <property name="permission" value="studioModeAccess"/>
                 <property name="contextNodePath" value="/modules"/>
                 <property name="operatingMode" value="development"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.Item.EditMode" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="titleKey" value="label.editMode"/>
-        <property name="icon" value="editMode"/>
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
-                <property name="configurationName" value="editmode"/>
-            </bean>
-        </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="operatingMode" value="development,production"/>
             </bean>
         </property>
     </bean>

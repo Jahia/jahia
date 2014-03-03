@@ -585,10 +585,13 @@ public class UIConfigHelper {
                     JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
                     if (resolvedSite == null) {
                         resolvedSite = JahiaSitesService.getInstance().getDefaultSite(session);
+                        if (!((JCRSiteNode)resolvedSite).hasPermission(config.getRequiredPermission())) {
+                            resolvedSite = null;
+                        }
                         if (resolvedSite == null) {
                             List<JCRSiteNode> sites = JahiaSitesService.getInstance().getSitesNodeList(session);
                             for (JCRSiteNode site : sites) {
-                                if (!"systemsite".equals(site.getName())) {
+                                if (!"systemsite".equals(site.getName()) && (site.hasPermission(config.getRequiredPermission()))) {
                                     resolvedSite = site;
                                     break;
                                 }

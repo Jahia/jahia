@@ -159,10 +159,12 @@
                             <td>
                                 <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
                                 <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
+                                <c:if test="${jcr:hasPermission(site,'editModeAccess')}">
                                 <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
                                 <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
                                     <i class="icon-pencil"></i>
                                 </a>
+                                </c:if>
                                 <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="<fmt:message key='serverSettings.manageWebProjects.editSite'/>" onclick="submitSiteForm('editSite', '${site.name}'); return false;">
                                     <i class=" icon-edit"></i>
                                 </a>

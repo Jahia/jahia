@@ -272,7 +272,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    boolean canEdit = node.hasPermission("jcr:write") && canEdit(renderContext) && contributeAccess(renderContext,
+                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
                             resource.getNode()) && !isExcluded(renderContext, resource);
 
                     boolean nodeEditable = checkNodeEditable(renderContext, node);

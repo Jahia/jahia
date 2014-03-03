@@ -824,12 +824,14 @@ public class Service extends JahiaService {
     public void flushGroupCaches(NodeFact node) {
         try {
             JCRNodeWrapper n = node.getParent().getNode();
-            if (n.isNodeType("jnt:members")) {
+            if (n != null && n.isNodeType("jnt:members")) {
                 n = n.getParent();
             }
-            final JahiaGroup jahiaGroup = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
-            if (jahiaGroup != null) {
-                groupManagerService.updateCache(jahiaGroup);
+            if (n != null && n.getResolveSite() != null) {
+                final JahiaGroup jahiaGroup = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
+                if (jahiaGroup != null) {
+                    groupManagerService.updateCache(jahiaGroup);
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

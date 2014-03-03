@@ -1,10 +1,6 @@
-<<<<<<< .working
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-=======
 <%@ page contentType="text/html; charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
->>>>>>> .merge-right.r48887
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -19,16 +15,7 @@
 <%@ page import="java.io.InputStream" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<<<<<<< .working
-<%@ page import="java.util.Calendar" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.LinkedList" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Map" %>
-=======
 <%@ page import="java.util.*" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
->>>>>>> .merge-right.r48887
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>

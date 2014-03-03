@@ -80,7 +80,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-            <Jahia-Depends>contentRetrieval,default,default-skins,facets,grid,profile,serverSettings,skins,tabularList,tags,tasks,userDashboard</Jahia-Depends>
+            <Jahia-Depends>contentRetrieval,default,default-skins,facets,grid,profile,serverSettings,skins,tabularList,tags</Jahia-Depends>
                         <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
                     </instructions>
                 </configuration>

@@ -12,7 +12,7 @@
                 <dashboard-modules-base j:view="dashboard"
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
-                    <me j:applyOn="jnt:user"
+                    <!--<me j:applyOn="jnt:user"
                         j:defaultTemplate="false"
                         j:hiddenTemplate="false"
                         j:titleKey="mySettings.about"
@@ -21,7 +21,7 @@
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <about-user jcr:primaryType="jnt:aboutUserDashboard"/>
                         </pagecontent>
-                    </me>
+                    </me>-->
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
@@ -90,7 +90,7 @@
                             </ajax-mode-dispatcher-preview>
                         </pagecontent>
                     </web-projects>
-                    <profile j:applyOn="jnt:user"
+                    <me j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
                            j:titleKey="system.mySettings"
@@ -118,7 +118,7 @@
                                          password="true"
                                          preferredLanguage="true"/>
                         </pagecontent>
-                    </profile>
+                    </me>
                 </dashboard-modules-base>
             </templates>
                 

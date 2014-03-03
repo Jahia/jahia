@@ -780,7 +780,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(final JahiaGroup jahiaGroup) {
-        cache.remove(jahiaGroup.getGroupKey());
+        invalidateCacheRecursively(jahiaGroup);
     }
     
     /**
@@ -790,7 +790,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
      *            the group to invalidate caches for
      */
     public void invalidateCacheRecursively(JahiaGroup jahiaGroup) {
-        updateCache(jahiaGroup);
+        cache.remove(jahiaGroup.getGroupKey());
         invalidateCachesForMembership(getMembership(jahiaGroup));
     }
 

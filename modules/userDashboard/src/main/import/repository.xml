@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <userDashboard j:dependencies="bootstrap default"
+        <userDashboard j:dependencies="default"
                        j:installedModules="userDashboard"
                        j:moduleType="module"
                        j:title="Jahia User Dashboard"
@@ -13,15 +13,25 @@
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
                     <me j:applyOn="jnt:user"
-                                j:defaultTemplate="false"
-                                j:hiddenTemplate="false"
-                                j:titleKey="mySettings.about"
-                                jcr:mixinTypes="jmix:rbTitle"
-                                jcr:primaryType="jnt:contentTemplate">
+                        j:defaultTemplate="false"
+                        j:hiddenTemplate="false"
+                        j:titleKey="mySettings.about"
+                        jcr:mixinTypes="jmix:rbTitle"
+                        jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <about-user jcr:primaryType="jnt:aboutUserDashboard"/>
                         </pagecontent>
                     </me>
+                    <my-files j:applyOn="jnt:user"
+                              j:defaultTemplate="false"
+                              j:hiddenTemplate="false"
+                              j:titleKey="myFiles.title"
+                              j:mixinTypes="jmix:rbTitle"
+                              jcr:primaryType="jnt:contentTemplate">
+                              <pagecontent jcr:primaryType="jnt:contentList">
+                                  <files-browser jcr:primaryType="jnt:myfilesDashboard"/>
+                              </pagecontent>
+                    </my-files>
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"

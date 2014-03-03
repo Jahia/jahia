@@ -431,7 +431,6 @@
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:birthDate'].boolean}">
                     <div>
-                        <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
                         <c:if test="${not empty birthDate}">
                             <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
                             <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy-MM-dd" var="dateforCal"/>
@@ -444,8 +443,8 @@
                     <div>
                         <strong><fmt:message key="jnt_user.preferredLanguage"/> : </strong>
                         <jcr:nodeProperty node="${user}" name="preferredLanguage" var="prefLang"/>
-                        <c:set var="prefLang" value="${function:toLocale(function:default(prefLang.string, 'en'))}"/>
-                        ${function:displayLocaleNameWith(prefLang, prefLang)}
+                        <c:set var="prefLang" value="${functions:toLocale(functions:default(prefLang.string, 'en'))}"/>
+                        ${functions:displayLocaleNameWith(prefLang, prefLang)}
                     </div>
                 </c:if>
                 <c:if test="${currentNode.properties['age'].boolean}">
@@ -475,16 +474,16 @@
                 </div>
             </c:if>
             <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
-                <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
+                <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}'
                            var="adLocale" varStatus="status">
                 </c:forEach>
                 <div class="control-group">
                     <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/></label>
                     <div class="controls">
                         <select name="preferredLanguage">
-                            <c:forEach items='${function:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
-                                <option value="${function:toLocale(adLocale)}" <c:if test="${function:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
-                                        ${function:displayLocaleNameWith(adLocale, adLocale)}
+                            <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
+                                <option value="${functions:toLocale(adLocale)}" <c:if test="${functions:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
+                                        ${functions:displayLocaleNameWith(adLocale, adLocale)}
                                 </option>
                             </c:forEach>
                         </select>
@@ -502,17 +501,13 @@
 </div>
 
 <div id="privacyRows">
-    <jcr:nodeProperty node="${user}" name="j:publicProperties" var="publicProperties" />
-    <c:forEach items="${publicProperties}" var="value">
-        <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
-    </c:forEach>
     <h2>
         <i class="icon-eye-close"></i>&nbsp;<fmt:message key="mySettings.privacy"/>
     </h2>
     <div class="row-fluid box-1">
         <div id="privacy">
-            <div class="pull-left span10">
-                <table class="table table-hover table-condensed table-striped">
+            <div class="pull-left span9">
+                <table class="table table-hover table-striped">
                     <thead>
                         <tr>
                             <th><fmt:message key='mySettings.property'/></th>
@@ -543,19 +538,15 @@
                     </tbody>
                 </table>
             </div>
-            <div class="pull-right span2">
-                <button class="btn btn-primary down-right" type="button" onclick="switchRow('privacy')">
+            <div class="pull-right span3">
+                <button class="btn btn-primary pull-right" type="button" onclick="switchRow('privacy')">
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
         </div>
         <div id="privacy_form" class="hide">
-            <c:set var="publicPropertiesAsString" value=""/>
-            <c:forEach items="${publicProperties}" var="value">
-                <c:set var="publicPropertiesAsString" value="${value.string} ${publicPropertiesAsString}"/>
-            </c:forEach>
-            <div class="row">
-                <div class="switchesSpans">
+            <div class="row-fluid">
+                <div class="span6">
                     <c:forTokens
                             items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,preferredLanguage"
                             delims="," var="key" varStatus="loopStatus">
@@ -566,21 +557,19 @@
                             <script type="text/javascript">
                                 currentPropertieState = $("#publicProperties"+${loopStatus.index}).bootstrapSwitch('state');
                             </script>
-                            <c:if test="${loopStatus.count eq 9}">
+                            <c:if test="${loopStatus.index eq 8}">
                                 </div>
-                                <div class="switchesSpans" >
+                                <div class="span6">
                             </c:if>
-                            <div class="row control-group switches-control-group">
+                            <div class="control-group">
                                 <label class="control-label switch" for="publicProperties${loopStatus.index}">
-                                    <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>
+                                    <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                                 </label>
-                                <div id="bootstrapSwitches" class="controls switch-wrapper">
-                                    <input data-size="mini" data-on-text=" public " data-off-text=" private " type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
+                                <div class="control">
+                                    <input data-size="mini" data-on-text="public" data-off-text="private" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
                                     &nbsp;
-                                </div>
-                                <div class="switchIconsDiv">
-                                    <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display:none;"></i>
-                                    <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display:none;"></i>
+                                    <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display: none;"></i>
+                                    <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display: none;"></i>
                                 </div>
                                 <div class="clear"></div>
                             </div>
@@ -589,7 +578,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" class="btn" onclick="ajaxReloadCallback('Back')"><fmt:message key="backToPreviousPage"/></button>
+                <button type="button" class="btn btn-primary" onclick="ajaxReloadCallback('Back')"><fmt:message key="backToPreviousPage"/></button>
             </div>
         </div>
     </div>

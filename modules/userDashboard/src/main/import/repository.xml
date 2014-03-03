@@ -22,16 +22,6 @@
                             <about-user jcr:primaryType="jnt:aboutUserDashboard"/>
                         </pagecontent>
                     </me>
-                    <my-files j:applyOn="jnt:user"
-                              j:defaultTemplate="false"
-                              j:hiddenTemplate="false"
-                              j:titleKey="myFiles.title"
-                              j:mixinTypes="jmix:rbTitle"
-                              jcr:primaryType="jnt:contentTemplate">
-                              <pagecontent jcr:primaryType="jnt:contentList">
-                                  <files-browser jcr:primaryType="jnt:myfilesDashboard"/>
-                              </pagecontent>
-                    </my-files>
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"

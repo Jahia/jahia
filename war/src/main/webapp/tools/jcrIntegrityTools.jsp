@@ -1,13 +1,15 @@
+<<<<<<< .working
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+=======
+<%@ page contentType="text/html; charset=UTF-8" language="java"
+%><?xml version="1.0" encoding="UTF-8" ?>
+>>>>>>> .merge-right.r48887
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
-<%@ page import="org.jahia.services.content.JCRCallback" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
-<%@ page import="org.jahia.services.content.JCRTemplate" %>
+<%@ page import="org.jahia.services.content.*" %>
 <%@ page import="org.jahia.utils.RequestLoadAverage" %>
 <%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.quartz.JobDetail" %>
@@ -17,11 +19,16 @@
 <%@ page import="java.io.InputStream" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<<<<<<< .working
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.LinkedList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+=======
+<%@ page import="java.util.*" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+>>>>>>> .merge-right.r48887
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -73,7 +80,6 @@
 <h2>Integrity checks</h2>
 <%@ include file="functions.jspf" %>
 <%!
-
     private void runJCRTest(final JspWriter out, HttpServletRequest request, JspContext pageContext, final boolean fix) throws IOException {
 
         if (running) {
@@ -209,6 +215,15 @@
                 try {
                     Node referencedNode = node.getSession().getNodeByIdentifier(uuid);
                 } catch (ItemNotFoundException infe) {
+                    if (Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName()) && isNodeUnderSiteTemplates(node.getPath())) {
+                        try {
+                            JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE).getNodeByIdentifier(uuid);
+                            // node found in default -> ignore this case
+                            break;
+                        } catch (ItemNotFoundException infeDefault) {
+                            // node not found also in default
+                        }
+                    }
                     println(out, "Couldn't find referenced node with UUID " + uuid + " referenced from property " + property.getPath(), null, true);
                     if (fix) {
                         if (mustRemoveParentNode(node)) {
@@ -290,6 +305,17 @@
             default:
         }
         return true;
+    }
+    
+    private boolean isNodeUnderSiteTemplates(String pathToCheck) {
+        boolean isUnder = false;
+        if (pathToCheck.startsWith("/sites/") && pathToCheck.length() > "/sites/".length()) {
+            pathToCheck = pathToCheck.substring("/sites/".length());
+            int ix = pathToCheck.indexOf("/templates/");
+            isUnder = ix != -1 && ix == pathToCheck.indexOf('/');
+        }
+        
+        return isUnder;
     }
 
     private boolean mustRemoveParentNode(Node node) throws RepositoryException {

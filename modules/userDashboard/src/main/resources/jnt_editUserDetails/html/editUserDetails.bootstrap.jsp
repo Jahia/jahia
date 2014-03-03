@@ -47,9 +47,10 @@
 <%@ include file="../../getUser.jspf"%>
 
 <%-- CSS inclusions --%>
+<template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="bootstrap-datetimepicker.min.css"/>
 <template:addResources type="css" resources="bootstrap-switch.css"/>
-<template:addResources type="css" resources="dashboardUserProfile.css"/>
+<%--<template:addResources type="css" resources="dashboardUserProfile.css"/>--%>
 
 <%-- Javascripts inclusions --%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
@@ -112,40 +113,40 @@ function updatePhoto()
  * @Author : Jahia(rahmed)
  * This function Hide the extra part of the about text when the user finish to read it
  */
-function hideMoreText()
+/*function hideMoreText()
 {
     $('#aboutMeText').css({
-        'height': 'auto',
-        'overflow': 'hidden'
+        height: 'auto',
+        overflow: 'hidden'
     });
     $('#aboutMeBlock').css({
-        'height': '115px',
+        height: '115px',
         overflow:'hidden'
     });
-    $('#aboutMeLessLink').hide();
-    $('#aboutMeMoreLink').show();
+    $('#btnLessAbout').hide();
+    $('#btnMoreAbout').show();
 
-}
+}*/
 
 /**
  * @Author : Jahia(rahmed)
  * This function Show the extra part of the about text so the user can read it (scroll view)
  */
-function showMoreText()
+/*function showMoreText()
 {
     $('#aboutMeText').css({
-        'height': '115px',
-        'overflow': 'auto',
-        'padding-right':'5px'
+        height: '115px',
+        overflow: 'auto',
+        paddingRight: '5px'
 
     });
-    $('#aboutMeBlock').css({
-        'height': '160px',
-        'overflow': 'auto'
+    $('#about').css({
+        height: '160px',
+        overflow: 'auto'
     });
-    $('#aboutMeMoreLink').hide();
-    $('#aboutMeLessLink').show();
-}
+    $('#btnMoreAbout').hide();
+    $('#btnLessAbout').show();
+}*/
 
 /* Privacy properties functions */
 /**
@@ -242,7 +243,7 @@ function ajaxReloadCallback(jcrId)
         windowToRefresh.location.reload();
     } else
     {
-        $('#editDetailspage').parent().load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
+        $('#editDetailspage').parent().load('<c:url value="${url.basePreview}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
     }
 }
 
@@ -345,11 +346,24 @@ function changePassword()
 
 var visibilityNumber = 0;
 $(document).ready(function(){
+
+    $(".btnMoreAbout").click(function(){
+     $(".aboutMeText").css( { height:"100%",maxHeight: "500px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
+     $(".btnMoreAbout").hide();
+     $(".btnLessAbout").show();
+     });
+
+     $(".btnLessAbout").click(function(){
+     $(".aboutMeText").css( { height:"100px", overflow: "hidden" }, { queue:false, duration:500 });
+     $(".btnLessAbout").hide();
+     $(".btnMoreAbout").show();
+     });
+
     // Activating the more/less links */
-    if($('#aboutMeText').height()>$('#aboutMeBlock').height())
+/*    if($('#aboutMeText').height()>$('#aboutMeDiv').height())
     {
-        $('#aboutMeMoreLink').show();
-    }
+        $('#btnMoreAbout').show();
+    }*/
 
     // Activating the checking buttons
     var currentvisibility=0;
@@ -381,102 +395,104 @@ $(document).ready(function(){
 </script>
 </template:addResources>
 <div id="editDetailspage">
-    <div id="detailsHead" class="row">
-        <div id="imageDiv" class="span2">
-            <c:if test="${currentNode.properties['j:picture'].boolean}">
-                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                <div id="image" class='image'>
-                    <c:choose>
-                        <c:when test="${empty picture}">
-                            <div class='itemImage itemImageLeft'>
-                                <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                                     alt="" border="0"/></div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class='itemImage itemImageLeft'>
-                                <img class="userProfileImage"
-                                     src="${picture.node.thumbnailUrls['avatar_120']}"
+    <div class="alert alert-info">
+        <div id="detailsHead" class="row-fluid">
+            <div id="imageDiv" class="span2">
+                <c:if test="${currentNode.properties['j:picture'].boolean}">
+                    <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                    <div id="image">
+                        <c:choose>
+                            <c:when test="${empty picture}">
+                                <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                     alt="" border="0"/>
+                            </c:when>
+                            <c:otherwise>
+                                <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
                                      alt="${fn:escapeXml(person)}"/>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                    <%--<div class="image_edit_button">
-                        <button class="btn btn-primary" type="button" onclick="switchRow('image')">
-                            <fmt:message key="label.clickToEdit"/>
-                        </button>
-                    </div>--%>
-                </div>
-                <div class="clear"></div>
-            </c:if>
-            <div id="image_form" class="hide">
-                <div class="image_form_preview">
-                    <c:choose>
-                        <c:when test="${empty picture}">
-                            <div class='itemImage itemImageLeft'>
-                                <img class="userProfileImage" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                                     alt="" border="0"/></div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class='itemImage itemImageLeft'><img class="userProfileImage"
-                                                                      src="${picture.node.thumbnailUrls['avatar_120']}"
-                                                                      alt="${fn:escapeXml(person)}"/></div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-                <div class="image_form_inputs">
-                    <form id="pictureform" name="pictureform" onsubmit="return false;">
-                        <label for="uploadedImage" value="Upload an Image"/>
-                        <input id="uploadedImage" type="file" name="uploadedImage" maxlength="15" size="15"/>
-                        <button class="btn btn-primary" type="button" onclick="updatePhoto()">
-                            <fmt:message key="label.clickToEdit"/>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div id="aboutMeDiv" class="span10">
-            <c:if test="${currentNode.properties['j:about'].boolean}">
-                <div id="about" class="row">
-                    <div id="aboutMeBlock" class="comment more">
-                        <h3 id="aboutMeTitle"><fmt:message key='jnt_user.j_about'/></h3>
-                           <div id="aboutMeText"> ${user.properties['j:about'].string}</div>
-                    </div>
-                    <a href="#" id="aboutMeMoreLink" class="hide" onclick="showMoreText()"><fmt:message key="mySettings.readMore"/></a>
-                    <div class="pull-right"><a href="#" id="aboutMeLessLink" class="hide" onclick="hideMoreText()"><fmt:message key="mySettings.readLess"/></a></div>
-                    <c:if test="${user:isPropertyEditable(user,'j:about')}">
-                        <div class="about_edit_button">
-                            <button class="btn btn-primary" type="button" onclick="switchRow('about')">
+                            </c:otherwise>
+                        </c:choose>
+                        <%--<div class="image_edit_button">
+                            <button class="btn btn-primary" type="button" onclick="switchRow('image')">
                                 <fmt:message key="label.clickToEdit"/>
                             </button>
-                        </div>
-                    </c:if>
-                </div>
-                <c:if test="${user:isPropertyEditable(user,'j:about')}">
-                    <div id="about_form" class="row hide">
-                        <div id="about_editor">
-                                ${fields['j:about']}
-                        </div>
-                        <script type="text/javascript">
-                        var editor = $( '#about_editor' ).ckeditor();
-                        </script>
-                        <div id="about_save_button">
-                            <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')">
-                                <fmt:message key="cancel"/>
-                            </button>
-                            <button class="btn btn-success  pull-right" type="button" onclick="saveChangesByRowId('about')">
-                                <fmt:message key="save"/>
-                            </button>
-                        </div>
+                        </div>--%>
                     </div>
                 </c:if>
-            </c:if>
+                <div id="image_form" class="hide">
+                    <div class="image_form_preview">
+                        <c:choose>
+                            <c:when test="${empty picture}">
+                                <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                     alt="" border="0"/>
+                            </c:when>
+                            <c:otherwise>
+                                <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                     alt="${fn:escapeXml(person)}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                    <div class="image_form_inputs">
+                        <form id="pictureform" name="pictureform" onsubmit="return false;">
+                            <label for="uploadedImage" value="Upload an Image"/>
+                            <input id="uploadedImage" type="file" name="uploadedImage" maxlength="15" size="15"/>
+                            <button class="btn btn-primary" type="button" onclick="updatePhoto()">
+                                <fmt:message key="label.clickToEdit"/>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="aboutMeDiv" class="span10">
+                <c:if test="${currentNode.properties['j:about'].boolean}">
+                    <div id="about">
+                        <h1>
+                            <fmt:message key='jnt_user.j_about'/>
+                        </h1>
+                        <div id="aboutMeText" class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
+                                ${user.properties['j:about'].string}
+                        </div>
+                        <br />
+                        <button id="btnMoreAbout" class="btn btn-small btn-primary btnMoreAbout" <%--onclick="showMoreText()"--%>>
+                            <fmt:message key='mySettings.readMore'/>
+                        </button>
+                        <button id="btnLessAbout" class="btn btn-small btn-primary hide btnLessAbout" <%--onclick="hideMoreText()"--%>>
+                            <fmt:message key='mySettings.readLess'/>
+                        </button>
+                        <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                            <button class="btn btn-primary pull-right" type="button" onclick="switchRow('about')">
+                                <fmt:message key="label.clickToEdit"/>
+                            </button>
+                        </c:if>
+                    </div>
+                    <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                        <div id="about_form" class="hide span10">
+                            <div id="about_editor">
+                                    ${fields['j:about']}
+                            </div>
+                            <script type="text/javascript">
+                                var editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"});
+                            </script>
+                            <br />
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')">
+                                    <fmt:message key="cancel"/>
+                                </button>
+                                <button class="btn btn-success" type="button" onclick="saveChangesByRowId('about')">
+                                    <fmt:message key="save"/>
+                                </button>
+                            </div>
+                        </div>
+                    </c:if>
+                </c:if>
+            </div>
         </div>
     </div>
-    <div class="row formtable">
+
+    <div class="row-fluid">
         <div class="span2"></div>
-        <div class="span10">
+        <div class="span8">
             <form id="editDetailsForm" class="form-horizontal user-profile-table" onsubmit="return false;">
-                    <%@include file="editUserDetailsRows.jspf" %>
+                <%@include file="editUserDetailsRows.jspf" %>
             </form>
         </div>
         <div class="span2"></div>

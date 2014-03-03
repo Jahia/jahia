@@ -33,7 +33,7 @@
                                                       displayState="true"
                                                       filterOnAssignee="assignedToMeOrUnassigned"
                                                       filterOnStates="active started suspended"
-                                             j:view="bootstrapTasks"
+                                                      j:view="bootstrapTasks"
                                                       jcr:mixinTypes="jmix:renderable"
                                                       jcr:primaryType="jnt:currentUserTasks"
                                                       sortBy="jcr:created"/>

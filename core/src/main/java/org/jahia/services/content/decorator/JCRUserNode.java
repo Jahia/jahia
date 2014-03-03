@@ -272,6 +272,13 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
     }
 
+    public boolean isRoot() {
+        if (user == null) {
+            user = lookupUser();
+        }
+        return user.isRoot();
+    }
+
     private boolean canGetProperty(String s) throws RepositoryException {
         if (publicProperties.contains(s) || hasPermission("jcr:write")) {
             return true;

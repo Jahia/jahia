@@ -360,7 +360,7 @@
  - j:groupsFolderSkeleton (string) nofulltext
  + * (jnt:group) = jnt:group
 
-[jnt:member] > nt:base
+[jnt:member] > nt:base, jmix:observable
  - j:member (weakreference) < jnt:user, jnt:group
 
 [jnt:members]  > nt:base

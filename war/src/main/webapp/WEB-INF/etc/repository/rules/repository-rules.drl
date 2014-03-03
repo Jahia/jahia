@@ -143,6 +143,23 @@ rule "Flush group cache"
 >       JahiaGroupManagerRoutingService.flushSiteKeyIdMap();
 end
 
+rule "Flush group cache when adding member"
+    when
+        A new node is created
+			- the node has the type jnt:member
+    then
+        Flush group cache for node
+end
+
+rule "Flush group cache when removing member"
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:members
+    then
+        Flush group cache for node
+end
+
 rule "Clear site cache when updated"
     when
 		A property has been set on a node

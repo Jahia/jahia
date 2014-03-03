@@ -97,6 +97,7 @@
 [consequence][]Enable auto-splitting for subnodes of the {node} into folders of type {folderNodeType} using configuration "{config}"=service.enableAutoSplitting(node, "{config}", "{folderNodeType}",drools);
 [consequence][]Move to split folder {node}=service.moveToSplitFolder(node, drools);
 [consequence][]Move subnodes of {node} to split folder=service.moveSubnodesToSplitFolder(node, drools);
+[consequence][]Flush group cache for {node}=service.flushGroupCaches(node);
 [consequence][]Flush group cache=service.flushGroupCaches();
 [consequence][]Flush all caches=service.flushAllCaches(drools);
 [consequence][]Flush {cacheName}=service.flushCache("{cacheName}",drools);

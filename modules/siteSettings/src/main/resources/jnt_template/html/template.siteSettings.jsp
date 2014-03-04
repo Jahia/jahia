@@ -27,8 +27,8 @@
 
 <body>
 
-<div class="page-header">
-    <h1><fmt:message key="label.administration"/></h1>
+<div class="page-header clearfix">
+    <img class="pull-left" src="<c:url value='${url.currentModule}/img/Digital-Factory.png'/>" alt=""/><h1 class="pull-right"><fmt:message key="label.administration"/></h1>
 </div>
 
 

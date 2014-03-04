@@ -880,6 +880,16 @@ public class WebprojectHandler implements Serializable {
 
     }
 
+    public void validateView(ValidationContext context) {
+        if(context.getUserEvent().equals("import")) {
+            MessageContext messages = context.getMessageContext();
+            if(StringUtils.isEmpty(getImportPath()) || getImportFile().isEmpty()) {
+                messages.addMessage(new MessageBuilder().error().source("importPath").
+                        code("serverSettings.manageWebProjects.fileImport.error").build());
+            }
+        }
+    }
+
     private void validateSite(MessageContext messageContext, ImportInfo infos) {
         try {
             infos.setSiteTitleInvalid(StringUtils.isEmpty((String) infos.getSiteTitle()));

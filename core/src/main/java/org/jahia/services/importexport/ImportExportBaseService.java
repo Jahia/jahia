@@ -348,6 +348,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             try {
                 exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout, tti, externalReferences, params);
+            } catch (IOException e) {
+                logger.warn("Cannot export due to some IO exception :"+e.getMessage());
             } catch (Exception e) {
                 logger.error("Cannot export", e);
             }
@@ -601,7 +603,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         try {
-            if (sitesService.getDefaultSite(s.getSession()).getSiteKey().equals(s.getName())) {
+            final JahiaSite defaultSite = sitesService.getDefaultSite(s.getSession());
+            if (defaultSite!= null && defaultSite.getSiteKey().equals(s.getName())) {
                 p.setProperty("defaultSite", "true");
             }
         } catch (RepositoryException e) {

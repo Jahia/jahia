@@ -40,6 +40,7 @@
 
 package org.jahia.bin;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -234,6 +235,9 @@ public class Export extends JahiaController implements ServletContextAware {
             }
 
             response.setStatus(HttpServletResponse.SC_OK);
+        } catch (IOException e) {
+            logger.warn("Cannot export due to some IO exception :" + e.getMessage());
+            DefaultErrorHandler.getInstance().handle(e, request, response);
         } catch (Exception e) {
             logger.error("Cannot export", e);
             DefaultErrorHandler.getInstance().handle(e, request, response);

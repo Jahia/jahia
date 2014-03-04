@@ -251,7 +251,8 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("otherVersions",selectedModule);
 
         populateSitesInformation(context);
-
+        Set<String> systemSiteRequiredModules = getSystemSiteRequiredModules();
+        context.getRequestScope().put("systemSiteRequiredModules", systemSiteRequiredModules);
         // Get list of definitions
         NodeTypeIterator nodeTypes = NodeTypeRegistry.getInstance().getNodeTypes(selectedModuleName);
         Map<String,Boolean> booleanMap = new TreeMap<String, Boolean>();

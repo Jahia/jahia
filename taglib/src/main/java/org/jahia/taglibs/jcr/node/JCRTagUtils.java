@@ -562,10 +562,10 @@ public class JCRTagUtils {
         JCRPublicationService publicationService = JCRPublicationService.getInstance();
         try {
             List<PublicationInfo> publicationInfos = publicationService.getPublicationInfo(node.getIdentifier(),
-                    (language == null ? null : Collections.singleton(language)), includesReferences, includesSubnodes,
+                    (StringUtils.isEmpty(language) ? null : Collections.singleton(language)), includesReferences, includesSubnodes,
                     allsubtree, node.getSession().getWorkspace().getName(), Constants.LIVE_WORKSPACE);
             for (PublicationInfo publicationInfo : publicationInfos) {
-                if (publicationInfo.needPublication(language)) {
+                if (publicationInfo.needPublication(StringUtils.isEmpty(language) ? null : language)) {
                     return true;
                 }
             }

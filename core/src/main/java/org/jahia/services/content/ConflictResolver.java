@@ -43,15 +43,12 @@ package org.jahia.services.content;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRVersion;
-import org.jahia.services.content.decorator.JCRVersionHistory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.OnConflictAction;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
 import java.util.*;
 
 /**
@@ -134,149 +131,81 @@ public class ConflictResolver {
     }
 
     private void computeDifferences() throws RepositoryException {
-        if (sourceNode.isNodeType("mix:versionable")) {
-            JCRVersionHistory vh = (JCRVersionHistory) sourceNode.getVersionHistory();
-
-            VersionIterator targetHistory = targetNode.getVersionHistory().getAllLinearVersions();
-            List<String> targetHistoryList = new ArrayList<String>();
-            while (targetHistory.hasNext()) {
-                targetHistoryList.add(targetHistory.nextVersion().getName());
-            }
-
-            JCRVersion sourceVersion = vh.getVersion(sourceNode.getBaseVersion().getName());
-            JCRVersion baseSourceVersion = null;
-            JCRVersion baseTargetVersion = null;
-            try {
-                while (baseSourceVersion == null) {
-                    if (sourceVersion == null) {
-                        baseSourceVersion = vh.getRootVersion();
-                        baseTargetVersion = baseSourceVersion;
-                        break;
-                    } else {
-                        JCRVersion[] successors = sourceVersion.getSuccessors();
-                        for (JCRVersion successor : successors) {
-                            if (targetHistoryList.contains(successor.getName())) {
-                                baseSourceVersion = sourceVersion;
-                                baseTargetVersion = successor;
-                                break;
-                            }
-                        }
-                        try {
-                            sourceVersion = sourceVersion.getLinearPredecessor();
-                        } catch (NullPointerException e) {
-                            sourceVersion = null;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.error("Error on node: " + sourceNode.getPath(), e);
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("compare " + sourceNode.getPath() + " version : " + baseSourceVersion.getName() + " with (source) " + sourceNode.getBaseVersion().getName());
-            }
-            List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode, "");
-            if (logger.isDebugEnabled()) {
-                logger.debug("compare " + targetNode.getPath() + " version : " + baseTargetVersion.getName() + " with (target) " + targetNode.getBaseVersion().getName());
-            }
-            List<Diff> targetDiff;
-            if (baseTargetVersion.getName().equals(targetNode.getBaseVersion().getName())) {
-                targetDiff = new ArrayList<Diff>();
-            } else {
-                targetDiff = compare(baseTargetVersion.getFrozenNode(), targetNode, "");
-            }
-
-
-            sourceDiff.removeAll(targetDiff);
-
-            // Check for conflicts in changed properties
-            Map<String, PropertyChangedDiff> changedProperties = new HashMap<String, PropertyChangedDiff>();
-            for (Diff diff : sourceDiff) {
-                if (diff instanceof PropertyChangedDiff) {
-                    PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
-                    changedProperties.put(diff1.propertyPath, diff1);
-                }
-                if (diff instanceof ChildAddedDiff) {
-                    ((ChildAddedDiff) diff).sourceWorkspace = sourceNode.getSession().getWorkspace().getName();
-                }
-            }
-            for (Diff diff : targetDiff) {
-                if (diff instanceof PropertyChangedDiff) {
-                    PropertyChangedDiff diff1 = (PropertyChangedDiff) diff;
-                    if (changedProperties.containsKey(diff1.propertyPath)) {
-                        changedProperties.get(diff1.propertyPath).newTargetValue = diff1.newValue;
-                    }
-                }
-            }
-
-            differences = sourceDiff;
-        } else {
-            differences = compare(targetNode, sourceNode, "");
-            // Check originWS to avoid removal of ugc -nodes
-        }
+        differences = compare(sourceNode, targetNode, "");
+        // Check originWS to avoid removal of ugc -nodes
     }
 
-    private List<Diff> compare(JCRNodeWrapper node1, JCRNodeWrapper node2, String basePath) throws RepositoryException {
-        boolean isNode1Frozen = node1.isNodeType(Constants.NT_FROZENNODE);
+    private List<Diff> compare(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode, String basePath) throws RepositoryException {
+        boolean isNode1Frozen = targetNode.isNodeType(Constants.NT_FROZENNODE);
         List<Diff> diffs = new ArrayList<Diff>();
 
-        ListOrderedMap uuids1 = getChildEntries(node1, node1.getSession());
-        ListOrderedMap uuids2 = getChildEntries(node2, node2.getSession());
+        final ListOrderedMap targetUuids = getChildEntries(targetNode, targetNode.getSession());
+        final ListOrderedMap sourceUuids = getChildEntries(sourceNode, sourceNode.getSession());
 
-        if (!uuids1.values().equals(uuids2.values())) {
-            for (Iterator iterator = uuids2.keySet().iterator(); iterator.hasNext(); ) {
+        if (!targetUuids.values().equals(sourceUuids.values())) {
+            for (Iterator iterator = sourceUuids.keySet().iterator(); iterator.hasNext(); ) {
                 String key = (String) iterator.next();
-                if (uuids1.containsKey(key) && !uuids1.get(key).equals(uuids2.get(key))) {
-                    diffs.add(new ChildRenamedDiff(key, addPath(basePath, (String) uuids1.get(key)), addPath(basePath, (String) uuids2.get(key))));
+                if (targetUuids.containsKey(key) && !targetUuids.get(key).equals(sourceUuids.get(key))) {
+                    diffs.add(new ChildRenamedDiff(key, addPath(basePath, (String) targetUuids.get(key)), addPath(basePath, (String) sourceUuids.get(key))));
                 }
             }
         }
 
-        if (!uuids1.keyList().equals(uuids2.keyList())) {
-            List<String> added = new ArrayList<String>(uuids2.keySet());
-            added.removeAll(uuids1.keySet());
-            List<String> removed = new ArrayList<String>(uuids1.keySet());
-            removed.removeAll(uuids2.keySet());
+        // Child nodes
+        if (!targetUuids.keyList().equals(sourceUuids.keyList())) {
+            List<String> added = new ArrayList<String>(sourceUuids.keySet());
+            added.removeAll(targetUuids.keySet());
+            List<String> removed = new ArrayList<String>(targetUuids.keySet());
+            removed.removeAll(sourceUuids.keySet());
 
             // Ordering
-            Map<String, String> oldOrdering = getOrdering(uuids1, removed);
-            Map<String, String> newOrdering = getOrdering(uuids2, Collections.<String>emptyList());
-            if (node1.getPrimaryNodeType().hasOrderableChildNodes()) {
-                // Reordering
-            if (!newOrdering.equals(oldOrdering)) {
-                for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
-                    String uuid = entry.getKey();
-                    if (!added.contains(uuid) && !added.contains(entry.getValue()) && !newOrdering.get(uuid).equals(oldOrdering.get(uuid))) {
-                        diffs.add(new ChildNodeReorderedDiff(uuid, entry.getValue(),
-                                addPath(basePath, (String) uuids2.get(uuid)), (String) uuids2.get(newOrdering.get(uuid)), newOrdering));
+            if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+                Map<String, String> newOrdering = getOrdering(sourceUuids, Collections.<String>emptyList());
+                List<String> oldUuidsList = new ArrayList<String>(targetUuids.keySet());
+                oldUuidsList.removeAll(removed);
+                List<String> newUuidsList = new ArrayList<String>(sourceUuids.keySet());
+                newUuidsList.removeAll(added);
+                if (!oldUuidsList.equals(newUuidsList)) {
+                    for (int i=1; i < oldUuidsList.size(); i++) {
+                        String x = oldUuidsList.get(i);
+                        int j = i;
+                        while ( j > 0 && sourceUuids.indexOf(oldUuidsList.get(j-1)) > sourceUuids.indexOf(x)) {
+                            oldUuidsList.set(j, oldUuidsList.get(j-1));
+                            j--;
+                        }
+                        if (j != i) {
+                            String orderBeforeUuid = (j+1 == oldUuidsList.size()) ? null : oldUuidsList.get(j + 1);
+
+                            diffs.add(new ChildNodeReorderedDiff(x, orderBeforeUuid,
+                                    addPath(basePath, (String) sourceUuids.get(x)), (String) sourceUuids.get(orderBeforeUuid), newOrdering));
+                            logger.debug("reorder " + sourceUuids.get(x) + " before " + sourceUuids.get(orderBeforeUuid));
+
+                            oldUuidsList.set(j,x);
+                        }
                     }
                 }
-            }}
+            }
 
             // Removed nodes
             for (String s : removed) {
                 try {
-                    sourceNode.getSession().getNodeByUUID(s);
+                    this.sourceNode.getSession().getNodeByUUID(s);
                     // Item has been moved
                 } catch (ItemNotFoundException e) {
-                    diffs.add(new ChildRemovedDiff(s, addPath(basePath, (String) uuids1.get(s)), s));
+                    diffs.add(new ChildRemovedDiff(s, addPath(basePath, (String) targetUuids.get(s)), s));
                 }
             }
 
             // Added nodes
-            if (!newOrdering.equals(oldOrdering)) {
-                for (Map.Entry<String, String> entry : newOrdering.entrySet()) {
-                    String uuid = entry.getKey();
-                    if (added.contains(uuid)) {
-                        diffs.add(new ChildAddedDiff(uuid, addPath(basePath,
-                                (String) uuids2.get(uuid)), uuid.equals(uuids2
-                                .lastKey()) ? null : (String) uuids2.get(uuids2
-                                .get(uuids2.indexOf(uuid) + 1))));
-                    }
-                }
+            for (String uuid : added) {
+                diffs.add(new ChildAddedDiff(uuid, addPath(basePath,
+                        (String) sourceUuids.get(uuid)), uuid.equals(sourceUuids
+                        .lastKey()) ? null : (String) sourceUuids.get(sourceUuids
+                        .get(sourceUuids.indexOf(uuid) + 1))));
             }
         }
 
-        PropertyIterator pi1 = node1.getProperties();
+        PropertyIterator pi1 = targetNode.getProperties();
         while (pi1.hasNext()) {
             JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
 
@@ -286,7 +215,7 @@ public class ConflictResolver {
             } else if (ignore.contains(propName)) {
                 continue;
             }
-            if (!node2.hasProperty(propName)) {
+            if (!sourceNode.hasProperty(propName)) {
                 if (prop1.isMultiple()) {
                     Value[] values = prop1.getRealValues();
                     for (Value value : values) {
@@ -297,7 +226,7 @@ public class ConflictResolver {
                             addPath(basePath, propName), prop1.getRealValue(), null));
                 }
             } else {
-                JCRPropertyWrapper prop2 = node2.getProperty(propName);
+                JCRPropertyWrapper prop2 = sourceNode.getProperty(propName);
 
                 if (prop1.isMultiple() != prop2.isMultiple()) {
                     throw new RepositoryException();
@@ -338,7 +267,7 @@ public class ConflictResolver {
                 }
             }
         }
-        PropertyIterator pi2 = node2.getProperties();
+        PropertyIterator pi2 = sourceNode.getProperties();
 
         while (pi2.hasNext()) {
             JCRPropertyWrapper prop2 = (JCRPropertyWrapper) pi2.next();
@@ -352,7 +281,7 @@ public class ConflictResolver {
             } else if (ignore.contains(propName)) {
                 continue;
             }
-            if (!node1.hasProperty(propName)) {
+            if (!targetNode.hasProperty(propName)) {
                 if (prop2.isMultiple()) {
                     Value[] values = prop2.getRealValues();
                     for (Value value : values) {
@@ -375,13 +304,13 @@ public class ConflictResolver {
             }
         }
 
-        NodeIterator ni = node1.getNodes();
+        NodeIterator ni = targetNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper frozenSub = (JCRNodeWrapper) ni.next();
-            if (node2.hasNode(frozenSub.getName()) &&
+            if (sourceNode.hasNode(frozenSub.getName()) &&
                     ((isNode1Frozen && frozenSub.isNodeType(Constants.NT_FROZENNODE)) || (!isNode1Frozen && !frozenSub.isVersioned())) &&
-                    !node2.getNode(frozenSub.getName()).isVersioned()) {
-                diffs.addAll(compare(frozenSub, node2.getNode(frozenSub.getName()), addPath(basePath, frozenSub.getName())));
+                    !sourceNode.getNode(frozenSub.getName()).isVersioned()) {
+                diffs.addAll(compare(sourceNode.getNode(frozenSub.getName()), frozenSub, addPath(basePath, frozenSub.getName())));
             }
         }
 
@@ -409,6 +338,10 @@ public class ConflictResolver {
             Node child = (Node) ni1.next();
             try {
                 if (child.isNodeType("jmix:nolive")) {
+                    // Skip non publishable content
+                    continue;
+                } else if (session.getWorkspace().getName().equals("live") && child.hasProperty("j:originWS") && child.getProperty("j:originWS").getString().equals("live")) {
+                    // Skip user generated content
                     continue;
                 } else if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                     VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());

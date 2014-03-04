@@ -254,13 +254,14 @@ public class UsersFlowHandler implements Serializable {
 
     public boolean removeUser(String userKey, MessageContext context) {
         JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
+        String displayName = PrincipalViewHelper.getDisplayName(jahiaUser);
         if(userManagerService.deleteUser(jahiaUser)) {
             context.addMessage(new MessageBuilder().info().code(
-                    "serverSettings.user.remove.successful").build());
+                    "serverSettings.user.remove.successful").arg(displayName).build());
             return true;
         } else {
             context.addMessage(new MessageBuilder().error().code(
-                    "serverSettings.user.remove.unsuccessful").build());
+                    "serverSettings.user.remove.unsuccessful").arg(displayName).build());
             return false;
         }
     }
@@ -350,5 +351,21 @@ public class UsersFlowHandler implements Serializable {
             context.addMessage(new MessageBuilder().info().code("serverSettings.user.edit.successful").build());
         }
         return !hasErrors;
+    }
+
+    public Set<Principal> populateUsers(String selectedUsers) {
+        final String[] split = selectedUsers.split(",");
+        Set<Principal> searchResult = new HashSet<Principal>();
+        for (String userKey : split) {
+            JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
+            searchResult.add(jahiaUser);
+        }
+        return searchResult;
+    }
+
+    public void bulkDeleteUser(List<String> selectedUser, MessageContext messageContext) {
+        for (String userKey : selectedUser) {
+            removeUser(userKey, messageContext);
+        }
     }
 }

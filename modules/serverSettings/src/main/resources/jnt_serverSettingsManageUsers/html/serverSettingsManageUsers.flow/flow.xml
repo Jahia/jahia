@@ -25,6 +25,9 @@
             <evaluate expression="flowHandler.populateUser(requestParameters.selectedUsers)" result="flowScope.userProperties"/>
         </transition>
         <transition on="bulkAddUser" to="bulkCreateUser" bind="false" validate="false"/>
+        <transition on="bulkDeleteUser" to="bulkDeleteUser" bind="false" validate="false">
+            <evaluate expression="flowHandler.populateUsers(requestParameters.selectedUsers)" result="flowScope.usersToDelete"/>
+        </transition>
     </view-state>
 
     <view-state id="createUser" model="userProperties">
@@ -64,6 +67,13 @@
         </on-entry>
         <transition on="confirm" to="search">
             <evaluate expression="flowHandler.bulkAddUser(csvFile, messageContext)"/>
+        </transition>
+        <transition on="cancel" to="search" bind="false" validate="false"/>
+    </view-state>
+
+    <view-state id="bulkDeleteUser">
+        <transition on="confirm" to="search">
+            <evaluate expression="flowHandler.bulkDeleteUser(requestParameters.userToDelete, messageContext)"/>
         </transition>
         <transition on="cancel" to="search" bind="false" validate="false"/>
     </view-state>

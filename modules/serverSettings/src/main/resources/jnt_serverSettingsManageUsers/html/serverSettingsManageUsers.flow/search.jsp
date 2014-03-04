@@ -35,7 +35,28 @@
             $("input[name='selectedUsers']").val(selected);
             return true;
         })
+
+        $(".needUsersSelectionCheckbox").submit(function () {
+            var selected = $("input[name='userToDelete']:checked").map(function() {
+                return this.value;
+            }).get().join(',');
+            console.log(selected);
+            if(undefined==selected) {
+                <fmt:message key="serverSettings.user.select.one" var="i18nSelectUser"/>
+                alert('${functions:escapeJavaScript(i18nSelectUser)}');
+                return false;
+            }
+            $("input[name='selectedUsers']").val(selected);
+            return true;
+        })
     });
+    function toggleModeToBulkDelete(){
+        $('.userRadio').toggle();
+        $('.userCheckbox').toggle();
+        $('.singleMode').toggle();
+        $('#bulkDeleteForm button').toggle();
+    };
+
 </script>
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
@@ -140,14 +161,14 @@
                 &nbsp;<fmt:message key='serverSettings.user.create'/>
             </button>
         </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
+        <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection singleMode" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <button class="btn" type="submit" name="_eventId_editUser" >
                 <i class="icon-edit"></i>
                 &nbsp;<fmt:message key='serverSettings.user.edit'/>
             </button>
         </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection" style="display: inline;">
+        <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection singleMode" style="display: inline;">
             <input type="hidden" name="selectedUsers"/>
             <button class="btn" type="submit" name="_eventId_removeUser" >
                 <i class="icon-remove"></i>
@@ -158,6 +179,17 @@
             <button class="btn" type="submit" name="_eventId_bulkAddUser" >
                 <i class="icon-cog"></i>
                 &nbsp;<fmt:message key='serverSettings.users.bulk.create'/>
+            </button>
+        </form>
+        <button class="btn" type="submit" onclick="toggleModeToBulkDelete(); ">
+            <i class="icon-check"></i>
+            &nbsp;<fmt:message key='serverSettings.users.bulk.remove.switch'/>
+        </button>
+        <form action="${flowExecutionUrl}" method="POST" style="display: inline" id="bulkDeleteForm" class="needUsersSelectionCheckbox">
+            <input type="hidden" name="selectedUsers"/>
+            <button class="btn" type="submit" name="_eventId_bulkDeleteUser" style="display: none">
+                <i class="icon-remove"></i>
+                &nbsp;<fmt:message key='serverSettings.users.bulk.delete'/>
             </button>
         </form>
     </div>
@@ -202,7 +234,7 @@
                 <c:otherwise>
                     <c:forEach items="${users}" var="curUser">
                         <tr class="sortable-row">
-                            <td><input type="radio" name="userSelected" value="${fn:escapeXml(curUser.userKey)}"></td>
+                            <td><input type="radio" name="userSelected" value="${fn:escapeXml(curUser.userKey)}" class="userRadio"><input type="checkbox" name="userToDelete" value="${fn:escapeXml(curUser.userKey)}" class="userCheckbox" style="display: none"></td>
                             <td>${user:displayName(curUser)}</td>
                             <td>${user:fullName(curUser)}</td>
                             <c:if test="${multipleProvidersAvailable}">

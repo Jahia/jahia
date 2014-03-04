@@ -54,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -63,11 +64,9 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineCards;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
-import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineWindow;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
@@ -296,12 +295,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         JahiaContentManagementService.App.getInstance().getWorkflowDefinitions(keys,
                 new BaseAsyncCallback<Map<String, GWTJahiaWorkflowDefinition>>() {
                     public void onSuccess(Map<String, GWTJahiaWorkflowDefinition> result) {
-                        EngineContainer container;
-                        if (linker instanceof ManagerLinker) {
-                            container = new EngineWindow();
-                        } else {
-                            container = new EnginePanel();
-                        }
+                        EngineContainer container = EngineLoader.createContainer(linker);
                         EngineContainer cards = new EngineCards(container, linker);
                         if (infosListByWorflowGroup.entrySet().isEmpty()) {
                             new PublicationStatusWindow(linker, null, null, cards, unpublish);

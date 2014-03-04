@@ -174,12 +174,12 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             Button b = new Button(historyItem.<String>get("displayName"));
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent ce) {
-                                    EnginePanel container = new EnginePanel();
+                                    EngineContainer container = EngineLoader.createContainer(linker);
 
                                     new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
                                             parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
                                     container.showEngine();
-                                    container.addListener(Events.Close, new Listener<BaseEvent>() {
+                                    container.getPanel().addListener(Events.Close, new Listener<BaseEvent>() {
                                         public void handleEvent(BaseEvent be) {
                                             engine.show();
                                             init();

@@ -42,6 +42,8 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.comparator.NumericStringComparator;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -56,7 +58,6 @@ import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
 
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -68,6 +69,7 @@ import java.util.*;
  *         Time: 10:06:02 AM
  */
 public class JCRVersionService extends JahiaService {
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy_MM_dd_HH_mm_ss");
 
     private static JCRVersionService instance;
 
@@ -157,11 +159,11 @@ public class JCRVersionService extends JahiaService {
             for (String label : labels) {
                 if (label.startsWith(vh.getSession().getWorkspace().getName()+"_removed")) {
                     try {
-                        Date removedAt = Constants.DATE_FORMAT.parse(StringUtils.substringAfter(label, vh.getSession().getWorkspace().getName() + "_removed_at_"));
+                        Date removedAt = DATE_FORMAT.parseDateTime(StringUtils.substringAfter(label, vh.getSession().getWorkspace().getName() + "_removed_at_")).toDate();
                         if (removedAt.before(versionDate)) {
                             return null;
                         }
-                    } catch (ParseException e1) {
+                    } catch (IllegalArgumentException e1) {
                         logger.error("Cannot parse deletion date for label "+label ,e1);
                         return null;
                     }

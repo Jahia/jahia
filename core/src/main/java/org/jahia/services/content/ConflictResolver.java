@@ -535,7 +535,7 @@ public class ConflictResolver {
             if (targetNode.hasNode(oldName)) {
                 final JCRNodeWrapper node = targetNode.getNode(oldName);
                 if (node.getIdentifier().equals(identifier)) {
-                    JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + Constants.DATE_FORMAT.format(new Date()));
+                    JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(System.currentTimeMillis()));
                     node.remove();
                 }
             }

@@ -364,7 +364,7 @@ public class JCRPublicationService extends JahiaService {
 
             for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {
                 try {
-                    addRemovedLabel(nodeWrapper, nodeWrapper.getSession().getWorkspace().getName() + "_removed_at_" + Constants.DATE_FORMAT.format(calendar.getTime()));
+                    addRemovedLabel(nodeWrapper, nodeWrapper.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
                     nodeWrapper.remove();
                 } catch (InvalidItemStateException e) {
                     logger.warn("Already deleted : " + nodeWrapper.getPath());
@@ -373,7 +373,7 @@ public class JCRPublicationService extends JahiaService {
             for (String s : toDelete) {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(s);
-                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + Constants.DATE_FORMAT.format(calendar.getTime()));
+                    addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
                     node.remove();
                 } catch (ItemNotFoundException e) {
                     logger.warn("Already deleted : " + s);

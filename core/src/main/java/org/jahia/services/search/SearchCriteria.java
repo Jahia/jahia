@@ -59,6 +59,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.utils.DateUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Bean for holding all search parameters.
@@ -108,8 +110,7 @@ public class SearchCriteria implements Serializable {
             ANYTIME, LAST_MONTH, LAST_SIX_MONTHS, LAST_THREE_MONTHS, LAST_WEEK, RANGE, TODAY;
         }
 
-        public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-                DateUtils.DEFAULT_DATE_FORMAT);
+        public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern(DateUtils.DEFAULT_DATE_FORMAT);
 
         private static final long serialVersionUID = -1637520083714465344L;
 
@@ -151,11 +152,7 @@ public class SearchCriteria implements Serializable {
         public void setFrom(String dateFromAsString) {
             if (dateFromAsString != null && dateFromAsString.length() > 0) {
                 from = dateFromAsString;
-                try {
-                    fromAsDate = DATE_FORMAT.parse(dateFromAsString);
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
-                }
+                fromAsDate = DATE_FORMAT.parseDateTime(dateFromAsString).toDate();
             } else {
                 from = null;
                 fromAsDate = null;
@@ -164,18 +161,14 @@ public class SearchCriteria implements Serializable {
 
         public void setFromAsDate(Date dateFrom) {
             fromAsDate = dateFrom;
-            from = dateFrom != null ? DATE_FORMAT.format(dateFrom) : null;
+            from = dateFrom != null ? DATE_FORMAT.print(dateFrom.getTime()) : null;
         }
 
         public void setTo(String dateToAsString) {
             if (dateToAsString != null && dateToAsString.length() > 0) {
                 to = dateToAsString;
-                try {
-                    toAsDate = DATE_FORMAT.parse(dateToAsString);
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            } else {
+                toAsDate = DATE_FORMAT.parseDateTime(dateToAsString).toDate();
+             } else {
                 to = null;
                 toAsDate = null;
             }
@@ -183,7 +176,7 @@ public class SearchCriteria implements Serializable {
 
         public void setToAsDate(Date dateTo) {
             toAsDate = dateTo;
-            to = dateTo != null ? DATE_FORMAT.format(dateTo) : null;
+            to = dateTo != null ? DATE_FORMAT.print(dateTo.getTime()) : null;
         }
 
         public void setType(Type type) {

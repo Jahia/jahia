@@ -56,6 +56,8 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.utils.zip.ZipEntry;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 import org.xml.sax.Attributes;
@@ -86,7 +88,7 @@ public class FilesAclImportHandler extends DefaultHandler {
 
     private Map<String, String> davPropertiesMapping = initializeDavPropertiesMapping();
 
-    public static final DateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern(ImportExportService.DATE_FORMAT);
 
     public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList, Map<String, File> filePath) {
         this.site = site;
@@ -145,11 +147,11 @@ public class FilesAclImportHandler extends DefaultHandler {
 
                 Calendar created = new GregorianCalendar();
                 if (attributes.getValue("dav:creationdate") != null) {
-                    created.setTime(DATE_FORMAT.parse(attributes.getValue("dav:creationdate")));
+                    created.setTime(DATE_FORMAT.parseDateTime(attributes.getValue("dav:creationdate")).toDate());
                 }
                 Calendar lastModified = new GregorianCalendar();
                 if (attributes.getValue("dav:modificationdate") != null) {
-                    lastModified.setTime(DATE_FORMAT.parse(attributes.getValue("dav:modificationdate")));
+                    lastModified.setTime(DATE_FORMAT.parseDateTime(attributes.getValue("dav:modificationdate")).toDate());
                 }
                 String createdBy = attributes.getValue("dav:creationuser");
                 String lastModifiedBy = attributes.getValue("dav:modificationuser");

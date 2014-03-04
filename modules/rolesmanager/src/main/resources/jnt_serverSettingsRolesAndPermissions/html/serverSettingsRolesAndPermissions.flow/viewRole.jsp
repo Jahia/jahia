@@ -148,7 +148,8 @@
 
 <form id="form" action="${flowExecutionUrl}" method="post">
     <fieldset>
-        <h2>${handler.roleBean.name}</h2>
+        <h2><fmt:message key="rolesmanager.rolesAndPermissions.roleDetails"/> : ${handler.roleBean.name}</h2>
+        <h4><fmt:message key="rolesmanager.rolesAndPermissions.languages"/></h4>
         <table class="table table-bordered table-striped table-hover" id="roleI18nPropsTable">
             <thead>
             <tr>
@@ -184,6 +185,8 @@
         </select>
         <button class="btn" onclick="addI18nRow(); return false;"><i class="icon-plus"></i></button>
     </fieldset>
+    <h4><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes"/></h4>
+
     <div class="box-1">
         <div class="container-fluid">
             <div class="row-fluid">
@@ -193,7 +196,7 @@
                 </div>
                 <c:if test="${not empty handler.roleBean.roleType.availableNodeTypes}">
                     <div class="span4">
-                        <label for="nodeTypes"><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes"/></label>
+                        <label for="nodeTypes"><fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes.onlyFor"/></label>
                         <select multiple="true" size="20" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger'); updatedSelectedTypes();">
                             <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
                                 <option value="${nodeType.name}" ${nodeType.set ? 'selected="true"' : ''}>${nodeType.displayName}</option>
@@ -230,6 +233,8 @@
             &nbsp;<fmt:message key="label.cancel"/>
         </button>
 
+    <h4><fmt:message key="rolesmanager.rolesAndPermissions.subRoles"/></h4>
+
     <div class="box-1">
         <fieldset>
             <input type="hidden"name="roleType" value="${handler.roleBean.roleType.name}" />
@@ -245,6 +250,7 @@
     <p>
 
     </p>
+    <h4><fmt:message key="rolesmanager.rolesAndPermissions.permissions"/></h4>
 
     <div>
         <div class="box-1">

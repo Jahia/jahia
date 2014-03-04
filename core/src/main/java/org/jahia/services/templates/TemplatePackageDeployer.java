@@ -312,6 +312,7 @@ public class TemplatePackageDeployer {
         if (pack.getModuleType() != null) {
             m.setProperty("j:moduleType", pack.getModuleType());
         }
+        m.setProperty("j:modulePriority", pack.getModulePriority());
         List<Value> l = new ArrayList<Value>();
         for (String d : pack.getDepends()) {
             String v = templatePackageRegistry.getModuleId(d);

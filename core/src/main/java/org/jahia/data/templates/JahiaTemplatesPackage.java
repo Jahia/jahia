@@ -121,6 +121,8 @@ public class JahiaTemplatesPackage {
 
     private List<JahiaTemplatesPackage> dependencies = Collections.emptyList();
 
+    private int modulePriority = 0;
+
     private String moduleType;
 
     private String rootFolderPath;
@@ -605,6 +607,23 @@ public class JahiaTemplatesPackage {
      */
     public void setVersion(ModuleVersion version) {
         this.version = version;
+    }
+
+    /**
+     * Return the module priority, used for views and resource resolution.
+     *
+     * @return the module priority
+     */
+    public int getModulePriority() {
+        return modulePriority;
+    }
+
+    /**
+     * Set the module priority for this module
+     * @param modulePriority
+     */
+    public void setModulePriority(int modulePriority) {
+        this.modulePriority = modulePriority;
     }
 
     /**

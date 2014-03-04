@@ -103,10 +103,16 @@ public class TemplatePackageRegistry {
 
     private static boolean hasEncounteredIssuesWithDefinitions = false;
 
-    private static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+    public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            if (o1.isDefault()) return 99;
-            if (o2.isDefault()) return -99;
+            if (o2.getModulePriority() != o1.getModulePriority()) {
+                return o2.getModulePriority() - o1.getModulePriority();
+            }
+            if (!o1.getModuleType().equals(o2.getModuleType())) {
+                if (o1.getModuleType().equals("templatesSet")) return -99;
+                if (o2.getModuleType().equals("templatesSet")) return 99;
+            }
+
             return o1.getName().compareTo(o2.getName());
         }
     };

@@ -71,6 +71,7 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setModuleType(moduleType);
 
+        pkg.setModulePriority(Integer.parseInt(StringUtils.defaultString(getHeader(bundle,"Jahia-Module-Priority"), "0")));
         pkg.setAutoDeployOnSite(StringUtils.defaultString(getHeader(bundle,"Jahia-Deploy-On-Site")));
         pkg.setName(StringUtils.defaultString(getHeader(bundle, "Implementation-Title", "Bundle-Name"),
                 bundle.getSymbolicName()));

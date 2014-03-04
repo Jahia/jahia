@@ -732,6 +732,7 @@ extends = jnt:content
  - j:title (string) protected nofulltext primary
  - j:description (string) protected
  - j:installedModules (string) multiple protected nofulltext
+ - j:modulePriority (long) protected hidden
  - j:moduleType (string) protected hidden nofulltext
  - j:dependencies (string) protected multiple nofulltext
  + * (nt:base)

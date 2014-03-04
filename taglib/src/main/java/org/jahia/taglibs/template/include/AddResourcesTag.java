@@ -44,7 +44,10 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -57,9 +60,9 @@ import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Add some resources to the head tag of the HTML.
@@ -101,22 +104,15 @@ public class AddResourcesTag extends AbstractJahiaTag {
             logger.error(e.getMessage(), e);
         }
         if (isVisible) {
-            JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
-                    getRenderContext().getSite().getTemplatePackageName());
-            if (!addResources(getRenderContext(), templatesSetPackage, false)) {
-                JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule",
-                        PageContext.REQUEST_SCOPE);
-                addResources(getRenderContext(), templatesPackage, true);
-            }
+            addResources(getRenderContext());
         }
         resetState();
         return super.doEndTag();
     }
 
-    protected boolean addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage,
-                                   boolean checkDependencies) {
+    protected boolean addResources(RenderContext renderContext) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Package : " + aPackage.getName() + " type : " + type + " resources : " + resources);
+            logger.debug("Site : " + renderContext.getSite() + " type : " + type + " resources : " + resources);
         }
         if (bodyContent != null) {
             try {
@@ -135,17 +131,26 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         String[] strings = Patterns.COMMA.split(resources);
 
-        Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
-        if (aPackage != null) {
-            packages.add(aPackage);
-            if (checkDependencies) {
-                for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
-                    if (pack != null) {
-                        packages.add(pack);
+        Set<JahiaTemplatesPackage> packages = new TreeSet<JahiaTemplatesPackage>(TemplatePackageRegistry.TEMPLATE_PACKAGE_COMPARATOR);
+        final JCRSiteNode site = renderContext.getSite();
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        if (site.getPath().startsWith("/sites/")) {
+            for (String s : site.getInstalledModulesWithAllDependencies()) {
+                packages.add(templateManagerService.getTemplatePackageById(s));
+            }
+        } else if (site.getPath().startsWith("/modules/")) {
+            JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageById(site.getName());
+            if (aPackage != null) {
+                packages.add(aPackage);
+                for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
+                    if (!packages.contains(depend)) {
+                        packages.add(depend);
                     }
                 }
             }
+
         }
+
         StringBuilder builder = new StringBuilder();
         for (String resource : strings) {
             boolean found = false;

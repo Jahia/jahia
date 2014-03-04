@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -278,7 +279,7 @@ public class GWTJahiaNodeTreeFactory {
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
             super.onDataChanged(mTreeStoreEvent);
             final GWTJahiaNode p = mTreeStoreEvent.getParent();
-            DeferredCommand.addCommand(new Command() {
+            Scheduler.get().scheduleDeferred(new Command() {
                 public void execute() {
                     if (p == null) {
                         expandChildren(treeStore.getRootItems());
@@ -316,7 +317,7 @@ public class GWTJahiaNodeTreeFactory {
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
             super.onDataChanged(mTreeStoreEvent);
             final GWTJahiaNode p = mTreeStoreEvent.getParent();
-            DeferredCommand.addCommand(new Command() {
+            Scheduler.get().scheduleDeferred(new Command() {
                 public void execute() {
                     if (p == null) {
                         expandChildren(store.getRootItems());

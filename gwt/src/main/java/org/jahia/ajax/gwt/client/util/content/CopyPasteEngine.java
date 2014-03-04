@@ -46,6 +46,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
@@ -119,7 +121,11 @@ public class CopyPasteEngine {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("node", getCopiedPaths().get(0));
         data.put("nodes", getCopiedPaths());
-        data.put(Linker.REFRESH_MAIN,true);
+        if (linker instanceof ManagerLinker) {
+            data.put(Linker.REFRESH_ALL,true);
+        } else {
+            data.put(Linker.REFRESH_MAIN,true);
+        }
         linker.refresh(data);
         onPastedPath();
         linker.setSelectPathAfterDataUpdate(copiedPaths, (Boolean) data.get(Linker.REFRESH_MAIN));

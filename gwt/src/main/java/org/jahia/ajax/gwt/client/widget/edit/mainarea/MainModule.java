@@ -386,6 +386,7 @@ public class MainModule extends Module {
                     forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
                 }
             }
+            allowSwitchingMode = true;
             goToUrl(getUrl(path, template), data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }

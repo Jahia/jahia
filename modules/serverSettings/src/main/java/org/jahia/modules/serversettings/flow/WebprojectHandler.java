@@ -883,7 +883,7 @@ public class WebprojectHandler implements Serializable {
     public void validateView(ValidationContext context) {
         if(context.getUserEvent().equals("import")) {
             MessageContext messages = context.getMessageContext();
-            if(StringUtils.isEmpty(getImportPath()) || getImportFile().isEmpty()) {
+            if(StringUtils.isEmpty(getImportPath()) && getImportFile().isEmpty()) {
                 messages.addMessage(new MessageBuilder().error().source("importPath").
                         code("serverSettings.manageWebProjects.fileImport.error").build());
             }

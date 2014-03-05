@@ -66,6 +66,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     private boolean updateToolbar =true;
     private String enforcedWorkspace = "default";
     private boolean forceRootChange = false;
+    private boolean updateOnMainNodeRefresh = false;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -99,7 +100,11 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        setEnabled(isNodeTypeAllowed(node));
+        if (updateOnMainNodeRefresh && linker instanceof EditLinker && !((EditLinker) linker).getMainModule().isAllowSwitchingMode()) {
+            setEnabled(false);
+        } else {
+            setEnabled(isNodeTypeAllowed(node));
+        }
     }
 
     /**
@@ -148,5 +153,9 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
 
     public void setForceRootChange(boolean forceRootChange) {
         this.forceRootChange = forceRootChange;
+    }
+
+    public void setUpdateOnMainNodeRefresh(boolean updateOnMainNodeRefresh) {
+        this.updateOnMainNodeRefresh = updateOnMainNodeRefresh;
     }
 }

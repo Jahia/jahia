@@ -196,6 +196,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="contributemode"/>
+                <property name="updateOnMainNodeRefresh" value="true"/>
             </bean>
         </property>
     </bean>

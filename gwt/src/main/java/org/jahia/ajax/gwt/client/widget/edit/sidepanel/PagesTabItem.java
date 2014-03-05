@@ -146,6 +146,7 @@ public class PagesTabItem extends SidePanelTabItem {
                         !node.getInheritedNodeTypes().contains("jmix:link") &&
                          PermissionsUtils.isPermitted("editModeAccess", node)
                         ) {
+                    editLinker.getMainModule().setAllowSwitchingMode(true);
                     MainModule.staticGoTo(node.getPath(), null);
                 }
             }

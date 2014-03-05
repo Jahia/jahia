@@ -108,6 +108,7 @@ public class MainModule extends Module {
     private final LayoutContainer headContainer;
     private String newLocation = null;
     private boolean firstLoad = true;
+    private boolean allowSwitchingMode = true;
 
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
@@ -589,6 +590,7 @@ public class MainModule extends Module {
     }
 
     public static void staticGoToUrl(String path) {
+        module.setAllowSwitchingMode(true);
         module.goToUrl(path, false, false, false);
     }
 
@@ -886,6 +888,14 @@ public class MainModule extends Module {
 
     public boolean isDraggable() {
         return false;
+    }
+
+    public boolean isAllowSwitchingMode() {
+        return allowSwitchingMode;
+    }
+
+    public void setAllowSwitchingMode(boolean allowSwitchingMode) {
+        this.allowSwitchingMode = allowSwitchingMode;
     }
 
     public static MainModule getInstance() {

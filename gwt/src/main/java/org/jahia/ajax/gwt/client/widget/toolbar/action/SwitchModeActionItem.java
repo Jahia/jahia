@@ -54,9 +54,10 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Jan 8, 2010
  * Time: 2:09:40 PM
@@ -66,7 +67,8 @@ public class SwitchModeActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
-        if (!hasPermission(linker.getSelectionContext().getMainNode())) {
+        if ((linker instanceof EditLinker && !((EditLinker) linker).getMainModule().isAllowSwitchingMode()) ||
+                !hasPermission(linker.getSelectionContext().getMainNode())) {
             setEnabled(false);
         } else {
             if (workspace.equalsIgnoreCase("live")) {

@@ -41,6 +41,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
@@ -60,7 +61,7 @@ public class SeparatorActionItem implements ActionItem {
     }
 
     public Component getCustomItem() {
-        return null;
+        return new Html("<span class=\"xtb-sep\">&nbsp;</span>");
     }
 
     public Button getTextToolItem() {

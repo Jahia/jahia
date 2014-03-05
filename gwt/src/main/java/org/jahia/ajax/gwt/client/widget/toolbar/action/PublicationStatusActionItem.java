@@ -42,6 +42,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -49,7 +50,6 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,6 +78,9 @@ public class PublicationStatusActionItem extends BaseActionItem {
     private void displayInfo(GWTJahiaPublicationInfo info) {
         Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
         panel.removeAll();
+        if (getGwtToolbarItem().getTitle() != null) {
+            panel.add(new Html(getGwtToolbarItem().getTitle() + "&nbsp;:&nbsp;"));
+        }
         panel.add(res);
         panel.layout();
     }

@@ -96,10 +96,10 @@ public class ActionToolbarMenu extends Menu implements ToolbarGroup {
             actionItems.add(actionItem);
             if (actionItem != null) {
                 actionItem.init(gwtToolbarItem, linker);
-                if (actionItem.getCustomItem() != null) {
-                    add(actionItem.getCustomItem());
-                } else if (ActionToolbar.isSeparator(gwtToolbarItem)) {
+                if (ActionToolbar.isSeparator(gwtToolbarItem)) {
                     add(new SeparatorMenuItem());
+                } else if (actionItem.getCustomItem() != null) {
+                    add(actionItem.getCustomItem());
                 } else {
                     add(createActionItem(actionItem));
                 }

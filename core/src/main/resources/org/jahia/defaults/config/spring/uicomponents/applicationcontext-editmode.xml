@@ -158,8 +158,9 @@
             <bean id="editModeMainModuleToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.PublicationStatus"/>
                         <ref bean="Toolbar.Item.NodePath"/>
+                        <ref bean="Toolbar.Item.PublicationStatusWithText"/>
+                        <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
                             <property name="icon" value="editAction"/>
@@ -196,6 +197,7 @@
                                 </list>
                             </property>
                         </bean>
+                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                     </list>
                 </property>

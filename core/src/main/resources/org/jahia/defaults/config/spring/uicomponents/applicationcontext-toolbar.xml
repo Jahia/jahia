@@ -629,6 +629,13 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.PublicationStatusWithText" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationStatusActionItem"/>
+        </property>
+        <property name="titleKey" value="label.publication.status"/>
+    </bean>
+
     <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>

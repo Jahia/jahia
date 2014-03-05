@@ -114,8 +114,8 @@ public class ToolbarHeader extends Header {
         } else {
             if (horizontalPanel == null) {
                 horizontalPanel = new HorizontalPanel();
+                horizontalPanel.addStyleName("x-toolbar-header");
                 horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
-
             }
             horizontalPanel.add(tool);
             horizontalPanel.layout();

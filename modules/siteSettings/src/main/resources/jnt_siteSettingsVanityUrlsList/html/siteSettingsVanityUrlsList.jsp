@@ -36,13 +36,17 @@
         </tr>
     </thead>
     <tbody>
+    <jsp:useBean id="vanityNodesID" class="java.util.HashMap" type="java.util.HashMap"/>
         <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}"
                    varStatus="status">
+            <c:if test="${empty vanityNodesID[subchild.parent.identifier]}">
             <tr class="${status.index % 2 == 0 ? 'evenLine' : 'oddLine'}">
                 <template:module node="${subchild}" view="${moduleMap.subNodesView}"
                                  editable="${moduleMap.editable && !resourceReadOnly}"/>
             </tr>
             <c:set var="isEmpty" value="false"/>
+                <c:set target="${vanityNodesID}" property="${subchild.parent.identifier}" value="${subchild.parent.identifier}"/>
+            </c:if>
         </c:forEach>
     </tbody>
 </table>

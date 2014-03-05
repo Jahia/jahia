@@ -577,6 +577,11 @@
                             <property name="limit" value="500"/>
                         </bean>
                     </property>
+                    <property name="treeColumns">
+                        <list>
+                            <value>displayName</value>
+                        </list>
+                    </property>
                     <property name="tableColumns">
                         <list>
                             <value>icon,40</value>

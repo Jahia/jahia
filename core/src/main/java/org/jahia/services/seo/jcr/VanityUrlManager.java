@@ -59,9 +59,15 @@ import javax.validation.ConstraintViolationException;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
+=======
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRCallback;
+>>>>>>> .merge-right.r48920
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.seo.VanityUrl;
 
 /**
@@ -100,6 +106,7 @@ public class VanityUrlManager {
      * @return the list of VanityUrl beans
      * @throws RepositoryException if there was an unexpected exception accessing the repository
      */
+    @SuppressWarnings("deprecation")
     public List<VanityUrl> findExistingVanityUrls(String url, String site,
             JCRSessionWrapper session) throws RepositoryException {
         QueryResult result = session.getWorkspace().getQueryManager()
@@ -300,7 +307,7 @@ public class VanityUrlManager {
             VanityUrl vanityUrl, JCRSessionWrapper session)
             throws RepositoryException {
 
-        checkUniqueConstraint(contentNode, vanityUrl, null, session);
+        checkUniqueConstraint(contentNode, vanityUrl, null);
 
         JCRNodeWrapper vanityUrlNode = null;
         JCRNodeWrapper previousDefaultVanityUrlNode = null;
@@ -539,7 +546,7 @@ public class VanityUrlManager {
 
         // Check if the added vanity URLs are really unique for the site
         for (VanityUrl vanityUrl : toAdd) {
-            checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
+            checkUniqueConstraint(contentNode, vanityUrl, toDelete);
         }
         
         // If there is no change do nothing otherwise do all the operations and 
@@ -588,9 +595,41 @@ public class VanityUrlManager {
         return true;
     }    
 
+    private void checkUniqueConstraint(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl,
+            final List<Map.Entry<String, VanityUrl>> toDelete) throws RepositoryException, NonUniqueUrlMappingException {
+        NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+                Constants.EDIT_WORKSPACE, new JCRCallback<NonUniqueUrlMappingException>() {
+                    public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        try {
+                            checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
+                        } catch (NonUniqueUrlMappingException e) {
+                            return e;
+                        }
+                        return null;
+                    }
+                });
+        if (ex != null) {
+            throw ex;
+        }
+        ex = JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE,
+                new JCRCallback<NonUniqueUrlMappingException>() {
+                    public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        try {
+                            checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
+                        } catch (NonUniqueUrlMappingException e) {
+                            return e;
+                        }
+                        return null;
+                    }
+                });
+        if (ex != null) {
+            throw ex;
+        }
+    }
+
     private void checkUniqueConstraint(JCRNodeWrapper contentNode,
             VanityUrl vanityUrl, List<Map.Entry<String, VanityUrl>> toDelete,
-            JCRSessionWrapper session) throws RepositoryException {
+            JCRSessionWrapper session) throws RepositoryException, NonUniqueUrlMappingException {
         List<VanityUrl> existingUrls = findExistingVanityUrls(vanityUrl
                 .getUrl(), vanityUrl.getSite(), session);
         if (existingUrls != null && !existingUrls.isEmpty()) {
@@ -606,15 +645,9 @@ public class VanityUrlManager {
                         }
                     }
                     if (!oldMatchWillBeDeleted) {
-                        throw new ConstraintViolationException(
-                                "URL Mapping already exists exception: vanityUrl="
-                                        + vanityUrl.getUrl()
-                                        + " to be set on node: "
-                                        + contentNode.getPath()
-                                        + " already found on "
-                                        +   StringUtils.removeEnd(session.getNodeByUUID(
-                                                existingUrl.getIdentifier())
-                                                .getParent().getPath(), "/" + VANITYURLMAPPINGS_NODE), null);
+                        throw new NonUniqueUrlMappingException(vanityUrl.getUrl(), contentNode.getPath(),
+                                StringUtils.removeEnd(session.getNodeByUUID(existingUrl.getIdentifier()).getParent()
+                                        .getPath(), "/" + VANITYURLMAPPINGS_NODE), session.getWorkspace().getName());
                     }
                 }
             }

@@ -28,7 +28,7 @@
 <body>
 
 <div class="page-header clearfix">
-    <img class="pull-left" src="<c:url value='${url.currentModule}/img/Digital-Factory.png'/>" alt=""/><h1 class="pull-right"><fmt:message key="label.administration"/></h1>
+    <img class="pull-left" src="<c:url value='${url.currentModule}/img/digital-factory.png'/>" alt=""/><h1 class="pull-right"><fmt:message key="label.administration"/></h1>
 </div>
 
 

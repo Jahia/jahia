@@ -41,16 +41,15 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
@@ -76,21 +75,21 @@ public abstract class SaveButtonItem implements ButtonItem {
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                save(engine, true);
+                save(engine, true, false);
             }
         });
         return button;
     }
 
-    protected void save(final AbstractContentEngine engine, final boolean closeAfterSave) {
+    protected void save(final AbstractContentEngine engine, final boolean closeAfterSave, boolean skipValidation) {
         engine.mask(Messages.get("label.saving", "Saving..."), "x-mask-loading");
         engine.setButtonsEnabled(false);
 
-        if (validateData(engine)) {
+        if (skipValidation || validateData(engine, closeAfterSave)) {
             Map<String, String> textForWCAGValidation = null;
             Map<String, CKEditorField> toValidate = null;
 
-            if (engine.getNode() != null && engine.getNode().isWCAGComplianceCheckEnabled() || engine.getNode() == null && engine.getTargetNode().isWCAGComplianceCheckEnabled()) {
+            if (!skipValidation && engine.getNode() != null && engine.getNode().isWCAGComplianceCheckEnabled() || engine.getNode() == null && engine.getTargetNode().isWCAGComplianceCheckEnabled()) {
                 // validation passes, let's get WCAG texts to validate
                 toValidate = getFieldsForWCAGValidation(engine);
                 textForWCAGValidation = new HashMap<String, String>(toValidate.size());
@@ -117,7 +116,7 @@ public abstract class SaveButtonItem implements ButtonItem {
                             // WCAG checks are OK
                             prepareAndSave(engine, closeAfterSave);
                         } else {
-                            validateData(engine);
+                            validateData(engine, closeAfterSave);
                         }
                     }
 
@@ -134,43 +133,45 @@ public abstract class SaveButtonItem implements ButtonItem {
         }
     }
 
-    protected boolean validateData(AbstractContentEngine engine) {
-        EngineValidation e = new EngineValidation(engine.getTabs(), engine.getSelectedLanguage(), engine.getChangedI18NProperties());
-        EngineValidation.ValidateResult r = e.validateData();
+    protected boolean validateData(final AbstractContentEngine engine, final boolean closeAfterSave) {
+        EngineValidation e = new EngineValidation(engine, engine.getTabs(), engine.getSelectedLanguage(), engine.getChangedI18NProperties());
+        EngineValidation.ValidateCallback callback = new EngineValidation.ValidateCallback() {
+            @Override
+            public void handleValidationResult(EngineValidation.ValidateResult result) {
+                SaveButtonItem.this.handleValidationResult(engine, result);
+            }
 
-        if (!r.allValid) {
-            MessageBox.alert(Messages.get("label.error", "Error"),
-                    Messages.get("failure.invalid.constraint.label",
-                            "There are some validation errors!"
-                                    + " Click on the information icon next to the"
-                                    + " highlighted fields, correct the input and save again."),
-                    null);
-            handleValidationResult(engine, r);
-            engine.unmask();
-            engine.setButtonsEnabled(true);
-            return false;
-        } else {
-            return true;
-        }
+            @Override
+            public void saveAnyway() {
+                save(engine, closeAfterSave, true);
+            }
+
+            @Override
+            public void close() {
+                engine.unmask();
+                engine.setButtonsEnabled(true);
+            }
+        };
+        return e.validateData(callback);
     }
 
-    protected void handleValidationResult(AbstractContentEngine engine, EngineValidation.ValidateResult r) {
-        if (r.firstErrorLang != null) {
+    private void handleValidationResult(AbstractContentEngine engine, EngineValidation.ValidateResult r) {
+        if (r.errorLang != null) {
             for (GWTJahiaLanguage jahiaLanguage : engine.getLanguageSwitcher().getStore().getModels()) {
-                if (jahiaLanguage.getLanguage().equals(r.firstErrorLang)) {
+                if (jahiaLanguage.getLanguage().equals(r.errorLang)) {
                     engine.getLanguageSwitcher().setValue(jahiaLanguage);
                     break;
                 }
             }
         }
-        if (r.firstErrorTab != null && !engine.getTabs().getSelectedItem().equals(r.firstErrorTab)) {
-            engine.getTabs().setSelection(r.firstErrorTab);
+        if (r.errorTab != null && !engine.getTabs().getSelectedItem().equals(r.errorTab)) {
+            engine.getTabs().setSelection(r.errorTab);
         }
-        if (r.firstErrorField != null) {
-            r.firstErrorField.focus();
+        if (r.errorField != null) {
+            r.errorField.focus();
         }
-        if (r.firstErrorTab != null) {
-            r.firstErrorTab.layout();
+        if (r.errorTab != null) {
+            r.errorTab.layout();
         }
     }
 
@@ -185,7 +186,7 @@ public abstract class SaveButtonItem implements ButtonItem {
                     if (pe != null) {
                         for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
                             Field<?> field = adapterField.getField();
-                            if ((field instanceof CKEditorField) && field.isEnabled() && !field.isReadOnly() && ((FieldSet)adapterField.getParent()).isExpanded()) {
+                            if ((field instanceof CKEditorField) && field.isEnabled() && !field.isReadOnly() && ((FieldSet) adapterField.getParent()).isExpanded()) {
                                 CKEditorField ckfield = (CKEditorField) field;
                                 if (ckfield.isIgnoreWcagWarnings()) {
                                     continue;
@@ -227,20 +228,22 @@ public abstract class SaveButtonItem implements ButtonItem {
                     (hasFieldErrors ? Messages.get("failure.invalid.constraint.label",
                             "There are some validation errors!"
                                     + " Click on the information icon next to the"
-                                    + " highlighted fields, correct the input and save again.") : "")
+                                    + " highlighted fields, correct the input and save again."
+                    ) : "")
                             + nodeLevelMessages.toString(),
                     new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (fHasFieldErrors) {
-                                EngineValidation e = new EngineValidation(engine.getTabs(), engine.getSelectedLanguage(), engine.getChangedI18NProperties());
+                                EngineValidation e = new EngineValidation(engine, engine.getTabs(), engine.getSelectedLanguage(), engine.getChangedI18NProperties());
                                 EngineValidation.ValidateResult r = e.getValidationFromException(cve.getErrors());
                                 handleValidationResult(engine, r);
                             }
                         }
-                    });
+                    }
+            );
         } catch (Throwable t) {
             String message = throwable.getMessage();
-            MessageBox.alert(Messages.get("label.error"),Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
+            MessageBox.alert(Messages.get("label.error"), Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
                     + message, null);
             Log.error("failed", throwable);
         }

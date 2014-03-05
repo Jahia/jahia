@@ -46,6 +46,8 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -389,6 +391,51 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
     public void setExcludedTypes(List<String> excludedTypes) {
         this.excludedTypes = excludedTypes;
+    }
+
+    @Override
+    public void doValidate(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, TabPanel tabs) {
+        PropertiesEditor pe = getPropertiesEditor();
+        if (pe != null) {
+            for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
+                Field<?> field = adapterField.getField();
+                if (field.isEnabled() && !field.isReadOnly() && !field.validate() && adapterField.getParent() != null && ((FieldSet)adapterField.getParent()).isExpanded()) {
+                    EngineValidation.ValidateResult result = new EngineValidation.ValidateResult();
+                    result.errorTab = tab;
+                    result.errorField = field;
+                    result.canIgnore = field.getData("optionalValidation") != null && (Boolean) field.getData("optionalValidation");
+                    validateResult.add(result);
+                    break;
+                }
+            }
+        }
+
+        // handle multilang
+        if (isMultiLang()) {
+            // for now only contentTabItem  has multilang. properties
+            if (selectedLanguage != null) {
+                final String lang = selectedLanguage;
+                for (String language : changedI18NProperties.keySet()) {
+                    if (!lang.equals(language)) {
+                        PropertiesEditor lpe = getPropertiesEditorByLang(language);
+                        if (lpe != null) {
+                            for (PropertiesEditor.PropertyAdapterField adapterField : lpe.getFieldsMap().values()) {
+                                Field<?> field = adapterField.getField();
+                                if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded() && adapterField.getDefinition().isInternationalized()) {
+                                    EngineValidation.ValidateResult result = new EngineValidation.ValidateResult();
+                                    result.errorTab = tab;
+                                    result.errorField = field;
+                                    result.canIgnore = false;
+                                    result.errorLang = language;
+                                    validateResult.add(result);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     @Override

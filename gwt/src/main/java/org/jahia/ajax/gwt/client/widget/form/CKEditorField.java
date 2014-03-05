@@ -304,6 +304,7 @@ public class CKEditorField extends Field<String> {
 
     @Override
     protected boolean validateValue(String value) {
+        setData("optionalValidation", null);
         boolean isValid = super.validateValue(value);
         if (value !=null && (value.length() < 1 || value.equals(""))) {
           if (allowBlank) {
@@ -325,7 +326,8 @@ public class CKEditorField extends Field<String> {
 
         if (!ignoreWcagWarnings && wcagValidationResult != null && !wcagValidationResult.isEmpty()) {
             showWarnings(wcagValidationResult, false);
-            return false;
+            setData("optionalValidation", true);
+             return false;
         } else {
             return true;
         }
@@ -366,6 +368,7 @@ public class CKEditorField extends Field<String> {
     }
 
     protected void showWarnings(WCAGValidationResult wcagResult, final boolean userTriggered) {
+
         LayoutContainer parent = (LayoutContainer) getParent();
         parent.addStyleName(invalidStyle);
         if (wcagPanel != null) {

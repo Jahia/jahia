@@ -40,12 +40,15 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
@@ -131,6 +134,21 @@ public class RolesTabItem extends EditEngineTabItem {
 
     public void setCanBreakInheritance(boolean canBreakInheritance) {
         this.canBreakInheritance = canBreakInheritance;
+    }
+
+    @Override
+    public void doValidate(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, TabPanel tabs) {
+        if (rolesEditor != null && rolesEditor.getBreakAllInheritance() && !engine.getAcl().isBreakAllInheritance()) {
+            for (GWTJahiaNodeACE ace : rolesEditor.getAcl().getAce()) {
+                if (!ace.isInherited()) {
+                    return;
+                }
+            }
+            EngineValidation.ValidateResult result = new EngineValidation.ValidateResult();
+            result.errorTab = tab;
+            result.message = Messages.get("label.breakInheritanceWarning", "You are going to break acl inheritance, and you did not assign any role to users. You may loose access to this content.");
+            validateResult.add(result);
+        }
     }
 
     @Override

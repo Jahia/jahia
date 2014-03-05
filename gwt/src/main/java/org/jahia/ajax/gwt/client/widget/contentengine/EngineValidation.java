@@ -40,18 +40,20 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.GWTConstraintViolationException;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Utility class used to collect validation result for engine decoration.
@@ -59,95 +61,95 @@ import java.util.Map;
  * @since Jahia 7.0
  */
 public class EngineValidation {
+    private NodeHolder engine;
     private TabPanel tabs;
     private String selectedLanguage;
     private Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties;
 
-    public EngineValidation(TabPanel tabs, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+    public EngineValidation(NodeHolder engine, TabPanel tabs, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+        this.engine = engine;
         this.tabs = tabs;
         this.selectedLanguage = selectedLanguage;
         this.changedI18NProperties = changedI18NProperties;
     }
 
-    public class ValidateResult {
-        public boolean allValid = true;
-        public TabItem firstErrorTab = null;
-        public Field<?> firstErrorField = null;
-        public String firstErrorLang = null;
+    public static class ValidateResult {
+        public boolean canIgnore = true;
+        public TabItem errorTab = null;
+        public Field<?> errorField = null;
+        public String errorLang = null;
+        public String message = Messages.get("failure.invalid.constraint.label",
+                "There are some validation errors!"
+                        + " Click on the information icon next to the"
+                        + " highlighted fields, correct the input and save again."
+        );
     }
+
+    public static interface ValidateCallback {
+        void handleValidationResult(EngineValidation.ValidateResult result);
+
+        void saveAnyway();
+
+        void close();
+    }
+
 
     /**
      * Generate {ValidateResult} based on the GWT fields validation.
      *
      * @return the {ValidateResult}.
      */
-    public ValidateResult validateData() {
-        ValidateResult validateResult = new ValidateResult();
+    public boolean validateData(final ValidateCallback callback) {
+        List<ValidateResult> validateResult = new ArrayList<ValidateResult>();
 
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
-            if (item instanceof ContentTabItem) {
-                Field<String> nameField = ((ContentTabItem)item).getName();
-                if (nameField != null && !nameField.isValid()) {
-                    validateResult.allValid = false;
-                    validateResult.firstErrorTab = tab;
-                    validateResult.firstErrorField = nameField;
-                    break;
-                }
-            }
-            if (item instanceof PropertiesTabItem) {
-                PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
-                if (pe != null) {
-                    for (PropertiesEditor.PropertyAdapterField adapterField : pe.getFieldsMap().values()) {
-                        Field<?> field = adapterField.getField();
-                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && adapterField.getParent() != null && ((FieldSet)adapterField.getParent()).isExpanded()) {
-                            if (validateResult.allValid || tab.equals(tabs.getSelectedItem())
-                                    && !tab.equals(validateResult.firstErrorTab)) {
-                                validateResult.firstErrorTab = tab;
-                                validateResult.firstErrorField = field;
-                            }
-                            validateResult.allValid = false;
-                            break;
-                        }
-                    }
-                    if (!validateResult.allValid) {
-                        break;
-                    }
-                }
-
-                // handle multilang
-                if (propertiesTabItem.isMultiLang()) {
-                    // for now only contentTabItem  has multilang. properties
-                    if (selectedLanguage != null) {
-                        final String lang = selectedLanguage;
-                        for (String language : changedI18NProperties.keySet()) {
-                            if (!lang.equals(language)) {
-                                PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
-                                if (lpe != null) {
-                                    for (PropertiesEditor.PropertyAdapterField adapterField : lpe.getFieldsMap().values()) {
-                                        Field<?> field = adapterField.getField();
-                                        if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet)adapterField.getParent()).isExpanded() && adapterField.getDefinition().isInternationalized()) {
-                                            if (validateResult.allValid || tab.equals(tabs.getSelectedItem())
-                                                    && !tab.equals(validateResult.firstErrorTab)) {
-                                                validateResult.firstErrorTab = tab;
-                                                validateResult.firstErrorField = field;
-                                            }
-                                            validateResult.allValid = false;
-                                        }
-                                    }
-                                    if (!validateResult.allValid) {
-                                        validateResult.firstErrorLang = language;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            item.doValidate(validateResult, engine, tab, selectedLanguage, changedI18NProperties, tabs);
         }
-        return validateResult;
+        if (!validateResult.isEmpty()) {
+            List<ValidateResult> r = new ArrayList<ValidateResult>();
+            for (ValidateResult result : validateResult) {
+                if (result.errorTab == tabs.getSelectedItem()) {
+                    r.add(0,result);
+                } else {
+                    r.add(result);
+                }
+            }
+
+            final Iterator<EngineValidation.ValidateResult> it = r.iterator();
+            displayValidationError(it, callback);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    private void displayValidationError(final Iterator<ValidateResult> it, final ValidateCallback callback) {
+        final EngineValidation.ValidateResult result = it.next();
+        callback.handleValidationResult(result);
+        final Listener<MessageBoxEvent> boxCallback = new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                if (result.canIgnore && be.getButtonClicked().equals(be.getDialog().getButtonById(Dialog.YES))) {
+                    //skip
+                    if (it.hasNext()) {
+                        displayValidationError(it, callback);
+                    } else {
+                        callback.saveAnyway();
+                    }
+                } else {
+                    // close
+                    callback.close();
+                }
+            }
+        };
+        if (result.canIgnore) {
+            String continueMessage = Messages.get("label.continueAnyway", "Do you want to continue anyway ?");
+            MessageBox.confirm(Messages.get("label.error", "Error"), result.message + "</br><b>" + continueMessage + "</b>", boxCallback);
+        } else {
+            MessageBox.alert(Messages.get("label.error", "Error"), result.message, boxCallback);
+        }
     }
 
     /**
@@ -177,23 +179,17 @@ public class EngineValidation {
                             Field<?> field = fieldsMap.get(fieldName).getField();
                             GWTConstraintViolationException error = errorMap.get(fieldName);
                             field.markInvalid(error.getConstraintMessage());
-                            if (validateResult.allValid || tab.equals(tabs.getSelectedItem())
-                                    && !tab.equals(validateResult.firstErrorTab)) {
-                                validateResult.firstErrorTab = tab;
-                                validateResult.firstErrorField = field;
-                                validateResult.firstErrorLang = error.getLocale();
-                            }
-                            validateResult.allValid = false;
+
+                            validateResult.errorTab = tab;
+                            validateResult.errorField = field;
+                            validateResult.errorLang = error.getLocale();
+                            validateResult.canIgnore = false;
                         }
-                    }
-                    if (!validateResult.allValid) {
-                        continue;
                     }
                 }
             }
         }
         return validateResult;
     }
-
 
 }

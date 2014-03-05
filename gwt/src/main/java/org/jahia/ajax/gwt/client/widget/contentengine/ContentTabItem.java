@@ -45,9 +45,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -57,6 +55,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
@@ -555,6 +554,19 @@ public class ContentTabItem extends PropertiesTabItem {
             }
         }
         return false;
+    }
+
+    @Override
+    public void doValidate(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, TabPanel tabs) {
+        Field<String> nameField = getName();
+        if (nameField != null && !nameField.isValid()) {
+            EngineValidation.ValidateResult result = new EngineValidation.ValidateResult();
+            result.canIgnore = false;
+            result.errorTab = tab;
+            result.errorField = nameField;
+            validateResult.add(result);
+        }
+        super.doValidate(validateResult, engine, tab, selectedLanguage, changedI18NProperties, tabs);
     }
 
     public void setDefaultAutoUpdate(boolean defaultAutoUpdate) {

@@ -59,11 +59,8 @@ import javax.validation.ConstraintViolationException;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
-<<<<<<< .working
-=======
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
->>>>>>> .merge-right.r48920
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;

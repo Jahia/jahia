@@ -43,12 +43,8 @@ package org.jahia.ajax.gwt.content.server;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
-<<<<<<< .working
 import com.extjs.gxt.ui.client.data.RpcMap;
 
-=======
-
->>>>>>> .merge-right.r48920
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -81,26 +77,15 @@ import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-<<<<<<< .working
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-=======
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
->>>>>>> .merge-right.r48920
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
-<<<<<<< .working
-import org.jahia.services.usermanager.JahiaGroup;
-=======
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
-import org.jahia.services.sites.JahiaSite;
->>>>>>> .merge-right.r48920
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.*;
 import org.jahia.services.visibility.VisibilityConditionRule;
@@ -1468,16 +1453,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             seo.saveUrlMappings(node, updatedLocales, mappings, retrieveCurrentSession());
         } catch (NonUniqueUrlMappingException e) {
             Locale uiLocale = getUILocale();
-            throw new GWTJahiaServiceException(JahiaResourceBundle.format(
-                    JahiaResourceBundle.getJahiaInternalResource("failure.duplicateVanityUrlMapping", uiLocale),
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments(
+                    "failure.duplicateVanityUrlMapping", uiLocale,
                     e.getUrlMapping(), e.getNodePath(), e.getExistingNodePath(),
-                    JahiaResourceBundle.getJahiaInternalResource("label." + e.getWorkspace(), uiLocale)));
+                    Messages.getInternal("label." + e.getWorkspace(), uiLocale)));
         } catch (ConstraintViolationException e) {
-<<<<<<< .working
-            // TODO handle it and display correct messages for the user
-            //logger.error(e.getMessage(), e);
-=======
->>>>>>> .merge-right.r48920
             throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

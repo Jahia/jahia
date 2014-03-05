@@ -136,7 +136,9 @@ public class FormFieldCreator {
                                 f.addListener(Events.Change, new Listener<ComponentEvent>() {
                                     public void handleEvent(ComponentEvent event) {
                                         String s = f.getValue();
-                                        f.setValue(s.trim());
+                                        if (s != null) {
+                                            f.setValue(s.trim());
+                                        }
                                     }
                                 });
                                 field = f;

@@ -389,67 +389,78 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             getNode().getNodeTypes().removeAll(removedTypes);
             getNode().getNodeTypes().addAll(addedTypes);
 
-            EngineValidation e = new EngineValidation(tabs, defaultLanguageCode, changedI18NProperties);
-            EngineValidation.ValidateResult r = e.validateData();
-            if (!r.allValid) {
-    			MessageBox.alert(Messages.get("label.error", "Error"),
-    			        Messages.get("failure.invalid.constraint.label",
-    			                "There are some validation errors!"
-    			                        + " Click on the information icon next to the"
-    			                        + " highlighted fields, correct the input and save again."),
-    			        null);
-                if (r.firstErrorTab != null && !tabs.getSelectedItem().equals(r.firstErrorTab)) {
-                    tabs.setSelection(r.firstErrorTab);
-                }
-                if (r.firstErrorField != null) {
-                    r.firstErrorField.focus();
-                }
-                if (r.firstErrorTab != null) {
-                    r.firstErrorTab.layout();
-                }
-            } else {
-
-                // we temporarily deactivate the button to prevent double clicks while saving...
-                final boolean okEnabled = ok.isEnabled();
-                ok.setEnabled(false);
-
-                // Ajax call to update values
-                AsyncCallback callback = new BaseAsyncCallback() {
-                    public void onApplicationFailure(Throwable throwable) {
-                        String message = throwable.getMessage();
-                        if (message.contains("Invalid link")) {
-                            message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
-                        }
-                        com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
-                                + message);
-                        Log.error("failed", throwable);
-                        ok.setEnabled(okEnabled);
+            EngineValidation e = new EngineValidation(ContentDetails.this, tabs, defaultLanguageCode, changedI18NProperties);
+            boolean valid = e.validateData(new EngineValidation.ValidateCallback() {
+                @Override
+                public void handleValidationResult(EngineValidation.ValidateResult result) {
+                    if (result.errorTab != null && !tabs.getSelectedItem().equals(result.errorTab)) {
+                        tabs.setSelection(result.errorTab);
                     }
-
-                    public void onSuccess(Object o) {
-                        ok.setEnabled(okEnabled);
-                        Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
-                        if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
-                            Map<String, Object> data = new HashMap<String, Object>();
-                            data.put(Linker.REFRESH_ALL, true);
-                            linker.refresh(data);
-                        } else {
-                            linker.refreshTable();
-                        }
+                    if (result.errorField != null) {
+                        result.errorField.focus();
                     }
-                };
-
-                if (isMultipleSelection()) {
-                    JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, removedTypes, callback);
-
-                } else {
-                    JahiaContentManagementService.App.getInstance()
-                            .saveNode(getNode(), acl, changedI18NProperties, changedProperties,
-                                    removedTypes, callback);
+                    if (result.errorTab != null) {
+                        result.errorTab.layout();
+                    }
                 }
+
+                @Override
+                public void saveAnyway() {
+                    save(changedProperties, removedTypes, changedI18NProperties);
+                }
+
+                @Override
+                public void close() {
+
+                }
+            });
+
+            if (valid) {
+                save(changedProperties, removedTypes, changedI18NProperties);
             }
         }
 
+    }
+
+    private void save(List<GWTJahiaNodeProperty> changedProperties, Set<String> removedTypes, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) {
+        // we temporarily deactivate the button to prevent double clicks while saving...
+        final boolean okEnabled = ok.isEnabled();
+        ok.setEnabled(false);
+
+        // Ajax call to update values
+        AsyncCallback callback = new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
+                String message = throwable.getMessage();
+                if (message.contains("Invalid link")) {
+                    message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
+                }
+                com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
+                        + message);
+                Log.error("failed", throwable);
+                ok.setEnabled(okEnabled);
+            }
+
+            public void onSuccess(Object o) {
+                ok.setEnabled(okEnabled);
+                Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
+                if (getNodes().contains(linker.getSelectionContext().getMainNode())) {
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_ALL, true);
+                    linker.refresh(data);
+                } else {
+                    linker.refreshTable();
+                }
+            }
+        };
+
+        if (isMultipleSelection()) {
+            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, removedTypes, callback);
+
+        } else {
+            JahiaContentManagementService.App.getInstance()
+                    .saveNode(getNode(), acl, changedI18NProperties, changedProperties,
+                            removedTypes, callback);
+        }
     }
 
 }

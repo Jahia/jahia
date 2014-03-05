@@ -378,8 +378,7 @@ public class ContentTabItem extends PropertiesTabItem {
             }
             invalidLanguagesFieldSet = new FieldSet();
             invalidLanguagesFieldSet.setHeadingHtml(Messages.get("label.validLanguages", "Valid display languages"));
-            invalidLanguagesFieldSet.setLayout(fl);
-
+            invalidLanguagesFieldSet.setLayout(new FormLayout());
             invalidLanguagesFieldSet.add(layoutContainer1, fd);
         }
         super.attachPropertiesEditor(engine, tab);

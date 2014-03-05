@@ -1122,6 +1122,7 @@ public class MainModule extends Module {
             }
         }-*/;
 
+
     }
 
     private String getPathFromUrl(String url) {
@@ -1131,5 +1132,25 @@ public class MainModule extends Module {
         }
         return url;
     }
+
+    public final int getIE10FrameTop() {
+        return getIE10FrameTop(IFrameElement.as(frame.getElement()));
+    }
+
+    public final int getIE10FrameLeft(){
+        return getIE10FrameLeft(IFrameElement.as(frame.getElement()));
+    }
+
+    public final native int getIE10FrameTop(IFrameElement iFrameElement) /*-{
+        if (iFrameElement.contentWindow.document.documentElement != null) {
+            return iFrameElement.contentWindow.document.documentElement.scrollTop;
+        }
+    }-*/;
+
+    public final native int getIE10FrameLeft(IFrameElement iFrameElement) /*-{
+        if (iFrameElement.contentWindow.document.documentElement != null) {
+            return iFrameElement.contentWindow.document.documentElement.scrollLeft;
+        }
+    }-*/;
 
 }

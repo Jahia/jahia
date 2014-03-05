@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -59,7 +60,7 @@ public class Hover {
 
     private static Hover instance;
 
-    private Module mainModule;
+    private MainModule mainModule;
 
     private Map<Module, Box> boxes = new HashMap<Module, Box>();
 
@@ -245,7 +246,11 @@ public class Hover {
 
             onShow();
 
-            setPosition(ctn.getAbsoluteLeft(), ctn.getAbsoluteTop(), ctn.getWidth(), ctn.getHeight());
+            if (!GXT.isIE10) {
+                setPosition(ctn.getAbsoluteLeft(), ctn.getAbsoluteTop(), ctn.getWidth(), ctn.getHeight());
+            } else {
+                setPosition(ctn.getAbsoluteLeft() + mainModule.getIE10FrameLeft(), ctn.getAbsoluteTop() + mainModule.getIE10FrameTop(), ctn.getWidth(), ctn.getHeight());
+            }
         }
 
         public void hide() {

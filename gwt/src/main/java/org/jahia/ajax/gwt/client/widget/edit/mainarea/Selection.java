@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -138,8 +139,14 @@ public class Selection extends LayoutContainer {
 
         onShow();
         if (currentContainer != null) {
-            setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(), currentContainer.getWidth(),
-                    currentContainer.getHeight());
+            if (!GXT.isIE10) {
+                setPosition(currentContainer.getAbsoluteLeft(), currentContainer.getAbsoluteTop(), currentContainer.getWidth(),
+                        currentContainer.getHeight());
+            } else {
+                setPosition(currentContainer.getAbsoluteLeft() + mainModule.getIE10FrameLeft(), currentContainer.getAbsoluteTop() + mainModule.getIE10FrameTop(), currentContainer.getWidth(),
+                        currentContainer.getHeight());
+            }
+
         }
     }
 

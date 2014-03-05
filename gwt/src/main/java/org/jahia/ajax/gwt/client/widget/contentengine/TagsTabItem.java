@@ -92,15 +92,11 @@ public class TagsTabItem extends EditEngineTabItem {
     private transient Map<String, GWTJahiaNodeProperty> newValues;
     private transient TreeStore<GWTJahiaNode> tagStore;
     private transient TreeLoader<GWTJahiaNode> tagLoader;
-    private transient boolean tagAreI15d;
 
     public void init(final NodeHolder engine, final AsyncTabItem tab, String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
-//            setProcessed(true);
+            tab.setProcessed(true);
             if (newValues == null) {
-                if(tagAreI15d) {
-                    this.locale = locale;
-                }
                 this.oldValues = new HashMap<String, GWTJahiaNodeProperty>();
                 this.newValues = new HashMap<String, GWTJahiaNodeProperty>();
                 tab.setLayout(new BorderLayout());
@@ -250,12 +246,6 @@ public class TagsTabItem extends EditEngineTabItem {
                 tagGrid.getTreeView().setForceFit(true);
                 tab.add(tagGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
                 tab.layout();
-            } else {
-                if(tagAreI15d) {
-                    this.locale = locale;
-                }
-                tagStore.removeAll();
-                tagLoader.load();
             }
         }
     }
@@ -296,12 +286,7 @@ public class TagsTabItem extends EditEngineTabItem {
 
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
-        if (isTagAreI15d()) {
-            updateI18NProperties(changedI18NProperties, addedTypes, removedTypes);
-        } else {
-            updateProperties(changedProperties, addedTypes, removedTypes);
-        }
-
+        updateProperties(changedProperties, addedTypes, removedTypes);
     }
 
     public void updateProperties(List<GWTJahiaNodeProperty> list, Set<String> addedTypes, Set<String> removedTypes) {
@@ -343,12 +328,4 @@ public class TagsTabItem extends EditEngineTabItem {
         }
         super.setProcessed(processed);
     }
-
-    public void setTagAreI15d(boolean tagAreI15d) {
-        this.tagAreI15d = tagAreI15d;
-    }
-
-    public boolean isTagAreI15d() {
-        return tagAreI15d;
-    }
-}
+ }

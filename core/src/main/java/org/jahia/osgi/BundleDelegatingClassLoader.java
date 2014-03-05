@@ -62,7 +62,7 @@ import java.util.Enumeration;
  * @author Andy Piper
  * @author Costin Leau
  */
-class BundleDelegatingClassLoader extends ClassLoader implements BundleReference {
+public class BundleDelegatingClassLoader extends ClassLoader implements BundleReference {
 
     /**
      * use degradable logger

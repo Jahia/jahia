@@ -858,7 +858,8 @@ public class JahiaTemplatesPackage {
      * @return the module bundle's class loader instance
      */
     public ClassLoader getClassLoader() {
-        if (classLoader == null && bundle != null) {
+        if (classLoader == null && bundle != null && state != null && state.getState() != null
+                && state.getState() != ModuleState.State.STOPPING && state.getState() != ModuleState.State.STOPPED ) {
             classLoader = BundleUtils.createBundleClassLoader(bundle);
         }
         return classLoader;

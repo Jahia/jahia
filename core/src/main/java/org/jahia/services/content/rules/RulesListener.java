@@ -43,25 +43,26 @@ package org.jahia.services.content.rules;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatelessSession;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.rule.Package;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleDelegatingClassLoader;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.settings.SettingsBean;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -69,7 +70,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-
 import java.io.*;
 import java.util.*;
 
@@ -708,6 +708,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     public void removeRules(JahiaTemplatesPackage module) {
         removeRules(module.getName());
         ClassLoader cl = module.getClassLoader();
+        if (cl == null) {
+            for (ClassLoader classLoader : ruleBaseClassLoader.getClassLoaders()) {
+                if (classLoader instanceof BundleDelegatingClassLoader
+                        && module.getBundle().getBundleId() == ((BundleDelegatingClassLoader) classLoader).getBundle().getBundleId()) {
+                    cl = classLoader;
+                    break;
+                }
+            }
+        }
         if (cl != null) {
             ruleBaseClassLoader.removeClassLoader(cl);
         }

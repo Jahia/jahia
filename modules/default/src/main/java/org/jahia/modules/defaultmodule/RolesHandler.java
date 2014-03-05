@@ -232,7 +232,7 @@ public class RolesHandler implements Serializable {
         }
         session.save();
         // Publish the node acls
-        if (session.getNode(nodePath).hasNode("j:acl")) {
+        if (Constants.EDIT_WORKSPACE.equals(workspace) && session.getNode(nodePath).hasNode("j:acl")) {
             publicationService.publishByMainId(session.getNode(nodePath).getNode("j:acl").getIdentifier());
         }
     }
@@ -260,7 +260,7 @@ public class RolesHandler implements Serializable {
 
         session.save();
         // Publish the node acls
-        if (session.getNode(nodePath).hasNode("j:acl")) {
+        if (Constants.EDIT_WORKSPACE.equals(workspace) && session.getNode(nodePath).hasNode("j:acl")) {
             publicationService.publishByMainId(session.getNode(nodePath).getNode("j:acl").getIdentifier());
         }
     }

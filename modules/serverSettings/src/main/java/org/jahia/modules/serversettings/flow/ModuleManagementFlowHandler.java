@@ -74,6 +74,9 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,6 +194,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             InputStream is = new URL(location).openStream();
             try {
                 bundle = FrameworkService.getBundleContext().installBundle(location, is);
+                bundle.adapt(BundleStartLevel.class).setStartLevel(2);
             } finally {
                 IOUtils.closeQuietly(is);
             }

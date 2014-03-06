@@ -136,7 +136,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         if (site.getPath().startsWith("/sites/")) {
             for (String s : site.getInstalledModulesWithAllDependencies()) {
-                packages.add(templateManagerService.getTemplatePackageById(s));
+                final JahiaTemplatesPackage templatePackageById = templateManagerService.getTemplatePackageById(s);
+                if (templatePackageById != null) {
+                    packages.add(templatePackageById);
+                }
             }
         } else if (site.getPath().startsWith("/modules/")) {
             JahiaTemplatesPackage aPackage = templateManagerService.getTemplatePackageById(site.getName());

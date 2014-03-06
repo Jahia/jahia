@@ -83,6 +83,7 @@ import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -365,7 +366,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         FileInputStream is = new FileInputStream(generatedWar);
         try {
-            FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), is);
+            Bundle bundle = FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), is);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(2);
         } finally {
             IOUtils.closeQuietly(is);
         }

@@ -61,6 +61,7 @@ import org.jahia.utils.PomUtils;
 import org.jahia.utils.ProcessHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,6 +139,7 @@ public class ModuleBuildHelper {
         FileInputStream is = new FileInputStream(moduleInfo.getFile());
         try {
             bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), is);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(2);
         } finally {
             IOUtils.closeQuietly(is);
         }

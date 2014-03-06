@@ -41,9 +41,11 @@
 package org.jahia.ajax.gwt.client.util.security;
 
 import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +98,7 @@ public class PermissionsUtils {
         if (permissions == null) {
             return false;
         }
-        if(JahiaGWTParameters.getCurrentUser().equalsIgnoreCase("root")) {
+        if("root".equals(JahiaGWTParameters.getCurrentUser())) {
             return true;
         }
         int i = grantedPermissions.indexOf(permissionName);
@@ -106,7 +108,7 @@ public class PermissionsUtils {
         }
 
         if (i == -1) {
-            Window.alert("Unknown permission " + permissionName);
+            Window.alert(Messages.get("message.unknownPermission", "Unknown permission") + " " + permissionName);
             return false;
         }
         return permissions.get(i);

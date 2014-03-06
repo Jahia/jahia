@@ -91,7 +91,7 @@ public class ValidationTest {
     public void testNotNullConstraint() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testNotNull = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testNotNull", TEST_NODE_TYPE);
             session.save();
         } catch (CompositeConstraintViolationException e) {
@@ -105,7 +105,7 @@ public class ValidationTest {
     public void testSizeBetween6And20Constraint() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testSizeBetween6And20 = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testSizeBetween6And20", TEST_NODE_TYPE);
             testSizeBetween6And20.setProperty("test:notNull", "something");
             testSizeBetween6And20.setProperty("test:sizeBetween6And20", "abc");
@@ -121,7 +121,7 @@ public class ValidationTest {
     public void testFieldMatchCustomConstraint() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testFieldMatch = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testFieldMatch", TEST_NODE_TYPE);
             testFieldMatch.setProperty("test:notNull", "something");
             testFieldMatch.setProperty("test:sizeBetween6And20", "abcdefghijklm");
@@ -139,7 +139,7 @@ public class ValidationTest {
     public void testEmailConstraint() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testEmail = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testEmail", TEST_NODE_TYPE);
             testEmail.setProperty("test:notNull", "something");
             testEmail.setProperty("test:sizeBetween6And20", "abcdefghijklm");
@@ -164,7 +164,7 @@ public class ValidationTest {
     public void testFutureDateConstraint() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testFutureDate = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testFutureDate", TEST_NODE_TYPE);
             testFutureDate.setProperty("test:notNull", "something");
             testFutureDate.setProperty("test:sizeBetween6And20", "abcdefghijklm");
@@ -183,7 +183,7 @@ public class ValidationTest {
     public void testGreaterThan2Constraint() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testGreaterThan2 = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testGreaterThan2", TEST_NODE_TYPE);
             testGreaterThan2.setProperty("test:notNull", "something");
             testGreaterThan2.setProperty("test:sizeBetween6And20", "abcdefghijklm");
@@ -205,7 +205,7 @@ public class ValidationTest {
     public void testMessageTranslation() throws Exception {
         List<ConstraintViolationException> errors = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
             JCRNodeWrapper testGreaterThan2 = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testTranslation", TEST_NODE_TYPE);
             testGreaterThan2.setProperty("test:sizeBetween6And20", "abc");
             testGreaterThan2.setProperty("test:email", "badmail.com");

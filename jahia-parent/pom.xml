@@ -70,20 +70,20 @@
         <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
 
         <!-- plugin versions -->
-        <javadoc.plugin.version>2.8</javadoc.plugin.version>
-        <assembly.plugin.version>2.2</assembly.plugin.version>
-        <site.plugin.version>3.0</site.plugin.version>
-        <war.plugin.version>2.3</war.plugin.version>
+        <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
+        <assembly.plugin.version>2.4</assembly.plugin.version>
+        <site.plugin.version>3.3</site.plugin.version>
+        <war.plugin.version>2.4</war.plugin.version>
         <enforcer.plugin.version>1.1.1</enforcer.plugin.version>
-        <compiler.plugin.version>2.3.2</compiler.plugin.version>
+        <compiler.plugin.version>3.1</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
-        <source.plugin.version>2.1.2</source.plugin.version>
+        <source.plugin.version>2.2.1</source.plugin.version>
         <release.plugin.version>2.2.1.jahia1</release.plugin.version>
-        <project.info.reports.plugin.version>2.2</project.info.reports.plugin.version>
-        <jxr.plugin.version>2.2</jxr.plugin.version>
-        <antrun.plugin.version>1.6</antrun.plugin.version>
+        <project.info.reports.plugin.version>2.7</project.info.reports.plugin.version>
+        <jxr.plugin.version>2.3</jxr.plugin.version>
+        <antrun.plugin.version>1.7</antrun.plugin.version>
         <surefire.plugin.version>2.7.2</surefire.plugin.version>
-        <eclipse.plugin.version>2.8</eclipse.plugin.version>
+        <eclipse.plugin.version>2.9</eclipse.plugin.version>
         <nexus.maven.plugin.version>1.5.1</nexus.maven.plugin.version>
 
         <!-- OSGi versions -->
@@ -529,7 +529,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>2.8</version>
                 </plugin>
 				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>

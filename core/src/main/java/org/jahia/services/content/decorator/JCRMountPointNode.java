@@ -111,7 +111,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     private JCRStoreProvider getMountProvider() throws RepositoryException {
         JCRStoreProvider provider;
         Map<String, JCRStoreProvider> dynamicMountPoints = getProvider().getSessionFactory().getDynamicMountPoints();
-        if (!dynamicMountPoints.containsKey(getPath())) {
+        if (dynamicMountPoints == null || !dynamicMountPoints.containsKey(getPath())) {
             ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName());
             if (providerFactory == null) {
                 logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");

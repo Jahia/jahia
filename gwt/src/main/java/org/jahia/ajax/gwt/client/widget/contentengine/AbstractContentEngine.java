@@ -408,6 +408,23 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     }
 
+    protected void removeUneditedLanguages() {
+        Set<String> editedLanguages = new HashSet<String>();
+        editedLanguages.add(getSelectedLanguage());
+        for (Map.Entry<String, List<GWTJahiaNodeProperty>> entry : getChangedI18NProperties().entrySet()) {
+            if (!getSelectedLanguage().equals(entry.getKey())) {
+                for (GWTJahiaNodeProperty property : entry.getValue()) {
+                    if (property.isDirty()) {
+                        editedLanguages.add(entry.getKey());
+                        break;
+                    }
+                }
+            }
+        }
+        getChangedI18NProperties().keySet().retainAll(editedLanguages);
+    }
+
+
     public Linker getLinker() {
         return linker;
     }

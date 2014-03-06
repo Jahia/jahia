@@ -150,6 +150,8 @@ public class UpdateButtonItem extends SaveButtonItem {
         engine.getNode().getNodeTypes().removeAll(removedTypes);
         engine.getNode().getNodeTypes().addAll(addedTypes);
 
+        engine.removeUneditedLanguages();
+
         JahiaContentManagementService.App.getInstance().saveNode(engine.getNode(),
                 engine.getAcl(), engine.getChangedI18NProperties(), engine.getChangedProperties(),
                 removedTypes, new BaseAsyncCallback<RpcMap>() {

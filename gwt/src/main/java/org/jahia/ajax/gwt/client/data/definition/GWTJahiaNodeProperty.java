@@ -52,6 +52,7 @@ public class GWTJahiaNodeProperty implements Serializable {
     /** The serialVersionUID. */
     private static final long serialVersionUID = 462346339035404507L;
     private boolean multiple;
+    private boolean dirty;
     private String name;
     private List<GWTJahiaNodePropertyValue> values;
 
@@ -117,6 +118,14 @@ public class GWTJahiaNodeProperty implements Serializable {
         this.multiple = multiple;
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     public String getName() {
         return name;
     }
@@ -130,6 +139,7 @@ public class GWTJahiaNodeProperty implements Serializable {
     }
 
     public void setValues(List<GWTJahiaNodePropertyValue> values) {
+        this.dirty = true;
         this.values = values;
     }
 

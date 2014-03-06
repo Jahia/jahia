@@ -172,6 +172,9 @@ public class CreateButtonItem extends SaveButtonItem {
                 }
             }
         };
+
+        engine.removeUneditedLanguages();
+
         if (engine.isCreateInParentAndMoveBefore()) {
             JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {

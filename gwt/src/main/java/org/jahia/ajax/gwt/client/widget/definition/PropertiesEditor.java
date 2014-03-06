@@ -501,6 +501,7 @@ public class PropertiesEditor extends FormPanel {
                                     (f.isDirty() || !modifiedOnly || f.getData("addedField") != null || f.getData("defaultedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
+                                prop.setDirty(f.isDirty());
                                 newProps.add(prop);
                             }
                         }

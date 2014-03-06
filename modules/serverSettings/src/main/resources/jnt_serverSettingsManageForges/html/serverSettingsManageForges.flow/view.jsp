@@ -77,7 +77,7 @@
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span8">
-                    <label for="url"><fmt:message key="serverSettings.manageForges.url"/></label>
+                    <label for="url"><fmt:message key="serverSettings.manageForges.url"/> <span title='<fmt:message key="serverSettings.manageForges.url.help"/>'><i class="icon-exclamation-sign"></i></span></label>
                     <form:input class="span12" type="text" id="url" path="url"/>
                     <form:input path="id" type="hidden"/>
                 </div>

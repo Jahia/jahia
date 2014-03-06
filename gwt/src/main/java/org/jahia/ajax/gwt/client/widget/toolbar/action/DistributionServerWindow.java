@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -131,6 +132,10 @@ public abstract class DistributionServerWindow extends Window {
 
         final TextField<String> tfForgeUrl = new TextField<String>();
         tfForgeUrl.setFieldLabel(Messages.get("label.url", "URL"));
+        String separator = tfForgeUrl.getLabelSeparator() != null ? tfForgeUrl.getLabelSeparator() : "";
+        tfForgeUrl.setLabelSeparator(separator + " <img width='16px' height='16px' src='" + JahiaGWTParameters.getContextPath() +
+                "/modules/default/images/icons/information.png' title='" + Messages.get("label.releaseModule.distributionServer.url.help",
+                "Copy URL displayed on the AppStore home page").replace("'", " ") + "'/>");
         tfForgeUrl.setAllowBlank(false);
         if (info.getForgeUrl() != null) {
             tfForgeUrl.setValue(info.getForgeUrl());

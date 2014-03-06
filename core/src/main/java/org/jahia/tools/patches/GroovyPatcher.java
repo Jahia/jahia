@@ -260,37 +260,45 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         } catch (ScriptException e) {
             throw new JahiaInitializationException(e.getMessage(), e);
         }
+        
+        // execute scripts right now
+        perform();
 
+        // start watchdog for monitoring
         watchdog = new Timer(true);
         watchdog.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Checking for avilable Groovy patches in {}", patchesLookup);
-                }
-                Resource[] resources = null;
-                try {
-                    resources = SpringContextSingleton.getInstance().getResources(patchesLookup,
-                            false);
-                } catch (IOException e) {
-                    logger.error(
-                            "Error looking up patches in " + patchesLookup + ". Cause: "
-                                    + e.getMessage(), e);
-                }
-                if (resources == null || resources.length == 0) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("No new Groovy patches found in {}. Sleeping...",
-                                patchesLookup);
-                    }
-                    return;
-                }
-
-                Arrays.sort(resources, RESOURCE_COMPARATOR);
-                executeScripts(resources);
+                perform();
             }
         }, 0, interval);
     }
 
+    private void perform() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("Checking for avilable Groovy patches in {}", patchesLookup);
+        }
+        Resource[] resources = null;
+        try {
+            resources = SpringContextSingleton.getInstance().getResources(patchesLookup,
+                    false);
+        } catch (IOException e) {
+            logger.error(
+                    "Error looking up patches in " + patchesLookup + ". Cause: "
+                            + e.getMessage(), e);
+        }
+        if (resources == null || resources.length == 0) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("No new Groovy patches found in {}. Sleeping...",
+                        patchesLookup);
+            }
+            return;
+        }
+
+        Arrays.sort(resources, RESOURCE_COMPARATOR);
+        executeScripts(resources);
+    }
+    
     public void setInterval(long interval) {
         this.interval = interval;
     }

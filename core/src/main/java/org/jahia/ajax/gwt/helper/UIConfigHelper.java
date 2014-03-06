@@ -585,7 +585,7 @@ public class UIConfigHelper {
                     JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
                     if (resolvedSite == null) {
                         resolvedSite = JahiaSitesService.getInstance().getDefaultSite(session);
-                        if (!((JCRSiteNode)resolvedSite).hasPermission(config.getRequiredPermission())) {
+                        if (resolvedSite != null && !((JCRSiteNode)resolvedSite).hasPermission(config.getRequiredPermission())) {
                             resolvedSite = null;
                         }
                         if (resolvedSite == null) {

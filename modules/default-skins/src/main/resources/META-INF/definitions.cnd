@@ -1,7 +1,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:style] > jmix:templateMixin mixin
- extends = jmix:list
+ extends = jmix:droppableContent
  itemtype = layout
  - j:style (string, choicelist) = 'grey' nofulltext < 'grey','blue','mushroom','orange','black','red','green','purple','yellow'
  - icon (weakreference, picker[type='image'])

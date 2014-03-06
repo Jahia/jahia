@@ -525,7 +525,7 @@
         <tag-class>org.jahia.taglibs.template.CaptchaTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>If set to false the captach image won't be shown, but the generated Captcha image URL will be exposed into the page scope variabled, defined by var (since Jahia 6.6). [true]</description>
+            <description>If set to false the captcha image won't be shown, but the generated Captcha image URL will be exposed into the page scope variabled, defined by var (since Jahia 6.6). [true]</description>
             <name>display</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

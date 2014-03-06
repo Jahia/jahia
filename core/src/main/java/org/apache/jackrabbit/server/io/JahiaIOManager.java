@@ -64,18 +64,6 @@ public class JahiaIOManager extends IOManagerImpl {
     }
 
     /**
-     * Creates a new <code>DefaultIOManager</code>. The if the flag is set to
-     * false no <code>IOHandler</code>s are added to the internal list.
-     *
-     * @deprecated Use {@link IOManagerImpl} instead.
-     */
-    protected JahiaIOManager(boolean initDefaults) {
-        if (initDefaults) {
-           init();
-        }
-    }
-
-    /**
      * Add the predefined <code>IOHandler</code>s to this manager. This includes
      * <ul>
      * <li>{@link ZipHandler}</li>

@@ -99,22 +99,6 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
      *            the content to be modified
      * @param filteredTags
      *            the set of tags to be filtered out
-     * @return filtered out content or the original one if no modifications needs to be done
-     * @deprecated since 6.5 SP1 use the {@link #filterTags(String, Set, boolean)} instead 
-     * @Deprecated
-     */
-    protected static String filterTags(String content, Set<String> filteredTags) {
-        return filterTags(content, filteredTags, false);
-    }
-
-    /**
-     * Filters out configured "unwanted" HTML tags and returns the modified content. If no modifications needs to be done, returns the
-     * original content.
-     * 
-     * @param content
-     *            the content to be modified
-     * @param filteredTags
-     *            the set of tags to be filtered out
      * @param removeContentBetweenTags
      *            if set to <code>true</code> the content between the start and end tag elements will be also removed from the output;
      *            otherwise only start and end tags themselves are removed.

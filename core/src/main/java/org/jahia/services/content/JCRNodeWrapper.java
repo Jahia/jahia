@@ -388,14 +388,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException;
 
     /**
-     * Get the value to store in jahia_fields_data when used as a jahia file field
-     *
-     * @return the value for jahia_fields_data for legacy code
-     * @deprecated
-     */
-    String getStorageName();
-
-    /**
      * Get the absolute file content url
      *
      * @param request the current request.

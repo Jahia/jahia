@@ -61,17 +61,6 @@ import java.util.Map;
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
  */
 public class URLGenerator {
-    /**
-     * Returns the server URL, including scheme, host and port. The URL is in the form <code><scheme><host>:<port></code>, e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case of standard HTTP (80) and HTTPS (443)
-     * ports.
-     *
-     * @return the server URL, including scheme, host and port
-     * @deprecated Please use Url.getServer(HttpServletRequest request) instead
-     */
-    public static String getServer(HttpServletRequest request) {
-        return Url.getServer(request);
-    }
-
     private String base;
 
     private String live;

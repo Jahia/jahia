@@ -771,19 +771,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public String getStorageName() {
-        String uuid;
-        try {
-            uuid = objectNode.getIdentifier();
-        } catch (RepositoryException e) {
-            uuid = localPathInProvider;
-        }
-        return provider.getKey() + ":" + uuid;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getAbsoluteUrl(ServletRequest request) {
         return provider.getAbsoluteContextPath(request) + getUrl();
     }
@@ -859,52 +846,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             map.put(thumbnailName, getThumbnailUrl(thumbnailName));
         }
         return map;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated
-     */
-    public List<JCRNodeWrapper> getChildren() {
-        List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
-        try {
-            NodeIterator nodes = getNodes();
-            while (nodes.hasNext()) {
-                JCRNodeWrapper node = (JCRNodeWrapper) nodes.next();
-                list.add(node);
-            }
-        } catch (RepositoryException e) {
-            logger.error("Repository error", e);
-        }
-        return list;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<JCRNodeWrapper> getEditableChildren() {
-        List<JCRNodeWrapper> list = getChildren();
-        list.add(new JCRPlaceholderNode(this));
-        return list;
-    }
-
-    /**
-     * @see #getNodes(String)
-     * @deprecated
-     */
-    public List<JCRNodeWrapper> getChildren(String name) {
-        List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
-        try {
-            NodeIterator nodes = getNodes(name);
-            while (nodes.hasNext()) {
-                JCRNodeWrapper node = (JCRNodeWrapper) nodes.next();
-                list.add(node);
-            }
-        } catch (RepositoryException e) {
-            logger.error("Repository error", e);
-        }
-        return list;
     }
 
     /**

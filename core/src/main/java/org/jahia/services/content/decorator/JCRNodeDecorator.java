@@ -151,10 +151,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.createCollection(name);
     }
 
-    public String getStorageName() {
-        return node.getStorageName();
-    }
-
     public String getAbsoluteUrl(ServletRequest request) {
         return node.getAbsoluteUrl(request);
     }

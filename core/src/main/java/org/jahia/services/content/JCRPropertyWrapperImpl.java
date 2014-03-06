@@ -357,16 +357,6 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return def.getRequiredType();
     }
 
-    /**
-     * @return
-     * @throws ValueFormatException
-     * @throws RepositoryException
-     * @deprecated use getNode instead
-     */
-    public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
-        return getValue().getCategory();
-    }
-
     public String getName() throws RepositoryException {
         return name;
     }

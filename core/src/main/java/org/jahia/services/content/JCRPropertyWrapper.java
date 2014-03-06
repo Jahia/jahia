@@ -75,14 +75,6 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
         }
     };
 
-    /**
-     * @return
-     * @throws ValueFormatException
-     * @throws RepositoryException
-     * @deprecated use getNode instead
-     */
-    CategoryBean getCategory() throws ValueFormatException, RepositoryException;
-
     void addValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
     void addValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;

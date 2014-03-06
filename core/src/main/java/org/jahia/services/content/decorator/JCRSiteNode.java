@@ -149,7 +149,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     }
 
     /**
-     * @deprecated use either {@link #getActiveLiveLanguages} method instead
+     * @deprecated use {@link #getActiveLiveLanguages} method instead
      */
     @Deprecated
     public Set<String> getActiveLanguages() {

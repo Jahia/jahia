@@ -122,7 +122,7 @@ public class WelcomeServlet extends HttpServlet {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
             String language = resolveLanguage(request, site, user);
-            redirect(request.getContextPath() + "/cms/render/live/"+language + user.getLocalPath() + ".user-home.html", response);
+            redirect(request.getContextPath() + "/cms/dashboard/live/"+language + user.getLocalPath() + ".me.html", response);
         } else {
             throw new AccessDeniedException();
         }

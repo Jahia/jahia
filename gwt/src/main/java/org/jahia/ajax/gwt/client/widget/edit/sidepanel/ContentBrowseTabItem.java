@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -161,7 +162,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                         contentStore.removeAll();
                     }
                     if (!node.getPath().equals(editLinker.getMainModule().getPath()) && node.getNodeTypes().contains("jnt:page") &&
-                            (PermissionsUtils.isPermitted("editModeAccess", node) || PermissionsUtils.isPermitted("studioModeAccess", node))
+                            (PermissionsUtils.isPermitted("editModeAccess", JahiaGWTParameters.getSiteNode()) || PermissionsUtils.isPermitted("studioModeAccess", JahiaGWTParameters.getSiteNode()))
                             ) {
                         MainModule.staticGoTo(node.getPath(), null);
                     }                } else {

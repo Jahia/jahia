@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
@@ -235,7 +236,7 @@ public class PagesTabItem extends SidePanelTabItem {
             }
             if (activeItem != null && isAllowed) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
-                isAllowed = PermissionsUtils.isPermitted("editModeAccess", activeNode) && PermissionsUtils.isPermitted(
+                isAllowed = PermissionsUtils.isPermitted("editModeAccess", JahiaGWTParameters.getSiteNode()) && PermissionsUtils.isPermitted(
                         "jcr:write_default", activeNode) && !activeNode.isLocked();
                 if (isAllowed) {
                     GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);

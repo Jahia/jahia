@@ -428,7 +428,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 fd.setMargins(new Margins(0));
                 nameFieldSet.add(name, fd);
 
-                boolean nameWriteable = !engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:write", engine.getNode()) && !engine.getNode().isLocked());
+                boolean nameWriteable = !engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:write_default", engine.getNode()) && !engine.getNode().isLocked());
                 if (!nameWriteable) {
                     nameText.setReadOnly(true);
                     if (autoUpdateName != null) {

@@ -138,6 +138,15 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 
         if (rolesNode.hasNode("editor-in-chief")) {
             log.info("Start updating editor-in-chief role...");
+            def permsToAdd = [];
+            if (jcrsession.nodeExists("/roles/editor/editor-in-chief")) {
+                // copy permissions and remove existing node
+                JCRNodeWrapper existingNode = jcrsession.getNode("/roles/editor/editor-in-chief");
+                if (existingNode.hasProperty("j:permissionNames")) {
+                    existingNode.getProperty("j:permissionNames").getValues().collect(permsToAdd, {it.getString()});
+                }
+                existingNode.remove();
+            }
             role = rolesNode.getNode("editor-in-chief");
             role.setProperty("j:hidden", false);
             def permsToRemove = ["jcr:all_default", "categoryManager", "editorialContentManager", "fileManager",

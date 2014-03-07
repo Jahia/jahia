@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -116,7 +117,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
             if (tabConfig.getRequiredPermission() == null ||
-                PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), targetNode)) {
+                PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode())) {
                 if (tabItem.isHandleCreate() &&
                     (tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(type.getName())) &&
                     (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(type.getName()))) {

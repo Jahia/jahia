@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -426,7 +427,9 @@ public class ContentTabItem extends PropertiesTabItem {
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 nameFieldSet.add(name, fd);
-                if (engine.getNode() != null && engine.getNode().isLocked()) {
+
+                boolean nameWriteable = !engine.isExistingNode() || (PermissionsUtils.isPermitted("jcr:write", engine.getNode()) && !engine.getNode().isLocked());
+                if (!nameWriteable) {
                     nameText.setReadOnly(true);
                     if (autoUpdateName != null) {
                         autoUpdateName.setEnabled(false);

@@ -47,6 +47,7 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
@@ -168,7 +169,7 @@ public class SidePanelTabItem implements Serializable {
      *            the main module node
      */
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        tab.setEnabled(config.getRequiredPermission() == null || PermissionsUtils.isPermitted(config.getRequiredPermission(), node));
+        tab.setEnabled(config.getRequiredPermission() == null || PermissionsUtils.isPermitted(config.getRequiredPermission(), JahiaGWTParameters.getSiteNode()));
     }
 
     /**

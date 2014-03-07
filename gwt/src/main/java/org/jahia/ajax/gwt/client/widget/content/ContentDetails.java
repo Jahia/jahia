@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -230,7 +231,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                         EditEngineTabItem tabItem = (EditEngineTabItem) item.getData("item");
                                         if ((tabItem.getHideForTypes().isEmpty() || !result.getNode().isNodeType(tabItem.getHideForTypes())) &&
                                                 (tabItem.getShowForTypes().isEmpty() || result.getNode().isNodeType(tabItem.getShowForTypes())) &&
-                                                (tabItem.getGwtEngineTab().getRequiredPermission() == null || tabItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(tabItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
+                                                (tabItem.getGwtEngineTab().getRequiredPermission() == null || tabItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(tabItem.getGwtEngineTab().getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                                             item.setEnabled(true);
                                         }
                                     }
@@ -259,7 +260,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         for (TabItem item : tabs.getItems()) {
                             EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
                             if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection() && 
-                                    (editItem.getGwtEngineTab().getRequiredPermission() == null || editItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(editItem.getGwtEngineTab().getRequiredPermission(), selectedNodes.get(0).getPermissions()))) {
+                                    (editItem.getGwtEngineTab().getRequiredPermission() == null || editItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(editItem.getGwtEngineTab().getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                                 item.setEnabled(true);
                             }
                             if (!tabs.getSelectedItem().equals(item)) {

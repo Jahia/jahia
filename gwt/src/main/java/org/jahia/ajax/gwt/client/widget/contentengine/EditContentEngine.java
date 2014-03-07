@@ -52,6 +52,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -131,7 +132,7 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.setId("JahiaGxtEditEngineTabs");
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), node)) {
+            if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode())) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || ( !tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
                     tabs.add(tabItem.create(tabConfig, this));
@@ -232,7 +233,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     }
                     heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by", "[ locked by {0} ]", new String[]{infos.toString()});
                     container.getPanel().setHeadingHtml(heading);
-                } else if (node.getLockInfos() != null) {
+                } else if (node.getLockInfos() != null && !node.getLockInfos().isEmpty()) {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
                     container.getPanel().setHeadingHtml(heading);
                 }

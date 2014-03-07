@@ -599,27 +599,16 @@
         <servlet-name>AtmosphereServlet</servlet-name>
         <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
         <init-param>
-            <param-name>org.atmosphere.useWebSocket</param-name>
+            <param-name>org.atmosphere.cpr.packages</param-name>
+            <param-value>org.jahia.ajax.gwt.commons.server</param-value>
+        </init-param>
+        <init-param>
+            <param-name>org.atmosphere.cpr.sessionSupport</param-name>
             <param-value>true</param-value>
         </init-param>
-        <init-param>
-            <param-name>org.atmosphere.useNative</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>org.atmosphere.cpr.broadcasterCacheClass</param-name>
-            <param-value>org.atmosphere.cache.HeaderBroadcasterCache</param-value>
-        </init-param>
-        <init-param>
-            <param-name>org.atmosphere.cpr.broadcastFilterClasses</param-name>
-            <param-value>org.atmosphere.client.TrackMessageSizeFilter</param-value>
-        </init-param>
-        <init-param>
-            <param-name>org.atmosphere.cpr.ApplicationConfig.scanClassPath</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <!-- shared thread pool across Broadcaster -->
-        <load-on-startup>800</load-on-startup>
+
+        <load-on-startup>1</load-on-startup>
+        <!--Uncomment if you want to use Servlet 3.0 Async Support-->
         <async-supported>true</async-supported>
     </servlet>
 
@@ -798,10 +787,6 @@
         <url-pattern>/atmosphere/*</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>AtmosphereServlet</servlet-name>
-        <url-pattern>/gwtAtmosphere/gwtComet</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>FlowDispatcherServlet</servlet-name>

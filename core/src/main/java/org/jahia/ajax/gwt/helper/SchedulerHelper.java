@@ -43,11 +43,12 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.DefaultBroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
-import org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler;
+import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
@@ -270,7 +271,7 @@ public class SchedulerHelper {
         private void updateJobs(JobDetail previousJob) {
             final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
             if (broadcasterFactory != null) {
-                Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID);
+                Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
                 if (broadcaster != null) {
                     try {
                         ProcessPollingEvent pollingEvent = new ProcessPollingEvent();

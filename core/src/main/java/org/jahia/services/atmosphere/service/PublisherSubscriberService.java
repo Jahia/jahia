@@ -43,6 +43,7 @@ package org.jahia.services.atmosphere.service;
 import org.apache.jackrabbit.util.Text;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.DefaultBroadcasterFactory;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;

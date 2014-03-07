@@ -62,9 +62,9 @@
             <version>2.3.1-gwt22</version>
         </dependency>
         <dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>atmosphere-gwt-client</artifactId>
-            <version>1.1.0.RC5</version>
+            <groupId>org.atmosphere.extensions</groupId>
+            <artifactId>atmosphere-gwt20-client</artifactId>
+            <version>${atmosphere.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gwt-log</groupId>

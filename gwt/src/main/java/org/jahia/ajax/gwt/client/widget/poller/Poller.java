@@ -40,31 +40,24 @@
 
 package org.jahia.ajax.gwt.client.widget.poller;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.StatusCodeException;
-import org.atmosphere.gwt.client.AtmosphereClient;
-import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
-import org.atmosphere.gwt.client.AtmosphereListener;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.atmosphere.gwt20.client.*;
+import org.atmosphere.gwt20.client.managed.RPCEvent;
+import org.atmosphere.gwt20.client.managed.RPCSerializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Execute recurrent calls to the server
  */
 public class Poller {
 
-    private transient AtmosphereClient client;
-    private transient MyCometListener cometListener;
-    private AtmosphereGWTSerializer serializer = GWT.create(PollerSerializer.class);
 
-    private transient Timer timer;
     private static Poller instance;
 
     private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
@@ -76,36 +69,56 @@ public class Poller {
         return instance;
     }
 
-    String getUrl() {
-        String moduleBaseURL = GWT.getModuleBaseURL();
-        return moduleBaseURL.substring(0, moduleBaseURL.indexOf("/gwt/")) + "/gwtAtmosphere/gwtComet";
-    }
-
     public Poller() {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
-//                timer = new Timer() {
-//                    public void run() {
-//                        JahiaContentManagementService.App.getInstance().getPollData(new HashSet<String>(listeners.keySet()), new AsyncCallback<Map<String,Object>>() {
-//                            public void onSuccess(Map<String,Object> result) {
-//                                for (Map.Entry<String, ArrayList<PollListener>> entry : listeners.entrySet()) {
-//                                    for (PollListener listener : entry.getValue()) {
-//                                        listener.handlePollingResult(entry.getKey(), result.get(entry.getKey()));
-//                                    }
-//                                }
-//                                schedule(5000);
-//                            }
-//
-//                            public void onFailure(Throwable caught) {
-//                                Log.error("Cannot get jobs", caught);
-//                            }
-//                        });
-//                    }
-//                };
-//                timer.run();
-                cometListener = new MyCometListener();
-                client = new AtmosphereClient(getUrl(), serializer, cometListener);
-                client.start();
+
+                RPCSerializer rpc_serializer = GWT.create(RPCSerializer.class);
+
+                AtmosphereRequestConfig rpcRequestConfig = AtmosphereRequestConfig.create(rpc_serializer);
+                rpcRequestConfig.setUrl(GWT.getModuleBaseURL() .substring(0,GWT.getModuleBaseURL() .indexOf("/gwt/")) + "/atmosphere/rpc");
+                rpcRequestConfig.setTransport(AtmosphereRequestConfig.Transport.WEBSOCKET);
+                rpcRequestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
+                rpcRequestConfig.setOpenHandler(new AtmosphereOpenHandler() {
+                    @Override
+                    public void onOpen(AtmosphereResponse response) {
+                        GWT.log("RPC Connection opened");
+                    }
+                });
+                rpcRequestConfig.setReopenHandler(new AtmosphereReopenHandler() {
+                    @Override
+                    public void onReopen(AtmosphereResponse response) {
+                        GWT.log("RPC Connection reopened");
+                    }
+                });
+                rpcRequestConfig.setCloseHandler(new AtmosphereCloseHandler() {
+                    @Override
+                    public void onClose(AtmosphereResponse response) {
+                        GWT.log("RPC Connection closed");
+                    }
+                });
+                rpcRequestConfig.setMessageHandler(new AtmosphereMessageHandler() {
+                    @Override
+                    public void onMessage(AtmosphereResponse response) {
+                        List<RPCEvent> messages = response.getMessages();
+                        for (RPCEvent event : messages) {
+                            for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
+                                if (entry.getKey() == event.getClass()) {
+                                    for (PollListener pollListener : entry.getValue()) {
+                                        pollListener.handlePollingResult(event);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                rpcRequestConfig.setFlags(AtmosphereRequestConfig.Flags.enableProtocol);
+                rpcRequestConfig.setFlags(AtmosphereRequestConfig.Flags.trackMessageLength);
+
+                // init atmosphere
+                Atmosphere atmosphere = Atmosphere.create();
+                atmosphere.subscribe(rpcRequestConfig);
             }
         });
     }
@@ -121,53 +134,5 @@ public class Poller {
         public void handlePollingResult(T result);
     }
 
-    private class MyCometListener implements AtmosphereListener {
-        public void onConnected(int heartbeat, int connectionID) {
-            Log.info("comet.connected [" + heartbeat + ", " + connectionID + "]");
-        }
 
-        public void onBeforeDisconnected() {
-            Log.info("comet.beforeDisconnected");
-        }
-
-        public void onDisconnected() {
-            Log.info("comet.disconneted");
-        }
-
-        public void onError(Throwable exception, boolean connected) {
-            int statuscode = -1;
-            if (exception instanceof StatusCodeException) {
-                statuscode = ((StatusCodeException) exception).getStatusCode();
-            }
-            Log.error("comet.error [connected=" + connected + "] (" + statuscode + ")", exception);
-        }
-
-        public void onHeartbeat() {
-            Log.info("comet.heartbeat [" + client.getConnectionUUID() + "]");
-        }
-
-        public void onRefresh() {
-            Log.info("comet.refresh [" + client.getConnectionUUID() + "]");
-        }
-
-        public void onConnected(int heartbeat, String connectionUUID) {
-            Log.info("comet.connected [" + connectionUUID + "]");
-        }
-
-        public void onAfterRefresh(String connectionUUID) {
-            Log.info("comet.afterRefresh [" + connectionUUID + "]");
-        }
-
-        public void onMessage(List<?> messages) {
-            for (Object message : messages) {
-                for (Map.Entry<Class, ArrayList<PollListener>> entry : listeners.entrySet()) {
-                    if (entry.getKey() == message.getClass()) {
-                        for (PollListener pollListener : entry.getValue()) {
-                            pollListener.handlePollingResult(message);
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

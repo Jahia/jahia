@@ -40,12 +40,13 @@
 
 package org.jahia.ajax.gwt.client.widget.poller;
 
+import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProcessPollingEvent implements Serializable {
+public class ProcessPollingEvent extends RPCEvent implements Serializable  {
     private static final long serialVersionUID = -4426085851435410969L;
     private ArrayList<GWTJahiaJobDetail> activeJobs;
 

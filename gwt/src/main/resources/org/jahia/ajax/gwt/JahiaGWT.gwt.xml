@@ -1,10 +1,11 @@
 <module>
     <inherits name="com.google.gwt.user.User"/>
     <inherits name='com.google.gwt.core.Core'/>
-    <inherits name="org.atmosphere.gwt.Client"/>
     <inherits name="com.google.gwt.http.HTTP"/>
     <inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.extjs.gxt.ui.GXT"/>
+
+    <inherits name="org.atmosphere.gwt20.AtmosphereGwt20"/>
 
     <inherits name="com.allen_sauer.gwt.log.gwt-log-ERROR" />
     <set-property name="log_DivLogger" value="DISABLED"/>

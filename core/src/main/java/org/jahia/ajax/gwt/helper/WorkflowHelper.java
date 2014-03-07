@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.DefaultBroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -53,7 +54,7 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTa
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
-import org.jahia.ajax.gwt.commons.server.GWTAtmosphereHandler;
+import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -627,8 +628,8 @@ public class WorkflowHelper {
         @Override
         public void workflowEnded(HistoryWorkflow workflow) {
             JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser());
-            final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
-            Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
+            final BroadcasterFactory broadcasterFactory = DefaultBroadcasterFactory.getDefault();
+            Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
             if (broadcaster != null) {
                 TaskEvent taskEvent = new TaskEvent();
                 Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
@@ -667,7 +668,7 @@ public class WorkflowHelper {
                 }
                 for (Principal user : users) {
                     if (user != null) {
-                        Broadcaster broadcaster = broadcasterFactory.lookup(Broadcaster.class, GWTAtmosphereHandler.GWT_BROADCASTER_ID + user.getName());
+                        Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
                         if (broadcaster != null) {
                             TaskEvent taskEvent = new TaskEvent();
                             try {

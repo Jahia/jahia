@@ -42,10 +42,11 @@ package org.jahia.ajax.gwt.client.widget.poller;
 
 import java.io.Serializable;
 
+import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 
-public class TaskEvent implements Serializable {
+public class TaskEvent extends RPCEvent implements Serializable {
     private static final long serialVersionUID = 7742645002324255207L;
     private Integer numberOfTasks;
     private GWTJahiaWorkflowTask newTask;

@@ -259,7 +259,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
         <!--Lucene dependencies-->
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -1452,9 +1451,9 @@
         </dependency>-->
 
         <dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>atmosphere-gwt-server</artifactId>
-            <version>1.1.0.RC5</version>
+            <groupId>org.atmosphere.extensions</groupId>
+            <artifactId>atmosphere-gwt20-client</artifactId>
+            <version>${atmosphere.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>gwt-servlet</artifactId>
@@ -1462,7 +1461,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.atmosphere.extensions</groupId>
+            <artifactId>atmosphere-gwt20-managed</artifactId>
+            <version>${atmosphere.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>gwt-servlet</artifactId>
+                    <groupId>com.google.gwt</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

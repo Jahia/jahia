@@ -214,17 +214,7 @@ public class TemplateHelper {
             if (constraints == null) {
                 constraints = "";
             }
-            if (renderContext.isEditMode()) {
-                String customConfig = GWTInitializer.getCustomCKEditorConfig(renderContext);
-                if (customConfig != null) {
-                    Map<String, Map<String, String>> js = map.get(JAVASCRIPT);
-                    if (js == null) {
-                        js = new HashMap<String, Map<String,String>>();
-                        map.put(JAVASCRIPT, js);
-                    }
-                    js.put(customConfig, Collections.<String, String>emptyMap());
-                }
-            }
+
             Map<String, List<GWTStaticAssetEntry>> m = new HashMap<String, List<GWTStaticAssetEntry>>();
             if (map != null) {
                   for (Map.Entry<String, Map<String,Map<String,String>>> entry : map.entrySet()) {

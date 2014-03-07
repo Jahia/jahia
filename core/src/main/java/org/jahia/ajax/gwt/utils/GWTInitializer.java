@@ -195,8 +195,6 @@ public class GWTInitializer {
         
         addJavaScript(buf, request);
         
-        addCustomCKEditorConfig(buf, request);
-
         return buf.toString();
     }
     
@@ -232,19 +230,9 @@ public class GWTInitializer {
     private static void addJavaScript(StringBuilder buf, HttpServletRequest request) {
         String context = request.getContextPath();
         for (String js : getConfig().getJavaScripts()) {
-            buf.append("<script id=\"jahia-ckeditor-js\" type=\"text/javascript\" src=\"")
+            buf.append("<script type=\"text/javascript\" src=\"")
                     .append(context).append(js).append("\"></script>\n");
         }
-    }
-
-    private static void addCustomCKEditorConfig(StringBuilder buf, HttpServletRequest request) {
-        RenderContext ctx = (RenderContext) request.getAttribute("renderContext");
-        String configPath = getCustomCKEditorConfig(ctx);
-        if (configPath == null) {
-            return;
-        }
-        buf.append("<script id=\"jahia-ckeditor-config-js\" type=\"text/javascript\" src=\"")
-                .append(configPath).append("\"></script>\n");
     }
 
     private static GWTResourceConfig getConfig() {

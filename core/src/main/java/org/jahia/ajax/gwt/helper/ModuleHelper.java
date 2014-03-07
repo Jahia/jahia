@@ -51,6 +51,7 @@ import java.util.Map;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.tika.io.IOUtils;
@@ -223,7 +224,12 @@ public class ModuleHelper {
         if (pom.getProperties().containsKey("jahia-forge")) {
             final String property = pom.getProperties().getProperty("jahia-forge");
             info.setForgeUrl(property);
-            info.setForgeModulePageUrl(property + "/contents/forge-modules-repository/" + moduleId + ".html");
+            String pageUrl = property + "/contents/forge-modules-repository/";
+            if (StringUtils.isNotEmpty(pack.getGroupId())) {
+                pageUrl += pack.getGroupId().replace(".", "/") + "/";
+            }
+            pageUrl += moduleId + ".html";
+            info.setForgeModulePageUrl(pageUrl);
         }
 
         return info;

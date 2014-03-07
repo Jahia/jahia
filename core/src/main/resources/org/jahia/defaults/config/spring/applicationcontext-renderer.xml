@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-<<<<<<< .working
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-=======
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:util="http://www.springframework.org/schema/util"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
->>>>>>> .merge-right.r48980
 
     <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
 
@@ -372,12 +365,6 @@
         <property name="defaultContentType" ref="renderer.defaultContentType"/>
     </bean>
 
-<<<<<<< .working
-    <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry">
-
-    </bean>
-
-=======
     <util:map id="renderer.defaultContentType">
         <entry key="csv" value="text/csv; charset=UTF-8"/>
         <entry key="ics" value="text/calendar; charset=UTF-8"/>
@@ -388,5 +375,7 @@
         <entry key="vcf" value="text/vcard; charset=UTF-8"/>
         <entry key="xml" value="text/xml; charset=UTF-8"/>
     </util:map>
->>>>>>> .merge-right.r48980
+    
+    <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry"/>
+
 </beans>

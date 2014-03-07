@@ -160,8 +160,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private Action defaultPostAction;
     private Action defaultPutAction;
     private Action defaultDeleteAction = new DefaultDeleteAction();
+    private Map<String, String> defaultContentType = new HashMap<String, String>();
 
-    protected SettingsBean settingsBean;
+	protected SettingsBean settingsBean;
     private RenderService renderService;
     private JCRSessionFactory jcrSessionFactory;
     private URLResolverFactory urlResolverFactory;
@@ -251,7 +252,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             resp.sendRedirect(renderContext.getRedirect());
         } else {
             resp.setContentType(
-                    renderContext.getContentType() != null ? renderContext.getContentType() : "text/html; charset=UTF-8");
+                    renderContext.getContentType() != null ? renderContext.getContentType() : getDefaultContentType(resource.getTemplateType()));
 //            resp.setContentLength(out.getBytes("UTF-8").length);
             resp.getWriter().print(out);
 //            resp.getWriter().close();
@@ -1074,4 +1075,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             this.allowedMethods.add(method.toUpperCase());
         }
     }
+    
+    public String getDefaultContentType(String templateType) {
+    	if(templateType != null && defaultContentType.get(templateType) != null) {
+		    return defaultContentType.get(templateType);
+    	}
+    	return "text/html; charset=UTF-8";
+	}
+
+	public void setDefaultContentType(Map<String, String> defaultContentType) {
+		this.defaultContentType = defaultContentType;
+	}
 }

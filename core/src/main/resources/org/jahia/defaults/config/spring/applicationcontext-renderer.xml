@@ -362,6 +362,13 @@
         <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
         <property name="cookieExpirationInDays" value="1"/>
         <property name="urlResolverFactory" ref="urlResolverFactory"/>
+        <property name="defaultContentType">
+			<map>
+				<entry key="html" value-ref="text/html; charset=UTF-8" />
+				<entry key="rss" value-ref="application/rss+xml;charset=UTF-8"/>
+				<entry key="csv" value-ref="application/CSV;charset=UTF-8"/>
+			</map>
+		</property>
     </bean>
 
     <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry">

@@ -63,8 +63,6 @@ import java.util.Map;
  * @author Christophe Laprun
  */
 public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
-    private static final transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SetupQueryAndMetadataTag.class);
-
     private JCRNodeWrapper boundComponent;
     private QueryObjectModel existing;
     private Map<String, List<KeyValue>> activeFacets;
@@ -142,8 +140,8 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 // field components
                 final String field = facet.getPropertyAsString("field");
                 final String[] fieldComponents = StringUtils.split(field, ";");
-                final String facetNodeTypeName = fieldComponents[0];
-                final String facetPropertyName = fieldComponents[1];
+                final String facetNodeTypeName = fieldComponents != null ? fieldComponents[0] : null;
+                final String facetPropertyName = fieldComponents != null ? fieldComponents[1] : null;
 
                 // are we dealing with a query facet?
                 boolean isQuery = facet.hasProperty("query");
@@ -158,8 +156,8 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 ExtendedNodeType nodeType = null;
                 if (StringUtils.isNotEmpty(facetNodeTypeName)) {
                     nodeType = NodeTypeRegistry.getInstance().getNodeType(facetNodeTypeName);
-                    if (facetValueNodeTypes != null) {
-                        facetValueNodeTypes.put(facetPropertyName, nodeType);
+                    if (facetValueNodeTypes != null && StringUtils.isNotEmpty(metadataKey)) {
+                        facetValueNodeTypes.put(metadataKey, nodeType);
                     }
                 }
 

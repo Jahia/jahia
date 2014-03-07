@@ -364,9 +364,9 @@
         <property name="urlResolverFactory" ref="urlResolverFactory"/>
         <property name="defaultContentType">
 			<map>
-				<entry key="html" value-ref="text/html; charset=UTF-8" />
-				<entry key="rss" value-ref="application/rss+xml;charset=UTF-8"/>
-				<entry key="csv" value-ref="application/CSV;charset=UTF-8"/>
+				<entry key="html" value="text/html; charset=UTF-8" />
+				<entry key="rss" value="application/rss+xml;charset=UTF-8"/>
+				<entry key="csv" value="application/CSV;charset=UTF-8"/>
 			</map>
 		</property>
     </bean>

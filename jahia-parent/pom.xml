@@ -37,7 +37,7 @@
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.8.RELEASE</spring.version>
         <springwebflow-version>2.3.2.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.4.5-jahia1-SNAPSHOT</jackrabbit.version>
+        <jackrabbit.version>2.4.5-jahia1</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -50,6 +50,7 @@
         <ant.version>1.8.2</ant.version>
         <junit.version>4.8.1</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
+        <izpack.version>4.3.5-jahia7</izpack.version>
         <jahia.tomcat.version>7.0.52</jahia.tomcat.version>
 
         <driver.derby.version>10.10.1.1</driver.derby.version>

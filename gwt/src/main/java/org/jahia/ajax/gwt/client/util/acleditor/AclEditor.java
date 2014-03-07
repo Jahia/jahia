@@ -184,6 +184,7 @@ public class AclEditor {
                     }
                 }
                 for (Grid grid : grids) {
+                    grid.show();
                     resizeGrid(grid);
                 }
                 restoreButton.setEnabled(false);
@@ -617,10 +618,15 @@ public class AclEditor {
 
     private void resizeGrid(Grid grid) {
         int h = 0;
+        if (grid.getStore().getModels().size() > 0) {
+            grid.show();
+        } else {
+            grid.hide();
+        }
         for (int i = 0; i < grid.getStore().getModels().size(); i++) {
             h += grid.getView().getRow(i).getOffsetHeight();
         }
-        grid.setHeight(h);
+         grid.setHeight(h);
     }
 
     private class UserGroupAdder implements org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder {

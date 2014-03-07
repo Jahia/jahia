@@ -171,16 +171,12 @@ public class NodePropertyDefaultValueTest extends JahiaTestCase {
         assertEquals(now.get(Calendar.YEAR), dateNow.get(Calendar.YEAR));
         assertEquals(now.get(Calendar.MONTH), dateNow.get(Calendar.MONTH));
         assertEquals(now.get(Calendar.DAY_OF_MONTH), dateNow.get(Calendar.DAY_OF_MONTH));
-        assertEquals(now.get(Calendar.HOUR_OF_DAY), dateNow.get(Calendar.HOUR_OF_DAY));
-        assertEquals(now.get(Calendar.MINUTE), dateNow.get(Calendar.MINUTE));
 
         Calendar dateTomorrow = node.getProperty("propertyTomorrow" + propNameSuffix).getDate();
         assertNotNull(dateTomorrow);
         assertEquals(tomorrow.get(Calendar.YEAR), dateTomorrow.get(Calendar.YEAR));
         assertEquals(tomorrow.get(Calendar.MONTH), dateTomorrow.get(Calendar.MONTH));
         assertEquals(tomorrow.get(Calendar.DAY_OF_MONTH), dateTomorrow.get(Calendar.DAY_OF_MONTH));
-        assertEquals(tomorrow.get(Calendar.HOUR_OF_DAY), dateTomorrow.get(Calendar.HOUR_OF_DAY));
-        assertEquals(tomorrow.get(Calendar.MINUTE), dateTomorrow.get(Calendar.MINUTE));
 
         assertEquals(englishSession.getUserID(), node.getProperty("propertyCurrentUser" + propNameSuffix).getString());
 

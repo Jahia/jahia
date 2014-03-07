@@ -770,6 +770,14 @@ public class ContentDefinitionHelper {
         return items;
     }
 
+    /**
+     * Get both dynamic and static default values for the specified types and locales
+     *
+     * @param items a list of nodeTypes
+     * @param locales a list of locales
+     * @return the default values per type, per locale
+     * @throws RepositoryException
+     */
     public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getAllDefaultValues(List<ExtendedNodeType> items, List<Locale> locales) throws RepositoryException {
         Set<Map.Entry<String, ExtendedPropertyDefinition>> entries = getInitializedItems(items).entrySet();
         Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> results = new HashMap<String, Map<String, List<GWTJahiaNodePropertyValue>>>();

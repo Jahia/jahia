@@ -179,13 +179,13 @@ public class DefaultValueListener extends DefaultEventListener {
 
     protected boolean handlePropertyDefaultValues(JCRNodeWrapper n, ExtendedPropertyDefinition pd, Value[] values,
             Locale sessionLocale) throws RepositoryException {
-        boolean doCreateI10n = sessionLocale != null && pd.isInternationalized();
-        if (!pd.isAutoCreated() || (!doCreateI10n && !pd.hasDynamicDefaultValues())) {
+        boolean doCreateI18n = sessionLocale != null && pd.isInternationalized();
+        if (!pd.isAutoCreated() || (!doCreateI18n && !pd.hasDynamicDefaultValues())) {
             // no handling needed
             return false;
         }
 
-        Node targetNode = doCreateI10n ? n.getOrCreateI18N(sessionLocale) : n;
+        Node targetNode = doCreateI18n ? n.getOrCreateI18N(sessionLocale) : n;
 
         String propertyName = pd.getName();
 

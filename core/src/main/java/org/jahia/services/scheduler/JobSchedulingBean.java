@@ -189,7 +189,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
     }
 
     protected void unscheduleJob() throws SchedulerException {
-        logger.info("Deleting job {}", jobDetail.getFullName());
+        logger.info("Unscheduling job {}", jobDetail.getFullName());
         Trigger[] triggers = getScheduler().getTriggersOfJob(jobDetail.getName(), jobDetail.getGroup());
         for (Trigger trigger : triggers) {
             getScheduler().unscheduleJob(trigger.getName(), trigger.getGroup());

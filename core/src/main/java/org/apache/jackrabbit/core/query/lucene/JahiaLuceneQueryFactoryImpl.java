@@ -41,6 +41,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -77,6 +78,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
 import javax.jcr.security.Privilege;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -96,6 +98,37 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
     private Locale locale;
     private String queryLanguage;
+    
+    @SuppressWarnings("serial")
+    public static final FieldSelector ONLY_MAIN_NODE_UUID = new FieldSelector() {
+        public FieldSelectorResult accept(String fieldName) {
+            if (JahiaNodeIndexer.TRANSLATED_NODE_PARENT == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else if (FieldNames.PARENT == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else {
+                return FieldSelectorResult.NO_LOAD;
+            }
+        }
+    };
+    @SuppressWarnings("serial")
+    public static final FieldSelector OPTIMIZATION_FIELDS = new FieldSelector() {
+        public FieldSelectorResult accept(String fieldName) {
+            if (JahiaNodeIndexer.TRANSLATED_NODE_PARENT == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else if (FieldNames.PARENT == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else if (JahiaNodeIndexer.ACL_UUID == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else if (JahiaNodeIndexer.CHECK_VISIBILITY == fieldName) {
+                return FieldSelectorResult.LOAD;                
+            } else if (JahiaNodeIndexer.PUBLISHED == fieldName) {
+                return FieldSelectorResult.LOAD;                                    
+            } else {
+                return FieldSelectorResult.NO_LOAD;
+            }
+        }
+    };
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
         super(session, index, bindVariables);
@@ -424,24 +457,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     private IndexedNodeInfo getIndexedNodeInfo (ScoreNode sn, IndexReader reader, final boolean onlyMainNodeUuid) throws IOException {
         IndexedNodeInfo info = new IndexedNodeInfo(sn.getDoc(reader));
 
-        @SuppressWarnings("serial")
-        Document doc = reader.document(info.getDocNumber(), new FieldSelector() {
-            public FieldSelectorResult accept(String fieldName) {
-                if (JahiaNodeIndexer.TRANSLATED_NODE_PARENT == fieldName) {
-                    return FieldSelectorResult.LOAD;
-                } else if (FieldNames.PARENT == fieldName) {
-                    return FieldSelectorResult.LOAD;
-                } else if (!onlyMainNodeUuid && JahiaNodeIndexer.ACL_UUID == fieldName) {
-                    return FieldSelectorResult.LOAD;
-                } else if (!onlyMainNodeUuid && JahiaNodeIndexer.CHECK_VISIBILITY == fieldName) {
-                    return FieldSelectorResult.LOAD;                
-                } else if (!onlyMainNodeUuid && JahiaNodeIndexer.PUBLISHED == fieldName) {
-                    return FieldSelectorResult.LOAD;                                    
-                } else {
-                    return FieldSelectorResult.NO_LOAD;
-                }
-            }
-        });
+        Document doc = reader.document(info.getDocNumber(), onlyMainNodeUuid ? ONLY_MAIN_NODE_UUID : OPTIMIZATION_FIELDS);
 
         if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
             info.setMainNodeUuid(doc.getField(FieldNames.PARENT).stringValue());

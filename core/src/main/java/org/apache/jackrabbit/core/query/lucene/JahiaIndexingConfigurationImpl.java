@@ -114,6 +114,8 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     }
 
     private Set<Name> excludesFromI18NCopy = Collections.emptySet();
+    
+    private Set<Name> hierarchicalNodetypes = Collections.emptySet();
 
     private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
 
@@ -124,6 +126,10 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     public Set<Name> getExcludesFromI18NCopy() {
         return excludesFromI18NCopy;
     }
+    
+    public Set<Name> getHierarchicalNodetypes() {
+        return hierarchicalNodetypes;
+    }    
 
     /**
      * Returns the namespaces declared on the <code>node</code>.
@@ -177,6 +183,8 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             final String nodeName = configNode.getNodeName();
             if (nodeName.equals("i18ncopy")) {
                 excludesFromI18NCopy = initPropertyCollectionFrom(configNode, "exclude-property", resolver);
+            } else if (nodeName.equals("hierarchical")) {
+                hierarchicalNodetypes = initPropertyCollectionFrom(configNode, "nodetype", resolver);                
             } else if (nodeName.equals("spellchecker")) {
                 includedInSpellchecking = initPropertyCollectionFrom(configNode, "include-property", null);
             } else if (nodeName.equals("analyzer-registry")) {

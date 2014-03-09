@@ -46,6 +46,8 @@ import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.lucene.TermFactory;
 import org.apache.jackrabbit.core.query.lucene.Util;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.document.FieldSelectorResult;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -75,6 +77,17 @@ public class HTMLExcerpt extends AbstractExcerpt {
     private static final Logger log = LoggerFactory.getLogger(HTMLExcerpt.class);
 
     private static final Pattern APOS = Pattern.compile("&apos;");
+    
+    @SuppressWarnings("serial")
+    public static final FieldSelector FULLTEXT = new FieldSelector() {
+        public FieldSelectorResult accept(String fieldName) {
+            if (FieldNames.FULLTEXT == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else {
+                return FieldSelectorResult.NO_LOAD;
+            }
+        }
+    };    
 
 
     @Override
@@ -97,7 +110,7 @@ public class HTMLExcerpt extends AbstractExcerpt {
             try {
                 if (tDocs.next()) {
                     docNumber = tDocs.doc();
-                    doc = reader.document(docNumber);
+                    doc = reader.document(docNumber, FULLTEXT);
                 } else {
                     // node not found in index
                     return null;

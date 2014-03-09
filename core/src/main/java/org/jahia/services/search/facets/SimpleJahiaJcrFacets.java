@@ -91,6 +91,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -143,7 +144,22 @@ public class SimpleJahiaJcrFacets {
      */
     protected final Session session;
     
-    private NamespaceMappings nsMappings;    
+    private NamespaceMappings nsMappings;
+    
+    @SuppressWarnings("serial")
+    public static final FieldSelector PARENT_AND_TRANSLATION_FIELDS = new FieldSelector() {
+        public FieldSelectorResult accept(String fieldName) {
+            if (JahiaNodeIndexer.TRANSLATED_NODE_PARENT == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else if (JahiaNodeIndexer.TRANSLATION_LANGUAGE == fieldName) {
+                return FieldSelectorResult.LOAD;
+            } else if (FieldNames.PARENT == fieldName) {
+                return FieldSelectorResult.LOAD;                
+            } else {
+                return FieldSelectorResult.NO_LOAD;
+            }
+        }
+    };    
 
     public SimpleJahiaJcrFacets(IndexSearcher searcher, OpenBitSet docs,
             SolrParams params, SearchIndex index, Session session, NamespaceMappings nsMappings) {
@@ -727,7 +743,7 @@ public class SimpleJahiaJcrFacets {
                             int doc = td.doc();
                             if (locale != null) {
                                 doc = getMainDocIdForTranslations(searcher.getIndexReader()
-                                        .document(doc), locale);
+                                        .document(doc, PARENT_AND_TRANSLATION_FIELDS), locale);
                             }
                             
                             if (docs.fastGet(doc)) {

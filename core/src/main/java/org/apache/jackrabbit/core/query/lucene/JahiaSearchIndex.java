@@ -75,7 +75,6 @@ import java.util.*;
  */
 public class JahiaSearchIndex extends SearchIndex {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaSearchIndex.class);
-    private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";
 
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
     private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
@@ -135,18 +134,30 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
             throws RepositoryException, IOException {
-
+        
+        if (isVersionIndex()) {
+            super.updateNodes(remove, add);
+            return;
+        }
+            
         final List<NodeState> addList = new ArrayList<NodeState>();
         final List<NodeId> removeList = new ArrayList<NodeId>();
         final Set<NodeId> removedIds = new HashSet<NodeId>();
         final Set<NodeId> addedIds = new HashSet<NodeId>();
         final List<NodeId> aclChangedList = new ArrayList<NodeId>();
 
+        boolean hasAclOrAce = false;
         while (add.hasNext()) {
             final NodeState state = add.next();
             if (state != null) {
                 addedIds.add(state.getNodeId());
                 addList.add(state);
+                
+                if (!hasAclOrAce
+                        && (JNT_ACL.equals(state.getNodeTypeName()) || 
+                            JNT_ACE.equals(state.getNodeTypeName()))) {
+                    hasAclOrAce = true;
+                }
             }
         }
         while (remove.hasNext()) {
@@ -154,73 +165,30 @@ public class JahiaSearchIndex extends SearchIndex {
             removedIds.add(nodeId);
             removeList.add(nodeId);
         }
-
-        if (!isVersionIndex() && !removeList.isEmpty()) {
-            final IndexReader reader = getIndexReader();
-            final Searcher searcher = new IndexSearcher(reader);
-            try {
-                int removeSubListStart = 0;
-                int removeSubListEnd = Math.min(removeList.size(), BooleanQuery.getMaxClauseCount());
-                while (removeSubListStart < removeList.size()) {
-                    BooleanQuery query = new BooleanQuery();
-                    for (final NodeId nodeId : new ArrayList<NodeId>(removeList.subList(removeSubListStart, removeSubListEnd))) {
-                        TermQuery termQuery = new TermQuery(new Term(JahiaNodeIndexer.FACET_HIERARCHY, nodeId.toString()));
-                        query.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
-                    }
-                    searcher.search(query, new AbstractHitCollector() {
-                        public void collect(int doc, float score) {
-                            try {
-                                String uuid = reader.document(doc).get("_:UUID");
-                                addIdToBeIndexed(new NodeId(uuid), addedIds, removedIds, addList, removeList);
-                            } catch (Exception e) {
-                                log.warn("Documents referencing moved/renamed hierarchy facet nodes may not be updated", e);
-                            }
-                        }
-                    });
-                    removeSubListStart += BooleanQuery.getMaxClauseCount();
-                    removeSubListEnd = Math.min(removeList.size(), removeSubListEnd + BooleanQuery.getMaxClauseCount());
-
-                }
-            } finally {
-                searcher.close();
-                Util.closeOrRelease(reader);
-            }
-        }
-
-        if (!isVersionIndex() && addList.size() > 0) {
+        
+        if (isAddAclUuidInIndex() && hasAclOrAce) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
-                for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
-                    if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
-                        try {
-                            addIdToBeIndexed(childNodeEntry.getId(), addedIds, removedIds, addList, removeList);
-                        } catch (ItemStateException e) {
-                            log.warn("Index of translation node may not be updated", e);
-                        }
+                try {
+                    // if acl node is added for the first time we need to add our ACL_UUID field
+                    // to parent's and all affected subnodes' index documents
+                    if (JNT_ACL.equals(node.getNodeTypeName())) {
+                        NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
+                                .getParentId());
+                        addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
+                        recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                     }
-                }
-                if (isAddAclUuidInIndex()) {
-                    try {
-                        // if acl node is added for the first time we need to add our ACL_UUID field
-                        // to parent's and all affected subnodes' index documents
-                        if (JNT_ACL.equals(node.getNodeTypeName())) {
-                            NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
-                                    .getParentId());
+                    // if an acl is modified, we need to reindex all its subnodes only if we use the optimized ACE
+                    if (JNT_ACE.equals(node.getNodeTypeName())) {
+                        NodeState acl = (NodeState) itemStateManager.getItemState(node.getParentId());
+                        NodeState nodeParent = (NodeState) itemStateManager.getItemState(acl.getParentId());
+                        if (canUseOptimizedACEIndexation(nodeParent)) {
                             addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                             recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                         }
-                        // if an acl is modified, we need to reindex all its subnodes only if we use the optimized ACE
-                        if (JNT_ACE.equals(node.getNodeTypeName())) {
-                            NodeState acl = (NodeState) itemStateManager.getItemState(node.getParentId());
-                            NodeState nodeParent = (NodeState) itemStateManager.getItemState(acl.getParentId());
-                            if (canUseOptimizedACEIndexation(nodeParent)) {
-                                addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                                recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
-                            }
-                        }
-                    } catch (ItemStateException e) {
-                        log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                     }
+                } catch (ItemStateException e) {
+                    log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                 }
             }
         }

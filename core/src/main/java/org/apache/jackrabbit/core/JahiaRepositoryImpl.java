@@ -56,6 +56,48 @@ import javax.security.auth.Subject;
  * Used to return session extension
  */
 public class JahiaRepositoryImpl extends RepositoryImpl {
+    protected class JahiaWorkspaceInfo extends WorkspaceInfo {
+        /**
+         * search manager (lazily instantiated)
+         */
+        private SearchManager searchMgr;        
+
+        public JahiaWorkspaceInfo(WorkspaceConfig config) {
+            super(config);
+        }
+
+        /**
+         * Returns the search manager for this workspace.
+         *
+         * @return the search manager for this workspace, or <code>null</code>
+         *         if no <code>SearchManager</code>
+         * @throws RepositoryException if the search manager could not be created
+         */
+        protected SearchManager getSearchManager() throws RepositoryException {
+            if (!isInitialized()) {
+                throw new IllegalStateException("workspace '" + getName()
+                        + "' not initialized");
+            }
+
+            synchronized (this) {
+                if (searchMgr == null && getConfig().isSearchEnabled()) {
+                    // search manager is lazily instantiated in order to avoid
+                    // 'chicken & egg' bootstrap problems
+                    searchMgr = new JahiaSearchManager(
+                            getName(),
+                            context,
+                            getConfig(),
+                            getItemStateProvider(), getPersistenceManager(),
+                            context.getRootNodeId(),
+                            getSystemSearchManager(getName()),
+                            SYSTEM_ROOT_NODE_ID);
+                }
+                return searchMgr;
+            }
+        }
+   
+    }
+    
     public JahiaRepositoryImpl(RepositoryConfig repConfig) throws RepositoryException {
         super(repConfig);
     }
@@ -96,4 +138,15 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
             throw new RepositoryException(e);
         }
     }
+    
+    /**
+     * Creates a new {@link RepositoryImpl.WorkspaceInfo} instance for
+     * <code>wspConfig</code>.
+     *
+     * @param wspConfig the workspace configuration.
+     * @return a new <code>WorkspaceInfo</code> instance.
+     */
+    protected WorkspaceInfo createWorkspaceInfo(WorkspaceConfig wspConfig) {
+        return new JahiaWorkspaceInfo(wspConfig);
+    }    
 }

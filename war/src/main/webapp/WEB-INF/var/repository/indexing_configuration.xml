@@ -25,15 +25,24 @@ The following example creates an index aggregate on jnt:file that includes the c
         <property isRegexp="true">.*:.*</property>
     </index-rule>
 
-    <i18ncopy>
+   <i18ncopy>
         <exclude-property>j:locktoken</exclude-property>
+        <exclude-property>j:lockTypes</exclude-property>
+        <exclude-property>jcr:lockIsDeep</exclude-property>
+        <exclude-property>jcr:lockOwner</exclude-property>
         <exclude-property>jcr:language</exclude-property>
+        <exclude-property>jcr:created</exclude-property>
+        <exclude-property>jcr:createdBy</exclude-property>
         <exclude-property>jcr:lastModified</exclude-property>
         <exclude-property>jcr:lastModifiedBy</exclude-property>
         <exclude-property>j:lastPublished</exclude-property>
         <exclude-property>j:lastPublishedBy</exclude-property>
         <exclude-property>j:published</exclude-property>
+        <exclude-property>j:originWS</exclude-property>
     </i18ncopy>
+    <hierarchical>
+        <nodetype>jnt:category</nodetype>
+    </hierarchical>       
     <analyzers>
         <analyzer class="org.apache.lucene.analysis.KeywordAnalyzer">
             <property>jcr:primaryType</property>

@@ -135,6 +135,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
 
             if (stubType != null) {
                 // stub type is defined -> create combos for code snippets
+                final Button addAllButton = new Button(Messages.get("label.addAll"));
+                final Button addButton = new Button(Messages.get("label.add"));
                 snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
                 snippetType.setTypeAhead(true);
                 snippetType.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
@@ -152,6 +154,12 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                         mirrorTemplates.clear();
                         mirrorTemplates.getStore().removeAll();
                         mirrorTemplates.getStore().add(snippets.get(se.getSelectedItem().getValue()));
+                        if (mirrorTemplates.getStore().getModels().size() > 0) {
+                            addAllButton.enable();
+                        } else {
+                            addAllButton.disable();
+                        }
+                        addButton.disable();
                     }
                 });
 
@@ -165,7 +173,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 mirrorTemplates.removeAllListeners();
                 mirrorTemplates.setStore(new ListStore<GWTJahiaValueDisplayBean>());
                 mirrorTemplates.getStore().sort("display", Style.SortDir.ASC);
-                mirrorTemplates.setAllowBlank(false);
+                mirrorTemplates.setAllowBlank(true);
                 mirrorTemplates.setDisplayField("display");
 
 
@@ -181,8 +189,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                 snippetType.getStore().add(new GWTJahiaValueDisplayBean(type, Messages.get("label.snippetType." + type, type)));
                             }
                             snippetType.setValue(snippetType.getStore().getAt(0));
-                            Button button = new Button(Messages.get("label.add"));
-                            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            addButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent buttonEvent) {
                                     if (mirrorTemplates.getValue() != null) {
@@ -198,9 +205,15 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             label.setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                             actions.add(label);
                             actions.add(mirrorTemplates);
-                            actions.add(button);
-                            Button addAllButton = new Button(Messages.get("label.addAll"));
-                            // create add all snippets button
+                            addButton.disable();
+                            mirrorTemplates.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+                                @Override
+                                public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
+                                    addButton.enable();
+                                }
+                            });
+                            actions.add(addButton);
+                            // create add all snippets addButton
                             addAllButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {

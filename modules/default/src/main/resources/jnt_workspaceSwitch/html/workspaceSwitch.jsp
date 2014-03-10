@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
-<c:if test="${renderContext.editMode}">
+<c:if test="${not renderContext.editModeConfigName eq 'dashboardmode' and renderContext.editMode}">
     Loaded with in workspace ${currentNode.properties['workspace'].string}
 </c:if>
 <c:forEach items="${jcr:getChildrenOfType(currentNode,'jmix:droppableContent')}" var="child">

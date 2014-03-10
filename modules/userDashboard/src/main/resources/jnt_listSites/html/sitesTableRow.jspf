@@ -212,7 +212,8 @@
                        value="${jcr:getFirstAllowedNodeForPermission('contributeModeAccess', node, 'jnt:page')}"/>
                 <c:set var="previewModeAccessNode"
                        value="${jcr:getFirstAllowedNodeForPermission('jcr:read_default', node, 'jnt:page')}"/>
-                <c:if test="${node.home.properties['j:published'].boolean or not empty editModeAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
+                <c:choose>
+                <c:when test="${node.home.properties['j:published'].boolean or not empty editModeAccessNode or not empty contributeModeAccessNode or not empty previewModeAccessNode}">
                     <c:set var="baseLive" value="${url.baseLive}"/>
                     <c:set var="basePreview" value="${url.basePreview}"/>
                     <c:set var="baseContribute" value="${url.baseContribute}"/>
@@ -321,7 +322,22 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
-                </c:if>
+                </c:when>
+                    <c:otherwise>
+                        <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative;"/></td>
+                        <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative;"/></td>
+                        <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative;"/></td>
+                        <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative;"/></td>
+                        <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative;"/></td>
+                        <td><img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                 style="position:relative;"/></td>
+                    </c:otherwise>
+                </c:choose>
             </c:otherwise>
         </c:choose>
     </tr>

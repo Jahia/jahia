@@ -46,15 +46,7 @@
                         <pagecontent j:id="user-sites"
                                      jcr:mixinTypes="jmix:customSkin"
                                      jcr:primaryType="jnt:contentList">
-                            <ajax-mode-dispatcher-live j:contextNodePath="/sites"
-                                                       j:invertCondition="true"
-                                                       j:requireLoggedUser="false"
-                                                       j:requirePrivilegedUser="false"
-                                                       j:requiredPermissionNames="jcr:read_default"
-                                                       jcr:mixinTypes="jmix:requiredPermissions"
-                                                       jcr:primaryType="jnt:modeDispatcher"
-                                                       mode="live">
-                                    <websites-list-in-edit-mode administrationlink="false"
+                                    <websites-list-in-live-mode administrationlink="false"
                                                     contribute="true"
                                                     delete="false"
                                                     details="false"
@@ -62,19 +54,23 @@
                                                     editproperties="false"
                                                     export="false"
                                                             j:view="bootstrapSites"
-                                                            jcr:mixinTypes="jmix:renderable"
+                                                            j:contextNodePath="/sites"
+                                                            j:invertCondition="true"
+                                                            j:requireLoggedUser="false"
+                                                            j:requirePrivilegedUser="false"
+                                                            j:requiredPermissionNames="jcr:read_default"
+                                                            jcr:mixinTypes="jmix:renderable jmix:requiredPermissions"
                                                             jcr:primaryType="jnt:listSites"
                                                             live="true"
                                                             preview="true"/>
-                            </ajax-mode-dispatcher-live>
-                            <ajax-mode-dispatcher-preview j:contextNodePath="/sites"
-                                                          j:invertCondition="false"
+                            <workspaceDispatcher-edit j:contextNodePath="/sites"
+                                                      j:invertCondition="false"
                                                           j:requireLoggedUser="false"
                                                           j:requirePrivilegedUser="false"
                                                           j:requiredPermissionNames="jcr:read_default"
                                                           jcr:mixinTypes="jmix:requiredPermissions"
-                                                          jcr:primaryType="jnt:modeDispatcher"
-                                                          mode="preview">
+                                                          jcr:primaryType="jnt:workspaceSwitch"
+                                                          workspace="default">
                                     <websites-list-in-edit-mode administrationlink="false"
                                                     contribute="true"
                                                     delete="false"
@@ -87,7 +83,7 @@
                                                             jcr:primaryType="jnt:listSites"
                                                             live="true"
                                                             preview="true"/>
-                            </ajax-mode-dispatcher-preview>
+                            </workspaceDispatcher-edit>
                         </pagecontent>
                     </web-projects>
                     <me j:applyOn="jnt:user"

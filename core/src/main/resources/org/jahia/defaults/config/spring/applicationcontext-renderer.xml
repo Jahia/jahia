@@ -138,7 +138,7 @@
         <property name="channelService" ref="ChannelService"/>
         <property name="priority" value="2"/>
         <property name="applyOnTemplateTypes" value="html,html-.+"/>
-        <property name="skipOnModes" value="live,edit,studio"/>
+        <property name="applyOnModes" value="preview"/>
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 

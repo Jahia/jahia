@@ -54,11 +54,13 @@ import java.util.Iterator;
 public class JCREventIterator extends RangeIteratorImpl implements EventIterator {
     private JCRSessionWrapper session;
     private int operationType;
+    private int lastOperationType;
 
-    JCREventIterator(JCRSessionWrapper session, int operationType, Iterator iterator, long size) {
+    JCREventIterator(JCRSessionWrapper session, int operationType, int lastOperationType, Iterator iterator, long size) {
         super(iterator, size);
         this.session = session;
         this.operationType = operationType;
+        this.lastOperationType = lastOperationType;
     }
 
     public JCRSessionWrapper getSession() {
@@ -67,6 +69,10 @@ public class JCREventIterator extends RangeIteratorImpl implements EventIterator
 
     public int getOperationType() {
         return operationType;
+    }
+
+    public int getLastOperationType() {
+        return lastOperationType;
     }
 
     /**

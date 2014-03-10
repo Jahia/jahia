@@ -242,19 +242,19 @@ public class JCRObservationManager implements ObservationManager {
         return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList(), session);
     }
 
-    private static void consume(JCRSessionWrapper session, int operationType) throws RepositoryException {
-        operationType = lastOp.get();
+    private static void consume(JCRSessionWrapper session, int lastOperationType) throws RepositoryException {
+        int operationType = lastOp.get();
 
         Map<JCRSessionWrapper, List<EventWrapper>> map = events.get();
         events.set(null);
         currentSession.set(null);
         if (map != null && map.containsKey(session)) {
             List<EventWrapper> list = map.get(session);
-            consume(list, session, operationType);
+            consume(list, session, operationType, lastOperationType);
         }
     }
 
-    public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType) throws RepositoryException {
+    public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType, int lastOperationType) throws RepositoryException {
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched
@@ -275,7 +275,7 @@ public class JCRObservationManager implements ObservationManager {
                     }
                     try {
                         if (!filteredEvents.isEmpty()) {
-                            consumer.listener.onEvent(new JCREventIterator(session, operationType, filteredEvents.iterator(),
+                            consumer.listener.onEvent(new JCREventIterator(session, operationType, lastOperationType, filteredEvents.iterator(),
                                     filteredEvents.size()));
                         }
                     } catch (Exception e) {

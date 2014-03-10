@@ -115,7 +115,7 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
                         for (Event event : fexternal) {
                             eventWrappers.add(JCRObservationManager.getEventWrapper(event,session));
                         }
-                        JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC);
+                        JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC, JCRObservationManager.EXTERNAL_SYNC);
                         return null;
                     }
                 });

@@ -118,7 +118,7 @@
                               jcr:primaryType="jnt:translation"
                               jcr:title="Server administrator"/>
             <currentSite-access j:path="/sites/systemsite"
-                                j:permissionNames="categoryManager engineTabs"
+                                j:permissionNames="managers engineTabs"
                                 jcr:primaryType="jnt:externalPermissions"/>
         </server-administrator>
 

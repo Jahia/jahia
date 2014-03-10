@@ -10,6 +10,7 @@ import javax.servlet.ServletContext
 import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.PreparedStatement
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
@@ -17,25 +18,48 @@ import java.util.jar.Manifest
 
 final Logger log = Logger.getLogger("org.jahia.tools.groovyConsole");
 
-DataSource dataSource = DatabaseUtils.getDatasource();
+Connection connection = null;
 
-ServletContext servletContext = SettingsBean.getInstance().getServletContext();
-String modulesPath = servletContext.getRealPath("WEB-INF/var/modules");
+try {
+    DataSource dataSource = DatabaseUtils.getDatasource();
+    connection = dataSource.getConnection();
 
-Collection<File> moduleFiles = FileUtils.listFiles(new File(modulesPath), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-for (File moduleFile : moduleFiles) {
-    if (moduleFile.getName().endsWith(".jar") || moduleFile.getName().endsWith(".war")) {
-        processJarFile(moduleFile, dataSource);
+    ServletContext servletContext = SettingsBean.getInstance().getServletContext();
+    String modulesPath = servletContext.getRealPath("WEB-INF/var/modules");
+
+    Collection<File> moduleFiles = FileUtils.listFiles(new File(modulesPath), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+    for (File moduleFile : moduleFiles) {
+        if (moduleFile.getName().endsWith(".jar") || moduleFile.getName().endsWith(".war")) {
+            processJarFile(moduleFile, connection);
+        }
+    }
+
+    if (!connection.getAutoCommit()) {
+        connection.commit();
+    }
+
+} catch (SQLException sqle) {
+    if (connection != null && !connection.getAutoCommit()) {
+        connection.rollback();
+    }
+
+} finally {
+    if (connection != null) {
+        connection.close();
     }
 }
 
-public void processJarFile(File file, DataSource dataSource) {
+public void processJarFile(File file, Connection connection) throws SQLException {
     JarFile jarFile = new JarFile(file);
     Manifest manifest = jarFile.getManifest();
     String systemId = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
     if (systemId == null) {
         systemId = manifest.getMainAttributes().getValue("Bundle-SymbolicName")
     }
+    String fileName = systemId + ".cnd";
+
+    Map<String, String> definitionContents = new LinkedHashMap<String, String>();
+    Map<String, String> namespaceDeclarations = new LinkedHashMap<String, String>();
 
     Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
     while (jarEntryEnumeration.hasMoreElements()) {
@@ -45,46 +69,124 @@ public void processJarFile(File file, DataSource dataSource) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             IOUtils.copy(entryInputStream, byteArrayOutputStream);
             String fileContents = new String(byteArrayOutputStream.toByteArray(), "UTF-8");
-            String fileName = systemId + ".cnd";
-            saveCndFile(fileName, fileContents, dataSource);
-            log.info("Copied CND file " + jarEntry.getName() + " from module " + file + " into database under file name=" + fileName);
+            fileContents = processNamespaces(fileContents, namespaceDeclarations);
+            definitionContents.put(jarEntry.getName(), fileContents);
             entryInputStream.close();
             byteArrayOutputStream.close();
         }
     }
+
+    StringBuffer concatenatedDefinitions = new StringBuffer();
+    if (definitionContents.size() > 0) {
+        for (Map.Entry<String, String> namespaceDeclaration : namespaceDeclarations.entrySet()) {
+            concatenatedDefinitions.append("<");
+            concatenatedDefinitions.append(namespaceDeclaration.getKey());
+            concatenatedDefinitions.append(" = ");
+            concatenatedDefinitions.append(namespaceDeclaration.getValue())
+            concatenatedDefinitions.append(">\n");
+        }
+        for (Map.Entry<String, String> definitionContent : definitionContents.entrySet()) {
+            String definitionContentValue = definitionContent.getValue();
+            concatenatedDefinitions.append(definitionContentValue);
+            concatenatedDefinitions.append("\n");
+        }
+
+        saveCndFile(fileName, concatenatedDefinitions.toString(), connection);
+        log.info("Copied CND files from module " + file + " into database under file name=" + fileName);
+    }
+
 }
 
-public void saveCndFile(String filename,String content, DataSource dataSource) throws RepositoryException {
-    Connection conn = null;
+public String processNamespaces(String fileContents, Map<String, String> namespaceDeclarations) {
+    int indexPos = 0;
+    int smallerThanPos = fileContents.indexOf("<", indexPos);
+    int largerThanPos = fileContents.indexOf(">", indexPos);
+    while ((smallerThanPos > -1) && (largerThanPos > -1) && (smallerThanPos < largerThanPos)) {
+        String namespacePart = fileContents.substring(smallerThanPos + 1, largerThanPos);
+        String[] namespaceParts = namespacePart.split("=");
+        if (namespaceParts.length == 2) {
+            namespaceDeclarations.put(namespaceParts[0].trim(), namespaceParts[1].trim());
+        } else {
+            log.warn("Invalid namespace declaration found: " + namespacePart);
+        }
+        indexPos = largerThanPos + 1;
+        smallerThanPos = fileContents.indexOf("<", indexPos);
+        largerThanPos = fileContents.indexOf(">", indexPos);
+    }
+    return fileContents.substring(indexPos);
+}
+
+public void saveCndFile(String filename, String content, Connection connection) throws RepositoryException, SQLException {
+    if (cndFileExists(filename, connection)) {
+        updateExistingCndFile(filename, content, connection);
+        log.info("Updated existing file " + filename);
+    } else {
+        saveNewCndFile(filename, content, connection);
+        log.info("Save new CND file under file name " + filename);
+    }
+}
+
+public int saveNewCndFile(String filename, String content, Connection connection) throws RepositoryException, SQLException {
     PreparedStatement stmt = null;
     try {
-        conn = dataSource.getConnection();
-        stmt = conn.prepareStatement('insert into jahia_nodetypes_provider(cndFile, filename) values (?,?)');
+        stmt = connection.prepareStatement('insert into jahia_nodetypes_provider(cndFile, filename) values (?,?)');
         stmt.setString(1, content);
         stmt.setString(2, filename);
-        int result = stmt.executeUpdate();
-        if (!conn.getAutoCommit()) {
-            conn.commit();
-        }
-    } catch (SQLException e) {
-        if (conn != null && !conn.getAutoCommit()) {
-            conn.rollback();
-        }
+        return stmt.executeUpdate();
     } finally {
         if (stmt != null) {
             try {
                 stmt.close();
             } catch (Exception e) {
-                // ignore
-            }
-        }
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (Exception e) {
-                // ignore
+                log.error("Error closing statement", e);
             }
         }
     }
+    return -1;
+}
 
+public int updateExistingCndFile(String filename, String content, Connection connection) throws RepositoryException, SQLException {
+    PreparedStatement stmt = null;
+    try {
+        stmt = connection.prepareStatement('update jahia_nodetypes_provider set cndFile=? where filename=?');
+        stmt.setString(1, content);
+        stmt.setString(2, filename);
+        return stmt.executeUpdate();
+    } finally {
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                log.error("Error closing statement", e);
+            }
+        }
+    }
+    return -1;
+}
+
+public boolean cndFileExists(String filename, Connection connection) {
+    PreparedStatement stmt = null;
+    ResultSet resultSet = null;
+    try {
+        stmt = connection.prepareStatement('select * from jahia_nodetypes_provider where filename=?');
+        stmt.setString(1, filename);
+        resultSet = stmt.executeQuery();
+        return resultSet.next();
+    } finally {
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (Exception e) {
+                log.error("Error closing result set ", e);
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                log.error("Error closing statement", e);
+            }
+        }
+    }
+    return false;
 }

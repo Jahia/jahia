@@ -6,6 +6,6 @@
                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 
-   <!-- <bean class="org.jahia.modules.profile.ChangePasswordAction" />-->
+    <bean class="org.jahia.modules.profile.ChangePasswordAction" />
 
 </beans>

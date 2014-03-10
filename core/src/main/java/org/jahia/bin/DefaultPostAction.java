@@ -92,8 +92,10 @@ public class DefaultPostAction extends Action {
         JCRNodeWrapper node = null;
         StringBuilder realPath = new StringBuilder();
         String startPath = "";
+        int index = 0;
         for (String subPath : subPaths) {
-            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
+            index++;
+            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && index != subPaths.length) {
                 realPath.append("/").append(subPath);
                 try {
                     session.getNode(JCRContentUtils.escapeNodePath(realPath.toString()));
@@ -108,9 +110,10 @@ public class DefaultPostAction extends Action {
         }
         startPath = "".equals(startPath)?realPath.toString():startPath;
         realPath = realPath.delete(0,realPath.length());
+        index = 0;
         for (String subPath : subPaths) {
-
-            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
+            index++;
+            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && index != subPaths.length) {
                 realPath.append("/").append(subPath);
                 if (realPath.toString().contains(startPath)) {
                     try {

@@ -768,23 +768,30 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
                     resource = urlResolver.getResource();
                     renderContext.setMainResource(resource);
-
-                    JCRSiteNode site = resource.getNode().getResolveSite();
-                    if (!Url.isLocalhost(req.getServerName()) && !renderContext.isEditMode()) {
-                        JCRSessionWrapper session1 = resource.getNode().getSession();
-                        if (urlResolver.getSiteKey() != null && (site == null || !site.getSiteKey().equals(urlResolver.getSiteKey()))) {
-                            site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKey());
-                        } else if (renderContext.isLiveMode() && urlResolver.getSiteKeyByServerName() != null && (site == null || !site.getSiteKey().equals(
-                                urlResolver.getSiteKeyByServerName()))) {
-                            site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKeyByServerName());
+                    if (renderContext.getSite() == null) {
+                        // If Site has not been resolved by the servlet (so far only dashboard mode is doing that
+                        JCRSiteNode site = resource.getNode().getResolveSite();
+                        if (!Url.isLocalhost(req.getServerName()) && !renderContext.isEditMode()) {
+                            JCRSessionWrapper session1 = resource.getNode().getSession();
+                            if (urlResolver.getSiteKey() != null &&
+                                (site == null || !site.getSiteKey().equals(urlResolver.getSiteKey()))) {
+                                site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKey());
+                            } else if (renderContext.isLiveMode() && urlResolver.getSiteKeyByServerName() != null &&
+                                       (site == null || !site.getSiteKey().equals(
+                                               urlResolver.getSiteKeyByServerName()))) {
+                                site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKeyByServerName());
+                            }
                         }
+                        if (resource.getNode().getPath().startsWith("/sites/") &&
+                            (site == null || (!site.getPath().startsWith("/modules/") &&
+                                              !site.isAllowsUnlistedLanguages() &&
+                                              !(renderContext.isLiveMode() ? site.getActiveLiveLanguagesAsLocales().contains(
+                                                      urlResolver.getLocale()) : site.getLanguagesAsLocales().contains(
+                                                      urlResolver.getLocale()))))) {
+                            throw new PathNotFoundException("This language does not exist on this site");
+                        }
+                        renderContext.setSite(site);
                     }
-                    if (resource.getNode().getPath().startsWith("/sites/") && (site == null || (site != null
-                            && !site.getPath().startsWith("/modules/") && !site.isAllowsUnlistedLanguages()
-                            && !(renderContext.isLiveMode() ? site.getActiveLiveLanguagesAsLocales().contains(urlResolver.getLocale()) : site.getLanguagesAsLocales().contains(urlResolver.getLocale()))))) {
-                        throw new PathNotFoundException("This language does not exist on this site");
-                    }
-                    renderContext.setSite(site);
 //                    resource.pushWrapper("wrapper.fullpage");
 
                     if (urlResolver.getPath().endsWith(".do")) {

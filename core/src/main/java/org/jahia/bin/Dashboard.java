@@ -42,6 +42,8 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
@@ -69,6 +71,11 @@ public class Dashboard extends Render {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         context.setEditModeConfig(editConfiguration);
+        try {
+            context.setSite((JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/systemsite"));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
         return context;
     }
 

@@ -192,7 +192,7 @@ function editVisibility(propertiesNumber,idNumber, value)
         }
     }
     //posting the properties visibility to JCR
-    $.post("<c:url value='${url.basePreview}${user.path}'/>",dataToPost,function (){
+    $.post("<c:url value='${url.baseUserBoardFrameEdit}${user.path}'/>",dataToPost,function (){
         //hiding all the others images near the switches
         $('.switchIcons').hide();
 
@@ -249,7 +249,7 @@ function ajaxReloadCallback(jcrId)
         windowToRefresh.location.reload();
     } else
     {
-        $('#editDetailspage').load('<c:url value="${url.basePreview}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
+        $('#editDetailspage').load('<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
     }
 }
 
@@ -311,7 +311,7 @@ function saveChangesByRowId(rowId)
 
     //calling ajax POST
     var thisField = this;
-    $.post("<c:url value='${url.basePreview}${user.path}'/>",data,null,"json").done(function(){ajaxReloadCallback(reloadType);});
+    $.post("<c:url value='${url.baseUserBoardFrameEdit}${user.path}'/>",data,null,"json").done(function(){ajaxReloadCallback(reloadType);});
 }
 
 /**

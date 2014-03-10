@@ -53,7 +53,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,6 +87,10 @@ public class URLGenerator {
     private String baseContribute;
     private String baseEdit;
     private String basePreview;
+    private String baseUserBoardEdit;
+    private String baseUserBoardLive;
+    private String baseUserBoardFrameEdit;
+    private String baseUserBoardFrameLive;
     private String convert;
     private String myProfile;
 
@@ -128,6 +131,10 @@ public class URLGenerator {
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         templatesPath = "/modules";
+        baseUserBoardEdit = "/cms/dashboard/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        baseUserBoardLive = "/cms/dashboard/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
+        baseUserBoardFrameEdit = "/cms/dashboardframe/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        baseUserBoardFrameLive = "/cms/dashboardframe/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
     }
 
     public String getResourcePath() {
@@ -369,6 +376,22 @@ public class URLGenerator {
 
     public String getConvert() {
         return convert;
+    }
+
+    public String getBaseUserBoardEdit() {
+        return baseUserBoardEdit;
+    }
+
+    public String getBaseUserBoardLive() {
+        return baseUserBoardLive;
+    }
+
+    public String getBaseUserBoardFrameEdit() {
+        return baseUserBoardFrameEdit;
+    }
+
+    public String getBaseUserBoardFrameLive() {
+        return baseUserBoardFrameLive;
     }
 
     public String getRealResource() {

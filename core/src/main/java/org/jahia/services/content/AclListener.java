@@ -56,7 +56,7 @@ import java.util.*;
 public class AclListener extends DefaultEventListener {
     private static Logger logger = LoggerFactory.getLogger(AclListener.class);
     private JCRPublicationService publicationService;
-    private ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>();
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
@@ -125,7 +125,7 @@ public class AclListener extends DefaultEventListener {
                     } catch (ItemNotFoundException e) {
                         logger.error("unable to read node " + next.getPath());
                     }
-                } else if (next.getType() == Event.NODE_REMOVED) {
+                } else if (next.getType() == Event.NODE_REMOVED && StringUtils.substringAfterLast(next.getPath(),"/").startsWith("GRANT_")) {
                     aceIdentifiers.add(next.getIdentifier());
                 }
             } else if (next.getPath().startsWith("/roles/")) {

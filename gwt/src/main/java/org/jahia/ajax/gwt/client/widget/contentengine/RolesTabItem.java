@@ -43,6 +43,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -72,6 +73,8 @@ public class RolesTabItem extends EditEngineTabItem {
 
     private boolean canBreakInheritance = false;
 
+    private String autoAddRole;
+
     @Override
     public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         rolesEditors.clear();
@@ -92,6 +95,7 @@ public class RolesTabItem extends EditEngineTabItem {
 
             rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roles, roleGroups, rolesEditors);
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
+            rolesEditor.setAutoAddRole(autoAddRole);
 
             if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                 rolesEditor.setReadOnly(true);
@@ -136,12 +140,24 @@ public class RolesTabItem extends EditEngineTabItem {
         this.canBreakInheritance = canBreakInheritance;
     }
 
+    public String getAutoAddRole() {
+        return autoAddRole;
+    }
+
+    public void setAutoAddRole(String autoAddRole) {
+        this.autoAddRole = autoAddRole;
+    }
+
     @Override
     public void doValidate(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, TabPanel tabs) {
-        if (rolesEditor != null && rolesEditor.getBreakAllInheritance() && !engine.getAcl().isBreakAllInheritance()) {
+        if (canBreakInheritance && rolesEditor != null && rolesEditor.getBreakAllInheritance()) {
             for (GWTJahiaNodeACE ace : rolesEditor.getAcl().getAce()) {
-                if (!ace.isInherited()) {
-                    return;
+                if (!ace.getRoles().isEmpty()) {
+                    for (Boolean granted : ace.getRoles().values()) {
+                        if (granted) {
+                            return;
+                        }
+                    }
                 }
             }
             EngineValidation.ValidateResult result = new EngineValidation.ValidateResult();

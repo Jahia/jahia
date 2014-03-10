@@ -57,6 +57,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Image;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -77,6 +78,8 @@ public class AclEditor {
     private final String context;
     private Button restoreButton;
     private boolean canBreakInheritance = false;
+    private String autoAddRole;
+    private transient PrincipalModelData autoAddRoleAdded = null;
     private Button breakinheritanceItem;
     private boolean readOnly = false;
     private List<String> displayedRoles;
@@ -154,10 +157,19 @@ public class AclEditor {
 
 
         breakinheritanceItem = new Button();
-        breakinheritanceItem.setEnabled(!readOnly);
+        breakinheritanceItem.setEnabled(!readOnly && canBreakInheritance);
         breakinheritanceItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 final boolean newValue = !breakAllInheritance;
+                if (autoAddRole != null && stores.containsKey(autoAddRole)) {
+                    if (newValue) {
+                        autoAddRoleAdded = new PrincipalModelData(JahiaGWTParameters.getCurrentUser(), 'u', JahiaGWTParameters.getCurrentUser(), JahiaGWTParameters.getCurrentUser(), false);
+                        stores.get(autoAddRole).add(autoAddRoleAdded);
+                    } else if (autoAddRoleAdded != null) {
+                        stores.get(autoAddRole).remove(autoAddRoleAdded);
+                        autoAddRoleAdded = null;
+                    }
+                }
                 for (AclEditor roleEditor : AclEditor.this.rolesEditors) {
                     roleEditor.setBreakAllInheritance(newValue);
                     roleEditor.setDirty();
@@ -165,7 +177,6 @@ public class AclEditor {
                         resizeGrid(grid);
                     }
                 }
-
             }
         });
 
@@ -291,6 +302,11 @@ public class AclEditor {
 
     public void setCanBreakInheritance(boolean canBreakInheritance) {
         this.canBreakInheritance = canBreakInheritance;
+        breakinheritanceItem.setEnabled(!readOnly && canBreakInheritance);
+    }
+
+    public void setAutoAddRole(String autoAddRole) {
+        this.autoAddRole = autoAddRole;
     }
 
     public void setReadOnly(boolean readOnly) {

@@ -1019,6 +1019,7 @@
                     </set>
                 </property>
                 <property name="canBreakInheritance"><value>true</value></property>
+                <property name="autoAddRole" value="editor-in-chief"/>
             </bean>
         </property>
     </bean>
@@ -1034,7 +1035,7 @@
                         <value>privileged</value>
                     </set>
                 </property>
-                <property name="canBreakInheritance"><value>true</value></property>
+                <property name="canBreakInheritance"><value>false</value></property>
                 <property name="showForTypes">
                     <list value-type="java.lang.String">
                         <value>jnt:component</value>

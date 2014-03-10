@@ -687,7 +687,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 }
             };
 
-            Collections.sort(node.getChildren(), nodeComparator);
+            // for new node, node is null
+            if (node != null) {
+                Collections.sort(node.getChildren(), nodeComparator);
+            }
             Collections.sort(this.children, nodeComparator);
 
             if (node != null) {

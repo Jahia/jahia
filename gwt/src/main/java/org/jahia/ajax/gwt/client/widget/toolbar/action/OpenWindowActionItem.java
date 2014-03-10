@@ -42,9 +42,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
@@ -116,12 +116,16 @@ public class OpenWindowActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         Map preferences = getGwtToolbarItem().getProperties();
         final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);
-        if (windowUrl != null && windowUrl.getValue() != null) {
-            try {
-                URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection());
-                setEnabled(true);
-            } catch (Exception e) {
-                setEnabled(false);
+        if (!hasPermission(JahiaGWTParameters.getSiteNode())) {
+            setEnabled(false);
+        } else {
+            if (windowUrl != null && windowUrl.getValue() != null) {
+                try {
+                    URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection());
+                    setEnabled(true);
+                } catch (Exception e) {
+                    setEnabled(false);
+                }
             }
         }
     }

@@ -361,11 +361,7 @@
         </property>
         <property name="titleKey" value="label.filemanager"/>
         <property name="icon" value="fileManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="fileManager"/>
-            </bean>
-        </property>
+        <property name="requiredPermission" value="fileManager"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -445,11 +441,7 @@
         </property>
         <property name="titleKey" value="label.portletmanager"/>
         <property name="icon" value="portletManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="portletManager"/>
-            </bean>
-        </property>
+        <property name="requiredPermission" value="portletManager"/>
 
         <property name="properties">
             <list>
@@ -508,11 +500,7 @@
         </property>
         <property name="titleKey" value="label.tagmanager"/>
         <property name="icon" value="tagManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="tagManager"/>
-            </bean>
-        </property>
+        <property name="requiredPermission" value="tagManager"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -538,11 +526,7 @@
         </property>
         <property name="titleKey" value="label.sitemanager"/>
         <property name="icon" value="siteManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="siteManager"/>
-            </bean>
-        </property>
+        <property name="requiredPermission" value="siteManager"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -1283,11 +1267,7 @@
         </property>
         <property name="titleKey" value="label.contentmanager"/>
         <property name="icon" value="content-manager-1616"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="permission" value="editorialContentManager"/>
-            </bean>
-        </property>
+        <property name="requiredPermission" value="editorialContentManager"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">

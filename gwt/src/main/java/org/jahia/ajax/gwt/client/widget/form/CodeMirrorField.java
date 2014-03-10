@@ -121,7 +121,10 @@ public class CodeMirrorField extends TextArea {
 
     private native void insertPropertyAtCursor(String value)/*-{
         var myCodeMirror = this.@org.jahia.ajax.gwt.client.widget.form.CodeMirrorField::codeMirror;
-        return myCodeMirror.replaceSelection(value);
+        myCodeMirror.replaceSelection(value);
+        myCodeMirror.setCursor(myCodeMirror.getCursor("end"));
+        myCodeMirror.focus();
+
     }-*/;
 
     public native void indent() /*-{

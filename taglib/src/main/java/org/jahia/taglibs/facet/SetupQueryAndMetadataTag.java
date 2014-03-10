@@ -279,6 +279,6 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
     private static String buildQueryString(String facetNodeTypeName, String key, String minCount, String extra) {
         final String nodeType = facetNodeTypeName != null ? "nodetype=" + facetNodeTypeName + "&" : "";
-        return "rep:facet(" + nodeType + "key=" + key + "&mincount=" + minCount + extra + ")";
+        return "rep:facet(" + nodeType + "key=" + key + "&mincount=" + minCount + (extra != null ? extra : "") + ")";
     }
 }

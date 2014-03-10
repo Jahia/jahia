@@ -56,6 +56,7 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -220,9 +221,9 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                                 String value = property.getString();
 
                                 // adjust value for hierarchical facets
-                                if (facet.isNodeType("jnt:fieldHierarchicalFacet") && name.equals("prefix") && activeFacets != null) {
-                                    final List<KeyValue> active = this.activeFacets.get(facetPropertyName);
-                                    if (active.isEmpty()) {
+                                if (facet.isNodeType("jnt:fieldHierarchicalFacet") && name.equals("prefix")) {
+                                    final List<KeyValue> active = activeFacets != null ? this.activeFacets.get(facetPropertyName) : Collections.<KeyValue>emptyList();
+                                    if (active == null || active.isEmpty()) {
                                         value = Functions.getIndexPrefixedPath(value);
                                     } else {
                                         value = Functions.getDrillDownPrefix((String) active.get(active.size() - 1).getKey());

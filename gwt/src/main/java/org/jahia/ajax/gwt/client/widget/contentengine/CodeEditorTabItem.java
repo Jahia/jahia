@@ -185,7 +185,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent buttonEvent) {
-                                    codeField.insertProperty(mirrorTemplates.getValue().getValue());
+                                    if (mirrorTemplates.getValue() != null) {
+                                        codeField.insertProperty(mirrorTemplates.getValue().getValue());
+                                    }
                                 }
                             });
                             Label label = new Label(Messages.get("label.snippetType", "Snippet Type"));

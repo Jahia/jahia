@@ -348,6 +348,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getApplicablePropertyDefinition(propertyName);
     }
 
+    @Override
+    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName, int requiredPropertyType, boolean isMultiple) throws RepositoryException {
+        return node.getApplicablePropertyDefinition(propertyName, requiredPropertyType, isMultiple);
+    }
+
     public List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException {
         return node.getReferenceProperties();
     }

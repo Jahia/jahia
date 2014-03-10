@@ -728,6 +728,18 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws RepositoryException;
 
+    /**
+     * Get the property definition object applicable to the given property name
+     *
+     * @param propertyName the name of the property to find the corresponding definition
+     * @param requiredPropertyType the type of the property to find the corresponding definition
+     * @param isMultiple is the property multiple
+     * @return the <code>ExtendedPropertyDefinition</code> for the given property
+     * @throws RepositoryException
+     */
+    ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName, int requiredPropertyType, boolean isMultiple) throws RepositoryException;
+
+
     List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException;
 
     /**

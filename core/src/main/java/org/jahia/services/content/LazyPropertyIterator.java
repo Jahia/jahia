@@ -182,7 +182,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         try {
             if (getPropertiesIterator().hasNext()) {
                 Property property = getPropertiesIterator().nextProperty();
-                ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName());
+                ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName(),property.getType(),property.isMultiple());
                 if (epd == null) {
                     return hasNext();
                 }

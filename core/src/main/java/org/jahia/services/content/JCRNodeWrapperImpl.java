@@ -2951,12 +2951,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return fileContent;
     }
-
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)  throws RepositoryException {
+        return getApplicablePropertyDefinition(propertyName,0,false);
+    }
 
     /**
      * {@inheritDoc}
      */
-    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)
+    public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName, int requiredPropertyType, boolean isMultiple)
             throws RepositoryException {
         ExtendedPropertyDefinition result = null;
         if (applicablePropertyDefinition.containsKey(propertyName)) {
@@ -2988,9 +2993,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         for (ExtendedNodeType type : types) {
             for (ExtendedPropertyDefinition epd : type.getUnstructuredPropertyDefinitions().values()) {
                 // check type .. ?
-                result = epd;
-                applicablePropertyDefinition.put(propertyName, result);
-                return result;
+                if (requiredPropertyType == 0 || (epd.getRequiredType() == requiredPropertyType && (isMultiple && epd.isMultiple() || !isMultiple && !epd.isMultiple()))) {
+                    result = epd;
+                    applicablePropertyDefinition.put(propertyName, result);
+                    return result;
+                }
             }
         }
         applicablePropertyDefinition.put(propertyName, result);

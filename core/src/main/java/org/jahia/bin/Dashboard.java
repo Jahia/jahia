@@ -41,6 +41,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -72,7 +73,7 @@ public class Dashboard extends Render {
         context.setEditMode(true);
         context.setEditModeConfig(editConfiguration);
         try {
-            context.setSite((JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/systemsite"));
+            context.setSite((JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode("/sites/systemsite"));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

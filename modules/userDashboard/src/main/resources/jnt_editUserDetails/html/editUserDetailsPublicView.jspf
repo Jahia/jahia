@@ -92,8 +92,9 @@
                         <c:when test="${fn:contains(publicPropertiesAsString, 'j:title') or fn:contains(publicPropertiesAsString, 'j:firstName')
                                                                                 or fn:contains(publicPropertiesAsString, 'j:lastName') and fn:contains(publicPropertiesAsString, 'j:gender')}">
                             <div class="pull-right">
-                                <strong><fmt:message key='mySettings.gender'/>&nbsp;:</strong>
+
                                 <c:if test="${(not empty user.properties['j:gender'].string)}">
+                                    <strong><fmt:message key='mySettings.gender'/>&nbsp;:</strong>
                                     &nbsp;${user.properties['j:gender'].string}
                                 </c:if>
                             </div>
@@ -117,9 +118,8 @@
                     </c:if>
                 </c:if>
                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:organization')}">
-                    &nbsp;<fmt:message key='mySettings.at'/>&nbsp;
                     <c:if test="${(not empty user.properties['j:organization'].string)}">
-                        ${user.properties['j:organization'].string}
+                        &nbsp;<fmt:message key='mySettings.at'/>&nbsp;${user.properties['j:organization'].string}
                     </c:if>
                 </c:if>
             </div>
@@ -179,9 +179,10 @@
                     <div class="pull-left">
                         <c:if test="${fn:contains(publicPropertiesAsString, 'j:email')}">
                             <div>
-                                <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
+
                                 <c:if test="${(not empty user.properties['j:email'].string)}">
                                     <c:if test="${(not empty user.properties['j:email'].string)}">
+                                        <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
                                         &nbsp;${user.properties['j:email'].string}
                                     </c:if>
                                 </c:if>
@@ -249,13 +250,15 @@
             <div class="box-1">
                 <c:if test="${fn:contains(publicPropertiesAsString, 'j:birthDate')}">
                     <div>
+                        <c:if test="${not empty birthDate}">
                         <strong><fmt:message key="jnt_user.age"/>&nbsp;:</strong>
                         <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>&nbsp;<fmt:message key="jnt_user.profile.years"/>
+                        </c:if>
                     </div>
                     <div>
-                        <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
-                        <strong><fmt:message key="jnt_user.j_birthDate"/>&nbsp;:</strong>
                         <c:if test="${not empty birthDate}">
+                            <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
+                            <strong><fmt:message key="jnt_user.j_birthDate"/>&nbsp;:</strong>
                             &nbsp;${displayBirthDate}
                         </c:if>
                     </div>

@@ -55,12 +55,14 @@
 <%-- Javascripts inclusions --%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap.js"/>
-<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
-<template:addResources type="javascript" resources="bootstrap-datetimepicker.${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootstrap-switch.js"/>
+<%--<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>--%>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.${currentResource.locale}.js"/>
 
 <template:addCacheDependency node="${user}"/>
 
@@ -79,328 +81,66 @@
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>
 <template:addResources>
 <script type="text/javascript">
-/* User Picture */
-var currentElement = "";
-var currentForm = "";
+var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
+var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";
 
-/**
- * @Author : Jahia(rahmed)
- * This function Upload a picture the user picked and update his user picture with it
- * The picture to upload is directly picked from the form
- */
-function updatePhoto()
+function updateProperties(cssClass)
 {
-    /*$.post($(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'), )*/
-    $(".userPicture${currentNode.identifier}").editable('', {
-        type : 'ajaxupload',
-        target: $(".userPicture${currentNode.identifier}").attr('jcr:fileUrl'),
-        callback : function (data, status,original) {
-            var datas;
-            var initData = $(original).attr('init:data');
-            if (initData != null) {
-                datas = $.parseJSON(initData);
-            }
-            if (datas == null) {
-                datas = {};
-            }
-            datas['jcrMethodToCall'] = 'put';
-            var callableUrl = $(original).attr('jcr:url');
-            datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
-            $.post($(original).attr('jcr:url'), datas, function(result) {
-                ajaxReloadCallback();
-            }, "json");
-            $(".userPicture${currentNode.identifier}").html(original.revert);
-        }
-    });
-}
-
-/* About me functions */
-/**
- * @Author : Jahia(rahmed)
- * This function Hide the extra part of the about text when the user finish to read it
- */
-/*function hideMoreText()
-{
-    $('#aboutMeText').css({
-        height: 'auto',
-        overflow: 'hidden'
-    });
-    $('#aboutMeBlock').css({
-        height: '115px',
-        overflow:'hidden'
-    });
-    $('#btnLessAbout').hide();
-    $('#btnMoreAbout').show();
-
-}*/
-
-/**
- * @Author : Jahia(rahmed)
- * This function Show the extra part of the about text so the user can read it (scroll view)
- */
-/*function showMoreText()
-{
-    $('#aboutMeText').css({
-        height: '115px',
-        overflow: 'auto',
-        paddingRight: '5px'
-
-    });
-    $('#about').css({
-        height: '160px',
-        overflow: 'auto'
-    });
-    $('#btnMoreAbout').hide();
-    $('#btnLessAbout').show();
-}*/
-
-/* Privacy properties functions */
-/**
- * @Author : Jahia(rahmed)
- * This function post the privacy properties in order to update JCR
- * The post is in string in order to allow multiple values on publicProperties as the Jahia API
- * Doesn't allow the JSON table attributes.
- * propertiesNumber: the number of properties in the loop
- * idNumber: The id of the switch triggering the update (for the check image near the switch)
- * propertiesNumber: The updated state by the switch (for the check image near the switch)
- */
-function editVisibility(propertiesNumber,idNumber, value)
-{
-    //data to Post
-    var dataToPost = "jcrMethodToCall=put";
-
-    //the image to put near the switch once the post is successful
-    var doneImageId = '';
-
-    if(value == true)
-    {
-        doneImageId = '#switchOn'+idNumber;
-    }
-    else
-    {
-        doneImageId = '#switchOff'+idNumber;
-    }
-
-    //Looping on properties and filling the data
-    for(var currentPropertieIndex=0;currentPropertieIndex<propertiesNumber;currentPropertieIndex++)
-    {
-        //replacing the list of public properties by the list of all the switches in true state
-        if($('#publicProperties'+currentPropertieIndex).bootstrapSwitch('state') == true)
-        {
-            //Parsing the ":" to "%3A" while adding data
-            dataToPost += '&j%3ApublicProperties='+$("#publicProperties"+currentPropertieIndex).val().replace(":","%3A");
-        }
-    }
-    //posting the properties visibility to JCR
-    $.post("<c:url value='${url.baseUserBoardFrameEdit}${user.path}'/>",dataToPost,function (){
-        //hiding all the others images near the switches
-        $('.switchIcons').hide();
-
-        //showing the image near the switch
-        $(doneImageId).fadeIn('slow').delay(1000).fadeOut('slow');
-    });
-}
-
-/* General Table form functions */
-
-/**
- * @Author : Jahia(rahmed)
- * This function switch a row from the display view to the form view
- * elementId : id of the row to switch
- */
-function switchRow(elementId)
-{
-    //building css element id
-    elementId="#"+elementId;
-
-    //building css form id
-    var elementFormId = elementId+"_form";
-    //Checking which element to show and which element to hide
-    if( $(elementId).is(":visible"))
-    {
-        if(currentForm!='')
-        {
-            $(currentForm).hide();
-            $(currentElement).show();
-        }
-        //Hide the display row
-        $(elementId).hide();
-        //Show the form
-        $(elementFormId).show();
-    }
-    else
-    {
-        //Hide the Form
-        $(elementFormId).hide();
-        //Show the display Row
-        $(elementId).show();
-    }
-    currentElement = elementId;
-    currentForm = elementFormId;
-}
-
-function ajaxReloadCallback(jcrId)
-{
-    if (jcrId == 'preferredLanguage')
-    {
-        var windowToRefresh = window.parent;
-        if(windowToRefresh == undefined)
-            windowToRefresh = window;
-        windowToRefresh.location.reload();
-    } else
-    {
-        $('#editDetailspage').load('<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>');
-    }
-}
-
-/**
- * @Author : Jahia(rahmed)
- * This function make a JSON Post of all the form entries (textInputs, select and ckeditors) contained in a Row
- * rowId: the Id of the from which post the form entries
- */
-function saveChangesByRowId(rowId)
-{
-    var data;
-    var reloadType='other';
-
-    //initializing data table
-    var initData = $(this).attr('init:data');
-    if (initData != null)
-    {
-        data = $.parseJSON(initData);
-    }
-    if (data == null)
-    {
-        data = {};
-    }
-
-    //presetting the jcr method
-    data['jcrMethodToCall'] = 'put';
-    var divId = "#"+rowId+'_form';
-    //getting the form selects
-    $(divId+' select').each(function() {
-        if(this.name=='preferredLanguage')
-        {
-            reloadType='preferredLanguage';
-            data[this.name]=this.value;
-        }
-        else
-        {
-            if(!(this.name == 'title' && this.value.length == 0))
-            {
-                data['j:'+this.name]=this.value;
-            }
-        }
-    });
-
-    //getting the form inputs
-    $(divId+' input').each(function() {
-        if(!(this.name == 'birthDate' && this.value.length == 0 ))
-        {
-            data['j:'+this.name]=this.value;
-        }
-    });
-
-    //getting the ckeditors
-    var editorId = rowId+"_editor";
-    var editor = CKEDITOR.instances[editorId];
-    if(editor != null)
-    {
-        data['j:'+rowId]=editor.getData();
-    }
-
-    //calling ajax POST
-    var thisField = this;
-    $.post("<c:url value='${url.baseUserBoardFrameEdit}${user.path}'/>",data,null,"json").done(function(){ajaxReloadCallback(reloadType);});
-}
-
-/**
- * @Author : Jahia(rahmed)
- * This function changes the user Password calling the action changePassword.do
- * The new password is picked directly from the password change form in this page.
- */
-function changePassword()
-{
-    //passwords checks
-    if ($("#passwordField").val() == "") {
-        alert("<fmt:message key='serverSettings.user.errors.password.mandatory'/>");
-        return false;
-    }
-    if ($("#passwordField").val() != $("#passwordconfirm").val()) {
-        alert("<fmt:message key='serverSettings.user.errors.password.not.matching'/>");
-        return false;
-    }
-    var params = {password: $("#passwordField").val()};
-    $.post( '<c:url value="${url.base}${user.path}.changePassword.do"/>', { password: $("#passwordField").val(), passwordconfirm:  $("#passwordconfirm").val()},
-        function(result)
-        {
-            if(result['result'] != 'success')
-            {
-                $('#passwordError').html(result['errorMessage']);
-                $('#passwordError').fadeIn('slow').delay(4000).fadeOut('slow');
-                $('#passwordField').focus();
-            }
-            else
-            {
-                switchRow('password');
-                $('#passwordSuccess').html(result['errorMessage']);
-                $('#passwordSuccess').fadeIn('slow').delay(4000).fadeOut('slow');
-            }
-        },
-        'json');
+    formToJahiaAPICreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError)
 }
 
 var visibilityNumber = 0;
+var passwordMandatoryLabel="<fmt:message key='serverSettings.user.errors.password.mandatory'/>"
+var passwordNotMatchingLabel="<fmt:message key='serverSettings.user.errors.password.not.matching'/>"
 $(document).ready(function(){
-
-    $('#tabView a').click(function (e) {
+    $('body').on('click','#tabView a',function (e) {
         e.preventDefault();
         $(this).tab('show');
-    })
+    });
+    $('body').on('click','#datePickerParent',function (e) {
+        e.preventDefault();
+        $('#birthDate').datetimepicker({
+            format: 'yyyy-MM-dd',
+            pickTime: false,
+            language: '${currentResource.locale}'
+        });
+    });
+
+    // Activating the checkbox buttons
+    $('body').on('click','#switchParent',function (e) {
+        e.preventDefault();
+        for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
+         {
+             $("#publicProperties"+currentvisibility).bootstrapSwitch();
+         }
+         for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
+         {
+             $('#publicProperties'+currentvisibility).on('switchChange', function (e, data)
+             {
+                 //getting the switch form element and its value
+             var $element = $(data.el),value = data.value;
+             var elementId=$element.attr("id");
+             //getting the switch number contained in its css id by removing the text part
+             var number = parseInt(elementId.replace("publicProperties",''));
+
+             //calling the change visibility function with the number total of visibility switches, the number of the visibility to change and the state to put
+             editVisibility(visibilityNumber,number,value,"${user.identifier}", "${currentResource.locale}");
+
+             });
+         }
+    });
+
 
     $(".btnMoreAbout").click(function(){
-     $(".aboutMeText").css( { height:"100%",maxHeight: "500px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
-     $(".btnMoreAbout").hide();
-     $(".btnLessAbout").show();
-     });
+        $(".aboutMeText").css( { height:"100%",maxHeight: "500px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
+        $(".btnMoreAbout").hide();
+        $(".btnLessAbout").show();
+    });
 
-     $(".btnLessAbout").click(function(){
-     $(".aboutMeText").css( { height:"100px", overflow: "hidden" }, { queue:false, duration:500 });
-     $(".btnLessAbout").hide();
-     $(".btnMoreAbout").show();
-     });
-
-    // Activating the more/less links */
-/*    if($('#aboutMeText').height()>$('#aboutMeDiv').height())
-    {
-        $('#btnMoreAbout').show();
-    }*/
-
-    // Activating the checking buttons
-    var currentvisibility=0;
-    for(currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
-    {
-        $("#publicProperties"+currentvisibility).bootstrapSwitch();
-    }
-    for(currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
-    {
-        $('#publicProperties'+currentvisibility).on('switchChange', function (e, data)
-        {
-            //getting the switch form element and its value
-            var $element = $(data.el),value = data.value;
-            var elementId=$element.attr("id");
-            //getting the switch number contained in its css id by removing the text part
-            var number = parseInt(elementId.replace("publicProperties",''));
-            //calling the change visibility function with the number total of visibility switches, the number of the visibility to change and the state to put
-            editVisibility(visibilityNumber,number,value);
-        });
-    }
-
-    //Activating the Date-Picker
-    $('#birthDate').datetimepicker({
-        format: 'yyyy-MM-dd',
-        pickTime: false,
-        language: '${currentResource.locale}'
+    $(".btnLessAbout").click(function(){
+        $(".aboutMeText").css( { height:"100px", overflow: "hidden" }, { queue:false, duration:500 });
+        $(".btnLessAbout").hide();
+        $(".btnMoreAbout").show();
     });
 });
 </script>
@@ -415,108 +155,113 @@ $(document).ready(function(){
 
     <div class="tab-content">
         <div class="tab-pane active" id="private">
-            <div class="alert alert-info">
-                <div id="detailsHead" class="row-fluid">
-                    <div id="imageDiv" class="span2">
-                        <c:if test="${currentNode.properties['j:picture'].boolean}">
-                            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                            <div id="image">
-                                <c:choose>
-                                    <c:when test="${empty picture}">
-                                        <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                                             alt="" border="0"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
-                                             alt="${fn:escapeXml(person)}"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <%--<div class="image_edit_button">
-                                    <button class="btn btn-primary" type="button" onclick="switchRow('image')">
-                                        <fmt:message key="label.clickToEdit"/>
-                                    </button>
-                                </div>--%>
-                            </div>
-                        </c:if>
-                        <div id="image_form" class="hide">
-                            <div class="image_form_preview">
-                                <c:choose>
-                                    <c:when test="${empty picture}">
-                                        <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                                             alt="" border="0"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
-                                             alt="${fn:escapeXml(person)}"/>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                            <div class="image_form_inputs">
-                                <form id="pictureform" name="pictureform" onsubmit="return false;">
-                                    <label for="uploadedImage" value="Upload an Image"/>
-                                    <input id="uploadedImage" type="file" name="uploadedImage" maxlength="15" size="15"/>
-                                    <button class="btn btn-primary" type="button" onclick="updatePhoto()">
-                                        <fmt:message key="label.clickToEdit"/>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="aboutMeDiv" class="span10">
-                        <c:if test="${currentNode.properties['j:about'].boolean}">
-                            <div id="about">
-                                <h1>
-                                    <fmt:message key='jnt_user.j_about'/>
-                                </h1>
-                                <div id="aboutMeText" class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
-                                        ${user.properties['j:about'].string}
-                                </div>
-                                <br />
-                                <button id="btnMoreAbout" class="btn btn-small btn-primary btnMoreAbout" <%--onclick="showMoreText()"--%>>
-                                    <fmt:message key='mySettings.readMore'/>
-                                </button>
-                                <button id="btnLessAbout" class="btn btn-small btn-primary hide btnLessAbout" <%--onclick="hideMoreText()"--%>>
-                                    <fmt:message key='mySettings.readLess'/>
-                                </button>
-                                <c:if test="${user:isPropertyEditable(user,'j:about')}">
-                                    <button class="btn btn-primary pull-right" type="button" onclick="switchRow('about')">
-                                        <fmt:message key="label.clickToEdit"/>
-                                    </button>
-                                </c:if>
-                            </div>
-                            <c:if test="${user:isPropertyEditable(user,'j:about')}">
-                                <div id="about_form" class="hide span10">
-                                    <div id="about_editor">
-                                            ${fields['j:about']}
+            <form onkeypress="return event.keyCode != 13;" id="editDetailsForm" class="form-horizontal user-profile-table" onsubmit="return false;">
+                <div class="alert alert-info">
+                    <div id="detailsHead" class="row-fluid">
+                        <div id="imageDiv" class="span2">
+                            <c:if test="${currentNode.properties['j:picture'].boolean}">
+                                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                                <div id="image">
+                                    <div id="imageDisplay" style="height:135px;">
+                                        <c:choose>
+                                            <c:when test="${empty picture}">
+                                                <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                                     alt="" border="0"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                     alt="${fn:escapeXml(person)}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <br/>
+                                        <div style="clear: both;"></div>
                                     </div>
-                                    <script type="text/javascript">
-                                        var editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"});
-                                    </script>
-                                    <br />
-                                    <div class="pull-right">
-                                        <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')">
-                                            <fmt:message key="cancel"/>
+                                    <div>
+                                        <button class="btn btn-primary" type="button" onclick="switchRow('image')">
+                                            <fmt:message key="label.clickToEdit"/>
                                         </button>
-                                        <button class="btn btn-success" type="button" onclick="saveChangesByRowId('about')">
+                                     </div>
+                                </div>
+
+                                <div id="image_form" class="hide">
+                                    <div class="image_form_preview">
+                                        <c:choose>
+                                            <c:when test="${empty picture}">
+                                                <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                                     alt="" border="0"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                     alt="${fn:escapeXml(person)}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="image_form_inputs">
+                                        <label for="uploadedImage" value="Upload an Image"/>
+                                        <input id="uploadedImage" type="file" name="file" maxlength="15" size="15"/>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage', '${currentResource.locale}','${user.path}', '${user.identifier}',ajaxReloadCallback, formError)">
                                             <fmt:message key="save"/>
                                         </button>
                                     </div>
                                 </div>
                             </c:if>
-                        </c:if>
+                        </div>
+                        <div id="aboutMeDiv" class="span10">
+                            <c:if test="${currentNode.properties['j:about'].boolean}">
+                                <div id="about">
+                                    <h1>
+                                        <fmt:message key='jnt_user.j_about'/>
+                                    </h1>
+                                    <div id="aboutMeText" class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
+                                            ${user.properties['j:about'].string}
+                                    </div>
+                                    <br />
+                                    <button id="btnMoreAbout" class="btn btn-small btn-primary btnMoreAbout" <%--onclick="showMoreText()"--%>>
+                                        <fmt:message key='mySettings.readMore'/>
+                                    </button>
+                                    <button id="btnLessAbout" class="btn btn-small btn-primary hide btnLessAbout" <%--onclick="hideMoreText()"--%>>
+                                        <fmt:message key='mySettings.readLess'/>
+                                    </button>
+                                    <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                                        <button class="btn btn-primary pull-right" type="button" onclick="switchRow('about')">
+                                            <fmt:message key="label.clickToEdit"/>
+                                        </button>
+                                    </c:if>
+                                </div>
+                                <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                                    <div id="about_form" class="hide span10">
+                                        <div id="about_editor">
+                                                ${fields['j:about']}
+                                        </div>
+                                        <script type="text/javascript">
+                                            var editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"});
+                                        </script>
+                                        <br />
+                                        <div class="pull-right">
+                                            <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')">
+                                                <fmt:message key="cancel"/>
+                                            </button>
+                                            <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError)">
+                                                <fmt:message key="save"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </c:if>
+                            </c:if>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row-fluid">
-                <div class="span2"></div>
-                <div class="span8">
-                    <form id="editDetailsForm" class="form-horizontal user-profile-table" onsubmit="return false;">
-                        <%@include file="editUserDetailsRows.jspf" %>
-                    </form>
+                <div class="row-fluid">
+                    <div class="span2"></div>
+                    <div class="span8">
+                            <%@include file="editUserDetailsRows.jspf" %>
+                    </div>
+                    <div class="span2"></div>
                 </div>
-                <div class="span2"></div>
-            </div>
+            </form>
         </div>
         <div class="tab-pane" id="public">
             <%@include file="editUserDetailsPublicView.jspf" %>

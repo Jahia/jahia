@@ -29,7 +29,7 @@
                 <div class="control-group">
                     <label class="control-label" for="title"><fmt:message key="mySettings.title"/></label>
                     <div class="controls">
-                        <select name="title">
+                        <select name="j:title" class="namesField">
                             <option value=""></option>
                             <c:forEach items="${titleInit}"
                                        varStatus="status"
@@ -52,7 +52,7 @@
                     <label class="control-label" for="firstname"><fmt:message key="mySettings.firstName"/></label>
                     <div class="controls">
                         <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
-                        <input name="firstName" type="text" value="${firstNameValue}"/>
+                        <input class="namesField" name="j:firstName" type="text" value="${firstNameValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -61,7 +61,7 @@
                     <label class="control-label" for="lastName"><fmt:message key="mySettings.lastName"/></label>
                     <div class="controls">
                         <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
-                        <input name="lastName" type="text" value="${lastNameValue}"/>
+                        <input class="namesField" name="j:lastName" type="text" value="${lastNameValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -69,16 +69,16 @@
                 <div class="control-group">
                     <label class="control-label" for="gender"><fmt:message key="mySettings.gender"/></label>
                     <div class="controls">
-                        <select name="gender">
+                        <select name="j:gender" class="namesField">
                             <c:forEach items="${genderInit}"
                                        varStatus="status"
                                        var="gender">
                                 <c:choose>
                                     <c:when test="${(fn:escapeXml(user.properties['j:gender'])) eq  (gender.value.string)}">
-                                        <option name="gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
+                                        <option name="j:gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
                                     </c:when>
                                     <c:otherwise>
-                                        <option name="gender" value="${gender.value.string}" >${gender.displayName}</option>
+                                        <option name="j:gender" value="${gender.value.string}" >${gender.displayName}</option>
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>
@@ -88,8 +88,8 @@
             </c:if>
             <div class="clear"></div>
             <div class="form-actions">
-                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
-                <button onclick="saveChangesByRowId('names')" class="btn btn-success"><fmt:message key="save"/></button>
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                <button onclick="updateProperties('namesField')" class="btn btn-success"><fmt:message key="save"/></button>
             </div>
         </div>
     </div>
@@ -101,12 +101,12 @@
         <div id="profession">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:function'].boolean}">
-                    <c:if test="${!empty user.properties['j:function']}">
+                    <c:if test="${not empty user.properties['j:function'].string}">
                         ${fn:escapeXml(user.properties['j:function'].string)}
                     </c:if>
                 </c:if>
                 <c:if test="${currentNode.properties['j:organization'].boolean}">
-                    <c:if test="${!empty user.properties['j:organization']}">
+                    <c:if test="${not empty user.properties['j:organization'].string}">
                         at ${fn:escapeXml(user.properties['j:organization'].string)}
                     </c:if>
                 </c:if>
@@ -123,7 +123,7 @@
                     <label class="control-label" for="function"><fmt:message key="mySettings.function"/></label>
                     <div class="controls">
                         <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
-                        <input name="function" type="text" value="${functionValue}"/>
+                        <input class="professionField" name="j:function" type="text" value="${functionValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -132,21 +132,20 @@
                     <label class="control-label" for="organization"><fmt:message key="mySettings.organization"/></label>
                     <div class="controls">
                         <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
-                        <input name="organization" type="text" value="${organizationValue}"/>
+                        <input class="professionField" name="j:organization" type="text" value="${organizationValue}"/>
                     </div>
                 </div>
             </c:if>
             <div class="clear"></div>
             <div class="form-actions">
-                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
-                <button class="btn btn-success" type="button" onclick="saveChangesByRowId('profession')">
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                <button class="btn btn-success" type="button" onclick="updateProperties('professionField')">
                     <fmt:message key="save"/>
                 </button>
             </div>
         </div>
     </div>
 </div>
-
 <div id="socialRows">
     <h2><i class="icon-globe"></i>&nbsp;<fmt:message key="mySettings.social"/></h2>
     <div class="row-fluid box-1">
@@ -205,7 +204,7 @@
                     <label class="control-label" for="facebookID"><fmt:message key="mySettings.facebookID"/></label>
                     <div class="controls">
                         <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
-                        <input name="facebookID" type="text" value="${facebookIDValue}"/>
+                        <input class="socialField" name="j:facebookID" type="text" value="${facebookIDValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -214,7 +213,7 @@
                     <label class="control-label" for="linkedinID"><fmt:message key="mySettings.linkedinID"/></label>
                     <div class="controls">
                         <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
-                        <input name="linkedinID" type="text" value="${linkedinIDValue}"/>
+                        <input class="socialField" name="j:linkedinID" type="text" value="${linkedinIDValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -223,7 +222,7 @@
                     <label class="control-label" for="skypeID"><fmt:message key="mySettings.skypeID"/></label>
                     <div class="controls">
                         <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
-                        <input name="skypeID" type="text" value="${skypeIDValue}"/>
+                        <input class="socialField" name="j:skypeID" type="text" value="${skypeIDValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -232,14 +231,14 @@
                     <label class="control-label" for="twitterID"><fmt:message key="mySettings.twitterID"/></label>
                     <div class="controls">
                         <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
-                        <input name="twitterID" type="text" value="${twitterIDValue}"/>
+                        <input class="socialField" name="j:twitterID" type="text" value="${twitterIDValue}"/>
                     </div>
                 </div>
             </c:if>
             <div class="clear"></div>
             <div class="form-actions">
-                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
-                <button class="btn btn-success" type="button" onclick="saveChangesByRowId('social')">
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                <button class="btn btn-success" type="button" onclick="updateProperties('socialField')">
                     <fmt:message key="save"/>
                 </button>
             </div>
@@ -255,27 +254,29 @@
                 <div class="row-fluid">
                     <div class="pull-left">
                         <div>
-                            <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
                             <c:if test="${(not empty user.properties['j:email'].string)}">
-                                &nbsp;${user.properties['j:email'].string}
+                            <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
+                             &nbsp;${user.properties['j:email'].string}
                             </c:if>
                         </div>
                         <div>
-                            <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
                             <c:if test="${(not empty user.properties['j:phoneNumber'].string)}">
+                                <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
                                 &nbsp;${user.properties['j:phoneNumber'].string}
                             </c:if>
                         </div>
                         <div>
-                            <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
                             <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
+                                <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
                                 &nbsp;${user.properties['j:mobileNumber'].string}
                             </c:if>
                         </div>
                     </div>
                     <div class="pull-right">
                         <div class="pull-left">
-                            <strong><fmt:message key='jnt_user.j_address'/>&nbsp;:</strong>&nbsp;
+                            <c:if test="${(not empty user.properties['j:address'].string) or not empty user.properties['j:zipCode'].string or not empty user.properties['j:city'].string or not empty user.properties['j:country'].string}">
+                                <strong><fmt:message key='jnt_user.j_address'/>&nbsp;:</strong>&nbsp;
+                            </c:if>
                         </div>
                         <div class="pull-right">
                             <c:if test="${(not empty user.properties['j:address'].string)}">
@@ -309,7 +310,7 @@
                     <label class="control-label" for="address"><fmt:message key='jnt_user.j_address'/></label>
                     <div class="controls">
                         <c:set var="addressValue" value="${not empty user.properties['j:address'] ? fn:escapeXml(user.properties['j:address'].string) : ''}"/>
-                        <input type="text" name="address" value="${addressValue}"/>
+                        <input class="addressField" type="text" name="j:address" value="${addressValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -318,7 +319,7 @@
                     <label class="control-label" for="zipCode"><fmt:message key='jnt_user.j_zipCode'/></label>
                     <div class="controls">
                         <c:set var="zipCodeValue" value="${not empty user.properties['j:zipCode'] ? fn:escapeXml(user.properties['j:zipCode'].string) : ''}"/>
-                        <input type="text" name="zipCode" value="${zipCodeValue}"/>
+                        <input class="addressField" type="text" name="j:zipCode" value="${zipCodeValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -327,7 +328,7 @@
                     <label class="control-label" for="city"><fmt:message key='jnt_user.j_city'/></label>
                     <div class="controls">
                         <c:set var="cityValue" value="${not empty user.properties['j:city'] ? fn:escapeXml(user.properties['j:city'].string) : ''}"/>
-                        <input type="text" name="city" value="${cityValue}"/>
+                        <input class="addressField" type="text" name="j:city" value="${cityValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -336,7 +337,7 @@
                     <label class="control-label" for="country"><fmt:message key='jnt_user.j_country'/></label>
                     <div class="controls">
                         <c:set var="countryValue" value="${not empty user.properties['j:country'] ? fn:escapeXml(user.properties['j:country'].string) : ''}"/>
-                        <input type="text" name="country" value="${countryValue}"/>
+                        <input class="addressField" type="text" name="j:country" value="${countryValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -345,7 +346,7 @@
                     <label class="control-label" for="phoneNumber"><fmt:message key='jnt_user.j_phoneNumber'/></label>
                     <div class="controls">
                         <c:set var="phoneNumberValue" value="${not empty user.properties['j:phoneNumber'] ? fn:escapeXml(user.properties['j:phoneNumber'].string) : ''}"/>
-                        <input type="text" name="phoneNumber" value="${phoneNumberValue}"/>
+                        <input class="addressField" type="text" name="j:phoneNumber" value="${phoneNumberValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -354,7 +355,7 @@
                     <label class="control-label" for="mobileNumber"><fmt:message key='jnt_user.j_mobileNumber'/></label>
                     <div class="controls">
                         <c:set var="mobileNumberValue" value="${not empty user.properties['j:mobileNumber'] ? fn:escapeXml(user.properties['j:mobileNumber'].string) : ''}"/>
-                        <input type="text" name="mobileNumber" value="${mobileNumberValue}"/>
+                        <input class="addressField" type="text" name="j:mobileNumber" value="${mobileNumberValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -363,13 +364,13 @@
                     <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/></label>
                     <div class="controls">
                         <c:set var="emailValue" value="${not empty user.properties['j:email'] ? fn:escapeXml(user.properties['j:email'].string) : ''}"/>
-                        <input type="text" name="email" value="${emailValue}"/>
+                        <input class="addressField" type="text" name="j:email" value="${emailValue}"/>
                     </div>
                 </div>
             </c:if>
             <div class="form-actions">
-                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
-                <button class="btn btn-success" type="button" onclick="saveChangesByRowId('address')">
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                <button class="btn btn-success" type="button" onclick="updateProperties('addressField')">
                     <fmt:message key="save"/>
                 </button>
             </div>
@@ -414,8 +415,8 @@
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
-                    <button class="btn btn-success" type="button" onclick="changePassword()">
+                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                    <button id="passwordChangeButton" class="btn btn-success" type="button" onclick="changePassword(passwordMandatoryLabel, passwordNotMatchingLabel)">
                         <fmt:message key="save"/>
                     </button>
                 </div>
@@ -434,9 +435,9 @@
                         <c:if test="${not empty birthDate}">
                             <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
                             <fmt:formatDate value="${birthDate.date.time}" pattern="yyyy-MM-dd" var="dateforCal"/>
+                            <strong><fmt:message key="jnt_user.j_birthDate"/> : </strong>
+                            ${displayBirthDate}
                         </c:if>
-                        <strong><fmt:message key="jnt_user.j_birthDate"/> : </strong>
-                        ${displayBirthDate}
                     </div>
                 </c:if>
                 <c:if test="${currentNode.properties['preferredLanguage'].boolean}">
@@ -449,14 +450,16 @@
                 </c:if>
                 <c:if test="${currentNode.properties['age'].boolean}">
                     <div>
+                    <c:if test="${not empty birthDate}">
                         <strong><fmt:message key="jnt_user.age"/>&nbsp;:&nbsp;</strong>
                         <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/>
                         &nbsp;<fmt:message key="jnt_user.profile.years"/>
+                     </c:if>
                     </div>
                 </c:if>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary" type="button" onclick="switchRow('other')">
+                <button id="datePickerParent" class="btn btn-primary" type="button" onclick="switchRow('other')">
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
@@ -468,7 +471,7 @@
                         <fmt:message key="jnt_user.j_birthDate"/>
                     </label>
                     <div class="controls input-append date" id="birthDate" style="display: block;">
-                        <input type="text" name="birthDate" value="${dateforCal}"/>
+                        <input class="otherField" type="text" name="j:birthDate" value="${dateforCal}" jcrtype="Date"/>
                         <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
                     </div>
                 </div>
@@ -480,10 +483,10 @@
                 <div class="control-group">
                     <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/></label>
                     <div class="controls">
-                        <select name="preferredLanguage">
+                        <select class="otherField" name="preferredLanguage">
                             <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
                                 <option value="${functions:toLocale(adLocale)}" <c:if test="${functions:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
-                                        ${functions:displayLocaleNameWith(adLocale, adLocale)}
+                                ${functions:displayLocaleNameWith(adLocale, adLocale)}
                                 </option>
                             </c:forEach>
                         </select>
@@ -491,8 +494,8 @@
                 </div>
             </c:if>
             <div class="form-actions">
-                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback('cancel')"><fmt:message key="cancel"/></button>
-                <button class="btn btn-success" type="button" onclick="saveChangesByRowId('other')">
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                <button class="btn btn-success" type="button" onclick="updateProperties('otherField')">
                     <fmt:message key="save"/>
                 </button>
             </div>
@@ -509,11 +512,11 @@
             <div class="pull-left span9">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <tr>
-                            <th><fmt:message key='mySettings.property'/></th>
-                            <th><fmt:message key='jnt_user.profile.public'/></th>
-                            <th><fmt:message key='jnt_user.profile.nonpublic'/></th>
-                        </tr>
+                    <tr>
+                        <th><fmt:message key='mySettings.property'/></th>
+                        <th><fmt:message key='jnt_user.profile.public'/></th>
+                        <th><fmt:message key='jnt_user.profile.nonpublic'/></th>
+                    </tr>
                     </thead>
                     <tbody>
                     <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
@@ -539,12 +542,17 @@
                 </table>
             </div>
             <div class="pull-right span3">
-                <button class="btn btn-primary pull-right" type="button" onclick="switchRow('privacy')">
+                <button id="switchParent" class="btn btn-primary pull-right" type="button" onclick="switchRow('privacy')">
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
         </div>
         <div id="privacy_form" class="hide">
+            <div class="row-fluid">
+                 <div class="span11"></div>
+                 <div class="span1"><button type="button" class="btn btn-primary btn-danger" onclick="ajaxReloadCallback(null,'Back')">X</button></div>
+
+            </div>
             <div class="row-fluid">
                 <div class="span6">
                     <c:forTokens
@@ -558,28 +566,28 @@
                                 currentPropertieState = $("#publicProperties"+${loopStatus.index}).bootstrapSwitch('state');
                             </script>
                             <c:if test="${loopStatus.index eq 8}">
-                                </div>
-                                <div class="span6">
-                            </c:if>
-                            <div class="control-group">
-                                <label class="control-label switch" for="publicProperties${loopStatus.index}">
-                                    <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
-                                </label>
-                                <div class="control">
-                                    <input data-size="mini" data-on-text="public" data-off-text="private" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
-                                    &nbsp;
-                                    <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display: none;"></i>
-                                    <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display: none;"></i>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                        </c:if>
+                </div>
+                <div class="span6">
+                    </c:if>
+                    <div class="control-group">
+                        <label class="control-label switch" for="publicProperties${loopStatus.index}">
+                            <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                        </label>
+                        <div class="control">
+                            <input data-size="mini" data-on-text="public" data-off-text="private" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
+                            &nbsp;
+                            <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display: none;"></i>
+                            <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display: none;"></i>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    </c:if>
                     </c:forTokens>
                 </div>
             </div>
-            <div class="form-actions">
-                <button type="button" class="btn btn-primary" onclick="ajaxReloadCallback('Back')"><fmt:message key="backToPreviousPage"/></button>
-            </div>
+            <%--<div class="form-actions">
+                <button type="button" class="btn btn-primary btn-success" onclick="ajaxReloadCallback(null,'Back')"><fmt:message key="save"/></button>
+            </div>--%>
         </div>
     </div>
 </div>

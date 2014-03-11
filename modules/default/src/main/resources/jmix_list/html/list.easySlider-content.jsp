@@ -32,6 +32,8 @@
                 <template:module node="${child}"/>
             </li>
         </c:forEach>
-        <template:module path="*"/>
+        <div/>
     </ul>
 </div>
+<template:module path="*"/>
+

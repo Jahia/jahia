@@ -499,6 +499,10 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${antrun.plugin.version}</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${assembly.plugin.version}</version>
                 </plugin>

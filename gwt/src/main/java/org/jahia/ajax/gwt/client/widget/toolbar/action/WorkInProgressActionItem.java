@@ -66,7 +66,9 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
     private static WorkInProgressActionItem instance;
 
     private List<String> statuses = new ArrayList<String>();
-    private List<GWTJahiaJobDetail> processes = new ArrayList<GWTJahiaJobDetail>();
+    private List<GWTJahiaJobDetail> lastStartedJobs = new ArrayList<GWTJahiaJobDetail>();
+    private List<GWTJahiaJobDetail> lastEndedJobs = new ArrayList<GWTJahiaJobDetail>();
+    private int processesCount = 0;
 
     private boolean adminMode = true;
 
@@ -80,12 +82,13 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
     }
 
     public void handlePollingResult(ProcessPollingEvent result) {
-        List<GWTJahiaJobDetail> jobs = result.getActiveJobs();
-        if (!processes.equals(jobs)) {
-            final ArrayList<GWTJahiaJobDetail> deleted = new ArrayList<GWTJahiaJobDetail>(processes);
-            deleted.removeAll(jobs);
-            processes = jobs;
-            refreshStatus(deleted);
+        lastStartedJobs = result.getStartedJob();
+        lastEndedJobs = result.getEndedJob();
+
+        if (!lastStartedJobs.isEmpty() || !lastEndedJobs.isEmpty() || processesCount != result.getTotalCount()) {
+            processesCount = result.getTotalCount();
+
+            refreshStatus();
         }
     }
 
@@ -103,29 +106,9 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
         }
     }
 
-    private void refreshStatus(List<GWTJahiaJobDetail> oldJobs) {
-        refreshStatus();
-        Map<String, Object> refreshData = new HashMap<String, Object>();
-
-        if (oldJobs != null) {
-            for (GWTJahiaJobDetail oldJob : oldJobs) {
-                if (oldJob.getSite() == null || oldJob.getSite().equals(JahiaGWTParameters.getSiteKey()))
-                    if (oldJob.getGroup().equals("PublicationJob")) {
-                        if (oldJob.getUser().equals(JahiaGWTParameters.getCurrentUser())) {
-                            refreshData.put("publishedNodes", oldJob.getTargetPaths());
-                        }
-                        refreshData.put("event", "publicationSuccess");
-                    }
-            }
-        }
-        if (!refreshData.isEmpty()) {
-            linker.refresh(refreshData);
-        }
-    }
-
     private void refreshStatus() {
         Button b = (Button) getTextToolItem();
-        if (statuses.isEmpty() && processes.isEmpty()) {
+        if (statuses.isEmpty() && processesCount == 0) {
             b.setText(getMenuItem().getHtml());
             b.setIcon(getMenuItem().getIcon());
             b.setEnabled(true);
@@ -133,14 +116,32 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
             b.setIconStyle("x-status-busy");
             b.setText(statuses.get(0) + " ...");
             b.setEnabled(true);
-        } else if (processes.size() == 1) {
+        } else if (processesCount == 1 && lastStartedJobs.size() == 1) {
             b.setIconStyle("x-status-busy");
-            b.setText(Messages.get(processes.get(0).getLabelKey()) + " ...");
+            b.setText(Messages.get(lastStartedJobs.get(0).getLabelKey()) + " ...");
             b.setEnabled(true);
         } else {
             b.setIconStyle("x-status-busy");
-            b.setText((statuses.size() + processes.size()) + " " + Messages.get("label.tasksExecuting", "tasks running") + " ...");
+            b.setText((statuses.size() + processesCount) + " " + Messages.get("label.tasksExecuting", "tasks running") + " ...");
             b.setEnabled(true);
+        }
+
+        Map<String, Object> refreshData = new HashMap<String, Object>();
+
+        if (!lastEndedJobs.isEmpty()) {
+            for (GWTJahiaJobDetail endedJob : lastEndedJobs) {
+                if (endedJob.getSite() == null || endedJob.getSite().equals(JahiaGWTParameters.getSiteKey())) {
+                    if (endedJob.getGroup().equals("PublicationJob")) {
+                        if (endedJob.getUser().equals(JahiaGWTParameters.getCurrentUser())) {
+                            refreshData.put("publishedNodes", endedJob.getTargetPaths());
+                        }
+                        refreshData.put("event", "publicationSuccess");
+                    }
+                }
+            }
+        }
+        if (!refreshData.isEmpty()) {
+            linker.refresh(refreshData);
         }
     }
 

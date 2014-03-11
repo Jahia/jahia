@@ -44,22 +44,40 @@ import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ProcessPollingEvent extends RPCEvent implements Serializable  {
     private static final long serialVersionUID = -4426085851435410969L;
-    private ArrayList<GWTJahiaJobDetail> activeJobs;
+
+    private int totalCount = 0;
+    private List<GWTJahiaJobDetail> startedJob;
+    private List<GWTJahiaJobDetail> endedJob;
 
     public ProcessPollingEvent() {
     }
 
-    public ArrayList<GWTJahiaJobDetail> getActiveJobs() {
-        return activeJobs;
+    public int getTotalCount() {
+        return totalCount;
     }
 
-    public void setActiveJobs(ArrayList<GWTJahiaJobDetail> activeJobs) {
-        this.activeJobs = activeJobs;
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
+    public List<GWTJahiaJobDetail> getStartedJob() {
+        return startedJob;
+    }
+
+    public void setStartedJob(List<GWTJahiaJobDetail> startedJob) {
+        this.startedJob = startedJob;
+    }
+
+    public List<GWTJahiaJobDetail> getEndedJob() {
+        return endedJob;
+    }
+
+    public void setEndedJob(List<GWTJahiaJobDetail> endedJob) {
+        this.endedJob = endedJob;
+    }
 }
 

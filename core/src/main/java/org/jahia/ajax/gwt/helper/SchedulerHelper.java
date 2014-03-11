@@ -43,13 +43,15 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.DefaultBroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
 import org.jahia.services.content.textextraction.TextExtractorJob;
@@ -70,17 +72,16 @@ import java.util.*;
  * User: toto
  * Date: Sep 17, 2010
  * Time: 2:04:17 PM
- * 
  */
 public class SchedulerHelper {
-	private Logger logger = LoggerFactory.getLogger(SchedulerHelper.class);
+    private Logger logger = LoggerFactory.getLogger(SchedulerHelper.class);
 
-	private static final Comparator<GWTJahiaJobDetail> JOB_COMPARATOR = new Comparator<GWTJahiaJobDetail>() {
+    private static final Comparator<GWTJahiaJobDetail> JOB_COMPARATOR = new Comparator<GWTJahiaJobDetail>() {
         public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {
             return -o1.compareTo(o2);
         }
     };
-    
+
     private SchedulerService scheduler;
 
     public void setScheduler(SchedulerService scheduler) {
@@ -128,7 +129,7 @@ public class SchedulerHelper {
             String targetWorkspace = null;
 
 //            if ((jahiaUser != null) && (!jahiaUser.getUserKey().equals(user))) {
-                // we must check whether the user has the permission to view other users's jobs
+            // we must check whether the user has the permission to view other users's jobs
 //                if (!jahiaUser.isPermitted(new PermissionIdentity("view-all-jobs"))) {
 //                    // he doesn't we skip this entry.
 //                    continue;
@@ -153,7 +154,7 @@ public class SchedulerHelper {
                                 try {
                                     targetPaths.add(session.getNodeByIdentifier(uuid).getPath());
                                 } catch (ItemNotFoundException e) {
-                                    logger.debug("Cannot get item " +uuid,e);
+                                    logger.debug("Cannot get item " + uuid, e);
                                 }
                             }
                             return null;
@@ -244,7 +245,7 @@ public class SchedulerHelper {
         }
     }
 
-	public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
+    public Integer deleteAllCompletedJobs() throws GWTJahiaServiceException {
         try {
             return scheduler.deleteAllCompletedJobs();
         } catch (SchedulerException e) {
@@ -253,38 +254,50 @@ public class SchedulerHelper {
     }
 
 
-    class PollingSchedulerListener  extends JobListenerSupport {
+    class PollingSchedulerListener extends JobListenerSupport {
+        int totalCount = -1;
+
         public String getName() {
             return "PollingSchedulerListener";
         }
 
         @Override
         public void jobToBeExecuted(JobExecutionContext context) {
-            updateJobs(null);
+            updateJobs(Arrays.asList(context.getJobDetail()), Collections.<JobDetail>emptyList());
         }
 
         @Override
         public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-            updateJobs(context.getJobDetail());
+            updateJobs(Collections.<JobDetail>emptyList(), Arrays.asList(context.getJobDetail()));
         }
 
-        private void updateJobs(JobDetail previousJob) {
-            final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
-            if (broadcasterFactory != null) {
-                Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
-                if (broadcaster != null) {
-                    try {
+        private void updateJobs(List<JobDetail> startedJob, List<JobDetail> endedJob) {
+            try {
+                if (totalCount == -1) {
+                    totalCount = getActiveJobs(Locale.ENGLISH).size();
+                } else {
+                    totalCount += startedJob.size();
+                }
+                totalCount -= endedJob.size();
+                final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+                if (broadcasterFactory != null) {
+                    Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
+                    if (broadcaster != null) {
                         ProcessPollingEvent pollingEvent = new ProcessPollingEvent();
-                        pollingEvent.setActiveJobs((ArrayList<GWTJahiaJobDetail>) getActiveJobs(Locale.ENGLISH));
-                        if (previousJob != null) {
-                            pollingEvent.getActiveJobs().removeAll(convertToGWTJobs(Arrays.asList(previousJob)));
+                        if (startedJob != null) {
+                            pollingEvent.setStartedJob(convertToGWTJobs(startedJob));
                         }
+                        if (endedJob != null) {
+                            pollingEvent.setEndedJob(convertToGWTJobs(endedJob));
+                        }
+                        pollingEvent.setTotalCount(totalCount);
                         broadcaster.broadcast(pollingEvent);
-                    } catch (GWTJahiaServiceException e) {
-                        logger.error("Cannot parse jobs",e);
                     }
                 }
+            } catch (GWTJahiaServiceException e) {
+                logger.error("Cannot parse jobs", e);
             }
+
         }
     }
 

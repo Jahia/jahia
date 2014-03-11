@@ -82,7 +82,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Jahia-Depends>default,contentRetrieval</Jahia-Depends>
+                        <Jahia-Depends>default</Jahia-Depends>
                     </instructions>
                 </configuration>
             </plugin>

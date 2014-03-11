@@ -177,7 +177,7 @@
                             </h3>
                         </div>
                         <div class="modal-body">
-                            <form class="ajaxForm form-horizontal" id="editSiteForm${node.identifier}" action="<c:url value='${url.basePreview}${node.path}.adminEditSite.do'/>" >
+                            <form class="ajaxForm form-horizontal" id="editSiteForm${node.identifier}" action="<c:url value='${url.baseUserBoardFrameEdit}${node.path}.adminEditSite.do'/>" >
                                 <fieldset>
                                     <p id="siteTitleForm${node.identifier}">
                                         <label for="siteTitle${node.identifier}"><fmt:message key="jnt_virtualsite.j_title"/> (*)</label>

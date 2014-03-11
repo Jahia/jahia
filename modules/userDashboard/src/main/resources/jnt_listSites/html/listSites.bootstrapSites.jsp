@@ -202,4 +202,10 @@
     </form>
 </c:if>
 
+<c:if test="${jcr:hasPermission(root, 'adminVirtualSites')}">
+    <a href="<c:url value='/cms/admin/default/en/settings.webProjectSettings.html'/>" class="btn btn-primary pull-right">
+        <fmt:message key="myWebProjects.goToCreateNewSite"/>&nbsp;<i class="icon-arrow-right icon-white"></i>
+    </a>
+</c:if>
+
 <template:include view="hidden.footer"/>

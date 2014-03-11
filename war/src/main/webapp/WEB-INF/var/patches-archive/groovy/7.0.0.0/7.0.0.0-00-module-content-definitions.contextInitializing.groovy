@@ -15,6 +15,8 @@ import java.sql.SQLException
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.Manifest
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 final Logger log = Logger.getLogger("org.jahia.tools.groovyConsole");
 
@@ -98,22 +100,17 @@ public void processJarFile(File file, Connection connection) throws SQLException
 }
 
 public String processNamespaces(String fileContents, Map<String, String> namespaceDeclarations) {
-    int indexPos = 0;
-    int smallerThanPos = fileContents.indexOf("<", indexPos);
-    int largerThanPos = fileContents.indexOf(">", indexPos);
-    while ((smallerThanPos > -1) && (largerThanPos > -1) && (smallerThanPos < largerThanPos)) {
-        String namespacePart = fileContents.substring(smallerThanPos + 1, largerThanPos);
-        String[] namespaceParts = namespacePart.split("=");
-        if (namespaceParts.length == 2) {
-            namespaceDeclarations.put(namespaceParts[0].trim(), namespaceParts[1].trim());
-        } else {
-            log.warn("Invalid namespace declaration found: " + namespacePart);
-        }
-        indexPos = largerThanPos + 1;
-        smallerThanPos = fileContents.indexOf("<", indexPos);
-        largerThanPos = fileContents.indexOf(">", indexPos);
+
+    final Pattern namespacePattern = Pattern.compile("<\\s*([A-Za-z0-9:_']*)\\s*=\\s*([A-Za-z0-9:_'\\.\\/]*)\\s*>");
+    final Matcher namespaceMatcher = namespacePattern.matcher(fileContents);
+
+    int lastFoundPos = 0;
+    while (namespaceMatcher.find()) {
+        log.info("Found namespace prefix=" + namespaceMatcher.group(1) + " uri=" + namespaceMatcher.group(2));
+        namespaceDeclarations.put(namespaceMatcher.group(1), namespaceMatcher.group(2));
+        lastFoundPos = namespaceMatcher.end();
     }
-    return fileContents.substring(indexPos);
+    return fileContents.substring(lastFoundPos);
 }
 
 public void saveCndFile(String filename, String content, Connection connection) throws RepositoryException, SQLException {

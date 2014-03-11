@@ -23,7 +23,9 @@
         </c:otherwise>
     </c:choose>
 </c:if>
-<c:if test="${not empty pageNode}">
+<c:set var="isHome" value="${pageNode.path == renderContext.site.home.path}"/>
+
+<c:if test="${not empty pageNode && (!isHome || empty currentNode.properties['hideInHomePage'] || !currentNode.properties['hideInHomePage'].boolean)}}">
     <h2 class="pageTitle"><c:out value="${pageNode.displayableName}" /><c:if
             test="${not jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
         > <c:out value="${functions:abbreviate(renderContext.mainResource.node.displayableName,15,30,'...')}" /></c:if></h2>

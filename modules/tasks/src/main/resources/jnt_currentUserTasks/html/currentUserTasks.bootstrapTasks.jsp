@@ -38,7 +38,7 @@
 
             $('#userTasks_table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-                "iDisplayLength":10,
+                "iDisplayLength":25,
                 "sPaginationType": "bootstrap",
                 "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
             });
@@ -49,7 +49,7 @@
 <div id="currentUserTasks${currentNode.identifier}">
     <c:if test="${currentResource.workspace eq 'live'}">
     <script type="text/javascript">
-        $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.basePreview}${currentNode.path}.html.ajax"/>');
+        $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.html.ajax"/>');
     </script>
     </c:if>
 
@@ -72,7 +72,7 @@
 
             <c:choose>
                 <c:when test="${not empty modeDispatcherId}">
-                    <c:url  var="reloadurl" value="${url.basePreview}${currentNode.parent.path}.html.ajax">
+                    <c:url  var="reloadurl" value="${url.baseUserBoardFrameEdit}${currentNode.parent.path}.html.ajax">
                         <c:forEach items="${param}" var="p">
                             <c:param name="${p.key}" value="${p.value}"/>
                         </c:forEach>
@@ -80,7 +80,7 @@
                     <c:set var="identifierName" value="\#${modeDispatcherId}"/>
                 </c:when>
                 <c:otherwise>
-                    <c:url  var="reloadurl" value="${url.basePreview}${currentNode.path}.html.ajax">
+                    <c:url  var="reloadurl" value="${url.baseUserBoardFrameEdit}${currentNode.path}.html.ajax">
                         <c:forEach items="${param}" var="p">
                             <c:param name="${p.key}" value="${p.value}"/>
                         </c:forEach>
@@ -95,11 +95,11 @@
                     $(".taskaction-complete").addClass("taskaction-disabled");
                     $(".taskaction").addClass("taskaction-disabled");
                     post = function () {
-                        $.post('<c:url value="${url.basePreview}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                        $.post('<c:url value="${url.baseUserBoardFrameEdit}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
                             $('${identifierName}').load('${reloadurl}',null,function() {
                                 $("#taskdetail_"+uuid).css("display","block");
                             });
-                        }, "json");
+                        }, "json");${url.baseUserBoardFrameEdit}
                     }
 
                     if ($("#taskDataForm_"+uuid).size() > 0) {
@@ -117,7 +117,7 @@
                     ready = false;
                     $(".taskaction-complete").addClass("taskaction-disabled");
                     $(".taskaction").addClass("taskaction-disabled");
-                    $.post('<c:url value="${url.basePreview}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
+                    $.post('<c:url value="${url.baseUserBoardFrameEdit}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
                         $('${identifierName}').load('${reloadurl}',null,function(){
                             $("#taskdetail_"+uuid).css("display","block");
                         });

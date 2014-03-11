@@ -341,7 +341,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 CheckBox checkBox = new CheckBox();
                 checkBox.setBoxLabel(siteLanguage.getDisplayName());
                 checkBox.setValueAttribute(siteLanguage.getLanguage());
-                checkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                /*checkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent componentEvent) {
                         CheckBox checkBox1 = (CheckBox) componentEvent.getSource();
                         if (engine instanceof AbstractContentEngine) {
@@ -357,7 +357,7 @@ public class ContentTabItem extends PropertiesTabItem {
                             }
                         }
                     }
-                });
+                });*/
 
                 if (siteMandatoryLanguages.contains(siteLanguage.getLanguage())) {
                     checkBox.setValue(true);
@@ -367,12 +367,14 @@ public class ContentTabItem extends PropertiesTabItem {
                 if (selectedNode == null || !selectedNode.getInvalidLanguages().contains(
                         siteLanguage.getLanguage())) {
                     checkBox.setValue(true);
-                } else if (engine instanceof AbstractContentEngine) {
+                }
+//                Deactivate interactions between display languages checkboxes and language switcher
+                /*else if (engine instanceof AbstractContentEngine) {
                     AbstractContentEngine contentEngine = (AbstractContentEngine) engine;
                     final GWTJahiaLanguage model = contentEngine.getLanguageSwitcher().getStore().findModel(
                             "language", siteLanguage.getLanguage());
                     model.setActive(false);
-                }
+                }*/
                 layoutContainer1.add(checkBox);
                 invalidLanguagesCheckBoxes.add(checkBox);
 

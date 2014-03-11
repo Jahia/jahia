@@ -99,7 +99,7 @@
                             $('${identifierName}').load('${reloadurl}',null,function() {
                                 $("#taskdetail_"+uuid).css("display","block");
                             });
-                        }, "json");${url.baseUserBoardFrameEdit}
+                        }, "json");
                     }
 
                     if ($("#taskDataForm_"+uuid).size() > 0) {

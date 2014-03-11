@@ -156,9 +156,17 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 // get node type if we can
                 ExtendedNodeType nodeType = null;
                 if (StringUtils.isNotEmpty(facetNodeTypeName)) {
-                    nodeType = NodeTypeRegistry.getInstance().getNodeType(facetNodeTypeName);
-                    if (facetValueNodeTypes != null && StringUtils.isNotEmpty(metadataKey)) {
-                        facetValueNodeTypes.put(metadataKey, nodeType);
+                    // first check if we don't already have resolved the nodeType to avoid resolving it again
+                    if (facetValueNodeTypes != null) {
+                        nodeType = (ExtendedNodeType) facetValueNodeTypes.get(metadataKey);
+                    }
+
+                    // since we haven't already resolved it, try that now
+                    if (nodeType == null) {
+                        nodeType = NodeTypeRegistry.getInstance().getNodeType(facetNodeTypeName);
+                        if (facetValueNodeTypes != null && StringUtils.isNotEmpty(metadataKey)) {
+                            facetValueNodeTypes.put(metadataKey, nodeType);
+                        }
                     }
                 }
 
@@ -195,10 +203,11 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                     facetValueLabels.put(metadataKey, facet.getPropertyAsString("valueLabel"));
                 }
 
-                if (nodeType != null
-                        && StringUtils.isNotEmpty(facetPropertyName)
-                        && !Functions.isFacetApplied(facetPropertyName, activeFacets, nodeType.getPropertyDefinition(facetPropertyName))) {
+                // is the current facet applied?
+                final ExtendedPropertyDefinition propDef = nodeType != null ? nodeType.getPropertyDefinition(facetPropertyName) : null;
+                final boolean isFacetApplied = Functions.isFacetApplied(metadataKey, activeFacets, propDef);
 
+                if (nodeType != null && StringUtils.isNotEmpty(facetPropertyName) && !isFacetApplied) {
                     StringBuilder extraBuilder = new StringBuilder();
 
                     // deal with facets with labelRenderers, currently only jnt:dateFacet or jnt:rangeFacet
@@ -239,15 +248,18 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
                 }
 
-                if (isQuery && !Functions.isFacetApplied(queryProperty, activeFacets, null)) {
+                if (isQuery && !isFacetApplied) {
                     extra = "&facet.query=" + queryProperty;
                 }
 
-                // key used in the solr query string
-                final String key = isQuery ? facet.getName() : facetPropertyName;
-                String query = buildQueryString(facetNodeTypeName, key, minCount, extra);
-                final String columnPropertyName = StringUtils.isNotEmpty(facetPropertyName) ? facetPropertyName : "rep:facet()";
-                qomBuilder.getColumns().add(factory.column(selectorName, columnPropertyName, query));
+                // only add a column if the facet isn't already applied
+                if (!isFacetApplied) {
+                    // key used in the solr query string
+                    final String key = isQuery ? facet.getName() : facetPropertyName;
+                    String query = buildQueryString(facetNodeTypeName, key, minCount, extra);
+                    final String columnPropertyName = StringUtils.isNotEmpty(facetPropertyName) ? facetPropertyName : "rep:facet()";
+                    qomBuilder.getColumns().add(factory.column(selectorName, columnPropertyName, query));
+                }
             }
 
             // repeat applied facets

@@ -795,13 +795,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     public boolean matchPermission(Set<String> permissions, String role) throws RepositoryException {
+        int permissionsSize = permissions.size();
         StringBuilder stringBuilder = new StringBuilder(role);
         for (String permission : permissions) {
-            stringBuilder.append(permission.hashCode());
+            stringBuilder.append(permission);
         }
         String entryKey = stringBuilder.toString();
-        Boolean o = matchingPermissions.get(entryKey);
-        if (o == null) {
+        Boolean cachedValue = isAliased ? null : matchingPermissions.get(entryKey);
+        if (cachedValue == null) {
             Set<Privilege> permsInRole = getPermissionsInRole(role);
             if (logger.isDebugEnabled()) {
                 logger.debug("Checking role {}", role);
@@ -810,28 +811,39 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             for (Privilege privilege : permsInRole) {
                 String privilegeName = privilege.getName();
                 if (checkPrivilege(permissions, privilegeName)) {
-                    matchingPermissions.put(entryKey, Boolean.TRUE);
+                    if (!isAliased) {
+                        matchingPermissions.put(entryKey, Boolean.TRUE);
+                    }
                     return true;
                 }
                 if (isAliased && privilegeName.contains("_" + Constants.LIVE_WORKSPACE)) {
                     if (checkPrivilege(permissions, privilegeName.replaceAll("_" + Constants.LIVE_WORKSPACE,
                             "_" + workspaceName))) {
-                        matchingPermissions.put(entryKey, Boolean.TRUE);
                         return true;
                     }
                 }
 
                 for (Privilege sub : privilege.getAggregatePrivileges()) {
                     if (checkPrivilege(permissions, sub.getName())) {
-                        matchingPermissions.put(entryKey, Boolean.TRUE);
+                        if (!isAliased) {
+                            matchingPermissions.put(entryKey, Boolean.TRUE);
+                        }
                         return true;
                     }
                 }
             }
-            matchingPermissions.put(entryKey, Boolean.FALSE);
+            if (permissionsSize == permissions.size()) {
+                // Do not cache if permissions set is modified
+                matchingPermissions.put(entryKey, Boolean.FALSE);
+            }
             return false;
         } else {
-            return (boolean) o;
+            if (cachedValue) {
+                permissions.clear();
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

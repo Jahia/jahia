@@ -39,102 +39,12 @@
     <jsp:useBean id="facetValueLabels" class="java.util.HashMap" scope="request"/>
     <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>
 
-    <query:definition var="listQuery" scope="request">
-        <query:selector nodeTypeName="jnt:content"/>
-        <query:childNode path="${boundComponent.path}"/>
+    <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.load">
+        <template:param name="queryLoadAllUnsorted" value="true"/>
+    </template:option>
 
-        <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
-            <jcr:nodeProperty node="${facet}" name="facet" var="currentFacetGroup"/>
-            <jcr:nodeProperty node="${facet}" name="field" var="currentField"/>
-            <c:set var="facetNodeTypeName" value="${fn:substringBefore(currentField.string, ';')}"/>
-            <c:set var="facetPropertyName" value="${fn:substringAfter(currentField.string, ';')}"/>
-            <jcr:nodeType name="${facetNodeTypeName}" var="facetNodeType"/>
-            <jcr:nodeProperty node="${facet}" name="mincount" var="minCount"/>
-            <c:set var="minCountParam" value=""/>
-            <c:if test="${not empty minCount.string}">
-                <c:set var="minCountParam" value="&mincount=${minCount.string}"/>
-            </c:if>
-
-            <jcr:nodeProperty node="${facet}" name="label" var="currentFacetLabel"/>
-            <c:if test="${not empty currentFacetLabel.string and not empty facetPropertyName}">
-                <c:set target="${facetLabels}" property="${facetPropertyName}" value="${currentFacetLabel.string}"/>
-            </c:if>
-
-            <c:choose>
-                <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet') or jcr:isNodeType(facet, 'jnt:rangeFacet')}">
-                    <c:if test="${jcr:isNodeType(facet, 'jnt:dateFacet') or jcr:isNodeType(facet, 'jnt:rangeFacet')}">
-                        <jcr:nodeProperty node="${facet}" name="labelFormat" var="currentFacetValueFormat"/>
-                        <c:if test="${not empty currentFacetValueFormat.string}">
-                            <c:set target="${facetValueFormats}" property="${facetPropertyName}"
-                                   value="${currentFacetValueFormat.string}"/>
-                        </c:if>
-                    </c:if>
-                    <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
-                        <c:set var="facetQuery"
-                               value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
-                        <c:choose>
-                            <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
-                                <c:set var="paramPrefix" value="date."/>
-                            </c:when>
-                            <c:when test="${jcr:isNodeType(facet, 'jnt:rangeFacet')}">
-                                <c:set var="paramPrefix" value="range."/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="paramPrefix" value=""/>
-                            </c:otherwise>                            
-                        </c:choose>  
-                        <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}"
-                                   var="propertyDefinition">
-                            <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
-                            <c:choose>
-                                <c:when test="${functions:isIterable(facetPropValue)}">
-                                    <c:forEach items="${facetPropValue}" var="facetPropValueItem">
-                                        <c:if test="${not empty facetPropValueItem.string}">
-                                            <c:set var="facetQuery"
-                                                   value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValueItem.string}"/>
-                                        </c:if>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:if test="${not empty facetPropValue.string}">
-                                        <c:set var="facetQuery"
-                                               value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValue.string}"/>
-                                    </c:if>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                        <query:column columnName="rep:facet(${facetQuery})" propertyName="${facetPropertyName}"/>
-                    </c:if>
-                </c:when>
-                <c:otherwise>
-                    <c:if test="${jcr:isNodeType(facet, 'jnt:queryFacet')}">
-                        <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>
-                        <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
-                    </c:if>
-                    <jcr:nodeProperty node="${facet}" name="valueLabel" var="currentFacetValueLabel"/>
-                    <c:if test="${not empty currentFacetValueLabel.string and not empty currentFacetQuery}">
-                        <c:set target="${facetValueLabels}" property="${currentFacetQuery}"
-                               value="${currentFacetValueLabel.string}"/>
-                    </c:if>
-                    <c:if test="${not empty currentFacetLabel.string and not empty currentFacetQuery}">
-                        <c:set target="${facetLabels}" property="${currentFacetQuery}"
-                               value="${currentFacetLabel.string}"/>
-                    </c:if>
-                    <c:if test="${not empty currentFacetQuery and not facet:isFacetApplied(currentFacetQuery, activeFacetsVars[activeFacetMapVarName], null)}">
-                        <query:column
-                                columnName="rep:facet(nodetype=${facetNodeTypeName}&key=${facet.name}${minCountParam}&facet.query=${currentFacetQuery})"
-                                propertyName="${not empty facetPropertyName ? facetPropertyName : 'rep:facet()'}"/>
-                    </c:if>
-                </c:otherwise>
-            </c:choose>
-        </c:forEach>
-        <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
-            <c:forEach items="${facet.value}" var="facetValue">
-                <query:fullTextSearch propertyName="rep:filter(${jcr:escapeIllegalJcrChars(facet.key)})"
-                                      searchExpression="${facetValue.value}"/>
-            </c:forEach>
-        </c:forEach>
-    </query:definition>
+    <facet:setupQueryAndMetadata var="listQuery" boundComponent="${boundComponent}" existingQuery="${moduleMap.listQuery}"
+                                 activeFacets="${activeFacetsVars[activeFacetMapVarName]}"/>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
     <c:if test="${(result.facetFields[0].valueCount gt 0)}">
         <c:if test="${!empty activeFacetsVars[activeFacetMapVarName]}">
@@ -168,11 +78,11 @@
                                facetValueCount="${facetValue}"
                                facetValueLabels="${facetValueLabels}"
                                facetValueFormats="${facetValueFormats}" display="false"/>
-                        {text:"${facetValueLabel}",weight:${functions:round(10 * tagCloud[facetValue.name] / totalUsages)},url:"${facetUrl}"}
+                                {text: "${facetValueLabel}", weight:${functions:round(10 * tagCloud[facetValue.name] / totalUsages)}, url: "${facetUrl}"}
                                 <c:if test="${not status.last}">, </c:if>
                                 </c:if>
                                 </c:forEach>);
-                        $(document).ready(function() {
+                        $(document).ready(function () {
                             $("#wordcloud").jQCloud(word_list);
                         });
                     </script>

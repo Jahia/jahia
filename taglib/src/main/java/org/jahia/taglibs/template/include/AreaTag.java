@@ -328,9 +328,15 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
                     // No more areas in an absolute area
                     renderContext.getRequest().setAttribute("previousTemplate", null);
+<<<<<<< .working
                     if(logger.isDebugEnabled()) {
                         logger.debug("Looking for absolute area "+path+", will be searched in node "+ node.getPath() +
                                      " saved template = "+(templateNode != null ? templateNode.serialize() : "none")+", previousTemplate set to null");
+=======
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Looking for absolute area " + path + ", will be searched in node " + (node!=null?node.getPath():null) +
+                                " saved template = " + (templateNode != null ? templateNode.serialize() : "none") + ", previousTemplate set to null");
+>>>>>>> .merge-right.r49034
                     }
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);

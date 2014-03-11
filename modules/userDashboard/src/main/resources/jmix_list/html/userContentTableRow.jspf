@@ -8,16 +8,16 @@
             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
             <c:choose>
                 <c:when test='${jcr:isNodeType(subchild, "nt:file")}'>
-                    <a href="<c:url value='${url.files}${subchild.path}'/>"><c:out
+                    <a href="<c:url value='${url.files}${subchild.path}'/>" target="_self"><c:out
                             value="${not empty subchild && not empty subchild.displayableName ? subchild.string : subchild.name}"/></a>
                 </c:when>
                 <c:when test='${jcr:isNodeType(subchild, "jmix:nodeReference")}'>
                     <jcr:nodeProperty node="${subchild.properties['j:node'].node}" name="jcr:title" var="title"/>
-                    <a href="<c:url value='${url.base}${subchild.properties["j:node"].node.path}.html'/>">
+                    <a href="<c:url value='${url.baseLive}${subchild.properties["j:node"].node.path}.html'/>" target="_self">
                         <c:out value="${not empty subchild && not empty subchild.displayableName ? subchild.displayableName : subchild.properties['j:node'].node.name}"/></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="<c:url value='${url.base}${subchild.path}.html'/>"><c:out
+                    <a href="<c:url value='${url.baseLive}${subchild.path}.html'/>" target="_self"><c:out
                             value="${not empty subchild && not empty subchild.displayableName ? subchild.displayableName : subchild.name}"/></a>
                 </c:otherwise>
             </c:choose>

@@ -90,11 +90,13 @@ public class JCRPortletNode extends JCRNodeDecorator {
                     try {
                         final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(
                                 finalContext);
-                        JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
-                        session.checkout(nodeByUUID);
-                        nodeByUUID.setProperty("j:applicationRef", applicationByContext.getID());
-                        nodeByUUID.setProperty("j:definition", strings[1]);
-                        session.save();
+                        if(applicationByContext!=null){
+                            JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
+                            session.checkout(nodeByUUID);
+                            nodeByUUID.setProperty("j:applicationRef", applicationByContext.getID());
+                            nodeByUUID.setProperty("j:definition", strings[1]);
+                            session.save();
+                        }
                     } catch (JahiaException e1) {
                         logger.error(e1.getMessage(),e1);
                     }

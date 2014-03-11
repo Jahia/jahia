@@ -51,7 +51,7 @@
         $(document).ready(function () {
             $('#userContent_table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-                "iDisplayLength":10,
+                "iDisplayLength":25,
                 "sPaginationType": "bootstrap",
                 "bFilter":true,
                 "aaSorting": [],

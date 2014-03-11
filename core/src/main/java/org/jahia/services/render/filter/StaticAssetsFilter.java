@@ -377,9 +377,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private static boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
-        if (!renderContext.isEditMode()) {
-            return false;
-        }
+//        if (!renderContext.isEditMode()) {
+//            return false;
+//        }
         String header = renderContext.getRequest().getHeader("user-agent");
         if (header == null || header.length() == 0) {
             return false;

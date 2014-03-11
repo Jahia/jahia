@@ -30,10 +30,11 @@
         <maven>3.0</maven>
     </prerequisites>
     <properties>
+        <year>2014</year>
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
+        
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.8.RELEASE</spring.version>
         <springwebflow-version>2.3.2.RELEASE</springwebflow-version>
@@ -361,9 +362,6 @@
                                 <jspf>DYNASCRIPT_STYLE</jspf>
                             </mapping>
                             <useDefaultMapping>true</useDefaultMapping>
-                            <properties>
-                                <year>2014</year>
-                            </properties>
                             <encoding>UTF-8</encoding>
                             <headerDefinitions>
                                 <headerDefinition>style.xml</headerDefinition>

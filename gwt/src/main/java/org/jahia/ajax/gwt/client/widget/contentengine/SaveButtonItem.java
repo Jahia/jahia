@@ -89,7 +89,7 @@ public abstract class SaveButtonItem implements ButtonItem {
             Map<String, String> textForWCAGValidation = null;
             Map<String, CKEditorField> toValidate = null;
 
-            if (!skipValidation && engine.getNode() != null && engine.getNode().isWCAGComplianceCheckEnabled() || engine.getNode() == null && engine.getTargetNode().isWCAGComplianceCheckEnabled()) {
+            if (!skipValidation && (engine.getNode() != null && engine.getNode().isWCAGComplianceCheckEnabled() || engine.getNode() == null && engine.getTargetNode().isWCAGComplianceCheckEnabled())) {
                 // validation passes, let's get WCAG texts to validate
                 toValidate = getFieldsForWCAGValidation(engine);
                 textForWCAGValidation = new HashMap<String, String>(toValidate.size());

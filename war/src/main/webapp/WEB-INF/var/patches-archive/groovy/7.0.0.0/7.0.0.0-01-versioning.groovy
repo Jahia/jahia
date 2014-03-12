@@ -23,7 +23,7 @@ final Logger log = Logger.getLogger("org.jahia.tools.groovyConsole");
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         Logger logger = Logger.getLogger(ItemManager.class);
         Level previousLevel = logger.getLevel();
         logger.setLevel(Level.ERROR);
@@ -44,7 +44,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallba
             log.info("...done removing live nodes");
         } finally {
             logger.setLevel(previousLevel);
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
 
         return null;
@@ -54,7 +54,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallba
 JCRCallback<Object> callback = new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
         log.info("Start removing versioning in workspace " + jcrsession.getWorkspace().getName());
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         Logger logger = Logger.getLogger(ItemStateReferenceCache.class);
         Level previousLevel = logger.getLevel();
         logger.setLevel(Level.ERROR);
@@ -79,7 +79,7 @@ JCRCallback<Object> callback = new JCRCallback<Object>() {
             removeMixin(jcrsession, "jnt:component", "jmix:lastPublished");
         } finally {
             logger.setLevel(previousLevel);
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
         log.info("...done removing versioning in workspace " + jcrsession.getWorkspace().getName());
         

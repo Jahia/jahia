@@ -23,7 +23,7 @@ final Logger log = Logger.getLogger("org.jahia.tools.groovyConsole");
 
 def removeTemplateSetsCallback = new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         Logger logger = Logger.getLogger(ItemManager.class);
         Level previousLevel = logger.getLevel();
         logger.setLevel(Level.ERROR);
@@ -44,7 +44,7 @@ def removeTemplateSetsCallback = new JCRCallback<Object>() {
             log.info("...done removing "+jcrsession.getWorkspace().getName()+" nodes");
         } finally {
             logger.setLevel(previousLevel);
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
 
         return null;
@@ -54,7 +54,7 @@ def removeTemplateSetsCallback = new JCRCallback<Object>() {
 
 JCRCallback<Object> callback = new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         Logger logger = Logger.getLogger(ItemManager.class);
         Level previousLevel = logger.getLevel();
         logger.setLevel(Level.ERROR);
@@ -79,7 +79,7 @@ JCRCallback<Object> callback = new JCRCallback<Object>() {
             log.info("...done updating "+jcrsession.getWorkspace().getName()+" nodes");
         } finally {
             logger.setLevel(previousLevel);
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
 
         return null;
@@ -89,7 +89,7 @@ JCRCallback<Object> callback = new JCRCallback<Object>() {
 
 def removeTemplatesFolderCallback = new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         Logger logger = Logger.getLogger(ItemManager.class);
         Level previousLevel = logger.getLevel();
         logger.setLevel(Level.ERROR);
@@ -111,7 +111,7 @@ def removeTemplatesFolderCallback = new JCRCallback<Object>() {
             log.info("...done removing "+jcrsession.getWorkspace().getName()+" nodes");
         } finally {
             logger.setLevel(previousLevel);
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
 
         return null;

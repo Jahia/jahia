@@ -77,7 +77,8 @@ public class JCRObservationManager implements ObservationManager {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
-    private static ThreadLocal<Boolean> eventsDisabled = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> allEventListenersDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Integer> lastOp = new ThreadLocal<Integer>();
     private static ThreadLocal<Map<JCRSessionWrapper, List<EventWrapper>>> events =
@@ -196,8 +197,12 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
-    public static void setEventsDisabled(Boolean eventsDisabled) {
-        JCRObservationManager.eventsDisabled.set(eventsDisabled);
+    public static void setEventListenersAvailableDuringPublishOnly(Boolean eventsDisabled) {
+        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(eventsDisabled);
+    }
+
+    public static void setAllEventListenersDisabled(Boolean eventsDisabled) {
+        JCRObservationManager.allEventListenersDisabled.set(eventsDisabled);
     }
 
     public static void addEvent(Event event) {
@@ -255,13 +260,16 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static void consume(List<EventWrapper> list, JCRSessionWrapper session, int operationType, int lastOperationType) throws RepositoryException {
+        if (Boolean.TRUE.equals(allEventListenersDisabled.get())) {
+            return;
+        }
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched
             // check if the events are not disabled or the listener is still available during publication
             // check if the event is not eternal or consumer accepts external events
             if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName()) &&
-                (!Boolean.TRUE.equals(eventsDisabled.get()) || (castListener != null && castListener.isAvailableDuringPublish()))
+                (!Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get()) || (castListener != null && castListener.isAvailableDuringPublish()))
                         && (consumer.useExternalEvents || operationType != EXTERNAL_SYNC)) {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {

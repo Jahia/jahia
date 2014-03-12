@@ -90,7 +90,7 @@ public class ExtractionService {
             session.save();
         }
         JCRNodeWrapper contentNodeCopy = null;
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         try {
             JCRNodeWrapper contentNode = fileNode.getNode(Constants.JCR_CONTENT);
             contentNode.copy(fileNode, Constants.JCR_CONTENT + "-temp", true);
@@ -99,7 +99,7 @@ public class ExtractionService {
             session.move(contentNodeCopy.getPath(), fileNode.getPath() + "/" + Constants.JCR_CONTENT);
             session.save();
         } finally {
-            JCRObservationManager.setEventsDisabled(null);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(null);
         }
 
         JCRNodeWrapper contentNode = fileNode.getNode(Constants.JCR_CONTENT);

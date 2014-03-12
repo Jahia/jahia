@@ -17,7 +17,7 @@ if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         Logger logger = Logger.getLogger(ItemStateReferenceCache.class);
         Level previousLevel = logger.getLevel();
         logger.setLevel(Level.ERROR);
@@ -26,7 +26,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             removeVersionable(jcrsession, "jnt:component");
         } finally {
             logger.setLevel(previousLevel);
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
 
         return null;

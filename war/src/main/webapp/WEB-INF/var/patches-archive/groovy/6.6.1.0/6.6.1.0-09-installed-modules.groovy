@@ -18,7 +18,7 @@ if (!org.jahia.settings.SettingsBean.getInstance().isProcessingServer()) {
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
         try {
             JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
             QueryResult result = jcrsession.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite]", Query.JCR_SQL2).execute();
@@ -43,7 +43,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 jcrsession.save();
             }
         } finally {
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.FALSE);
         }
         return null;
     }

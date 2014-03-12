@@ -289,10 +289,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException {
+    public GWTEditConfiguration getEditConfiguration(String path, String name, String enforcedWorkspace) throws GWTJahiaServiceException {
         GWTEditConfiguration config = null;
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
+            if(!session.getWorkspace().getName().equals(enforcedWorkspace)){
+                session = retrieveCurrentSession(enforcedWorkspace,session.getLocale(),true);
+            }
             config = uiConfigHelper.getGWTEditConfiguration(name, path, getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), session);
         } catch (Exception e) {

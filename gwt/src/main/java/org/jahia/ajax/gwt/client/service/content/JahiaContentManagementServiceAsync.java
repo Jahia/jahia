@@ -155,7 +155,7 @@ public interface JahiaContentManagementServiceAsync {
     void getContentTypesAsTree(List<String> nodeTypes, List<String> excludedNodeTypes,
                                boolean includeSubTypes, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getEditConfiguration(String path, String name, AsyncCallback<GWTEditConfiguration> async);
+    void getEditConfiguration(String path, String name, String enforcedWorkspace, AsyncCallback<GWTEditConfiguration> async);
 
     void getExportUrl(String path, AsyncCallback<String> async);
 

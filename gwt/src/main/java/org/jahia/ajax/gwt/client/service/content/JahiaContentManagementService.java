@@ -208,7 +208,7 @@ public interface JahiaContentManagementService extends RemoteService {
     List<GWTJahiaNodeType> getContentTypesAsTree(List<String> nodeTypes, List<String> excludedNodeTypes,
                                                  boolean includeSubTypes) throws GWTJahiaServiceException;
 
-    GWTEditConfiguration getEditConfiguration(String path, String name) throws GWTJahiaServiceException;
+    GWTEditConfiguration getEditConfiguration(String path, String name, String enforcedWorkspace) throws GWTJahiaServiceException;
 
     String getExportUrl(String path) throws GWTJahiaServiceException;
     

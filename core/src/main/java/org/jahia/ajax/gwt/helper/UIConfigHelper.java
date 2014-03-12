@@ -582,7 +582,7 @@ public class UIConfigHelper {
                 if (defaultLocation.contains("$defaultSiteHome")) {
                     JahiaSitesService siteService = JahiaSitesService.getInstance();
 
-                    JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName()) : null;
+                    JahiaSite resolvedSite = !Url.isLocalhost(request.getServerName()) ? siteService.getSiteByServerName(request.getServerName(), session) : null;
                     if (resolvedSite == null) {
                         resolvedSite = JahiaSitesService.getInstance().getDefaultSite(session);
                         if (resolvedSite != null && !((JCRSiteNode)resolvedSite).hasPermission(config.getRequiredPermission())) {
@@ -663,9 +663,6 @@ public class UIConfigHelper {
             } else {
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
             }
-        } catch (JahiaException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

@@ -114,7 +114,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         if (!configurationName.equals(MainModule.getInstance().getConfig().getName())) {
             linker.loading(Messages.get("label.loading", "Loading..."));
-            JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, new BaseAsyncCallback<GWTEditConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, enforcedWorkspace, new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     if (gwtEditConfiguration.getDefaultLocation() == null) {
                         linker.loaded();

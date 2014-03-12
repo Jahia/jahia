@@ -38,8 +38,6 @@
                             </div>
                         </c:otherwise>
                     </c:choose>
-
-                    <c:if test="${jcr:hasPermission(subchild,'jcr:removeNode')}">
                         <template:tokenizedForm>
                             <form action="<c:url value='${url.base}${subchild.path}'/>" method="post"
                                   id="jahia-blog-item-delete-${subchild.UUID}">
@@ -81,7 +79,6 @@
                                 </script>
                             </form>
                         </template:tokenizedForm>
-                    </c:if>
                 </li>
             </c:if>
         </c:forEach>

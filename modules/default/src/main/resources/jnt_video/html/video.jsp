@@ -27,7 +27,7 @@
 
 <template:addResources>
 <script type="text/javascript">
-    videojs.options.flash.swf = <c:url value="${url.server}${url.context}/modules/assets/swf/video-js.swf" />
+    videojs.options.flash.swf = '<c:url value="${url.server}${url.context}/modules/assets/swf/video-js.swf" />';
 </script>
 </template:addResources>
 

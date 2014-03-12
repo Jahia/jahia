@@ -64,7 +64,7 @@ public interface Linker {
 
     public void select(Object o);
 
-    public void setSelectPathAfterDataUpdate(List<String> paths, boolean refreshMainModule);
+    public void setSelectPathAfterDataUpdate(List<String> paths);
 
     public LinkerSelectionContext getSelectionContext();
 

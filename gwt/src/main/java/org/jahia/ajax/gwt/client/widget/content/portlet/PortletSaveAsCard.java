@@ -100,7 +100,7 @@ public class PortletSaveAsCard extends PortletWizardCard {
         JahiaContentManagementService.App.getInstance().createPortletInstance(path, getGwtJahiaNewPortletInstance(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
-                    getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()), false);
+                    getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_MAIN, true);
                     getLinker().refresh(data);

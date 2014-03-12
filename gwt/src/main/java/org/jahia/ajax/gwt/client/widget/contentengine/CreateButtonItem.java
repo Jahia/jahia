@@ -154,7 +154,7 @@ public class CreateButtonItem extends SaveButtonItem {
                                     + " " + node.getName());
                     engine.close();
 
-                    engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
+                    engine.getLinker().setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_MAIN, true);
                     data.put("node", node);

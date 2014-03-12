@@ -335,7 +335,7 @@ public class ManagerLinker implements Linker {
         this.leftPanelSelectionWhenHidden = leftPanelSelectionWhenHidden;
     }
 
-    public void setSelectPathAfterDataUpdate(List<String> paths, boolean refreshMainModule) {
+    public void setSelectPathAfterDataUpdate(List<String> paths) {
         List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
         for (String path: paths) {
             GWTJahiaNode n = new GWTJahiaNode();

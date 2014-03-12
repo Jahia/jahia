@@ -389,9 +389,9 @@ public class EditLinker implements Linker {
      *
      * @param paths
      *            the updated items paths
-     * @param refreshMainModule
+     *
      */
-    public void setSelectPathAfterDataUpdate(List<String> paths, boolean refreshMainModule) {
+    public void setSelectPathAfterDataUpdate(List<String> paths) {
         // no implementation so far
     }
 

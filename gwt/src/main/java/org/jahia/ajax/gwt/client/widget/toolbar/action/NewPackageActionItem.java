@@ -80,7 +80,7 @@ public class NewPackageActionItem extends NodeTypeAwareBaseActionItem {
             }
             JahiaContentManagementService.App.getInstance().createNode(parentPath, newNodeName, nodeType, null, null, null, null, null, parentNodesType, false, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode node) {
-                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
+                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                     linker.loaded();
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put("node", node);

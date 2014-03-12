@@ -65,8 +65,8 @@ public class PasteReferenceActionItem extends BaseActionItem  {
     protected transient List<String> allowedRefs;
 
     public void onComponentSelection() {
-        if (CopyPasteEngine.getInstance().getCopiedPaths().size() == 1) {
-            GWTJahiaNode copiedNode = CopyPasteEngine.getInstance().getCopiedPaths().get(0);
+        if (CopyPasteEngine.getInstance().getCopiedNodes().size() == 1) {
+            GWTJahiaNode copiedNode = CopyPasteEngine.getInstance().getCopiedNodes().get(0);
             Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
             props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
             props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
@@ -77,38 +77,40 @@ public class PasteReferenceActionItem extends BaseActionItem  {
     }
 
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b = lh.getSingleSelection() != null
-                && !lh.isLocked()
-                && hasPermission(lh.getSelectionPermissions())
-                && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
-                && lh.isPasteAllowed();
-        String refTypes = null;
-        if (linker instanceof EditLinker && b) {
-            final Module module = ((EditLinker) linker).getSelectedModule();
-            refTypes = module.getReferenceTypes();
-        } else if (lh.getSingleSelection() != null) {
-            refTypes = lh.getSingleSelection().get("referenceTypes");
-        }
-        if (refTypes != null && refTypes.length() > 0) {
-            String[] refs = refTypes.split(" ");
-            allowedRefs = new ArrayList<String>();
-            for (String ref : refs) {
-                String[] types = ref.split("\\[|\\]");
-                if (types[1] != null && Arrays.asList(types[1].split(" |,")).contains("jnt:contentReference")) {
-                    allowedRefs.add("jnt:contentReference");
-                    break;
-                } else if (checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), types[1])) {
-                    allowedRefs.add(types[0]);
-                }
+        boolean b = false;
+        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty()) {
+            LinkerSelectionContext lh = linker.getSelectionContext();
+            b = lh.getSingleSelection() != null
+                    && !lh.isLocked()
+                    && hasPermission(lh.getSelectionPermissions())
+                    && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
+                    && lh.isPasteAllowed();
+            String refTypes = null;
+            if (linker instanceof EditLinker && b) {
+                final Module module = ((EditLinker) linker).getSelectedModule();
+                refTypes = module.getReferenceTypes();
+            } else if (lh.getSingleSelection() != null) {
+                refTypes = lh.getSingleSelection().get("referenceTypes");
             }
-            if (this.allowedRefs.size() == 0) {
+            if (refTypes != null && refTypes.length() > 0) {
+                String[] refs = refTypes.split(" ");
+                allowedRefs = new ArrayList<String>();
+                for (String ref : refs) {
+                    String[] types = ref.split("\\[|\\]");
+                    if (types[1] != null && Arrays.asList(types[1].split(" |,")).contains("jnt:contentReference")) {
+                        allowedRefs.add("jnt:contentReference");
+                        break;
+                    } else if (checkNodeType(CopyPasteEngine.getInstance().getCopiedNodes(), types[1])) {
+                        allowedRefs.add(types[0]);
+                    }
+                }
+                if (this.allowedRefs.size() == 0) {
+                    b = false;
+                }
+            } else {
                 b = false;
             }
-        } else {
-            b = false;
         }
-
         setEnabled(b);
     }
 

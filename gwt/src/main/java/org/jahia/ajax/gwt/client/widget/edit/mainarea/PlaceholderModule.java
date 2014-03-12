@@ -239,7 +239,7 @@ public class PlaceholderModule extends Module {
     }
 
     public void updatePasteButton() {
-        if (CopyPasteEngine.getInstance().getCopiedPaths() != null && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
+        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty() && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
             pasteButton.setVisible(true);
             if (CopyPasteEngine.getInstance().canPasteAsReference()) {
                 pasteAsReferenceButton.setVisible(true);

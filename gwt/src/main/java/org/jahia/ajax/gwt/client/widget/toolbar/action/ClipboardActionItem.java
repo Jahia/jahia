@@ -40,8 +40,6 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -73,18 +71,18 @@ public class ClipboardActionItem extends BaseActionItem {
         instance = this;
     }
 
-    public static void removeCopied(List<GWTJahiaNode> copiedPath) {
-        instance.copiedStuff.remove(copiedPath);
+    public static void removeCopied(List<GWTJahiaNode> copiedNodes) {
+        instance.copiedStuff.remove(copiedNodes);
         refreshView();
     }
 
-    public static void setCopied(List<GWTJahiaNode> copiedPath) {
+    public static void setCopied(List<GWTJahiaNode> copiedNodes) {
         if (instance == null) instance = new ClipboardActionItem();
 
         // todo handle history, keeps old items
         instance.copiedStuff.clear();
 
-        instance.copiedStuff.add(0,copiedPath);
+        instance.copiedStuff.add(0, copiedNodes);
         if (instance.copiedStuff.size() == 10) {
             instance.copiedStuff.remove(9);
         }

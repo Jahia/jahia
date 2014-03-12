@@ -79,7 +79,7 @@ public class ContentActions {
         if (m != null) {
             linker.loading(Messages.get("statusbar.pastingref.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, new BaseAsyncCallback() {
+            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
                     Window.alert(Messages.get("failure.pasteref.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
@@ -87,7 +87,7 @@ public class ContentActions {
 
                 public void onSuccess(Object o) {
                     boolean refresh = false;
-                    for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
+                    for (GWTJahiaNode n : copyPasteEngine.getCopiedNodes()) {
                         if (!n.isFile()) {
                             refresh = true;
                             break;
@@ -200,7 +200,7 @@ public class ContentActions {
                     }
 
                     public void onSuccess(GWTJahiaNode node) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("node", node);
@@ -237,7 +237,7 @@ public class ContentActions {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), name, nodeType, mixins, null, nodeProperties, null, null, null, !isNodeNameProvided, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode node) {
-                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
+                        linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("node", node);

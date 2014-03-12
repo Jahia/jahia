@@ -47,7 +47,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.PlaceholderModule;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
@@ -68,7 +68,7 @@ public class CopyPasteEngine {
     private List<PlaceholderModule> placeholders = new ArrayList<PlaceholderModule>();
     
     // Copy-paste
-    private List<GWTJahiaNode> copiedPaths;
+    private final List<GWTJahiaNode> copiedNodes = new ArrayList<GWTJahiaNode>();
     private boolean cut ;
 
     public static CopyPasteEngine getInstance() {
@@ -80,79 +80,80 @@ public class CopyPasteEngine {
 
     protected CopyPasteEngine() {}
 
-    public void paste(GWTJahiaNode m, final Linker linker) {
-        final List<String> copiedPaths = new ArrayList<String>();
-        for (GWTJahiaNode node : getCopiedPaths()) {
-            copiedPaths.add(m.getPath() + "/" + node.getName());
+    public void paste(final GWTJahiaNode m, final Linker linker) {
+        if (!getCopiedNodes().isEmpty()) {
+            JahiaContentManagementService
+                    .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, isCut(), new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
+                    Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
+                    linker.loaded();
+                }
+
+                public void onSuccess(Object o) {
+                    afterPaste(linker, m);
+                }
+            });
         }
+    }
+    public void pasteReference(final GWTJahiaNode m, final Linker linker) {
         JahiaContentManagementService
-                .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedPaths()), m.getPath(), null, isCut(), new BaseAsyncCallback() {
+                .App.getInstance().pasteReferences(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable throwable) {
                 Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
                 linker.loaded();
             }
 
             public void onSuccess(Object o) {
-                afterPaste(linker, copiedPaths);
-            }
-        });
-    }
-    public void pasteReference(GWTJahiaNode m, final Linker linker) {
-        final List<String> copiedPaths = new ArrayList<String>();
-        for (GWTJahiaNode node : getCopiedPaths()) {
-            copiedPaths.add(m.getPath() + "/" + node.getName());
-        }
-        JahiaContentManagementService
-                .App.getInstance().pasteReferences(JCRClientUtils.getPathesList(getCopiedPaths()), m.getPath(), null, new BaseAsyncCallback() {
-            public void onApplicationFailure(Throwable throwable) {
-                Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
-                linker.loaded();
-            }
-
-            public void onSuccess(Object o) {
-                afterPaste(linker, copiedPaths);
+                afterPaste(linker, m);
             }
         });
 
     }
 
-    private void afterPaste(Linker linker, List<String> copiedPaths) {
+    private void afterPaste(Linker linker, GWTJahiaNode target) {
         linker.loaded();
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("node", getCopiedPaths().get(0));
-        data.put("nodes", getCopiedPaths());
+        List<String> newPaths = new ArrayList<String>();
+        for (GWTJahiaNode node : getCopiedNodes()) {
+            newPaths.add(target.getPath() + "/" +  node.getName());
+        }
+        data.put("node", getCopiedNodes().get(0));
+        data.put("nodes", newPaths);
         if (linker instanceof ManagerLinker) {
             data.put(Linker.REFRESH_ALL,true);
+            linker.refresh(data);
+        } else if (isCut() && MainModule.getInstance().getPath().contains(getCopiedNodes().get(0).getPath())) {
+            MainModule.staticGoTo(newPaths.get(0),MainModule.getInstance().getTemplate());
         } else {
-            data.put(Linker.REFRESH_MAIN,true);
+            data.put(Linker.REFRESH_MAIN, true);
+            linker.refresh(data);
         }
-        linker.refresh(data);
         onPastedPath();
-        linker.setSelectPathAfterDataUpdate(copiedPaths, (Boolean) data.get(Linker.REFRESH_MAIN));
     }
 
-    public List<GWTJahiaNode> getCopiedPaths() {
-        return copiedPaths;
+    public List<GWTJahiaNode> getCopiedNodes() {
+        return copiedNodes;
     }
 
-    public void setCopiedPaths(List<GWTJahiaNode> copiedPaths) {
+    public void setCopiedNodes(List<GWTJahiaNode> copiedPaths) {
         cut = false ;
-        this.copiedPaths = new ArrayList<GWTJahiaNode>(copiedPaths);
+        this.copiedNodes.clear();
+        this.copiedNodes.addAll(copiedPaths);
         ClipboardActionItem.setCopied(copiedPaths);
         updatePlaceholders();
     }
 
     public void setCutPaths(List<GWTJahiaNode> cutPaths) {
-        this.copiedPaths = new ArrayList<GWTJahiaNode>(cutPaths);
-        this.copiedPaths = cutPaths;
+        this.copiedNodes.clear();
+        this.copiedNodes.addAll(cutPaths);
         cut = true ;
         ClipboardActionItem.setCopied(cutPaths);
         updatePlaceholders();
     }
 
     public void onPastedPath() {
-        ClipboardActionItem.removeCopied(copiedPaths);
-        copiedPaths = null ;
+        ClipboardActionItem.removeCopied(copiedNodes);
+        copiedNodes.clear();
         cut = false ;
     }
 
@@ -164,11 +165,11 @@ public class CopyPasteEngine {
         if (dest == null) {
             return false ;
         }
-        if (copiedPaths == null) {
+        if (copiedNodes == null) {
             return false;
         }
 
-        for (GWTJahiaNode copiedPath : copiedPaths) {
+        for (GWTJahiaNode copiedPath : copiedNodes) {
             if ((dest.getPath()+"/").startsWith(copiedPath.getPath()+"/")) {
                 return false;
             }
@@ -183,11 +184,11 @@ public class CopyPasteEngine {
     }
 
     public boolean checkNodeType(String nodetypes) {
-        List<GWTJahiaNode> sources = getCopiedPaths();
+        List<GWTJahiaNode> sources = getCopiedNodes();
         boolean allowed = true;
 
         if (nodetypes != null && nodetypes.length() > 0) {
-            if (sources != null) {
+            if (!sources.isEmpty()) {
                 String[] allowedTypes = nodetypes.split(" |,");
                 for (GWTJahiaNode source : sources) {
                     boolean nodeAllowed = false;
@@ -211,8 +212,8 @@ public class CopyPasteEngine {
         if (isCut()) {
             return false;
         }
-        List<GWTJahiaNode> sources = getCopiedPaths();
-        if (sources != null) {
+        List<GWTJahiaNode> sources = getCopiedNodes();
+        if (!sources.isEmpty()) {
             for (GWTJahiaNode source : sources) {
                 if (source.isReference()) {
                     return false;

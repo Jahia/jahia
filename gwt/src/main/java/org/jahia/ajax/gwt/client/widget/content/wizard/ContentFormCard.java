@@ -119,7 +119,7 @@ public class ContentFormCard extends ContentWizardCard {
 
                             public void onSuccess(GWTJahiaNode result) {
                                 if (getWizardWindow().getLinker() != null) {
-                                    getWizardWindow().getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()), false);
+                                    getWizardWindow().getLinker().setSelectPathAfterDataUpdate(Arrays.asList(result.getPath()));
                                     Map<String, Object> data = new HashMap<String, Object>();
                                     data.put(Linker.REFRESH_MAIN, true);
                                     getWizardWindow().getLinker().refresh(data);

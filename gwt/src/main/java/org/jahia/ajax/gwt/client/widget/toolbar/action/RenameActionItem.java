@@ -89,7 +89,7 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
 
                             public void onSuccess(GWTJahiaNode node) {
                                 if (goTo) {
-                                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()), false);
+                                    linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                                 }
                                 linker.loaded();
                                 Map<String, Object> data = new HashMap<String, Object>();

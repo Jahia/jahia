@@ -237,12 +237,16 @@ public class SidePanelTabItem implements Serializable {
             ctx.setSelectedNodes(selectionModel.getSelectedItems());
             ctx.refresh(context);
         }
+        /**
+         * Callback for the event of data update.
+         *
+         * @param paths
+         *            the updated items paths
+         *
+         */
 
-        public void setSelectPathAfterDataUpdate(List<String> paths, boolean refreshMainModule) {
-            if (refreshMainModule && paths != null && !paths.isEmpty()) {
-                String template = MainModule.getInstance().getTemplate();
-                MainModule.staticGoTo(paths.get(0), "default".equals(template) ? null : template);
-            }
+        public void setSelectPathAfterDataUpdate(List<String> paths) {
+
         }
 
         public GWTConfiguration getConfig() {

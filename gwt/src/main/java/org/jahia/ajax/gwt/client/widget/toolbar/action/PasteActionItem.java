@@ -52,11 +52,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:57:20 PM
-*/
+ *
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:57:20 PM
+ */
 public class PasteActionItem extends BaseActionItem {
     private boolean pasteInMainNode;
 
@@ -82,22 +82,22 @@ public class PasteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b;
-
-        if (pasteInMainNode) {
-            b = lh.getMainNode() != null && hasPermission(lh.getMainNode()) && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getMainNode());
-        } else {
-            b = lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) &&PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
-        }
-
-        if (b && linker instanceof EditLinker) {
-            String nodeTypes = "";
-            for (String nodeType : linker.getSelectionContext().getSingleSelection().getNodeTypes()) {
-                nodeTypes += nodeTypes.equals("")?nodeType:","+nodeType;
+        boolean b = false;
+        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty()) {
+            if (pasteInMainNode) {
+                b = lh.getMainNode() != null && hasPermission(lh.getMainNode()) && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getMainNode());
+            } else {
+                b = lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) &&PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()) && lh.isPasteAllowed();
             }
-            b = b && CopyPasteEngine.getInstance().checkNodeType(nodeTypes);
-        }
 
+            if (b && linker instanceof EditLinker) {
+                String nodeTypes = "";
+                for (String nodeType : linker.getSelectionContext().getSingleSelection().getNodeTypes()) {
+                    nodeTypes += nodeTypes.equals("")?nodeType:","+nodeType;
+                }
+                b = b && CopyPasteEngine.getInstance().checkNodeType(nodeTypes);
+            }
+        }
         setEnabled(b);
     }
 

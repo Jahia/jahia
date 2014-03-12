@@ -81,7 +81,7 @@ public class EditEntryPoint extends CommonEntryPoint {
             if (!hash.equals("")) {
                 config = hash.substring(1, hash.indexOf('|'));
             }
-            JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config, new BaseAsyncCallback<GWTEditConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config,"default", new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
                     DOM.setInnerHTML(panel.getElement(), "");

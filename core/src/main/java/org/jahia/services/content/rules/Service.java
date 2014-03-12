@@ -766,9 +766,8 @@ public class Service extends JahiaService {
                     List<String> rolesName = new ArrayList<String>();
                     boolean needPrivileged = false;
                     String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and isdescendantnode(ace, ['" + site.getPath() + "'])";
-                    rolesName.addAll(getRolesName(session, sql));
                     if (StringUtils.equals(site.getPath(),JCRContentUtils.getSystemSitePath())) {
-                        sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and (not isdescendantnode(ace, ['/sites']))";
+                        sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + fPrincipal + "' and (isdescendantnode(ace, ['" + site.getPath() + "']) or not isdescendantnode(ace, ['/sites']))";
                     }
                     rolesName.addAll(getRolesName(session, sql));
                     try {

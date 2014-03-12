@@ -264,7 +264,9 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 List<GWTJahiaNode> selection = grid.getSelectionModel().getSelection();
                 for (GWTJahiaNode node : selection) {
                     removedChildren.add(node);
-                    engine.getNode().remove(node);
+                    if (engine.getNode() != null) {
+                        engine.getNode().remove(node);
+                    }
                     propertiesEditors.remove(node);
                     children.remove(node);
                     store.remove(node);

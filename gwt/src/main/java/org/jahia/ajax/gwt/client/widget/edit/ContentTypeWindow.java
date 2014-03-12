@@ -222,7 +222,7 @@ public class ContentTypeWindow extends Window {
                             targetNodeType = (GWTJahiaNodeType) result[1];
                         }
                     }
-                } else  if (!startNode.getSuperTypes().contains("jmix:droppableContent")) {
+                } else  if (!startNode.isMixin()) {
                     if (nodeTypeName.equals(startNode.getName())) {
                         targetNodeType  = startNode;
                     }

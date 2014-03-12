@@ -1032,11 +1032,15 @@ public class JCRPublicationService extends JahiaService {
                 return info;
             }
             if (node.hasProperty("j:lockTypes")) {
-                Value[] lockTypes = node.getProperty("j:lockTypes").getValues();
-                for (Value lockType : lockTypes) {
-                    if (lockType.getString().endsWith(":validation")) {
-                        info.setLocked(true);
+                try {
+                    Value[] lockTypes = node.getProperty("j:lockTypes").getValues();
+                    for (Value lockType : lockTypes) {
+                        if (lockType.getString().endsWith(":validation")) {
+                            info.setLocked(true);
+                        }
                     }
+                } catch (PathNotFoundException e) {
+                    // Property has been removed
                 }
             }
         }

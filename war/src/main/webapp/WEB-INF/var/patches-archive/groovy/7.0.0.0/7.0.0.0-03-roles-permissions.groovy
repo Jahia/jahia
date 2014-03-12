@@ -249,10 +249,10 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallba
         }
         if (jcrsession.nodeExists("/roles")) {
             log.info("Removing /roles node on live.");
-            JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
             jcrsession.getNode("/roles").remove();
             jcrsession.save();
-            JCRObservationManager.setEventsDisabled(Boolean.FALSE);
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
         jcrsession.save();
     }

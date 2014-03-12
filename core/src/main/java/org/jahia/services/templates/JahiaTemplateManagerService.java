@@ -1036,36 +1036,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (logger.isDebugEnabled()) {
             logger.debug("Executing query {}", query.toString());
         }
-        for (NodeIterator nodes = queryManager.createQuery(query.toString(), Query.JCR_SQL2)
-                .execute().getNodes(); nodes.hasNext(); ) {
-            JCRNodeWrapper node = (JCRNodeWrapper) nodes.nextNode();
-            Matcher matcher = TEMPLATE_PATTERN.matcher(node.getPath());
-            String pathToCheck = matcher.matches() ? matcher.group(1) : null;
-            if (StringUtils.isEmpty(pathToCheck)) {
-                continue;
-            }
-            pathToCheck = "/" + pathToCheck;
-            if (templateName.equals(pathToCheck)) {
-                // got it
-                found = true;
-                break;
-            } else {
-                String basePath = "/base";
-                JCRNodeWrapper folder = JCRContentUtils
-                        .getParentOfType(node, "jnt:templatesFolder");
-                if (folder != null && folder.hasProperty("j:rootTemplatePath")) {
-                    basePath = folder.getProperty("j:rootTemplatePath").getString();
-                }
-                if (StringUtils.isNotEmpty(basePath) && !"/".equals(basePath)
-                        && pathToCheck.equals(basePath + "/" + templateName)) {
-                    // matched it considering the base path
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        return found;
+        return queryManager.createQuery(query.toString(), Query.JCR_SQL2).execute().getNodes().hasNext();
     }
 
 

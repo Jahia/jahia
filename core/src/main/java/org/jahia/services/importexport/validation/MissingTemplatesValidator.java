@@ -177,6 +177,9 @@ public class MissingTemplatesValidator implements ImportValidator, ModuleDepende
 
         String templateAttr = atts.getValue("j:templateName");
         if (StringUtils.isEmpty(templateAttr)) {
+            templateAttr = StringUtils.substringAfterLast(atts.getValue("j:templateNode"), "/");
+        }
+        if (StringUtils.isEmpty(templateAttr)) {
             // no template attribute
             return;
         }

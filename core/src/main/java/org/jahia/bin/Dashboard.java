@@ -86,6 +86,10 @@ public class Dashboard extends Render {
             return false;
         }
         try {
+            if (!node.getPath().startsWith(node.getSession().getUser().getLocalPath())) {
+                logger.error("User : "+node.getSession().getUser().getUsername()+"tried to access the dashboard "+node.getPath());
+                return false;
+            }
             // the site cannot be resolved
             if (node.getResolveSite() == null) {
                 return false;

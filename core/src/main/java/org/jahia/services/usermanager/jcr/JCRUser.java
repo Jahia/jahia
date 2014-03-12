@@ -414,7 +414,7 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     }
 
     /**
-     * Get the path of this user in the local store. For examle for LDAP user this will return the path of
+     * Get the path of this user in the local store. For example for LDAP user this will return the path of
      * the user in the JCR with all necessary encoding.
      *
      * @return String representation of the name of the provider of this user

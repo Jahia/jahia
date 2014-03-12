@@ -51,9 +51,12 @@ import javax.jcr.observation.EventIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class AclListener extends DefaultEventListener {
+    private static final Pattern CURRENT_SITE_PATTERN = Pattern.compile("^currentSite");
     private static Logger logger = LoggerFactory.getLogger(AclListener.class);
     private JCRPublicationService publicationService;
     private static ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>();
@@ -355,15 +358,19 @@ public class AclListener extends DefaultEventListener {
 
     public JCRNodeWrapper getRefAclNode(JCRSessionWrapper session, JCRNodeWrapper ace, String role, JCRNodeWrapper externalPermissions) throws RepositoryException {
         String path = externalPermissions.getProperty("j:path").getString();
-        path = path.replaceFirst("^currentSite", ace.getResolveSite().getPath());
+        path = CURRENT_SITE_PATTERN.matcher(path).replaceFirst(ace.getResolveSite().getPath());
         if (!session.nodeExists(path)) {
-            logger.debug(
-                    "Cannot create or update external ACE " + externalPermissions.getName() + " because the node " +
-                            path + "doesn't exist."
-            );
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                        "Cannot create or update external ACE " + externalPermissions.getName() + " because the node " +
+                                path + "doesn't exist."
+                );
+            }
             return null;
         }
-        logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() + " on " + path);
+        if (logger.isDebugEnabled()) {
+            logger.debug(ace.getPath() + " / " + role + " ---> " + externalPermissions.getName() + " on " + path);
+        }
         return session.getNode(path);
     }
 }

@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides a tag library which should only be used by Jahia JSP files, but not templates</description>
     <display-name>Internal Jahia Tag Library</display-name>
-    <tlib-version>6.5</tlib-version>
+    <tlib-version>7.0</tlib-version>
     <short-name>internal</short-name>
     <uri>http://www.jahia.org/tags/internalLib</uri>
     <!--

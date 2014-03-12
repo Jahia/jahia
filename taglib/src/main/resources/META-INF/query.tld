@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides a tag library for declaring JSR-283 based Query Object Model.</description>
     <display-name>Jahia Query Tag Library</display-name>
-    <tlib-version>6.5</tlib-version>
+    <tlib-version>7.0</tlib-version>
     <short-name>query</short-name>
     <uri>http://www.jahia.org/tags/queryLib</uri>
     

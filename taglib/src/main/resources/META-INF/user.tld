@@ -7,7 +7,7 @@
 
     <description>Jahia User library</description>
     <display-name>Jahia User</display-name>
-    <tlib-version>6.5</tlib-version>
+    <tlib-version>7.0</tlib-version>
     <short-name>user</short-name>
     <uri>http://www.jahia.org/tags/user</uri>
 

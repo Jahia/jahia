@@ -373,17 +373,28 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         String key = p.getKey();
         String mountPoint = p.getMountPoint();
 
-        providerList.add(p);
-        Collections.sort(providerList);
-        providers = null;
+        synchronized(this) {
+            List<JCRStoreProvider> newList = new ArrayList<JCRStoreProvider>(providerList);
+            newList.add(p);
+            Collections.sort(newList);
+            providerList = Collections.unmodifiableList(newList);
+            providers = null;
 
-        if (mountPoint != null) {
-            if (p.isDynamicallyMounted()) {
-                dynamicMountPoints.put(mountPoint, p);
-            } else {
-                mountPoints.put(mountPoint, p);
+            if (mountPoint != null) {
+                if (p.isDynamicallyMounted()) {
+                    SortedMap<String, JCRStoreProvider> newDynamicMountPoints = new TreeMap<String, JCRStoreProvider>(dynamicMountPoints);
+                    newDynamicMountPoints.put(mountPoint, p);
+                    dynamicMountPoints = Collections.unmodifiableSortedMap(newDynamicMountPoints);
+                } else {
+                    SortedMap<String, JCRStoreProvider> newMountPoints = new TreeMap<String, JCRStoreProvider>(mountPoints);
+                    newMountPoints.put(mountPoint, p);
+                    mountPoints = Collections.unmodifiableSortedMap(newMountPoints);
+                }
+
+                Set<String> newAllMountPoints = new HashSet<String>(allMountPoints);
+                newAllMountPoints.add(mountPoint);
+                allMountPoints = Collections.unmodifiableSet(newAllMountPoints);
             }
-            allMountPoints.add(mountPoint);
         }
         logger.info("Added provider " + key + " at mount point " + mountPoint + " using implementation "
                 + p.getClass().getName());
@@ -414,12 +425,26 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         if (p == null) {
             return;
         }
-        providerList.remove(p);
-        providers = null;
-        if (p.getMountPoint() != null) {
-            mountPoints.remove(p.getMountPoint());
-            dynamicMountPoints.remove(p.getMountPoint());
-            allMountPoints.remove(p.getMountPoint());
+        synchronized(this) {
+            List<JCRStoreProvider> newList = new ArrayList<JCRStoreProvider>(providerList);
+            newList.remove(p);
+            providerList = Collections.unmodifiableList(newList);
+
+            providers = null;
+
+            if (p.getMountPoint() != null) {
+                SortedMap<String, JCRStoreProvider> newMountPoints = new TreeMap<String, JCRStoreProvider>(mountPoints);
+                newMountPoints.remove(p.getMountPoint());
+                mountPoints = Collections.unmodifiableSortedMap(newMountPoints);
+
+                SortedMap<String, JCRStoreProvider> newDynamicMountPoints = new TreeMap<String, JCRStoreProvider>(dynamicMountPoints);
+                newDynamicMountPoints.remove(p.getMountPoint());
+                dynamicMountPoints = Collections.unmodifiableSortedMap(newDynamicMountPoints);
+
+                Set<String> newAllMountPoints = new HashSet<String>(allMountPoints);
+                newAllMountPoints.remove(p.getMountPoint());
+                allMountPoints = Collections.unmodifiableSet(newAllMountPoints);
+            }
         }
         logger.info("Removed provider " + key + " at mount point " + p.getMountPoint() + " using implementation " + p.getClass().getName());
     }
@@ -456,14 +481,16 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public JCRStoreProvider getProvider(String path) {
-        for (String mp : dynamicMountPoints.keySet()) {
+        Map<String, JCRStoreProvider> currentDynamicMountPoints = getDynamicMountPoints();
+        for (String mp : currentDynamicMountPoints.keySet()) {
             if (path.startsWith(mp + "/")) {
-                return dynamicMountPoints.get(mp);
+                return currentDynamicMountPoints.get(mp);
             }
         }
-        for (String mp : mountPoints.keySet()) {
+        Map<String, JCRStoreProvider> currentMountPoints = getMountPoints();
+        for (String mp : currentMountPoints.keySet()) {
             if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
-                return mountPoints.get(mp);
+                return currentMountPoints.get(mp);
             }
         }
         return null;

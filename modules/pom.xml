@@ -202,6 +202,7 @@
                 <!--<module>atmosphere</module>-->
                 <module>channels</module>
                 <module>contentRetrieval</module>
+                <module>contribute</module>
                 <module>default</module>
                 <module>default-skins</module>
                 <module>siteSettings</module>

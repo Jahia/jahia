@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<%@ page language="java" contentType="text/html;charset=UTF-8" 
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -26,7 +26,14 @@
 
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
 </head>
-<body bgcolor="white">
-    <template:area path="pagecontent"/>
+<body>
+<jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
+<template:area path="pagecontent"/>
 </body>
 </html>
+
+<!--ressources-->
+<template:addResources type="css" resources="960-fluid.css,01web.css,navigation.css,navigationN2-1.css" />
+<template:addResources><!--[if IE 6]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/ie6.css'/>" media="screen" /><![endif]--></template:addResources>
+<template:addResources><!--[if IE 7]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/ie.css'/>" media="screen" /><![endif]--></template:addResources>
+<template:theme/>

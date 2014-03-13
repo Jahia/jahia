@@ -206,8 +206,7 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
             logger.error("Cannot read files",e);
         }
 
-        logger.info("No macro script found for macro \"{}\" using lookup \"{}\".",
-                macroName, "");
+        logger.warn("No macro script found for macro \"{}\" .", macroName);
         if(!replaceByErrorMessageOnMissingMacros) {
             scriptCache.put(macroName, null);
         }

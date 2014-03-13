@@ -42,6 +42,7 @@ package org.jahia.services.templates;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ProvisionActivator;
@@ -205,18 +206,27 @@ public class TemplatePackageDeployer {
     private synchronized void cloneModuleInLive(final JahiaTemplatesPackage pack) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                if (!session.itemExists("/modules")) {
-                    session.getWorkspace().clone("default", "/modules", "/modules", true);
-                } else if (!session.itemExists("/modules/" + pack.getId())) {
-                    session.getWorkspace().clone("default", "/modules/" + pack.getId(), "/modules/" + pack.getId(), true);
-                } else {
-                    if (session.itemExists("/modules/" + pack.getIdWithVersion())) {
-                        session.getNode("/modules/" + pack.getIdWithVersion()).remove();
-                        session.save();
+                try {
+                    JCRObservationManager.setEventListenersAvailableDuringPublishOnly(true);
+                    if (!session.itemExists("/modules")) {
+                        JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
+                        session.getWorkspace().clone("default", "/modules", "/modules", true);
+                    } else if (!session.itemExists("/modules/" + pack.getId())) {
+                        JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
+                        session.getWorkspace().clone("default", "/modules/" + pack.getId(), "/modules/" + pack.getId(), true);
+                    } else {
+                        if (session.itemExists("/modules/" + pack.getIdWithVersion())) {
+                            session.getNode("/modules/" + pack.getIdWithVersion()).remove();
+                            session.save();
+                        }
+                        JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
+                        session.getWorkspace().clone("default", "/modules/" + pack.getIdWithVersion(), "/modules/" + pack.getIdWithVersion(), true);
                     }
-                    session.getWorkspace().clone("default", "/modules/" + pack.getIdWithVersion(), "/modules/" + pack.getIdWithVersion(), true);
+                } finally {
+                    JCRObservationManager.setEventListenersAvailableDuringPublishOnly(false);
+                    JahiaAccessManager.setDeniedPaths(null);
                 }
-                return null;
+               return null;
             }
         });
     }

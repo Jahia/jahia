@@ -704,7 +704,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         if (w.checkValidity()) {
             return service.decorate(w);
         } else {
-            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
+            throw new PathNotFoundException("Invalid node : " + objectNode.getPath());
         }
     }
 

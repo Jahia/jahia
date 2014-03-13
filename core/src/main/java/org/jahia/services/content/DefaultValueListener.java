@@ -105,16 +105,16 @@ public class DefaultValueListener extends DefaultEventListener {
                         try {
                             JCRNodeWrapper n = null;
                             String eventPath = event.getPath();
-                            if (event.getType() == Event.NODE_ADDED) {
-                                try {
+                            try {
+                                if (event.getType() == Event.NODE_ADDED) {
                                     n = (JCRNodeWrapper) s.getItem(eventPath);
-                                } catch (PathNotFoundException e) {
-                                    continue;
                                 }
-                            }
-                            if (eventPath.endsWith(Constants.JCR_MIXINTYPES)) {
-                                String path = eventPath.substring(0, eventPath.lastIndexOf('/'));
-                                n = (JCRNodeWrapper) s.getItem(path.length() == 0 ? "/" : path);
+                                if (eventPath.endsWith(Constants.JCR_MIXINTYPES)) {
+                                    String path = eventPath.substring(0, eventPath.lastIndexOf('/'));
+                                    n = (JCRNodeWrapper) s.getItem(path.length() == 0 ? "/" : path);
+                                }
+                            } catch (PathNotFoundException e) {
+                                continue;
                             }
                             if (n != null) {
                                 boolean anythingChanged = false;

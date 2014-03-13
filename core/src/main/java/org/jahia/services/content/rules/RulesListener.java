@@ -66,6 +66,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
@@ -508,8 +509,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                 }
                             }
                         } catch (PathNotFoundException pnfe) {
-                            logger.error("Error when executing event. Unable to find node or property for path: " +
+                            logger.debug("Error when executing event. Unable to find node or property for path: " +
                                     path, pnfe);
+                        } catch (ItemNotFoundException infe) {
+                            logger.debug("Error when executing event. Unable to find node or property for item: " +
+                                    event.getIdentifier() , infe);
                         } catch (Exception e) {
                             logger.error("Error when executing event", e);
                         }

@@ -45,6 +45,7 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.*;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
@@ -88,9 +89,13 @@ public class NodenameListener extends DefaultEventListener {
                             if(logger.isDebugEnabled()) {
                                 logger.debug("Node has been added, we are updating its fullpath properties : "+path);
                             }
-                            JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);
-                            if (nodeAdded(item)) {
-                                sessions.add(item.getRealNode().getSession());
+                            try {
+                                JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);
+                                if (nodeAdded(item)) {
+                                    sessions.add(item.getRealNode().getSession());
+                                }
+                            } catch (PathNotFoundException e) {
+                                logger.debug("Node does not exist, continue");
                             }
                         }
                     }

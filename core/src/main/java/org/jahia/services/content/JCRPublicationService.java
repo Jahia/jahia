@@ -281,7 +281,7 @@ public class JCRPublicationService extends JahiaService {
         for (String uuid : uuidsToPublish) {
             try {
                 JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
-                if (!node.isNodeType("jmix:nolive")) {
+                if (!node.isNodeType("jmix:nolive") && !toPublish.contains(node)) {
                     toPublish.add(node);
                 }
             } catch (javax.jcr.ItemNotFoundException e) {

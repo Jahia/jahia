@@ -17,7 +17,9 @@ CKEDITOR.plugins.add('macrosdropdown', {
                     }
                 });
                 if (isMacrosDefined) {
-                    var initializerURL = window.location.protocol + "//" + window.location.host + '/cms/initializers';
+                    var domainURL = window.location.protocol + "//" + window.location.host +
+                                    (jahiaGWTParameters != undefined ? jahiaGWTParameters.contextPath : "");
+                    var initializerURL = domainURL+ '/cms/initializers';
                     $.get(initializerURL,
                             {name: 'macros', nodeuuid: path, initializers: 'choicelistmacros'}, function (result) {
                                 $.each(result, function (key, value) {

@@ -206,7 +206,6 @@ public class MacrosFilter extends AbstractFilter implements InitializingBean, Ap
             logger.error("Cannot read files",e);
         }
 
-        logger.warn("No macro script found for macro \"{}\" .", macroName);
         if(!replaceByErrorMessageOnMissingMacros) {
             scriptCache.put(macroName, null);
         }

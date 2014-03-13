@@ -78,6 +78,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
         this.linker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
         removeAll();
         add(component);
+        head.setStyleAttribute("height","20px");
         setHeadingHtml(header);
         if (buttonsBar != null) {
             setBottomComponent(buttonsBar);

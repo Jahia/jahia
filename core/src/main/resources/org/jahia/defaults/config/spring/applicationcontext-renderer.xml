@@ -234,7 +234,7 @@
         <property name="description"
                   value="Forces the usage of the UI locale when the template has jmix:useUILocale mixin"/>
         <property name="applyOnNodeTypes" value="jmix:useUILocale"/>
-        <property name="applyOnConfigurations" value="wrapper"/>
+        <property name="applyOnConfigurations" value="wrapper,page"/>
     </bean>
     <bean class="org.jahia.services.render.filter.TemplateAttributesFilter">
         <property name="priority" value="30"/>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <userDashboard j:dependencies="default"
+        <userDashboard j:dependencies="contentRetrieval default"
                        j:installedModules="userDashboard"
+                     j:modulePriority="0"
                        j:moduleType="module"
                        j:title="Jahia User Dashboard"
                        jcr:primaryType="jnt:module">
@@ -12,16 +13,18 @@
                 <dashboard-modules-base j:view="dashboard"
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
-                    <!--<me j:applyOn="jnt:user"
-                        j:defaultTemplate="false"
-                        j:hiddenTemplate="false"
-                        j:titleKey="mySettings.about"
-                        jcr:mixinTypes="jmix:rbTitle"
-                        jcr:primaryType="jnt:contentTemplate">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <about-user jcr:primaryType="jnt:aboutUserDashboard"/>
-                        </pagecontent>
-                    </me>-->
+                    <my-files j:applyOn="jnt:user"
+                              j:defaultTemplate="false"
+                              j:hiddenTemplate="false"
+                              j:titleKey="myFiles.label"
+                              jcr:mixinTypes="jmix:rbTitle"
+                              jcr:primaryType="jnt:contentTemplate">
+                              <pagecontent jcr:primaryType="jnt:contentList">
+                                  <workspace-default jcr:primaryType="jnt:workspaceSwitch" workspace="default">
+                                      <files-browser jcr:primaryType="jnt:myFilesDashboard"/>
+                                  </workspace-default>
+                              </pagecontent>
+                    </my-files>
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
@@ -50,48 +53,48 @@
                                                     contribute="true"
                                                     delete="false"
                                                     details="false"
-                                                            edit="true"
+                                                    edit="true"
                                                     editproperties="false"
                                                     export="false"
-                                                            j:view="bootstrapSites"
                                                             j:contextNodePath="/sites"
                                                             j:invertCondition="true"
                                                             j:requireLoggedUser="false"
                                                             j:requirePrivilegedUser="false"
                                                             j:requiredPermissionNames="jcr:read_default"
+                                                 j:view="bootstrapSites"
                                                             jcr:mixinTypes="jmix:renderable jmix:requiredPermissions"
                                                             jcr:primaryType="jnt:listSites"
                                                             live="true"
                                                             preview="true"/>
                             <workspaceDispatcher-edit j:contextNodePath="/sites"
                                                       j:invertCondition="false"
-                                                          j:requireLoggedUser="false"
-                                                          j:requirePrivilegedUser="false"
-                                                          j:requiredPermissionNames="jcr:read_default"
-                                                          jcr:mixinTypes="jmix:requiredPermissions"
-                                                          jcr:primaryType="jnt:workspaceSwitch"
-                                                          workspace="default">
-                                    <websites-list-in-edit-mode administrationlink="false"
+                                                      j:requireLoggedUser="false"
+                                                      j:requirePrivilegedUser="false"
+                                                      j:requiredPermissionNames="jcr:read_default"
+                                                      jcr:mixinTypes="jmix:requiredPermissions"
+                                                      jcr:primaryType="jnt:workspaceSwitch"
+                                                      workspace="default">
+                                    <websites-list-in-edit-mode administrationlink="true"
                                                     contribute="true"
-                                                    delete="false"
-                                                    details="false"
-                                                            edit="true"
-                                                    editproperties="false"
-                                                    export="false"
-                                                            j:view="bootstrapSites"
-                                                            jcr:mixinTypes="jmix:renderable"
-                                                            jcr:primaryType="jnt:listSites"
-                                                            live="true"
-                                                            preview="true"/>
+                                                    delete="true"
+                                                    details="true"
+                                                    edit="true"
+                                                    editproperties="true"
+                                                    export="true"
+                                                    j:view="bootstrapSites"
+                                                    jcr:mixinTypes="jmix:renderable"
+                                                    jcr:primaryType="jnt:listSites"
+                                                    live="true"
+                                                    preview="true"/>
                             </workspaceDispatcher-edit>
                         </pagecontent>
                     </web-projects>
                     <me j:applyOn="jnt:user"
-                           j:defaultTemplate="false"
-                           j:hiddenTemplate="false"
-                           j:titleKey="system.mySettings"
-                           jcr:mixinTypes="jmix:rbTitle"
-                           jcr:primaryType="jnt:contentTemplate">
+                        j:defaultTemplate="false"
+                        j:hiddenTemplate="false"
+                        j:titleKey="system.mySettings"
+                        jcr:mixinTypes="jmix:rbTitle"
+                        jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <editDetails age="true"
                                          j:about="true"
@@ -118,9 +121,9 @@
                 </dashboard-modules-base>
             </templates>
                 
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
         </userDashboard>
     </modules>
 </content>

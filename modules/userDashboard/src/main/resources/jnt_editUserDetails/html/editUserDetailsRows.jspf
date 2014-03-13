@@ -583,7 +583,7 @@
                     </c:if>
                     <div class="control-group">
                         <label class="control-label switch" for="publicProperties${loopStatus.index}">
-                            <script type="text/javascript">console.log("jnt_user.${fn:replace(key, ':','_')}");</script><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                         </label>
                         <div class="control">
                             <input data-size="mini" data-on-text="<fmt:message key='jnt_user.profile.public'/>" data-off-text="<fmt:message key='jnt_user.profile.nonpublic'/>" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
@@ -597,9 +597,6 @@
                     </c:forTokens>
                 </div>
             </div>
-            <%--<div class="form-actions">
-                <button type="button" class="btn btn-primary btn-success" onclick="ajaxReloadCallback(null,'Back')"><fmt:message key="save"/></button>
-            </div>--%>
         </div>
     </div>
 </div>

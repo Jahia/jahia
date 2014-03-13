@@ -42,48 +42,6 @@ function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method,
 
 /**
  * @Author : Jahia(rahmed)
- * This function make an ajax call to the Jahia API and return the result of this call
- * @param workspace : the workspace to use on this call (live, default)
- * @param locale : the locale to use in ISO 639-1
- * @param way : the way to find the JCR entity on which make the call (nodes, byPath, byType)
- * @param method : the METHOD to call (GET, POST, PUT, DELETE ...)
- * @param endOfURI : the information needed to complete the entity search (id if the way is nodes, path if byPath and type if byType) with the options (/propertie/<propertieName> for example)
- * @param json : the Json to pass with the call
- * @param callback : the callback function for the request (Optional)
- * @param errorCallback : the error function for the request (Optional)
- * @return callResult : the result of the Ajax call
- */
-function jahiaAPIDELETE(urlContext,workspace,locale, endOfURI,method, callback, errorCallback)
-{
-    var callResult;
-    //Post the Serialized form to Jahia
-    $.ajax({
-        contentType: 'application/json',
-        data: json,
-        dataType: 'json',
-        processData: false,
-        type: method,
-        url: urlContext+"/modules/api/"+workspace+"/"+locale+"/nodes/"+endOfURI
-    }).done(function(result){
-        //calling the callback
-        if(!(callback === undefined))
-        {
-            callback(result,json);
-        }
-        callResult=result;
-    }).error(function(result){
-        if(!(errorCallback === undefined))
-        {
-            errorCallback(result, json);
-        }
-        callResult=result;
-    });
-    return callResult;
-}
-
-
-/**
- * @Author : Jahia(rahmed)
  * This function serialize a form (or some form elements with a given css class) to a JSON String,
  * then it send a Put Request to the JCR Rest API
  * @param formId : the id of the forms containing the elements to serialize
@@ -185,7 +143,15 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
     return {"properties" : serializedObject};
 };
 
-
+/**
+ * @Author : Jahia(rahmed)
+ * This function verify the phone and email fields of an adress before submitting it
+ * the phone fields must have the 'phone' css class
+ * The email fields must have the 'email' css class
+ * @param cssClass : The class of the form adress fields
+ * @param phoneErrorId : The css id of the div that will display the phone error message
+ * @param emailErrorId : The css id of the div that will display the email error message
+ */
 function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
 {
     $('#'+emailErrorId).hide();
@@ -222,6 +188,7 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
         updateProperties(cssClass);
     }
     else{
+        //displaying the error messages
         if(!phoneSize || !phoneForm)
         {
             $('#'+phoneErrorId).fadeIn('slow').delay(4000).fadeOut('slow');
@@ -234,8 +201,6 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
 
 
 }
-/* Edit User Detail Global variables */
-
 
 /* Edit User Details Functions */
 /**
@@ -263,6 +228,13 @@ var ajaxReloadCallback = function (result,sent)
 }
 
 
+/**
+ * @Author : Jahia(rahmed)
+ * This function is called after the user picture Upload
+ * to check is the avatar is created
+ * @testresult: the file url to test
+ * @return: 200 for success and 0 or negative value on error
+ */
 function urlExists(testUrl) {
     var http = jQuery.ajax({
         type:"HEAD",
@@ -270,27 +242,17 @@ function urlExists(testUrl) {
         async: false
     })
     return http.status;
-    // this will return 200 on success, and 0 or negative value on error
-}
-
-
-/**
- * Edit User Details Callback Function
- * This function is called after the user properties Update in case the put request end with an error state
- */
-var formError = function ()
-{
-    console.log('Error ...');
 }
 
 /**
  * @Author : Jahia(rahmed)
  * This function post the privacy properties in order to update JCR
- * The post is in string in order to allow multiple values on publicProperties as the Jahia API
- * Doesn't allow the JSON table attributes.
- * propertiesNumber: the number of properties in the loop
- * idNumber: The id of the switch triggering the update (for the check image near the switch)
- * propertiesNumber: The updated state by the switch (for the check image near the switch)
+ * The post is in string in order to allow multiple values on publicProperties.
+ * @propertiesNumber: The number of properties in the loop
+ * @idNumber: The id of the switch triggering the update (for the check image near the switch)
+ * @value: State of the property switch
+ * @nodeIdentifier: The end of URI for the jahia API Standard Call is the user id
+ * @locale: The locale for the jahia API Standard Call
  */
 function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale)
 {
@@ -337,6 +299,12 @@ function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale
  * @Author : Jahia(rahmed)
  * This function changes the user Password calling the action changePassword.do
  * The new password is picked directly from the password change form in this page.
+ * The error messages are displayed in the '#passwordErrors' div
+ * The success messages are displayed in the '#passwordSuccess' div
+ * @oldPasswordMandatory: The error message for the empty old password case
+ * @confirmationMandatory: The error message for the empty confirmation case
+ * @passwordMandatory: The error message for the empty password case
+ * @passwordNotMatching: The error message for the non matching passwords case
  */
 function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMandatory, passwordNotMatching)
 {
@@ -399,31 +367,28 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
 /* Edit User Details User Picture */
 /**
  * @Author : Jahia(rahmed)
- * This function Upload a picture the user picked and update his user picture with it
+ * This function Upload a picture the user picked and update his user picture property with it
  * The picture to upload is directly picked from the form
+ * @imageId : The id of the input file form field
+ * @locale: The locale for the API call URL build
+ * @nodepath : The path of the user node for the API call URL build
+ * @userId : The user Id for the picture propertie Update
+ * @callbackFunction : the callback function
+ * @errorFunction : The error callback function
  */
 function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
 {
     var uploadUrl = context+"/modules/api/default/"+locale+"/byPath"+nodePath+"/files/profile";
-    //Upload the picture
-    var validFilename = false;
 
-    var filename = $("#"+imageId).val();
-    var regex = /[:<>[\]*|"\\]/;
-
-    if( filename == "")
+    //checking if the file input has been filled
+    if( $("#"+imageId).val() == "")
     {
         $("#imageUploadEmptyError").fadeIn('slow').delay(4000).fadeOut('slow');
     }
     else
     {
-        /*if(regex.test($("#"+imageId).val()))
-        {
-            $("#imageUploadNameError").fadeIn('slow').delay(4000).fadeOut('slow');
-        }
-        else
-        {*/
-            $.ajaxFileUpload({
+        //Upload the picture
+        $.ajaxFileUpload({
                 url: uploadUrl,
                 secureuri:false,
                 fileElementId: imageId,
@@ -440,7 +405,7 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
 
                         //Creating the Json String to send with the PUT request
                         jsonData = "{\"value\":\""+fileId+"\"}";
-                        /*var jsonResponse = JSON.parse(result.responseText);*/
+
                         //Requesting the Jahia API to update the user picture
                         jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"PUT", jsonData, function(){
                             //Check If Jahia had the time to create the Avatar
@@ -471,13 +436,15 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
                 }
             });
         }
-    /*}*/
 }
-
 /**
  * @Author : Jahia(rahmed)
- * This function make a JSON Post of all the form entries (textInputs, select and ckeditors) contained in a Row
- * rowId: the Id of the from which post the form entries
+ * This function make a JSON Post of ckeditor contained in a Row
+ * @rowId: the Id of the from which post the form entries
+ * @nodeIdentifier : the endofURI for the Jahia API Standard Call
+ * @locale : the locale for the Jahia API Standard Call
+ * @callback : the callback function for the Jahia API Standard Call
+ * @errorCallback : the error callback function for the Jahia API Standard Call
  */
 function saveCkEditorChanges(rowId,nodeIdentifier ,locale, callback, errorCallback )
 {
@@ -508,7 +475,7 @@ var currentForm = "";
 /**
  * @Author : Jahia(rahmed)
  * This function switch a row from the display view to the form view
- * elementId : id of the row to switch
+ * @elementId : id of the row to switch
  */
 function switchRow(elementId)
 {

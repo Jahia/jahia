@@ -87,7 +87,7 @@ var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.boots
 
 function updateProperties(cssClass)
 {
-    formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
+    formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,undefined);
 }
 
 var visibilityNumber = 0;
@@ -257,7 +257,7 @@ $(document).ready(function(){
                                                     <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')">
                                                         <fmt:message key="cancel"/>
                                                     </button>
-                                                    <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError)">
+                                                    <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,undefined)">
                                                         <fmt:message key="save"/>
                                                     </button>
                                                 </div>

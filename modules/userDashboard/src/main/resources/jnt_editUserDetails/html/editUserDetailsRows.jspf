@@ -1,7 +1,7 @@
 <div id="namesRow">
     <h2><i class="icon-user"></i>&nbsp;<fmt:message key="mySettings.name"/></h2>
-    <div class="row-fluid box-1">
-        <div id="names">
+    <div class="row-fluid">
+        <div id="names" class="box-1 presentation">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:title'].boolean}">
                     <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
@@ -69,12 +69,13 @@
                 <div class="control-group">
                     <label class="control-label" for="gender"><fmt:message key="mySettings.gender"/></label>
                     <div class="controls">
-                        <select name="j:gender" class="namesField">
+                        <select name="j:gender" class="namesField" jcrtype="choiceList">
+                            <option value=""></option>
                             <c:forEach items="${genderInit}"
                                        varStatus="status"
                                        var="gender">
                                 <c:choose>
-                                    <c:when test="${(fn:escapeXml(user.properties['j:gender'])) eq  (gender.value.string)}">
+                                    <c:when test="${(fn:escapeXml(user.properties['j:gender'].string)) eq  (gender.value.string)}">
                                         <option name="j:gender" value="${gender.value.string}" selected="selected">${gender.displayName}</option>
                                     </c:when>
                                     <c:otherwise>
@@ -97,8 +98,8 @@
 
 <div id="professionRows">
     <h2><i class="icon-briefcase"></i>&nbsp;<fmt:message key="mySettings.profession"/></h2>
-    <div class="row-fluid box-1">
-        <div id="profession">
+    <div class="row-fluid">
+        <div id="profession" class="box-1 presentation">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:function'].boolean}">
                     <c:if test="${not empty user.properties['j:function'].string}">
@@ -148,8 +149,8 @@
 </div>
 <div id="socialRows">
     <h2><i class="icon-globe"></i>&nbsp;<fmt:message key="mySettings.social"/></h2>
-    <div class="row-fluid box-1">
-        <div id="social">
+    <div class="row-fluid">
+        <div id="social" class="box-1 presentation">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                     <c:choose>
@@ -248,8 +249,8 @@
 
 <div id="AddressRows">
     <h2><i class="icon-envelope"></i>&nbsp;<fmt:message key="mySettings.address"/></h2>
-    <div class="row-fluid box-1">
-        <div id="address">
+    <div class="row-fluid">
+        <div id="address" class="box-1 presentation">
             <div class="pull-left">
                 <div class="row-fluid">
                     <div class="pull-left">
@@ -272,7 +273,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="pull-right">
+                    <div class="pull-right" style="margin-left:15px;">
                         <div class="pull-left">
                             <c:if test="${(not empty user.properties['j:address'].string) or not empty user.properties['j:zipCode'].string or not empty user.properties['j:city'].string or not empty user.properties['j:country'].string}">
                                 <strong><fmt:message key='jnt_user.j_address'/>&nbsp;:</strong>&nbsp;
@@ -280,19 +281,16 @@
                         </div>
                         <div class="pull-right">
                             <c:if test="${(not empty user.properties['j:address'].string)}">
-                                ${user.properties['j:address'].string}
+                                <div>${user.properties['j:address'].string}</div>
                             </c:if>
-                            <br />
                             <c:if test="${(not empty user.properties['j:zipCode'].string)}">
-                                ${user.properties['j:zipCode'].string}
+                                <div>${user.properties['j:zipCode'].string}</div>
                             </c:if>
-                            <br />
                             <c:if test="${(not empty user.properties['j:city'].string)}">
-                                ${user.properties['j:city'].string}
+                                <div>${user.properties['j:city'].string}</div>
                             </c:if>
-                            <br />
                             <c:if test="${(not empty user.properties['j:country'].string)}">
-                                ${user.properties['j:country'].string}
+                                <div>${user.properties['j:country'].string}</div>
                             </c:if>
                         </div>
                     </div>
@@ -380,8 +378,8 @@
 
 <div id="passwordRows">
     <h2><i class="icon-lock"></i>&nbsp;<fmt:message key="label.password"/></h2>
-    <div class="row-fluid box-1">
-        <div id="password">
+    <div class="row-fluid">
+        <div id="password" class="box-1 presentation">
             <div class="pull-left">
                 ****** &nbsp; <span id="passwordSuccess" class="hide"></span>
             </div>
@@ -402,11 +400,16 @@
                     </c:if>
                 </c:forEach>
                 <div class="control-group">
+                    <label class="control-label" for="passwordField"><fmt:message key="mySettings.oldPassword"/></label>
+                    <div class="controls">
+                        <input type="password" id="oldPasswordField" name="oldpassword"/>
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="passwordField"><fmt:message key="label.password"/></label>
                     <div class="controls">
                         <input type="password" id="passwordField" name="password"/>
                     </div>
-                    <div id="passwordError" class="controls hide"></div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="passwordconfirm"><fmt:message key="label.confirmPassword"/></label>
@@ -416,9 +419,13 @@
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
-                    <button id="passwordChangeButton" class="btn btn-success" type="button" onclick="changePassword(passwordMandatoryLabel, passwordNotMatchingLabel)">
+                    <button id="passwordChangeButton"
+                            class="btn btn-success"
+                            type="button"
+                            onclick="changePassword('<fmt:message key="mySettings.errors.oldPassword.mandatory"/>','<fmt:message key="mySettings.errors.passwordConfirmation.mandatory"/>','<fmt:message key="mySettings.errors.password.mandatory"/>', '<fmt:message key="mySettings.errors.password.not.matching"/>')">
                         <fmt:message key="save"/>
                     </button>
+                    &nbsp;<span id="passwordErrors" class="hide"></span>
                 </div>
             </c:if>
         </div>
@@ -427,8 +434,8 @@
 
 <div id="otherRows">
     <h2><i class="icon-info-sign"></i>&nbsp;<fmt:message key="mySettings.other"/></h2>
-    <div class="row-fluid box-1">
-        <div id="other">
+    <div class="row-fluid">
+        <div id="other" class="box-1 presentation">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:birthDate'].boolean}">
                     <div>
@@ -507,9 +514,9 @@
     <h2>
         <i class="icon-eye-close"></i>&nbsp;<fmt:message key="mySettings.privacy"/>
     </h2>
-    <div class="row-fluid box-1">
-        <div id="privacy">
-            <div class="pull-left span9">
+    <div class="row-fluid">
+        <div id="privacy" class="box-1 presentation">
+            <div id="privacyBlock" class="pull-left span9">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>

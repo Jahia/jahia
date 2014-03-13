@@ -1,36 +1,40 @@
 <c:if test="${fn:contains(publicPropertiesAsString, 'j:picture') and fn:contains(publicPropertiesAsString, 'j:about')}">
-    <div class="alert alert-info">
-        <div class="row-fluid">
-            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-            <div class="span2">
-                <c:choose>
-                    <c:when test="${empty picture}">
-                        <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                             alt="" border="0"/>
-                    </c:when>
-                    <c:otherwise>
-                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
-                             alt="${fn:escapeXml(person)}"/>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="span10">
-                <h1>
-                    <fmt:message key='jnt_user.j_about'/>
-                </h1>
-                <div class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
-                    ${user.properties['j:about'].string}
+    <div class="row-fluid">
+        <div class="span2"></div>
+        <div class="span8 alert alert-info">
+            <div class="row-fluid">
+                <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                <div class="span2">
+                    <c:choose>
+                        <c:when test="${empty picture}">
+                            <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                 alt="" border="0"/>
+                        </c:when>
+                        <c:otherwise>
+                            <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                 alt="${fn:escapeXml(person)}"/>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
-                <br />
-                <button class="btn btn-small btn-primary btnMoreAbout">
-                    <fmt:message key='mySettings.readMore'/>
-                </button>
-                <button class="btn btn-small btn-primary hide btnLessAbout">
-                    <fmt:message key='mySettings.readLess'/>
-                </button>
+                <div class="span10">
+                    <h1>
+                        <fmt:message key='jnt_user.j_about'/>
+                    </h1>
+                    <div class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
+                        ${user.properties['j:about'].string}
+                    </div>
+                    <br />
+                    <button class="btn btn-small btn-primary btnMoreAbout">
+                        <fmt:message key='mySettings.readMore'/>
+                    </button>
+                    <button class="btn btn-small btn-primary hide btnLessAbout">
+                        <fmt:message key='mySettings.readLess'/>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+        <div class="span2"></div>
+   </div>
 </c:if>
 <div class="row-fluid">
     <div class="span2">
@@ -215,12 +219,13 @@
                             <div class="pull-left">
                                 <strong><fmt:message key='jnt_user.j_address'/>&nbsp;:</strong>&nbsp;
                                 <div class="pull-right">
+
                                     <c:if test="${fn:contains(publicPropertiesAsString, 'j:address')}">
                                         <c:if test="${(not empty user.properties['j:address'].string)}">
                                             ${user.properties['j:address'].string}
                                         </c:if>
                                     </c:if>
-                                    <br />
+
                                     <c:if test="${fn:contains(publicPropertiesAsString, 'j:zipCode')}">
                                         <c:if test="${(not empty user.properties['j:zipCode'].string)}">
                                             ${user.properties['j:zipCode'].string}

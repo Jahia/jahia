@@ -66,35 +66,47 @@ public class ChangePasswordAction extends Action {
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String passwd = req.getParameter("password").trim();
+
         JSONObject json = new JSONObject();
         if (!resource.getNode().hasPermission("jcr:write_default") || !resource.getNode().isNodeType("jnt:user")) {
             return new ActionResult(HttpServletResponse.SC_FORBIDDEN, null, null);
         }
         if ("".equals(passwd)) {
-            String userMessage = Messages.get("resources.JahiaServerSettings","serverSettings.user.errors.password.mandatory", renderContext.getUILocale());
+            String userMessage = Messages.get("resources.userDashboard", "mySettings.errors.password.mandatory", renderContext.getUILocale());
             json.put("errorMessage", userMessage);
+            json.put("focusField","password");
         } else {
             String passwdConfirm = req.getParameter("passwordconfirm").trim();
             if (!passwdConfirm.equals(passwd)) {
-                String userMessage = Messages.get("resources.JahiaServerSettings","serverSettings.user.errors.password.not.matching", renderContext.getUILocale());
+                String userMessage = Messages.get("resources.userDashboard","mySettings.errors.password.not.matching", renderContext.getUILocale());
                 json.put("errorMessage",userMessage);
+                json.put("focusField","password");
             } else {
-                JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
-                JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(resource.getNode().getName());
+                String oldPassword = req.getParameter("oldpassword").trim();
+                if(!getCurrentUser().verifyPassword(oldPassword))
+                {
+                    String userMessage = Messages.get("resources.userDashboard","mySettings.errors.oldPassword.matching", renderContext.getUILocale());
+                    json.put("errorMessage",userMessage);
+                    json.put("focusField","oldpassword");
+                }
+                else{
+                    JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
+                    JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(resource.getNode().getName());
 
-                PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(user, passwd, true);
-                if (!evalResult.isSuccess()) {
-                    EngineMessages policyMsgs = evalResult.getEngineMessages();
-                    StringBuilder res = new StringBuilder();
-                    for (EngineMessage message : policyMsgs.getMessages()) {
-                        res.append((message.isResource() ? Messages.getInternalWithArguments(message.getKey(), renderContext.getUILocale(), message.getValues()) : message.getKey())+"\n");
+                    PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(user, passwd, true);
+                    if (!evalResult.isSuccess()) {
+                        EngineMessages policyMsgs = evalResult.getEngineMessages();
+                        StringBuilder res = new StringBuilder();
+                        for (EngineMessage message : policyMsgs.getMessages()) {
+                            res.append((message.isResource() ? Messages.getInternalWithArguments(message.getKey(), renderContext.getUILocale(), message.getValues()) : message.getKey())+"\n");
+                        }
+                        json.put("errorMessage", res.toString());
+                    } else {
+                        // change password
+                        user.setPassword(passwd);
+                        json.put("errorMessage", Messages.get("resources.userDashboard","mySettings.passwordChanged", renderContext.getUILocale()));
+                        json.put("result", "success");
                     }
-                    json.put("errorMessage", res.toString());
-                } else {
-                    // change password
-                    user.setPassword(passwd);
-                    json.put("errorMessage", Messages.get("resources.JahiaUserProfile","userProfile.passwordChanged.label", renderContext.getUILocale()));
-                    json.put("result", "success");
                 }
             }
         }

@@ -86,8 +86,9 @@ public class Dashboard extends Render {
             return false;
         }
         try {
-            if (!node.getPath().startsWith(node.getSession().getUser().getLocalPath())) {
-                logger.error("User : "+node.getSession().getUser().getUsername()+"tried to access the dashboard "+node.getPath());
+            final String nodePath = node.getPath();
+            if (!nodePath.startsWith("/modules") && !nodePath.startsWith(node.getSession().getUser().getLocalPath())) {
+                logger.error("User : "+node.getSession().getUser().getUsername()+"tried to access the dashboard "+ nodePath);
                 return false;
             }
             // the site cannot be resolved

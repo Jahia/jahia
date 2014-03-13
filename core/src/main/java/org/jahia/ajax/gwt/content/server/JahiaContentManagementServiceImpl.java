@@ -99,6 +99,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+import javax.jcr.lock.LockException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
@@ -663,6 +664,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 properties.convertException((NodeConstraintViolationException) e);
             }
             throw new GWTJahiaServiceException(e.getMessage());
+        } catch (LockException e) {
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause", getUILocale()) + e.getMessage());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed.cause", getUILocale()) + e.getMessage());
@@ -751,6 +754,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
                     removedTypes.remove(mixin.getName());
                 }
+            } catch (LockException e) {
+                throw new GWTJahiaServiceException(new StringBuilder(node.getDisplayName()).append(Messages.getInternal("could.not.be.accessed", getUILocale())).append(e.toString()).toString());
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(new StringBuilder(node.getDisplayName()).append(Messages.getInternal("could.not.be.accessed", getUILocale())).append(e.toString()).toString());

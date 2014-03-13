@@ -83,7 +83,6 @@
 <script type="text/javascript">
 var context = "${url.context}";
 var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
-/*var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";*/
 var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";
 
 function updateProperties(cssClass)
@@ -131,16 +130,6 @@ $(document).ready(function(){
          }
     });
 
-    $.each($(".presentation"),function(){
-        $(this).css('min-height', '26px');
-        var rightHeight = $('.pull-right', this).height();
-        var leftHeight = $('.pull-left', this).height();
-        var finaleHeight = Math.max(rightHeight,leftHeight);
-        $(this).css('height', finaleHeight+'px');
-    })
-    var privacyHeight = 0+$("#privacyBlock").height();
-    $("#privacy").height(privacyHeight);
-
     $(".btnMoreAbout").click(function(){
         $(".aboutMeText").css( { height:"100%",maxHeight: "500px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
         $(".btnMoreAbout").hide();
@@ -153,17 +142,15 @@ $(document).ready(function(){
         $(".btnMoreAbout").show();
     });
 
-    var height = $('#about-text-part').height();
-    height+=9;
-    $('#imageDisplay').height(height);
+
 });
 </script>
 </template:addResources>
 <div id="editDetailspage">
 
     <ul class="nav nav-tabs" id="tabView">
-        <li class="active"><a href="#private">Private view</a></li>
-        <li><a href="#public">Public view</a></li>
+        <li class="active"><a href="#private"><fmt:message key="mySettings.privateView"/></a></li>
+        <li><a href="#public"><fmt:message key="mySettings.publicView"/></a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="private">
@@ -177,7 +164,7 @@ $(document).ready(function(){
                                     <c:if test="${currentNode.properties['j:picture'].boolean}">
                                         <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
                                         <div id="image">
-                                            <div id="imageDisplay">
+                                            <div id="imageDisplay" class="row-fluid">
                                                 <c:choose>
                                                     <c:when test="${empty picture}">
                                                         <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
@@ -191,9 +178,9 @@ $(document).ready(function(){
                                                 <br/>
                                                 <div style="clear: both;"></div>
                                             </div>
-                                            <div class="row-fluid">
-                                                <button class="btn btn-primary" type="button" onclick="$('#about').hide();$('#image_form').show()">
-                                                    <fmt:message key="label.clickToEdit"/>
+                                            <div id="pictureEditButton" class="row-fluid">
+                                                <button class="btn btn-primary" type="button" onclick="$('#about').hide();$('#image_form').show();$('#image').hide()">
+                                                    <fmt:message key="mysettings.picture.edit"/>
                                                 </button>
                                             </div>
                                         </div>
@@ -226,6 +213,18 @@ $(document).ready(function(){
                                             </div>
                                         </div>
                                         <div id="image_form" class="hide span10">
+                                            <div class="image_form_preview">
+                                                <c:choose>
+                                                    <c:when test="${empty picture}">
+                                                        <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                                             alt="" border="0"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                             alt="${fn:escapeXml(person)}"/>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
                                             <div class="image_form_inputs">
                                                 <div class="control-group">
                                                     <div class="controls">
@@ -237,7 +236,7 @@ $(document).ready(function(){
                                                     <button id="DeletePictureButton" class="btn btn-warning" type="button" onclick="jahiaAPIStandardCall('${url.context}','default','${currentResource.locale}','nodes', '${user.identifier}/properties/j__picture','DELETE', '' , ajaxReloadCallback(), undefined)">
                                                         <fmt:message key="mySettings.picture.delete"/>
                                                     </button>
-                                                    <button id="imageUploadButton" class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, undefined, 'pas valide ....' )">
+                                                    <button id="imageUploadButton" class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, undefined );">
                                                         <fmt:message key="save"/>
                                                     </button>
                                                 </div>

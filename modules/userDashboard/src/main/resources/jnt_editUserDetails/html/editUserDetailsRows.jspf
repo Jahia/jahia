@@ -1,7 +1,7 @@
 <div id="namesRow">
     <h2><i class="icon-user"></i>&nbsp;<fmt:message key="mySettings.name"/></h2>
     <div class="row-fluid">
-        <div id="names" class="box-1 presentation">
+        <div id="names" class="span12 box-1">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:title'].boolean}">
                     <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
@@ -99,16 +99,16 @@
 <div id="professionRows">
     <h2><i class="icon-briefcase"></i>&nbsp;<fmt:message key="mySettings.profession"/></h2>
     <div class="row-fluid">
-        <div id="profession" class="box-1 presentation">
+        <div id="profession" class="span12 box-1">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:function'].boolean}">
                     <c:if test="${not empty user.properties['j:function'].string}">
-                        ${fn:escapeXml(user.properties['j:function'].string)}
+                        ${fn:escapeXml(user.properties['j:function'].string)}&nbsp;
                     </c:if>
                 </c:if>
                 <c:if test="${currentNode.properties['j:organization'].boolean}">
                     <c:if test="${not empty user.properties['j:organization'].string}">
-                        at ${fn:escapeXml(user.properties['j:organization'].string)}
+                        <fmt:message key="mySettings.at"/>&nbsp;${fn:escapeXml(user.properties['j:organization'].string)}
                     </c:if>
                 </c:if>
             </div>
@@ -150,7 +150,7 @@
 <div id="socialRows">
     <h2><i class="icon-globe"></i>&nbsp;<fmt:message key="mySettings.social"/></h2>
     <div class="row-fluid">
-        <div id="social" class="box-1 presentation">
+        <div id="social" class="span12 box-1">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                     <c:choose>
@@ -250,7 +250,7 @@
 <div id="AddressRows">
     <h2><i class="icon-envelope"></i>&nbsp;<fmt:message key="mySettings.address"/></h2>
     <div class="row-fluid">
-        <div id="address" class="box-1 presentation">
+        <div id="address" class="span12 box-1">
             <div class="pull-left">
                 <div class="row-fluid">
                     <div class="pull-left">
@@ -344,7 +344,7 @@
                     <label class="control-label" for="phoneNumber"><fmt:message key='jnt_user.j_phoneNumber'/></label>
                     <div class="controls">
                         <c:set var="phoneNumberValue" value="${not empty user.properties['j:phoneNumber'] ? fn:escapeXml(user.properties['j:phoneNumber'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:phoneNumber" value="${phoneNumberValue}"/>
+                        <input class="addressField phone" type="text" name="j:phoneNumber" value="${phoneNumberValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -353,7 +353,7 @@
                     <label class="control-label" for="mobileNumber"><fmt:message key='jnt_user.j_mobileNumber'/></label>
                     <div class="controls">
                         <c:set var="mobileNumberValue" value="${not empty user.properties['j:mobileNumber'] ? fn:escapeXml(user.properties['j:mobileNumber'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:mobileNumber" value="${mobileNumberValue}"/>
+                        <input class="addressField phone" type="text" name="j:mobileNumber" value="${mobileNumberValue}"/>
                     </div>
                 </div>
             </c:if>
@@ -362,15 +362,19 @@
                     <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/></label>
                     <div class="controls">
                         <c:set var="emailValue" value="${not empty user.properties['j:email'] ? fn:escapeXml(user.properties['j:email'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:email" value="${emailValue}"/>
+                        <input class="addressField email" type="text" name="j:email" value="${emailValue}"/>
                     </div>
                 </div>
             </c:if>
             <div class="form-actions">
                 <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
-                <button class="btn btn-success" type="button" onclick="updateProperties('addressField')">
+                <button class="btn btn-success" type="button" onclick="verifyAndSubmitAddress('addressField', 'phoneFormatError','emailFormatError')">
                     <fmt:message key="save"/>
                 </button>
+                <div class="addressField errorMessages">
+                    <div id="phoneFormatError" class="hide"><fmt:message key="mySettings.errors.phone.format"/></div>
+                    <div id="emailFormatError" class="hide"><fmt:message key="failure.invalid.emailAddress"/></div>
+                </div>
             </div>
         </div>
     </div>
@@ -379,7 +383,7 @@
 <div id="passwordRows">
     <h2><i class="icon-lock"></i>&nbsp;<fmt:message key="label.password"/></h2>
     <div class="row-fluid">
-        <div id="password" class="box-1 presentation">
+        <div id="password" class="span12 box-1">
             <div class="pull-left">
                 ****** &nbsp; <span id="passwordSuccess" class="hide"></span>
             </div>
@@ -425,7 +429,8 @@
                             onclick="changePassword('<fmt:message key="mySettings.errors.oldPassword.mandatory"/>','<fmt:message key="mySettings.errors.passwordConfirmation.mandatory"/>','<fmt:message key="mySettings.errors.password.mandatory"/>', '<fmt:message key="mySettings.errors.password.not.matching"/>')">
                         <fmt:message key="save"/>
                     </button>
-                    &nbsp;<span id="passwordErrors" class="hide"></span>
+                    <div class="errorMessages"><span id="passwordErrors" class="hide"></span></div>
+
                 </div>
             </c:if>
         </div>
@@ -435,7 +440,7 @@
 <div id="otherRows">
     <h2><i class="icon-info-sign"></i>&nbsp;<fmt:message key="mySettings.other"/></h2>
     <div class="row-fluid">
-        <div id="other" class="box-1 presentation">
+        <div id="other" class="span12 box-1">
             <div class="pull-left">
                 <c:if test="${currentNode.properties['j:birthDate'].boolean}">
                     <div>
@@ -515,7 +520,7 @@
         <i class="icon-eye-close"></i>&nbsp;<fmt:message key="mySettings.privacy"/>
     </h2>
     <div class="row-fluid">
-        <div id="privacy" class="box-1 presentation">
+        <div id="privacy" class="span12 box-1">
             <div id="privacyBlock" class="pull-left span9">
                 <table class="table table-hover table-striped">
                     <thead>
@@ -581,7 +586,7 @@
                             <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                         </label>
                         <div class="control">
-                            <input data-size="mini" data-on-text="public" data-off-text="private" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
+                            <input data-size="mini" data-on-text="<fmt:message key="mySettings.public"/>" data-off-text="<fmt:message key="mySettings.private"/>" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
                             &nbsp;
                             <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display: none;"></i>
                             <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display: none;"></i>

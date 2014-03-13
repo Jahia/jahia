@@ -185,6 +185,55 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
     return {"properties" : serializedObject};
 };
 
+
+function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
+{
+    $('#'+emailErrorId).hide();
+    $('#'+phoneErrorId).hide();
+
+    var phoneRegex = /^[0-9]{1,45}$/;
+    var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;;
+    var phoneSize = true;
+    var phoneForm = true;
+    var emailForm = true;
+
+    //Phone fields verification
+    $.each($("."+cssClass+".phone"), function(){
+        if($(this).val().length>0 && $(this).val().length<5)
+        {
+            phoneSize=false;
+        }
+        if($(this).val().length>0 && !phoneRegex.test($(this).val()))
+        {
+            phoneForm=false;
+        }
+    });
+    //Email fields verification
+    $.each($("."+cssClass+".email"), function(){
+        if(!emailRegex.test($(this).val()))
+        {
+            emailForm=false;
+        }
+    });
+
+    //Submiting
+    if(phoneSize && phoneForm && emailForm)
+    {
+        updateProperties(cssClass);
+    }
+    else{
+        if(!phoneSize || !phoneForm)
+        {
+            $('#'+phoneErrorId).fadeIn('slow').delay(4000).fadeOut('slow');
+        }
+        if(!emailForm)
+        {
+            $('#'+emailErrorId).fadeIn('slow').delay(4000).fadeOut('slow');
+        }
+    }
+
+
+}
 /* Edit User Detail Global variables */
 
 
@@ -330,7 +379,7 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
                     switchRow('password');
                     $('#passwordSuccess').addClass("text-success");
                     $('#passwordSuccess').html(result['errorMessage']);
-                    $('#passwordSuccess').fadeIn('slow').delay(4000).fadeOut('slow');
+                    $('#passwordSuccess').fadeIn('slow').delay(2000).fadeOut('slow');
                 }
                 else
                 {
@@ -339,7 +388,7 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
                     $("#oldPasswordField").val("");
                     $("#passwordErrors").hide();
                     $("#passwordErrors").html(result['errorMessage']);
-                    $("#passwordErrors").fadeIn('slow').delay(4000).fadeOut('slow');
+                    $("#passwordErrors").fadeIn('slow').delay(2000).fadeOut('slow');
                     $("input[name="+result['focusField']+"]").focus();
                 }
             },
@@ -353,7 +402,7 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
  * This function Upload a picture the user picked and update his user picture with it
  * The picture to upload is directly picked from the form
  */
-function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction, invalidMessage)
+function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
 {
     var uploadUrl = context+"/modules/api/default/"+locale+"/byPath"+nodePath+"/files/profile";
     //Upload the picture
@@ -423,53 +472,6 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
             });
         }
     /*}*/
-}
-
-
-/* Edit User Details User Picture */
-/**
- * @Author : Jahia(rahmed)
- * This function Upload a picture the user picked and update his user picture with it
- * The picture to upload is directly picked from the form
- */
-function updatePhoto2(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
-{
-    var uploadUrl = "/modules/api/default/"+locale+"/byPath"+nodePath+"/files/profile";
-    //Upload the picture
-    $.ajaxFileUpload({
-        url: uploadUrl,
-        secureuri:false,
-        fileElementId: imageId,
-        dataType: 'json',
-        success: function(result)
-        {
-            var fileId = result["id"];
-            //Set the uploaded Picture as the User Picture
-            jahiaAPICreateUpdateProperties(fileId,"j:picture", userId, locale, function(){
-                //Check If Jahia had the time to create the Avatar
-
-                //building the avatar URL
-                var filename = $("#"+imageId).val();
-                var imageUrl = "/files/default/users/root/files/profile/"+filename+"?t=avatar_120";
-                var avatarExists=false;
-                var ExistsCode=-1;
-                //Check 5 times if the avatar exists
-                for(var testNumber = 0 ; !avatarExists &&  testNumber<5; testNumber++)
-                {
-                    ExistsCode =urlExists(imageUrl);
-                    if(ExistsCode!=404)
-                    {
-                        //Avatar has been found refreshing the profile display ...
-                        avatarExists=true;
-                        callbackFunction(result, "picture");
-                    }
-                }
-            }, errorFunction);
-        },
-        error: function(result){
-            errorFunction(result);
-        }
-    });
 }
 
 /**

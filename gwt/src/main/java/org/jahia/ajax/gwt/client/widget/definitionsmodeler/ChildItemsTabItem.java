@@ -750,7 +750,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             StringBuilder s = new StringBuilder("__node__");
             for (Object e : (List<Object>) node.get("j:requiredPrimaryTypes")) {
                 if (e instanceof String) {
-                    s.append(e).append(" ");
+                    s.append(((String) e).replace(":","@@")).append(" ");
                 } else if (e instanceof GWTJahiaNodePropertyValue) {
                     s.append(((GWTJahiaNodePropertyValue) e).getString().replace(":","@@")).append(" ");
                 }

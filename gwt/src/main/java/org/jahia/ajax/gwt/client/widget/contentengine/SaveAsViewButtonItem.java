@@ -207,6 +207,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 popup.add(f);
                 popup.setFocusWidget(viewName);
                 popup.show();
+                viewName.setCursorPos(viewName.getValue().length());
             }
         });
         return button;
@@ -225,6 +226,8 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         List<GWTJahiaNodeProperty> properties = null;
         // this property has been added to create the engine with the right type, but has to be removed before really save it.
         engine.getProperties().remove("nodeTypeName");
+        // Remove scm status from the engine as the file is new
+        engine.getProperties().remove("scmStatus");
         if (engine.getProperties().size() > 0) {
             // Edit
             Map<String, GWTJahiaNodeProperty> engineProperties = new HashMap<String, GWTJahiaNodeProperty>(engine.getProperties());
@@ -239,6 +242,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
             // Create
             properties = changedProperties;
         }
+
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
                 MessageBox.alert(Messages.get("label.error.processingRequestError","An error occurred while processing your request"), throwable.getMessage(), null);

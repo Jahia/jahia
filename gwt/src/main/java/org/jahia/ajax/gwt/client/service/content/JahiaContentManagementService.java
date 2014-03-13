@@ -441,6 +441,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException;
 
+<<<<<<< .working
     /**
      * Request to an online service the translations for all the values of a list of properties
      *
@@ -453,6 +454,13 @@ public interface JahiaContentManagementService extends RemoteService {
      * @throws GWTJahiaServiceException
      */
     List<GWTJahiaNodeProperty> translate(List<GWTJahiaNodeProperty> properties, List<GWTJahiaItemDefinition> definitions, String srcLanguage, String destLanguage, String siteUUID) throws GWTJahiaServiceException;
+=======
+    List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException;
+
+// -------------------------- INNER CLASSES --------------------------
+>>>>>>> .merge-right.r49094
 
     /**
      * Request to an online service the translations for the values of a property

@@ -143,7 +143,26 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         if (disabled || isReadOnly()) {
             return;
         }
+<<<<<<< .working
+=======
+        if (configuration.equals("userpicker")) {
+            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_USERS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
+        } else if (configuration.equals("usergrouppicker")) {
+            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_TABS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
+        } else {
+            JahiaContentManagementService.App.getInstance()
+                    .getManagerConfiguration(configuration, new BaseAsyncCallback<GWTManagerConfiguration>() {
+                        public void onSuccess(GWTManagerConfiguration config) {
+                            PermissionsUtils.loadPermissions(config.getPermissions());
+                            final Window w = new Window();
+                            w.setLayout(new FitLayout());
+                            w.setId("JahiaGxtContentPickerWindow");
+                            final ContentPicker contentPicker =
+                                    new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
+                                            config, multiple);
+>>>>>>> .merge-right.r49094
 
+<<<<<<< .working
         if (configuration.equals("userpicker")) {
             new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_USERS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
         } else if (configuration.equals("usergrouppicker")) {
@@ -159,16 +178,34 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                             final ContentPicker contentPicker =
                                     new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
                                             config, multiple);
+=======
+                            w.setHeading(Messages.get("label." + config.getName(), config.getName()));
+                            int windowHeight=com.google.gwt.user.client.Window.getClientHeight()-10;
+>>>>>>> .merge-right.r49094
 
+<<<<<<< .working
                             w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
                             int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
-
+=======
                             w.setModal(true);
                             w.setSize(900, windowHeight);
                             w.setResizable(true);
                             w.setMaximizable(true);
                             w.setBodyBorder(false);
+>>>>>>> .merge-right.r49094
 
+<<<<<<< .working
+                            w.setModal(true);
+                            w.setSize(900, windowHeight);
+                            w.setResizable(true);
+                            w.setMaximizable(true);
+                            w.setBodyBorder(false);
+=======
+                            final ButtonBar bar = new ButtonBar();
+                            bar.setAlignment(Style.HorizontalAlignment.CENTER);
+>>>>>>> .merge-right.r49094
+
+<<<<<<< .working
                             final ButtonBar bar = new ButtonBar();
                             bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
@@ -185,6 +222,21 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                             contentPicker.setSaveButton(ok);
                             if (getValue() == null || getValue().size() == 0) {
                                 ok.setEnabled(false);
+=======
+                            final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent event) {
+                                    List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
+                                    setValue(selection);
+                                    w.hide();
+                                }
+                            });
+                            ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
+                            bar.add(ok);
+
+                            contentPicker.setSaveButton(ok);
+                            if (getValue() == null || getValue().size() ==0) {
+                                ok.setEnabled(false);
+>>>>>>> .merge-right.r49094
                             }
 
                             final Button cancel =
@@ -227,6 +279,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         super.setValue(value);
     }
 
+<<<<<<< .working
     private class UserPickerAdder implements UserGroupAdder {
         @Override
         public void addUsers(List<GWTJahiaUser> users) {
@@ -274,5 +327,50 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         }
     }
 
+=======
+    private class UserPickerAdder implements UserGroupAdder {
+        public void addUsers(List<GWTJahiaUser> users) {
+            List<String> l = new ArrayList<String>();
+            for (GWTJahiaUser user : users) {
+                l.add(user.getKey());
+            }
+            mask();
+            JahiaContentManagementService.App.getInstance().getNodesForUsers(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                @Override
+                public void onApplicationFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                    unmask();
+                }
+
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    setValue(result);
+                    unmask();
+                }
+            });
+        }
+
+        public void addGroups(List<GWTJahiaGroup> groups) {
+            List<String> l = new ArrayList<String>();
+            for (GWTJahiaGroup group : groups) {
+                l.add(group.getKey());
+            }
+            mask();
+            JahiaContentManagementService.App.getInstance().getNodesForGroups(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                @Override
+                public void onApplicationFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                    unmask();
+                }
+
+                public void onSuccess(List<GWTJahiaNode> result) {
+                    setValue(result);
+                    unmask();
+                }
+            });
+
+        }
+    }
+
+>>>>>>> .merge-right.r49094
 }
 

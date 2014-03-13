@@ -77,8 +77,12 @@ import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+<<<<<<< .working
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+=======
+import org.jahia.services.content.*;
+>>>>>>> .merge-right.r49094
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.htmlvalidator.Result;
@@ -86,8 +90,16 @@ import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+<<<<<<< .working
 import org.jahia.services.usermanager.jcr.*;
+=======
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+>>>>>>> .merge-right.r49094
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
@@ -2453,6 +2465,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         return result;
     }
+<<<<<<< .working
 
     /**
      * Initialize a map with all data needed to render the code editor.
@@ -2548,4 +2561,47 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
+=======
+
+    public List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        for (String key : userKeys) {
+            final JahiaUser principal = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(key);
+            try {
+                JCRUser jcrUser;
+                if (principal instanceof JCRUser) {
+                    jcrUser = (JCRUser) principal;
+                } else {
+                    JCRTemplate.getInstance().getProvider("/").deployExternalUser(principal);
+                    jcrUser = JCRUserManagerProvider.getInstance().lookupExternalUser(principal);
+                }
+                nodes.add(navigation.getGWTJahiaNode(jcrUser.getNode(retrieveCurrentSession()), GWTJahiaNode.DEFAULT_FIELDS));
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException("Cannot get user node " +principal,e);
+            }
+        }
+        return nodes;
+    }
+
+    public List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        for (String key : groupKeys) {
+            final JahiaGroup principal = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(key);
+            try {
+                JCRGroup jcrGroup;
+                if (principal instanceof JCRGroup) {
+                    jcrGroup = (JCRGroup) principal;
+                } else {
+                    JCRTemplate.getInstance().getProvider("/").deployExternalGroup(principal);
+                    jcrGroup = JCRGroupManagerProvider.getInstance().lookupExternalGroup(principal.getName());
+                }
+                nodes.add(navigation.getGWTJahiaNode(jcrGroup.getNode(retrieveCurrentSession()), GWTJahiaNode.DEFAULT_FIELDS));
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException("Cannot get user node " +principal,e);
+            }
+        }
+        return nodes;
+    }
+
+>>>>>>> .merge-right.r49094
 }

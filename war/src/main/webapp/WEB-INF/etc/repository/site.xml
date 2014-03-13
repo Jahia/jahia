@@ -20,8 +20,6 @@
 
     <contents jcr:primaryType="jnt:contentFolder"/>
 
-    <templates jcr:primaryType="jnt:templatesFolder"/>
-
     <tags jcr:primaryType="jnt:tagList"/>
 
 </site>

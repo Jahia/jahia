@@ -284,7 +284,8 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             NodeIterator ni = source.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder") || child.isNodeType("jnt:externalProviderExtension")) {
+                if (child.isNodeType("jnt:versionInfo") || child.isNodeType("jnt:moduleVersionFolder") || child.isNodeType("jnt:externalProviderExtension")
+                        || child.isNodeType("jnt:templatesFolder") || child.isNodeType("jnt:componentFolder") || child.isNodeType("jnt:permission")) {
                     continue;
                 }
                 JCRNodeWrapper node;
@@ -297,10 +298,6 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                     String primaryNodeTypeName = child.getPrimaryNodeTypeName();
                     node = destinationNode.addNode(childName, primaryNodeTypeName);
                     newNode = true;
-                }
-
-                if (!child.isNodeType("jnt:templatesFolder") && !child.isNodeType("jnt:componentFolder")&& !child.isNodeType("jnt:permission")) {
-                    templatesSynchro(child, node, session, references, newNode, true);
                 }
             }
         }

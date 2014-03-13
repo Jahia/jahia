@@ -359,7 +359,6 @@ public interface JahiaContentManagementServiceAsync {
 	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
 
     void zip(List<String> paths, String archiveName, AsyncCallback async);
-<<<<<<< .working
 
     /**
      * Request to an online service the translations for all the values of a list of properties
@@ -395,11 +394,4 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodesForGroups(List<String> groupKeys, AsyncCallback<List<GWTJahiaNode>> async);
 
-=======
-
-    void getNodesForUsers(List<String> userKeys, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void getNodesForGroups(List<String> groupKeys, AsyncCallback<List<GWTJahiaNode>> async);
-
->>>>>>> .merge-right.r49094
 }

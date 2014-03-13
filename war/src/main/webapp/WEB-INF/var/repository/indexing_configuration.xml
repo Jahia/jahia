@@ -31,8 +31,6 @@ The following example creates an index aggregate on jnt:file that includes the c
         <exclude-property>jcr:lockIsDeep</exclude-property>
         <exclude-property>jcr:lockOwner</exclude-property>
         <exclude-property>jcr:language</exclude-property>
-        <exclude-property>jcr:created</exclude-property>
-        <exclude-property>jcr:createdBy</exclude-property>
         <exclude-property>jcr:lastModified</exclude-property>
         <exclude-property>jcr:lastModifiedBy</exclude-property>
         <exclude-property>j:lastPublished</exclude-property>

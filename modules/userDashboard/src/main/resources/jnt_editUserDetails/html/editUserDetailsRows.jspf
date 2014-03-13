@@ -27,7 +27,7 @@
         <div id="names_form" class="hide">
             <c:if test="${currentNode.properties['j:title'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="title"><fmt:message key="mySettings.title"/></label>
+                    <label class="control-label" for="title"><fmt:message key="jnt_user.j_title"/></label>
                     <div class="controls">
                         <select name="j:title" class="namesField">
                             <option value=""></option>
@@ -49,7 +49,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:firstName'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="firstname"><fmt:message key="mySettings.firstName"/></label>
+                    <label class="control-label" for="firstname"><fmt:message key="jnt_user.j_firstName"/></label>
                     <div class="controls">
                         <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
                         <input class="namesField" name="j:firstName" type="text" value="${firstNameValue}"/>
@@ -58,7 +58,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:lastName'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="lastName"><fmt:message key="mySettings.lastName"/></label>
+                    <label class="control-label" for="lastName"><fmt:message key="jnt_user.j_lastName"/></label>
                     <div class="controls">
                         <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
                         <input class="namesField" name="j:lastName" type="text" value="${lastNameValue}"/>
@@ -67,7 +67,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:gender'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="gender"><fmt:message key="mySettings.gender"/></label>
+                    <label class="control-label" for="gender"><fmt:message key="jnt_user.j_gender"/></label>
                     <div class="controls">
                         <select name="j:gender" class="namesField" jcrtype="choiceList">
                             <option value=""></option>
@@ -121,7 +121,7 @@
         <div id="profession_form" class="hide">
             <c:if test="${currentNode.properties['j:function'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="function"><fmt:message key="mySettings.function"/></label>
+                    <label class="control-label" for="function"><fmt:message key="jnt_user.j_function"/></label>
                     <div class="controls">
                         <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
                         <input class="professionField" name="j:function" type="text" value="${functionValue}"/>
@@ -130,7 +130,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:organization'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="organization"><fmt:message key="mySettings.organization"/></label>
+                    <label class="control-label" for="organization"><fmt:message key="jnt_user.j_organization"/></label>
                     <div class="controls">
                         <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
                         <input class="professionField" name="j:organization" type="text" value="${organizationValue}"/>
@@ -162,6 +162,16 @@
                         </c:otherwise>
                     </c:choose>
                 </c:if>
+                <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
+                    <c:choose>
+                        <c:when test="${!empty user.properties['j:linkedinID'].string}">
+                            <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+                </c:if>
                 <c:if test="${currentNode.properties['j:skypeID'].boolean}">
                     <c:choose>
                         <c:when test="${!empty user.properties['j:skypeID'].string}">
@@ -182,16 +192,6 @@
                         </c:otherwise>
                     </c:choose>
                 </c:if>
-                <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
-                    <c:choose>
-                        <c:when test="${!empty user.properties['j:linkedinID'].string}">
-                            <img src="<c:url value='${url.currentModule}/img/in_logo_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                        </c:when>
-                        <c:otherwise>
-                            <img src="<c:url value='${url.currentModule}/img/in_logo_off_20_20.png' />"/>&nbsp;&nbsp;&nbsp;
-                        </c:otherwise>
-                    </c:choose>
-                </c:if>
             </div>
             <div class="pull-right">
                 <button class="btn btn-primary" type="button" onclick="switchRow('social')">
@@ -202,7 +202,7 @@
         <div id="social_form" class="hide">
             <c:if test="${currentNode.properties['j:facebookID'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="facebookID"><fmt:message key="mySettings.facebookID"/></label>
+                    <label class="control-label" for="facebookID"><fmt:message key="jnt_user.j_facebookID"/></label>
                     <div class="controls">
                         <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
                         <input class="socialField" name="j:facebookID" type="text" value="${facebookIDValue}"/>
@@ -211,7 +211,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:linkedinID'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="linkedinID"><fmt:message key="mySettings.linkedinID"/></label>
+                    <label class="control-label" for="linkedinID"><fmt:message key="jnt_user.j_linkedinID"/></label>
                     <div class="controls">
                         <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
                         <input class="socialField" name="j:linkedinID" type="text" value="${linkedinIDValue}"/>
@@ -220,7 +220,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:skypeID'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="skypeID"><fmt:message key="mySettings.skypeID"/></label>
+                    <label class="control-label" for="skypeID"><fmt:message key="jnt_user.j_skypeID"/></label>
                     <div class="controls">
                         <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
                         <input class="socialField" name="j:skypeID" type="text" value="${skypeIDValue}"/>
@@ -229,7 +229,7 @@
             </c:if>
             <c:if test="${currentNode.properties['j:twitterID'].boolean}">
                 <div class="control-group">
-                    <label class="control-label" for="twitterID"><fmt:message key="mySettings.twitterID"/></label>
+                    <label class="control-label" for="twitterID"><fmt:message key="jnt_user.j_twitterID"/></label>
                     <div class="controls">
                         <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
                         <input class="socialField" name="j:twitterID" type="text" value="${twitterIDValue}"/>
@@ -533,7 +533,7 @@
                     <tbody>
                     <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,j:about,preferredLanguage"
                                  delims="," var="key" varStatus="loopStatus">
-                        <c:set var="bundleKey" value="mySettings.${fn:replace(key,'j:','')}"/>
+                        <c:set var="bundleKey" value="jnt_user.${fn:replace(key,':','_')}"/>
                         <tr>
                             <td>
                                 <fmt:message key="${bundleKey}"/>
@@ -583,7 +583,7 @@
                     </c:if>
                     <div class="control-group">
                         <label class="control-label switch" for="publicProperties${loopStatus.index}">
-                            <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <script type="text/javascript">console.log("jnt_user.${fn:replace(key, ':','_')}");</script><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                         </label>
                         <div class="control">
                             <input data-size="mini" data-on-text="<fmt:message key='jnt_user.profile.public'/>" data-off-text="<fmt:message key='jnt_user.profile.nonpublic'/>" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />

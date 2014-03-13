@@ -552,14 +552,19 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
             ProcessInstanceLog processInstanceLog = getLogService().findProcessInstance(Long.parseLong(processId));
             List<VariableInstanceLog> nodeIdVariableInstanceLogs = getLogService().findVariableInstances(Long.parseLong(processId), "nodeId");
             String nodeId = null;
-            for (VariableInstanceLog nodeIdVariableInstanceLog : nodeIdVariableInstanceLogs) {
-                nodeId = nodeIdVariableInstanceLog.getValue();
+            if (nodeIdVariableInstanceLogs.size() > 0) {
+                nodeId = nodeIdVariableInstanceLogs.get(0).getValue();
+            }
+            String user = null;
+            List<VariableInstanceLog> userVariableInstanceLogs = getLogService().findVariableInstances(Long.parseLong(processId), "user");
+            if (userVariableInstanceLogs.size() > 0) {
+                user = userVariableInstanceLogs.get(0).getValue();
             }
             final HistoryWorkflow historyWorkflow = new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
                     getWorkflowDefinitionById(processInstanceLog.getProcessId(), uiLocale, getKieSession().getKieBase()),
                     processInstanceLog.getProcessName(),
                     getKey(),
-                    processInstanceLog.getIdentity(),
+                    user,
                     processInstanceLog.getStart(),
                     processInstanceLog.getEnd(),
                     processInstanceLog.getOutcome(),

@@ -109,7 +109,7 @@
                                          j:title="true"
                                          j:twitterID="true"
                                          j:view="bootstrap"
-                                         jcr:mixinTypes="jmix:renderable"
+                                         jcr:mixinTypes="jmix:renderable jmix:useUILocale"
                                          jcr:primaryType="jnt:editUserDetails"
                                          password="true"
                                          preferredLanguage="true"/>

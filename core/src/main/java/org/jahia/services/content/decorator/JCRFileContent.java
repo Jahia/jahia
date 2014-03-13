@@ -85,8 +85,10 @@ public class JCRFileContent {
             Node content;
             if (objectNode.hasNode(Constants.JCR_CONTENT)) {
                 content = objectNode.getNode(Constants.JCR_CONTENT);
-            } else {
+            } else if (!objectNode.isNodeType(Constants.JAHIANT_RESOURCE)) {
                 content = objectNode.addNode(Constants.JCR_CONTENT, Constants.JAHIANT_RESOURCE);
+            } else {
+                content = objectNode;
             }
             if (content.hasProperty(Constants.JCR_DATA)) {
                 content.getProperty(Constants.JCR_DATA).remove();

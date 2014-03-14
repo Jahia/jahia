@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <userDashboard j:dependencies="contentRetrieval default"
+        <userDashboard j:dependencies="contentRetrieval default jcrestapi"
                        j:installedModules="userDashboard"
                      j:modulePriority="0"
                        j:moduleType="module"
@@ -9,6 +9,40 @@
                        jcr:primaryType="jnt:module">
                 
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                    <files jcr:primaryType="jnt:folder">
+                        <user_information.png j:height="16"
+                                     j:width="16"
+                                     jcr:mixinTypes="jmix:image"
+                                     jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </user_information.png>
+                        <folder_document.png j:height="16"
+                                    j:width="16"
+                                    jcr:mixinTypes="jmix:image"
+                                    jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </folder_document.png>
+                        <text_rich_colored.png j:height="16"
+                                      j:width="16"
+                                      jcr:mixinTypes="jmix:image"
+                                      jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </text_rich_colored.png>
+                        <environment.png j:height="16"
+                                j:width="16"
+                                jcr:mixinTypes="jmix:image"
+                                jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </environment.png>
+                    </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <dashboard-modules-base j:view="dashboard"
                                         jcr:mixinTypes="jmix:useUILocale"
@@ -16,6 +50,7 @@
                     <my-files j:applyOn="jnt:user"
                               j:defaultTemplate="false"
                               j:hiddenTemplate="false"
+                         j:icon="/modules/userDashboard/templates/files/folder_document.png"
                               j:titleKey="myFiles.label"
                               jcr:mixinTypes="jmix:rbTitle"
                               jcr:primaryType="jnt:contentTemplate">
@@ -28,6 +63,7 @@
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
+                      j:icon="/modules/userDashboard/templates/files/text_rich_colored.png"
                            j:titleKey="system.myPages"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">
@@ -43,6 +79,7 @@
                     <web-projects j:applyOn="jnt:user"
                                 j:defaultTemplate="false"
                                 j:hiddenTemplate="false"
+                             j:icon="/modules/userDashboard/templates/files/environment.png"
                                 j:titleKey="system.myWebProjects"
                                 jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
@@ -92,6 +129,7 @@
                     <me j:applyOn="jnt:user"
                         j:defaultTemplate="false"
                         j:hiddenTemplate="false"
+                   j:icon="/modules/userDashboard/templates/files/user_information.png"
                         j:titleKey="system.mySettings"
                         jcr:mixinTypes="jmix:rbTitle"
                         jcr:primaryType="jnt:contentTemplate">
@@ -121,9 +159,9 @@
                 </dashboard-modules-base>
             </templates>
                 
-            <portlets jcr:primaryType="jnt:portletFolder"/>
-            <files jcr:primaryType="jnt:folder"/>
-            <contents jcr:primaryType="jnt:contentFolder"/>
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
         </userDashboard>
     </modules>
 </content>

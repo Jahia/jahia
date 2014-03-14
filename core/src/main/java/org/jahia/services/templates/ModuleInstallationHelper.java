@@ -299,6 +299,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                     node = destinationNode.addNode(childName, primaryNodeTypeName);
                     newNode = true;
                 }
+                templatesSynchro(child, node, session, references, newNode, true);
             }
         }
     }

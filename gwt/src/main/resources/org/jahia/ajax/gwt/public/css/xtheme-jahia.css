@@ -70,7 +70,40 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     background-color: #333;
     border-bottom-color: #000;
 }
-
+/*Dashboard  Mode*/
+.x-viewport-dashboardmode .x-toolbar-first{
+    background:none !important;
+    background-color : #333333 !important;
+    background : #333333 url(../images/xtheme-jahia/dashboardmode.png) no-repeat top right !important;
+    border-top:4px solid #3399ff !important;
+    padding: 6px;
+}
+.x-viewport-dashboardmode .x-toolbar-first button {
+    color:#fff !important;
+}
+.x-viewport-dashboardmode .x-toolbar-first .x-btn-menu-active .x-btn-arrow,.x-viewport-dashboardmode .x-toolbar-first .x-btn-over .x-btn-arrow,.x-viewport-dashboardmode .x-toolbar-first .x-btn-focus .x-btn-arrow, .x-viewport-dashboardmode .x-toolbar-first .x-btn-active .x-btn-arrow {
+    background-image:url(../images/xtheme-jahia/arrow2.gif) !important;
+}
+.x-viewport-dashboardmode .x-toolbar-first .x-btn-menu-active .x-btn-text  {
+    color:#3399ff !important;
+}
+.x-viewport-dashboardmode .x-toolbar-first .x-btn-tl, .x-viewport-dashboardmode .x-toolbar-first .x-btn-tr, .x-viewport-dashboardmode .x-toolbar-first .x-btn-tc, .x-viewport-dashboardmode .x-toolbar-first .x-btn-ml, .x-viewport-dashboardmode .x-toolbar-first .x-btn-mr, .x-viewport-dashboardmode .x-toolbar-first .x-btn-mc, .x-viewport-dashboardmode .x-toolbar-first .x-btn-bl, .x-viewport-dashboardmode .x-toolbar-first .x-btn-br, .x-viewport-dashboardmode .x-toolbar-first .x-btn-bc{
+    background-image:url(../images/xtheme-jahia/btn.png)!important;
+}
+.x-viewport-dashboardmode .x-toolbar-first .xtb-sep {
+    background-image:url(../images/xtheme-jahia/grid-split.gif) !important;
+}
+.x-viewport-dashboardmode .x-toolbar-first .x-btn-over button, .x-viewport-dashboardmode .x-toolbar-first .x-btn-focus button {
+    color:#3399ff !important;
+}
+.x-viewport-dashboardmode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+    background-image:url(../images/xtheme-jahia/arrow.gif);
+}
+.x-viewport-dashboardmode .x-toolbar-first .x-menu-sep{
+    height:1px;
+    background-color: #333;
+    border-bottom-color: #000;
+}
 /*Page path*/
 .x-current-page-path{
     font-family: tahoma,arial,helvetica,sans-serif !important;

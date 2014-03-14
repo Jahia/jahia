@@ -28,9 +28,10 @@
 
 <body>
 
-<div class="page-header">
+<div class="page-header clearfix">
+    <img class="pull-left" src="<c:url value='${url.currentModule}/img/digital-factory.png'/>" alt=""/>
     <%--<h1><fmt:message key="label.aboutMe"/></h1>--%>
-     <h1>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</h1>
+    <h1 class="pull-right">${fn:escapeXml(renderContext.mainResource.node.displayableName)}</h1>
 </div>
 
 <template:area path="pagecontent"/>

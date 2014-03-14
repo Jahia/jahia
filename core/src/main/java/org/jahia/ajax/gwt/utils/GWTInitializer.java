@@ -74,6 +74,21 @@ public class GWTInitializer {
     private final static Logger logger = LoggerFactory.getLogger(GWTInitializer.class);
     private static GWTResourceConfig config;
 
+    public static String generateInitializerStructureForFrame(HttpServletRequest request, HttpSession session) {
+        StringBuilder buf = new StringBuilder();
+
+        addCss(buf, request, true);
+
+        buf.append("<script type=\"text/javascript\">\n");
+        buf.append("        var onGWTFrameLoaded = [];\n");
+        buf.append("        function onGWTFrameLoad(fun) {\n");
+        buf.append("            onGWTFrameLoaded[onGWTFrameLoaded.length] = fun;\n");
+        buf.append("        }\n");
+        buf.append("\n</script>\n");
+
+        return buf.toString();
+    }
+
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         return generateInitializerStructure(request, session, null, null);
     }
@@ -101,7 +116,7 @@ public class GWTInitializer {
         }
 
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
-        addCss(buf, request);
+        addCss(buf, request, false);
 
         // creat parameters map
         Map<String, String> params = new HashMap<String, String>();
@@ -187,10 +202,6 @@ public class GWTInitializer {
         // add jahia parameter dictionary
         buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));
-        buf.append("        var onGWTFrameLoaded = [];\n");
-        buf.append("        function onGWTFrameLoad(fun) {\n");
-        buf.append("            onGWTFrameLoaded[onGWTFrameLoaded.length] = fun;\n");
-        buf.append("        }\n");
         buf.append("\n</script>\n");
         
         addJavaScript(buf, request);
@@ -212,15 +223,11 @@ public class GWTInitializer {
         return null;
     }
 
-    private static void addCss(StringBuilder buf, HttpServletRequest request) {
+    private static void addCss(StringBuilder buf, HttpServletRequest request, boolean frame) {
         String context = request.getContextPath();
 
-        RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
+        List<String> cssStyles = frame ? getConfig().getCssStylesForFrame() : getConfig().getCssStyles();
 
-        List<String> cssStyles = getConfig().getCssStyles();
-        if (renderContext != null && renderContext.getServletPath().endsWith("frame")) {
-            cssStyles = getConfig().getCssStylesForFrame();
-        }
         for (String css : cssStyles) {
             buf.append("<link type=\"text/css\" href=\"").append(context).append(css)
                     .append("\" rel=\"stylesheet\"/>\n");

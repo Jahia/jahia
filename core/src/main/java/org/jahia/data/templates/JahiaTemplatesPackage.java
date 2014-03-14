@@ -973,19 +973,19 @@ public class JahiaTemplatesPackage {
     }
 
     /**
-     * Returns the URL of the corresponding Jahia forge.
+     * Returns the URL of the corresponding Jahia Private App Store.
      * 
-     * @return the URL of the corresponding Jahia forge
+     * @return the URL of the corresponding Jahia Private App Store
      */
     public String getForgeUrl() {
         return forgeUrl;
     }
 
     /**
-     * Sets the URL of the corresponding Jahia forge.
+     * Sets the URL of the corresponding Jahia Private App Store.
      * 
      * @param forgeUrl
-     *            the URL of the corresponding Jahia forge
+     *            the URL of the corresponding Jahia Private App Store
      */
     public void setForgeUrl(String forgeUrl) {
         this.forgeUrl = forgeUrl;

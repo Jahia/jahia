@@ -116,7 +116,7 @@ public abstract class DistributionServerWindow extends Window {
         combo.setValueField("value");
         combo.setDisplayField("display");
         combo.setStore(new ListStore<GWTJahiaValueDisplayBean>());
-        combo.getStore().add(new GWTJahiaValueDisplayBean("forge", "Jahia forge"));
+        combo.getStore().add(new GWTJahiaValueDisplayBean("forge", "Jahia Private App Store"));
         combo.getStore().add(new GWTJahiaValueDisplayBean("maven", "Maven repository"));
         combo.setForceSelection(true);
         combo.setTypeAhead(false);
@@ -135,7 +135,7 @@ public abstract class DistributionServerWindow extends Window {
         String separator = tfForgeUrl.getLabelSeparator() != null ? tfForgeUrl.getLabelSeparator() : "";
         tfForgeUrl.setLabelSeparator(separator + " <img width='16px' height='16px' src='" + JahiaGWTParameters.getContextPath() +
                 "/modules/default/images/icons/information.png' title='" + Messages.get("label.releaseModule.distributionServer.url.help",
-                "Copy URL displayed on the AppStore home page").replace("'", " ") + "'/>");
+                "Copy URL displayed on the Private App Store home page").replace("'", " ") + "'/>");
         tfForgeUrl.setAllowBlank(false);
         if (info.getForgeUrl() != null) {
             tfForgeUrl.setValue(info.getForgeUrl());

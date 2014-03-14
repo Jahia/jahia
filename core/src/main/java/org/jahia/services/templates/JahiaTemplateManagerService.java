@@ -1168,10 +1168,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     /**
-     * Injects an instance of the helper class for Forge related operations.
+     * Injects an instance of the helper class for Private App Store related operations.
      * 
      * @param forgeHelper
-     *            an instance helper class for Forge related operations
+     *            an instance helper class for Private App Store related operations
      */
     public void setForgeHelper(ForgeHelper forgeHelper) {
         this.forgeHelper = forgeHelper;

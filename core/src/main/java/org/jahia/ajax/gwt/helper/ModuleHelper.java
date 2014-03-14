@@ -184,15 +184,15 @@ public class ModuleHelper {
             try {
                 JSONObject obj = new JSONObject(info);
 
-                logger.info("Retrieved Jahia Catalog information in {} ms. The URL to the catalog is: {}", System.currentTimeMillis() - timer,
+                logger.info("Retrieved Jahia Private App Store information in {} ms. The URL to the Private App Store is: {}", System.currentTimeMillis() - timer,
                         info);
 
                 PomUtils.updateDistributionManagement(pomFile, obj.getString("forgeSettingsId"), obj.getString("forgeSettingsUrl"));
             } catch (JSONException e) {
-                throw new IOException("Cannot get info from forge",e);
+                throw new IOException("Cannot get info from Private App Store",e);
             }
         } else {
-            throw new IOException("Cannot connect to forge server");
+            throw new IOException("Cannot connect to Private App Store server");
         }
         return null;
     }
@@ -221,10 +221,10 @@ public class ModuleHelper {
             info.setRepositoryUrl(repositoryUrl);
 
         }
-        if (pom.getProperties().containsKey("jahia-forge")) {
-            final String property = pom.getProperties().getProperty("jahia-forge");
+        if (pom.getProperties().containsKey("jahia-private-app-store")) {
+            final String property = pom.getProperties().getProperty("jahia-private-app-store");
             info.setForgeUrl(property);
-            String pageUrl = property + "/contents/forge-modules-repository/";
+            String pageUrl = property + "/contents/modules-repository/";
             if (StringUtils.isNotEmpty(pack.getGroupId())) {
                 pageUrl += pack.getGroupId().replace(".", "/") + "/";
             }
@@ -318,13 +318,13 @@ public class ModuleHelper {
     }
 
     /**
-     * Updates the module's pom.xml file with the specified forge server details.
+     * Updates the module's pom.xml file with the specified Private App Store server details.
      * 
      *
      * @param module
      *            the module to update distribution management information
      * @param forgeUrl
-     *            the target forge URL
+     *            the target Private App Store URL
      * @param session
      *            current JCR session
      * @param username
@@ -343,7 +343,7 @@ public class ModuleHelper {
             if (pack != null && templateManagerService.checkValidSources(pack, sources)) {
                 File pomFile = new File(sources, "pom.xml");
 
-                // fetch repository info from forge
+                // fetch repository info from Private App Store
                 updateRepositoryUrlFromForge(pomFile, forgeUrl, username, password);
 
                 PomUtils.updateForgeUrl(pomFile, forgeUrl);

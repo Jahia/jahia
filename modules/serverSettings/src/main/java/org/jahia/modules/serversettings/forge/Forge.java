@@ -96,7 +96,7 @@ public class Forge implements Serializable {
         if (!StringUtils.equals((String) context.getUserValue("actionType"),"delete")) {
             // try basic http connexion
             try {
-                GetMethod httpMethod = new GetMethod(url + "/contents/forge-modules-repository.forgeModuleList.json");
+                GetMethod httpMethod = new GetMethod(url + "/contents/modules-repository.moduleList.json");
                 httpMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((user + ":" + password).getBytes()));
                 HttpClient httpClient = new HttpClient();
                 int i = httpClient.executeMethod(httpMethod);

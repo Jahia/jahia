@@ -1596,7 +1596,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * deploy the newly created version in Jahia.
      *
      * @param moduleId    The module to be released.
-     * @param releaseInfo the release data, like next version, should we publish to Maven distribution server andJahia module catalog etc.
+     * @param releaseInfo the release data, like next version, should we publish to Maven distribution server and Jahia Private App Store etc.
      * @return a {@link RpcMap} with the filename, the download URL for the generated module and the newly deployed module node
      * @throws GWTJahiaServiceException if something happened during compile/deploy of the module
      */

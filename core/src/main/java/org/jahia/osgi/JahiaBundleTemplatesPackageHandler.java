@@ -122,7 +122,7 @@ class JahiaBundleTemplatesPackageHandler {
 
         pkg.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
 
-        pkg.setForgeUrl(getHeader(bundle, "Jahia-Forge"));
+        pkg.setForgeUrl(getHeader(bundle, "Jahia-Private-App-Store"));
 
         pkg.setGroupId(getHeader(bundle, "Jahia-GroupId"));
 

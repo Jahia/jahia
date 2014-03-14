@@ -145,7 +145,7 @@ public class ReleaseModuleWindow extends Window {
         setHeight(300);
 
         if (releaseInfo.getForgeUrl() != null) {
-            fs.setHeadingHtml(Messages.get("label.releaseModule.publishToModuleForge", "Publish to module forge"));
+            fs.setHeadingHtml(Messages.get("label.releaseModule.publishToModuleForge", "Publish to module Private App Store"));
 
             LabelField lbCatalogUrl = new LabelField();
             lbCatalogUrl.setToolTip(releaseInfo.getForgeUrl());

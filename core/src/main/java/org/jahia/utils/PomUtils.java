@@ -179,7 +179,7 @@ public final class PomUtils {
     public static void updateForgeUrl(File pomXmlFile, String forgeUrl)
             throws IOException, XmlPullParserException {
         Model model = read(pomXmlFile);
-        model.getProperties().put("jahia-forge", forgeUrl);
+        model.getProperties().put("jahia-private-app-store", forgeUrl);
         write(model, pomXmlFile);
     }
 

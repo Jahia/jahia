@@ -67,7 +67,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper class for Forge related operations.
+ * Helper class for Private App Store related operations.
  *
  * @author Sergiy Shyrkov
  */
@@ -76,14 +76,14 @@ class ForgeHelper {
     private static Logger logger = LoggerFactory.getLogger(ForgeHelper.class);
 
     /**
-     * Manage forge
+     * Manage Private App Store
      */
     String createForgeModule(ModuleReleaseInfo releaseInfo, File jar) throws IOException {
 
         String moduleUrl = null;
         final String url = releaseInfo.getForgeUrl();
         HttpClient client = new HttpClient();
-        // Get token from forge home page
+        // Get token from Private App Store home page
         GetMethod getMethod = new GetMethod(url + "/home.html");
         getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
         client.executeMethod(getMethod);
@@ -97,13 +97,13 @@ class ForgeHelper {
                 }
             }
         } else {
-            throw new IOException("Unable to get forge site information, please check your credentials");
+            throw new IOException("Unable to get Private App Store site information, please check your credentials");
         }
 
         Part[] parts = {new StringPart("form-token",token),new FilePart("file",jar) };
 
         // send module
-        PostMethod postMethod = new PostMethod(url + "/contents/forge-modules-repository.createModuleFromJar.do");
+        PostMethod postMethod = new PostMethod(url + "/contents/modules-repository.createModuleFromJar.do");
         postMethod.getParams().setSoTimeout(0);
         postMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
         postMethod.addRequestHeader("accept", "application/json");

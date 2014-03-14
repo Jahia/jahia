@@ -284,7 +284,7 @@
                                 <j:translation_en jcr:language="en"
                                        jcr:mixinTypes="mix:title"
                                        jcr:primaryType="jnt:translation"
-                                       jcr:title="Private AppStores"/>
+                                       jcr:title="Private App Stores"/>
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <serversettingsmanageforges jcr:primaryType="jnt:serverSettingsManageForges"/>
                                     <rich-text jcr:primaryType="jnt:bigText">

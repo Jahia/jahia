@@ -52,7 +52,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- *Handler for forge settings
+ * Handler for Private App Store settings
  */
 
 public class ForgesSettingsHandler implements Serializable {

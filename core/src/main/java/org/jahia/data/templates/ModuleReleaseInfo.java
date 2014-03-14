@@ -41,7 +41,7 @@
 package org.jahia.data.templates;
 
 /**
- * Information required to perform module release operation, including target module forge.
+ * Information required to perform module release operation, including target module Private App Store.
  * 
  * @author Sergiy Shyrkov
  */

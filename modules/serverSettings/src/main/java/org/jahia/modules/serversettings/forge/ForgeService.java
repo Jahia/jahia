@@ -197,7 +197,7 @@ public class ForgeService {
     public List<Module> loadModules() {
         modules.clear();
         for (Forge forge : forges) {
-            String url = forge.getUrl() + "/contents/forge-modules-repository.forgeModuleList.json";
+            String url = forge.getUrl() + "/contents/modules-repository.moduleList.json";
             Map<String, String> headers = new HashMap<String, String>();
             if (!StringUtils.isEmpty(forge.getUser())) {
                 headers.put("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));

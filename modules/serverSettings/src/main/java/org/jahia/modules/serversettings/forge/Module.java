@@ -45,7 +45,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import java.io.Serializable;
 
 /**
- * Bean for Forge Module
+ * Bean for Private App Store Module
  */
 public class Module implements Serializable, Comparable<Module> {
 

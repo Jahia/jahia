@@ -26,7 +26,7 @@
                 </form>
             </c:if>
             <c:if test="${not isStudio && not empty currentModule.forgeUrl}">
-            <button class="btn btn-info" type="submit" onclick="window.location.assign('${currentModule.forgeUrl}/contents/modules-repository/${currentModule.id}.html')">
+            <button class="btn btn-info" type="submit" onclick="window.location.assign('${currentModule.forgeUrl}/contents/modules-repository/${fn:replace(currentModule.groupId, '.', '/')}/${currentModule.id}.html')">
                 <i class="icon-zoom-in icon-white"></i>
                 &nbsp;${i18nModuleForge}
             </button>

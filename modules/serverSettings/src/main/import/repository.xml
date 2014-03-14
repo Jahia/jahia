@@ -3,10 +3,13 @@
     <modules jcr:primaryType="jnt:modules">
         <serverSettings j:dependencies="default tabularList"
                       j:installedModules="serverSettings"
+                      j:modulePriority="0"
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <serveradmin jcr:primaryType="jnt:folder">
@@ -198,6 +201,7 @@
                         <aboutJahia j:applyOn="jnt:globalSettings"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
+                           j:icon="/modules/serverSettings/templates/files/serveradmin/aboutJahia.png"
                            j:requiredPermissionNames="adminAbout"
                            j:titleKey="serverSettings.aboutJahia"
                            jcr:mixinTypes="jmix:rbTitle"
@@ -288,9 +292,7 @@
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <serversettingsmanageforges jcr:primaryType="jnt:serverSettingsManageForges"/>
                                     <rich-text jcr:primaryType="jnt:bigText">
-                                        <j:translation_fr jcr:language="fr"
-                                             jcr:primaryType="jnt:translation"
-                                             text=""/>
+                                        <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text=""/>
                                     </rich-text>
                                 </pagecontent>
                             </forges>
@@ -408,9 +410,7 @@
                 </server-settings-base>
             </templates>
                 
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
         </serverSettings>
     </modules>
 </content>

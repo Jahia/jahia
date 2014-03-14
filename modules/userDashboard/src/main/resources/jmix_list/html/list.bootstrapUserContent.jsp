@@ -75,27 +75,27 @@
             <thead>
             <tr>
                 <th>
-                    <img src="/icons/siteManager.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='label.site'/>
                 </th>
                 <th>
-                    <img src="/icons/copy.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='jnt_imageReferenceLink.j_linknode'/>
                 </th>
                 <th>
-                    <img src="/icons/editMode.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='mix_created'/>
                 </th>
                 <th>
-                    <img src="/icons/contribute.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='jmix_contentmetadata.j_lastModificationDate'/>
                 </th>
                 <th>
-                    <img src="/icons/publicationAction.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/publicationAction.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='jmix_contentmetadata.j_lastPublishingDate'/>
                 </th>

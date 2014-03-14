@@ -30,4 +30,6 @@
  - age (boolean)
  - password (boolean)
 
- [jnt:userContentRetrieval] > jnt:contentRetrieval, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+[jnt:userContentRetrieval] > jnt:contentRetrieval, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
+
+[jnt:myFilesDashboard] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

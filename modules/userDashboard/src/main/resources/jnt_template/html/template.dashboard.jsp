@@ -30,8 +30,16 @@
 
 <div class="page-header clearfix">
     <img class="pull-left" src="<c:url value='${url.currentModule}/img/digital-factory.png'/>" alt=""/>
-    <%--<h1><fmt:message key="label.aboutMe"/></h1>--%>
-    <h1 class="pull-right">${fn:escapeXml(renderContext.mainResource.node.displayableName)}</h1>
+    <jcr:node path="${currentNode.path}/${renderContext.mainResource.resolvedTemplate}" var="contentTemplateNode"/>
+    <%--@elvariable id="contentTemplateNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+    <c:choose>
+        <c:when test="${jcr:isNodeType(contentTemplateNode, 'jmix:rbTitle')}">
+            <h1 class="pull-right"><fmt:message key="${contentTemplateNode.properties['j:titleKey'].string}"/></h1>
+        </c:when>
+        <c:otherwise>
+            <h1 class="pull-right"><fmt:message key="${contentTemplateNode.displayableName}"/></h1>
+        </c:otherwise>
+    </c:choose>
 </div>
 
 <template:area path="pagecontent"/>

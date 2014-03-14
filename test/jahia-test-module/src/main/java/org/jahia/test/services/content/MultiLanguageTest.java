@@ -117,6 +117,8 @@ public class MultiLanguageTest extends JahiaTestCase {
 
         // now let's test without mix language active.
         JCRSessionFactory.getInstance().closeAllSessions();
+        site = ((JCRSiteNode)JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath()));
+
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSystemSitePermissions(site);
 
@@ -138,6 +140,8 @@ public class MultiLanguageTest extends JahiaTestCase {
 
         // now let's test without mix language active.
         JCRSessionFactory.getInstance().closeAllSessions();
+        site = ((JCRSiteNode)JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath()));
+
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSystemSitePermissions(site);
 

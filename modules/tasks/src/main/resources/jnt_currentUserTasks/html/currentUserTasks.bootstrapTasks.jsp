@@ -19,13 +19,11 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="task" type="org.jahia.services.workflow.WorkflowTask"--%>
-<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery-ui.min.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
 
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
-<template:addResources type="javascript" resources="jquery-ui.min.js"/>
-<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 
 <template:addResources type="javascript" resources="tasks.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>

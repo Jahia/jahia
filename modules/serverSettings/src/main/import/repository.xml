@@ -93,9 +93,9 @@
                                 <cache jcr:primaryType="jnt:folder"/>
                                 <memory jcr:primaryType="jnt:folder">
                                     <memory.png j:height="16"
-                                    j:width="16"
-                                    jcr:mixinTypes="jmix:image"
-                                    jcr:primaryType="jnt:file">
+                                      j:width="16"
+                                      jcr:mixinTypes="jmix:image"
+                                      jcr:primaryType="jnt:file">
                                         <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                         <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                         <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>

@@ -78,6 +78,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -89,7 +90,7 @@ import java.util.regex.Pattern;
  */
 public class JBPMMailProducer {
     private transient static Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
-    private static final Pattern ACTORS_PATTERN = Pattern.compile("[,;\\s]+");
+    private static final Pattern ACTORS_PATTERN = Pattern.compile("(assignableFor\\([^)]+\\))|([^,;\\s]+)");
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
@@ -268,9 +269,13 @@ public class JBPMMailProducer {
     }
 
     private String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws Exception {
-        String[] actors = ACTORS_PATTERN.split(evaluateExpression(workItem, recipients, session));
-        if (actors.length == 0) throw new Exception("recipient list is empty: " + recipients);
-        return actors;
+        List<String> actors = new ArrayList<String>();
+
+        Matcher m = ACTORS_PATTERN.matcher(recipients);
+        while (m.find()) {
+            actors.add(m.group());
+        }
+        return actors.toArray(new String[actors.size()]);
     }
 
     /**

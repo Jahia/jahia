@@ -100,7 +100,7 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
-        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
+        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:false}"/>
         <property name="excludesFromAggregateAndCompress" ref="excludesFromAggregateAndCompress"/>
     </bean>
     <util:list id="excludesFromAggregateAndCompress">
@@ -295,16 +295,13 @@
                 <value>/gwt/resources/css/gwt-1.4.min.css</value>
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.css</value>
                 <value>/modules/assets/css/codemirror/theme/elegant.css</value>
-            </list>
-            <!-- comment out gwt.css and uncomment the following CSS if you are in dev mode and are working on modifying those CSSs
-            <list>
                 <value>/gwt/resources/css/jahia-ext-all.css</value>
                 <value>/gwt/resources/css/xtheme-jahia.css</value>
                 <value>/gwt/resources/css/edit.css</value>
                 <value>/gwt/resources/css/jahia-gwt-engines.css</value>
                 <value>/gwt/resources/css/diff.css</value>
             </list>
-            -->
+
         </property>
         <property name="cssStylesForFrame">
             <list>

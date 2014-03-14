@@ -3,17 +3,32 @@
     <modules jcr:primaryType="jnt:modules">
         <tasks j:dependencies="default userDashboard"
                j:installedModules="tasks"
+             j:modulePriority="0"
                j:moduleType="module"
                j:title="Jahia User Tasks"
                jcr:primaryType="jnt:module">
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                    <files jcr:primaryType="jnt:folder">
+                        <checkbox.png j:height="16"
+                             j:width="16"
+                             jcr:mixinTypes="jmix:image"
+                             jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </checkbox.png>
+                    </files>
+                    <contents jcr:primaryType="jnt:contentFolder"/>
                 <dashboard-modules-base j:view="dashboard"
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
                     <tasks j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
+                      j:icon="/modules/tasks/templates/files/checkbox.png"
                            j:requireLoggedUser="false"
                            j:requirePrivilegedUser="true"
                            j:titleKey="system.myTasks"
@@ -43,6 +58,7 @@
                     </tasks>
                 </dashboard-modules-base>
             </templates>
+                
                 
         </tasks>
     </modules>

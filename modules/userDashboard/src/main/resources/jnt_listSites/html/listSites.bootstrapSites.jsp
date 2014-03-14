@@ -58,7 +58,7 @@
         <thead>
             <tr>
                 <th>
-                    <img src="/icons/siteManager.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/siteManager.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='label.site'/>
                 </th>
@@ -71,39 +71,39 @@
                 </c:if>
                 <c:if test="${currentNode.properties.edit.boolean}">
                     <th>
-                        <img src="/icons/editMode.png" width="16" height="16" alt=" "
+                        <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
                              role="presentation" style="position:relative;"/>
                         <fmt:message key="label.editMode"/>
                     </th>
                 </c:if>
                 <c:if test="${currentNode.properties.contribute.boolean}">
                     <th>
-                        <img src="/icons/contribute.png" width="16" height="16" alt=" "
+                        <img src="<c:url value='/icons/contribute.png'/>" width="16" height="16" alt=" "
                              role="presentation" style="position:relative;"/>
                         <fmt:message key="label.contribute"/>
                     </th>
                 </c:if>
                 <c:if test="${currentNode.properties.preview.boolean}">
                     <th>
-                        <img src="/icons/preview.png" width="16" height="16" alt=" "
+                        <img src="<c:url value='/icons/preview.png'/>" width="16" height="16" alt=" "
                              role="presentation" style="position:relative;"/>
                         <fmt:message key="label.preview"/>
                     </th>
                 </c:if>
                 <c:if test="${currentNode.properties.live.boolean}">
                     <th>
-                        <img src="/icons/live.png" width="16" height="16" alt=" "
+                        <img src="<c:url value='/icons/live.png'/>" width="16" height="16" alt=" "
                              role="presentation" style="position:relative;"/>
                         <fmt:message key="label.live.version"/>
                     </th>
                 </c:if>
                 <th>
-                    <img src="/icons/files-manager-1616.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key="label.filemanager"/>
                 </th>
                 <th>
-                    <img src="/icons/content-manager-1616.png" width="16" height="16" alt=" "
+                    <img src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
                     <fmt:message key="label.contentmanager"/>
                 </th>
@@ -122,11 +122,11 @@
     </table>
     <c:if test="${moduleMap.end > 0 and moduleMap.end > moduleMap.begin}">
         <c:if test="${currentNode.properties.export.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
-            <c:url var="stagingExportUrl" value="${renderContext.request.contextPath}/cms/export/default/sites_staging_export_${now}.zip"/>
+            <c:url var="stagingExportUrl" value="/cms/export/default/sites_staging_export_${now}.zip"/>
             <button class="btn btn-primary exportStagingButton" id="exportStagingButton" onclick="exportSite('${stagingExportUrl}',false)">
                 <fmt:message key="label.manageSite.exportStaging"/>
             </button>
-            <c:url var="exportUrl" value="${renderContext.request.contextPath}/cms/export/default/sites_export_${now}.zip"/>
+            <c:url var="exportUrl" value="/cms/export/default/sites_export_${now}.zip"/>
             <button class="btn btn-primary exportLiveButton" id="exportLiveButton" onclick="exportSite('${exportUrl}',true)">
                 <fmt:message key="label.manageSite.exportLive"/>
             </button>
@@ -176,7 +176,7 @@
         </div>
     </div>
 
-    <form  class="deleteSiteForm ajaxForm" id="deleteSiteForm" action="<c:url value='${url.base}/sites.adminDeleteSite.do'/>">
+    <form  class="deleteSiteForm ajaxForm" id="deleteSiteForm" action="<c:url value='${url.basePreview}/sites.adminDeleteSite.do'/>">
     </form>
 
     <div id="nothing-selected" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal-nothing-selected" aria-hidden="true">

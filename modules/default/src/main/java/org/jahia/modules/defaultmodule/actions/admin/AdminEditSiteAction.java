@@ -52,6 +52,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Node;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -86,6 +87,7 @@ public class AdminEditSiteAction extends AdminSiteAction {
         Map<String, String> result = new HashMap<String, String>();
 
         try {
+            session.checkout((Node) site);
             // check validity...
             if (siteTitle != null && (siteTitle.trim().length() > 0) && siteServerName != null &&
                     (siteServerName.trim().length() > 0)) {
@@ -122,7 +124,7 @@ public class AdminEditSiteAction extends AdminSiteAction {
                     sitesService.setDefaultSite(null);
                 }
             }
-
+            session.save();
             // redirect...
             return ActionResult.OK_JSON;
         } catch (JahiaException ex) {

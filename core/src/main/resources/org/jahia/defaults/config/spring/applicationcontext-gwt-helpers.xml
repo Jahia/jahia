@@ -40,6 +40,7 @@
         <property name="ignoreInUsages">
         	<set>
         		<value>jnt:socialActivity.*</value>
+        		<value>jnt:workflowTask.*</value>
         	</set>
         </property>
         <property name="nodeHelper">

@@ -4,9 +4,7 @@ import org.jahia.services.content.*
 
 import javax.jcr.ImportUUIDBehavior
 import javax.jcr.NodeIterator
-import javax.jcr.PropertyType
 import javax.jcr.RepositoryException
-import javax.jcr.Value
 import javax.jcr.query.Query
 import javax.jcr.query.QueryResult
 
@@ -18,7 +16,7 @@ def callback = new JCRCallback<Object>() {
             QueryResult result = jcrsession.getWorkspace().getQueryManager().createQuery("select * from [" + nodeType + "]", Query.JCR_SQL2).execute();
             NodeIterator ni = result.getNodes();
             while (ni.hasNext()) {
-                JCRNodeWrapperImpl next = (JCRNodeWrapper) ni.next();
+                JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                 try {
                     if(next.hasProperty(refPropName)) {
                         JCRPropertyWrapper property = next.getProperty(refPropName);
@@ -34,7 +32,7 @@ def callback = new JCRCallback<Object>() {
                                 log.error("Failed to get permission name", e);
                             }
                         });
-                        next.setProperty(namesPropName, names.toArray(new String[names.size()]));
+                        next.setProperty(namesPropName, (String[]) names.toArray(new String[names.size()]));
                         property.remove();
                         jcrsession.save();
                     }
@@ -53,6 +51,7 @@ def callback = new JCRCallback<Object>() {
         log.info("Changing required permissions references to names on workspace " + workspaceName + "...");
         refToNames("jmix:requiredPermissions", "j:requiredPermissions", "j:requiredPermissionNames");
         log.info("...update done.")
+        return null;
     }
 };
 JCRTemplate.getInstance().doExecuteWithSystemSession(callback);
@@ -80,7 +79,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
         JCRNodeWrapper role;
         JCRNodeWrapper subNode;
 
-        def setPermissions = {JCRNodeWrapperImpl node, List<String> permsToRemove, List<String> permsToAdd ->
+        def setPermissions = {JCRNodeWrapper node, List<String> permsToRemove, List<String> permsToAdd ->
             def permissionNames = [];
             node.getProperty("j:permissionNames").getValues().collect(permissionNames, {it.getString()});
             permissionNames.removeAll(permsToRemove);
@@ -89,7 +88,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     permissionNames.add(permName);
                 }
             }
-            node.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
+            node.setProperty("j:permissionNames", (String[]) permissionNames.toArray(new String[permissionNames.size()]));
         }
 
         if (rolesNode.hasNode("contributor")) {
@@ -176,7 +175,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             if (!nodeTypes.contains("rep:root")) {
                 nodeTypes.add("rep:root");
             }
-            role.setProperty("j:nodeTypes", nodeTypes.toArray(new String[nodeTypes.size()]));
+            role.setProperty("j:nodeTypes", (String[]) nodeTypes.toArray(new String[nodeTypes.size()]));
             role.setProperty("j:permissionNames", ["adminTemplates"].toArray(new String[1]));
             role.setProperty("j:roleGroup", "server-role");
 
@@ -206,7 +205,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             def nodeTypes = [];
             role.getProperty("j:nodeTypes").getValues().collect(nodeTypes, {it.getString()});
             nodeTypes.remove("jnt:virtualsite");
-            role.setProperty("j:nodeTypes",  nodeTypes.toArray(new String[nodeTypes.size()]));
+            role.setProperty("j:nodeTypes",  (String[]) nodeTypes.toArray(new String[nodeTypes.size()]));
             def permsToRemove = ["administrationAccess", "siteAdminLanguages", "siteAdminUrlmapping",
                     "siteAdminHtmlSettings", "adminDocumentation", "siteAdminGroups", "adminIssueTracking",
                     "siteAdminTemplates", "siteAdminWcagCompliance"];
@@ -255,19 +254,21 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallba
             JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
         jcrsession.save();
+        return null;
     }
 });
 
 JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, new JCRCallback<Object>() {
     public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
-        NodeIterator ni = jcrsession.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite]", Query.JCR_SQL2).execute().getNodes();
+        JCRNodeIteratorWrapper ni = jcrsession.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite]", Query.JCR_SQL2).execute().getNodes();
         while (ni.hasNext()) {
-            JCRNodeWrapper next = ni.next();
+            JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
             if (next.hasNode("files/contributed")) {
                 JCRNodeWrapper contributed = next.getNode("files/contributed");
                 contributed.revokeAllRoles();
             }
         }
-        jcrsession.save()
+        jcrsession.save();
+        return null;
     }
 });

@@ -121,6 +121,8 @@ public class JahiaOperandEvaluator extends OperandEvaluator {
             try {
                 if (locale != null && node.hasNode("j:translation_"+locale)) {
                     return node.getNode("j:translation_"+locale).getProperty(operand.getPropertyName());
+                } else if (node.getName().startsWith("j:translation_")) {
+                    return node.getParent().getProperty(operand.getPropertyName());
                 }
             } catch (PathNotFoundException e1) {
             }

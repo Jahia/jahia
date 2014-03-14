@@ -7,9 +7,7 @@
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <serveradmin jcr:primaryType="jnt:folder">
@@ -80,6 +78,16 @@
                                     <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                     <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                 </system_components.png>
+                                <private_x0020_app_x0020_stores jcr:primaryType="jnt:folder">
+                                    <private-app-stores.png j:height="16"
+                                                j:width="16"
+                                                jcr:mixinTypes="jmix:image"
+                                                jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </private-app-stores.png>
+                                </private_x0020_app_x0020_stores>
                             </system_x0020_components>
                             <system_x0020_health jcr:primaryType="jnt:folder">
                                 <cache jcr:primaryType="jnt:folder"/>
@@ -284,6 +292,7 @@
                             <forges j:applyOn="jnt:globalSettings"
                           j:defaultTemplate="false"
                           j:hiddenTemplate="false"
+                          j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/private_x0020_app_x0020_stores/private-app-stores.png"
                           jcr:primaryType="jnt:contentTemplate">
                                 <j:translation_en jcr:language="en"
                                        jcr:mixinTypes="mix:title"
@@ -410,7 +419,9 @@
                 </server-settings-base>
             </templates>
                 
-                
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
         </serverSettings>
     </modules>
 </content>

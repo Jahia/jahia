@@ -66,23 +66,13 @@
                         label: "<fmt:message key="label.delete"/>",
                         className: "btn-success",
                         callback: function() {
-                            $.blockUI({ css: {
-                                border: 'none',
-                                padding: '15px',
-                                backgroundColor: '#000',
-                                '-webkit-border-radius': '10px',
-                                '-moz-border-radius': '10px',
-                                opacity: .5,
-                                color: '#fff'
-                            }, message: '${i18nWaiting}' });
                             $.ajax({
-                                url: '/modules/api/default/${currentResource.locale}/nodes/' + id,
+                                url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
                                 type: 'DELETE',
                                 success: function(){
                                     window.location.reload();
                                 },
                                 error: function(result){
-                                    $.unblockUI();
                                     bootbox.alert("<fmt:message key="myFiles.DeleteError"/>&nbsp;:&nbsp;" + name + "<br />" + result.responseJSON.localizedMessage, function() {});
                                 }
                             })
@@ -113,9 +103,9 @@
                                     url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
                                     type: 'PUT',
                                     contentType: 'application/json',
-                                    data: "{\"name\":\"TOTO\",\"properties\":{\"j__nodename\":{\"value\":\"TOTO\"}}}",
+                                    data: "{\"name\":\"" + $('#renameFolder').val() + "\",\"properties\":{\"j__nodename\":{\"value\":\"" + $('#renameFolder').val() + "\"}}}",
                                     success: function(){
-                                        //window.location.reload();
+                                        window.location.reload();
                                     },
                                     error: function(result){
                                         bootbox.alert("<h1><fmt:message key="label.error"/>&nbsp;!</h1><br /><fmt:message key="myFiles.renameFolderError"/>&nbsp;:<br /><br />" + result.responseJSON.localizedMessage);
@@ -151,7 +141,7 @@
                                     url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
                                     type: 'PUT',
                                     contentType: 'application/json',
-                                    data: "{\"name\":\"" + $('#renameFile').val() + "\",\"type\":\"jnt:file\"}",
+                                    data: "{\"name\":\"" + $('#renameFile').val() + "\",\"properties\":{\"j__nodename\":{\"value\":\"" + $('#renameFile').val() + "\"}}}",
                                     success: function(){
                                         window.location.reload();
                                     },
@@ -288,15 +278,15 @@
             <i class="icon-folder-open"></i>
         </button>
     </div>
-    <%--<div class="pull-right btn-group">
+<%--    <div class="pull-right btn-group">
         <button class="btn" title="<fmt:message key="myFiles.detailledView"/>">
             <i class="icon-th-list"></i>
         </button>
-        <c:url value='${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html' var="link">
+        <c:url value="${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html" var="link">
             <c:param name="view" value="${functions:encodeUrlParam('icon')}"/>
             <c:param name="path" value="${functions:encodeUrlParam(currentNode.path)}"/>
         </c:url>
-        <a class="btn" href="<c:url value="${link}"/>" title="<fmt:message key="myFiles.iconView"/>">
+        <a class="btn" href="<c:out value='${link}' escapeXml='false'/>" title="<fmt:message key="myFiles.iconView"/>">
             <i class="icon-th"></i>
         </a>
         <a class="btn" title="<fmt:message key="myFiles.slideView"/>">
@@ -328,10 +318,10 @@
                     <c:otherwise>
                         <li>
                             <span class="divider">/</span>
-                            <c:url value='${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html' var="link">
+                            <c:url value="${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html" var="link">
                                 <c:param name="path" value="${compare}${folderUrl}"/>
                             </c:url>
-                            <a href="<c:url value="${link}"/>" style="text-decoration: none;">${folder}</a>
+                            <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">${folder}</a>
                         </li>
                     </c:otherwise>
                 </c:choose>
@@ -361,10 +351,10 @@
         <c:forEach items="${jcr:getChildrenOfType(currentNode,'jnt:folder')}" var="node">
             <tr>
                 <td>
-                    <c:url value='${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html' var="link">
+                    <c:url value="${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html" var="link">
                         <c:param name="path" value="${functions:encodeUrlParam(node.path)}"/>
                     </c:url>
-                    <a class="" href="<c:url value="${link}"/>" style="text-decoration: none;">
+                    <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">
                         <i class="icon-folder-close"></i>&nbsp;&nbsp;${node.name}
                     </a>
                 </td>
@@ -417,7 +407,7 @@
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <a class="" href="<c:url value="${url.files}${functions:escapePath(node.path)}"/>" style="text-decoration: none;" download>
+                            <a class="" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" style="text-decoration: none;" download>
                                 <span class="icon ${functions:fileIcon(node.name)}"></span>
                                 ${node.name}
                             </a>
@@ -459,8 +449,7 @@
 <%--                    <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="bbRenameFile('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
                         <i class="icon-pencil"></i>&nbsp;&nbsp;
                     </a>--%>
-                    <c:url value="${url.files}" var="link"/>
-                    <a class="pull-right" href="<c:out value="${link}${functions:escapePath(node.path)}" escapeXml="false"/>" title="<fmt:message key="label.download"/>" style="text-decoration: none;" download>
+                    <a class="pull-right" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" title="<fmt:message key="label.download"/>" style="text-decoration: none;" download>
                         <i class="icon-download-alt"></i>&nbsp;&nbsp;
                     </a>
                 </td>

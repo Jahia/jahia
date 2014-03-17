@@ -240,6 +240,7 @@ public class ImageJImageService extends AbstractImageService {
                 PlugIn p =null;
                 try {
                     p = (PlugIn) Class.forName("ij.plugin.PNG_Writer").newInstance();
+                    p.run(outputFile.getPath());
                 } catch (InstantiationException e) {
                     logger.error(e.getMessage(), e);
                 } catch (IllegalAccessException e) {
@@ -247,7 +248,6 @@ public class ImageJImageService extends AbstractImageService {
                 } catch (ClassNotFoundException e) {
                     logger.error(e.getMessage(), e);
                 }
-                p.run(outputFile.getPath());
                 WindowManager.setTempCurrentImage(tempImage);
                 return true;
             case Opener.PGM:

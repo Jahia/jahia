@@ -285,11 +285,7 @@ public class SearchHelper {
 
             JCRNodeWrapper parent = null;
             if (path == null) {
-                try {
-                    parent = jcrService.getUserFolder(session.getUser());
-                } catch (Exception e) {
-                    logger.error("there is no defined user floder.",e);
-                }
+                parent = jcrService.getUserFolder(session.getUser());
             } else {
                 parent = session.getNode(path);
             }

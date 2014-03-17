@@ -63,6 +63,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tika.io.IOUtils;
+
 /**
  * Get file format, image resolution, number of bits per pixel and optionally
  * number of images, comments and physical resolution from
@@ -286,7 +288,7 @@ public class ImageInfo {
       private InputStream in;
       private DataInput din;
       private boolean collectComments = true;
-      private List comments;
+      private List<String> comments;
       private boolean determineNumberOfImages;
       private int numberOfImages;
       private int physicalHeightDpi;
@@ -294,7 +296,7 @@ public class ImageInfo {
 
       private void addComment(String s) {
             if (comments == null) {
-                  comments = new ArrayList();
+                  comments = new ArrayList<String>();
             }
             comments.add(s);
       }
@@ -1041,10 +1043,7 @@ public class ImageInfo {
                               in.close();
                         } catch (IOException e) {
                               System.out.println(e);
-                              try {
-                                    in.close();
-                              } catch (IOException ee) {
-                              }
+                              IOUtils.closeQuietly(in);
                         }
                   }
             }

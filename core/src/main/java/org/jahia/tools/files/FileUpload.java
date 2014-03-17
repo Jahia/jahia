@@ -182,10 +182,8 @@ public class FileUpload {
                                     + FileUploadBase.MULTIPART_FORM_DATA + " request failed. "
                                     + e.getMessage(), e);
                         }
-                        if (fileItem instanceof FileItemHeadersSupport) {
-                            final FileItemHeaders fih = item.getHeaders();
-                            ((FileItemHeadersSupport) fileItem).setHeaders(fih);
-                        }
+                        final FileItemHeaders fih = item.getHeaders();
+                        fileItem.setHeaders(fih);
                         if (fileItem.getSize() > 0) {
                             files.put(fileItem.getStoreLocation().getName(), fileItem);
                             filesByFieldName.put(fileItem.getFieldName(), fileItem);

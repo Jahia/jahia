@@ -186,7 +186,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         try {
             return ScriptEngineUtils.getInstance().scriptEngine("groovy");
         } catch (ScriptException e) {
-            if (e instanceof ScriptException && e.getMessage() != null
+            if (e.getMessage() != null
                     && e.getMessage().startsWith("Script engine not found for extension")) {
                 return null;
             } else {

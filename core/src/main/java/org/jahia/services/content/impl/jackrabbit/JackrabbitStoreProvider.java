@@ -184,6 +184,22 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         logger.info("Custom node types registered for " +systemId + " in " + (System.currentTimeMillis() - timer) + " ms");
     }
 
+    protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
+        org.apache.jackrabbit.core.nodetype.NodeTypeRegistry.disableCheckForReferencesInContentException = true;
+        NodeTypeIterator nti = NodeTypeRegistry.getProviderNodeTypeRegistry().getNodeTypes(systemId);
+        List<String> names = new ArrayList<String>();
+
+        long timer = System.currentTimeMillis();
+        NodeTypeManager jntm  = ws.getNodeTypeManager();
+
+        while (nti.hasNext()) {
+            names.add(nti.nextNodeType().getName());
+        }
+
+        jntm.unregisterNodeTypes(names.toArray(new String[names.size()]));
+        logger.info("Custom node types registered for " +systemId + " in " + (System.currentTimeMillis() - timer) + " ms");
+    }
+
     protected boolean canRegisterCustomNodeTypes() {
         return true;
     }

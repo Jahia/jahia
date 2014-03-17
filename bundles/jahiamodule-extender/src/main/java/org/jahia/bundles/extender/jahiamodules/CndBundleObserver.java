@@ -103,6 +103,5 @@ public class CndBundleObserver implements BundleObserver<URL> {
 
     @Override
     public void removingEntries(Bundle bundle, List<URL> urls) {
-        NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
     }
 }

@@ -64,7 +64,7 @@ public class NodeTypesDBServiceImpl {
             session.beginTransaction();
             NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0,
                     DEFINITIONS_PROPERTIES).setReadOnly(true).uniqueResult();
-            if (nodeTypesDBProvider!=null) {
+            if (nodeTypesDBProvider != null) {
                 return nodeTypesDBProvider.getCndFile();
             }
             session.getTransaction().commit();
@@ -88,7 +88,7 @@ public class NodeTypesDBServiceImpl {
             session.beginTransaction();
             NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0,
                     DEFINITIONS_PROPERTIES).setReadOnly(false).uniqueResult();
-            if (nodeTypesDBProvider!=null) {
+            if (nodeTypesDBProvider != null) {
                 nodeTypesDBProvider.setCndFile(content);
                 session.update(nodeTypesDBProvider);
             } else {
@@ -116,7 +116,7 @@ public class NodeTypesDBServiceImpl {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
             NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0, filename).setReadOnly(true).uniqueResult();
-            if (nodeTypesDBProvider!=null) {
+            if (nodeTypesDBProvider != null) {
                 return nodeTypesDBProvider.getCndFile();
             }
             session.getTransaction().commit();
@@ -139,7 +139,7 @@ public class NodeTypesDBServiceImpl {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
             List<String> nodeTypesDBProviderList = session.createQuery("select filename from NodeTypesDBProvider").setReadOnly(true).list();
-            if (nodeTypesDBProviderList!=null) {
+            if (nodeTypesDBProviderList != null) {
                 return nodeTypesDBProviderList;
             }
             session.getTransaction().commit();
@@ -156,17 +156,19 @@ public class NodeTypesDBServiceImpl {
         return null;
     }
 
-    public void saveCndFile(String filename,String content) throws RepositoryException {
+    public void saveCndFile(String filename, String content) throws RepositoryException {
         StatelessSession session = null;
         try {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
             NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0,
                     filename).setReadOnly(false).uniqueResult();
-            if (nodeTypesDBProvider!=null) {
+            if (nodeTypesDBProvider != null && content != null) {
                 nodeTypesDBProvider.setCndFile(content);
                 session.update(nodeTypesDBProvider);
-            } else {
+            } else if (nodeTypesDBProvider != null) {
+                session.delete(nodeTypesDBProvider);
+             } else if (content != null) {
                 nodeTypesDBProvider = new NodeTypesDBProvider();
                 nodeTypesDBProvider.setFilename(filename);
                 nodeTypesDBProvider.setCndFile(content);

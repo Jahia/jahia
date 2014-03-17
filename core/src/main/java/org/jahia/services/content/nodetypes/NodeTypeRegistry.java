@@ -439,6 +439,12 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                 unregisterNodeType(n);
             }
         }
+        deploymentProperties.remove(systemId + ".version");
+        try {
+            saveProperties();
+        } catch (IOException e) {
+            logger.error("Cannot save definitions properties",e);
+        }
     }
 
     public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {

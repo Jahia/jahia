@@ -773,6 +773,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     /**
+     * Check if any content is created with definitions in this module
+     * @param module
+     * @return
+     * @throws RepositoryException
+     */
+    public boolean checkExistingContent(final String module) throws RepositoryException {
+        return moduleInstallationHelper.checkExistingContent(module);
+    }
+
+    /**
      * Returns a list of all available template packages.
      *
      * @return a list of all available template packages

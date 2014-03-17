@@ -575,9 +575,6 @@ public class TemplatePackageRegistry {
             packagesById.remove(templatePackage.getId());
             templatePackages = null;
         }
-        if (templatePackage.isLastVersion()) {
-            NodeTypeRegistry.getInstance().unregisterNodeTypes(templatePackage.getId());
-        }
 
         for (Set<JahiaTemplatesPackage> packages : modulesWithViewsPerComponents.values()) {
             packages.remove(templatePackage);

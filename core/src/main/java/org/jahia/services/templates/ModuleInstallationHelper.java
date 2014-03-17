@@ -64,11 +64,7 @@ import javax.jcr.query.QueryManager;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -263,6 +259,25 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                 }
             }
         }
+    }
+
+    public boolean checkExistingContent(final String module) throws RepositoryException {
+        final JCRCallback<Boolean> callback = new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                QueryManager manager = session.getWorkspace().getQueryManager();
+                NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(module);
+                while (nti.hasNext()) {
+                    ExtendedNodeType next = (ExtendedNodeType) nti.next();
+                    Query q = manager.createQuery("select * from ['" + next.getName() + "']", Query.JCR_SQL2);
+                    if (q.execute().getRows().hasNext()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(callback) ||
+                JCRTemplate.getInstance().doExecuteWithSystemSession("live", callback);
     }
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

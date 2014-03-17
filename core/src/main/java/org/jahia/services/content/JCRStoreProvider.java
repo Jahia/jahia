@@ -554,6 +554,57 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return needUpdate;
     }
 
+    public void undeployDefinitions(String systemId) {
+        try {
+            if (undeployDefinitions(systemId, NodeTypeRegistry.getInstance().getDeploymentProperties())) {
+                NodeTypeRegistry.getInstance().saveProperties();
+            }
+        } catch (IOException e) {
+            logger.error("Cannot save definitions timestamps", e);
+        }
+    }
+
+    public boolean undeployDefinitions(String systemId, Properties p) {
+        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
+        boolean needUpdate = false;
+        try {
+            getRepository(); // create repository instance
+            JCRSessionWrapper session = sessionFactory.getSystemSession();
+            try {
+                Workspace workspace = session.getProviderSession(this).getWorkspace();
+
+                try {
+                    unregisterCustomNodeTypes(systemId, workspace);
+                } catch (RepositoryException e) {
+                    logger.error("Cannot register nodetypes", e);
+                }
+                session.save();
+            } finally {
+                session.logout();
+            }
+        } catch (Exception e) {
+            logger.error("Repository init error", e);
+        }
+        for (Resource file : files) {
+            try {
+                String propKey = file.getURL().toString() + ".lastRegistered."+key;
+                p.remove(propKey);
+                try {
+                    nodeTypesDBService.saveCndFile(systemId+".cnd",null);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                }
+                needUpdate = true;
+                NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
+            } catch (IOException e) {
+                logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
+                needUpdate = true;
+            }
+        }
+        return needUpdate;
+    }
+
+
     public Repository getRepository() {
         if (repo == null) {
             synchronized (syncRepoInit) {
@@ -777,6 +828,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
+        return;
+    }
+
+    protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         return;
     }
 

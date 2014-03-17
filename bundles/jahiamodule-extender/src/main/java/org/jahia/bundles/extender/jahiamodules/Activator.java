@@ -53,6 +53,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -354,6 +355,15 @@ public class Activator implements BundleActivator {
                         return null;
                     }
                 });
+                if (templatePackageRegistry.getAvailableVersionsForModule(jahiaTemplatesPackage.getId()).equals(Collections.singleton(jahiaTemplatesPackage.getVersion()))) {
+                    if (SettingsBean.getInstance().isDevelopmentMode() && !templatesService.checkExistingContent(bundle.getSymbolicName())) {
+                        if (SettingsBean.getInstance().isProcessingServer()) {
+                            JCRStoreService jcrStoreService = (JCRStoreService) SpringContextSingleton.getBean("JCRStoreService");
+                            jcrStoreService.undeployDefinitions(bundle.getSymbolicName());
+                        }
+                    }
+                    NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
+                }
             } catch (RepositoryException e) {
                 logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
             }
@@ -363,7 +373,7 @@ public class Activator implements BundleActivator {
         initializedBundles.remove(bundle);
 
         deleteBundleFileIfNeeded(bundle);
-        
+
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished uninstalling Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }

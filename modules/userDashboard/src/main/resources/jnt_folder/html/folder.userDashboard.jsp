@@ -28,6 +28,8 @@
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
 <c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
+<c:set var="apiPath" value="/modules/api/jcr/v1/default/${currentResource.locale}"/>
+
 <template:addResources>
     <script type="text/javascript">
 
@@ -67,7 +69,7 @@
                         className: "btn-success",
                         callback: function() {
                             $.ajax({
-                                url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
+                                url: '${url.context}${apiPath}/nodes/' + id,
                                 type: 'DELETE',
                                 success: function(){
                                     window.location.reload();
@@ -100,10 +102,9 @@
 
                             if(!regex.test($('#renameFolder').val())){
                                 $.ajax({
-                                    url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
-                                    type: 'PUT',
+                                    url: '${url.context}${apiPath}/nodes/' + id + '/moveto/' + $('#renameFolder').val(),
+                                    type: 'POST',
                                     contentType: 'application/json',
-                                    data: "{\"name\":\"" + $('#renameFolder').val() + "\",\"properties\":{\"j__nodename\":{\"value\":\"" + $('#renameFolder').val() + "\"}}}",
                                     success: function(){
                                         window.location.reload();
                                     },
@@ -135,13 +136,17 @@
                         className: "btn-success",
                         callback: function() {
                             var regex = /[:<>[\]*|"\\]/;
+                            var fileExt = '';
+
+                            if(name.split('.').pop() != name){
+                                fileExt = '.' + name.split('.').pop();
+                            }
 
                             if(!regex.test($('#renameFile').val())){
                                 $.ajax({
-                                    url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
-                                    type: 'PUT',
+                                    url: '${url.context}${apiPath}/nodes/' + id + '/moveto/' + $('#renameFile').val() + fileExt,
+                                    type: 'POST',
                                     contentType: 'application/json',
-                                    data: "{\"name\":\"" + $('#renameFile').val() + "\",\"properties\":{\"j__nodename\":{\"value\":\"" + $('#renameFile').val() + "\"}}}",
                                     success: function(){
                                         window.location.reload();
                                     },
@@ -160,7 +165,9 @@
 
         function endAddFile(fileName, addFileIndex, status, messageError){
             index += 1;
-            fileUp.push([fileName, status, messageError]);
+            if(fileName != ''){
+                fileUp.push([fileName, status, messageError]);
+            }
             if(index == addFileIndex+1){
                 var table = "<table class='table table-hover table-bordered'><thead><tr><th><fmt:message key="label.name"/></th><th><fmt:message key="label.status"/></th><th><fmt:message key="label.message"/></th></tr></thead><tbody>";
                 for(var j = 0 ; j < fileUp.length ; j++){
@@ -192,8 +199,9 @@
                         className: "btn-success",
                         callback: function() {
                             for(var i = 0 ; i <= addFileIndex ; i++){
+                                if($('#file' + i).val() != ''){
                                     $.ajaxFileUpload({
-                                        url: '${url.context}/modules/api/default/${currentResource.locale}/byPath${functions:escapeJavaScript(currentNode.path)}',
+                                        url: '${url.context}${apiPath}/byPath${functions:escapeJavaScript(currentNode.path)}',
                                         secureuri:false,
                                         fileElementId: 'file' + i,
                                         dataType: 'json',
@@ -208,6 +216,10 @@
                                             endAddFile(result.subElements[0], addFileIndex, 'error', result.message);
                                         }
                                     });
+                                }
+                                else{
+                                    endAddFile('', addFileIndex, '', '');
+                                }
                             }
                         }
                     }
@@ -233,7 +245,7 @@
 
                             if(!regex.test($('#nameFolder').val())){
                                 $.ajax({
-                                    url: '${url.context}/modules/api/default/${currentResource.locale}/nodes/' + id,
+                                    url: '${url.context}${apiPath}/nodes/' + id,
                                     type: 'PUT',
                                     contentType: 'application/json',
                                     data: "{\"children\":{\"" + $('#nameFolder').val() + "\":{\"name\":\"" + $('#nameFolder').val() + "\",\"type\":\"jnt:folder\"}}}",
@@ -318,8 +330,9 @@
                     <c:otherwise>
                         <li>
                             <span class="divider">/</span>
+                            <c:set var="folderPath" value="${compare}${folderUrl}"/>
                             <c:url value="${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html" var="link">
-                                <c:param name="path" value="${compare}${folderUrl}"/>
+                                <c:param name="path" value="${functions:encodeUrlParam(folderPath)}"/>
                             </c:url>
                             <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">${folder}</a>
                         </li>
@@ -377,9 +390,9 @@
                         <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>" onclick="bbDelete('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;" >
                             <i class="icon-trash"></i>
                         </a>
-<%--                        <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="bbRenameFolder('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
+                        <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="bbRenameFolder('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
                             <i class="icon-pencil"></i>&nbsp;&nbsp;
-                        </a>--%>
+                        </a>
                     </c:if>
                 </td>
             </tr>
@@ -389,25 +402,25 @@
                 <td>
                     <c:choose>
                         <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'video'}">
-                            <a class="" href="#" onclick="bbShowVideo('${functions:escapeJavaScript(node.name)}','${url.files}${functions:escapeJavaScript(node.path)}', '${node.fileContent.contentType}');return false;" style="text-decoration: none;">
+                            <a href="#" onclick="bbShowVideo('${functions:escapeJavaScript(node.name)}','${url.files}${functions:escapeJavaScript(node.path)}', '${node.fileContent.contentType}');return false;" style="text-decoration: none;">
                                 <span class="icon ${functions:fileIcon(node.name)}"></span>
                                 ${node.name}
                             </a>
                         </c:when>
                         <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'audio'}">
-                            <a class="" href="#" onclick="bbShowAudio('${functions:escapeJavaScript(node.name)}','${url.files}${functions:escapeJavaScript(node.path)}', '${node.fileContent.contentType}');return false;" style="text-decoration: none;">
+                            <a href="#" onclick="bbShowAudio('${functions:escapeJavaScript(node.name)}','${url.files}${functions:escapeJavaScript(node.path)}', '${node.fileContent.contentType}');return false;" style="text-decoration: none;">
                                 <span class="icon ${functions:fileIcon(node.name)}"></span>
                                 ${node.name}
                             </a>
                         </c:when>
                         <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'image'}">
-                            <a class="" href="#" onclick="bbShowImage('${functions:escapeJavaScript(node.name)}','${url.files}${functions:escapeJavaScript(node.path)}', '${node.properties['j:width'].string}', '${node.properties['j:height'].string}');return false;" style="text-decoration: none;">
+                            <a href="#" onclick="bbShowImage('${functions:escapeJavaScript(node.name)}','${url.files}${functions:escapeJavaScript(node.path)}', '${node.properties['j:width'].string}', '${node.properties['j:height'].string}');return false;" style="text-decoration: none;">
                                 <span class="icon ${functions:fileIcon(node.name)}"></span>
                                 ${node.name}
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <a class="" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" style="text-decoration: none;" download>
+                            <a href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" style="text-decoration: none;" download>
                                 <span class="icon ${functions:fileIcon(node.name)}"></span>
                                 ${node.name}
                             </a>
@@ -446,9 +459,9 @@
                     <a class="pull-right" href="#" title="<fmt:message key="label.delete"/>" onclick="bbDelete('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
                         <i class="icon-trash"></i>
                     </a>
-<%--                    <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="bbRenameFile('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
+                    <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="bbRenameFile('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
                         <i class="icon-pencil"></i>&nbsp;&nbsp;
-                    </a>--%>
+                    </a>
                     <a class="pull-right" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" title="<fmt:message key="label.download"/>" style="text-decoration: none;" download>
                         <i class="icon-download-alt"></i>&nbsp;&nbsp;
                     </a>

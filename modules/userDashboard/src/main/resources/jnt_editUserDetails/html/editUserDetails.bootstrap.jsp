@@ -91,7 +91,7 @@
 <template:addResources>
 <script type="text/javascript">
 
-var API_URL_START = "modules/api";
+var API_URL_START = "modules/api/jcr/v1";
 var context = "${url.context}";
 var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
 var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";

@@ -359,47 +359,7 @@ public class WAIValidator {
      */
     protected Result validateImage(final Element node, Source source) {
         final Attribute src = node.getAttributes().get("src");
-        final String srcText;
-
-        if (src == null) {
-            srcText = "n/a";
-        } else {
-            srcText = src.getValue();
-        }
-
-        String width = node.getAttributeValue("width");
-        String height = node.getAttributeValue("height");
-
-        int widthValue = -1;
-        int heightValue = -1;
-        if (width != null && width.length() > 0 && height != null && height.length() > 0) {
-            try {
-                widthValue = Integer.parseInt(width);
-                heightValue = Integer.parseInt(height);
-            } catch (NumberFormatException nfe) {
-                // Ignore
-            }
-        }
-        if (widthValue == -1 || heightValue == -1) {
-            // try out style attribute
-            String style = node.getAttributeValue("style");
-            if (style != null && style.length() > 0) {
-                style = style.toLowerCase();
-                if (style.contains("height:") && style.contains("width:")) {
-                    height = StringUtils.substringBetween(style, "height:", "px");
-                    width = StringUtils.substringBetween(style, "width:", "px");
-                    if (width != null && width.length() > 0 && height != null
-                            && height.length() > 0) {
-                        try {
-                            widthValue = Integer.parseInt(width.trim());
-                            heightValue = Integer.parseInt(height.trim());
-                        } catch (NumberFormatException nfe) {
-                            // Ignore
-                        }
-                    }
-                }
-            }
-        }
+        final String srcText = src == null ? "n/a" : src.getValue();
 
         // Criteria 1.1
         final Attribute alt = node.getAttributes().get("alt");

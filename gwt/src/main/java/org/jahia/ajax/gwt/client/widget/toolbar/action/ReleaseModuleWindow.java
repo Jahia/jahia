@@ -49,9 +49,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldSetEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -91,13 +88,12 @@ public class ReleaseModuleWindow extends Window {
         for (int i = index + 1; i < newOrderedVersionNumbers.size(); i++) {
             newOrderedVersionNumbers.set(i, Integer.valueOf(0));
         }
-        String s = "";
+        StringBuilder sb = new StringBuilder();
         for (Integer n : newOrderedVersionNumbers) {
-            s += ("." + n);
+            sb.append(".").append(n);
         }
-        s = s.substring(1);
-        s += "-SNAPSHOT";
-        return s;
+        sb.append("-SNAPSHOT");
+        return sb.substring(1);
     }
 
     @Override

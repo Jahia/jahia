@@ -58,7 +58,6 @@ public class NewPackageActionItem extends NodeTypeAwareBaseActionItem {
 
     public void onComponentSelection() {
         GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
-        GWTJahiaNode newNode = null;
         if (parent != null) {
             final String nodeName = Window.prompt(Messages.get("label.newJavaPackage"), "untitled");
             if (nodeName == null || nodeName.length() == 0 || !nodeName.matches("^([a-z0-9-_]+\\.)*[a-z0-9-_]+$")) {
@@ -66,19 +65,19 @@ public class NewPackageActionItem extends NodeTypeAwareBaseActionItem {
                 return;
             }
             linker.loading("");
-            String parentPath = parent.getPath();
+            StringBuilder parentPath = new StringBuilder(parent.getPath());
             Map<String, String> parentNodesType = new HashMap<String, String>();
             List<String> packages = new ArrayList<String>(Arrays.asList(nodeName.split("\\.")));
             String newNodeName = packages.remove(packages.size() - 1);
             String nodeType = "jnt:folder";
             for (String packageName : packages) {
-                if (!parentPath.endsWith("/")) {
-                     parentPath += "/";
+                if (parentPath.length() == 0 || parentPath.charAt(parentPath.length() - 1) != '/') {
+                    parentPath.append("/");
                 }
-                parentPath += packageName;
-                parentNodesType.put(parentPath, nodeType);
+                parentPath.append(packageName);
+                parentNodesType.put(parentPath.toString(), nodeType);
             }
-            JahiaContentManagementService.App.getInstance().createNode(parentPath, newNodeName, nodeType, null, null, null, null, null, parentNodesType, false, new BaseAsyncCallback<GWTJahiaNode>() {
+            JahiaContentManagementService.App.getInstance().createNode(parentPath.toString(), newNodeName, nodeType, null, null, null, null, null, parentNodesType, false, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode node) {
                     linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                     linker.loaded();

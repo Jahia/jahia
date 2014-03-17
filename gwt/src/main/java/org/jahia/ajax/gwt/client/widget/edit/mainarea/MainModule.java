@@ -863,17 +863,17 @@ public class MainModule extends Module {
                                         LayoutContainer layoutContainer = new LayoutContainer(new CenterLayout());
                                         layoutContainer.add(icon.createImage());
                                         Set<Map.Entry<GWTJahiaNode, ModelData>> entries = visibility.entrySet();
-                                        String toolTip = "";
+                                        StringBuilder toolTip = new StringBuilder();
                                         for (Map.Entry<GWTJahiaNode, ModelData> entry : entries) {
-                                            if (!"".equals(toolTip)) {
-                                                toolTip += "<br/>";
+                                            if (toolTip.length() > 0) {
+                                                toolTip.append("<br/>");
                                             }
                                             XTemplate tpl = XTemplate.create((String) entry.getValue().get(
                                                     "xtemplate"));
-                                            toolTip += tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(
-                                                    entry.getKey()));
+                                            toolTip.append(tpl.applyTemplate(com.extjs.gxt.ui.client.util.Util.getJsObject(
+                                                    entry.getKey())));
                                         }
-                                        layoutContainer.setToolTip(toolTip);
+                                        layoutContainer.setToolTip(toolTip.toString());
                                         images.add(layoutContainer);
                                     }
                                 }

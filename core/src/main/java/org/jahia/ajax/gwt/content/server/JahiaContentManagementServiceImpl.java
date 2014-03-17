@@ -1512,7 +1512,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new GWTJahiaServiceException("Nothing to commit");
             }
         } catch (Exception e) {
-            if (e.getMessage() == null && e.getMessage().equals("Nothing to commit")) {
+            if (e.getMessage() != null && e.getMessage().equals("Nothing to commit")) {
                 logger.error("Cannot synchronize module into sources", e);
             }
             throw new GWTJahiaServiceException(e.getMessage());

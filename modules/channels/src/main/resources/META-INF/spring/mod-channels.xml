@@ -149,4 +149,63 @@
         </property>
     </bean>
 
+    <bean id="Engine.Tab.Channels" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="channels"/>
+        <property name="titleKey" value="label.engineTab.channels"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                <property name="showForTypes">
+                    <list>
+                        <value>jnt:content</value>
+                        <value>jnt:area</value>
+                        <value>jnt:page</value>
+                        <value>jnt:nodeLink</value>
+                        <value>jnt:externalLink</value>
+                    </list>
+                </property>
+
+                <property name="dataType">
+                    <list>
+                        <value>channels</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="parentEditConfiguration" ref="editmode" />
+    </bean>
+
+    <bean id="Engine.Tab.Channels.Studio" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="channels"/>
+        <property name="titleKey" value="label.engineTab.channels"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                <property name="dataType">
+                    <list>
+                        <value>channels</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <property name="parentEditConfiguration" ref="studiomode" />
+    </bean>
+
+    <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="parent" value="editmode"/>
+        <property name="key" value="channel"/>
+        <property name="icon" value="tab-channel"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ChannelsTabItem"/>
+        </property>
+    </bean>
+
+    <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="parent" value="studiomode"/>
+        <property name="key" value="channel"/>
+        <property name="icon" value="tab-channel"/>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ChannelsTabItem"/>
+        </property>
+    </bean>
+
 </beans>

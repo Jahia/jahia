@@ -136,12 +136,12 @@ public class FileHttpContext implements HttpContext {
                 URL resourceURL = null;
                 try {
                     resourceURL = new URL(sourceURL, name);
+                    if (urlExists(resourceURL)) {
+                        // @todo we could add dynamic registration here if the resource has not yet been registered in the activator
+                        return resourceURL;
+                    }                    
                 } catch (MalformedURLException e) {
                     logger.error("Error in resource URL " + name, e);
-                }
-                if (urlExists(resourceURL)) {
-                    // @todo we could add dynamic registration here if the resource has not yet been registered in the activator
-                    return resourceURL;
                 }
             }
         }

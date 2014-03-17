@@ -120,7 +120,9 @@ public class JahiaPortletUtil {
         portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_EntryPointInstance", entryPointInstance);
 
         // copy  node properties
-        copyNodeProperties(entryPointInstance, window, portalRequest, workspaceName);
+        if (entryPointInstance != null) {
+            copyNodeProperties(entryPointInstance, window, portalRequest, workspaceName);
+        }
 
         // copy shared map
         copySharedMapFromJahiaToPortlet(httpServletRequest, portalRequest, window, canModifySharedMap);

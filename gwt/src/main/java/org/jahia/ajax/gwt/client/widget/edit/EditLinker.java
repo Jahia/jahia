@@ -213,10 +213,10 @@ public class EditLinker implements Linker {
     public void setLocale(GWTJahiaLanguage locale) {
         if (locale != null) {
             this.locale = locale.getLanguage();
+            JahiaGWTParameters.setLanguage(locale);
         } else {
             this.locale = null;
         }
-        JahiaGWTParameters.setLanguage(locale);
     }
 
     /**

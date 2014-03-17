@@ -166,7 +166,7 @@ public class ImportJob extends BackgroundJob {
             throws IOException, RepositoryException, JahiaException {
         ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
         if ("application/zip".equals(contentType)) {
-            importExport.importZip(parentPath, file == null ? null : new FileSystemResource(file),
+            importExport.importZip(parentPath, new FileSystemResource(file),
                     replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
 
         } else if ("application/xml".equals(contentType) || "text/xml".equals(contentType)) {

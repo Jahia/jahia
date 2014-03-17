@@ -47,9 +47,11 @@ import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -100,13 +102,18 @@ public class JahiaOsgiBundleApplicationContextListener implements
         logEvent(event, bundleDisplayName);
 
         if (stopBundleIfContextFails && (event instanceof OsgiBundleContextFailedEvent)) {
-            logger.info("Stopping bundle {}", bundleDisplayName);
-            try {
-                bundle.stop();
-                logger.info("...bundle {} stopped", bundleDisplayName);
-            } catch (BundleException e) {
-                logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
+            if (!SettingsBean.getInstance().isDevelopmentMode()) {
+                logger.info("Stopping bundle {}", bundleDisplayName);
+                try {
+                    bundle.stop();
+                    logger.info("...bundle {} stopped", bundleDisplayName);
+                } catch (BundleException e) {
+                    logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
+                }
+            } else {
+                logger.error("Cannot start spring context for bundle {}", bundleDisplayName);
             }
+            return;
         }
 
         if (event instanceof OsgiBundleContextRefreshedEvent && BundleUtils.isJahiaModuleBundle(bundle)) {

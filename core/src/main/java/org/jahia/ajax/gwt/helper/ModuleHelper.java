@@ -40,11 +40,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,6 +59,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.notification.HttpClientService;
@@ -136,7 +133,12 @@ public class ModuleHelper {
         File sources = getSources(moduleId, session);
 
         templateManagerService.regenerateImportFile(moduleId, sources, session);
-        templateManagerService.compileAndDeploy(moduleId, sources, session);
+        JahiaTemplatesPackage jahiaTemplatesPackage = templateManagerService.compileAndDeploy(moduleId, sources, session);
+        final ModuleState state = jahiaTemplatesPackage.getState();
+        if (state.getState() == ModuleState.State.SPRING_NOT_STARTED) {
+            final Throwable details = (Throwable) state.getDetails();
+            throw new IOException(details.getMessage(), details);
+        }
     }
 
     public GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, final String siteType, String sources,

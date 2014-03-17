@@ -1568,7 +1568,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             moduleHelper.compileAndDeploy(moduleId, retrieveCurrentSession(null));
         } catch (Exception e) {
-            logger.error("Cannot update module", e);
+            logger.error("Cannot compile module", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

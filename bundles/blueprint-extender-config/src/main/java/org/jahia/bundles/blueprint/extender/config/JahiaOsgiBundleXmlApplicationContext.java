@@ -45,7 +45,6 @@ import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationCont
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 
 /**
  * OsgiBundleXmlApplicationContext that does not start until jahia module is registered.

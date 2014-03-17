@@ -45,7 +45,7 @@ package org.jahia.data.templates;
  */
 public class ModuleState {
     public static enum State {
-        ERROR_DURING_START, INSTALLED, PARSED, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_PARSED, WAITING_TO_BE_STARTED, WAITING_TO_BE_IMPORTED;
+        ERROR_DURING_START, INSTALLED, PARSED, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_PARSED, WAITING_TO_BE_STARTED, WAITING_TO_BE_IMPORTED, SPRING_NOT_STARTED;
 
         @Override
         public String toString() {
@@ -76,6 +76,8 @@ public class ModuleState {
                     return "Error during start";
                 case STARTED:
                     return "Started";
+                case SPRING_NOT_STARTED:
+                    return "Spring not started";
                 case WAITING_TO_BE_IMPORTED:
                     return "Waiting to be imported by processing server";
                 default:

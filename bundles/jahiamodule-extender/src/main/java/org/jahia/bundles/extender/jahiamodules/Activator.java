@@ -67,6 +67,7 @@ import org.osgi.framework.*;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -301,7 +302,7 @@ public class Activator implements BundleActivator {
         // Stop all modules and put them in waiting to be started state
         final String symbolicName = context.getBundle().getSymbolicName();
         for (Bundle bundle : new HashSet<Bundle>(registeredBundles.keySet())) {
-            if (getModuleState(bundle).getState() == ModuleState.State.STARTED) {
+            if (getModuleState(bundle).getState() == ModuleState.State.STARTED || getModuleState(bundle).getState() == ModuleState.State.SPRING_NOT_STARTED) {
                 stopping(bundle);
                 if (toBeStarted.get(symbolicName) == null) {
                     toBeStarted.put(symbolicName, new ArrayList<Bundle>());
@@ -605,8 +606,12 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         setModuleState(bundle, ModuleState.State.STARTED, null);
 
-        if (BundleUtils.getContextToStartForModule(bundle) != null) {
-            BundleUtils.getContextToStartForModule(bundle).refresh();
+        try {
+            if (BundleUtils.getContextToStartForModule(bundle) != null) {
+                BundleUtils.getContextToStartForModule(bundle).refresh();
+            }
+        } catch (Exception e) {
+            setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);
         }
 
         startDependantBundles(jahiaTemplatesPackage.getId());

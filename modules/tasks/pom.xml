@@ -83,6 +83,7 @@
                         <Jahia-Depends>default,userDashboard</Jahia-Depends>
                         <Export-Package>org.jahia.modules.tasks.rules</Export-Package>
                         <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
+                        <Jahia-Module-Type>system</Jahia-Module-Type>
                     </instructions>
                 </configuration>
             </plugin>

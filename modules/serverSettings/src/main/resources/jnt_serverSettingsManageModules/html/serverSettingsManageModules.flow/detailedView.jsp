@@ -235,6 +235,7 @@
     </thead>
     <tbody>
     <c:forEach items="${sites}" var="site" varStatus="status">
+        <c:if test="${site eq 'systemsite' or activeVersion.moduleType ne 'system'}">
         <tr>
             <td>${site}</td>
             <td>
@@ -296,6 +297,7 @@
                 <c:if test="${cellEmpty}">&nbsp;</c:if>
             </td>
         </tr>
+        </c:if>
     </c:forEach>
     <c:if test="${not empty usedOnce}">
         <tr>

@@ -100,6 +100,7 @@ import javax.xml.transform.TransformerException;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -469,7 +470,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (session.nodeExists(filesNodePath)) {
             filesNode = session.getNode(filesNodePath);
         }
-
+        // clean up files folder before unziping in it
+        File filesDirectory = new File(sourcesImportFolder.getPath() + "/" + importFileBasePath);
+        if (filesDirectory.exists()) {
+            FileUtils.deleteDirectory(filesDirectory);
+        }
         ZipInputStream zis = null;
         try {
             zis = new ZipInputStream(new FileInputStream(f));

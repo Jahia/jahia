@@ -58,7 +58,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.modules.serversettings.forge.ForgeService;
 import org.jahia.modules.serversettings.forge.Module;
 import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
@@ -74,9 +73,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.startlevel.BundleStartLevel;
-import org.osgi.service.startlevel.StartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,71 +156,75 @@ public class ModuleManagementFlowHandler implements Serializable {
     }
 
     private boolean installModule(File file, MessageContext context) throws IOException, BundleException {
-        Manifest manifest = new JarFile(file).getManifest();
-        String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
-        if (symbolicName == null) {
-            symbolicName = manifest.getMainAttributes().getValue("root-folder");
-        }
-        String version = manifest.getMainAttributes().getValue("Implementation-Version");
-        String groupId = manifest.getMainAttributes().getValue("Jahia-GroupId");
-        if (templateManagerService.differentModuleWithSameIdExists(symbolicName, groupId)) {
-            context.addMessage(new MessageBuilder().source("moduleFile")
-                    .code("serverSettings.manageModules.install.moduleWithSameIdExists")
-                    .arg(symbolicName)
-                    .error()
-                    .build());
-            return false;
-        }
-
-
-        Bundle bundle = BundleUtils.getBundle(symbolicName, version);
-
-        String location = file.toURI().toString();
-        if (file.getName().toLowerCase().endsWith(".war")) {
-            location = "jahiawar:"+location;
-        }
-
-        if (bundle != null) {
-            InputStream is = new URL(location).openStream();
-            try {
-                bundle.update(is);
-            } finally {
-                IOUtils.closeQuietly(is);
+        JarFile jarFile = new JarFile(file);
+        try {
+            Manifest manifest = jarFile.getManifest();
+            String symbolicName = manifest.getMainAttributes().getValue("Bundle-SymbolicName");
+            if (symbolicName == null) {
+                symbolicName = manifest.getMainAttributes().getValue("root-folder");
             }
-        } else {
-            InputStream is = new URL(location).openStream();
-            try {
-                bundle = FrameworkService.getBundleContext().installBundle(location, is);
-                bundle.adapt(BundleStartLevel.class).setStartLevel(2);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
-        }
-        List<String> deps = BundleUtils.getModule(bundle).getDepends();
-        List<String> missingDeps = new ArrayList<String>();
-        for (String dep : deps) {
-            if (templateManagerService.getTemplatePackageById(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
-                missingDeps.add(dep);
-            }
-        }
-        if (!missingDeps.isEmpty()) {
-            context.addMessage(new MessageBuilder().source("moduleFile")
-                    .code("serverSettings.manageModules.install.missingDependencies")
-                    .arg(StringUtils.join(missingDeps, ","))
-                    .error()
-                    .build());
-        } else {
-            Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
-            if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
-                bundle.start();
+            String version = manifest.getMainAttributes().getValue("Implementation-Version");
+            String groupId = manifest.getMainAttributes().getValue("Jahia-GroupId");
+            if (templateManagerService.differentModuleWithSameIdExists(symbolicName, groupId)) {
                 context.addMessage(new MessageBuilder().source("moduleFile")
-                        .code("serverSettings.manageModules.install.uploadedAndStarted")
+                        .code("serverSettings.manageModules.install.moduleWithSameIdExists")
+                        .arg(symbolicName)
+                        .error()
+                        .build());
+                return false;
+            }
+
+            Bundle bundle = BundleUtils.getBundle(symbolicName, version);
+
+            String location = file.toURI().toString();
+            if (file.getName().toLowerCase().endsWith(".war")) {
+                location = "jahiawar:"+location;
+            }
+
+            if (bundle != null) {
+                InputStream is = new URL(location).openStream();
+                try {
+                    bundle.update(is);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
+            } else {
+                InputStream is = new URL(location).openStream();
+                try {
+                    bundle = FrameworkService.getBundleContext().installBundle(location, is);
+                    bundle.adapt(BundleStartLevel.class).setStartLevel(2);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
+            }
+            List<String> deps = BundleUtils.getModule(bundle).getDepends();
+            List<String> missingDeps = new ArrayList<String>();
+            for (String dep : deps) {
+                if (templateManagerService.getTemplatePackageById(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
+                    missingDeps.add(dep);
+                }
+            }
+            if (!missingDeps.isEmpty()) {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .code("serverSettings.manageModules.install.missingDependencies")
+                        .arg(StringUtils.join(missingDeps, ","))
+                        .error()
                         .build());
             } else {
-                context.addMessage(new MessageBuilder().source("moduleFile")
-                        .code("serverSettings.manageModules.install.uploaded")
-                        .build());
+                Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
+                if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
+                    bundle.start();
+                    context.addMessage(new MessageBuilder().source("moduleFile")
+                            .code("serverSettings.manageModules.install.uploadedAndStarted")
+                            .build());
+                } else {
+                    context.addMessage(new MessageBuilder().source("moduleFile")
+                            .code("serverSettings.manageModules.install.uploaded")
+                            .build());
+                }
             }
+        } finally {
+            IOUtils.closeQuietly(jarFile);
         }
 
         return true;

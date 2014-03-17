@@ -267,6 +267,7 @@ public class JahiaPortletUtil {
                 break;
             default:
                 theValue = val.getString();
+                break;
         }
         return theValue;
     }

@@ -385,6 +385,7 @@ public class CalendarField extends TriggerField<Date> {
                     case Event.ONMOUSEWHEEL:
                     case Event.ONMOUSEDOWN:
                         collapseIf(pe);
+                        break;                        
                 }
                 return true;
             }

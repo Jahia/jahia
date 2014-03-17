@@ -200,6 +200,7 @@ public class TableView extends AbstractView {
                                     });
                                     break;
                                 case GWTJahiaNodeSelectorType.CHOICELIST:
+                                    break;                                    
                             }
                             Field f = FormFieldCreator.createField(definition, null, null, false, root.getPermissions(), null);
                             if (f != null) {

@@ -552,6 +552,7 @@ public class FormFieldCreator {
                         field.setValue(v);
                         break;
                     default:
+                        break;                        
                 }
             }
         } else {

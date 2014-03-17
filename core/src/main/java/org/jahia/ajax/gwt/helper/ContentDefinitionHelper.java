@@ -620,6 +620,7 @@ public class ContentDefinitionHelper {
             default:
                 type = GWTJahiaNodePropertyType.UNDEFINED;
                 theValue = val.getString();
+                break;
         }
 
         return new GWTJahiaNodePropertyValue(theValue, type);
@@ -665,6 +666,7 @@ public class ContentDefinitionHelper {
                 break;
             default:
                 value = new StringValue(val.getString());
+                break;
         }
 
         return value;

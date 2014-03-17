@@ -1227,6 +1227,7 @@ public class XMLWriter extends XMLFilterImpl
                         //nothing
                         System.err.println("Avoided char: "+ch[i] +" or as: "+ Integer.toString(ch[i]));
                     }
+                    break;
             }//switch
         }//for
     }

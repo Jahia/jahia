@@ -132,6 +132,7 @@ public class LinkerSelectionContext {
                     singleSelection = mainNode;
                     isSecondarySelection = true;
                 }
+                break;                
         }
 
 

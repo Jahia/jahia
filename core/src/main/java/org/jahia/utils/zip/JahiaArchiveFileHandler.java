@@ -315,9 +315,12 @@ public class JahiaArchiveFileHandler {
                             "extractFile error creating temporary file");
                 }
                 FileOutputStream outs = new FileOutputStream(tmpFile);
-                copyStream(ins, outs);
-                outs.flush();
-                outs.close();
+                try {
+                    copyStream(ins, outs);
+                    outs.flush();
+                } finally {
+                    outs.close();
+                }
             }
         } else {
             logger.error(entryName + " is null or a directory ");

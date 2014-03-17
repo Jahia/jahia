@@ -41,6 +41,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.tika.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.workflow.jbpm.custom.email.AddressTemplate;
 import org.jahia.services.workflow.jbpm.custom.email.MailTemplate;
@@ -112,7 +113,6 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
 
             for (Resource mailTemplateResource : mailTemplates) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));
                 MailTemplate mailTemplate = new MailTemplate();
                 mailTemplate.setLanguage("velocity");
                 mailTemplate.setFrom(new AddressTemplate());
@@ -123,25 +123,29 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 int currentField = -1;
                 String currentLine;
                 StringBuilder buf = new StringBuilder();
-                while ((currentLine = reader.readLine()) != null) {
-                    if (currentLine.contains(":")) {
-                        String prefix = StringUtils.substringBefore(currentLine, ":").toLowerCase();
-                        if (FIELDS.contains(prefix)) {
-                            setMailTemplateField(mailTemplate, currentField, buf);
-                            buf = new StringBuilder();
-                            currentField = FIELDS.indexOf(prefix);
-                            currentLine = StringUtils.substringAfter(currentLine, ":").trim();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(mailTemplateResource.getInputStream(), "UTF-8"));                
+                try {
+                    while ((currentLine = reader.readLine()) != null) {
+                        if (currentLine.contains(":")) {
+                            String prefix = StringUtils.substringBefore(currentLine, ":").toLowerCase();
+                            if (FIELDS.contains(prefix)) {
+                                setMailTemplateField(mailTemplate, currentField, buf);
+                                buf = new StringBuilder();
+                                currentField = FIELDS.indexOf(prefix);
+                                currentLine = StringUtils.substringAfter(currentLine, ":").trim();
+                            }
+                        } else {
+                            buf.append('\n');
                         }
-                    } else {
-                        buf.append('\n');
+                        buf.append(currentLine);
                     }
-                    buf.append(currentLine);
-                }
+                } finally {
+                    IOUtils.closeQuietly(reader);
+                }          
                 setMailTemplateField(mailTemplate, currentField, buf);
                 mailTemplateRegistry.addTemplate(StringUtils.substringBeforeLast(mailTemplateResource.getFilename(), "."), mailTemplate);
             }
         }
-
     }
 
     public static void setMailTemplateField(MailTemplate t, int currentField, StringBuilder buf) {

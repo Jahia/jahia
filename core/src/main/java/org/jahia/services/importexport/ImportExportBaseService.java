@@ -1870,11 +1870,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 if (name.endsWith(".xml")) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(zis));
-                    long i = 0;
-                    while (br.readLine() != null) {
-                        i++;
+                    try {
+                        long i = 0;
+                        while (br.readLine() != null) {
+                            i++;
+                        }
+                        sizes.put(name, i);
+                    } finally {
+                        IOUtils.closeQuietly(br);  
                     }
-                    sizes.put(name, i);
                 } else {
                     sizes.put(name, zipentry.getSize());
                 }

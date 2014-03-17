@@ -325,8 +325,11 @@ public class PropertiesManager
             else
             {
                 FileOutputStream outputStream =  new FileOutputStream( propertiesFileObject );
-                properties.store( outputStream, "This file has been written by Jahia." );
-                outputStream.close();
+                try {
+                    properties.store( outputStream, "This file has been written by Jahia." );
+                } finally {
+                    outputStream.close();
+                }
             }
         } catch (java.io.IOException ioe) {
         }

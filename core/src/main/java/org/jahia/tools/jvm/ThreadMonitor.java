@@ -357,14 +357,17 @@ public class ThreadMonitor {
     }
 
     private void dumpThreadInfoUsingJstack(StringBuilder dump) {
+        BufferedReader br = null;
         try {
             Process p = Runtime.getRuntime().exec("jstack " + JahiaContextLoaderListener.getPid());
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 dump.append(line).append("\n");
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(br);
         }
     }
 

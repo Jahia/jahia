@@ -186,7 +186,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             if (values[1]) {
                 aclsKeys.add(renderContext.getSite().getPath());
             }
-            if (values[2]) {
+            if (values[2] || "true".equals(properties.get("cache.useLoggedInState"))) {
                 aclsKeys.add(LOGGED_USER);
             }
 

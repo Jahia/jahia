@@ -43,6 +43,8 @@ package org.jahia.services.templates;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.ExternalEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -50,6 +52,8 @@ import javax.jcr.observation.EventIterator;
 
 public class JCRModuleListener  extends DefaultEventListener implements ExternalEventListener {
 
+    private static Logger logger = LoggerFactory.getLogger(JCRModuleListener.class);
+    
     private TemplatePackageRegistry packageRegistry;
 
     private Listener listener;
@@ -84,7 +88,7 @@ public class JCRModuleListener  extends DefaultEventListener implements External
                     listener.onModuleImported(p);
                 }
             } catch (Exception e1) {
-                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error("Error handling event", e1);
             }
         }
     }

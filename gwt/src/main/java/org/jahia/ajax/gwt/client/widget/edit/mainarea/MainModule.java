@@ -40,6 +40,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -63,6 +64,7 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Image;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -1008,7 +1010,7 @@ public class MainModule extends Module {
             needParseAfterLayout = true;
             layout();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.error("Error in EditFrame: " + e.getMessage(), e);
         }
     }
 
@@ -1054,7 +1056,7 @@ public class MainModule extends Module {
                     }
                 }
             } catch (Throwable e) {
-                e.printStackTrace();
+                Log.error("Error in EditFrame: " + e.getMessage(), e);                
             }
         }
 

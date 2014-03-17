@@ -137,9 +137,9 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
             }
         });
 
-        grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent baseEvent) {
-                final GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) (((GridEvent) baseEvent).getModel());
+        grid.addListener(Events.OnDoubleClick, new Listener<GridEvent<GWTJahiaNode>>() {
+            public void handleEvent(GridEvent<GWTJahiaNode> baseEvent) {
+                final GWTJahiaNode gwtJahiaNode = baseEvent.getModel();
                 if (gwtJahiaNode != null && editLinker != null) {
                     if (ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)) == null) {
                         JahiaContentManagementService.App.getInstance().getNodeType(gwtJahiaNode.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {

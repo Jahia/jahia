@@ -266,9 +266,9 @@ class SearchTabItem extends SidePanelTabItem {
 
         panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 0, 0)));
         tab.add(panel);
-        grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                final GWTJahiaNode node = (GWTJahiaNode) ((GridEvent) be).getModel();
+        grid.addListener(Events.OnDoubleClick, new Listener<GridEvent>() {
+            public void handleEvent(GridEvent be) {
+                final GWTJahiaNode node = (GWTJahiaNode) be.getModel();
                 if (ModuleHelper.getNodeType(node.getNodeTypes().get(0)) == null) {
                     JahiaContentManagementService.App.getInstance().getNodeType(node.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
                         public void onFailure(Throwable caught) {

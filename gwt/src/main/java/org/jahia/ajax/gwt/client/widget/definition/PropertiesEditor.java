@@ -321,11 +321,11 @@ public class PropertiesEditor extends FormPanel {
                             } else {
                                 fieldSet.setExpanded(false);
                             }
-                            fieldSet.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-                                public void handleEvent(ComponentEvent componentEvent) {
+                            fieldSet.addListener(Events.Collapse, new Listener<FieldSetEvent>() {
+                                public void handleEvent(FieldSetEvent componentEvent) {
                                     removedTypes.add(definition.getDeclaringNodeType());
                                     addedTypes.remove(definition.getDeclaringNodeType());
-                                    final FieldSet  fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
+                                    final FieldSet  fs = (FieldSet) componentEvent.getBoxComponent();
                                     for (Component component : fs.getItems()) {
                                         if (component instanceof PropertyAdapterField) {
                                             PropertyAdapterField adapterField = (PropertyAdapterField) component;
@@ -337,11 +337,11 @@ public class PropertiesEditor extends FormPanel {
                                     }
                                 }
                             });
-                            fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
-                                public void handleEvent(ComponentEvent componentEvent) {
+                            fieldSet.addListener(Events.Expand, new Listener<FieldSetEvent>() {
+                                public void handleEvent(FieldSetEvent componentEvent) {
                                     addedTypes.add(definition.getDeclaringNodeType());
                                     removedTypes.remove(definition.getDeclaringNodeType());
-                                    final FieldSet fs = (FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent();
+                                    final FieldSet fs = (FieldSet) componentEvent.getBoxComponent();
                                     final List<Component> w = new ArrayList<Component>();
                                     w.addAll(fs.getItems());
                                     fs.removeAll();

@@ -92,9 +92,9 @@ public class ContentTypeWindow extends Window {
         contentTypeTree.fillStore(components);
         TreeGrid treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
-        treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent baseEvent) {
-                GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) ((TreeGridEvent) baseEvent).getModel();
+        treeGrid.addListener(Events.OnDoubleClick, new Listener<TreeGridEvent<GWTJahiaNodeType>>() {
+            public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
+                GWTJahiaNodeType gwtJahiaNodeType = baseEvent.getModel();
                 if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
                     EngineLoader.showCreateEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore);
                     hide();

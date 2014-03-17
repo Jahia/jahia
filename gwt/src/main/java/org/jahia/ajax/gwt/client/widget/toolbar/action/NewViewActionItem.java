@@ -129,9 +129,9 @@ public class NewViewActionItem extends BaseActionItem  {
                             contentTypeTree.fillStore(result);
                             TreeGrid treeGrid = contentTypeTree.getTreeGrid();
                             treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
-                            treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
-                                public void handleEvent(BaseEvent baseEvent) {
-                                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel());
+                            treeGrid.addListener(Events.OnDoubleClick, new Listener<TreeGridEvent<GWTJahiaNodeType>>() {
+                                public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
+                                    GWTJahiaNodeType gwtJahiaNodeType = baseEvent.getModel();
                                     if (gwtJahiaNodeType != null && linker != null) {
                                         createEngine(fileNodeType, selectedNode, gwtJahiaNodeType.getName());
                                         popup.hide();

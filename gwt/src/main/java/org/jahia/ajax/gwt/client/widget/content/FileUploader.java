@@ -180,9 +180,9 @@ public class FileUploader extends Window {
         form.add(dest);
         form.add(unzip);
 
-        form.addListener(Events.Submit, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce){
-                String r = ((FormEvent)ce).getResultHtml();
+        form.addListener(Events.Submit, new Listener<FormEvent>() {
+            public void handleEvent(FormEvent ce){
+                String r = ce.getResultHtml();
                 if (r != null && r.contains("UPLOAD-ISSUE:")) {
                     unmask();
                     final Dialog dl = new Dialog();

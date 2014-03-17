@@ -14,7 +14,15 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
 <%!
     final String PUBLICPROPERTIES_PROPERTY = "j:publicProperties";
 
@@ -62,7 +70,8 @@
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
-<template:addResources type="javascript" resources="bootstrap-datetimepicker.${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.${renderContext.UILocale}.js"/>
+
 
 <template:addCacheDependency node="${user}"/>
 
@@ -81,37 +90,70 @@
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>
 <template:addResources>
 <script type="text/javascript">
+
+var API_URL_START = "modules/api";
 var context = "${url.context}";
 var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
 var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";
 
+var propertiesNames = {
+<c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,preferredLanguage"
+             delims="," var="key" varStatus="loopStatus">
+    <c:set var="message"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></c:set>
+     '${key}' : '${functions:escapeJavaScript(message)}'<c:if test="${!loopStatus.last}">,</c:if>
+</c:forTokens>
+};
+
+var CurrentCssClass ="";
+/**
+* @author rahmed (JAHIA)
+* This function updates a Form Row properties and verify the phones and email fields if the Row cssClass is 'AddressField'
+* @param cssClass : The Form Row css class
+ */
 function updateProperties(cssClass)
 {
-    formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,undefined);
+    CurrentCssClass=cssClass;
+    if(cssClass=="addressField")
+    {
+        if(verifyAndSubmitAddress(cssClass,'phoneFormatError','emailFormatError'))
+        {
+            var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
+        }
+    }
+    else
+    {
+        var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
+    }
 }
 
 var visibilityNumber = 0;
+if(window.userDetailsHasSwitch == undefined) {
+   var userDetailsHasSwitch = false;
+}
 
 $(document).ready(function(){
+    //Activating the Pag NavBar ('public'/'private')
     $('body').on('click','#tabView a',function (e) {
         e.preventDefault();
         $(this).tab('show');
     });
+    //Activating the Birthdate Date Picker
     $('body').on('click','#datePickerParent',function (e) {
         e.preventDefault();
         $('#birthDate').datetimepicker({
             format: 'yyyy-MM-dd',
             pickTime: false,
-            language: '${currentResource.locale}'
+            language: '${renderContext.UILocale}'
         });
     });
 
-    // Activating the checkbox buttons
+    // Activating the privacy checkboxes buttons
     $('body').on('click','#switchParent',function (e) {
         e.preventDefault();
         for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
          {
              $("#publicProperties"+currentvisibility).bootstrapSwitch();
+             $('#publicProperties'+currentvisibility).off('switchChange');
          }
          for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
          {
@@ -141,8 +183,6 @@ $(document).ready(function(){
         $(".btnLessAbout").hide();
         $(".btnMoreAbout").show();
     });
-
-
 });
 </script>
 </template:addResources>
@@ -179,7 +219,7 @@ $(document).ready(function(){
                                                 <div style="clear: both;"></div>
                                             </div>
                                             <div id="pictureEditButton" class="row-fluid">
-                                                <button class="btn btn-primary" type="button" onclick="$('#about').hide();$('#image_form').show();$('#image').hide()">
+                                                <button class="btn btn-primary" type="button" onclick="$('#about').hide();$('#about_form').hide();$('#image_form').show();$('#image').hide()">
                                                     <fmt:message key="mysettings.picture.edit"/>
                                                 </button>
                                             </div>
@@ -233,10 +273,10 @@ $(document).ready(function(){
                                                 </div>
                                                 <div class="form-actions">
                                                     <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
-                                                    <button id="DeletePictureButton" class="btn btn-warning" type="button" onclick="jahiaAPIStandardCall('${url.context}','default','${currentResource.locale}','nodes', '${user.identifier}/properties/j__picture','DELETE', '' , ajaxReloadCallback(), undefined)">
+                                                    <button id="DeletePictureButton" class="btn btn-warning" type="button" onclick="jahiaAPIStandardCall('${url.context}','default','${currentResource.locale}','nodes', '${user.identifier}/properties/j__picture','DELETE', '' , ajaxReloadCallback(), formError)">
                                                         <fmt:message key="mySettings.picture.delete"/>
                                                     </button>
-                                                    <button id="imageUploadButton" class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, undefined );">
+                                                    <button id="imageUploadButton" class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, formError );">
                                                         <fmt:message key="save"/>
                                                     </button>
                                                 </div>
@@ -254,13 +294,16 @@ $(document).ready(function(){
                                                 </script>
                                                 <br />
                                                 <div class="pull-right">
-                                                    <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')">
-                                                        <fmt:message key="cancel"/>
-                                                    </button>
-                                                    <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,undefined)">
-                                                        <fmt:message key="save"/>
-                                                    </button>
+                                                    <div>
+                                                        <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')">
+                                                            <fmt:message key="cancel"/>
+                                                        </button>
+                                                        <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError)">
+                                                            <fmt:message key="save"/>
+                                                        </button>
+                                                    </div>
                                                 </div>
+                                                <div class="aboutField errorMessage pull-right hide" style="margin-right:15px;"></div>
                                             </div>
                                         </c:if>
                                     </c:if>

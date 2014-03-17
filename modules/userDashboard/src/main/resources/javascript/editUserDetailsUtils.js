@@ -15,27 +15,27 @@
 function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method, json , callback, errorCallback)
 {
     var callResult;
-    //Post the Serialized form to Jahia
     $.ajax({
         contentType: 'application/json',
         data: json,
         dataType: 'json',
         processData: false,
         type: method,
-        url: urlContext+"/modules/api/"+workspace+"/"+locale+"/"+way+"/"+endOfURI
-    }).done(function(result){
-        //calling the callback
-        if(!(callback === undefined))
-        {
-            callback(result,json);
+        url: urlContext+"/"+API_URL_START+"/"+workspace+"/"+locale+"/"+way+"/"+endOfURI,
+        success:function(result) {
+            //calling the callback
+            if(!(callback === undefined))
+            {
+                callback(result,json);
+            }
+            callResult=result;
+        },
+        error : function(result){
+            if(result.responseJSON != undefined)
+            {
+                return errorCallback(result, json);
+            }
         }
-        callResult=result;
-    }).error(function(result){
-        if(!(errorCallback === undefined))
-        {
-            errorCallback(result, json);
-        }
-        callResult=result;
     });
     return callResult;
 }
@@ -47,7 +47,7 @@ function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method,
  * @param formId : the id of the forms containing the elements to serialize
  * @param nodeIdentifier : the identifier of the node on witch do the PUT request
  * @param locale : the current locale for the PUT request
- * @param fieldsClass : the class of the form elements to serialize (Optional)
+ * @param fieldsClass : the class of the form elements to serialize
  * @param callback : the callback function for the PUT Request (Optional)
  * @param errorCallback : the error function for the PUT request (Optional)
  */
@@ -58,23 +58,30 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
     var serializedForm;
     var serializedObject;
     var result;
-    var PostUrl = "/modules/api/default/"+locale+"/nodes/"+nodeIdentifier;
-
     //Creating the Json String to send with the PUT request
     serializedObject = $(formId).serializeObject(fieldsClass,deleteList);
     serializedForm = JSON.stringify(serializedObject);
-
-    //Deleting the properties listed to be deleted
-    for (var currentPropertie = 0; currentPropertie<deleteList.length;currentPropertie++)
+    if(deleteList.length>0)
     {
-        var endOfURI = nodeIdentifier+"/properties/"+deleteList[currentPropertie];
+        var deleteJsonString = "[";
+        //Deleting the properties listed to be deleted
+        for (var currentPropertie = 0; currentPropertie<deleteList.length;currentPropertie++)
+        {
+            if(deleteJsonString.length>1)
+            {
+                deleteJsonString+=",";
+            }
+            deleteJsonString+="\""+deleteList[currentPropertie]+"\"";
+        }
+        deleteJsonString+="]";
         //Delete the current propertie
-        result = jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"DELETE", "" , undefined, errorCallback);
+        var endOfURI = nodeIdentifier+"/properties";
+        result = jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"DELETE", deleteJsonString , undefined, errorCallback);
     }
-    if (serializedForm != '{"properties":{}}')
+    if (serializedForm != '{"properties":{"undefined":{"value":""}}}')
     {
         //Post the Serialized form to Jahia
-        result = jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", serializedForm , callback, errorCallback);
+        return jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", serializedForm , callback, errorCallback);
     }
     else
     {
@@ -118,7 +125,7 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
         //Adding to delete List all the form elements with empty values
         if(value=="")
         {
-            deleteTable[deleteIndex] = this.name.replace(":","__");
+            deleteTable[deleteIndex] = this.name;
             deleteIndex++;
         }
         else
@@ -142,65 +149,6 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
     });
     return {"properties" : serializedObject};
 };
-
-/**
- * @Author : Jahia(rahmed)
- * This function verify the phone and email fields of an adress before submitting it
- * the phone fields must have the 'phone' css class
- * The email fields must have the 'email' css class
- * @param cssClass : The class of the form adress fields
- * @param phoneErrorId : The css id of the div that will display the phone error message
- * @param emailErrorId : The css id of the div that will display the email error message
- */
-function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
-{
-    $('#'+emailErrorId).hide();
-    $('#'+phoneErrorId).hide();
-
-    var phoneRegex = /^[0-9]{1,45}$/;
-    var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;;
-    var phoneSize = true;
-    var phoneForm = true;
-    var emailForm = true;
-
-    //Phone fields verification
-    $.each($("."+cssClass+".phone"), function(){
-        if($(this).val().length>0 && $(this).val().length<5)
-        {
-            phoneSize=false;
-        }
-        if($(this).val().length>0 && !phoneRegex.test($(this).val()))
-        {
-            phoneForm=false;
-        }
-    });
-    //Email fields verification
-    $.each($("."+cssClass+".email"), function(){
-        if(!emailRegex.test($(this).val()))
-        {
-            emailForm=false;
-        }
-    });
-
-    //Submiting
-    if(phoneSize && phoneForm && emailForm)
-    {
-        updateProperties(cssClass);
-    }
-    else{
-        //displaying the error messages
-        if(!phoneSize || !phoneForm)
-        {
-            $('#'+phoneErrorId).fadeIn('slow').delay(4000).fadeOut('slow');
-        }
-        if(!emailForm)
-        {
-            $('#'+emailErrorId).fadeIn('slow').delay(4000).fadeOut('slow');
-        }
-    }
-
-
-}
 
 /* Edit User Details Functions */
 /**
@@ -227,12 +175,117 @@ var ajaxReloadCallback = function (result,sent)
     }
 }
 
+/* Edit User Details Functions */
+/**
+ * @Author : Jahia(rahmed)
+ * Edit User Details Callback Function
+ * This function is called after the user properties Update in error cases
+ * It formats and displays the Jahia API error messages
+ * @param result : The PUT request result
+ * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
+ */
+var formError = function (result,sent)
+{
+
+    $("."+CurrentCssClass+".errorMessage").html("");
+    var resultObject = {"message":""+result.responseJSON.message+"", "properties":[]};
+    if(result.responseJSON != undefined)
+    {
+        //looking for JCR property name
+        var propertiesArray=new Array();
+        if(result.responseJSON.message.indexOf("j:")!=-1)
+        {
+            //split message on spaces
+            propertiesArray=result.responseJSON.message.split(" ");
+
+            for(var property=0;property<propertiesArray.length;property++)
+            {
+                if(propertiesArray[property].indexOf("j:")!=-1)
+                {
+                    if (resultObject["properties"]) {
+                        if (!resultObject["properties"].push) {
+                            resultObject["properties"] = [resultObject["properties"]];
+                        }
+                        resultObject["properties"].push(propertiesArray[property] || '');
+                    } else {
+                        resultObject["properties"] = {"keys" : propertiesArray[property] || ''};
+                    }
+                }
+            }
+        }
+        var errorMessage = ""+resultObject["message"];
+        var propertiesArray = resultObject["properties"];
+
+        for(var propertyName = 0;propertyName<propertiesArray.length;propertyName++)
+        {
+            errorMessage=errorMessage.replace(propertiesArray[propertyName], propertiesNames[propertiesArray[propertyName]]);
+        }
+        $("."+CurrentCssClass+".errorMessage").hide();
+        $("."+CurrentCssClass+".errorMessage").stop().fadeIn();
+        $("."+CurrentCssClass+".errorMessage").stop().fadeOut();
+        $("."+CurrentCssClass+".errorMessage").html($("."+CurrentCssClass+".errorMessage").html()+"<div>"+errorMessage+"</div>");
+        $("."+CurrentCssClass+".errorMessage").fadeIn('slow').delay(1500).fadeOut('slow');
+
+    }
+    return resultObject;
+}
+
+/**
+ * @Author : Jahia(rahmed)
+ * This function verify the phone and email fields of an adress
+ * the phone fields must have the 'phone' css class
+ * The email fields must have the 'email' css class
+ * @param cssClass : The class of the form adress fields
+ * @param phoneErrorId : The css id of the div that will display the phone error message
+ * @param emailErrorId : The css id of the div that will display the email error message
+ * @return true if the address is valid and false in the other case
+ */
+function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
+{
+    var phoneValidation=true;
+    var emailValidation=true;
+
+    var phoneRegex = /^[0-9]{1,45}$/;
+    var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+
+    $.each($("."+cssClass+".phone"),function(){
+        if($(this).val().length>0 && $(this).val().length<5)
+        {
+            phoneValidation=false;
+        }
+        if($(this).val().length>0 && !phoneRegex.test($(this).val()))
+        {
+            phoneValidation=false;
+        }
+    });
+
+    $.each($("."+cssClass+".email"),function(){
+        if($(this).val().length>0 && !emailRegex.test($(this).val()))
+        {
+            emailValidation=false;
+        }
+    });
+
+    //displaying the error messages
+    $("#"+phoneErrorId).hide();
+
+    $("#"+emailErrorId).hide();
+    if(!phoneValidation)
+    {
+        $('#'+phoneErrorId).fadeIn('slow').delay(1500).fadeOut('slow');
+    }
+    if(!emailValidation)
+    {
+        $('#'+emailErrorId).fadeIn('slow').delay(1500).fadeOut('slow');
+    }
+    return phoneValidation && emailValidation;
+}
 
 /**
  * @Author : Jahia(rahmed)
  * This function is called after the user picture Upload
- * to check is the avatar is created
- * @testresult: the file url to test
+ * to check if the avatar is created
+ * @param testUrl: the file url to test
  * @return: 200 for success and 0 or negative value on error
  */
 function urlExists(testUrl) {
@@ -248,16 +301,15 @@ function urlExists(testUrl) {
  * @Author : Jahia(rahmed)
  * This function post the privacy properties in order to update JCR
  * The post is in string in order to allow multiple values on publicProperties.
- * @propertiesNumber: The number of properties in the loop
- * @idNumber: The id of the switch triggering the update (for the check image near the switch)
- * @value: State of the property switch
- * @nodeIdentifier: The end of URI for the jahia API Standard Call is the user id
- * @locale: The locale for the jahia API Standard Call
+ * @param propertiesNumber: The number of properties in the loop
+ * @param idNumber: The id of the switch triggering the update (for the check image near the switch)
+ * @param value: State of the property switch
+ * @param nodeIdentifier: The end of URI for the jahia API Standard Call is the user id
+ * @param locale: The locale for the jahia API Standard Call
  */
 function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale)
 {
     var jsonString = "{\"properties\":{\"j:publicProperties\":{\"multiValued\":true,\"value\":[";
-    var urlPostChanges ="/modules/api/default/"+locale+"/nodes/"+nodeIdentifier;
     var filled=false;
     //the image to put near the switch once the post is successful
     var doneImageId = '';
@@ -286,13 +338,14 @@ function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale
     }
     jsonString += "]}}}";
     //posting the properties visibility to JCR
+    CurrentCssClass = "privacyField"
     jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", jsonString , function (){
         //hiding all the others images near the switches
         $('.switchIcons').hide();
 
         //showing the image near the switch
         $(doneImageId).fadeIn('slow').delay(1000).fadeOut('slow');
-    }, undefined);
+    }, formError);
 }
 
 /**
@@ -301,10 +354,10 @@ function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale
  * The new password is picked directly from the password change form in this page.
  * The error messages are displayed in the '#passwordErrors' div
  * The success messages are displayed in the '#passwordSuccess' div
- * @oldPasswordMandatory: The error message for the empty old password case
- * @confirmationMandatory: The error message for the empty confirmation case
- * @passwordMandatory: The error message for the empty password case
- * @passwordNotMatching: The error message for the non matching passwords case
+ * @param oldPasswordMandatory: The error message for the empty old password case
+ * @param confirmationMandatory: The error message for the empty confirmation case
+ * @param passwordMandatory: The error message for the empty password case
+ * @param passwordNotMatching: The error message for the non matching passwords case
  */
 function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMandatory, passwordNotMatching)
 {
@@ -369,16 +422,16 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
  * @Author : Jahia(rahmed)
  * This function Upload a picture the user picked and update his user picture property with it
  * The picture to upload is directly picked from the form
- * @imageId : The id of the input file form field
- * @locale: The locale for the API call URL build
- * @nodepath : The path of the user node for the API call URL build
- * @userId : The user Id for the picture propertie Update
- * @callbackFunction : the callback function
- * @errorFunction : The error callback function
+ * @param imageId : The id of the input file form field
+ * @param locale: The locale for the API call URL build
+ * @param nodepath : The path of the user node for the API call URL build
+ * @param userId : The user Id for the picture propertie Update
+ * @param callbackFunction : the callback function
+ * @param errorFunction : The error callback function
  */
 function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
 {
-    var uploadUrl = context+"/modules/api/default/"+locale+"/byPath"+nodePath+"/files/profile";
+    var uploadUrl = context+"/"+API_URL_START+"/default/"+locale+"/byPath"+nodePath+"/files/profile";
 
     //checking if the file input has been filled
     if( $("#"+imageId).val() == "")
@@ -440,11 +493,13 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
 /**
  * @Author : Jahia(rahmed)
  * This function make a JSON Post of ckeditor contained in a Row
- * @rowId: the Id of the from which post the form entries
- * @nodeIdentifier : the endofURI for the Jahia API Standard Call
- * @locale : the locale for the Jahia API Standard Call
- * @callback : the callback function for the Jahia API Standard Call
- * @errorCallback : the error callback function for the Jahia API Standard Call
+ * It also defines the error message div css class for the error callback
+ * The div has to be defined following the pattern : <ID>Field
+ * @param rowId: the Id of the from which post the form entries
+ * @param nodeIdentifier : the endofURI for the Jahia API Standard Call
+ * @param locale : the locale for the Jahia API Standard Call
+ * @param callback : the callback function for the Jahia API Standard Call
+ * @param errorCallback : the error callback function for the Jahia API Standard Call
  */
 function saveCkEditorChanges(rowId,nodeIdentifier ,locale, callback, errorCallback )
 {
@@ -464,6 +519,7 @@ function saveCkEditorChanges(rowId,nodeIdentifier ,locale, callback, errorCallba
 
     //calling ajax POST
     var myJSONText = JSON.stringify(jsonTable);
+    CurrentCssClass=rowId+"Field";
 
     //Calling the Jahia Restful API to Update the node
     jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", myJSONText, callback, errorCallback);
@@ -474,7 +530,7 @@ var currentElement = "";
 var currentForm = "";
 /**
  * @Author : Jahia(rahmed)
- * This function switch a row from the display view to the form view
+ * This function switches a row from the display view to the form view hiding other form view already active
  * @elementId : id of the row to switch
  */
 function switchRow(elementId)

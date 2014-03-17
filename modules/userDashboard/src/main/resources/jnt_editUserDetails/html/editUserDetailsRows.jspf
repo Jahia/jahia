@@ -91,6 +91,7 @@
             <div class="form-actions">
                 <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
                 <button onclick="updateProperties('namesField')" class="btn btn-success"><fmt:message key="save"/></button>
+                <div class="namesField errorMessage"></div>
             </div>
         </div>
     </div>
@@ -143,6 +144,7 @@
                 <button class="btn btn-success" type="button" onclick="updateProperties('professionField')">
                     <fmt:message key="save"/>
                 </button>
+                <div class="professionField errorMessage"></div>
             </div>
         </div>
     </div>
@@ -242,6 +244,7 @@
                 <button class="btn btn-success" type="button" onclick="updateProperties('socialField')">
                     <fmt:message key="save"/>
                 </button>
+                <div class="socialField errorMessage"></div>
             </div>
         </div>
     </div>
@@ -368,13 +371,12 @@
             </c:if>
             <div class="form-actions">
                 <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
-                <button class="btn btn-success" type="button" onclick="verifyAndSubmitAddress('addressField', 'phoneFormatError','emailFormatError')">
+                <button class="btn btn-success" type="button" onclick="updateProperties('addressField')">
                     <fmt:message key="save"/>
                 </button>
-                <div class="addressField errorMessages">
-                    <div id="phoneFormatError" class="hide"><fmt:message key="mySettings.errors.phone.format"/></div>
-                    <div id="emailFormatError" class="hide"><fmt:message key="failure.invalid.emailAddress"/></div>
-                </div>
+                <div class="addressField errorMessage"></div>
+                <div id="phoneFormatError" class="hide"><fmt:message key="mySettings.errors.phone.format"/></div>
+                <div id="emailFormatError" class="hide"><fmt:message key="failure.invalid.emailAddress"/></div>
             </div>
         </div>
     </div>
@@ -422,14 +424,29 @@
                     </div>
                 </div>
                 <div class="form-actions">
+                    <c:set var="oldPasswordMandatory">
+                        <fmt:message key="mySettings.errors.oldPassword.mandatory"/>
+                    </c:set>
+                    <c:set var="passwordMandatory">
+                        <fmt:message key="mySettings.errors.password.mandatory"/>
+                    </c:set>
+                    <c:set var="ConfirmationMandatory">
+                        <fmt:message key="mySettings.errors.passwordConfirmation.mandatory"/>
+                    </c:set>
+                    <c:set var="PasswordNotMatching">
+                        <fmt:message key="mySettings.errors.password.not.matching"/>
+                    </c:set>
+
                     <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
                     <button id="passwordChangeButton"
                             class="btn btn-success"
                             type="button"
-                            onclick="changePassword('<fmt:message key="mySettings.errors.oldPassword.mandatory"/>','<fmt:message key="mySettings.errors.passwordConfirmation.mandatory"/>','<fmt:message key="mySettings.errors.password.mandatory"/>', '<fmt:message key="mySettings.errors.password.not.matching"/>')">
+                            onclick="changePassword('${functions:escapeJavaScript(oldPasswordMandatory)}','${functions:escapeJavaScript(ConfirmationMandatory)}','${functions:escapeJavaScript(passwordMandatory)}', '${functions:escapeJavaScript(PasswordNotMatching)}')">
                         <fmt:message key="save"/>
                     </button>
-                    <div class="errorMessages"><span id="passwordErrors" class="hide"></span></div>
+                    <div class="errorMessage">
+                        <span id="passwordErrors" class="hide"></span>
+                    </div>
 
                 </div>
             </c:if>
@@ -510,6 +527,7 @@
                 <button class="btn btn-success" type="button" onclick="updateProperties('otherField')">
                     <fmt:message key="save"/>
                 </button>
+                <div class="otherField errorMessage"></div>
             </div>
         </div>
     </div>
@@ -586,7 +604,7 @@
                             <fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                         </label>
                         <div class="control">
-                            <input data-size="mini" data-on-text="<fmt:message key='jnt_user.profile.public'/>" data-off-text="<fmt:message key='jnt_user.profile.nonpublic'/>" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
+                            <input data-size="mini" data-on-text="<fmt:message key='jnt_user.profile.public'/>" data-off-text="<fmt:message key='mySettings.private'/>" type="checkbox" data-on-color="success" data-off-color="danger" name="j:publicProperties" id="publicProperties${loopStatus.index}" value="${key}" ${fn:contains(publicPropertiesAsString, key) ? 'checked' : ''} />
                             &nbsp;
                             <i id="switchOn${loopStatus.index}" class="switchIcons icon-ok-sign" style="display: none;"></i>
                             <i id="switchOff${loopStatus.index}" class="switchIcons icon-remove-circle" style="display: none;"></i>
@@ -597,6 +615,7 @@
                     </c:forTokens>
                 </div>
             </div>
+            <div class="errorMessage privacyField" style="text-align:center"></div>
         </div>
     </div>
 </div>

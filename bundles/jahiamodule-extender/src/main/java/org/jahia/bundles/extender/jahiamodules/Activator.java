@@ -631,9 +631,9 @@ public class Activator implements BundleActivator {
                 try {
                     start(bundle);
                     startedBundles.add(bundle);
-                } catch (Throwable t) {
+                } catch (Exception e) {
                     logger.error("Error during startup of dependent module " + bundle.getSymbolicName() + ", module is not started !", t);
-                    setModuleState(bundle, ModuleState.State.ERROR_DURING_START, t);
+                    setModuleState(bundle, ModuleState.State.ERROR_DURING_START, e);
                 }
             }
             toBeStarted.get(key).removeAll(startedBundles);

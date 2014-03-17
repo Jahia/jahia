@@ -1055,7 +1055,7 @@ public class MainModule extends Module {
                         editLinker.getMainModule().unmask();
                     }
                 }
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 Log.error("Error in EditFrame: " + e.getMessage(), e);                
             }
         }

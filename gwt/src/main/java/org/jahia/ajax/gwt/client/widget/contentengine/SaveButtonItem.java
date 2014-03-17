@@ -211,9 +211,8 @@ public abstract class SaveButtonItem implements ButtonItem {
     protected abstract void prepareAndSave(final AbstractContentEngine engine, boolean closeAfterSave);
 
     protected void failSave(final AbstractContentEngine engine, Throwable throwable) {
-        try {
-            throw throwable;
-        } catch (final GWTCompositeConstraintViolationException cve) {
+        if (throwable instanceof GWTCompositeConstraintViolationException) {
+            final GWTCompositeConstraintViolationException cve = (GWTCompositeConstraintViolationException) throwable;
             StringBuilder nodeLevelMessages = new StringBuilder();
             boolean hasFieldErrors = false;
             for (GWTConstraintViolationException violationException : cve.getErrors()) {
@@ -241,7 +240,7 @@ public abstract class SaveButtonItem implements ButtonItem {
                         }
                     }
             );
-        } catch (Throwable t) {
+        } else {
             String message = throwable.getMessage();
             MessageBox.alert(Messages.get("label.error"), Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
                     + message, null);

@@ -821,6 +821,7 @@ public class Activator implements BundleActivator {
                 case FrameworkEvent.PACKAGES_REFRESHED: 
                     startAllBundles();
                     stopAllBundles();
+                    break;
             }
         }
 

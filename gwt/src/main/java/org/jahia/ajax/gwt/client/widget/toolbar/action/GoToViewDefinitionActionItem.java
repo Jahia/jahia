@@ -57,9 +57,11 @@ public class GoToViewDefinitionActionItem extends BaseActionItem {
             String sourceInfo = ((EditLinker) linker).getSelectedModule().getSourceInfo();
             if (sourceInfo != null) {
                 String url = JahiaGWTParameters.getParam("studioUrl");
-                url = url.substring(0, url.indexOf(MODULES_BASE_PATH));
-                url += sourceInfo + ".html";
-                Window.Location.assign(url);
+                if (url != null && url.indexOf(MODULES_BASE_PATH) > 0) {
+                    url = url.substring(0, url.indexOf(MODULES_BASE_PATH));
+                    url += sourceInfo + ".html";
+                    Window.Location.assign(url);
+                }
             }
         }
     }
@@ -68,7 +70,11 @@ public class GoToViewDefinitionActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null);
+        boolean enable = singleSelection != null;
+        if (linker instanceof EditLinker) {
+            enable &= ((EditLinker) linker).getSelectedModule().getSourceInfo() != null;
+        }
+        setEnabled(enable);
     }
 
 }

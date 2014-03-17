@@ -366,12 +366,9 @@ public class PropertiesManager
             fileWriter.write( outputBuffer.toString() );
         } catch (java.io.IOException ioe) {
     	} finally {
-            try {
-            	fileWriter.close();
-            }catch ( java.io.IOException ioe2 ){
-			}
-			fileWriter = null;
-			thisFile = null;
+            IOUtils.closeQuietly(fileWriter);
+            fileWriter = null;
+            thisFile = null;
     	}
     } // end writeTheFile
 

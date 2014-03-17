@@ -256,7 +256,7 @@
 
 [jnt:imageReferenceLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:multimediaContent, jmix:editorialContent
  - j:node (weakreference, picker[type='image']) internationalized < 'jmix:image'
- - j:linknode (weakreference) internationalized < 'jmix:droppableContent', 'jnt:page'
+ - j:linknode (weakreference, picker[type='editoriallink']) internationalized < 'jmix:droppableContent', 'jnt:page'
  - j:alternateText (string) internationalized
  - j:url (string) internationalized
 

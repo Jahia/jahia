@@ -224,7 +224,9 @@ public class ModuleManagementFlowHandler implements Serializable {
                 }
             }
         } finally {
-            IOUtils.closeQuietly(jarFile);
+            if (jarFile != null) {
+                jarFile.close();
+            }
         }
 
         return true;

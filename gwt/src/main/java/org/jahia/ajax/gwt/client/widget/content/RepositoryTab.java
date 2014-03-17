@@ -106,6 +106,7 @@ public class RepositoryTab extends ContentPanel {
 
         List<String> keys = new ArrayList<String>(config.getTreeColumnKeys());
         keys.add(GWTJahiaNode.PUBLICATION_INFO);
+        keys.add(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         factory.setFields(keys);
 
         factory.setSelectedPath(selectedPaths);

@@ -559,18 +559,22 @@ public class JCRTagUtils {
 
     public static boolean needPublication(JCRNodeWrapper node, String language, boolean includesReferences,
                                                      boolean includesSubnodes, boolean allsubtree) {
-        JCRPublicationService publicationService = JCRPublicationService.getInstance();
-        try {
-            List<PublicationInfo> publicationInfos = publicationService.getPublicationInfo(node.getIdentifier(),
-                    (StringUtils.isEmpty(language) ? null : Collections.singleton(language)), includesReferences, includesSubnodes,
-                    allsubtree, node.getSession().getWorkspace().getName(), Constants.LIVE_WORKSPACE);
-            for (PublicationInfo publicationInfo : publicationInfos) {
-                if (publicationInfo.needPublication(StringUtils.isEmpty(language) ? null : language)) {
-                    return true;
+        if (node != null) {
+            JCRPublicationService publicationService = JCRPublicationService.getInstance();
+            if (publicationService != null) {
+                try {
+                    List<PublicationInfo> publicationInfos = publicationService.getPublicationInfo(node.getIdentifier(),
+                            (StringUtils.isEmpty(language) ? null : Collections.singleton(language)), includesReferences, includesSubnodes,
+                            allsubtree, node.getSession().getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+                    for (PublicationInfo publicationInfo : publicationInfos) {
+                        if (publicationInfo.needPublication(StringUtils.isEmpty(language) ? null : language)) {
+                            return true;
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Failed to get PublicationInfo for node " + node.getPath(), e);
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error("Failed to get PublicationInfo for node " + node.getPath(), e);
         }
         return false;
     }

@@ -36,5 +36,5 @@
              
     <%-- Set variables to store the result --%>
     <c:set target="${moduleMap}" property="editable" value="false" />
-    <c:set target="${moduleMap}" property="subNodesView" value="link" />
+    <c:set target="${moduleMap}" property="subNodesView" value="parentDisplayableLink" />
     <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" /> 

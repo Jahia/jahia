@@ -129,22 +129,22 @@ public class RolesAndPermissionsHandler implements Serializable {
     public Map<String, List<RoleBean>> getRoles(boolean filterUUIDs, boolean getChildren) throws RepositoryException {
 
         QueryManager qm = getSession().getWorkspace().getQueryManager();
-        String statement = "select * from [jnt:role] as role";
+        StringBuilder statement = new StringBuilder("select * from [jnt:role] as role");
         if (filterUUIDs) {
-            statement += " where ";
+            statement.append(" where ");
             Iterator<String> it = uuids.iterator();
             while (it.hasNext()) {
                 String uuid = it.next();
-                statement += "[jcr:uuid] = '" + uuid + "'";
+                statement.append("[jcr:uuid] = '").append(uuid).append("'");
                 if (getChildren) {
-                    statement +=  " or isdescendantnode(role, ['" + getSession().getNodeByIdentifier(uuid).getPath() + "'])";
+                    statement.append(" or isdescendantnode(role, ['").append(getSession().getNodeByIdentifier(uuid).getPath()).append("'])");
                 }
                 if (it.hasNext()) {
-                    statement += " or ";
+                    statement.append(" or ");
                 }
             }
         }
-        Query q = qm.createQuery(statement, Query.JCR_SQL2);
+        Query q = qm.createQuery(statement.toString(), Query.JCR_SQL2);
         Map<String, List<RoleBean>> all = new LinkedHashMap<String, List<RoleBean>>();
         if (!filterUUIDs) {
             for (RoleType roleType : roleTypes.getValues()) {

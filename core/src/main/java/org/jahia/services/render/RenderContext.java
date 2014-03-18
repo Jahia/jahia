@@ -254,11 +254,13 @@ public class RenderContext {
             if(JahiaUserManagerService.isNotGuest(getUser())) {
                 locale = UserPreferencesHelper.getPreferredLocale(getUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
             }
-            if (locale == null) {
-                locale = getMainResourceLocale();
+            if (locale == null && mainResource!=null) {
+                    locale = getMainResourceLocale();
             }
             uiLocale = locale;
-            request.getSession(false).setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
+            if(uiLocale!=null) {
+                request.getSession(false).setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
+            }
         }
         return uiLocale;
     }

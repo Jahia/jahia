@@ -119,8 +119,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private static ImportExportBaseService instance;
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
-
     private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
             "application/zip", "application/xml", "text/xml");
 

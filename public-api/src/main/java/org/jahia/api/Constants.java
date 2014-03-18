@@ -302,6 +302,4 @@ public class Constants {
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT));
 
     public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
-
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 }

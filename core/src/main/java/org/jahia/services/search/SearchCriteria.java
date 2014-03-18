@@ -41,8 +41,6 @@
 package org.jahia.services.search;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -713,9 +711,6 @@ public class SearchCriteria implements Serializable {
                                         term.getFields(), TO_STRING_STYLE))
                         .toString());
 
-            } else if (obj instanceof NodeProperty) {
-                toStringItems.add(ReflectionToStringBuilder.reflectionToString(
-                        obj, TO_STRING_STYLE));
             } else {
                 toStringItems.add(ReflectionToStringBuilder.reflectionToString(
                         obj, TO_STRING_STYLE));

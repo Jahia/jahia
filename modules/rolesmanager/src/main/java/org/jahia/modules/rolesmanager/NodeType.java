@@ -43,6 +43,9 @@ package org.jahia.modules.rolesmanager;
 import java.io.Serializable;
 
 public class NodeType implements Comparable<NodeType>, Serializable {
+
+    private static final long serialVersionUID = 7069492207446295521L;
+    
     private String name;
     private String displayName;
     private boolean set;
@@ -73,4 +76,19 @@ public class NodeType implements Comparable<NodeType>, Serializable {
     public int compareTo(NodeType o) {
         return getDisplayName().compareTo(o.getDisplayName());
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NodeType that = (NodeType) o;
+
+        return getName().equals(that.getName());
+    }
+    
+    @Override
+    public int hashCode() {
+        return getName() != null ? getName().hashCode() : 0;
+    }       
 }

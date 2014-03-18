@@ -52,7 +52,9 @@ import java.util.Date;
  * Time: 3:29:38 PM
  * 
  */
-public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serializable, Comparable {
+public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serializable, Comparable<GWTJahiaContentHistoryEntry> {
+
+    private static final long serialVersionUID = -3193096751387080238L;
 
     public GWTJahiaContentHistoryEntry() {
         super();
@@ -125,7 +127,22 @@ public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serial
         set("languageCode", languageCode);
     }
 
-    public int compareTo(Object o) {
-        return getDate().compareTo(((GWTJahiaContentHistoryEntry) o).getDate());
+    public int compareTo(GWTJahiaContentHistoryEntry o) {
+        return getDate().compareTo(o.getDate());
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GWTJahiaContentHistoryEntry that = (GWTJahiaContentHistoryEntry) o;
+
+        return getDate().equals(that.getDate());
+    }
+    
+    @Override
+    public int hashCode() {
+        return getDate() != null ? getDate().hashCode() : 0;
+    }    
 }

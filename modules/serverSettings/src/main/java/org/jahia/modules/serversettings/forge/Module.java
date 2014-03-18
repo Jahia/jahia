@@ -41,6 +41,8 @@
 package org.jahia.modules.serversettings.forge;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
@@ -144,6 +146,27 @@ public class Module implements Serializable, Comparable<Module> {
     @Override
     public int compareTo(Module o) {
         return new CompareToBuilder().append(id, o.id).append(groupId, o.groupId).toComparison();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o != null && this.getClass() == o.getClass()) {
+            Module castOther = (Module) o;
+            return new EqualsBuilder().append(this.getId(), castOther.getId())
+                    .append(this.getGroupId(), castOther.getGroupId())
+                    .isEquals();
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(getId()).append(getGroupId())
+                .toHashCode();
     }
 }
 

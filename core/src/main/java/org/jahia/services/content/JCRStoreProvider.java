@@ -86,6 +86,7 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -1153,6 +1154,21 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return StringUtils.defaultString(getMountPoint()).compareTo(StringUtils.defaultString(o.getMountPoint()));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JCRStoreProvider that = (JCRStoreProvider) o;
+
+        return StringUtils.defaultString(getMountPoint()).equals(that.getMountPoint());
+    }
+    
+    @Override
+    public int hashCode() {
+        return getMountPoint() != null ? getMountPoint().hashCode() : 0;
+    }      
+    
     public Map<String,Constructor<?>> getValidators() {
         return service.getValidators();
     }

@@ -52,36 +52,54 @@ import org.apache.commons.collections.ComparatorUtils;
  */
 public class PasswordHistoryEntry implements Comparable<PasswordHistoryEntry>, Serializable {
 
-	/**
-	 * Initializes an instance of this class.
-	 * 
-	 * @param password
-	 * @param modificationDate
-	 */
-	public PasswordHistoryEntry(String password, Date modificationDate) {
-		super();
-		this.password = password;
-		this.modificationDate = modificationDate;
-	}
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param password
+     * @param modificationDate
+     */
+    public PasswordHistoryEntry(String password, Date modificationDate) {
+        super();
+        this.password = password;
+        this.modificationDate = modificationDate;
+    }
 
-	private static final long serialVersionUID = -3097158027608649414L;
+    private static final long serialVersionUID = -3097158027608649414L;
 
-	private String password;
+    private String password;
 
-	private Date modificationDate;
+    private Date modificationDate;
 
-	@SuppressWarnings("unchecked")
-	public int compareTo(PasswordHistoryEntry o) {
-		return ComparatorUtils.naturalComparator().compare(o.getModificationDate(),
-		        getModificationDate());
-	}
+    @SuppressWarnings("unchecked")
+    public int compareTo(PasswordHistoryEntry o) {
+        return ComparatorUtils.naturalComparator().compare(
+                o.getModificationDate(), getModificationDate());
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-	public Date getModificationDate() {
-		return modificationDate;
-	}
+        PasswordHistoryEntry that = (PasswordHistoryEntry) o;
+
+        return getModificationDate().equals(that.getModificationDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return getModificationDate() != null ? getModificationDate().hashCode()
+                : 0;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Date getModificationDate() {
+        return modificationDate;
+    }
 
 }

@@ -571,7 +571,10 @@ public abstract class AbstractFilter implements RenderFilter {
 
     @Override
     public boolean equals(Object obj) {
-        if(this.getClass().getName().equals(obj.getClass().getName())) {
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass().getName().equals(obj.getClass().getName())) {
             return this.getPriority()==((AbstractFilter)obj).getPriority();
         }
         return false;

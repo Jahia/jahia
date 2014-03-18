@@ -312,7 +312,7 @@
     <c:choose>
         <c:when test="${currentNode.path ne compare}">
             <li>
-                <a href="<c:url value='${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html'/>" style="text-decoration: none;">
+                <a href="<c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html'/>" style="text-decoration: none;">
                     <i class="icon-home"></i> Home
                 </a>
             </li>
@@ -331,7 +331,7 @@
                         <li>
                             <span class="divider">/</span>
                             <c:set var="folderPath" value="${compare}${folderUrl}"/>
-                            <c:url value="${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html" var="link">
+                            <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
                                 <c:param name="path" value="${functions:encodeUrlParam(folderPath)}"/>
                             </c:url>
                             <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">${folder}</a>
@@ -364,7 +364,7 @@
         <c:forEach items="${jcr:getChildrenOfType(currentNode,'jnt:folder')}" var="node">
             <tr>
                 <td>
-                    <c:url value="${url.baseUserBoardFrameLive}${currentUser.localPath}.my-files.html" var="link">
+                    <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
                         <c:param name="path" value="${functions:encodeUrlParam(node.path)}"/>
                     </c:url>
                     <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">

@@ -363,6 +363,9 @@ public class URLResolver {
      * @return the locale of the given URL
      */
     public Locale getLocale() {
+        if(renderContext!=null && renderContext.isForceUILocaleForJCRSession()){
+            return renderContext.getUILocale();
+        }
         return locale;
     }
 

@@ -571,7 +571,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="dashboardmode"/>
-                <property name="enforcedWorkspace" value="live"/>
+                <property name="enforcedWorkspace" value="default"/>
                 <property name="forceRootChange" value="true"/>
             </bean>
         </property>

@@ -62,13 +62,6 @@
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='label.site'/>
                 </th>
-                <c:if test="${currentNode.properties.administrationlink.boolean}">
-                    <th>
-                        <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
-                             role="presentation" style="position:relative;"/>
-                        <fmt:message key="label.administration"/>
-                    </th>
-                </c:if>
                 <c:if test="${currentNode.properties.edit.boolean}">
                     <th>
                         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "

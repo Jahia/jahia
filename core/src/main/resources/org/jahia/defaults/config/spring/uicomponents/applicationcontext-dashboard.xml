@@ -9,7 +9,7 @@
         <property name="requiredPermission" value="actions"/>
         <property name="nodeCheckPermission" value="$user"/>
         <property name="defaultUrlMapping" value="/cms/dashboard"/>
-        <property name="defaultLocation" value="$user.me.html"/>
+        <property name="defaultLocation" value="$user.tasks.html"/>
         <property name="sitesLocation" value="/sites/systemsite"/>
         <property name="loadSitesList" value="false"/>
         <property name="topToolbar">

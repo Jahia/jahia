@@ -68,6 +68,7 @@ public class Edit extends Render {
 
     private boolean availableInProductionMode = true;
     private boolean availableInDistantPublicationServerMode = true;
+    private boolean forceUILocaleForJCRSession = false;
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
@@ -76,6 +77,8 @@ public class Edit extends Render {
             context.setContributionMode(true);
         }
         context.setEditModeConfig(editConfiguration);
+
+        context.setForceUILocaleForJCRSession(forceUILocaleForJCRSession);
         return context;
     }
 
@@ -133,6 +136,14 @@ public class Edit extends Render {
 
     public void setAvailableInDistantPublicationServerMode(boolean availableInDistantPublicationServerMode) {
         this.availableInDistantPublicationServerMode = availableInDistantPublicationServerMode;
+    }
+
+    public void setForceUILocaleForJCRSession(boolean forceUILocaleForJCRSession) {
+        this.forceUILocaleForJCRSession = forceUILocaleForJCRSession;
+    }
+
+    public boolean isForceUILocaleForJCRSession() {
+        return forceUILocaleForJCRSession;
     }
 
 }

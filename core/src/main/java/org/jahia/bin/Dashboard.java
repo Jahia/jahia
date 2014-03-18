@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Rendering controller for the edit mode.
+ * Rendering controller for the dashboard mode.
  * User: rincevent
  * Date: Aug 19, 2009
  * Time: 4:15:21 PM
@@ -77,6 +77,7 @@ public class Dashboard extends Render {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+        context.setForceUILocaleForJCRSession(true);
         return context;
     }
 

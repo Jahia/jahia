@@ -103,6 +103,7 @@ public class RenderContext {
     private Channel channel = null;
     private String mode;
     private SiteInfo siteInfo;
+    private boolean forceUILocaleForJCRSession;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -391,5 +392,13 @@ public class RenderContext {
 
     public SiteInfo getSiteInfo() {
         return siteInfo;
+    }
+
+    public void setForceUILocaleForJCRSession(boolean forceUILocaleForJCRSession) {
+        this.forceUILocaleForJCRSession = forceUILocaleForJCRSession;
+    }
+
+    public boolean isForceUILocaleForJCRSession() {
+        return forceUILocaleForJCRSession;
     }
 }

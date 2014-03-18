@@ -77,19 +77,17 @@
                                          preferredLanguage="true"/>
                         </pagecontent>
                     </me>
-                    <my-files j:applyOn="jnt:user"
-                              j:defaultTemplate="false"
-                              j:hiddenTemplate="false"
-                              j:icon="/modules/userDashboard/templates/files/folder_document.png"
-                              j:titleKey="myFiles.label"
-                              jcr:mixinTypes="jmix:rbTitle"
-                              jcr:primaryType="jnt:contentTemplate">
+                    <files j:applyOn="jnt:user"
+                           j:defaultTemplate="false"
+                           j:hiddenTemplate="false"
+                           j:icon="/modules/userDashboard/templates/files/folder_document.png"
+                           j:titleKey="myFiles.label"
+                           jcr:mixinTypes="jmix:rbTitle"
+                           jcr:primaryType="jnt:contentTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
-                            <workspace-default jcr:primaryType="jnt:workspaceSwitch" workspace="default">
-                                <files-browser jcr:primaryType="jnt:myFilesDashboard"/>
-                            </workspace-default>
+                            <files-browser jcr:primaryType="jnt:myFilesDashboard"/>
                         </pagecontent>
-                    </my-files>
+                    </files>
                     <pages j:applyOn="jnt:user"
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
@@ -106,56 +104,30 @@
                                       jcr:primaryType="jnt:userContentRetrieval"/>
                         </pagecontent>
                     </pages>
-                    <web-projects j:applyOn="jnt:user"
-                                  j:defaultTemplate="false"
-                                  j:hiddenTemplate="false"
-                                  j:icon="/modules/userDashboard/templates/files/environment.png"
-                                  j:titleKey="system.myWebProjects"
-                                  jcr:mixinTypes="jmix:rbTitle"
-                                  jcr:primaryType="jnt:contentTemplate">
+                    <projects j:applyOn="jnt:user"
+                              j:defaultTemplate="false"
+                              j:hiddenTemplate="false"
+                              j:icon="/modules/userDashboard/templates/files/environment.png"
+                              j:titleKey="system.myWebProjects"
+                              jcr:mixinTypes="jmix:rbTitle"
+                              jcr:primaryType="jnt:contentTemplate">
                         <pagecontent j:id="user-sites"
                                      jcr:mixinTypes="jmix:customSkin"
                                      jcr:primaryType="jnt:contentList">
-                            <websites-list-in-live-mode administrationlink="false"
+                            <websites-list-in-edit-mode administrationlink="true"
                                                         contribute="true"
-                                                        delete="false"
-                                                        details="false"
+                                                        delete="true"
+                                                        details="true"
                                                         edit="true"
-                                                        editproperties="false"
-                                                        export="false"
-                                                        j:contextNodePath="/sites"
-                                                        j:invertCondition="true"
-                                                        j:requireLoggedUser="false"
-                                                        j:requirePrivilegedUser="false"
-                                                        j:requiredPermissionNames="jcr:read_default"
+                                                        editproperties="true"
+                                                        export="true"
                                                         j:view="bootstrapSites"
-                                                        jcr:mixinTypes="jmix:renderable jmix:requiredPermissions"
+                                                        jcr:mixinTypes="jmix:renderable"
                                                         jcr:primaryType="jnt:listSites"
                                                         live="true"
                                                         preview="true"/>
-                            <workspaceDispatcher-edit j:contextNodePath="/sites"
-                                                      j:invertCondition="false"
-                                                      j:requireLoggedUser="false"
-                                                      j:requirePrivilegedUser="false"
-                                                      j:requiredPermissionNames="jcr:read_default"
-                                                      jcr:mixinTypes="jmix:requiredPermissions"
-                                                      jcr:primaryType="jnt:workspaceSwitch"
-                                                      workspace="default">
-                                <websites-list-in-edit-mode administrationlink="true"
-                                                            contribute="true"
-                                                            delete="true"
-                                                            details="true"
-                                                            edit="true"
-                                                            editproperties="true"
-                                                            export="true"
-                                                            j:view="bootstrapSites"
-                                                            jcr:mixinTypes="jmix:renderable"
-                                                            jcr:primaryType="jnt:listSites"
-                                                            live="true"
-                                                            preview="true"/>
-                            </workspaceDispatcher-edit>
                         </pagecontent>
-                    </web-projects>
+                    </projects>
                 </dashboard-modules-base>
             </templates>
 

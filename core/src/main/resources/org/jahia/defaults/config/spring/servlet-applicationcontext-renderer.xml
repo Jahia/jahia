@@ -56,11 +56,13 @@
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="adminmode"/>
         <property name="workspace" value="default"/>
+        <property name="forceUILocaleForJCRSession" value="true"/>
     </bean>
 
     <bean name="org.jahia.bin.DashboardLayout" parent="abstractRender" class="org.jahia.bin.Dashboard">
         <property name="sessionExpiryTime" value="60"/>
         <property name="editConfiguration" ref="dashboardmode"/>
+        <property name="workspace" value="default"/>
     </bean>
 
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

@@ -98,7 +98,7 @@ public class NamespaceRegistryWrapper implements NamespaceRegistry {
         internalRegister(Name.NS_REP_PREFIX, Name.NS_REP_URI);        
     }
 
-    public void registerNamespace(String prefix, String uri) throws NamespaceException, UnsupportedRepositoryOperationException, AccessDeniedException, RepositoryException {
+    public synchronized void registerNamespace(String prefix, String uri) throws NamespaceException, UnsupportedRepositoryOperationException, AccessDeniedException, RepositoryException {
         if (prefix == null || uri == null) {
             throw new IllegalArgumentException("prefix/uri can not be null");
         }        
@@ -176,18 +176,18 @@ public class NamespaceRegistryWrapper implements NamespaceRegistry {
         return (String[]) nsToPrefix.keySet().toArray(new String[nsToPrefix.size()]);
     }
 
-    public String getURI(String s) throws NamespaceException, RepositoryException {
-        if (!prefixToNs.containsKey(s)) {
-            throw new NamespaceException("URI "+s+" is not a registered namespace URI in this system");
+    public String getURI(String prefix) throws NamespaceException, RepositoryException {
+        if (!prefixToNs.containsKey(prefix)) {
+            throw new NamespaceException("Prefix "+ prefix +" is not a registered namespace prefix in this system");
         }
-        return (String) prefixToNs.get(s);
+        return prefixToNs.get(prefix);
     }
 
-    public String getPrefix(String s) throws NamespaceException, RepositoryException {
-        if (!nsToPrefix.containsKey(s)) {
-            throw new NamespaceException("Prefix "+s+" is not a registered namespace prefix in this system");
+    public String getPrefix(String uri) throws NamespaceException, RepositoryException {
+        if (!nsToPrefix.containsKey(uri)) {
+            throw new NamespaceException("URI "+ uri +" is not a registered namespace URI in this system");
         }
-        return (String) nsToPrefix.get(s);
+        return nsToPrefix.get(uri);
     }
 
 }

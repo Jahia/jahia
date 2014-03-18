@@ -269,7 +269,7 @@ public final class CacheHelper {
         StatisticsGateway stats = cache.getStatistics();
         info.setHitCount(stats.cacheHitCount());
         info.setMissCount(stats.cacheMissCount());
-        info.setHitRatio(info.getAccessCount() > 0 ? info.getHitCount() * 100 / info.getAccessCount() : 0);
+        info.setHitRatio(info.getAccessCount() > 0 ? info.getHitCount() * 100 / (double) info.getAccessCount() : 0);
 
         info.setSize(stats.getSize());
         

@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  */
 public class GWTJahiaLanguage extends BaseModelData {
 
+    private static final long serialVersionUID = 673867224721055777L;
 
     public GWTJahiaLanguage() {
 
@@ -151,8 +152,14 @@ public class GWTJahiaLanguage extends BaseModelData {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj==null) return false;
-        return getLanguage().equals(((GWTJahiaLanguage)obj).getLanguage()) && getDisplayName().equals(((GWTJahiaLanguage)obj).getDisplayName());
+        if (obj==null) {
+            return false;
+        }
+        if (obj instanceof GWTJahiaLanguage) {
+            GWTJahiaLanguage langObj = (GWTJahiaLanguage)obj;
+            return getLanguage().equals(langObj.getLanguage()) && getDisplayName().equals(langObj.getDisplayName());
+        }
+        return false;
     }
 
     /**

@@ -398,8 +398,8 @@ public class ImageInfo {
             if (read(a) != 11) {
                   return false;
             }
-            if ((!equals(a, 0, GIF_MAGIC_89A, 0, 4)) &&
-                  (!equals(a, 0, GIF_MAGIC_87A, 0, 4))) {
+            if ((!regionMatches(a, 0, GIF_MAGIC_89A, 0, 4)) &&
+                  (!regionMatches(a, 0, GIF_MAGIC_87A, 0, 4))) {
                   return false;
             }
             format = FORMAT_GIF;
@@ -519,7 +519,7 @@ public class ImageInfo {
                   return false;
             }
             final byte[] IFF_RM = {0x52, 0x4d};
-            if (!equals(a, 0, IFF_RM, 0, 2)) {
+            if (!regionMatches(a, 0, IFF_RM, 0, 2)) {
                   return false;
             }
             int type = getIntBigEndian(a, 6);
@@ -571,7 +571,7 @@ public class ImageInfo {
                               return false;
                         }
                         final byte[] APP0_ID = {0x4a, 0x46, 0x49, 0x46, 0x00};
-                        if (equals(APP0_ID, 0, data, 0, 5)) {
+                        if (regionMatches(APP0_ID, 0, data, 0, 5)) {
                               //System.out.println("data 7=" + data[7]);
                               if (data[7] == 1) {
                                     setPhysicalWidthDpi(getShortBigEndian(data, 8));
@@ -660,7 +660,7 @@ public class ImageInfo {
             if (read(a) != 27) {
                   return false;
             }
-            if (!equals(a, 0, PNG_MAGIC, 0, 6)) {
+            if (!regionMatches(a, 0, PNG_MAGIC, 0, 6)) {
                   return false;
             }
             format = FORMAT_PNG;
@@ -755,7 +755,7 @@ public class ImageInfo {
                   return false;
             }
             final byte[] PSD_MAGIC = {0x50, 0x53};
-            if (!equals(a, 0, PSD_MAGIC, 0, 2)) {
+            if (!regionMatches(a, 0, PSD_MAGIC, 0, 2)) {
                   return false;
             }
             format = FORMAT_PSD;
@@ -773,7 +773,7 @@ public class ImageInfo {
                   return false;
             }
             final byte[] RAS_MAGIC = {0x6a, (byte)0x95};
-            if (!equals(a, 0, RAS_MAGIC, 0, 2)) {
+            if (!regionMatches(a, 0, RAS_MAGIC, 0, 2)) {
                   return false;
             }
             format = FORMAT_RAS;
@@ -799,7 +799,7 @@ public class ImageInfo {
             return true;
       }
 
-      private static boolean equals(byte[] a1, int offs1, byte[] a2, int offs2, int num) {
+      private static boolean regionMatches(byte[] a1, int offs1, byte[] a2, int offs2, int num) {
             while (num-- > 0) {
                   if (a1[offs1++] != a2[offs2++]) {
                         return false;

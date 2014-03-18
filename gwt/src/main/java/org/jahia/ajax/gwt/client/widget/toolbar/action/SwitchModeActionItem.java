@@ -51,10 +51,16 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineCards;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
+import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 /**
  *
@@ -66,6 +72,18 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 public class SwitchModeActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
+        Menu m = new Menu();
+        MenuItem menuItem = new MenuItem(Messages.get("label.openInNewWindow","Open in new window"));
+        menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon("openWindow"));
+        menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                onComponentSelection(true);
+            }
+        });
+        m.add(menuItem);
+        setSubMenu(m);
+
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if ((linker instanceof EditLinker && !((EditLinker) linker).getMainModule().isAllowSwitchingMode()) ||
                 !hasPermission(linker.getSelectionContext().getMainNode())) {
@@ -119,20 +137,4 @@ public class SwitchModeActionItem extends BaseActionItem {
         }
     }
 
-    @Override
-    public Component getTextToolItem() {
-        Component c = super.getTextToolItem();
-        Menu m = new Menu();
-        MenuItem menuItem = new MenuItem(Messages.get("label.openInNewWindow","Open in new window"));
-        menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon("openWindow"));
-        menuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                onComponentSelection(true);
-            }
-        });
-        m.add(menuItem);
-        c.setContextMenu(m);
-        return c;
-    }
 }

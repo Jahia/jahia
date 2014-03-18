@@ -67,6 +67,8 @@ import java.util.*;
 
 public class RolesAndPermissionsHandler implements Serializable {
 
+    private static final long serialVersionUID = 7910715831938629654L;
+
     private static Logger logger = LoggerFactory.getLogger(RolesAndPermissionsHandler.class);
 
 //    enum Scope {CONTENT, SITE, SERVER_SETTINGS, STUDIO, JCR, OTHER};
@@ -403,7 +405,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 try {
                     type = getSession().getNode(scope).getPrimaryNodeTypeName();
                 } catch (RepositoryException e) {
-                    e.printStackTrace();
+                    logger.error("Error retrieving scope", e);
                 }
             }
         }

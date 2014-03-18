@@ -614,6 +614,9 @@
 [jmix:hasIcon] mixin
  - j:icon (weakreference,picker[type='image']) < jmix:image
 
+[jmix:requireLicense] mixin
+ - j:requiredLicenseFeature (string) hidden indexed=no
+
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------

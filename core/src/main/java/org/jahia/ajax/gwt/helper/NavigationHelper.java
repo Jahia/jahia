@@ -49,7 +49,9 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -117,7 +119,7 @@ public class NavigationHelper {
         }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
-            getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild,
+            getMatchingChildNodes(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild,
                     displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates, uiLocale);
 
             return gwtNodeChildren;
@@ -127,7 +129,7 @@ public class NavigationHelper {
         }
     }
 
-    private void getMatchingChilds(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
+    private void getMatchingChildNodes(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
                                    List<String> fields, JCRNodeWrapper node, List<GWTJahiaNode> gwtNodeChildren,
                                    boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes,
                                    String hiddenRegex, boolean showOnlyNodesWithTemplates, Locale uiLocale) throws RepositoryException, GWTJahiaServiceException {
@@ -147,6 +149,8 @@ public class NavigationHelper {
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.children.list.is.null", uiLocale));
         }
 
+        boolean licenseCheck = haveToCheckLicense(fields);
+        
         int i = 1;
         while (nodesIterator.hasNext()) {
             try {
@@ -199,6 +203,9 @@ public class NavigationHelper {
                 }
                 // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
                 if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
+                    if (licenseCheck && !isAllowedByLicense(childNode)) {
+                        continue;
+                    }
                     GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
                     gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
                     if (hasOrderableChildren) {
@@ -215,7 +222,7 @@ public class NavigationHelper {
                     }
                     gwtNodeChildren.add(gwtChildNode);
                 } else if (checkSubChild && childNode.hasNodes()) {
-                    getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
+                    getMatchingChildNodes(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
                             displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates, uiLocale);
                 }
             } catch (InvalidItemStateException e) {
@@ -343,6 +350,7 @@ public class NavigationHelper {
 
     public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, final JCRSiteNode site, Locale uiLocale, JCRSessionWrapper currentUserSession, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws RepositoryException, GWTJahiaServiceException {
         final List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
+        final boolean checkLicense = haveToCheckLicense(fields);
 
         for (String path : paths) {
             // replace $user and $site by the right values
@@ -386,7 +394,9 @@ public class NavigationHelper {
                         NodeIterator nodes = parent.getNodes();
                         while (nodes.hasNext()) {
                             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
-                            userNodes.add(getGWTJahiaNode(nodeWrapper));
+                            if (!checkLicense || isAllowedByLicense(nodeWrapper)) {
+                                userNodes.add(getGWTJahiaNode(nodeWrapper));
+                            }
                         }
                         return null;
                     }
@@ -399,7 +409,7 @@ public class NavigationHelper {
             if (path.startsWith("/")) {
                 if (path.endsWith("/*")) {
                     try {
-                        getMatchingChilds(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
+                        getMatchingChildNodes(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
                     } catch (PathNotFoundException e) {
                         // do nothing is the path is not found
                     }
@@ -665,6 +675,7 @@ public class NavigationHelper {
     public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
                                            List<String> filtersToApply, List<String> fields, List<String> sites, boolean showOnlyNodesWithTemplates)
             throws RepositoryException {
+        boolean licenseCheck = haveToCheckLicense(fields);
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         Set<String> addedIds = new HashSet<String>();
         NodeIterator ni = null;
@@ -705,9 +716,11 @@ public class NavigationHelper {
                     boolean siteCheck = (sites == null || sites.contains(n.getResolveSite().getSiteKey()));
 
                     if (siteCheck && (matchFilter || hasNodes) && addedIds.add(n.getIdentifier())) {
-                        GWTJahiaNode node = getGWTJahiaNode(n, fields);
-                        node.setMatchFilters(matchFilter);
-                        result.add(node);
+                        if (!licenseCheck || isAllowedByLicense(n)) {
+                            GWTJahiaNode node = getGWTJahiaNode(n, fields);
+                            node.setMatchFilters(matchFilter);
+                            result.add(node);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -768,4 +781,25 @@ public class NavigationHelper {
         this.nodeHelper = nodeHelper;
     }
 
+    private boolean isAllowedByLicense(JCRNodeWrapper node) {
+        boolean allowed = true;
+        try {
+            if (node.isNodeType("jmix:requireLicense")) {
+                try {
+                    String feature = node.getProperty("j:requiredLicenseFeature").getString();
+                    allowed = StringUtils.isEmpty(feature) || LicenseCheckerService.Stub.isAllowed(feature);
+                } catch (PathNotFoundException e) {
+                    // ignore
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error checking required license feature on node " + node, e);
+        }
+        
+        return allowed;
+    }
+    
+    private boolean haveToCheckLicense(List<String> fields) {
+        return Jahia.isEnterpriseEdition() && fields.contains("j:requiredLicenseFeature");
+    }
 }

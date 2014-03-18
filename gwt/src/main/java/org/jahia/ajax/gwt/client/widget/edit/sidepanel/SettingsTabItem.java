@@ -131,6 +131,7 @@ public class SettingsTabItem extends SidePanelTabItem {
         fields.add(GWTJahiaNode.ICON);
         fields.add(GWTJahiaNode.LOCKS_INFO);
         fields.add("j:requiredPermissionNames");
+        fields.add("j:requiredLicenseFeature");
 
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override

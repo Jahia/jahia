@@ -78,16 +78,6 @@
                                     <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                     <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                 </system_components.png>
-                                <private_x0020_app_x0020_stores jcr:primaryType="jnt:folder">
-                                    <private-app-stores.png j:height="16"
-                                                j:width="16"
-                                                jcr:mixinTypes="jmix:image"
-                                                jcr:primaryType="jnt:file">
-                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
-                                    </private-app-stores.png>
-                                </private_x0020_app_x0020_stores>
                             </system_x0020_components>
                             <system_x0020_health jcr:primaryType="jnt:folder">
                                 <cache jcr:primaryType="jnt:folder"/>
@@ -289,22 +279,6 @@
                                     <manage-portlets jcr:primaryType="jnt:serverSettingsManagePortlets"/>
                                 </pagecontent>
                             </managePortlets>
-                            <forges j:applyOn="jnt:globalSettings"
-                          j:defaultTemplate="false"
-                          j:hiddenTemplate="false"
-                          j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/private_x0020_app_x0020_stores/private-app-stores.png"
-                          jcr:primaryType="jnt:contentTemplate">
-                                <j:translation_en jcr:language="en"
-                                       jcr:mixinTypes="mix:title"
-                                       jcr:primaryType="jnt:translation"
-                                       jcr:title="Private App Stores"/>
-                                <pagecontent jcr:primaryType="jnt:contentList">
-                                    <serversettingsmanageforges jcr:primaryType="jnt:serverSettingsManageForges"/>
-                                    <rich-text jcr:primaryType="jnt:bigText">
-                                        <j:translation_fr jcr:language="fr" jcr:primaryType="jnt:translation" text=""/>
-                                    </rich-text>
-                                </pagecontent>
-                            </forges>
                         </system-components>
                         <users-and-roles j:hiddenTemplate="false"
                                 j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/users_and_roles.png"

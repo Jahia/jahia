@@ -366,8 +366,8 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 scriptEngine.eval(scriptContent, scriptContext);
                 subject = scriptContext.getWriter().toString().trim();
             } catch (Exception e) {
-                logger.warn("Exception while rendering mail subject using " + StringUtils.substringBeforeLast(templateRealPath, ".") + ".subject."
-                                        + StringUtils.substringAfterLast(templateRealPath, "."), e);
+                logger.warn("Exception while rendering mail subject using " + StringUtils.substringBeforeLast(templateRealPath.getFilename(), ".") + ".subject."
+                                        + StringUtils.substringAfterLast(templateRealPath.getFilename(), "."), e);
                 subject = resourceBundle.getString(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(template, "/"), ".") + ".subject");
             } finally {
                 IOUtils.closeQuietly(scriptContent);

@@ -48,17 +48,14 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 public class GoToViewDefinitionActionItem extends BaseActionItem {
 
-    private static String MODULES_BASE_PATH = "/modules";
-    private static String SCRIPT_INFO_PREFIX = "Path dispatch: " + MODULES_BASE_PATH;
-
     @Override
     public void onComponentSelection() {
         if (linker instanceof EditLinker) {
             String sourceInfo = ((EditLinker) linker).getSelectedModule().getSourceInfo();
             if (sourceInfo != null) {
-                String url = JahiaGWTParameters.getParam("studioUrl");
-                if (url != null && url.indexOf(MODULES_BASE_PATH) > 0) {
-                    url = url.substring(0, url.indexOf(MODULES_BASE_PATH));
+                String url = JahiaGWTParameters.getParam(JahiaGWTParameters.BASE_URL);
+                if (url != null) {
+                    url = url.replace("/cms/edit/default/","/cms/studio/default/");
                     url += sourceInfo + ".html";
                     Window.Location.assign(url);
                 }

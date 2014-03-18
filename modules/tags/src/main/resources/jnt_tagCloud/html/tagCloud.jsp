@@ -16,6 +16,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="tags.css"/>
+<template:addResources type="css" resources="jqcloud.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jqcloud.js"/>
 <c:set var="edit" value="${renderContext.editMode}" />
 
 <c:set var="usageThreshold"
@@ -47,23 +49,34 @@
     </c:forEach>
 
     <c:if test="${not empty tagCloud}">
-        <ul>
-            <c:forEach items="${tagCloud}" var="tag">
-                <jcr:node var="tagName" uuid="${tag.key}"/>
-                <c:if test="${empty currentNode.properties.resultPage}">
+            <template:addResources type="inlinejavascript" key="wordListForCloud">
+                <script type="text/javascript">
+                    var word_list = [];
+
+                    <c:forEach items="${tagCloud}" var="tag">
+                    <jcr:node var="tagName" uuid="${tag.key}"/>
+                    <c:if test="${empty currentNode.properties.resultPage}">
                     <c:set var="edit" value="${true}"/>
-                </c:if>
-                <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html">
+                    </c:if>
+                    <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html">
                     <c:param name="src_terms[0].term" value="${tagName.name}"/>
                     <c:param name="src_terms[0].fields.tags" value="true"/>
                     <c:param name="src_sites.values" value="${renderContext.site.siteKey}"/>
                     <c:param name="autoSuggest" value="false"/>
-                </c:url>
-                <li><c:if test="${!edit}"><a href="${facetUrl}" class="tag${functions:round(10 * tag.value / totalUsages)}0"
-                                             title="${tagName.name} (${tag.value})">${tagName.name}</a></c:if>
-                    <c:if test="${edit}">${tagName.name}</c:if>
-                </li>
-            </c:forEach>
-        </ul>
+                    </c:url>
+                    word_list.push({
+                        text: "${tagName.name}",
+                        weight:${functions:round(10 * tag.value / totalUsages)},
+                        url: decodeURI("${facetUrl}")
+                    });
+                    </c:forEach>
+
+                    $(document).ready(function () {
+                        $("#wordcloud").jQCloud(word_list);
+                    });
+                </script>
+            </template:addResources>
+
+        <div id="wordcloud" style="width: 280px; height: 200px;"></div>
     </c:if>
 </div>

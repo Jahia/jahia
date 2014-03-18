@@ -41,7 +41,9 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -49,12 +51,13 @@ import com.google.gwt.storage.client.Storage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +67,7 @@ import java.util.Map;
 /**
  * Side panel widget that allows creation of new content using drag and drop from different sources
  * (new content panel, file repository, image repository, page tree, portlets, etc.).
+ *
  * @author toto
  */
 public class SidePanel extends ContentPanel {
@@ -74,9 +78,8 @@ public class SidePanel extends ContentPanel {
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param config
-     *            the edit mode configuration settings
+     *
+     * @param config the edit mode configuration settings
      */
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
@@ -87,9 +90,8 @@ public class SidePanel extends ContentPanel {
 
     /**
      * Initializes the tabs based on the edit mode settings
-     * 
-     * @param config
-     *            the edit mode configuration settings
+     *
+     * @param config the edit mode configuration settings
      */
     public void initTabs(GWTEditConfiguration config) {
         removeAll();
@@ -113,7 +115,7 @@ public class SidePanel extends ContentPanel {
                 selectedTab.refresh(selectedTab.getAutoRefreshData());
                 updateRefreshButton();
                 if (storage != null) {
-                    storage.setItem(SidePanel.this.config.getName() +"_selectedTab", Integer.toString(tabPanel.getItems().indexOf(tabPanel.getSelectedItem())));
+                    storage.setItem(SidePanel.this.config.getName() + "_selectedTab", Integer.toString(tabPanel.getItems().indexOf(tabPanel.getSelectedItem())));
                 }
             }
         });
@@ -125,7 +127,7 @@ public class SidePanel extends ContentPanel {
             tabPanel.add(tabItem.create(tabConfig));
         }
 
-        if (storage != null && storage.getItem(config.getName() +"_selectedTab") != null) {
+        if (storage != null && storage.getItem(config.getName() + "_selectedTab") != null) {
             int selectedTab = Integer.parseInt(storage.getItem(config.getName() + "_selectedTab"));
             tabPanel.setSelection(tabPanel.getItem(selectedTab));
         } else {
@@ -137,15 +139,19 @@ public class SidePanel extends ContentPanel {
 
     /**
      * Performs tabs initialization using edit linker object.
-     * 
-     * @param editLinker
-     *            edit linker object
+     *
+     * @param editLinker edit linker object
      */
     public void initWithLinker(final EditLinker editLinker) {
+        Component collapse = null;
+        if (head.getTools().size() == 1) {
+            HorizontalPanel hp = ((HorizontalPanel) head.getTools().get(0));
+            collapse = hp.getItem(hp.getItemCount() - 1);
+        }
         ((ToolbarHeader) head).removeAllTools();
         if (config.getSidePanelToolbar() != null) {
             for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
-                ((ToolbarHeader)head).addItem(editLinker, item);
+                ((ToolbarHeader) head).addItem(editLinker, item);
             }
         }
         refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
@@ -158,10 +164,14 @@ public class SidePanel extends ContentPanel {
                     ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).refresh(data);
                 }
                 updateRefreshButton();
+                SiteSwitcherActionItem.reloadAndRefreshAllSitesList(config.getSitesLocation(), editLinker);
             }
         });
         refreshButton.setId("JahiaGxtRefreshSidePanelButton");
         head.addTool(refreshButton);
+        if (collapse != null) {
+            head.addTool(collapse);
+        }
         ((ToolbarHeader) head).attachTools();
         layout();
 
@@ -188,49 +198,45 @@ public class SidePanel extends ContentPanel {
 
     /**
      * Callback for module selection event.
-     * 
-     * @param selectedModule
-     *            the selected module
+     *
+     * @param selectedModule the selected module
      */
     public void handleNewModuleSelection(Module selectedModule) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewModuleSelection(selectedModule);
         }
-        ((ToolbarHeader)head).handleNewLinkerSelection();
+        ((ToolbarHeader) head).handleNewLinkerSelection();
     }
 
     /**
      * Callback for the main module loaded event
-     * 
-     * @param node
-     *            the main module node
+     *
+     * @param node the main module node
      */
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewMainNodeLoaded(node);
         }
-        ((ToolbarHeader)head).handleNewMainNodeLoaded(node);
+        ((ToolbarHeader) head).handleNewMainNodeLoaded(node);
         layout();
     }
 
     /**
      * Callback for the selection of a main module.
-     * 
-     * @param path
-     *            the path of the new main module node
+     *
+     * @param path the path of the new main module node
      */
     public void handleNewMainSelection(String path) {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewMainSelection(path);
         }
-        ((ToolbarHeader)head).handleNewLinkerSelection();
+        ((ToolbarHeader) head).handleNewLinkerSelection();
     }
 
     /**
      * Specifies the items to be refreshed manually.
-     * 
-     * @param data
-     *            the refresh data
+     *
+     * @param data the refresh data
      */
     public void markForManualRefresh(Map<String, Object> data) {
         for (SidePanelTabItem tab : tabs) {
@@ -241,9 +247,8 @@ public class SidePanel extends ContentPanel {
 
     /**
      * Performs the refresh of the side panel tabs, based on the provided data.
-     * 
-     * @param data
-     *            the refresh data
+     *
+     * @param data the refresh data
      */
     public void refresh(Map<String, Object> data) {
         if (tabPanel.getSelectedItem() != null) {
@@ -262,9 +267,8 @@ public class SidePanel extends ContentPanel {
 
     /**
      * Sets the edit mode configuration settings.
-     * 
-     * @param config
-     *            the edit mode configuration settings
+     *
+     * @param config the edit mode configuration settings
      */
     public void setConfig(GWTEditConfiguration config) {
         this.config = config;

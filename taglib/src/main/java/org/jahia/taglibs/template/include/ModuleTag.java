@@ -413,14 +413,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     }
                 }
                 LinkedHashSet<String> subtypes = new LinkedHashSet<String>();
+                final Set<String> installedModulesWithAllDependencies = renderContext.getSite().getInstalledModulesWithAllDependencies();
                 for (String s : l) {
                     ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
                     if (nt != null) {
-                        if (!nt.isAbstract() && !nt.isMixin()) {
+                        if (!nt.isAbstract() && !nt.isMixin() &&
+                            installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId())) {
                             subtypes.add(nt.getName());
                         }
                         for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
-                            if (!subtype.isAbstract() && !subtype.isMixin()) {
+                            if (!subtype.isAbstract() && !subtype.isMixin() &&
+                                installedModulesWithAllDependencies.contains(subtype.getTemplatePackage().getId())) {
                                 subtypes.add(subtype.getName());
                             }
                         }

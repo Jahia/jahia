@@ -23,7 +23,7 @@
 <h2><fmt:message key="siteSettings.label.manageModules"/> - ${fn:escapeXml(site.displayableName)}</h2>
 <p>
 <strong><fmt:message key="siteSettings.manageWebProjects.webProject.templateSet"/>:&nbsp;</strong>
-${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
+${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.version})
 </p>
 <table class="table table-bordered table-striped table-hover" >
     <thead>
@@ -47,7 +47,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
             <td><strong>${pkg.name}</strong></td>
             <td>${pkg.id}</td>
             <td>${pkg.groupId}</td>
-            <td>${pkg.lastVersion}</td>
+            <td>${pkg.version}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>
         </tr>
@@ -62,7 +62,7 @@ ${fn:escapeXml(templatePackageName)}&nbsp;(${templateSetPackage.lastVersion})
             <td><strong>${pkg.name}</strong></td>
             <td>${pkg.id}</td>
             <td>${pkg.groupId}</td>
-            <td>${pkg.lastVersion}</td>
+            <td>${pkg.version}</td>
             <td><fmt:message key="moduleType.${pkg.moduleType}.label"/></td>
             <td>${pkg.provider}</td>
         </tr>

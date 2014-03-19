@@ -29,76 +29,77 @@
         <a href="#"><fmt:message key="serverSettings.manageModules.availableModules"/></a>
     </li>
 </ul>
-
-<div id="moduleDetailsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="moduleDetailsModalLabel" aria-hidden="true" style="width:960px; margin-left:-480px;">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="moduleDetailsModalLabel"><fmt:message key="serverSettings.manageModules.details"/></h3>
+<div class="tab-content">
+    <div id="moduleDetailsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="moduleDetailsModalLabel" aria-hidden="true" style="width:960px; margin-left:-480px;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 id="moduleDetailsModalLabel"><fmt:message key="serverSettings.manageModules.details"/></h3>
+        </div>
+        <div class="modal-body" style="padding:0; height:480px; max-height:480px">
+            <iframe id="modalframe" frameborder="0" style="width:100%; height:99%"></iframe>
+        </div>
     </div>
-    <div class="modal-body" style="padding:0; height:480px; max-height:480px">
-        <iframe id="modalframe" frameborder="0" style="width:100%; height:99%"></iframe>
-    </div>
-</div>
 
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-    <tr>
-        <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
-        <th><fmt:message key='serverSettings.manageModules.moduleId'/></th>
-        <th><fmt:message key='serverSettings.manageModules.groupId'/></th>
-        <th>
-            <fmt:message key="serverSettings.manageModules.version"/>
-        </th>
-        <th>
-            <fmt:message key="serverSettings.manageModules.details"/>
-        </th>
-        <th>
-            <fmt:message key="serverSettings.manageModules.download"/>
-        </th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <c:forEach items="${requestScope.modules}" var="module">
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
         <tr>
-            <td><c:if test="${not empty module.icon}"><img width="100" height="100" src="${module.icon}"/></c:if>${module.name}</td>
-            <td> ${module.id}</td>
-            <td> ${module.groupId}</td>
-            <td> ${module.version}</td>
-            <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>
-            <td>
-                <a data-toggle="modal" role="button" class="btn btn-info" type="button" data-target="#moduleDetailsModal" onclick="$('#modalframe').attr('src', '${remoteUrl}')">
-                    <i class="icon-zoom-in icon-white"></i>
-                    &nbsp;${i18nModuleDetails}
-                </a>
-            <td>
-
-            <c:choose>
-
-            <c:when test="${!module.installable}">
-                <fmt:message key="serverSettings.manageModules.module.canNotInstall" />
-            </c:when>
-
-            <c:when test="${not empty allModuleVersions[module.id] and functions:contains(allModuleVersions[module.id],module.version)}">
-                <fmt:message key="serverSettings.manageModules.module.alreadyInstalled" />
-            </c:when>
-            <%--<c:when test="${not empty allModuleVersions[module.id]}">--%>
-                <%--Other versions installed--%>
-            <%--</c:when>--%>
-            <c:otherwise>
-                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
-                    <input type="hidden" name="forgeId" value="${module.forgeId}"/>
-                    <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
-                    <button class="btn btn-block button-download" type="submit" name="_eventId_installForgeModule">
-                        <i class="icon-download"></i>
-                        &nbsp;<fmt:message key="serverSettings.manageModules.download"/>
-                    </button>
-                </form>
-            </c:otherwise>
-            </c:choose>
-
-            </td>
+            <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
+            <th><fmt:message key='serverSettings.manageModules.moduleId'/></th>
+            <th><fmt:message key='serverSettings.manageModules.groupId'/></th>
+            <th>
+                <fmt:message key="serverSettings.manageModules.version"/>
+            </th>
+            <th>
+                <fmt:message key="serverSettings.manageModules.details"/>
+            </th>
+            <th>
+                <fmt:message key="serverSettings.manageModules.download"/>
+            </th>
         </tr>
-    </c:forEach>
-    </tbody>
-</table>
+        </thead>
+
+        <tbody>
+        <c:forEach items="${requestScope.modules}" var="module">
+            <tr>
+                <td><c:if test="${not empty module.icon}"><img width="100" height="100" src="${module.icon}"/></c:if>${module.name}</td>
+                <td> ${module.id}</td>
+                <td> ${module.groupId}</td>
+                <td> ${module.version}</td>
+                <c:url value="${module.remoteUrl}" context="/" var="remoteUrl"/>
+                <td>
+                    <a data-toggle="modal" role="button" class="btn btn-info" type="button" data-target="#moduleDetailsModal" onclick="$('#modalframe').attr('src', '${remoteUrl}')">
+                        <i class="icon-zoom-in icon-white"></i>
+                        &nbsp;${i18nModuleDetails}
+                    </a>
+                <td>
+
+                <c:choose>
+
+                <c:when test="${!module.installable}">
+                    <fmt:message key="serverSettings.manageModules.module.canNotInstall" />
+                </c:when>
+
+                <c:when test="${not empty allModuleVersions[module.id] and functions:contains(allModuleVersions[module.id],module.version)}">
+                    <fmt:message key="serverSettings.manageModules.module.alreadyInstalled" />
+                </c:when>
+                <%--<c:when test="${not empty allModuleVersions[module.id]}">--%>
+                    <%--Other versions installed--%>
+                <%--</c:when>--%>
+                <c:otherwise>
+                    <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
+                        <input type="hidden" name="forgeId" value="${module.forgeId}"/>
+                        <input type="hidden" name="moduleUrl" value="${module.downloadUrl}"/>
+                        <button class="btn btn-block button-download" type="submit" name="_eventId_installForgeModule">
+                            <i class="icon-download"></i>
+                            &nbsp;<fmt:message key="serverSettings.manageModules.download"/>
+                        </button>
+                    </form>
+                </c:otherwise>
+                </c:choose>
+
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</div>

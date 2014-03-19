@@ -53,81 +53,83 @@
         </li>
         <li><a href="#" onclick="$('#viewAvailableModulesForm').submit()"><fmt:message key="serverSettings.manageModules.availableModules"/></a></li>
     </ul>
-    <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post"
-			   onsubmit="workInProgress('${i18nWaiting}');">
-        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
-            <c:if test="${message.severity eq 'INFO'}">
-                <div class="alert alert-success">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        ${message.text}
-                </div>
+    <div class="tab-content">
+        <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post"
+                   onsubmit="workInProgress('${i18nWaiting}');">
+            <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+                <c:if test="${message.severity eq 'INFO'}">
+                    <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            ${message.text}
+                    </div>
+                </c:if>
+                <c:if test="${message.severity eq 'ERROR'}">
+                    <div class="alert alert-error">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            ${message.text}
+                    </div>
+                </c:if>
+            </c:forEach>
+            <div class="alert alert-info">
+                <label for="moduleFileUpload"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
+                <input type="file" id="moduleFileUpload" name="moduleFile" accept=""/>
+                <button class="btn btn-primary" type="submit" name="_eventId_upload">
+                    <i class="icon-download icon-white"></i>
+                    &nbsp;<fmt:message key='label.upload'/>
+                </button>
+            </div>
+        </form:form>
+    </c:if>
+    <%@include file="moduleLabels.jspf" %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="module_table">
+        <thead>
+        <tr>
+            <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
+            <th><fmt:message key='serverSettings.manageModules.moduleId'/></th>
+            <th><fmt:message key='serverSettings.manageModules.groupId'/></th>
+            <th class="{sorter: false}">${i18nModuleDetails}</th>
+            <th><fmt:message key='serverSettings.manageModules.versions'/></th>
+            <c:if test="${not isStudio}">
+                <th><fmt:message key='serverSettings.manageModules.status'/></th>
             </c:if>
-            <c:if test="${message.severity eq 'ERROR'}">
-                <div class="alert alert-error">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        ${message.text}
-                </div>
+            <c:if test="${not isStudio}">
+                <th><fmt:message key='serverSettings.manageModules.sources'/></th>
             </c:if>
-        </c:forEach>
-        <div class="alert alert-info">
-            <label for="moduleFileUpload"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
-            <input type="file" id="moduleFileUpload" name="moduleFile" accept=""/>
-            <button class="btn btn-primary" type="submit" name="_eventId_upload">
-                <i class="icon-download icon-white"></i>
-                &nbsp;<fmt:message key='label.upload'/>
-            </button>
+            <th><fmt:message key='serverSettings.manageModules.usedInSites'/></th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:choose>
+            <c:when test="${isStudio}">
+                <c:forEach items="${allModuleVersions}" var="entry">
+                    <%@include file="currentModuleVars.jspf" %>
+                    <%@include file="modulesTableRow.jspf" %>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <c:forEach items="${allModuleVersions}" var="entry">
+                    <%@include file="currentModuleVars.jspf" %>
+                    <c:if test="${!isMandatoryDependency && sourcesDownloadable}">
+                        <%@include file="modulesTableRow.jspf" %>
+                    </c:if>
+                </c:forEach>
+                <c:forEach items="${allModuleVersions}" var="entry">
+                    <%@include file="currentModuleVars.jspf" %>
+                    <c:if test="${!isMandatoryDependency && !sourcesDownloadable}">
+                        <%@include file="modulesTableRow.jspf" %>
+                    </c:if>
+                </c:forEach>
+                <c:forEach items="${allModuleVersions}" var="entry">
+                    <%@include file="currentModuleVars.jspf" %>
+                    <c:if test="${isMandatoryDependency}">
+                        <%@include file="modulesTableRow.jspf" %>
+                    </c:if>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+        </tbody>
+    </table>
+    <c:if test="${not isStudio}">
+        <p><a id="mandatory-dependency">&nbsp;</a><span class="text-error"><strong>*</strong></span>&nbsp;-&nbsp;${i18nMandatoryDependency}</p>
         </div>
-    </form:form>
-</c:if>
-<%@include file="moduleLabels.jspf" %>
-<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="module_table">
-    <thead>
-    <tr>
-        <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>
-        <th><fmt:message key='serverSettings.manageModules.moduleId'/></th>
-        <th><fmt:message key='serverSettings.manageModules.groupId'/></th>
-        <th class="{sorter: false}">${i18nModuleDetails}</th>
-        <th><fmt:message key='serverSettings.manageModules.versions'/></th>
-        <c:if test="${not isStudio}">
-            <th><fmt:message key='serverSettings.manageModules.status'/></th>
-        </c:if>
-        <c:if test="${not isStudio}">
-            <th><fmt:message key='serverSettings.manageModules.sources'/></th>
-        </c:if>
-        <th><fmt:message key='serverSettings.manageModules.usedInSites'/></th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:choose>
-        <c:when test="${isStudio}">
-            <c:forEach items="${allModuleVersions}" var="entry">
-                <%@include file="currentModuleVars.jspf" %>
-                <%@include file="modulesTableRow.jspf" %>
-            </c:forEach>
-        </c:when>
-        <c:otherwise>
-            <c:forEach items="${allModuleVersions}" var="entry">
-                <%@include file="currentModuleVars.jspf" %>
-                <c:if test="${!isMandatoryDependency && sourcesDownloadable}">
-                    <%@include file="modulesTableRow.jspf" %>
-                </c:if>
-            </c:forEach>
-            <c:forEach items="${allModuleVersions}" var="entry">
-                <%@include file="currentModuleVars.jspf" %>
-                <c:if test="${!isMandatoryDependency && !sourcesDownloadable}">
-                    <%@include file="modulesTableRow.jspf" %>
-                </c:if>
-            </c:forEach>
-            <c:forEach items="${allModuleVersions}" var="entry">
-                <%@include file="currentModuleVars.jspf" %>
-                <c:if test="${isMandatoryDependency}">
-                    <%@include file="modulesTableRow.jspf" %>
-                </c:if>
-            </c:forEach>
-        </c:otherwise>
-    </c:choose>
-    </tbody>
-</table>
-<c:if test="${not isStudio}">
-    <p><a id="mandatory-dependency">&nbsp;</a><span class="text-error"><strong>*</strong></span>&nbsp;-&nbsp;${i18nMandatoryDependency}</p>
-</c:if>
+    </c:if>

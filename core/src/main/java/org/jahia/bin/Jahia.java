@@ -423,11 +423,8 @@ public final class Jahia {
         if (FULL_PRODUCT_VERSION == null) {
             StringBuilder version = new StringBuilder(32);
 
-            if (isEnterpriseEdition()) {
-                version.append("Enterprise ");
-            }
-
-            version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] r")
+            version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
+                    .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ")
                     .append(Jahia.getBuildNumber());
             if (isEnterpriseEdition()) {
                 version.append(".").append(Jahia.getEEBuildNumber());

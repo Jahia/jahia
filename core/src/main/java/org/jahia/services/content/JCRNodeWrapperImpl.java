@@ -3468,7 +3468,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 title = null;
             }
         }
-        return title != null ? (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(") ? interpolateResourceBundle(title) : title) : getUnescapedName();
+
+        // also return unescaped name if title is empty
+        if(title != null && !title.isEmpty()) {
+            return (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(")) ?
+                    interpolateResourceBundle(title) :
+                    title;
+        }
+        else {
+            return getUnescapedName();
+        }
     }
 
     public String getUnescapedName() {

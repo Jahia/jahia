@@ -1,0 +1,79 @@
+<div class="row-fluid">
+    <div class="pull-left btn-group">
+        <button class="btn" onclick="bbAddFile()" title="<fmt:message key="uploadFile.label"/>">
+            <i class="icon-arrow-up"></i>
+            <i class="icon-file"></i>
+        </button>
+        <button class="btn" onclick="bbAddFolder('${currentNode.identifier}')" title="<fmt:message key="label.createFolder"/>">
+            <i class="icon-plus"></i>
+            <i class="icon-folder-open"></i>
+        </button>
+    </div>
+    <div class="pull-right btn-group">
+        <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+            <c:param name="path" value="${functions:encodeUrlParam(currentNode.path)}"/>
+        </c:url>
+        <a class="btn" href="<c:out value='${link}' escapeXml='false'/>" title="<fmt:message key="myFiles.detailledView"/>">
+            <i class="icon-th-list"></i>
+        </a>
+        <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
+            <c:param name="view" value="${functions:encodeUrlParam('icon')}"/>
+            <c:param name="path" value="${functions:encodeUrlParam(currentNode.path)}"/>
+        </c:url>
+        <a class="btn" href="<c:out value='${link}' escapeXml='false'/>" title="<fmt:message key="myFiles.iconView"/>">
+            <i class="icon-th"></i>
+        </a>
+        <c:url value="${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html" var="link">
+            <c:param name="view" value="${functions:encodeUrlParam('slider')}"/>
+            <c:param name="path" value="${functions:encodeUrlParam(currentNode.path)}"/>
+        </c:url>
+        <a class="btn" href="<c:out value='${link}' escapeXml='false'/>" title="<fmt:message key="myFiles.slideView"/>">
+            <i class="icon-th-large"></i>
+        </a>
+    </div>
+</div>
+
+<ul class="breadcrumb">
+    <c:set var="compare" value="${currentUser.localPath}/files"/>
+    <c:choose>
+        <c:when test="${currentNode.path ne compare}">
+            <li>
+                <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                    <c:param name="view" value="${functions:encodeUrlParam(currentView)}"/>
+                </c:url>
+                <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">
+                    <i class="icon-home"></i> Home
+                </a>
+            </li>
+            <c:set value="${fn:substringAfter(currentNode.path, compare)}" var="sub"/>
+            <c:set value="${fn:split(sub, '/')}" var="split"/>
+            <c:forEach items="${split}" var="folder" varStatus="folderIndex">
+                <c:set value="${folderUrl}/${folder}" var="folderUrl"/>
+                <c:choose>
+                    <c:when test="${folderIndex.last}">
+                        <li class="active">
+                            <span class="divider">/</span>
+                            ${folder}
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                            <span class="divider">/</span>
+                            <c:set var="folderPath" value="${compare}${folderUrl}"/>
+                            <c:url value='${url.baseUserBoardFrameEdit}${currentUser.localPath}.files.html' var="link">
+                                <c:param name="path" value="${functions:encodeUrlParam(folderPath)}"/>
+                                <c:param name="view" value="${functions:encodeUrlParam(currentView)}"/>
+                            </c:url>
+                            <a href="<c:out value='${link}' escapeXml='false'/>" style="text-decoration: none;">${folder}</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+        </c:when>
+        <c:otherwise>
+            <li class="active">
+                <i class="icon-home"></i>&nbsp;<fmt:message key="label.home"/>
+            </li>
+        </c:otherwise>
+    </c:choose>
+</ul>

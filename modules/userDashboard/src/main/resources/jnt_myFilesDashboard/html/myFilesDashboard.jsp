@@ -29,6 +29,9 @@
         <c:if test="${displayView eq 'icon'}">
             <template:module path="${displayPath}" templateType="html" view="userDashboard-icon"/>
         </c:if>
+        <c:if test="${displayView eq 'slider'}">
+            <template:module path="${displayPath}" templateType="html" view="userDashboard-slider"/>
+        </c:if>
     </c:when>
     <c:otherwise>
         <template:module path="${displayPath}" templateType="html" view="userDashboard"/>

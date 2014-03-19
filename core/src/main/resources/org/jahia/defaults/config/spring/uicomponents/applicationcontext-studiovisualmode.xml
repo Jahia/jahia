@@ -7,6 +7,7 @@
 
     <bean id="studiovisualmode" parent="studiomode">
         <property name="forceHeaders" value="false"/>
+        <property name="supportChannelsDisplay" value="true"/>
         <property name="visibleTypes">
             <set>
             </set>

@@ -78,7 +78,7 @@ public class SettingsTabItem extends SidePanelTabItem {
 
     private transient ContentPanel settingsPanel;
     private String settingPath;
-    private String settingTemplateRoot;
+    private String settingsTemplateRoot;
     private String label;
     private transient TreeLoader<GWTJahiaNode> settingsLoader;
     private transient TreeStore<GWTJahiaNode> settingsStore;
@@ -271,8 +271,7 @@ public class SettingsTabItem extends SidePanelTabItem {
                 super.handleMouseClick(e);
                 final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath()).replaceAll("\\$user",JahiaGWTParameters.getCurrentUserPath());
                 if (e.getModel().isNodeType("jnt:contentTemplate") && !Boolean.FALSE.equals(e.getModel().get("hasAccessToSettings"))) {
-                    MainModule.getInstance().staticGoTo(path, getSelectedItem().getName());
-                    editLinker.getMainModule().setAllowSwitchingMode(false);
+                    MainModule.staticGoTo(path, getSelectedItem().getName(), "generic", "");
                 }
             }
         });
@@ -291,19 +290,24 @@ public class SettingsTabItem extends SidePanelTabItem {
             this.mainNode = node;
             doRefresh();
         }
+        if (settingsTemplateRoot.equals("site-settings-base")) {
+            if (node.equals(JahiaGWTParameters.getSiteNode())) {
+                tab.getTabPanel().setSelection(tab);
+            }
+        }
     }
 
     private void resetPaths() {
         paths = new ArrayList<String>();
         if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().get("j:installedModules") != null) {
             for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules"))) {
-                paths.add("/modules/" + module + "/$moduleversion/templates/" + settingTemplateRoot + "/*");
+                paths.add("/modules/" + module + "/$moduleversion/templates/" + settingsTemplateRoot + "/*");
             }
         }
     }
 
     public void setSettingsTemplateRoot(String settingTemplateRoot) {
-        this.settingTemplateRoot = settingTemplateRoot;
+        this.settingsTemplateRoot = settingTemplateRoot;
     }
 
     public void setLabel(String label) {
@@ -327,7 +331,7 @@ public class SettingsTabItem extends SidePanelTabItem {
 
     private String getSettingsPath(GWTJahiaNode node) {
         String nodePath = node.getPath();
-        return nodePath.substring(nodePath.indexOf(settingTemplateRoot) + settingTemplateRoot.length());
+        return nodePath.substring(nodePath.indexOf(settingsTemplateRoot) + settingsTemplateRoot.length());
     }
 
 }

@@ -60,6 +60,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private String defaultUrlMapping;
     private String defaultLocation;
     private boolean useFullPublicationInfoInMainAreaModules;
+    private boolean supportChannelsDisplay;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -138,4 +139,11 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
         this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
     }
 
+    public boolean isSupportChannelsDisplay() {
+        return supportChannelsDisplay;
+    }
+
+    public void setSupportChannelsDisplay(boolean supportChannelsDisplay) {
+        this.supportChannelsDisplay = supportChannelsDisplay;
+    }
 }

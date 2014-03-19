@@ -110,7 +110,9 @@ public class MainModule extends Module {
     private final LayoutContainer headContainer;
     private String newLocation = null;
     private boolean firstLoad = true;
-    private boolean allowSwitchingMode = true;
+
+    private GWTJahiaChannel activeChannel;
+    private String activeChannelVariant;
 
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
@@ -282,24 +284,24 @@ public class MainModule extends Module {
     }
 
     private void layoutChannel() {
-
         center.removeAll();
 
 
-        GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
-        int activeChannelVariantIndex = 0;
-
-        if (activeChannel == null || "default".equals(activeChannel.getValue())) {
+        if (activeChannel == null || "generic".equals(activeChannel.getValue()) || !config.isSupportChannelsDisplay()) {
             scrollContainer.setPosition(0, 0);
             center.setLayout(new FitLayout());
             center.setScrollMode(Style.Scroll.NONE);
             center.add(scrollContainer);
         } else {
-            activeChannelVariantIndex = editLinker.getActiveChannelVariantIndex();
+            int variantIndex = activeChannel.getVariants().indexOf(activeChannelVariant);
+            if (variantIndex == -1) {
+                variantIndex = 0;
+            }
+
             // first let setup the device decorator layout container
             LayoutContainer deviceDecoratorContainer = new LayoutContainer(new AbsoluteLayout());
             deviceDecoratorContainer.setBorders(false);
-            int[] decoratorImageSize = activeChannel.getVariantDecoratorImageSize(activeChannelVariantIndex);
+            int[] decoratorImageSize = activeChannel.getVariantDecoratorImageSize(variantIndex);
             if (decoratorImageSize.length == 0) {
                 decoratorImageSize = new int[]{-1, -1};
             }
@@ -308,16 +310,16 @@ public class MainModule extends Module {
             deviceDecoratorContainer.setStyleAttribute("margin-right", "auto");
             AbsoluteData deviceOuterData = new AbsoluteData(0, 0);
             deviceOuterData.setMargins(new Margins(0, 0, 0, 0));
-            if (activeChannel.getVariantDecoratorImage(activeChannelVariantIndex) != null) {
-                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath() + activeChannel.getVariantDecoratorImage(activeChannelVariantIndex)), deviceOuterData);
+            if (activeChannel.getVariantDecoratorImage(variantIndex) != null) {
+                deviceDecoratorContainer.add(new Image(JahiaGWTParameters.getContextPath() + activeChannel.getVariantDecoratorImage(variantIndex)), deviceOuterData);
             }
 
-            int[] usableResolution = getUsableDeviceResolution(activeChannel, activeChannelVariantIndex);
+            int[] usableResolution = getUsableDeviceResolution(activeChannel, variantIndex);
             scrollContainer.setSize(usableResolution[0], usableResolution[1]);
             scrollContainer.setScrollMode(Style.Scroll.NONE);
 
             int[] screenPosition = null;
-            screenPosition = activeChannel.getVariantDecoratorScreenPosition(activeChannelVariantIndex);
+            screenPosition = activeChannel.getVariantDecoratorScreenPosition(variantIndex);
             if (screenPosition == null || screenPosition.length == 0) {
                 screenPosition = new int[]{0, 0};
             }
@@ -338,7 +340,7 @@ public class MainModule extends Module {
     private int[] getUsableDeviceResolution(GWTJahiaChannel activeChannel, int activeChannelIndex) {
         int[] usableResolution;
         if (activeChannel != null) {
-            usableResolution = editLinker.getActiveChannel().getVariantUsableResolution(activeChannelIndex);
+            usableResolution = activeChannel.getVariantUsableResolution(activeChannelIndex);
             if (usableResolution.length == 0) {
                 usableResolution = new int[]{
                         -1,
@@ -388,8 +390,8 @@ public class MainModule extends Module {
                     forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
                 }
             }
-            allowSwitchingMode = true;
-            goToUrl(getUrl(path, template), data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
+            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant);
+            goToUrl(url, data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }
 
@@ -417,6 +419,7 @@ public class MainModule extends Module {
      */
     public void goToUrl(final String url, final boolean forceImageRefresh, boolean forceCssRefresh, boolean forceJavascriptRefresh) {
         mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
+        setChannelFromUrl(url);
         layoutChannel();
         frame.setForceImageRefresh(forceImageRefresh);
         frame.setForceCssRefresh(forceCssRefresh);
@@ -425,17 +428,63 @@ public class MainModule extends Module {
         center.layout(true);
     }
 
+    private void setChannelFromUrl(String url) {
+        if (config.isSupportChannelsDisplay()) {
+            activeChannel = editLinker.getActiveChannel();
+            activeChannelVariant = editLinker.getActiveChannelVariant();
+
+            Map<String,String> params = getParamsFromUrl(url);
+            if (params.containsKey("channel")) {
+                String channelName = params.get("channel");
+                for (GWTJahiaChannel gwtJahiaChannel : JahiaGWTParameters.getChannels()) {
+                    if (gwtJahiaChannel.getValue().equals(channelName)) {
+                        this.activeChannel = gwtJahiaChannel;
+                        this.activeChannelVariant = null;
+                        break;
+                    }
+                }
+
+                if (params.containsKey("variant")) {
+                    activeChannelVariant = params.get("variant");
+                }
+            }
+        } else {
+            activeChannel = null;
+            activeChannelVariant = null;
+        }
+    }
+
+    private Map<String,String> getParamsFromUrl(String url) {
+        Map<String,String> m = new HashMap<String,String>();
+        if (url.contains("?")) {
+            String[] params = url.substring(url.indexOf('?')+1).split("&");
+            for (String param : params) {
+                if (param.contains("=")) {
+                    String[] v = param.split("=");
+                    m.put(v[0],v[1]);
+                }
+            }
+        }
+        return m;
+    }
+
     public static void waitingMask(String text) {
         getInstance().mask(text, "x-mask-loading");
     }
 
-    private String getUrl(String path, String template) {
+    public String getUrl(String path, String template, String channel, String variant) {
         StringBuilder url = new StringBuilder(getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html");
         // add channel parameters
-        if (editLinker.getActiveChannel() != null && !"default".equals(editLinker.getActiveChannel().getValue())) {
-            url.append("?channel=").append(editLinker.getActiveChannel().getValue());
-            if (editLinker.getActiveChannelVariant() != null) {
-                url.append("&variant=").append(editLinker.getActiveChannelVariant());
+        if (channel == null && editLinker.getActiveChannel() != null && !"default".equals(editLinker.getActiveChannel().getValue())) {
+            channel = editLinker.getActiveChannel().getValue();
+        }
+        if (variant == null && editLinker.getActiveChannelVariant() != null) {
+            variant = editLinker.getActiveChannelVariant();
+        }
+        if (channel != null && channel.length() > 0) {
+            url.append("?channel=").append(channel);
+            if (variant != null && variant.length() > 0) {
+                url.append("&variant=").append(variant);
             }
         }
         return url.toString();
@@ -531,9 +580,8 @@ public class MainModule extends Module {
             scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
             scrollContainer.setWidth(getWidth());
 
-            GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
             if (activeChannel != null && !"default".equals(activeChannel.getValue())) {
-                int[] usableResolution = getUsableDeviceResolution(editLinker.getActiveChannel(), editLinker.getActiveChannelVariantIndex());
+                int[] usableResolution = getUsableDeviceResolution(activeChannel, editLinker.getActiveChannelVariantIndex());
                 scrollContainer.setSize(usableResolution[0], usableResolution[1]);
             }
             needParseAfterLayout = false;
@@ -545,9 +593,8 @@ public class MainModule extends Module {
         scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
         scrollContainer.setWidth(getWidth());
 
-        GWTJahiaChannel activeChannel = editLinker.getActiveChannel();
         if (activeChannel != null && !"default".equals(activeChannel.getValue())) {
-            int[] usableResolution = getUsableDeviceResolution(editLinker.getActiveChannel(), editLinker.getActiveChannelVariantIndex());
+            int[] usableResolution = getUsableDeviceResolution(activeChannel, editLinker.getActiveChannelVariantIndex());
             scrollContainer.setSize(usableResolution[0], usableResolution[1]);
         }
 
@@ -589,11 +636,14 @@ public class MainModule extends Module {
     }
 
     public static void staticGoTo(String path, String template) {
-        module.goTo(path, template);
+        module.goTo(path, template, null, null);
+    }
+
+    public static void staticGoTo(String path, String template, String channel, String variant) {
+        module.goTo(path, template, channel, variant);
     }
 
     public static void staticGoToUrl(String path) {
-        module.setAllowSwitchingMode(true);
         module.goToUrl(path, false, false, false);
     }
 
@@ -606,8 +656,8 @@ public class MainModule extends Module {
         }
     }
 
-    public void goTo(String path, String template) {
-        goToUrl(getUrl(path, template), false, false, false);
+    public void goTo(String path, String template, String channel, String variant) {
+        goToUrl(getUrl(path, template, channel, variant), false, false, false);
     }
 
     private void setHashMarker(String path) {
@@ -620,7 +670,8 @@ public class MainModule extends Module {
             if (!path.endsWith("##")) {
                 String pathWithoutFrame = path.replaceFirst("frame/", "/");
                 if (Window.Location.getQueryString().contains("gwt.codesvr")) {
-                    pathWithoutFrame += Window.Location.getQueryString();
+                    Map<String,String> m = getParamsFromUrl(Window.Location.getQueryString());
+                    pathWithoutFrame += (pathWithoutFrame.contains("?") ? '&': '?') + "gwt.codesvr="+m.get("gwt.codesvr");
                 }
                 if (!pathWithoutFrame.equals(currentHref) || firstLoad) {
                     firstLoad = false;
@@ -658,10 +709,9 @@ public class MainModule extends Module {
     public void switchChannel(GWTJahiaChannel channel, String variant) {
         editLinker.setActiveChannelVariant(variant);
         editLinker.setActiveChannel(channel);
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put(Linker.REFRESH_MAIN, true);
-        data.put("event", "channelChanged");
-        editLinker.refresh(data);
+        if (!editLinker.isInSettingsPage()) {
+            goTo(path, template, channel.getValue(), variant);
+        }
     }
 
     @Override
@@ -671,6 +721,11 @@ public class MainModule extends Module {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
                     Messages.get("info_sharednode", "This is a shared node")));
         }
+
+        final List<String> types = node.getNodeTypes();
+        final List<String> inheritedTypes = node.getInheritedNodeTypes();
+        editLinker.setInSettingsPage(!types.contains("jnt:page") && !types.contains("jnt:template") && !types.contains("jnt:content") &&
+                        !inheritedTypes.contains("jnt:page") && !inheritedTypes.contains("jnt:template") && !inheritedTypes.contains("jnt:content"));
 
         setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());
 
@@ -700,7 +755,8 @@ public class MainModule extends Module {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
 
         boolean changedRoot = forceRootChange || !config.getSitesLocation().equals(this.config.getSitesLocation());
-
+        activeChannel = null;
+        activeChannelVariant = null;
         if (newPath != null) {
             newLocation = newPath;
         } else if (changedRoot) {
@@ -891,14 +947,6 @@ public class MainModule extends Module {
 
     public boolean isDraggable() {
         return false;
-    }
-
-    public boolean isAllowSwitchingMode() {
-        return allowSwitchingMode;
-    }
-
-    public void setAllowSwitchingMode(boolean allowSwitchingMode) {
-        this.allowSwitchingMode = allowSwitchingMode;
     }
 
     public static MainModule getInstance() {

@@ -26,6 +26,7 @@
         <property name="requiredPermission" value="studioModeAccess"/>
         <property name="nodeCheckPermission" value="/modules"/>
         <property name="forceHeaders" value="true"/>
+        <property name="supportChannelsDisplay" value="false"/>
         <property name="componentsPaths">
             <list>
                 <value>/modules/*</value>

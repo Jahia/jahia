@@ -123,6 +123,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
                 GWTJahiaChannel selectedChannel = event.getSelectedItem();
                 editLinker.getMainModule().switchChannel(selectedChannel, null);
+                doRefresh();
             }
         });
         formPanel.add(deviceCombo);

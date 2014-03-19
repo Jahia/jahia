@@ -100,7 +100,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        if (updateOnMainNodeRefresh && linker instanceof EditLinker && !((EditLinker) linker).getMainModule().isAllowSwitchingMode()) {
+        if (updateOnMainNodeRefresh && linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) {
             setEnabled(false);
         } else {
             setEnabled(isNodeTypeAllowed(node));

@@ -87,6 +87,7 @@ public class EditLinker implements Linker {
     private String locale;
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
+    private boolean isInSettingsPage = true;
 
     /**
      * Initializes an instance of this class.
@@ -174,6 +175,11 @@ public class EditLinker implements Linker {
             JahiaGWTParameters.setWorkspace(enforcedWorkspace);
         }
         PermissionsUtils.loadPermissions(config.getPermissions());
+
+        if (updateSidePanel) {
+            this.activeChannel = null;
+            this.activeChannelVariant = null;
+        }
 
         mainModule.setConfig(config, newPath, forceRootChange);
         if (updateSidePanel) {
@@ -510,6 +516,14 @@ public class EditLinker implements Linker {
      */
     public void setActiveChannelVariant(String activeChannelVariant) {
         this.activeChannelVariant = activeChannelVariant;
+    }
+
+    public boolean isInSettingsPage() {
+        return isInSettingsPage;
+    }
+
+    public void setInSettingsPage(boolean inSettingsPage) {
+        this.isInSettingsPage = inSettingsPage;
     }
 
     /**

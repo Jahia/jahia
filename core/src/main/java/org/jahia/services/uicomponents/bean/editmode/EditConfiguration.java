@@ -96,7 +96,9 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private boolean loadSitesList = true;
 
     private boolean useFullPublicationInfoInMainAreaModules;
-    
+
+    private boolean supportChannelsDisplay = true;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -342,5 +344,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setUseFullPublicationInfoInMainAreaModules(boolean useFullPublicationInfoInMainAreaModules) {
         this.useFullPublicationInfoInMainAreaModules = useFullPublicationInfoInMainAreaModules;
+    }
+
+    public boolean isSupportChannelsDisplay() {
+        return supportChannelsDisplay;
+    }
+
+    public void setSupportChannelsDisplay(boolean supportChannelsDisplay) {
+        this.supportChannelsDisplay = supportChannelsDisplay;
     }
 }

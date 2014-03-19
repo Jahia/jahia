@@ -91,7 +91,7 @@ public class ModulesTabItem extends BrowseTabItem {
                             && !getSelectedItem().getNodeTypes().contains("jnt:folder")
                             && !getSelectedItem().getInheritedNodeTypes().contains("jnt:folder")
                             && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
-                        MainModule.staticGoTo(getSelectedItem().getPath(), null);
+                        MainModule.staticGoTo(getSelectedItem().getPath(), null, "generic", "");
                     }
                 }
             }

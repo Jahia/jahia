@@ -146,7 +146,6 @@ public class PagesTabItem extends SidePanelTabItem {
                     !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")
                         ) {
-                    editLinker.getMainModule().setAllowSwitchingMode(true);
                     MainModule.staticGoTo(node.getPath(), null);
                 }
             }

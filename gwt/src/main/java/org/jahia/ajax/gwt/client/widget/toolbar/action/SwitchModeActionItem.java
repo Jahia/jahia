@@ -43,7 +43,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.Window;
@@ -85,7 +84,7 @@ public class SwitchModeActionItem extends BaseActionItem {
         setSubMenu(m);
 
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
-        if ((linker instanceof EditLinker && !((EditLinker) linker).getMainModule().isAllowSwitchingMode()) ||
+        if ((linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) ||
                 !hasPermission(linker.getSelectionContext().getMainNode())) {
             setEnabled(false);
         } else {

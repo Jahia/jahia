@@ -154,7 +154,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @SuppressWarnings("unchecked")
     public void contextInitialized(ServletContextEvent event) {
         startupTime = System.currentTimeMillis();
-        startupWithTrust(Jahia.getBuildNumber());
+        startupWithTrust(Jahia.isEnterpriseEdition() ? (Jahia.getBuildNumber() + "." + Jahia.getEEBuildNumber()) : String.valueOf(Jahia.getBuildNumber()));
 
         logger.info("Starting up Jahia, please wait...");
 
@@ -361,9 +361,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
      * startupWithTrust
      * AK    20.01.2001
      */
-    private void startupWithTrust(int buildNumber) {
-        Integer buildNumberInteger = new Integer(buildNumber);
-        String buildString = buildNumberInteger.toString();
+    private void startupWithTrust(String buildString) {
         StringBuilder buildBuffer = new StringBuilder();
 
         for (int i = 0; i < buildString.length(); i++) {

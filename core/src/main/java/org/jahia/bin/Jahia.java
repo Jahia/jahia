@@ -109,6 +109,8 @@ public final class Jahia {
     private static String EDITION;
 
     private static final Version JAHIA_VERSION;
+    
+    private static String FULL_PRODUCT_VERSION; 
 
     static {
         Version v = null;
@@ -136,9 +138,9 @@ public final class Jahia {
     public static int getBuildNumber() {
         if (BUILD_NUMBER == -1) {
             try {
-                URL urlToMavenPom = Jahia.class
+                URL urlToVersionMarker = Jahia.class
                         .getResource("/META-INF/jahia-impl-marker.txt");
-                if (urlToMavenPom != null) {
+                if (urlToVersionMarker != null) {
                     InputStream in = Jahia.class
                             .getResourceAsStream("/META-INF/jahia-impl-marker.txt");
                     try {
@@ -418,13 +420,22 @@ public final class Jahia {
      * @return full product version string
      */
     public static String getFullProductVersion() {
-        StringBuilder version = new StringBuilder(32);
+        if (FULL_PRODUCT_VERSION == null) {
+            StringBuilder version = new StringBuilder(32);
 
-        version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] r").append(Jahia.getBuildNumber());
-        if (isEnterpriseEdition()) {
-            version.append(".").append(Jahia.getEEBuildNumber());
+            if (isEnterpriseEdition()) {
+                version.append("Enterprise ");
+            }
+
+            version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] r")
+                    .append(Jahia.getBuildNumber());
+            if (isEnterpriseEdition()) {
+                version.append(".").append(Jahia.getEEBuildNumber());
+            }
+
+            FULL_PRODUCT_VERSION = version.toString();
         }
 
-        return version.toString();
+        return FULL_PRODUCT_VERSION;
     }
 }

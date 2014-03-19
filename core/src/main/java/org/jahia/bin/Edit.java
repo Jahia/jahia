@@ -88,6 +88,9 @@ public class Edit extends Render {
             return false;
         }
         try {
+            if (node.getSession().getUser() == null) {
+                return false;
+            }
             if (Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName())) {
                 logger.error("Someone have tried to access the live repository in edit mode");
                 return false;

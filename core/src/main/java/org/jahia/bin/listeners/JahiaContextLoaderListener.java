@@ -156,7 +156,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         startupTime = System.currentTimeMillis();
         startupWithTrust(Jahia.isEnterpriseEdition() ? (Jahia.getBuildNumber() + "." + Jahia.getEEBuildNumber()) : String.valueOf(Jahia.getBuildNumber()));
 
-        logger.info("Starting up Jahia, please wait...");
+        logger.info("Starting up Digital Factory, please wait...");
 
         servletContext = event.getServletContext();
         

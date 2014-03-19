@@ -1,15 +1,15 @@
-<c:forEach items="${moduleMap.currentList}"  var="task" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+<c:forEach items="${moduleMap.currentList}" var="task" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
     <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
         <td>
             <i id="iconTaskDisplay_${task.identifier}" class="iconTaskDisplay icon-plus" onclick="switchTaskDisplay('${task.identifier}')"></i>
-                <strong>&nbsp;${fn:escapeXml(task.displayableName)}</strong>
+            <strong>&nbsp;${fn:escapeXml(task.displayableName)}</strong>
             </a>
             <c:if test="${not empty task.properties['targetNode'].node}">
                 <c:set value="${jcr:findDisplayableNodeInSite(task.properties['targetNode'].node, renderContext, task.properties['targetNode'].node.resolveSite)}" var="displayableNode"/>
                 &nbsp;-&nbsp;
                 <span>
                     <a href="<c:url value='${url.base}${displayableNode.path}.html'/>">
-                        ${fn:escapeXml(task.properties["targetNode"].node.displayableName)}
+                            ${fn:escapeXml(task.properties["targetNode"].node.displayableName)}
                     </a>
                 </span>
             </c:if>
@@ -18,134 +18,139 @@
                 &nbsp;-&nbsp;
                 <span>
                     <a href="<c:url value='${url.base}${displayableNode.path}.html'/>">
-                        ${displayableNode.displayableName}
+                            ${displayableNode.displayableName}
                     </a>
                 </span>
             </c:if>
             <div class="taskdetail hide" id="taskdetail_${task.identifier}">
-                <p><em><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string},&nbsp;<fmt:message key="label.createdOn"/>&nbsp;<fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></em></p>
+                <p>
+                    <em><fmt:message key="label.createdBy"/>: ${task.properties['jcr:createdBy'].string},&nbsp;<fmt:message key="label.createdOn"/>&nbsp;<fmt:formatDate value="${task.properties['jcr:created'].date.time}" dateStyle="long" type="both"/></em>
+                </p>
                 <c:if test="${not empty task.properties['priority']}">
-                    <p><fmt:message key="jnt_task.priority"/>: <span><jcr:nodePropertyRenderer node="${task}" name="priority" renderer="resourceBundle"/></span></p>
+                    <p><fmt:message key="jnt_task.priority"/>:
+                        <span><jcr:nodePropertyRenderer node="${task}" name="priority" renderer="resourceBundle"/></span>
+                    </p>
                 </c:if>
                 <c:if test="${not empty task.properties['description']}">
                     <p>${task.properties['description'].string}</p>
                 </c:if>
                 <template:tokenizedForm>
-                    <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.baseUserBoardFrameEdit}'/>${task.path}">
+                    <form id="tokenForm_${task.identifier}" name="tokenform_${task.identifier}" method="post" action="<c:url value='${url.basePreview}'/>${task.path}">
                     </form>
                 </template:tokenizedForm>
-                    <c:set var="assignable" value="true" />
-                    <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.name}">
-                        <c:set var="assignable" value="false" />
-                        <c:set var="candidates" value=""/>
-                        <c:forEach items="${task.properties['candidates']}" var="candidate">
-                            <c:set var="candidates" value=" ${candidate.string} ${candidates} "/>
+                <c:set var="assignable" value="true"/>
+                <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.name}">
+                    <c:set var="assignable" value="false"/>
+                    <c:set var="candidates" value=""/>
+                    <c:forEach items="${task.properties['candidates']}" var="candidate">
+                        <c:set var="candidates" value=" ${candidate.string} ${candidates} "/>
+                    </c:forEach>
+                    <c:set var="userKey" value="u:${user.name}"/>
+                    <c:if test="${fn:contains(candidates, userKey)}">
+                        <c:set var="assignable" value="true"/>
+                    </c:if>
+                    <c:if test="${not assignable}">
+                        <c:set var="groups" value="${user:getUserMembership(user)}"/>
+                        <c:forEach items="${groups}" var="x">
+                            <c:if test="${fn:contains(candidates, x.key)}">
+                                <c:set var="assignable" value="true"/>
+                            </c:if>
                         </c:forEach>
-                        <c:set var="userKey" value="u:${user.name}" />
-                        <c:if test="${fn:contains(candidates, userKey)}">
-                            <c:set var="assignable" value="true" />
+                    </c:if>
+                </c:if>
+                <c:choose>
+                    <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name and assignable eq 'true'}">
+                        <a class="btn btn-primary btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','${user.name}');return false;" title="assign to me">
+                            <i class="icon-check icon-white"></i>
+                            <fmt:message key="label.actions.assigneToMe"/>
+                        </a>
+                    </c:when>
+                    <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
+                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Refuse">
+                            <i class="icon-stop icon-white"></i>
+                            <fmt:message key="label.actions.refuse"/>
+                        </a>
+                        <a class="btn btn-success btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','started');return false;" title="start">
+                            <i class="icon-play icon-white"></i>
+                            <fmt:message key="label.actions.start"/>
+                        </a>
+                    </c:when>
+                    <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
+                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Refuse">
+                            <i class="icon-stop icon-white"></i>
+                            <fmt:message key="label.actions.refuse"/>
+                        </a>
+                        <a class="btn btn-warning btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','suspended');return false;" title="suspend">
+                            <i class="icon-pause icon-white"></i>
+                            <fmt:message key="label.actions.suspend"/>
+                        </a>
+                        <utility:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
+                        <c:if test="${not empty task.properties['targetNode'].node}">
+                            <c:set var="currentTaskNode" value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}"/>
+                            <a class="btn btn-small" target="_blank" href="<c:url value="${url.basePreview}${currentTaskNode.path}.html"/>">
+                                <i class="icon-eye-open"></i>
+                                <fmt:message key="label.preview"/>
+                            </a>
                         </c:if>
-                        <c:if test="${not assignable}">
-                            <c:set var="groups" value="${user:getUserMembership(user)}" />
-                            <c:forEach items="${groups}" var="x">
-                                <c:if test="${fn:contains(candidates, x.key)}">
-                                    <c:set var="assignable" value="true" />
-                                </c:if>
+                        <c:if test="${not empty task.properties['possibleOutcomes']}">
+                            <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">
+                                <fmt:message bundle="${taskBundle}" var="outcomeLabel" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/>
+                                <c:if test="${fn:startsWith(outcomeLabel, '???')}"><fmt:message bundle="${taskBundle}" var="outcomeLabel" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(fn:toLowerCase(outcome.string),' ','.')}"/></c:if>
+                                <div>
+                                    <a class="btn btn-primary btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}');return false;" title="${outcome.string}">
+                                        <i class="icon-play icon-white"></i>
+                                            ${outcomeLabel}
+                                    </a>
+                                </div>
                             </c:forEach>
                         </c:if>
-                    </c:if>
-                    <c:choose>
-                        <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name and assignable eq 'true'}">
-                            <a class="btn btn-primary btn-small" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me">
-                                <i class="icon-check icon-white"></i>
-                                <fmt:message key="label.actions.assigneToMe"/>
-                            </a>
-                        </c:when>
-                        <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
-                            <a class="btn btn-danger btn-small" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse">
-                                <i class="icon-stop icon-white"></i>
-                                <fmt:message key="label.actions.refuse"/>
-                            </a>
-                            <a class="btn btn-success btn-small" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start">
-                                <i class="icon-play icon-white"></i>
-                                <fmt:message key="label.actions.start"/>
-                            </a>
-                        </c:when>
-                        <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
-                            <a class="btn btn-danger btn-small" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse">
-                                <i class="icon-stop icon-white"></i>
-                                <fmt:message key="label.actions.refuse"/>
-                            </a>
-                            <a class="btn btn-warning btn-small" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend">
-                                <i class="icon-pause icon-white"></i>
-                                <fmt:message key="label.actions.suspend"/>
-                            </a>
-                            <utility:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"/>
-                            <c:if test="${not empty task.properties['targetNode'].node}">
-                                <c:set var="currentTaskNode" value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" />
-                                <a class="btn btn-small" target="_blank" href="<c:url value="${url.baseUserBoardFrameEdit}${currentTaskNode.path}.html"/>">
-                                    <i class="icon-eye-open"></i>
-                                    <fmt:message key="label.preview"/>
-                                </a>
-                            </c:if>
-                            <c:if test="${not empty task.properties['possibleOutcomes']}">
-                                <c:forEach items="${task.properties['possibleOutcomes']}" var="outcome" varStatus="status">
-                                    <fmt:message bundle="${taskBundle}" var="outcomeLabel" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(outcome.string,' ','.')}"/>
-                                    <c:if test="${fn:startsWith(outcomeLabel, '???')}"><fmt:message bundle="${taskBundle}" var="outcomeLabel" key="${fn:replace(task.properties['taskName'].string,' ','.')}.${fn:replace(fn:toLowerCase(outcome.string),' ','.')}"/></c:if>
-                                    <div>
-                                        <a class="btn btn-primary btn-small" href="javascript:sendNewStatus('${task.identifier}','${task.path}','finished','${outcome.string}')" title="${outcome.string}">
-                                            <i class="icon-play icon-white"></i>
-                                            ${outcomeLabel}
-                                        </a>
-                                    </div>
-                                </c:forEach>
-                            </c:if>
-                            <c:if test="${empty task.properties['possibleOutcomes']}">
-                                <c:set var="taskId" value="${task.identifier}"/>
-                                <label class="checkbox" for="btnComplete-${taskId}">
-                                    <input class="checkbox completeTaskAction" taskPath="<c:url value='${url.base}${currentNode.path}'/>" type="checkbox" id="btnComplete-${taskId}" onchange="sendNewStatus('${taskId}','${task.path}','finished')"/>&nbsp;<fmt:message key="label.actions.completed"/>
-                                </label>
-                            </c:if>
-                            <jcr:node var="taskData" path="${task.path}/taskData"/>
-                            <c:if test="${not empty taskData}">
-                                <template:module path="${task.path}/taskData" view="taskData" />
-                            </c:if>
-                        </c:when>
-                        <c:when test="${task.properties.state.string == 'finished'}">
-                                <i class="icon-ok"></i>
+                        <c:if test="${empty task.properties['possibleOutcomes']}">
+                            <c:set var="taskId" value="${task.identifier}"/>
+                            <label class="checkbox" for="btnComplete-${taskId}">
+                                <input class="checkbox completeTaskAction" taskPath="<c:url value='${url.basePreview}${currentNode.path}'/>" type="checkbox" id="btnComplete-${taskId}" onchange="sendNewStatus('${taskId}','${task.path}','finished')"/>
                                 &nbsp;<fmt:message key="label.actions.completed"/>
-                        </c:when>
-                        <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
-                            <a class="btn btn-danger btn-small" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse">
-                                <i class="icon-stop icon-white"></i>
-                                <fmt:message key="label.actions.refuse"/>
-                            </a>
-                            <a class="btn btn-success btn-small" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start">
-                                <i class="icon-play icon-white"></i>
-                                <fmt:message key="label.actions.start"/>
-                            </a>
-                        </c:when>
-                        <c:when test="${task.properties.state.string == 'canceled'}">
-                        </c:when>
-                    </c:choose>
-                    <c:if test="${not empty task.properties['dueDate']}">
-                        <div>
-                            <a class="btn" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar">
-                                <i class="icon-calendar"></i>
-                                <fmt:message key="label.actions.icalendar"/>
-                            </a>
-                        </div>
-                    </c:if>
+                            </label>
+                        </c:if>
+                        <jcr:node var="taskData" path="${task.path}/taskData"/>
+                        <c:if test="${not empty taskData}">
+                            <template:module path="${task.path}/taskData" view="taskData"/>
+                        </c:if>
+                    </c:when>
+                    <c:when test="${task.properties.state.string == 'finished'}">
+                        <i class="icon-ok"></i>
+                        &nbsp;<fmt:message key="label.actions.completed"/>
+                    </c:when>
+                    <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
+                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Refuse">
+                            <i class="icon-stop icon-white"></i>
+                            <fmt:message key="label.actions.refuse"/>
+                        </a>
+                        <a class="btn btn-success btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','started');return false;" title="start">
+                            <i class="icon-play icon-white"></i>
+                            <fmt:message key="label.actions.start"/>
+                        </a>
+                    </c:when>
+                    <c:when test="${task.properties.state.string == 'canceled'}">
+                    </c:when>
+                </c:choose>
+                <c:if test="${not empty task.properties['dueDate']}">
+                    <div>
+                        <a class="btn" href="<c:url value='${url.base}${task.path}.ics'/>" title="iCalendar">
+                            <i class="icon-calendar"></i>
+                            <fmt:message key="label.actions.icalendar"/>
+                        </a>
+                    </div>
+                </c:if>
             </div>
         </td>
         <c:if test="${dispAssignee}">
             <td headers="Assigned">
-                ${task.properties['assigneeUserKey'].string}
+                    ${task.properties['assigneeUserKey'].string}
             </td>
         </c:if>
         <c:if test="${dispCreator}">
             <td headers="CreatedBy">
-                ${task.properties['jcr:createdBy'].string}
+                    ${task.properties['jcr:createdBy'].string}
             </td>
         </c:if>
         <c:if test="${dispState}">

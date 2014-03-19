@@ -21,7 +21,7 @@
 <%--@elvariable id="task" type="org.jahia.services.workflow.WorkflowTask"--%>
 <template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery-ui.min.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
-<template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
+<template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 
@@ -32,11 +32,11 @@
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function () {
-            $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
+            $(":file").filestyle({classButton: "btn", classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
 
             $('#userTasks_table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-                "iDisplayLength":25,
+                "iDisplayLength": 25,
                 "sPaginationType": "bootstrap",
                 "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
             });
@@ -46,9 +46,9 @@
 
 <div id="currentUserTasks${currentNode.identifier}">
     <c:if test="${currentResource.workspace eq 'live'}">
-    <script type="text/javascript">
-        $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.html.ajax"/>');
-    </script>
+        <script type="text/javascript">
+            $('#currentUserTasks${currentNode.identifier}').load('<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.html.ajax"/>');
+        </script>
     </c:if>
 
     <c:if test="${currentResource.workspace ne 'live'}">
@@ -67,70 +67,55 @@
 
         <script type="text/javascript">
             var ready = true;
-
-            <c:choose>
-                <c:when test="${not empty modeDispatcherId}">
-                    <c:url  var="reloadurl" value="${url.baseUserBoardFrameEdit}${currentNode.parent.path}.html.ajax">
-                        <c:forEach items="${param}" var="p">
-                            <c:param name="${p.key}" value="${p.value}"/>
-                        </c:forEach>
-                    </c:url>
-                    <c:set var="identifierName" value="\#${modeDispatcherId}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:url  var="reloadurl" value="${url.baseUserBoardFrameEdit}${currentNode.path}.html.ajax">
-                        <c:forEach items="${param}" var="p">
-                            <c:param name="${p.key}" value="${p.value}"/>
-                        </c:forEach>
-                    </c:url>
-                    <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
-                </c:otherwise>
-            </c:choose>
+            <c:url  var="reloadurl" value="${url.baseUserBoardFrameEdit}${currentNode.path}.html.ajax">
+            <c:forEach items="${param}" var="p">
+            <c:param name="${p.key}" value="${p.value}"/>
+            </c:forEach>
+            </c:url>
+            <c:set var="identifierName" value="#currentUserTasks${currentNode.identifier}"/>
 
             function sendNewStatus(uuid, task, state, finalOutcome) {
                 if (ready) {
                     ready = false;
                     $(".taskaction-complete").addClass("taskaction-disabled");
                     $(".taskaction").addClass("taskaction-disabled");
-                    post = function () {
-                        $.post('<c:url value="${url.baseUserBoardFrameEdit}"/>' + task, {"jcrMethodToCall":"put","state":state,"finalOutcome":finalOutcome,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                            $('${identifierName}').load('${reloadurl}',null,function() {
-                                $("#taskdetail_"+uuid).css("display","block");
-                            });
-                        }, "json");
-                    }
-
-                    if ($("#taskDataForm_"+uuid).size() > 0) {
-                        $("#taskDataForm_"+uuid).ajaxSubmit( {
-                            success: post
-                        });
-                    } else {
-                        post()
-                    }
+                    $.post('<c:url value="${url.basePreview}"/>' + task,
+                            {"jcrMethodToCall": "put", "state": state, "finalOutcome": finalOutcome, "form-token": document.forms['tokenForm_' +
+                                                                                                                                  uuid].elements['form-token'].value},
+                            function () {
+                                $('${identifierName}').load('${reloadurl}', null, function () {
+                                    $("#taskdetail_" + uuid).css("display", "block");
+                                });
+                            }, "json");
                 }
-            };
+            }
+            ;
 
             function sendNewAssignee(uuid, task, key) {
                 if (ready) {
                     ready = false;
                     $(".taskaction-complete").addClass("taskaction-disabled");
                     $(".taskaction").addClass("taskaction-disabled");
-                    $.post('<c:url value="${url.baseUserBoardFrameEdit}"/>' + task, {"jcrMethodToCall":"put","state":"active","assigneeUserKey":key,"form-token":document.forms['tokenForm_' + uuid].elements['form-token'].value}, function() {
-                        $('${identifierName}').load('${reloadurl}',null,function(){
-                            $("#taskdetail_"+uuid).css("display","block");
-                        });
-                    }, "json");
+                    $.post('<c:url value="${url.basePreview}"/>' + task,
+                            {"jcrMethodToCall": "put", "state": "active", "assigneeUserKey": key, "form-token": document.forms['tokenForm_' +
+                                                                                                                               uuid].elements['form-token'].value},
+                            function () {
+                                $('${identifierName}').load('${reloadurl}', null, function () {
+                                    $("#taskdetail_" + uuid).css("display", "block");
+                                });
+                            }, "json");
                 }
-            };
+            }
+            ;
 
             function switchTaskDisplay(identifier) {
                 $(".taskdetail").each(function () {
                     if (!$(this).is("#taskdetail_" + identifier)) {
                         $(this).slideUp("medium");
-                        if($("#iconTaskDisplay_" + identifier).hasClass("icon-plus")){
+                        if ($("#iconTaskDisplay_" + identifier).hasClass("icon-plus")) {
                             $("#iconTaskDisplay_" + identifier).removeClass("icon-plus");
                             $("#iconTaskDisplay_" + identifier).addClass("icon-minus");
-                        }else {
+                        } else {
                             $(".iconTaskDisplay").removeClass("icon-minus");
                             $(".iconTaskDisplay").addClass("icon-plus");
                         }
@@ -138,7 +123,8 @@
                 });
 
                 $("#taskdetail_" + identifier).slideToggle("medium");
-            };
+            }
+            ;
 
         </script>
 
@@ -154,47 +140,47 @@
                 <fieldset>
                     <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userTasks_table">
                         <thead>
-                            <tr>
+                        <tr>
+                            <th>
+                                <i class="icon-tasks"></i>
+                                <fmt:message key="mix_title.jcr_title"/>
+                            </th>
+                            <c:if test="${dispAssignee}">
                                 <th>
-                                    <i class="icon-tasks"></i>
-                                    <fmt:message key="mix_title.jcr_title"/>
+                                    <i class="icon-user"></i>
+                                    <fmt:message key="label.owner"/>
                                 </th>
-                                <c:if test="${dispAssignee}">
+                            </c:if>
+                            <c:if test="${dispCreator}">
+                                <th>
+                                    <i class="icon-user"></i>
+                                    <fmt:message key="mix_createdBy.jcr_createdBy"/>
+                                </th>
+                            </c:if>
+                            <c:if test="${dispState}">
+                                <th>
+                                    <i class="icon-info-sign"></i>
+                                    <fmt:message key="jnt_task.state"/>
+                                </th>
+                            </c:if>
+                            <c:choose>
+                                <c:when test="${dispDueDate}">
                                     <th>
-                                        <i class="icon-user"></i>
-                                        <fmt:message key="label.owner"/>
+                                        <i class="icon-calendar"></i>
+                                        <fmt:message key="jnt_task.dueDate"/>
                                     </th>
-                                </c:if>
-                                <c:if test="${dispCreator}">
+                                </c:when>
+                                <c:when test="${dispLastModifiedDate}">
                                     <th>
-                                        <i class="icon-user"></i>
-                                        <fmt:message key="mix_createdBy.jcr_createdBy"/>
+                                        <i class="icon-calendar"></i>
+                                        <fmt:message key="jnt_task.lastModifiedDate"/>
                                     </th>
-                                </c:if>
-                                <c:if test="${dispState}">
-                                    <th>
-                                        <i class="icon-info-sign"></i>
-                                        <fmt:message key="jnt_task.state"/>
-                                    </th>
-                                </c:if>
-                                <c:choose>
-                                    <c:when test="${dispDueDate}">
-                                        <th>
-                                            <i class="icon-calendar"></i>
-                                            <fmt:message key="jnt_task.dueDate"/>
-                                        </th>
-                                    </c:when>
-                                    <c:when test="${dispLastModifiedDate}">
-                                        <th>
-                                            <i class="icon-calendar"></i>
-                                            <fmt:message key="jnt_task.lastModifiedDate"/>
-                                        </th>
-                                    </c:when>
-                                </c:choose>
-                            </tr>
+                                </c:when>
+                            </c:choose>
+                        </tr>
                         </thead>
                         <tbody>
-                            <%@include file="userTasksTableRow.jspf" %>
+                        <%@include file="userTasksTableRow.jspf" %>
                         </tbody>
                     </table>
                 </fieldset>

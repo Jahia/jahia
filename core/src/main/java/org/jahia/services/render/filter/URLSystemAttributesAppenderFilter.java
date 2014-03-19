@@ -72,34 +72,36 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
             previousOut = traverser.traverse(previousOut, renderContext, resource,
                     new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
                         public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
-                            String separateChar;
-                            if (value.contains("?")) {
-                                separateChar = "&";
-                            } else {
-                                separateChar = "?";
-                            }
-                            for (String s : attributesToKeep) {
-                                if(s.contains("*")){
-                                    if(value.startsWith(renderContext.getURLGenerator().getContext()) &&
-                                       !value.matches(s.replace("*",".*="))){
-                                        final Map<String, String[]> parameterMap = renderContext.getRequest().getParameterMap();
-                                        for (String paramName : parameterMap.keySet()) {
-                                            if(paramName.matches(s.replace("*",".*"))) {
-                                                String parameter = renderContext.getRequest().getParameter(paramName);
-                                                if (parameter != null) {
-                                                    value += separateChar + paramName + "=" + parameter;
-                                                    separateChar = "&";
+                            if (!value.startsWith("javascript:")) {
+                                String separateChar;
+                                if (value.contains("?")) {
+                                    separateChar = "&";
+                                } else {
+                                    separateChar = "?";
+                                }
+                                for (String s : attributesToKeep) {
+                                    if (s.contains("*")) {
+                                        if (value.startsWith(renderContext.getURLGenerator().getContext()) &&
+                                            !value.matches(s.replace("*", ".*="))) {
+                                            final Map<String, String[]> parameterMap = renderContext.getRequest().getParameterMap();
+                                            for (String paramName : parameterMap.keySet()) {
+                                                if (paramName.matches(s.replace("*", ".*"))) {
+                                                    String parameter = renderContext.getRequest().getParameter(
+                                                            paramName);
+                                                    if (parameter != null) {
+                                                        value += separateChar + paramName + "=" + parameter;
+                                                        separateChar = "&";
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                                else if (!value.contains(s + "=") && value.startsWith(
-                                        renderContext.getURLGenerator().getContext())) {
-                                    String parameter = renderContext.getRequest().getParameter(s);
-                                    if (parameter != null) {
-                                        value += separateChar + s + "=" + parameter;
-                                        separateChar = "&";
+                                    } else if (!value.contains(s + "=") && value.startsWith(
+                                            renderContext.getURLGenerator().getContext())) {
+                                        String parameter = renderContext.getRequest().getParameter(s);
+                                        if (parameter != null) {
+                                            value += separateChar + s + "=" + parameter;
+                                            separateChar = "&";
+                                        }
                                     }
                                 }
                             }

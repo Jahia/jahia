@@ -15,7 +15,8 @@
             <meta http-equiv="X-UA-Compatible" content="${xUaCompatible}"/>
         </c:if>
         <meta name="robots" content="noindex, nofollow"/>
-		<title><fmt:message key="org.jahia.admin.sitepermissions.permission.engines.importexport.ManageContentPicker.label"/></title>
+        <fmt:message key="label.${fn:escapeXml(config)}" var="title"/>
+        <title>${fn:escapeXml(title)}</title>
         <internal:gwtGenerateDictionary/>
 		<internal:gwtInit locale="${param.lang}" uilocale="${param.uilang}" />
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />

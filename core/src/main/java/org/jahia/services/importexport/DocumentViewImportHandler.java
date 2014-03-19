@@ -648,26 +648,26 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 } else {
                     if (propDef.isMultiple()) {
+                        String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
+                        List<Value> oldvalues = new ArrayList<Value>();
+
+                        if (child.getRealNode().hasProperty(attrName)) {
+                            Value[] oldValues = child.getRealNode().getProperty(attrName).getValues();
+                            for (Value oldValue : oldValues) {
+                                oldvalues.add(oldValue);
+                            }
+                        }
+
                         if (replaceMultipleValues) {
-                            String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
-                            Value[] v = new Value[s.length];
+                            List<Value> values = new ArrayList<Value>();
                             for (int j = 0; j < s.length; j++) {
-                                v[j] = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType());
+                                values.add(child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType()));
                             }
-                            child.getRealNode().setProperty(attrName, v);
+                            if (!values.equals(oldvalues)) {
+                                child.getRealNode().setProperty(attrName, values.toArray(new Value[values.size()]));
+                            }
                         } else {
-                            String[] s = "".equals(attrValue) ? new String[0] : Patterns.SPACE.split(attrValue);
-                            List<Value> oldvalues = new ArrayList<Value>();
-
-                            if (child.getRealNode().hasProperty(attrName)) {
-                                Value[] oldValues = child.getRealNode().getProperty(attrName).getValues();
-                                for (Value oldValue : oldValues) {
-                                    oldvalues.add(oldValue);
-                                }
-                            }
-
                             List<Value> values = new ArrayList<Value>(oldvalues);
-
                             for (int j=0; j < s.length; j++) {
                                 final Value value = child.getRealNode().getSession().getValueFactory().createValue(JCRMultipleValueUtils.decode(s[j]), propDef.getRequiredType());
                                 if (!oldvalues.contains(value)) {
@@ -675,13 +675,17 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                                 }
                             }
                             try {
-                                child.getRealNode().setProperty(attrName, values.toArray(new Value[values.size()]));
+                                if (!values.equals(oldvalues)) {
+                                    child.getRealNode().setProperty(attrName, values.toArray(new Value[values.size()]));
+                                }
                             } catch (RepositoryException e) {
                                 logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
                             }
                         }
                     } else {
-                        child.getRealNode().setProperty(attrName, attrValue);
+                        if (!child.getRealNode().hasProperty(attrName) || !child.getRealNode().getProperty(attrName).getString().equals(attrValue)) {
+                            child.getRealNode().setProperty(attrName, attrValue);
+                        }
                     }
                 }
             }

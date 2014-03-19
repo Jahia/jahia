@@ -29,24 +29,6 @@ rule "Remove user from cache when updated"
         Remove entry node.getName() from cache "JCRUserCache"
 end
 
-rule "ACL added"
-    when
-        A property j:roles has been set on a node
-        The node has a parent
-         - the parent has the type jnt:acl
-    then
-        Update the privileged users
-end
-
-rule "ACL removed"
-    when
-        A node is deleted
-        The node has a parent
-         - the parent has the type jnt:acl
-    then
-        Update the privileged users
-end
-
 rule "Import file"
     salience 50
     when

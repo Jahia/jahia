@@ -10,11 +10,10 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <title><fmt:message key="label.error.maintenance.title"/></title>
 </head>
-<body class="login">
+<body class="error-page">
 <div class="row-fluid login-wrapper">
     <div class="span4 box error-box">
         <div class="content-wrap">
-            <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo.png">
             <h1 class="message-big"><fmt:message key="label.error.maintenance.title"/></h1>
             <p><fmt:message key="label.error.maintenance.description"/></p>
         </div>

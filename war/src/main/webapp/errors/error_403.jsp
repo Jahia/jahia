@@ -13,11 +13,10 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <title><fmt:message key="label.error.403.title"/></title>
 </head>
-<body class="login" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
+<body class="error-page" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
     <div class="row-fluid login-wrapper">
         <div class="span4 box error-box">
             <div class="content-wrap">
-                <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo.png">
                 <h1 class="message-big"><fmt:message key="label.error.403.title"/></h1>
                 <p><fmt:message key="label.error.403.description"/></p>
                 <p id="backLink" style="display:none">

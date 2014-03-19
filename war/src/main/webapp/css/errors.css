@@ -19,6 +19,13 @@
 /* login */
 html { height:100%}
 
+body.error-page {
+    background-image:none;
+    background-color: #eaeaea;
+    margin:0;
+    padding: 0;
+    text-align:center;
+}
 body.login {
     background: url(images/bg-body_login.png) no-repeat center center;
     -webkit-background-size: cover; /* pour Chrome et Safari */

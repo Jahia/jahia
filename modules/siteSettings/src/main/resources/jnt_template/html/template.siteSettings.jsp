@@ -37,9 +37,9 @@
     </c:forEach>
 </div>
 
-
-<template:area path="pagecontent"/>
-
+<div class="well">
+    <template:area path="pagecontent"/>
+</div>
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>

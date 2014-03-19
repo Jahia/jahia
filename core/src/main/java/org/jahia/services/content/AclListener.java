@@ -74,6 +74,8 @@ public class AclListener extends DefaultEventListener {
         this.publicationService = publicationService;
     }
 
+    private Map<String,String> foundRoles = new HashMap<String,String>();
+
     @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
@@ -194,24 +196,26 @@ public class AclListener extends DefaultEventListener {
                 // Item does not exist anymore, use empty roles set
             }
 
-            QueryManager q = systemSession.getWorkspace().getQueryManager();
-            String sql = "select * from [jnt:externalAce] as ace where ace.[j:sourceAce] = '" + aceIdentifier + "'";
-            QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
-            NodeIterator ni = qr.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-                String role = n.getProperty("j:roles").getValues()[0].getString();
-                if (!roles.contains(role)) {
-                    List<Value> newVals = new ArrayList<Value>();
-                    for (Value value : n.getProperty("j:sourceAce").getValues()) {
-                        if (!value.getString().equals(aceIdentifier)) {
-                            newVals.add(value);
+            if (!addedAceIdentifiers.contains(aceIdentifier)) {
+                QueryManager q = systemSession.getWorkspace().getQueryManager();
+                String sql = "select * from [jnt:externalAce] as ace where ace.[j:sourceAce] = '" + aceIdentifier + "'";
+                QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
+                NodeIterator ni = qr.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+                    String role = n.getProperty("j:roles").getValues()[0].getString();
+                    if (!roles.contains(role)) {
+                        List<Value> newVals = new ArrayList<Value>();
+                        for (Value value : n.getProperty("j:sourceAce").getValues()) {
+                            if (!value.getString().equals(aceIdentifier)) {
+                                newVals.add(value);
+                            }
                         }
-                    }
-                    if (newVals.size() == 0) {
-                        n.remove();
-                    } else {
-                        n.setProperty("j:sourceAce", newVals.toArray(new Value[newVals.size()]));
+                        if (newVals.size() == 0) {
+                            n.remove();
+                        } else {
+                            n.setProperty("j:sourceAce", newVals.toArray(new Value[newVals.size()]));
+                        }
                     }
                 }
             }
@@ -330,7 +334,7 @@ public class AclListener extends DefaultEventListener {
     private void handleAclModifications(JCRSessionWrapper session, JCRSessionWrapper defaultSession, Set<String> roles, JCRNodeWrapper ace, String principal, Map<String, Set<String>> privilegedAdded, Map<String, Set<String>> privilegedRemoved, Map<String, JCRNodeWrapper> roleNodes, boolean isNewAce, boolean publish) throws RepositoryException {
         boolean needPrivileged = false;
         for (String role : roles) {
-            JCRNodeWrapper roleNode = getRole(session, role, roleNodes);
+            JCRNodeWrapper roleNode = getRole(defaultSession, role, roleNodes);
             if (roleNode != null) {
                 do {
                     NodeIterator r = roleNode.getNodes();
@@ -368,15 +372,22 @@ public class AclListener extends DefaultEventListener {
         if (roleNodes.containsKey(roleName)) {
             return roleNodes.get(roleName);
         }
+        if (foundRoles.containsKey(roleName) && systemSession.itemExists(foundRoles.get(roleName))) {
+            JCRNodeWrapper roleNode = systemSession.getNode(foundRoles.get(roleName));
+            roleNodes.put(roleName, roleNode);
+            return roleNode;
+        }
         NodeIterator ni = systemSession.getWorkspace().getQueryManager().createQuery(
                 "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + roleName + "' and isdescendantnode(r,['/roles'])",
                 Query.JCR_SQL2).execute().getNodes();
         if (ni.hasNext()) {
             JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.nextNode();
             roleNodes.put(roleName, roleNode);
+            foundRoles.put(roleName, roleNode.getPath());
             return roleNode;
         }
         roleNodes.put(roleName, null);
+        foundRoles.remove(roleName);
         return null;
     }
 

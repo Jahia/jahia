@@ -52,7 +52,7 @@
     </script>
 </template:addResources>
 
-<fieldset class="well">
+<fieldset>
     <jcr:node var="root" path="/"/>
     <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userSites_table">
         <thead>

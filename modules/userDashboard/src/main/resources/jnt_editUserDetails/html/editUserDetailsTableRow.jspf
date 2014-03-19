@@ -490,7 +490,7 @@
                         </fieldset>
                     </div>
                     <div class="switchesSpans span4" >
-                        <fieldset class="well" id="part2">
+                        <fieldset id="part2">
                 </c:if>
                     <div class="row control-group switches-control-group">
                         <label class="control-label switch" for="publicProperties${loopStatus.index}"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/> : </label>

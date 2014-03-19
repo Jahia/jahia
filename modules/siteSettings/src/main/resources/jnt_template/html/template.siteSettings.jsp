@@ -37,7 +37,7 @@
     </c:forEach>
 </div>
 
-<div class="well">
+<div class="well clearfix">
     <template:area path="pagecontent"/>
 </div>
 <c:if test="${renderContext.editMode}">

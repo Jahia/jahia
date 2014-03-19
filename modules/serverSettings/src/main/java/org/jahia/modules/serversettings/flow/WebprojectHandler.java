@@ -670,21 +670,30 @@ public class WebprojectHandler implements Serializable {
                     String type = infos.getType();
                     if (type.equals("files")) {
                         try {
-                            JahiaSite system = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
+                            final JahiaSite system = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
 
                             Map<String, String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession()
                                     .getPathMapping();
                             pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
                             pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
-
-                            importExportBaseService.importSiteZip(file == null ? null : new FileSystemResource(file),
-                                    system, infos.asMap());
+                            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
+                                @Override
+                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                    try {
+                                        importExportBaseService.importSiteZip(file == null ? null : new FileSystemResource(file),
+                                                system, infos.asMap(),null,null,session);
+                                    } catch (Exception e) {
+                                        logger.error("Error when getting templates", e);
+                                    }
+                                    return null;
+                                }
+                            });
                         } catch (Exception e) {
                             logger.error("Error when getting templates", e);
                         }
                     } else if (type.equals("xml")
                             && (infos.getImportFileName().equals("serverPermissions.xml") || infos.getImportFileName()
-                                    .equals("users.xml"))) {
+                            .equals("users.xml"))) {
 
                     } else if (type.equals("site")) {
                         // site import
@@ -721,9 +730,9 @@ public class WebprojectHandler implements Serializable {
                                                             .getSiteServername(), infos.getSiteKey(), "",
                                                             defaultLocale, finalTpl, null, "fileImport",
                                                             file == null ? null : new FileSystemResource(file), infos
-                                                                    .getImportFileName(), false,
+                                                            .getImportFileName(), false,
                                                             finalDoImportServerPermissions, infos
-                                                                    .getOriginatingJahiaRelease(),
+                                                            .getOriginatingJahiaRelease(),
                                                             finalLegacyImportFilePath, finalLegacyDefinitionsFilePath);
                                                 } catch (JahiaException e) {
                                                     throw new RepositoryException(e);
@@ -934,10 +943,10 @@ public class WebprojectHandler implements Serializable {
             logger.error(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Returns the ID of the default template set.
-     * 
+     *
      * @return the ID of the default template set
      */
     public String getDefaultTemplateSetId() {
@@ -961,7 +970,7 @@ public class WebprojectHandler implements Serializable {
 
     /**
      * Returns the total number of sites in Jahia.
-     * 
+     *
      * @return the total number of sites in Jahia
      * @throws JahiaException
      *             in case of an error

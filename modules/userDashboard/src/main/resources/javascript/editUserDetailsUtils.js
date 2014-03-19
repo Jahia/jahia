@@ -40,6 +40,7 @@ function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method,
     return callResult;
 }
 
+
 /**
  * @Author : Jahia(rahmed)
  * This function serialize a form (or some form elements with a given css class) to a JSON String,
@@ -130,20 +131,23 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
         }
         else
         {
-            //formatting dates
-            if(this.getAttribute("jcrtype") != undefined && this.getAttribute("jcrtype") == "Date")
+            if(this.name != undefined && this.value != undefined)
             {
-                value = new Date(value).toISOString();
-            }
-
-            //adding to object
-            if (serializedObject[name]) {
-                if (!serializedObject[name].push) {
-                    serializedObject[name] = [serializedObject[name]];
+                //formatting dates
+                if(this.getAttribute("jcrtype") != undefined && this.getAttribute("jcrtype") == "Date")
+                {
+                    value = new Date(value).toISOString();
                 }
-                serializedObject[name].push(value || '');
-            } else {
-                serializedObject[name] = {"value" : value || ''};
+
+                //adding to object
+                if (serializedObject[name]) {
+                    if (!serializedObject[name].push) {
+                        serializedObject[name] = [serializedObject[name]];
+                    }
+                    serializedObject[name].push(value || '');
+                } else {
+                    serializedObject[name] = {"value" : value || ''};
+                }
             }
         }
     });
@@ -162,8 +166,7 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
  */
 var ajaxReloadCallback = function (result,sent)
 {
-
-    if (sent != undefined && sent.indexOf("preferredLanguage") != -1)
+    if (sent != undefined && (sent.indexOf("preferredLanguage") != -1 && CurrentCssClass != "privacyField"))
     {
         var windowToRefresh = window.parent;
         if(windowToRefresh == undefined)
@@ -173,6 +176,21 @@ var ajaxReloadCallback = function (result,sent)
     {
         $('#editDetailspage').load(getUrl);
     }
+}
+
+/* Edit User Details Functions */
+/**
+ * @Author : Jahia(rahmed)
+ * Edit User Details Callback Function
+ * This function is called after the user properties Update
+ * if the propertie preferredLanguage is updated the page is fully reloaded
+ * in the other case an ajax load is enough to refresh the properties display
+ * @param result : The PUT request result
+ * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
+ */
+function ajaxReloadPublicView ()
+{
+    $('#public').load(getUrl);
 }
 
 /* Edit User Details Functions */
@@ -338,14 +356,8 @@ function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale
     }
     jsonString += "]}}}";
     //posting the properties visibility to JCR
-    CurrentCssClass = "privacyField"
-    jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", jsonString , function (){
-        //hiding all the others images near the switches
-        $('.switchIcons').hide();
-
-        //showing the image near the switch
-        $(doneImageId).fadeIn('slow').delay(1000).fadeOut('slow');
-    }, formError);
+    CurrentCssClass = "privacyField";
+    jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", jsonString , ajaxReloadCallback, formError);
 }
 
 /**
@@ -431,7 +443,7 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
  */
 function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
 {
-    var uploadUrl = context+"/"+API_URL_START+"/default/"+locale+"/byPath"+nodePath+"/files/profile";
+    var uploadUrl = context+"/"+API_URL_START+"/default/"+locale+"/paths"+nodePath+"/files/profile";
 
     //checking if the file input has been filled
     if( $("#"+imageId).val() == "")

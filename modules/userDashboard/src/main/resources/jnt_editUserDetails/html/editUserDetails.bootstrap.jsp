@@ -55,7 +55,7 @@
 <%@ include file="../../getUser.jspf"%>
 
 <%-- CSS inclusions --%>
-<template:addResources type="css" resources="admin-bootstrap.css"/>
+<%--<template:addResources type="css" resources="admin-bootstrap.css"/>--%>
 <template:addResources type="css" resources="bootstrap-datetimepicker.min.css"/>
 <template:addResources type="css" resources="bootstrap-switch.css"/>
 
@@ -63,13 +63,11 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap.js"/>
 <template:addResources type="javascript" resources="bootstrap-switch.js"/>
-<template:addResources type="javascript" resources="bootbox.min.js"/>
-<%--<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>--%>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
 <template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
+<template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.${renderContext.UILocale}.js"/>
 
 
@@ -89,116 +87,109 @@
 <jcr:propertyInitializers node="${user}" name="j:title" var="titleInit"/>
 <%--<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>--%>
 <template:addResources>
-<script type="text/javascript">
+    <script type="text/javascript">
+        var editor = null;
+        var API_URL_START = "modules/api/jcr/v1";
+        var context = "${url.context}";
+        var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
+        var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";
 
-var API_URL_START = "modules/api/jcr/v1";
-var context = "${url.context}";
-var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
-var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";
+        var propertiesNames = {
+            <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,preferredLanguage"
+                         delims="," var="key" varStatus="loopStatus">
+            <c:set var="message"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></c:set>
+            '${key}' : '${functions:escapeJavaScript(message)}'<c:if test="${!loopStatus.last}">,</c:if>
+            </c:forTokens>
+        };
 
-var propertiesNames = {
-<c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,preferredLanguage"
-             delims="," var="key" varStatus="loopStatus">
-    <c:set var="message"><fmt:message key="jnt_user.${fn:replace(key, ':','_')}"/></c:set>
-     '${key}' : '${functions:escapeJavaScript(message)}'<c:if test="${!loopStatus.last}">,</c:if>
-</c:forTokens>
-};
+        var CurrentCssClass ="";
 
-var CurrentCssClass ="";
-/**
-* @author rahmed (JAHIA)
-* This function updates a Form Row properties and verify the phones and email fields if the Row cssClass is 'AddressField'
-* @param cssClass : The Form Row css class
- */
-function updateProperties(cssClass)
-{
-    CurrentCssClass=cssClass;
-    if(cssClass=="addressField")
-    {
-        if(verifyAndSubmitAddress(cssClass,'phoneFormatError','emailFormatError'))
+        /**
+         * @author rahmed (JAHIA)
+         * This function updates a Form Row properties and verify the phones and email fields if the Row cssClass is 'AddressField'
+         * @param cssClass : The Form Row css class
+         */
+        function updateProperties(cssClass)
         {
-            var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
+            CurrentCssClass=cssClass;
+            if(cssClass=="addressField")
+            {
+                if(verifyAndSubmitAddress(cssClass,'phoneFormatError','emailFormatError'))
+                {
+                    var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
+                }
+            }
+            else
+            {
+                var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
+            }
         }
-    }
-    else
-    {
-        var errorResult = formToJahiaCreateUpdateProperties("editDetailsForm", "${user.identifier}", "${currentResource.locale}", cssClass, ajaxReloadCallback,formError);
-    }
-}
 
-var visibilityNumber = 0;
-if(window.userDetailsHasSwitch == undefined) {
-   var userDetailsHasSwitch = false;
-}
+        var visibilityNumber = 0;
+        if(window.userDetailsHasSwitch == undefined) {
+            var userDetailsHasSwitch = false;
+        }
 
-$(document).ready(function(){
-    //Activating the Pag NavBar ('public'/'private')
-    $('body').on('click','#tabView a',function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-    });
-    //Activating the Birthdate Date Picker
-    $('body').on('click','#datePickerParent',function (e) {
-        e.preventDefault();
-        $('#birthDate').datetimepicker({
-            format: 'yyyy-MM-dd',
-            pickTime: false,
-            language: '${renderContext.UILocale}'
+        $(document).ready(function(){
+
+            //Activating the Pag NavBar ('public'/'private')
+            $('body').on('click','#tabView a',function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+            //Activating the Birthdate Date Picker
+            $('body').on('click','#datePickerParent',function (e) {
+                e.preventDefault();
+                $('#birthDate').datetimepicker({
+                    format: 'yyyy-MM-dd',
+                    pickTime: false,
+                    language: '${renderContext.UILocale}'
+                });
+            });
+
+            // Activating the privacy checkboxes buttons
+            $('body').on('click','#switchParent',function (e) {
+                e.preventDefault();
+                for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
+                {
+                    $("#publicProperties"+currentvisibility).bootstrapSwitch();
+                    $('#publicProperties'+currentvisibility).off('switchChange');
+                }
+            });
+
+            //Setting Read More button if needed
+            if ($("#aboutMeTextWrapper").height()>$("#aboutMeTextDiv").height())
+            {
+                $(".btnMoreAbout").show();
+            }
+
+            $(".btnMoreAbout").click(function(){
+                $(".aboutMeText").css( { height:"100%",maxHeight: "250px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
+                $(".btnMoreAbout").hide();
+                $(".btnLessAbout").show();
+            });
+
+            $(".btnLessAbout").click(function(){
+                $(".aboutMeText").scrollTop(0);
+                $(".aboutMeText").css( { height:"100px", overflow: "hidden" }, { queue:false, duration:500 });
+                $(".btnLessAbout").hide();
+                $(".btnMoreAbout").show();
+            });
         });
-    });
-
-    // Activating the privacy checkboxes buttons
-    $('body').on('click','#switchParent',function (e) {
-        e.preventDefault();
-        for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
-         {
-             $("#publicProperties"+currentvisibility).bootstrapSwitch();
-             $('#publicProperties'+currentvisibility).off('switchChange');
-         }
-         for(var currentvisibility=0;currentvisibility<visibilityNumber;currentvisibility++)
-         {
-             $('#publicProperties'+currentvisibility).on('switchChange', function (e, data)
-             {
-                 //getting the switch form element and its value
-             var $element = $(data.el),value = data.value;
-             var elementId=$element.attr("id");
-             //getting the switch number contained in its css id by removing the text part
-             var number = parseInt(elementId.replace("publicProperties",''));
-
-             //calling the change visibility function with the number total of visibility switches, the number of the visibility to change and the state to put
-             editVisibility(visibilityNumber,number,value,"${user.identifier}", "${currentResource.locale}");
-
-             });
-         }
-    });
-
-    $(".btnMoreAbout").click(function(){
-        $(".aboutMeText").css( { height:"100%",maxHeight: "500px", overflow: "auto", paddingRight: "5px" }, { queue:false, duration:500 });
-        $(".btnMoreAbout").hide();
-        $(".btnLessAbout").show();
-    });
-
-    $(".btnLessAbout").click(function(){
-        $(".aboutMeText").css( { height:"100px", overflow: "hidden" }, { queue:false, duration:500 });
-        $(".btnLessAbout").hide();
-        $(".btnMoreAbout").show();
-    });
-});
-</script>
+    </script>
 </template:addResources>
 <div id="editDetailspage">
 
     <ul class="nav nav-tabs" id="tabView">
-        <li class="active"><a href="#private"><fmt:message key="mySettings.privateView"/></a></li>
-        <li><a href="#public"><fmt:message key="mySettings.publicView"/></a></li>
+        <li id="privateView" class="active viewType"><a href="#private"><fmt:message key="mySettings.privateView"/></a></li>
+        <li id="publicView" class="viewType"><a href="#public"><fmt:message key="mySettings.publicView"/></a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="private">
             <form enctype= multipart/form-data onkeypress="return event.keyCode != 13;" id="editDetailsForm" class="form-horizontal user-profile-table" onsubmit="return false;">
-                <div>
+                <div class="container">
                     <div id="detailsHead" class="row-fluid">
-                        <div class="span2"></div>
-                        <div class="span8 alert alert-info" style="padding-right: 10px">
+                        <div class="span8 offset2 alert alert-info" style="padding-right: 10px">
                             <div class="row-fluid ">
                                 <div id="imageDiv" class="span2">
                                     <c:if test="${currentNode.properties['j:picture'].boolean}">
@@ -233,16 +224,18 @@ $(document).ready(function(){
                                                 <h1>
                                                     <fmt:message key='jnt_user.j_about'/>
                                                 </h1>
-                                                <div id="aboutMeText" class="aboutMeText lead" style="height: 100px; text-align: justify; overflow: hidden">
-                                                        ${user.properties['j:about'].string}
+                                                <div id="aboutMeTextDiv" class="aboutMeText lead" style="height: auto;max-height: 100px; text-align: justify; overflow: hidden">
+                                                    <div id="aboutMeTextWrapper">
+                                                            ${user.properties['j:about'].string}
+                                                    </div>
                                                 </div>
                                                 <br />
                                             </div>
                                             <div id="about-button-part" class="row-fluid">
-                                                <button id="btnMoreAbout" class="btn btn-small btn-primary btnMoreAbout" <%--onclick="showMoreText()"--%>>
+                                                <button id="btnMoreAbout" class="hide btn btn-small btn-primary btnMoreAbout" <%--onclick="showMoreText()"--%>>
                                                     <fmt:message key='mySettings.readMore'/>
                                                 </button>
-                                                <button id="btnLessAbout" class="btn btn-small btn-primary hide btnLessAbout" <%--onclick="hideMoreText()"--%>>
+                                                <button id="btnLessAbout" class="hide btn btn-small btn-primary hide btnLessAbout" <%--onclick="hideMoreText()"--%>>
                                                     <fmt:message key='mySettings.readLess'/>
                                                 </button>
                                                 <c:if test="${user:isPropertyEditable(user,'j:about')}">
@@ -290,7 +283,10 @@ $(document).ready(function(){
                                                         ${fields['j:about']}
                                                 </div>
                                                 <script type="text/javascript">
-                                                    var editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"});
+                                                    if(editor==null)
+                                                    {
+                                                        editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"});
+                                                    }
                                                 </script>
                                                 <br />
                                                 <div class="pull-right">
@@ -298,7 +294,7 @@ $(document).ready(function(){
                                                         <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')">
                                                             <fmt:message key="cancel"/>
                                                         </button>
-                                                        <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError)">
+                                                        <button class="btn btn-success" type="button" onclick="saveCkEditorChanges('about','${user.identifier}', '${currentResource.locale}',ajaxReloadCallback,formError);">
                                                             <fmt:message key="save"/>
                                                         </button>
                                                     </div>
@@ -310,16 +306,15 @@ $(document).ready(function(){
                                 </div>
                             </div>
                         </div>
-
-                        <div class="span2"></div>
                     </div>
                 </div>
-                <div class="row-fluid" >
-                    <div class="span2" ></div>
-                    <div class="span8">
+                <div class="container">
+                    <div class="row-fluid" >
+                        <div class="span8 offset2">
                             <%@include file="editUserDetailsRows.jspf" %>
+                        </div>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="span2"></div>
                 </div>
             </form>
         </div>

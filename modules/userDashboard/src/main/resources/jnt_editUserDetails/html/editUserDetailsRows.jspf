@@ -23,6 +23,7 @@
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div id="names_form" class="hide">
             <c:if test="${currentNode.properties['j:title'].boolean}">
@@ -52,7 +53,7 @@
                     <label class="control-label" for="firstname"><fmt:message key="jnt_user.j_firstName"/></label>
                     <div class="controls">
                         <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
-                        <input class="namesField" name="j:firstName" type="text" value="${firstNameValue}"/>
+                        <input class="namesField" name="j:firstName" type="text" value="${firstNameValue}" <c:if test="${user.properties['j:external'].boolean}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -61,7 +62,7 @@
                     <label class="control-label" for="lastName"><fmt:message key="jnt_user.j_lastName"/></label>
                     <div class="controls">
                         <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
-                        <input class="namesField" name="j:lastName" type="text" value="${lastNameValue}"/>
+                        <input class="namesField" name="j:lastName" type="text" value="${lastNameValue}" <c:if test="${user.properties['j:external'].boolean}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -90,7 +91,7 @@
             <div class="clear"></div>
             <div class="form-actions">
                 <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
-                <button onclick="updateProperties('namesField')" class="btn btn-success"><fmt:message key="save"/></button>
+                <button type="button" onclick="updateProperties('namesField')" class="btn btn-success"><fmt:message key="save"/></button>
                 <div class="namesField errorMessage"></div>
             </div>
         </div>
@@ -118,6 +119,7 @@
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div id="profession_form" class="hide">
             <c:if test="${currentNode.properties['j:function'].boolean}">
@@ -200,6 +202,7 @@
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div id="social_form" class="hide">
             <c:if test="${currentNode.properties['j:facebookID'].boolean}">
@@ -304,6 +307,7 @@
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div id="address_form" class="hide">
             <c:if test="${user:isPropertyEditable(user,'j:address')}">
@@ -389,11 +393,14 @@
             <div class="pull-left">
                 ****** &nbsp; <span id="passwordSuccess" class="hide"></span>
             </div>
-            <div class="pull-right">
-                <button class="btn btn-primary" type="button" onclick="switchRow('password')">
-                    <fmt:message key="label.clickToEdit"/>
-                </button>
-            </div>
+            <c:if test="${!(user.properties['j:external'].boolean)}">
+                <div class="pull-right">
+                    <button class="btn btn-primary" type="button" onclick="switchRow('password');$('#oldPasswordField').val('');$('#passwordField').val('');$('#passwordconfirm').val('');">
+                        <fmt:message key="label.clickToEdit"/>
+                    </button>
+                </div>
+            </c:if>
+            <div class="clearfix"></div>
         </div>
         <div id="password_form" class="hide">
             <c:if test="${currentNode.properties['password'].boolean and !(user.properties['j:external'].boolean)}">
@@ -447,7 +454,6 @@
                     <div class="errorMessage">
                         <span id="passwordErrors" class="hide"></span>
                     </div>
-
                 </div>
             </c:if>
         </div>
@@ -492,6 +498,7 @@
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div id="other_form" class="hide">
             <c:if test="${user:isPropertyEditable(user,'j:birthDate')}">
@@ -576,13 +583,9 @@
                     <fmt:message key="label.clickToEdit"/>
                 </button>
             </div>
+            <div class="clearfix"></div>
         </div>
         <div id="privacy_form" class="hide">
-            <div class="row-fluid">
-                 <div class="span11"></div>
-                 <div class="span1"><button type="button" class="btn btn-primary btn-danger" onclick="ajaxReloadCallback(null,'Back')">X</button></div>
-
-            </div>
             <div class="row-fluid">
                 <div class="span6">
                     <c:forTokens
@@ -614,6 +617,13 @@
                     </c:if>
                     </c:forTokens>
                 </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
+                <button class="btn btn-success" type="button" onclick="editVisibility(visibilityNumber,'','','${user.identifier}', '${currentResource.locale}');">
+                    <fmt:message key="save"/>
+                </button>
+                <div class="otherField errorMessage"></div>
             </div>
             <div class="errorMessage privacyField" style="text-align:center"></div>
         </div>

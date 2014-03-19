@@ -93,6 +93,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         model.set("titleLabel", Messages.get("label.title", "Title"));
         model.set("authorLabel", Messages.get("versioning_author", "Author"));
         model.set("tagsLabel", Messages.get("org.jahia.jcr.edit.tags.tab", "tags"));
+        model.set("createdBy", model.get("jcr:createdBy"));
         String width = model.get("j:width");
         if (width != null) {
             if (Integer.parseInt(width) < 80) {

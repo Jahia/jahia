@@ -949,7 +949,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             LicensedAction licensedAction = (LicensedAction) originalAction;
             if (!licensedAction.isAllowedByLicense()) {
                 logger.error("Action '{}' requires a licene feature '{}'"
-                        + " which is not allowed by the current license terms", action.getName(),
+                        + " which is not allowed by the current license terms", originalAction.getName(),
                         licensedAction.getLicenseFeature());
                 throw new AccessDeniedException("Action '" + action.getName() + "' requires a licene feature '"
                         + licensedAction.getLicenseFeature() + "' which is not allowed by the current license terms");

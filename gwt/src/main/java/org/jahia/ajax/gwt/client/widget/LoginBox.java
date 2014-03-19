@@ -145,7 +145,11 @@ public class LoginBox extends Window {
         Button btnCancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
-                com.google.gwt.user.client.Window.Location.reload();
+                final String portOrigin = com.google.gwt.user.client.Window.Location.getPort();
+                String port = (portOrigin == null || portOrigin.equals("80") || portOrigin.equals(""))? "":":"+ portOrigin;
+                com.google.gwt.user.client.Window.Location.assign(
+                        com.google.gwt.user.client.Window.Location.getProtocol() + "//" +
+                        com.google.gwt.user.client.Window.Location.getHost() + port + "/");
             }
         });
         form.addButton(btnCancel);

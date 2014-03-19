@@ -151,7 +151,7 @@
                 <c:set value="${currentNode.properties['displayLastModifiedDate'].boolean}" var="dispLastModifiedDate"/>
                 <c:set value="${currentNode.properties['displayAssignee'].boolean}" var="dispAssignee"/>
                 <c:set value="${currentNode.properties['displayCreator'].boolean}" var="dispCreator"/>
-                <fieldset class="well">
+                <fieldset>
                     <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered" id="userTasks_table">
                         <thead>
                             <tr>

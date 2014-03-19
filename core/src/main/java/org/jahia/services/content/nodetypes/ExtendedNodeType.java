@@ -604,21 +604,8 @@ public class ExtendedNodeType implements NodeType {
                 // perform type conversion as necessary and create InternalValue
                 // from (converted) Value
                 InternalValue internalValue = null;
-                if (targetType != value.getType()) {
-                    // type conversion required, but Jahia cannot do it, because we have no valueFactory, resolver, store or session object here
-                    // Value targetVal = ValueHelper.convert(
-                    // value, targetType,
-                    // valueFactory);
-                    if (value.getType() != PropertyType.BINARY
-                            && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
-                        internalValue = InternalValue.create(value, null, null);
-                    }
-                } else {
-                    // no type conversion required
-                    if (value.getType() != PropertyType.BINARY
-                            && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
-                        internalValue = InternalValue.create(value, null, null);
-                    }
+                if (value.getType() != PropertyType.BINARY && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
+                    internalValue = InternalValue.create(value, null, null);
                 }
                 if (internalValue != null) {
                     checkSetPropertyValueConstraints(def, new InternalValue[] { internalValue });

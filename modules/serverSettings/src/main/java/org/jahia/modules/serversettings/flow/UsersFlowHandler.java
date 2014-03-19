@@ -219,6 +219,7 @@ public class UsersFlowHandler implements Serializable {
 
 
         logger.info("Batch user create took " + (System.currentTimeMillis() - timer) + " ms");
+        csvFile.setCsvFile(null);
         return !hasErrors;
     }
 

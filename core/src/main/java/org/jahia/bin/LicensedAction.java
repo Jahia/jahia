@@ -44,18 +44,20 @@ import javax.jcr.RepositoryException;
 
 import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Action implementation that is checking the configured license feature for being enabled.
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class LicensedAction extends Action {
+public abstract class LicensedAction extends Action implements InitializingBean {
 
     private boolean allowedByLicense;
 
     private String licenseFeature;
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         allowedByLicense = licenseFeature == null || LicenseCheckerService.Stub.isAllowed(licenseFeature);
     }

@@ -800,6 +800,6 @@ public class NavigationHelper {
     }
     
     private boolean haveToCheckLicense(List<String> fields) {
-        return Jahia.isEnterpriseEdition() && fields.contains("j:requiredLicenseFeature");
+        return fields != null && Jahia.isEnterpriseEdition() && fields.contains("j:requiredLicenseFeature");
     }
 }

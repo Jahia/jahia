@@ -20,6 +20,7 @@
                 v e r s i o n   :   @VERSION@
               c o d e  n a m e  :   @CODENAME@
                   b u i l d     :   @BUILD_NUMBER@ 
+                   d a t e      :   @BUILD_DATE@ 
 
 
    Copyright 2002-2014 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
@@ -38,9 +39,16 @@
  * MA 02110-1301, USA. As a special exception to the terms and conditions of   *
  * version 2.0 of the GPL (or any later version), you may redistribute this    *
  * Program in connection with Free/Libre and Open Source Software ("FLOSS")    *
- * applications as described in Jahia's FLOSS exception. For more information  *
- * about Jahia software licensing, please contact us at legal@jahia.com or go  *
- * to http://www.jahia.com/license                                             *
+ * applications as described in Jahia's FLOSS exception.                       *
+ *                                                                             *
+ * Commercial and Supported Versions of the program (dual licensing):          *
+ * Alternatively, commercial and supported versions - also known as            *
+ * Enterprise Distributions - of the program must be used in accordance        *
+ * with the terms and conditions contained in a separate written agreement     *
+ * between you and Jahia Solutions Group SA.                                   *
+ *                                                                             *
+ * For more information about Jahia Software licensing, please contact us      *
+ * at legal@jahia.com or go to http://www.jahia.com/license                    *
  *******************************************************************************
 
 

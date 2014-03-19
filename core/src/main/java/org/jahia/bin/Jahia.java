@@ -63,6 +63,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
@@ -71,6 +73,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ibm.icu.text.DateFormat;
 
 /**
  * Jahia version and support utilities.
@@ -111,6 +115,8 @@ public final class Jahia {
     private static final Version JAHIA_VERSION;
     
     private static String FULL_PRODUCT_VERSION; 
+
+    private static String BUILD_DATE;
 
     static {
         Version v = null;
@@ -162,6 +168,26 @@ public final class Jahia {
         }
 
         return BUILD_NUMBER;
+    }
+
+    public static String getBuildDate() {
+        if (BUILD_DATE == null) {
+            try {
+                URL urlToVersionMarker = Jahia.class.getResource("/META-INF/jahia-impl-marker.txt");
+                if (urlToVersionMarker != null) {
+                    URLConnection conn = urlToVersionMarker.openConnection();
+                    BUILD_DATE = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
+                            new Date(conn.getLastModified()));
+                } else {
+                    BUILD_DATE = "";
+                }
+            } catch (IOException ioe) {
+                logger.error(ioe.getMessage(), ioe);
+                BUILD_DATE = "";
+            }
+        }
+
+        return BUILD_DATE;
     }
 
     public static int getEEBuildNumber() {

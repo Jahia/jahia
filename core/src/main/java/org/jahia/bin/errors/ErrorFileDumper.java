@@ -471,7 +471,7 @@ public class ErrorFileDumper {
             strOut.println();
 
             if (SettingsBean.getInstance() != null) {
-                strOut.append("Server configuration (").append(Jahia.getFullProductVersion()).append("):");
+                strOut.append("Server configuration (").append(Jahia.getFullProductVersion()).append(" - ").append(Jahia.getBuildDate()).append("):");
                 strOut.println();
                 strOut.println("---------------------");
                 SettingsBean settings = SettingsBean.getInstance();

@@ -895,6 +895,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 req.getHeader("accept").contains("application/json") && requestWith != null &&
                         requestWith.equals("XMLHttpRequest");
 
+        final Action originalAction = action;
+        
         int tokenResult = TokenChecker.checkToken(req, resp, parameters);
 
         switch (tokenResult) {
@@ -924,7 +926,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             case TokenChecker.INVALID_HIDDEN_FIELDS:
                 throw new AccessDeniedException();
             case TokenChecker.VALID_TOKEN:
-                final Action originalAction = action;
                 action = new SystemAction() {
                     @Override
                     public ActionResult doExecuteAsSystem(HttpServletRequest req, RenderContext renderContext, JCRSessionWrapper systemSession, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -943,6 +944,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
             if (!action.isPermitted(urlResolver.getNode())) {
                 throw new AccessDeniedException("Action '" + action.getName() + "' requires '" + action.getRequiredPermission() + "' permission.");
+            }
+        } else if (originalAction instanceof LicensedAction) {
+            LicensedAction licensedAction = (LicensedAction) originalAction;
+            if (!licensedAction.isAllowedByLicense()) {
+                logger.error("Action '{}' requires a licene feature '{}'"
+                        + " which is not allowed by the current license terms", action.getName(),
+                        licensedAction.getLicenseFeature());
+                throw new AccessDeniedException("Action '" + action.getName() + "' requires a licene feature '"
+                        + licensedAction.getLicenseFeature() + "' which is not allowed by the current license terms");
             }
         }
 

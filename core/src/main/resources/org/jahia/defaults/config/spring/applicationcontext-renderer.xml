@@ -187,7 +187,7 @@
             </list>
         </property>
         <property name="traverser"
-                  ref="org.jahia.services.render.filter.URLTraverser"/>
+                  ref="org.jahia.services.render.filter.SystemURLTraverser"/>
     </bean>
     <bean class="org.jahia.services.render.filter.URLFilter">
         <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
@@ -285,6 +285,44 @@
                         <value>value</value>
                     </set>
                 </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="org.jahia.services.render.filter.SystemURLTraverser"
+          class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">
+        <constructor-arg>
+            <map>
+                <entry key="a">
+                    <set>
+                        <value>href</value>
+                    </set>
+                </entry>
+                <!--<entry key="embed">-->
+                    <!--<set>-->
+                        <!--<value>src</value>-->
+                    <!--</set>-->
+                <!--</entry>-->
+                <!--<entry key="form">-->
+                    <!--<set>-->
+                        <!--<value>action</value>-->
+                    <!--</set>-->
+                <!--</entry>-->
+                <!--<entry key="img">-->
+                    <!--<set>-->
+                        <!--<value>src</value>-->
+                    <!--</set>-->
+                <!--</entry>-->
+                <!--<entry key="link">-->
+                    <!--<set>-->
+                        <!--<value>href</value>-->
+                    <!--</set>-->
+                <!--</entry>-->
+                <!--<entry key="param">-->
+                    <!--<set>-->
+                        <!--<value>value</value>-->
+                    <!--</set>-->
+                <!--</entry>-->
             </map>
         </constructor-arg>
     </bean>

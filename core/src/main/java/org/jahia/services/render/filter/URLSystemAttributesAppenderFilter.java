@@ -72,7 +72,7 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
             previousOut = traverser.traverse(previousOut, renderContext, resource,
                     new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
                         public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
-                            if (!value.startsWith("javascript:")) {
+                            if (!value.startsWith("javascript:") && !value.startsWith("#")) {
                                 String separateChar;
                                 if (value.contains("?")) {
                                     separateChar = "&";

@@ -637,8 +637,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                         } else {
                             JahiaSite site = sitesService.getSite(siteID1, session);
                             if (site == null) {
-                                // This can happen if this method is called during the creation of the site !
-                                logger.warn("Site " + siteID1 + " is not available, maybe it's being created ?");
+                                logger.debug("Site {} is not available", siteID1);
                                 return null;
                             }
                             String siteName = site.getSiteKey();

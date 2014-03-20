@@ -8,7 +8,7 @@
                 <c:set value="${jcr:findDisplayableNodeInSite(task.properties['targetNode'].node, renderContext, task.properties['targetNode'].node.resolveSite)}" var="displayableNode"/>
                 &nbsp;-&nbsp;
                 <span>
-                    <a href="<c:url value='${url.base}${displayableNode.path}.html'/>">
+                    <a href="<c:url value='${url.baseEdit}${displayableNode.path}.html'/>" target="_blank">
                             ${fn:escapeXml(task.properties["targetNode"].node.displayableName)}
                     </a>
                 </span>
@@ -17,7 +17,7 @@
             <c:if test="${not jcr:isNodeType(displayableNode, 'jnt:user')}">
                 &nbsp;-&nbsp;
                 <span>
-                    <a href="<c:url value='${url.base}${displayableNode.path}.html'/>">
+                    <a href="<c:url value='${url.baseEdit}${displayableNode.path}.html'/>" target="_blank">
                             ${displayableNode.displayableName}
                     </a>
                 </span>

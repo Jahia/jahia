@@ -92,12 +92,9 @@ import java.util.*;
 public abstract class ViewStatusActionItem extends BaseActionItem {
     protected transient InfoLayers infoLayers;
     protected transient ToggleButton button;
+    protected transient Set<InfoLayers.InfoLayer> before;
 
     public void onComponentSelection() {
-        if (!infoLayers.getContainers().isEmpty()) {
-            infoLayers.removeAll();
-            return;
-        }
         List<Module> modules = ModuleHelper.getModules();
         List<Module> list = new ArrayList<Module>();
         for (Module m : modules) {
@@ -107,6 +104,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         }
 
         infoLayers.setMainModule(modules.iterator().next());
+        before = new HashSet<InfoLayers.InfoLayer>(infoLayers.getContainers());
         viewStatus(list);
     }
 
@@ -123,7 +121,9 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
     protected Listener<ComponentEvent> createRemoveListener() {
         Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                infoLayers.removeAll();
+                Set<InfoLayers.InfoLayer> layers = new HashSet<InfoLayers.InfoLayer>(infoLayers.getContainers());
+                layers.removeAll(before);
+                infoLayers.removeAll(layers);
                 if (button != null) {
                     button.toggle(false);
                 }

@@ -82,6 +82,8 @@ import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -132,7 +134,14 @@ public class InfoLayers {
     private void addInfoLayer(Module module, String text, String textColor, String bgcolor, final List<LayoutContainer> images,
                                 Listener<ComponentEvent> listener, boolean headerOnly, final String opacity) {
         LayoutContainer layoutContainer = new LayoutContainer();
+
         RootPanel.get().add(layoutContainer);
+
+        if (!(module instanceof MainModule)) {
+            Element e = MainModule.getInstance().getInnerElement();
+            DOM.appendChild(e, layoutContainer.getElement());
+        }
+
         layoutContainer.el().makePositionable(true);
         layoutContainer.setZIndex(1001);
         LayoutContainer container = module.getContainer();
@@ -159,6 +168,7 @@ public class InfoLayers {
             box.setStyleAttribute("text-align", "center");
             box.setWidth(250);
             box.setStyleAttribute("white-space", "normal");
+            box.setStyleAttribute("position", "absolute");
             layoutContainer.add(box);
         }
         if (!images.isEmpty()) {
@@ -191,6 +201,7 @@ public class InfoLayers {
             layoutContainer.sinkEvents(Event.ONCLICK);
             layoutContainer.addListener(Events.OnClick, listener);
         }
+
     }
 
     protected void position(InfoLayer infoLayer, int width) {
@@ -208,23 +219,6 @@ public class InfoLayers {
                 x -= width + (infoLayer.images * 16);
                 y += 9;
             }
-        }
-
-        if (!infoLayer.isHeader) {
-            if (y < rect.y) {
-                h = Math.max(0, h - (rect.y - y));
-                y = rect.y;
-            }
-            if (y + h > rect.y + rect.height) {
-                h = rect.y + rect.height - y;
-            }
-        }
-        if (x < rect.x) {
-            w = Math.max(0, w - (rect.x - x));
-            x = rect.x;
-        }
-        if (x + w > rect.x + rect.width) {
-            w = rect.x + rect.width - x;
         }
 
         if (h <= 0 || w <= 0) {
@@ -264,7 +258,14 @@ public class InfoLayers {
         containers.clear();
     }
 
-    class InfoLayer {
+    public void removeAll(Set<InfoLayer> infoLayers) {
+        for (InfoLayer ctn : infoLayers) {
+            RootPanel.get().remove(ctn.layoutContainer);
+        }
+        containers.removeAll(infoLayers);
+    }
+
+    public class InfoLayer {
         LayoutContainer layoutContainer;
         El el;
         boolean isHeader;

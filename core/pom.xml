@@ -1491,6 +1491,10 @@
                     <artifactId>gwt-servlet</artifactId>
                     <groupId>com.google.gwt</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.atmosphere.client</groupId>
+                    <artifactId>javascript</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

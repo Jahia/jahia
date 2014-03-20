@@ -131,36 +131,35 @@ public class CreateButtonItem extends SaveButtonItem {
                     nodeName = ((ContentTabItem) item).getName().getValue();
                 }
                 final List<CheckBox> values = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
-                if (!values.isEmpty()) {
-                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-                    if (values.size() != siteLanguages.size()) {
-                        List<String> strings = new ArrayList<String>(siteLanguages.size());
-                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-                            strings.add(siteLanguage.getLanguage());
+                final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                if (values.size() != siteLanguages.size()) {
+                    List<String> strings = new ArrayList<String>(siteLanguages.size());
+                    for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                        strings.add(siteLanguage.getLanguage());
+                    }
+                    GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                    gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                    gwtJahiaNodeProperty.setMultiple(true);
+                    for (CheckBox value : values) {
+                        if (value.getValue()) {
+                            strings.remove(value.getValueAttribute());
                         }
-                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
-                        gwtJahiaNodeProperty.setMultiple(true);
-                        for (CheckBox value : values) {
-                            if (value.getValue()) {
-                                strings.remove(value.getValueAttribute());
-                            }
+                    }
+                    if (strings.size() > 0) {
+                        gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                        for (String string : strings) {
+                            gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
                         }
-                        if(strings.size()>0) {
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            for (String string : strings) {
-                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
-                            }
-                        }
-                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
-                        if (gwtJahiaNodePropertyValues!=null && gwtJahiaNodePropertyValues.size() > 0) {
-                            engine.getChangedProperties().add(gwtJahiaNodeProperty);
-                            addedTypes.add("jmix:i18n");
-                        }
+                    }
+                    final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                    if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
+                        engine.getChangedProperties().add(gwtJahiaNodeProperty);
+                        addedTypes.add("jmix:i18n");
                     }
                 }
             }
-            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes, new HashSet<String>(), children, newNodeACL);
+            item.doSave(engine.getNode(), engine.getChangedProperties(), engine.getChangedI18NProperties(), addedTypes,
+                    new HashSet<String>(), children, newNodeACL);
         }
 
         doSave((CreateContentEngine)engine, nodeName, engine.getChangedProperties(), engine.getChangedI18NProperties(), new ArrayList<String>(addedTypes), children, newNodeACL,

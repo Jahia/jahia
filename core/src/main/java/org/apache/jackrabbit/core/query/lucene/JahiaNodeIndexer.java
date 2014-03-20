@@ -139,6 +139,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public static final String FACET_HIERARCHY = "_:FACET_HIERARCHY".intern();
 
+    public static final Name J_INVALID_LANGUAGES = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "invalidLanguages");
+    public static final String INVALID_LANGUAGES = "_:INVALID_LANGUAGES".intern();
     /**
      * The persistent node type registry
      */
@@ -697,6 +699,23 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 logger.error(e.getMessage(), e);
             }
         }
+
+        if (isIndexed(J_INVALID_LANGUAGES) && node.getPropertyNames().contains(J_INVALID_LANGUAGES)) {
+            PropertyId id = new PropertyId(node.getNodeId(), J_INVALID_LANGUAGES);
+            try {
+                PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+
+                final InternalValue[] values = propState.getValues();
+                for (InternalValue value : values) {
+                    doc.add(new Field(INVALID_LANGUAGES, false, value.getString(),
+                            Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS,
+                            Field.TermVector.NO));
+                }
+            } catch (ItemStateException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
         return doc;
     }
 

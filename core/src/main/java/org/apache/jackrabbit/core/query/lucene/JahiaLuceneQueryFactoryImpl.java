@@ -153,6 +153,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 return FieldSelectorResult.LOAD;                
             } else if (JahiaNodeIndexer.PUBLISHED == fieldName) {
                 return FieldSelectorResult.LOAD;                                    
+            } else if (JahiaNodeIndexer.INVALID_LANGUAGES == fieldName) {
+                return FieldSelectorResult.LOAD;
             } else {
                 return FieldSelectorResult.NO_LOAD;
             }
@@ -242,8 +244,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                             if (canRead
                                     && (!Constants.LIVE_WORKSPACE.equals(session
                                             .getWorkspace().getName())
-                                            || infos.getPublished() == null || "true"
-                                                .equals(infos.getPublished()))) {
+                                            || ((infos.getPublished() == null || "true"
+                                                .equals(infos.getPublished())) &&
+                                                (infos.getCheckInvalidLanguages()==null || !infos.getCheckInvalidLanguages().contains(getLocale().toString()))))) {
                                 if (filter == Predicate.TRUE) { // <-- Added by jahia
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                         Row row = null;
@@ -477,13 +480,13 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     }
 
     /**
-     * Get a String array of indexed fields for running quick checks 
-     * [0] the uuid of the language independent node 
-     * [1] the acl-id 
+     * Get a String array of indexed fields for running quick checks
+     * [0] the uuid of the language independent node
+     * [1] the acl-id
      * [2] "1" if visibility rule is set for node
      * [3] "true" node is published / "false" node is not published
      */
-    private IndexedNodeInfo getIndexedNodeInfo (ScoreNode sn, IndexReader reader, final boolean onlyMainNodeUuid) throws IOException {
+    private IndexedNodeInfo getIndexedNodeInfo(ScoreNode sn, IndexReader reader, final boolean onlyMainNodeUuid) throws IOException {
         IndexedNodeInfo info = new IndexedNodeInfo(sn.getDoc(reader));
 
         Document doc = reader.document(info.getDocNumber(), onlyMainNodeUuid ? ONLY_MAIN_NODE_UUID : OPTIMIZATION_FIELDS);
@@ -499,15 +502,20 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 if (aclUuidField != null) {
                     info.setAclUuid(aclUuidField.stringValue());
                 }
-            }    
-            Field checkVisibilityField = doc
-                    .getField(JahiaNodeIndexer.CHECK_VISIBILITY);
+            }
+            Field checkVisibilityField = doc.getField(JahiaNodeIndexer.CHECK_VISIBILITY);
             if (checkVisibilityField != null) {
                 info.setCheckVisibility(checkVisibilityField.stringValue());
             }
             Field publishedField = doc.getField(JahiaNodeIndexer.PUBLISHED);
             if (publishedField != null) {
                 info.setPublished(publishedField.stringValue());
+            }
+            Field[] checkInvalidLanguagesField = doc.getFields(JahiaNodeIndexer.INVALID_LANGUAGES);
+            if (checkInvalidLanguagesField != null && checkInvalidLanguagesField.length > 0) {
+                for (Field field : checkInvalidLanguagesField) {
+                    info.addInvalidLanguages(field.stringValue());
+                }
             }
         }
         return info;
@@ -650,6 +658,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         private String aclUuid;
         private String checkVisibility;
         private String published;
+        private List<String> checkInvalidLanguages = null;
 
         public IndexedNodeInfo(int docNumber) {
             super();
@@ -692,6 +701,16 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             return docNumber;
         }
 
+        public List<String> getCheckInvalidLanguages() {
+            return checkInvalidLanguages;
+        }
+
+        public void addInvalidLanguages(String invalidLanguage) {
+            if(checkInvalidLanguages==null){
+                checkInvalidLanguages = new ArrayList<String>();
+            }
+            checkInvalidLanguages.add(invalidLanguage);
+        }
     }
     
     class LazySelectorRow extends SelectorRow {   // <-- Added by jahia

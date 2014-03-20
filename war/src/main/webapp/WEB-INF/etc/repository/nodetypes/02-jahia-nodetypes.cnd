@@ -102,7 +102,7 @@
   - * (undefined)
 
 [jmix:i18n] mixin
- - j:invalidLanguages (string) multiple hidden indexed=no
+ - j:invalidLanguages (string) multiple hidden
  + * (jnt:translation)
 
 //---------------------------------------------------------

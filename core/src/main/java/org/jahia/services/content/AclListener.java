@@ -103,7 +103,7 @@ public class AclListener extends DefaultEventListener {
         this.publicationService = publicationService;
     }
 
-    private Map<String,String> foundRoles = new HashMap<String,String>();
+    private Map<String, String> foundRoles = new HashMap<String, String>();
 
     @Override
     public int getEventTypes() {
@@ -256,7 +256,7 @@ public class AclListener extends DefaultEventListener {
                         @Override
                         public Object doInJCR(JCRSessionWrapper defaultSystemSession) throws RepositoryException {
                             final boolean publish = events.getOperationType() == JCRObservationManager.WORKSPACE_CLONE || events.getLastOperationType() == JCRObservationManager.WORKSPACE_CLONE;
-                            handleAclModifications(systemSession, defaultSystemSession, roles, finalAce, fprincipal, privilegedAdded, privilegedToCheck, roleNodes, addedAceIdentifiers.contains(aceIdentifier), publish);
+                            handleAclModifications(systemSession, defaultSystemSession, roles, finalAce, fprincipal, privilegedAdded, privilegedToCheck, new HashMap<String, JCRNodeWrapper>(), addedAceIdentifiers.contains(aceIdentifier), publish);
                             return null;
                         }
                     });
@@ -308,52 +308,56 @@ public class AclListener extends DefaultEventListener {
             for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
                 final String site = entry.getKey();
                 final JahiaGroup priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
-                for (String principal : entry.getValue()) {
-                    Principal p = getPrincipal(groupService, userService, site, principal);
+                if (priv != null) {
+                    for (String principal : entry.getValue()) {
+                        Principal p = getPrincipal(groupService, userService, site, principal);
 
-                    if (priv.isMember(p)) {
-                        continue;
+                        if (priv.isMember(p)) {
+                            continue;
+                        }
+                        logger.info(principal + " need privileged access");
+                        priv.addMember(p);
                     }
-                    logger.info(principal + " need privileged access");
-                    priv.addMember(p);
                 }
             }
 
             for (Map.Entry<String, Set<String>> entry : privilegedToCheck.entrySet()) {
                 final String site = entry.getKey();
                 final JahiaGroup priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
-                for (String principal : entry.getValue()) {
-                    Principal p = getPrincipal(groupService, userService, site, principal);
+                if (priv != null) {
+                    for (String principal : entry.getValue()) {
+                        Principal p = getPrincipal(groupService, userService, site, principal);
 
-                    if (!priv.isMember(p)) {
-                        continue;
-                    }
+                        if (!priv.isMember(p)) {
+                            continue;
+                        }
 
-                    List<String> rolesName = new ArrayList<String>();
-                    boolean needPrivileged = false;
+                        List<String> rolesName = new ArrayList<String>();
+                        boolean needPrivileged = false;
 
-                    String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
-                    if (StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY)) {
-                        sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + principal + "' and (isdescendantnode(ace, ['/sites/" + site + "']) or not isdescendantnode(ace, ['/sites']))";
-                    }
+                        String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
+                        if (StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY)) {
+                            sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + principal + "' and (isdescendantnode(ace, ['/sites/" + site + "']) or not isdescendantnode(ace, ['/sites']))";
+                        }
 
-                    rolesName.addAll(getRolesName(systemSession, sql));
-                    try {
-                        for (String roleName : rolesName) {
-                            JCRNodeWrapper roleNode = getRole(systemSession, roleName, roleNodes);
-                            if (roleNode != null) {
-                                if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
-                                    needPrivileged = true;
-                                    break;
+                        rolesName.addAll(getRolesName(systemSession, sql));
+                        try {
+                            for (String roleName : rolesName) {
+                                JCRNodeWrapper roleNode = getRole(systemSession, roleName, roleNodes);
+                                if (roleNode != null) {
+                                    if (roleNode.hasProperty("j:privilegedAccess") && roleNode.getProperty("j:privilegedAccess").getBoolean()) {
+                                        needPrivileged = true;
+                                        break;
+                                    }
                                 }
                             }
+                        } catch (PathNotFoundException e) {
+                            // ignore exception
                         }
-                    } catch (PathNotFoundException e) {
-                        // ignore exception
-                    }
-                    if (!needPrivileged) {
-                        logger.info(principal + " do not need privileged access");
-                        priv.removeMember(p);
+                        if (!needPrivileged) {
+                            logger.info(principal + " do not need privileged access");
+                            priv.removeMember(p);
+                        }
                     }
                 }
             }

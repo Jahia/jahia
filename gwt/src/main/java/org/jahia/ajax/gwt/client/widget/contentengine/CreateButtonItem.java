@@ -132,6 +132,8 @@ public class CreateButtonItem extends SaveButtonItem {
                 }
                 final List<CheckBox> values = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
                 if (values != null) {
+                    // Checkboxes are not null so they are displayed, if list is empty this means that this
+                    // content is not visible in any language
                     final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
                     if (values.size() != siteLanguages.size()) {
                         List<String> strings = new ArrayList<String>(siteLanguages.size());

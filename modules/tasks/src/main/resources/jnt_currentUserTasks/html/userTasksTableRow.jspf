@@ -66,9 +66,9 @@
                         </a>
                     </c:when>
                     <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
-                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Refuse">
+                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Unassign">
                             <i class="icon-stop icon-white"></i>
-                            <fmt:message key="label.actions.refuse"/>
+                            <fmt:message key="label.actions.unassign"/>
                         </a>
                         <a class="btn btn-success btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','started');return false;" title="start">
                             <i class="icon-play icon-white"></i>
@@ -76,9 +76,9 @@
                         </a>
                     </c:when>
                     <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
-                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Refuse">
+                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Unassign">
                             <i class="icon-stop icon-white"></i>
-                            <fmt:message key="label.actions.refuse"/>
+                            <fmt:message key="label.actions.unassign"/>
                         </a>
                         <a class="btn btn-warning btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','suspended');return false;" title="suspend">
                             <i class="icon-pause icon-white"></i>
@@ -121,9 +121,9 @@
                         &nbsp;<fmt:message key="label.actions.completed"/>
                     </c:when>
                     <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
-                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Refuse">
+                        <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Unassign">
                             <i class="icon-stop icon-white"></i>
-                            <fmt:message key="label.actions.refuse"/>
+                            <fmt:message key="label.actions.unassign"/>
                         </a>
                         <a class="btn btn-success btn-small" href="#" onclick="sendNewStatus('${task.identifier}','${task.path}','started');return false;" title="start">
                             <i class="icon-play icon-white"></i>

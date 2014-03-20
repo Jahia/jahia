@@ -678,15 +678,6 @@ public class ExtendedNodeType implements NodeType {
                 if (!def.isMultiple() || def.isProtected()) {
                     return false;
                 }
-                int targetType;
-                if (def.getRequiredType() != PropertyType.UNDEFINED
-                        && def.getRequiredType() != type) {
-                    // type conversion required, but Jahia cannot do it, because we have no valueFactory, resolver, store or session object here
-                    targetType = def.getRequiredType();
-                } else {
-                    // no type conversion required
-                    targetType = type;
-                }
                 List<InternalValue> list = new ArrayList<InternalValue>();
                 for (Value value : values) {
                     if (value != null) {

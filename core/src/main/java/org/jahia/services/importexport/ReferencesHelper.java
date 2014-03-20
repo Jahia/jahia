@@ -217,12 +217,7 @@ public class ReferencesHelper {
     private static void update(List<String> paths, JCRSessionWrapper session, String value) throws RepositoryException {
         for (String path : paths) {
             try {
-                JCRNodeWrapper n = null;
-                try {
-                    n = session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
-                } catch (RepositoryException e) {
-                    session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
-                }
+                JCRNodeWrapper n = session.getNodeByUUID(path.substring(0, path.lastIndexOf("/")));
                 String pName = path.substring(path.lastIndexOf("/") + 1);
                 if (pName.startsWith("@")) {
                     JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");

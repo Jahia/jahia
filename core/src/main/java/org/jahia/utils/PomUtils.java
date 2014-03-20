@@ -69,28 +69,30 @@
  */
 package org.jahia.utils;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Map;
-
-import org.apache.maven.model.Build;
-import org.apache.maven.model.DeploymentRepository;
-import org.apache.maven.model.DistributionManagement;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.model.Scm;
+import org.apache.commons.io.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.*;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tika.io.IOUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.codehaus.plexus.util.xml.pull.XmlSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.util.Map;
 
 /**
  * Utility class for reading and manipulating Maven project files (pom.xml).
@@ -99,10 +101,12 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  */
 public final class PomUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(PomUtils.class);
+
     /**
      * Gets the artifact group ID from the provided model. If the artifact group ID is not specified, takes the group ID of the parent, if
      * present. Otherwise returns <code>null</code>.
-     * 
+     *
      * @param model
      *            the Maven project model
      * @return the artifact group ID from the provided model. If the artifact group ID is not specified, takes the group ID of the parent,
@@ -319,14 +323,36 @@ public final class PomUtils {
      *             in case of a serialization error
      */
     public static void write(Model model, File targetPomXmlFile) throws IOException {
+        String copyright = null;
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(targetPomXmlFile);
+            Node firstChild = doc.getFirstChild();
+            if (firstChild.getNodeType() == Node.COMMENT_NODE) {
+                copyright = firstChild.getTextContent();
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to read pom.xml copyright", e);
+        }
+
         MavenXpp3Writer xpp3Writer = new MavenXpp3Writer();
         OutputStream os = null;
+        String pomContent;
         try {
-            os = new BufferedOutputStream(new FileOutputStream(targetPomXmlFile));
+            os = new ByteArrayOutputStream();
             xpp3Writer.write(os, model);
+            pomContent = os.toString();
         } finally {
             IOUtils.closeQuietly(os);
         }
+
+        if (copyright != null) {
+            int i = pomContent.indexOf("<project");
+            pomContent = pomContent.substring(0, i) + "<!--" + copyright + "-->\n" + pomContent.substring(i);
+        }
+
+        org.apache.commons.io.FileUtils.write(targetPomXmlFile, pomContent);
     }
 
     private PomUtils() {

@@ -305,27 +305,6 @@ public class TemplatePackageDeployer {
         } else {
             m = m.getNode(pack.getVersion().toString());
         }
-        if (!m.hasNode("portlets")) {
-            modified = true;
-            m.addNode("portlets", "jnt:portletFolder");
-        }
-        if (!m.hasNode("files")) {
-            modified = true;
-            m.addNode("files", "jnt:folder");
-        }
-        if (!m.hasNode("contents")) {
-            modified = true;
-            m.addNode("contents", "jnt:contentFolder");
-        }
-        if (!m.hasNode("templates")) {
-            modified = true;
-            JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
-            if (JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
-                tpls.setProperty("j:rootTemplatePath", "/base");
-            }
-            tpls.addNode("files", "jnt:folder");
-            tpls.addNode("contents", "jnt:contentFolder");
-        }
 
         JCRNodeWrapper v;
         if (!m.hasNode("j:versionInfo")) {
@@ -351,6 +330,28 @@ public class TemplatePackageDeployer {
         if (updateDeploymentDate) {
             v.setProperty("j:deployementDate", new GregorianCalendar());
             modified = true;
+        }
+
+        if (!m.hasNode("portlets")) {
+            modified = true;
+            m.addNode("portlets", "jnt:portletFolder");
+        }
+        if (!m.hasNode("files")) {
+            modified = true;
+            m.addNode("files", "jnt:folder");
+        }
+        if (!m.hasNode("contents")) {
+            modified = true;
+            m.addNode("contents", "jnt:contentFolder");
+        }
+        if (!m.hasNode("templates")) {
+            modified = true;
+            JCRNodeWrapper tpls = m.addNode("templates", "jnt:templatesFolder");
+            if (JahiaTemplateManagerService.MODULE_TYPE_MODULE.equals(pack.getModuleType())) {
+                tpls.setProperty("j:rootTemplatePath", "/base");
+            }
+            tpls.addNode("files", "jnt:folder");
+            tpls.addNode("contents", "jnt:contentFolder");
         }
 
         return modified;

@@ -96,36 +96,39 @@ public class FormTokenFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        String out = previousOut;
-
         Source source = new Source(previousOut);
-        List<StartTag> jahiaFormTags = source.getAllStartTags("jahia:token-form");
 
-        Map<StartTag, String> m = new HashMap<StartTag, String>();
-        for (StartTag formTag : jahiaFormTags) {
-            String formid = formTag.getAttributeValue("id");
-            Map<String,List<String>> hiddenInputs = (Map<String, List<String>>) ObjectBuilder.fromJSON(formTag.getAttributeValue("forms-data"));
-            if (hiddenInputs != null) {
-                String id = java.util.UUID.randomUUID().toString();
-                Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) renderContext.getRequest().getSession().getAttribute("form-tokens");
-                if (toks == null) {
-                    toks = new HashMap<String, Map<String, List<String>>>();
-                    renderContext.getRequest().getSession().setAttribute("form-tokens", toks);
+        List<StartTag> jahiaFormTags = source.getAllStartTags("jahia:token-form");
+        if (!jahiaFormTags.isEmpty()) {
+            Map<StartTag, String> m = new HashMap<StartTag, String>();
+            for (StartTag formTag : jahiaFormTags) {
+                String formid = formTag.getAttributeValue("id");
+                Map<String, List<String>> hiddenInputs = (Map<String, List<String>>) ObjectBuilder.fromJSON(formTag.getAttributeValue("forms-data"));
+                if (hiddenInputs != null) {
+                    String id = UUID.randomUUID().toString();
+                    Map<String, Map<String, List<String>>> toks = (Map<String, Map<String, List<String>>>) renderContext.getRequest().getSession().getAttribute("form-tokens");
+                    if (toks == null) {
+                        toks = new HashMap<String, Map<String, List<String>>>();
+                        renderContext.getRequest().getSession().setAttribute("form-tokens", toks);
+                    }
+                    toks.put(id, hiddenInputs);
+                    m.put(formTag, id);
+                    renderContext.getRequest().setAttribute("form-" + formid, id);
                 }
-                toks.put(id, hiddenInputs);
-                m.put(formTag, id);
-                renderContext.getRequest().setAttribute("form-" + formid, id);
+
             }
 
+            OutputDocument outputDocument = new OutputDocument(source);
+
+            Collections.reverse(jahiaFormTags);
+            for (StartTag jahiaFormTag : jahiaFormTags) {
+                outputDocument.replace(jahiaFormTag, "<input type=\"hidden\" name=\"form-token\" value=\"" + m.get(jahiaFormTag) + "\"/>");
+            }
+
+            return outputDocument.toString().trim();
         }
 
-        OutputDocument outputDocument = new OutputDocument(source);
-
-        Collections.reverse(jahiaFormTags);
-        for (StartTag jahiaFormTag : jahiaFormTags) {
-            outputDocument.replace(jahiaFormTag, "<input type=\"hidden\" name=\"form-token\" value=\""+m.get(jahiaFormTag)+"\"/>");
-        }
-
-        return outputDocument.toString().trim();
+        // we don't have any jahia:token-form so just return what we were given
+        return previousOut;
     }
 }

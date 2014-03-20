@@ -77,6 +77,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ScriptEngine provider class.
@@ -108,8 +109,8 @@ public class ScriptEngineUtils {
     public ScriptEngineUtils() {
         super();
         scriptEngineManager = new ScriptEngineManager();
-        scriptEngineByExtensionCache = new LinkedHashMap<ClassLoader, Map<String, ScriptEngine>>(3);
-        scriptEngineByNameCache = new LinkedHashMap<ClassLoader, Map<String, ScriptEngine>>(3);
+        scriptEngineByExtensionCache = new ConcurrentHashMap<ClassLoader, Map<String, ScriptEngine>>(3);
+        scriptEngineByNameCache = new ConcurrentHashMap<ClassLoader, Map<String, ScriptEngine>>(3);
         try {
             scriptEngineManager.getEngineByExtension("groovy").eval("true");
         } catch (ScriptException e) {
@@ -125,17 +126,22 @@ public class ScriptEngineUtils {
      */
     public ScriptEngine getEngineByName(String name) throws ScriptException {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        if (scriptEngineByNameCache.get(contextClassLoader) == null) {
-            scriptEngineByNameCache.put(contextClassLoader, new HashMap<String, ScriptEngine>());
+
+        Map<String, ScriptEngine> stringScriptEngineMap = scriptEngineByNameCache.get(contextClassLoader);
+
+        if (stringScriptEngineMap == null) {
+            stringScriptEngineMap = new ConcurrentHashMap<String, ScriptEngine>();
+            scriptEngineByNameCache.put(contextClassLoader, stringScriptEngineMap);
         }
-        ScriptEngine scriptEngine = scriptEngineByNameCache.get(contextClassLoader).get(name);
+
+        ScriptEngine scriptEngine = stringScriptEngineMap.get(name);
         if (scriptEngine == null) {
             scriptEngine = scriptEngineManager.getEngineByName(name);
             if (scriptEngine == null) {
                 throw new ScriptException("Script engine not found for name :" + name);
             }
             initEngine(scriptEngine);
-            scriptEngineByNameCache.get(contextClassLoader).put(name, scriptEngine);
+            stringScriptEngineMap.put(name, scriptEngine);
         }
         return scriptEngine;
     }
@@ -160,17 +166,23 @@ public class ScriptEngineUtils {
      */
     public ScriptEngine scriptEngine(String extension) throws ScriptException {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        if (scriptEngineByExtensionCache.get(contextClassLoader) == null) {
-            scriptEngineByExtensionCache.put(contextClassLoader, new HashMap<String, ScriptEngine>());
+
+        Map<String, ScriptEngine> stringScriptEngineMap = scriptEngineByExtensionCache.get(contextClassLoader);
+
+        if (stringScriptEngineMap == null) {
+            stringScriptEngineMap = new ConcurrentHashMap<String, ScriptEngine>();
+            scriptEngineByExtensionCache.put(contextClassLoader, stringScriptEngineMap);
         }
-        ScriptEngine scriptEngine = scriptEngineByExtensionCache.get(contextClassLoader).get(extension);
+
+        ScriptEngine scriptEngine = stringScriptEngineMap.get(extension);
+
         if (scriptEngine == null) {
             scriptEngine = scriptEngineManager.getEngineByExtension(extension);
             if (scriptEngine == null) {
                 throw new ScriptException("Script engine not found for extension: " + extension);
             }
             initEngine(scriptEngine);
-            scriptEngineByExtensionCache.get(contextClassLoader).put(extension, scriptEngine);
+            stringScriptEngineMap.put(extension, scriptEngine);
         }
         return scriptEngine;
     }

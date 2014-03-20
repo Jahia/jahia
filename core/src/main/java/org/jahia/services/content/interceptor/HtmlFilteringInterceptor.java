@@ -190,7 +190,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
 
         Set<String> tags = filteredTags;
         boolean doFiltering = false;
-        if (considerSiteSettingsForFiltering) {
+        if (considerSiteSettingsForFiltering && node.getResolveSite().isHtmlMarkupFilteringEnabled()) {
             JCRSiteNode resolveSite = node.getResolveSite();
             if (resolveSite != null && resolveSite.hasProperty(SitesSettings.HTML_MARKUP_FILTERING_ENABLED)) {
                 tags = convertToTagSet(resolveSite.hasProperty(

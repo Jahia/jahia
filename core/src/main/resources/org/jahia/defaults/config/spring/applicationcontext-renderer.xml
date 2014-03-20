@@ -361,7 +361,7 @@
                 <value>/modules/assets/javascript/codemirror/mode/htmlembedded/htmlembedded.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/properties/properties.js</value>
                 <value>/modules/assets/javascript/codemirror.mode.jsp.js</value>
-                <value>/modules/assets/javascript/atmosphere.js</value>
+                <value>/modules/assets/javascript/atmosphere-min.js</value>
             </list>
         </property>
         <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>

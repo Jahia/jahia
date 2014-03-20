@@ -137,8 +137,9 @@ public class ContentTabItem extends PropertiesTabItem {
                     values.add(check);
                 }
             }
+            return values;
         }
-        return values;
+        return null;
     }
 
     @Override

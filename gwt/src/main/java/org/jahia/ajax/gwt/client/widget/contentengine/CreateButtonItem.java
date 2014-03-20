@@ -131,30 +131,32 @@ public class CreateButtonItem extends SaveButtonItem {
                     nodeName = ((ContentTabItem) item).getName().getValue();
                 }
                 final List<CheckBox> values = ((ContentTabItem) item).getCheckedLanguagesCheckBox();
-                final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
-                if (values.size() != siteLanguages.size()) {
-                    List<String> strings = new ArrayList<String>(siteLanguages.size());
-                    for (GWTJahiaLanguage siteLanguage : siteLanguages) {
-                        strings.add(siteLanguage.getLanguage());
-                    }
-                    GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                    gwtJahiaNodeProperty.setName("j:invalidLanguages");
-                    gwtJahiaNodeProperty.setMultiple(true);
-                    for (CheckBox value : values) {
-                        if (value.getValue()) {
-                            strings.remove(value.getValueAttribute());
+                if (values != null) {
+                    final List<GWTJahiaLanguage> siteLanguages = JahiaGWTParameters.getSiteLanguages();
+                    if (values.size() != siteLanguages.size()) {
+                        List<String> strings = new ArrayList<String>(siteLanguages.size());
+                        for (GWTJahiaLanguage siteLanguage : siteLanguages) {
+                            strings.add(siteLanguage.getLanguage());
                         }
-                    }
-                    if (strings.size() > 0) {
-                        gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                        for (String string : strings) {
-                            gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                        gwtJahiaNodeProperty.setName("j:invalidLanguages");
+                        gwtJahiaNodeProperty.setMultiple(true);
+                        for (CheckBox value : values) {
+                            if (value.getValue()) {
+                                strings.remove(value.getValueAttribute());
+                            }
                         }
-                    }
-                    final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
-                    if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
-                        engine.getChangedProperties().add(gwtJahiaNodeProperty);
-                        addedTypes.add("jmix:i18n");
+                        if (strings.size() > 0) {
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            for (String string : strings) {
+                                gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(string));
+                            }
+                        }
+                        final List<GWTJahiaNodePropertyValue> gwtJahiaNodePropertyValues = gwtJahiaNodeProperty.getValues();
+                        if (gwtJahiaNodePropertyValues != null && gwtJahiaNodePropertyValues.size() > 0) {
+                            engine.getChangedProperties().add(gwtJahiaNodeProperty);
+                            addedTypes.add("jmix:i18n");
+                        }
                     }
                 }
             }

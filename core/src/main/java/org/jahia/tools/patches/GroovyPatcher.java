@@ -170,6 +170,9 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
     public static void executeScripts(ServletContext ctx, String lifecyclePhase) {
         try {
             String realPath = ctx.getRealPath(PATCHES_BASE);
+            if (System.getProperty("jahiaVarDiskPath") != null) {
+                realPath = System.getProperty("jahiaVarDiskPath") + File.separator + "patches" + File.separator + "groovy";
+            }
             File lookupFolder = realPath != null ? new File(realPath) : null;
             if (lookupFolder == null || !lookupFolder.isDirectory()) {
                 return;
@@ -274,6 +277,10 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         if (interval <= 0) {
             logger.info("The interval for the Groovy patcher is <= 0. Skip starting file watcher.");
             return;
+        }
+
+        if (System.getProperty("jahiaVarDiskPath") != null) {
+            patchesLookup = "file://" + System.getProperty("jahiaVarDiskPath") + File.separator + "patches" + File.separator + "groovy" + File.separator + "**" + File.separator + "*.groovy";
         }
 
         if (StringUtils.isEmpty(patchesLookup)) {

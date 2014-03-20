@@ -62,11 +62,18 @@
                          role="presentation" style="position:relative;"/>
                     <fmt:message key='label.site'/>
                 </th>
+                <c:if test="${currentNode.properties.administrationlink.boolean}">
+                    <th>
+                        <img src="<c:url value='/icons/admin.png'/>" width="16" height="16" alt=" "
+                             role="presentation" style="position:relative;"/>
+                        <fmt:message key="label.administration"/>
+                    </th>
+                </c:if>
                 <c:if test="${currentNode.properties.edit.boolean}">
                     <th>
                         <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "
                              role="presentation" style="position:relative;"/>
-                        <fmt:message key="label.editMode"/>
+                        <fmt:message key="label.edit"/>
                     </th>
                 </c:if>
                 <c:if test="${currentNode.properties.contribute.boolean}">
@@ -93,12 +100,12 @@
                 <th>
                     <img src="<c:url value='/icons/files-manager-1616.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
-                    <fmt:message key="label.filemanager"/>
+                    <fmt:message key="myWebProjects.files"/>
                 </th>
                 <th>
                     <img src="<c:url value='/icons/content-manager-1616.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
-                    <fmt:message key="label.contentmanager"/>
+                    <fmt:message key="label.content"/>
                 </th>
                 <c:if test="${currentNode.properties.editproperties.boolean}">
                     <th>

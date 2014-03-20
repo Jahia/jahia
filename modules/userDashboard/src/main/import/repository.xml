@@ -7,7 +7,9 @@
                        j:moduleType="module"
                        j:title="Jahia User Dashboard"
                        jcr:primaryType="jnt:module">
-
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
                     <user_information.png j:height="16"
@@ -119,7 +121,7 @@
                                                         delete="true"
                                                         details="true"
                                                         edit="true"
-                                                        editproperties="true"
+                                                 editproperties="false"
                                                         export="true"
                                                         j:view="bootstrapSites"
                                                         jcr:mixinTypes="jmix:renderable"
@@ -131,9 +133,7 @@
                 </dashboard-modules-base>
             </templates>
 
-            <portlets jcr:primaryType="jnt:portletFolder"/>
-            <files jcr:primaryType="jnt:folder"/>
-            <contents jcr:primaryType="jnt:contentFolder"/>
+                
         </userDashboard>
     </modules>
 </content>

@@ -42,6 +42,22 @@
                            value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${node.defaultLanguage}"/>
                 </c:if>
                 <c:set var="remotelyPublished" value="${jcr:isNodeType(node,'jmix:remotelyPublished')}"/>
+                <c:if test="${currentNode.properties.administrationlink.boolean}">
+                    <td>
+                        <c:choose>
+                            <c:when test="${jcr:hasPermission(node,'siteAdministrationAccess')}">
+                                <a href="<c:url value='${baseEdit}${node.path}.manageModules.html'/>" target="_blank">
+                                    <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" " role="presentation"
+                                         style="position:relative;"/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/icons/cancel.png'/>" width="16" height="16" alt=" " role="presentation"
+                                     style="position:relative;"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                </c:if>
                 <c:if test="${currentNode.properties.edit.boolean}">
                     <td>
                         <c:choose>

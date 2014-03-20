@@ -127,7 +127,8 @@ public class ContentTabItem extends PropertiesTabItem {
 
     /**
      * Get the list of checked languages checkboxes.
-     * @return the list of checked languages checkboxes.
+     * @return the list of checked languages checkboxes if they are available or
+     * null if they are not present based on invalidLanguagesAvailableForTypes.
      */
     public List<CheckBox> getCheckedLanguagesCheckBox() {
         List<CheckBox> values = new ArrayList<CheckBox>();

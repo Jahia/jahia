@@ -20,7 +20,7 @@
                 v e r s i o n   :   @VERSION@
               c o d e  n a m e  :   @CODENAME@
                   b u i l d     :   @BUILD_NUMBER@ 
-                   d a t e      :   @BUILD_DATE@ 
+                   d a t e      :    @BUILD_DATE@ 
 
 
    Copyright 2002-2014 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved

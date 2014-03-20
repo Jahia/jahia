@@ -152,7 +152,7 @@ public abstract class BaseActionItem implements ActionItem {
 
         // description
         String description = gwtJahiaToolbarItem.getDescription();
-        if (gwtJahiaToolbarItem.getDescription() != null && description.length() > 0 && textToolitem.getToolTip() == null) {
+        if (gwtJahiaToolbarItem.getDescription() != null && description.length() > 0 && textToolitem.getToolTip() == null && !gwtJahiaToolbarItem.getTitle().equals(description)) {
             textToolitem.setToolTip(description);
         }
 
@@ -189,7 +189,9 @@ public abstract class BaseActionItem implements ActionItem {
 
         // selection
         menuItem.setText(toolbarItem.getTitle());
-        menuItem.setToolTip(toolbarItem.getDescription());
+        if (!toolbarItem.getTitle().equals(toolbarItem.getDescription())) {
+            menuItem.setToolTip(toolbarItem.getDescription());
+        }
         SelectionListener<MenuEvent> listener = getSelectListener();
         menuItem.addSelectionListener(listener);
     }
@@ -357,12 +359,10 @@ public abstract class BaseActionItem implements ActionItem {
         }
         if (menuItem != null) {
             menuItem.setText(title);
-            menuItem.setToolTip(title);
             menuItem.getParentMenu().recalculate();
         }
         if (contextMenuItem != null) {
             contextMenuItem.setText(title);
-            contextMenuItem.setToolTip(title);
             contextMenuItem.getParentMenu().recalculate();
         }
     }

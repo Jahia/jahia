@@ -10,7 +10,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.js, codemirror/lib/codemirror.js,codemirror/mode/xml/xml.js,codemirror/mode/htmlmixed/htmlmixed.js,codemirror/mode/javascript/javascript.js,codemirror/mode/clike/clike.js,codemirror/mode/css/css.js,codemirror/mode/less/less.js,codemirror/mode/htmlembedded/htmlembedded.js,codemirror.mode.jsp.js"/>
+<template:addResources type="javascript" resources="jquery.js, codemirror.jahia.min.js"/>
 <template:addResources type="css" resources="01web.css,codemirror/codemirror.css"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="javascript" resources="admin-bootstrap.js"/>

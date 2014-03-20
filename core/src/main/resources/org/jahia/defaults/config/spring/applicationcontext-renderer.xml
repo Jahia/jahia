@@ -333,11 +333,14 @@
                 <value>/gwt/resources/css/gwt-1.4.min.css</value>
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.css</value>
                 <value>/modules/assets/css/codemirror/theme/elegant.css</value>
+                <!--
+                we compress those files into gwt-1.4.min.css
                 <value>/gwt/resources/css/jahia-ext-all.css</value>
                 <value>/gwt/resources/css/xtheme-jahia.css</value>
                 <value>/gwt/resources/css/edit.css</value>
                 <value>/gwt/resources/css/jahia-gwt-engines.css</value>
                 <value>/gwt/resources/css/diff.css</value>
+                -->
             </list>
 
         </property>
@@ -349,6 +352,7 @@
         <property name="javaScripts">
             <list>
                 <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
+                <!--
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.js</value>
                 <value>/modules/assets/javascript/codemirror/addon/edit/matchbrackets.js</value>
                 <value>/modules/assets/javascript/codemirror/addon/edit/closetag.js</value>
@@ -361,6 +365,8 @@
                 <value>/modules/assets/javascript/codemirror/mode/htmlembedded/htmlembedded.js</value>
                 <value>/modules/assets/javascript/codemirror/mode/properties/properties.js</value>
                 <value>/modules/assets/javascript/codemirror.mode.jsp.js</value>
+                -->
+                <value>/modules/assets/javascript/codemirror.jahia.min.js</value>
                 <value>/modules/assets/javascript/atmosphere-min.js</value>
             </list>
         </property>

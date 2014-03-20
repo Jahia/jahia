@@ -70,51 +70,49 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>jahia-modules</artifactId>
-        <groupId>org.jahia.modules</groupId>
-        <version>7.0.0.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>default-skins</artifactId>
-    <name>Jahia Default Skins</name>
-    <packaging>bundle</packaging>
-    <description>This module provides default skins.</description>
-
-    <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</url>
-    </scm>
-
-    <repositories>
-        <repository>
-            <id>jahia-public</id>
-            <name>Jahia Public Repository</name>
-            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Jahia-Depends>skins</Jahia-Depends>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jahia.modules</groupId>
+    <artifactId>jahia-modules</artifactId>
+    <version>7.0.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>default-skins</artifactId>
+  <packaging>bundle</packaging>
+  <name>Jahia Default Skins</name>
+  <description>This module provides default skins.</description>
+  <scm>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</url>
+  </scm>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>jahia-public</id>
+      <name>Jahia Public Repository</name>
+      <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Jahia-Depends>skins</Jahia-Depends>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

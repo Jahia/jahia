@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:j="http://www.jahia.org/jahia/1.0"
-         xmlns:jcr="http://www.jcp.org/jcr/1.0"
-         xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
         <translation j:dependencies="default siteSettings"
                    j:installedModules="translation"
+                   j:modulePriority="0"
                    j:moduleType="system"
                    j:title="Jahia Translation Providers"
                    jcr:primaryType="jnt:module">
                 
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
+                    <files jcr:primaryType="jnt:folder"/>
+                    <contents jcr:primaryType="jnt:contentFolder"/>
                     <site-settings-base j:view="siteSettings"
                               jcr:mixinTypes="jmix:useUILocale"
                               jcr:primaryType="jnt:template">
@@ -28,10 +31,7 @@
                     </translationSettings>
                 </site-settings-base>
             </templates>
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
                 
         </translation>
     </modules>
-    
 </content>

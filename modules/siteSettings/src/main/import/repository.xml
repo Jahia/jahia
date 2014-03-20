@@ -3,9 +3,11 @@
   <modules jcr:primaryType="jnt:modules">
         <siteSettings j:dependencies="default"
                     j:installedModules="siteSettings"
+                    j:modulePriority="0"
                     j:moduleType="module"
                     j:title="Jahia Site Settings"
                     jcr:primaryType="jnt:module">
+                
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
@@ -228,7 +230,6 @@
             </manageSiteRoles>
         </site-settings-base>
       </templates>
-                
                 
     </siteSettings>
   </modules>

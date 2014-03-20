@@ -3,9 +3,11 @@
     <modules jcr:primaryType="jnt:modules">
         <templates-system j:dependencies="contentRetrieval default default-skins facets grid profile serverSettings skins tabularList tags"
                           j:installedModules="Jahia System Templates"
+                        j:modulePriority="0"
                           j:moduleType="templatesSet"
                           j:title="Jahia System Templates"
                           jcr:primaryType="jnt:module">
+                
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
@@ -148,7 +150,7 @@
                                               jcr:mixinTypes="mix:title"
                                               jcr:primaryType="jnt:translation"
                                               jcr:title="##resourceBundle(system.content)##"/>
-                            <pagecontent j:allowedTypes="" jcr:primaryType="jnt:area"/>
+                                <pagecontent jcr:primaryType="jnt:area"/>
                         </content>
                         <footer colNames="footer-colContent"
                                 customColumn="16"

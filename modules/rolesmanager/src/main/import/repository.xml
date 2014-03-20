@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content xmlns:j="http://www.jahia.org/jahia/1.0"
-         xmlns:jcr="http://www.jcp.org/jcr/1.0"
-         xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
         <rolesmanager j:dependencies="default serverSettings"
                       j:installedModules="rolesmanager"
+                    j:modulePriority="0"
                       j:moduleType="module"
                       j:title="Jahia Roles Manager"
                       jcr:primaryType="jnt:module">
 
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">
                     <permissions.png j:height="16"
@@ -42,9 +44,6 @@
                     </users-and-roles>
                 </server-settings-base>
             </templates>
-            <portlets jcr:primaryType="jnt:portletFolder"/>
-            <files jcr:primaryType="jnt:folder"/>
-            <contents jcr:primaryType="jnt:contentFolder"/>
 
         </rolesmanager>
     </modules>

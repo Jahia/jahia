@@ -8,6 +8,9 @@
                       j:title="Jahia Server Settings"
                       jcr:primaryType="jnt:module">
                 
+                <portlets jcr:primaryType="jnt:portletFolder"/>
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder">
                         <serveradmin jcr:primaryType="jnt:folder">
@@ -393,9 +396,6 @@
                 </server-settings-base>
             </templates>
                 
-                <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
         </serverSettings>
     </modules>
 </content>

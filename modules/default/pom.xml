@@ -70,72 +70,67 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>jahia-modules</artifactId>
-        <groupId>org.jahia.modules</groupId>
-        <version>7.0.0.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>default</artifactId>
-    <name>Default Jahia Templates</name>
-    <packaging>bundle</packaging>
-
-    <description>These are the custom templates for running on a Jahia server.</description>
-
-    <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/default</url>
-    </scm>
-
-    <repositories>
-        <repository>
-            <id>jahia-public</id>
-            <name>Jahia Public Repository</name>
-            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>atg.taglib.json</groupId>
-            <artifactId>json-taglib</artifactId>
-            <version>0.4.1</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-el</groupId>
-                    <artifactId>commons-el</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Jahia-Depends>assets</Jahia-Depends>
-                        <Embed-Dependency>*; scope=compile; type=!pom;
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jahia.modules</groupId>
+    <artifactId>jahia-modules</artifactId>
+    <version>7.0.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>default</artifactId>
+  <packaging>bundle</packaging>
+  <name>Default Jahia Templates</name>
+  <description>These are the custom templates for running on a Jahia server.</description>
+  <scm>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/default</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>atg.taglib.json</groupId>
+      <artifactId>json-taglib</artifactId>
+      <version>0.4.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-el</artifactId>
+          <groupId>commons-el</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>jahia-public</id>
+      <name>Jahia Public Repository</name>
+      <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Jahia-Module-Type>system</Jahia-Module-Type>
+            <Jahia-Depends>assets</Jahia-Depends>
+            <Embed-Dependency>*; scope=compile; type=!pom;
                             inline=false</Embed-Dependency>
-                        <Export-Package>org.jahia.modules.osgi</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+            <Export-Package>org.jahia.modules.osgi</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

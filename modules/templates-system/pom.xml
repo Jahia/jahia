@@ -70,92 +70,90 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>jahia-modules</artifactId>
-        <groupId>org.jahia.modules</groupId>
-        <version>7.0.0.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>templates-system</artifactId>
-    <name>Jahia System Templates</name>
-    <packaging>bundle</packaging>
-    <description>This is the custom module (templates-system) for running on a Jahia server.</description>
-
-    <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/templates-system</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/templates-system</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/templates-system</url>
-    </scm>
-
-    <repositories>
-        <repository>
-            <id>jahia-public</id>
-            <name>Jahia Public Repository</name>
-            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jahia.modules</groupId>
+    <artifactId>jahia-modules</artifactId>
+    <version>7.0.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>templates-system</artifactId>
+  <packaging>bundle</packaging>
+  <name>Jahia System Templates</name>
+  <description>This is the custom module (templates-system) for running on a Jahia server.</description>
+  <scm>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/templates-system</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/templates-system</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/templates-system</url>
+  </scm>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>jahia-public</id>
+      <name>Jahia Public Repository</name>
+      <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
             <Jahia-Depends>contentRetrieval,default,default-skins,facets,grid,profile,serverSettings,skins,tabularList,tags</Jahia-Depends>
-                        <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.samaxes.maven</groupId>
-                <artifactId>maven-minify-plugin</artifactId>
-                <version>1.3.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>minify</goal>
-                        </goals>
-                        <configuration>
-                            <webappSourceDir>${basedir}/src/main/resources</webappSourceDir>
-                            <webappTargetDir>${project.build.directory}/${project.build.finalName}</webappTargetDir>
-                            <cssSourceFiles>
-                                <cssSourceFile>960-fluid.css</cssSourceFile>
-                                <cssSourceFile>01web.css</cssSourceFile>
-                                <cssSourceFile>navigation.css</cssSourceFile>
-                                <cssSourceFile>navigationN2-1.css</cssSourceFile>
-                            </cssSourceFiles>
-                            <cssFinalFile>${project.artifactId}.css</cssFinalFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>jahia-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>package-importsite</id>
-                        <configuration>
-                            <src>${basedir}/src/main/importsite-systemsite</src>
-                            <dest>${project.build.directory}/${project.build.finalName}/META-INF</dest>
-                            <archiveName>importsite-systemsite.zip</archiveName>
-                        </configuration>
-                        <goals>
-                            <goal>package-imports</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+            <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.samaxes.maven</groupId>
+        <artifactId>maven-minify-plugin</artifactId>
+        <version>1.3.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+            <configuration>
+              <webappSourceDir>${basedir}/src/main/resources</webappSourceDir>
+              <webappTargetDir>${project.build.directory}/${project.build.finalName}</webappTargetDir>
+              <cssSourceFiles>
+                <cssSourceFile>960-fluid.css</cssSourceFile>
+                <cssSourceFile>01web.css</cssSourceFile>
+                <cssSourceFile>navigation.css</cssSourceFile>
+                <cssSourceFile>navigationN2-1.css</cssSourceFile>
+              </cssSourceFiles>
+              <cssFinalFile>${project.artifactId}.css</cssFinalFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-importsite</id>
+            <goals>
+              <goal>package-imports</goal>
+            </goals>
+            <configuration>
+              <src>${basedir}/src/main/importsite-systemsite</src>
+              <dest>${project.build.directory}/${project.build.finalName}/META-INF</dest>
+              <archiveName>importsite-systemsite.zip</archiveName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

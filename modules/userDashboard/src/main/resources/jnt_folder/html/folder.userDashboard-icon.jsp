@@ -147,7 +147,7 @@
                         </c:when>
                         <c:when test="${(fn:split(node.fileContent.contentType, '/')[0]) eq 'image'}">
                             <a class="thumbnail text-center" href="#" onclick="bbShowImage('${functions:escapeJavaScript(node.name)}','${url.context}${url.files}${functions:escapeJavaScript(node.path)}', '${node.properties['j:width'].string}', '${node.properties['j:height'].string}');return false;">
-                                <img src="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" width="${node.properties['j:width'].string}" height="${node.properties['j:height'].string}" alt="${node.name}" style="max-height: 71px"/>
+                                <img src="${functions:default(node.thumbnailUrls['thumbnail'],thumbnailURL)}" alt="${fn:escapeXml(node.name)}" style="max-height: 71px"/>
                             </a>
                         </c:when>
                         <c:otherwise>

@@ -19,11 +19,9 @@
 
 <template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <template:addResources type="css" resources="files.css"/>
-<template:addResources type="css" resources="bootstrap-tagsinput.css"/>
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,admin-bootstrap.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
-<template:addResources type="javascript" resources="bootstrap-tagsinput.min.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="myFilesDashboard.js"/>
@@ -106,7 +104,7 @@
 <%@include file="folder.userDashboard-toolbarBreadcrumb.jspf" %>
 
 <div id="iconView">
-    <ul class="thumbnails box-1">
+    <ul class="thumbnails">
         <c:forEach items="${jcr:getChildrenOfType(currentNode,'jnt:folder')}" var="node">
             <li class="span2">
                 <div class="divFH" style="height: 135px;overflow: hidden">
@@ -168,9 +166,6 @@
                         <a class="pull-right" href="#" title="<fmt:message key="label.rename"/>" onclick="bbRenameFile('${functions:escapeJavaScript(node.name)}', '${node.identifier}');return false;" style="text-decoration: none;">
                             <i class="icon-pencil"></i>&nbsp;&nbsp;
                         </a>
-<%--                        <a class="pull-right" href="#modalTag_${node.identifier}" data-toggle="modal" title="<fmt:message key="label.tags"/>" style="text-decoration: none;">
-                            <i class="icon-tags"></i>&nbsp;&nbsp;
-                        </a>--%>
                         <a class="pull-right" href="<c:url value='${url.files}${functions:escapePath(node.path)}'/>" title="<fmt:message key="label.download"/>" style="text-decoration: none;" download>
                             <i class="icon-download-alt"></i>&nbsp;&nbsp;
                         </a>
@@ -180,5 +175,3 @@
         </c:forEach>
     </ul>
 </div>
-
-<%--<%@include file="folder.userDashboard-modalTags.jspf" %>--%>

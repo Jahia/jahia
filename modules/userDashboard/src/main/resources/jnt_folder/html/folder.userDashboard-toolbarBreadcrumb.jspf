@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<ul class="breadcrumb">
+<ul class="breadcrumb box-1">
     <c:set var="compare" value="${currentUser.localPath}/files"/>
     <c:choose>
         <c:when test="${currentNode.path ne compare}">

@@ -49,21 +49,6 @@ function bbDelete(name, id){
     });
 }
 
-function bbTagFile(name, id){
-    $.ajax({
-        url: apiPath + '/nodes/' + id,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: '{"mixins":{"jmix__tagged":{"name":"jmix:tagged"}},"properties":{"j__newTag":{"name":"j:newTag","value":"' + $('#tagsInput_' + id).val() + '"}}}',
-        success: function() {
-            window.location.reload();
-        },
-        error: function(result) {
-            bootbox.alert("<h1>" + labelError + "&nbsp;!</h1><br />" + myFilesUpdateTagsError + "&nbsp;:<br /><br />" + result.responseJSON.localizedMessage);
-        }
-    })
-}
-
 function bbRenameFolder(name, id){
     bootbox.dialog({
         message: "<label>" + labelNewDirName + "&nbsp;:&nbsp;</label><input type='text' id='renameFolder'/>",

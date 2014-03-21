@@ -420,64 +420,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
 
                         addMixins(child, atts);
-                        if (!expandImportedFilesOnDisk) {
-                            boolean contentFound = findContent();
-
-                            if (contentFound) {
-                                if (child.isFile()) {
-                                    String mime = atts.getValue(Constants.JCR_MIMETYPE);
-                                    if (mime == null) {
-                                        if (logger.isWarnEnabled()) {
-                                            mime = JCRContentUtils.getMimeType(decodedQName);
-                                            if (mime != null) {
-                                                logger.warn("Legacy or invalid import detected for node " + path +
-                                                        ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
-                                                        mime + ".");
-                                            } else {
-                                                logger.warn("Legacy or invalid import detected for node " + path +
-                                                        ", file should be in same named path. Mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
-                                            }
-                                        }
-                                    }
-                                    child.getFileContent().uploadFile(zis, mime);
-                                    zis.close();
-                                } else {
-                                    child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
-                                    child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-                                    child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
-                                    zis.close();
-                                }
-                            }
-                        } else {
-                            String contentInExpandedPath = findContentInExpandedPath();
-
-                            if (contentInExpandedPath != null) {
-                                final InputStream is = FileUtils.openInputStream(new File(
-                                        expandImportedFilesOnDiskPath + contentInExpandedPath));
-                                if (child.isFile()) {
-                                    String mime = atts.getValue(Constants.JCR_MIMETYPE);
-                                    if (mime == null) {
-                                        if (logger.isWarnEnabled()) {
-                                            mime = JCRContentUtils.getMimeType(decodedQName);
-                                            if (mime != null) {
-                                                logger.warn("Legacy or invalid import detected for node " + path +
-                                                        ", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
-                                                        mime + ".");
-                                            } else {
-                                                logger.warn("Legacy or invalid import detected for node " + path +
-                                                        ", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
-                                            }
-                                        }
-                                    }
-                                    child.getFileContent().uploadFile(is, mime);
-                                } else {
-                                    child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(is));
-                                    child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
-                                    child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
-                                }
-                                is.close();
-                            }
-                        }
+                        uploadFile(atts, decodedQName, path, child);
 
                         setAttributes(child, atts);
                         uuids.add(child.getIdentifier());
@@ -493,6 +436,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (!noUpdateTypes.contains(child.getPrimaryNodeType().getName()) && atts.getValue("jcr:primaryType") != null) {
                             addMixins(child, atts);
                             setAttributes(child, atts);
+                            uploadFile(atts, decodedQName, path, child);
                         }
                     }
                     uuids.add(child.getIdentifier());
@@ -530,6 +474,48 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             error++;
         } catch (Exception re) {
             throw new SAXException(re);
+        }
+    }
+
+    private void uploadFile(Attributes atts, String decodedQName, String path, JCRNodeWrapper child) throws IOException, RepositoryException {
+        if (!expandImportedFilesOnDisk) {
+            boolean contentFound = findContent();
+            if (contentFound) {
+                uploadFile(atts, decodedQName, path, child, zis);
+                zis.close();
+            }
+        } else {
+            String contentInExpandedPath = findContentInExpandedPath();
+            if (contentInExpandedPath != null) {
+                final InputStream is = FileUtils.openInputStream(new File(
+                        expandImportedFilesOnDiskPath + contentInExpandedPath));
+                uploadFile(atts, decodedQName, path, child, is);
+                is.close();
+            }
+        }
+    }
+
+    private void uploadFile(Attributes atts, String decodedQName, String path, JCRNodeWrapper child, InputStream is) throws RepositoryException {
+        if (child.isFile()) {
+            String mime = atts.getValue(Constants.JCR_MIMETYPE);
+            if (mime == null) {
+                if (logger.isWarnEnabled()) {
+                    mime = JCRContentUtils.getMimeType(decodedQName);
+                    if (mime != null) {
+                        logger.warn("Legacy or invalid import detected for node " + path +
+                                ", mime type cannot be resolved from file node, it should come from jcr:content node. Resolved mime type using servlet context instead=" +
+                                mime + ".");
+                    } else {
+                        logger.warn("Legacy or invalid import detected for node " + path +
+                                ", mime type cannot be resolved from file node, it should come from jcr:content node. Tried resolving mime type using servlet context but it isn't registered!");
+                    }
+                }
+            }
+            child.getFileContent().uploadFile(is, mime);
+        } else {
+            child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(is));
+            child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
+            child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
         }
     }
 

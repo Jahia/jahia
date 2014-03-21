@@ -243,6 +243,8 @@
 		</property>
 	</bean>
 
+    <bean id="CompositeFilter" class="org.jahia.bin.filters.CompositeFilter"/>
+
     <bean id="RequestLoadAverage" class="org.jahia.utils.RequestLoadAverage" init-method="start" destroy-method="stop">
         <constructor-arg index="0" value="request-loadaverage"/>
     </bean>

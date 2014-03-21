@@ -18,6 +18,7 @@
         <property name="workflowService" ref="workflowService"/>
         <property name="visibilityService" ref="visibilityService"/>
         <property name="jcrStoreService" ref="JCRStoreService"/>
+        <property name="compositeFilter" ref="CompositeFilter"/>
     </bean>
 
     <bean id="modulePlaceholderConfig"

@@ -74,6 +74,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.bin.filters.AbstractServletFilter;
+import org.jahia.bin.filters.CompositeFilter;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -119,6 +121,7 @@ import javax.jcr.Workspace;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
+import javax.servlet.Filter;
 
 import java.util.*;
 
@@ -153,6 +156,7 @@ public class TemplatePackageRegistry {
     private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionById = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
+    private List<Filter> servletFilters = new LinkedList<Filter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String, Action> actions;
     private Map<String, BackgroundAction> backgroundActions;
@@ -636,6 +640,8 @@ public class TemplatePackageRegistry {
 
         private JCRStoreService jcrStoreService;
 
+        private CompositeFilter compositeFilter;
+
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;
@@ -772,6 +778,14 @@ public class TemplatePackageRegistry {
                 }
             }
 
+            if (bean instanceof  AbstractServletFilter) {
+                try {
+                    compositeFilter.unregisterFilter((AbstractServletFilter) bean);
+                } catch (Exception e) {
+                    logger.error("Cannot register servlet filter", e);
+                }
+            }
+
         }
 
         @SuppressWarnings("unchecked")
@@ -900,7 +914,7 @@ public class TemplatePackageRegistry {
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
                 List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
-                l.add((CacheKeyPartGenerator)bean);
+                l.add((CacheKeyPartGenerator) bean);
                 cacheKeyGenerator.setPartGenerators(l);
                 CacheHelper.flushOutputCaches();
             }
@@ -924,6 +938,14 @@ public class TemplatePackageRegistry {
                     ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
                     logger.error("Cannot register webflow registry", e);
+                }
+            }
+
+            if (bean instanceof AbstractServletFilter) {
+                try {
+                    compositeFilter.registerFilter((AbstractServletFilter) bean);
+                } catch (Exception e) {
+                    logger.error("Cannot register servlet filter", e);
                 }
             }
 
@@ -1010,6 +1032,10 @@ public class TemplatePackageRegistry {
 
         public void setJcrStoreService(JCRStoreService jcrStoreService) {
             this.jcrStoreService = jcrStoreService;
+        }
+
+        public void setCompositeFilter(CompositeFilter compositeFilter) {
+            this.compositeFilter = compositeFilter;
         }
     }
 }

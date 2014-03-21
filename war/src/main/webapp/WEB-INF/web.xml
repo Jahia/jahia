@@ -143,6 +143,16 @@
     </filter>
 
     <filter>
+        <filter-name>CompositeFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
         <filter-name>LicenseFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
         <async-supported>true</async-supported>
@@ -174,9 +184,9 @@
 	<filter-mapping>
 		<filter-name>MaintenanceFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping> 
+	</filter-mapping>
 
-	<filter-mapping>
+    <filter-mapping>
 		<filter-name>LicenseFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping> 
@@ -199,6 +209,11 @@
     </filter-mapping>
 
     <filter-mapping>
+        <filter-name>CompositeFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
        <filter-name>UrlRewriteFilter</filter-name>
        <url-pattern>/*</url-pattern>
        <dispatcher>REQUEST</dispatcher>
@@ -217,7 +232,7 @@
         <url-pattern>/*</url-pattern>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-    
+
     <filter-mapping>
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <url-pattern>/engines/contentpicker.jsp</url-pattern>
@@ -259,7 +274,7 @@
       <filter-name>ShindigAuthFilter</filter-name>
       <url-pattern>/rest/*</url-pattern>
     </filter-mapping>
-<!-- End of Shindig filter mappings -->   
+<!-- End of Shindig filter mappings -->
 
     <listener>
         <listener-class>org.jahia.bin.listeners.LoggingConfigListener</listener-class>

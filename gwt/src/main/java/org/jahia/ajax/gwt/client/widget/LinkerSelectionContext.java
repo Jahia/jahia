@@ -189,10 +189,9 @@ public class LinkerSelectionContext {
             }
             parentWriteable = parent != null && PermissionsUtils.isPermitted("jcr:addChildNodes",  parent) && !parent.isLocked();
             isRootNode |= node.get("isRootNode") != null;
-            lockable &= node.isLockable();
-            locked &= node.isLocked();
-
-            file &= node.isFile();
+            lockable = lockable && node.isLockable();
+            locked = locked && node.isLocked();
+            file = file && node.isFile();
 
             int extIndex = node.getName().lastIndexOf(".");
             if (extIndex <= 0 || !node.getName().substring(extIndex).equalsIgnoreCase(".zip")) {

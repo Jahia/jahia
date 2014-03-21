@@ -185,7 +185,7 @@ public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
             String attributeValue = null;
             if (linkKind == null || linkKind.length() == 0 || LANGUAGE_CODE.equals(linkKind) ||
-                    FLAG.equals(linkKind)) {
+                    linkKind.startsWith(FLAG)) {
                 attributeValue = languageCode;
                 buff.append(languageCode);
 

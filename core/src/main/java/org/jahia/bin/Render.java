@@ -784,7 +784,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 jcrSessionFactory.setCurrentPreviewDate(previewDate);
             }
             if (method.equals(METHOD_GET) || isWebflowRequest(req)) {
-                if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {
+                Resource resource;
+                resource = urlResolver.getResource();
+                if (!StringUtils.isEmpty(urlResolver.getRedirectUrl()) && (StringUtils.isEmpty(resource.getTemplate()) || StringUtils.equals(resource.getTemplate(),"default"))) {
                     Map<String, List<String>> parameters = new HashMap<String, List<String>>();
                     parameters.put(NEW_NODE_OUTPUT_FORMAT, LIST_WITH_EMPTY_STRING);
                     parameters.put(REDIRECT_HTTP_RESPONSE_CODE, REDIRECT_CODE_MOVED_PERMANENTLY);
@@ -793,9 +795,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             "/" + urlResolver.getLocale().toString() + urlResolver.getPath() :
                             urlResolver.getVanityUrl(), req, resp, parameters, false);
                 } else {
-                    Resource resource;
-
-                    resource = urlResolver.getResource();
                     renderContext.setMainResource(resource);
                     if (renderContext.getSite() == null) {
                         // If Site has not been resolved by the servlet (so far only dashboard mode is doing that

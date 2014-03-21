@@ -956,6 +956,11 @@
                                     <artifactId>org.jahia.bundles.webconsole.config</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.slf4j.loglistener</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
 
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>

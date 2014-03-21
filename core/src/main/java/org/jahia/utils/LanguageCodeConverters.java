@@ -103,7 +103,7 @@ public class LanguageCodeConverters {
     public final static String JAVA7_LOCALE_TOSTRING = JAVA7_LOCALE_LANGUAGE + "?_?" + JAVA7_LOCALE_COUNTRY + "?(?:" + JAVA7_LOCALE_VARIANT + ")?";
     final static Pattern JAVA7_LOCALE_TOSTRING_PATTERN = Pattern.compile(JAVA7_LOCALE_TOSTRING);
 
-    private static List<Locale> availableBundleLocales;
+    private static volatile List<Locale> availableBundleLocales;
     
     private static Map<String, Locale> locales = new ConcurrentHashMap<String, Locale>();
 

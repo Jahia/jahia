@@ -122,7 +122,7 @@ rule "Flush group cache"
             - the parent has the type jnt:virtualsitesFolder
     then
         Flush group cache
->       JahiaGroupManagerRoutingService.flushSiteKeyIdMap();
+>       JahiaGroupManagerRoutingService.getInstance().flushSiteKeyIdMap();
 end
 
 rule "Flush group cache when adding member"
@@ -189,7 +189,7 @@ rule "Flush site key to site id map in jahia group manager routing service on si
         A property j:siteId has been set on a node
             - the node has the type jnt:virtualsite
     then
->       JahiaGroupManagerRoutingService.flushSiteKeyIdMap();
+>       JahiaGroupManagerRoutingService.getInstance().flushSiteKeyIdMap();
 end
 
 rule "Flush workflow rules cache on update"

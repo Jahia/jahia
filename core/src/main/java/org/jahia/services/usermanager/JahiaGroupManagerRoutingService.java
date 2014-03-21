@@ -69,22 +69,8 @@
  */
 package org.jahia.services.usermanager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -102,14 +88,15 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
 import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
- * Implementation of the group manager service which delegates the calls to multiple registered group providers. 
+ * Implementation of the group manager service which delegates the calls to multiple registered group providers.
  */
 public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService implements ApplicationEventPublisherAware {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JahiaGroupManagerRoutingService.class);
-    
+
     static private JahiaGroupManagerRoutingService mInstance = new JahiaGroupManagerRoutingService();
 
     private static final Comparator<JahiaGroupManagerProvider> PROVIDER_COMPARATOR = new Comparator<JahiaGroupManagerProvider>() {
@@ -119,7 +106,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         }
     };
 
-    private static SelfPopulatingCache siteKeyIdMap;
+    private SelfPopulatingCache siteKeyIdMap;
 
     private Map<String, JahiaGroupManagerProvider> providerMap = new HashMap<String, JahiaGroupManagerProvider>();
     private List<JahiaGroupManagerProvider> providers = Collections.emptyList();
@@ -136,16 +123,16 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      *
      * @return the instance of the Group Manager Service
      */
-    public static JahiaGroupManagerRoutingService getInstance () {
+    public static JahiaGroupManagerRoutingService getInstance() {
         return mInstance;
     }
 
     public void start() throws JahiaInitializationException {
-    	// do nothing
+        // do nothing
     }
 
     public void stop() throws JahiaException {
-    	// do nothing
+        // do nothing
     }
 
     public JahiaGroup createGroup(final int siteID, final String name, final Properties properties, final boolean hidden) {
@@ -160,7 +147,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         if (isSingleProvider()) {
             return defaultProvider.getAdminGrantedSites(user);
         }
-        
+
         Set<JahiaSite> sitesList = new LinkedHashSet<JahiaSite>();
         for (JahiaGroupManagerProvider p : providers) {
             List<JahiaSite> adminGrantedSites = p.getAdminGrantedSites(user);
@@ -176,7 +163,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return providers.size() == 1;
     }
 
-    public JahiaGroup getAdministratorGroup (final int siteID) {
+    public JahiaGroup getAdministratorGroup(final int siteID) {
         if (isSingleProvider()) {
             return defaultProvider.getAdministratorGroup(siteID);
         }
@@ -187,11 +174,11 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
                 break;
             }
         }
-        
+
         return group;
     }
 
-    public List<String> getGroupList () {
+    public List<String> getGroupList() {
         if (isSingleProvider()) {
             return defaultProvider.getGroupList();
         }
@@ -204,7 +191,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return groupList;
     }
 
-    public List<String> getGroupList (final int siteID) {
+    public List<String> getGroupList(final int siteID) {
         if (isSingleProvider()) {
             return defaultProvider.getGroupList(siteID);
         }
@@ -219,7 +206,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return groupList;
     }
 
-    public List<String> getGroupnameList () {
+    public List<String> getGroupnameList() {
         if (isSingleProvider()) {
             return defaultProvider.getGroupnameList();
         }
@@ -231,13 +218,13 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         return groupNameList;
     }
 
-    public List<String> getGroupnameList (final int siteID) {
+    public List<String> getGroupnameList(final int siteID) {
         if (isSingleProvider()) {
             return defaultProvider.getGroupnameList(siteID);
         }
         List<String> groupNameList = new ArrayList<String>();
         for (JahiaGroupManagerProvider p : providers) {
-            groupNameList.addAll (p.getGroupnameList(siteID));
+            groupNameList.addAll(p.getGroupnameList(siteID));
         }
 
         return groupNameList;
@@ -248,14 +235,14 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * available group management providers
      *
      * @return result a List of JahiaGroupManagerProvider objects that describe
-     *         the providers. This will never be null but may be empty if no providers
-     *         are available.
+     * the providers. This will never be null but may be empty if no providers
+     * are available.
      */
-    public List<? extends JahiaGroupManagerProvider> getProviderList () {
+    public List<? extends JahiaGroupManagerProvider> getProviderList() {
         return providers;
     }
 
-    public List<String> getUserMembership (final JahiaUser user) {
+    public List<String> getUserMembership(final JahiaUser user) {
         if (isSingleProvider()) {
             return defaultProvider.getUserMembership(user);
         }
@@ -264,19 +251,19 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         for (JahiaGroupManagerProvider p : providers) {
             List<String> curResult = p.getUserMembership(user);
             if (curResult != null) {
-                userMembership.addAll (curResult);
+                userMembership.addAll(curResult);
             }
         }
 
         return userMembership;
     }
 
-    public boolean groupExists (final int siteID, final String name) {
+    public boolean groupExists(final int siteID, final String name) {
         if (isSingleProvider()) {
             return defaultProvider.groupExists(siteID, name);
         }
-        if(getJahiaJcrEnforcedGroups().contains(name)) {
-            return getProvider(jahiaJcrEnforcedGroupsProviderKey).groupExists(siteID, name)?Boolean.TRUE:Boolean.FALSE;
+        if (getJahiaJcrEnforcedGroups().contains(name)) {
+            return getProvider(jahiaJcrEnforcedGroupsProviderKey).groupExists(siteID, name) ? Boolean.TRUE : Boolean.FALSE;
         }
         boolean result = false;
         for (JahiaGroupManagerProvider p : providers) {
@@ -285,15 +272,15 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
                 break;
             }
         }
-        
+
         return result;
     }
 
-    public JahiaGroup lookupGroup (final String groupKey) {
+    public JahiaGroup lookupGroup(final String groupKey) {
         if (isSingleProvider()) {
             return defaultProvider.lookupGroup(groupKey);
         }
-        if(getJahiaJcrEnforcedGroups().contains(StringUtils.substringBefore(groupKey,":"))) {
+        if (getJahiaJcrEnforcedGroups().contains(StringUtils.substringBefore(groupKey, ":"))) {
             return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(groupKey);
         }
         JahiaGroup group = null;
@@ -303,16 +290,16 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
                 break;
             }
         }
-        
+
         return group;
     }
 
-    public JahiaGroup lookupGroup (final int siteID, final String name) {
+    public JahiaGroup lookupGroup(final int siteID, final String name) {
         if (isSingleProvider()) {
             return defaultProvider.lookupGroup(siteID, name);
         }
-        if(getJahiaJcrEnforcedGroups().contains(name)) {
-            return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(siteID,name);
+        if (getJahiaJcrEnforcedGroups().contains(name)) {
+            return getProvider(jahiaJcrEnforcedGroupsProviderKey).lookupGroup(siteID, name);
         }
         JahiaGroup group = null;
         for (JahiaGroupManagerProvider p : providers) {
@@ -321,11 +308,11 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
                 break;
             }
         }
-        
+
         return group;
     }
 
-    public boolean removeUserFromAllGroups (final JahiaUser user) {
+    public boolean removeUserFromAllGroups(final JahiaUser user) {
         if (isSingleProvider()) {
             return defaultProvider.removeUserFromAllGroups(user);
         }
@@ -333,7 +320,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         for (JahiaGroupManagerProvider p : providers) {
             success = p.removeUserFromAllGroups(user) && success;
         }
-        
+
         return success;
     }
 
@@ -345,18 +332,17 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * @param siteID          site identifier
      * @param searchCriterias a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*")
-     *
      * @return Set a set of JahiaGroup elements that correspond to those
-     *         search criteria
+     * search criteria
      */
-    public Set<JahiaGroup> searchGroups (final int siteID, final Properties searchCriterias) {
+    public Set<JahiaGroup> searchGroups(final int siteID, final Properties searchCriterias) {
         if (isSingleProvider()) {
             return defaultProvider.searchGroups(siteID, searchCriterias);
         }
         Set<JahiaGroup> groupList = new HashSet<JahiaGroup>();
 
         for (JahiaGroupManagerProvider p : providers) {
-            groupList.addAll (p.searchGroups(siteID, searchCriterias));
+            groupList.addAll(p.searchGroups(siteID, searchCriterias));
         }
 
         return groupList;
@@ -373,11 +359,10 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * @param searchCriterias a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
      *                        null to search without criteria
-     *
      * @return Set a set of JahiaGroup elements that correspond to those
-     *         search criteria
+     * search criteria
      */
-    public Set<JahiaGroup> searchGroups (final String providerKey, final int siteID, final Properties searchCriterias) {
+    public Set<JahiaGroup> searchGroups(final String providerKey, final int siteID, final Properties searchCriterias) {
         if (defaultProvider == null) {
             return Collections.emptySet();
         }
@@ -392,6 +377,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * This method indicates that any internal cache for a provider should be
      * updated because the value has changed and needs to be transmitted to the
      * other nodes in a clustering environment.
+     *
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(final JahiaGroup jahiaGroup) {
@@ -424,7 +410,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     @Override
     public synchronized void registerProvider(JahiaGroupManagerProvider provider) {
         logger.info("Registered group provider {}", provider.getKey());
-        
+
         List<JahiaGroupManagerProvider> newProviderList = null;
         if (!providers.isEmpty()) {
             Set<JahiaGroupManagerProvider> newProviderSet = new TreeSet<JahiaGroupManagerProvider>(PROVIDER_COMPARATOR);
@@ -437,7 +423,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         }
         providers = UnmodifiableList.decorate(newProviderList);
         providerMap.put(provider.getKey(), provider);
-        
+
         if (defaultProvider == null || provider.isDefaultProvider()) {
             defaultProvider = provider;
         }
@@ -453,7 +439,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
             return;
         }
         logger.info("Unregistering group provider {}", provider.getKey());
-        
+
         if (providerMap.remove(provider.getKey()) != null) {
             if (isSingleProvider()) {
                 providers = Collections.emptyList();
@@ -493,7 +479,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
         defaultProvider.setGroupManagerService(this);
         registerProvider(defaultProvider);
     }
-    
+
     @Override
     public JahiaGroupManagerProvider getProvider(String name) {
         return providerMap.get(name);
@@ -501,7 +487,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
 
     private int getSiteId(final String siteKey) {
         if (StringUtils.isNotEmpty(siteKey)) {
-            if(siteKeyIdMap==null){
+            if (siteKeyIdMap == null) {
                 siteKeyIdMap = ehCacheProvider.registerSelfPopulatingCache("org.jahia.groups.siteKeyIDCache", new CacheEntryFactory() {
                     @Override
                     public Object createEntry(final Object key) throws Exception {
@@ -527,15 +513,15 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     /**
      * Flush the cache of site id by site key.
      */
-    public static void flushSiteKeyIdMap() {
-        if(siteKeyIdMap!=null) {
+    public void flushSiteKeyIdMap() {
+        if (siteKeyIdMap != null) {
             siteKeyIdMap.refresh(false);
         }
     }
 
     @Override
     public JahiaGroup createGroup(String siteKey, String name, Properties properties, boolean hidden) {
-         return createGroup(getSiteId(siteKey), name, properties, hidden);
+        return createGroup(getSiteId(siteKey), name, properties, hidden);
     }
 
     @Override
@@ -570,7 +556,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
 
     @Override
     public Set<JahiaGroup> searchGroups(String providerKey, String siteKey, Properties searchCriterias) {
-        return searchGroups(providerKey,getSiteId(siteKey), searchCriterias);
+        return searchGroups(providerKey, getSiteId(siteKey), searchCriterias);
     }
 
     @Override

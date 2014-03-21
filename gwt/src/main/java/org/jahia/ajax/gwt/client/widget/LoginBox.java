@@ -179,7 +179,7 @@ public class LoginBox extends Window {
                 String port = (portOrigin == null || portOrigin.equals("80") || portOrigin.equals(""))? "":(":"+ portOrigin);
                 com.google.gwt.user.client.Window.Location.assign(
                         com.google.gwt.user.client.Window.Location.getProtocol() + "//" +
-                        com.google.gwt.user.client.Window.Location.getHostName() + port + "/");
+                        com.google.gwt.user.client.Window.Location.getHostName() + port + JahiaGWTParameters.getContextPath());
             }
         });
         form.addButton(btnCancel);

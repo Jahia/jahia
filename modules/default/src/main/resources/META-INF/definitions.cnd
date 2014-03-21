@@ -212,6 +212,8 @@
 
 [jnt:categorizing] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
 
+[jnt:displayCategories] > jnt:content, mix:title, jmix:socialComponent, jmix:bindedComponent
+
 [jnt:displayCurrentLanguage] > jnt:content, jmix:siteComponent
 
 [jnt:workflowMonitor] > jnt:content, jmix:siteComponent, jmix:bindedComponent, jmix:studioOnly

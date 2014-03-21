@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -14,80 +14,67 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<template:addResources type="css" resources="pagecategorizing.css"/>
 <c:set var="boundComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:if test="${not empty boundComponent}">
-    <c:set var="nodeLocked" value="${jcr:isLockedAndCannotBeEdited(boundComponent)}"/>
-    <div class="categorythispage">
-        <jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
-        <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
-        <c:if test="${not nodeLocked}">
-        <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
-        <script type="text/javascript">
-            var uuidCategories = "${boundComponent.identifier}";
-            var uuids = new Array();
-            <c:forEach items="${assignedCategories}" var="category" varStatus="status">
-            <c:if test="${not empty category.node}">
-            uuids.push("${category.node.identifier}");
-            </c:if>
-            </c:forEach>
+<c:if test="${not empty boundComponent && !jcr:isLockedAndCannotBeEdited(boundComponent)}">
+    <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
+    <template:addResources type="javascript" resources="jquery.min.js"/>
+    <template:addResources type="css" resources="jquery.autocomplete.css"/>
+    <template:addResources type="css" resources="thickbox.css"/>
+    <template:addResources type="javascript" resources="jquery.autocomplete.js"/>
+    <template:addResources type="javascript" resources="jquery.bgiframe.min.js"/>
+    <template:addResources type="javascript" resources="thickbox-compressed.js"/>
+    <jcr:nodeProperty node="${boundComponent}" name="j:defaultCategory" var="assignedCategories"/>
+    <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
+    <script type="text/javascript">
 
-            function deleteCategory(uuid) {
-                $.ajaxSetup({traditional: true, cache:false});
-                var newUuids = new Array();
-                for (i = 0; i < uuids.length; i++) {
-                    if (uuids[i] != uuid) {
-                        newUuids.push(uuids[i])
+        function addCategory(uuid, separator) {
+            var catToAddUuid = $("#categorytoadd").val();
+            $.ajaxSetup({ traditional: true, cache:false });
+            var isAlreadyExist = new Boolean();
+            isAlreadyExist = false;
+            for (i = 0; i < uuids.length; i++) {
+                if (uuids[i] == catToAddUuid) {
+                    isAlreadyExist = true;
+                }
+            }
+            if ($("#categorytoadd").val() != "" && !isAlreadyExist) {
+                uuids.push($("#categorytoadd").val());
+                $.post("${postUrl}", {"j:defaultCategory":uuids,"jcrMethodToCall":"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
+                    var catContainer = jQuery('#jahia-categories-' + uuid);
+                    if (jQuery(".nocategorizeditem" + uuid).length > 0 && $(".nocategorizeditem" + uuid).is(":visible")) {
+                        jQuery(".nocategorizeditem" + uuid).hide();
+                        separator = '';
+                    }else {
+                        separator = ' ,'
                     }
-                }
-                uuids = newUuids;
-                if (uuids.length == 0) {
-                    $.post("${postUrl}", {"jcrMethodToCall":"put","jcrRemoveMixin":"jmix:categorized"}, function(result) {
-                        $("#category" + uuid).hide();
-                        if (uuids.length == 0) {
-                            var spanNoYetCat = $('<span><fmt:message key="label.categories.noCategory"/></span>').attr('class', 'nocategorizeditem' + uuidCategories);
-                            $("#jahia-categories-" + uuidCategories).append(spanNoYetCat)
-                        }
-                    }, "json");
-                } else {
-                    $.post("${postUrl}", {"j:defaultCategory":uuids,"jcrMethodToCall":"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
-                        $("#category" + uuid).hide();
-                    }, "json");
-                }
+
+                    var catDiv = $('<div></div>').attr('id','category'+catToAddUuid).attr('style','display:inline');
+                    var catDisplay = jQuery('<span class="categorizeditem">' + $("#category").val() + '</span>');
+                    var catLinkDelete = $('<a></a>').attr('onclick','deleteCategory(\''+ catToAddUuid +'\')').attr('class','delete').attr('href','#');
+
+                    catContainer.append(catDiv);
+                    catDiv.append(separator);
+                    catDiv.append(catDisplay);
+                    catDiv.append(catLinkDelete);
+                    $("#category").val("");
+                    $('#categorySubmit').hide();
+                }, "json");
+            } else {
                 return false;
             }
-
-        </script>
-        </c:if>
-        <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
-        <c:forEach items="${assignedCategories}" var="category" varStatus="status">
-            <c:if test="${not empty category.node}">
-                <c:set target="${filteredCategories}" property="${category.node.identifier}"
-                       value="${category.node.properties['jcr:title'].string}"/>
-            </c:if>
-        </c:forEach>
-        <div class="categorized">
-            <span><fmt:message key="label.categories"/>:</span>
-            <span id="jahia-categories-${boundComponent.identifier}">
-                <c:choose>
-                    <c:when test="${not empty filteredCategories}">
-                        <c:forEach items="${filteredCategories}" var="category" varStatus="status">
-                            <div id="category${category.key}" style="display:inline">
-                                    ${!status.first ? separator : ''}<span
-                                    class="categorizeditem">${fn:escapeXml(category.value)}</span>
-                                <c:if test="${not nodeLocked}">
-                                <a class="delete" onclick="deleteCategory('${category.key}')" href="#"></a>
-                                </c:if>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <span class="nocategorizeditem${boundComponent.identifier}"><fmt:message
-                                key="label.categories.noCategory"/></span>
-                    </c:otherwise>
-                </c:choose>
-            </span>
-        </div>
-    </div>
+        }
+    </script>
+    <c:if test="${renderContext.user.name != 'guest'}">
+        <label><fmt:message key="label.add.categories"/></label>
+        <input type="hidden" id="categorytoadd"/>
+        <input type="text" id="category" disabled="true"/>
+        <fmt:message key="label.select.category" var="categoryLabel"/>
+        <uiComponents:treeItemSelector fieldId="categorytoadd"  valueType="identifier"
+                                       nodeTypes="jnt:category" selectableNodeTypes="jnt:category" displayIncludeChildren="false"
+                                       root="${jcr:getSystemSitePath()}/categories" label="${categoryLabel}" displayFieldId="category" onSelect="function(uuid, path, title) {$('#categorytoadd').val(uuid);$('#category').val(title);$('#categorySubmit').show();return false;}"/>
+        <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
+               onclick="addCategory('${boundComponent.identifier}', '${separator}')" id="categorySubmit" style="display:none;">
+    </c:if>
 </c:if>
+

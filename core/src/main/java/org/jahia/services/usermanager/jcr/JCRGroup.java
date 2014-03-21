@@ -362,8 +362,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             JahiaUser jahiaUser = JahiaUserManagerRoutingService.getInstance().lookupUser(member.getName());
                             if (jahiaUser != null) {
                                 principals.add(jahiaUser);
-                            } else {
-                                logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                            } else if (logger.isDebugEnabled()) {
+                                logger.debug("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
                                         + "'");
                             }
                         } else {
@@ -371,8 +371,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
                             if (g != null) {
                                 principals.add(g);
-                            } else {
-                                logger.warn("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
+                            } else if (logger.isDebugEnabled()) {
+                                logger.debug("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
                                         + "'");
                             }
                         }

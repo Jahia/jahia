@@ -111,7 +111,7 @@ public class WorkflowService implements BeanPostProcessor {
     public static final String START_ROLE = "start";
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
 
-    private static WorkflowService instance;
+    private static WorkflowService instance = new WorkflowService();;
 
     private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
 
@@ -129,9 +129,6 @@ public class WorkflowService implements BeanPostProcessor {
      * @return a singleton instance of this service
      */
     public static WorkflowService getInstance() {
-        if (instance == null) {
-            instance = new WorkflowService();
-        }
         return instance;
     }
 

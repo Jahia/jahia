@@ -86,6 +86,7 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,6 +177,13 @@ public class Functions {
 
     public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
         return WordUtils.capitalizeFully(localeToDisplay.getDisplayName(localeUsedForRendering));
+    }
+
+    public static String getLangIcon(Locale localeToDisplay) {
+        if("".equals(localeToDisplay.getCountry()))
+            return "flag_" + localeToDisplay.getLanguage().toLowerCase() + "_on";
+        else
+            return "flag_" + Patterns.SPACE.matcher(localeToDisplay.getDisplayCountry(Locale.ENGLISH).toLowerCase()).replaceAll("_");
     }
 
     /**

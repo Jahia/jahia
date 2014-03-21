@@ -112,7 +112,7 @@
  - displayOnFirstLevel (boolean) = 'false' indexed=no
 
 [jnt:languageSwitcher] > jnt:content, jmix:siteComponent, jmix:studioOnly
- - typeOfDisplay (string, choicelist[resourceBundle]) = 'isoLocaleCountryCode' mandatory indexed=no < 'isoLocaleCountryCode', 'languageCode', 'doubleLetter', 'letter', 'nameInLocale', 'nameCurrentLocale', 'flag', 'flagPlain', 'flagShadow'
+ - typeOfDisplay (string, choicelist[resourceBundle]) = 'isoLocaleCountryCode' mandatory indexed=no < 'isoLocaleCountryCode', 'languageCode', 'doubleLetter', 'letter', 'nameInLocale', 'nameCurrentLocale', 'flag'
 
 [jnt:tree] > jnt:content, jmix:siteComponent
  - nodeType (string, choicelist[subnodetypes='jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory indexed=no

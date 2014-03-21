@@ -583,4 +583,13 @@
         <function-signature>java.lang.String humanReadableByteCount(long)</function-signature>
         <example>${functions:humanReadableByteCount(node.fileContent.contentLength)}</example>
     </function>
+
+    <function>
+        <description>
+            Get icon class for language
+        </description>
+        <name>getLanguageFlagCSSClass</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String getLangIcon(java.util.Locale)</function-signature>
+    </function>
 </taglib>

@@ -145,6 +145,95 @@
                         </map>
                     </property>
                 </bean>
+                <bean class="org.jahia.services.channels.Channel" id="samsung_gt_i9500_ver1">
+                    <property name="identifier" value="samsung_gt_i9500_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
+                    <property name="capabilities">
+                        <map>
+                            <entry key="template-type-mapping" value="samsunggalaxys4"/>
+                            <entry key="display-name" value="Samsung Galaxy S4"/>
+                            <entry key="variants" value="portrait,landscape"/>
+                            <entry key="variants-displayNames" value="Portrait,Landscape"/>
+                            <entry key="device-image" value="/modules/samsungchannels/images/devices/samsunggalaxys4-small.png"/>
+                            <entry key="usable-resolutions" value="1080x1920,1920x1080"/>
+                            <entry key="decorator-images"
+                                   value="/modules/samsungchannels/images/devices/samsunggalaxys4-portrait.png,/modules/samsungchannels/images/devices/samsunggalaxys4-landscape.png"/>
+                            <entry key="decorator-image-sizes" value="1267x2478,2478x1267"/>
+                            <entry key="decorator-screen-positions" value="86x315,314x102"/>
+                            <entry key="resolution_width" value="1080"/>
+                            <entry key="resolution_height" value="1920"/>
+                            <entry key="userAgentPattern" value=".*GT-I9500.*"/>
+                            <entry key="full_flash_support" value="false"/>
+                        </map>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.channels.Channel" id="samsung_sm_t210_ver1">
+                    <property name="identifier" value="samsung_sm_t210_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
+                    <property name="capabilities">
+                        <map>
+                            <entry key="template-type-mapping" value="samsunggalaxytab7"/>
+                            <entry key="display-name" value="Samsung Galaxy Tab 3 7.0"/>
+                            <entry key="variants" value="portrait,landscape"/>
+                            <entry key="variants-displayNames" value="Portrait,Landscape"/>
+                            <entry key="device-image" value="/modules/samsungchannels/images/devices/samsunggalaxytab7-small.png"/>
+                            <entry key="usable-resolutions" value="600x1024,1024x600"/>
+                            <entry key="decorator-images"
+                            value="/modules/samsungchannels/images/devices/samsunggalaxytab7-portrait.png,/modules/samsungchannels/images/devices/samsunggalaxytab7-landscape.png"/>
+                            <entry key="decorator-image-sizes" value="732x1232,1232x732"/>
+                            <entry key="decorator-screen-positions" value="65x109,108x69"/>
+                            <entry key="resolution_width" value="600"/>
+                            <entry key="resolution_height" value="1024"/>
+                            <entry key="userAgentPattern" value=".*SM-T210.*"/>
+                            <entry key="full_flash_support" value="false"/>
+                        </map>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.channels.Channel" id="samsung_gt_p5200_ver1">
+                    <property name="identifier" value="samsung_gt_p5200_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
+                    <property name="capabilities">
+                        <map>
+                            <entry key="template-type-mapping" value="samsunggalaxytab10.1"/>
+                            <entry key="display-name" value="Samsung Galaxy Tab 3 10.1"/>
+                            <entry key="variants" value="portrait,landscape"/>
+                            <entry key="variants-displayNames" value="Portrait,Landscape"/>
+                            <entry key="device-image" value="/modules/samsungchannels/images/devices/samsunggalaxytab10.1-small.png"/>
+                            <entry key="usable-resolutions" value="800x1280,1280x800"/>
+                            <entry key="decorator-images"
+                            value="/modules/samsungchannels/images/devices/samsunggalaxytab10.1-portrait.png,/modules/samsungchannels/images/devices/samsunggalaxytab10.1-landscape.png"/>
+                            <entry key="decorator-image-sizes" value="1036x1425,1425x1036"/>
+                            <entry key="decorator-screen-positions" value="115x74,72x115"/>
+                            <entry key="resolution_width" value="800"/>
+                            <entry key="resolution_height" value="1280"/>
+                            <entry key="userAgentPattern" value=".*GT-P5200.*"/>
+                            <entry key="full_flash_support" value="false"/>
+                        </map>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.channels.Channel" id="samsung_sm_n900_ver1">
+                    <property name="identifier" value="samsung_sm_n900_ver1"/>
+                    <property name="fallBack" value="generic_mobile"/>
+                    <property name="capabilities">
+                        <map>
+                            <entry key="template-type-mapping" value="samsunggalaxynote3"/>
+                            <entry key="display-name" value="Samsung Galaxy Note 3"/>
+                            <entry key="variants" value="portrait,landscape"/>
+                            <entry key="variants-displayNames" value="Portrait,Landscape"/>
+                            <entry key="device-image" value="/modules/samsungchannels/images/devices/samsunggalaxynote3-small.png"/>
+                            <entry key="usable-resolutions" value="1080x1920,1920x1080"/>
+                            <entry key="decorator-images"
+                            value="/modules/samsungchannels/images/devices/samsunggalaxynote3-portrait.png,/modules/samsungchannels/images/devices/samsunggalaxynote3-landscape.png"/>
+                            <entry key="decorator-image-sizes" value="1036x1425,1425x1036"/>
+                            <entry key="decorator-screen-positions" value="64x200,199x61"/>
+                            <entry key="resolution_width" value="1080"/>
+                            <entry key="resolution_height" value="1920"/>
+                            <entry key="userAgentPattern" value=".*SM-N900T.*"/>
+                            <entry key="full_flash_support" value="false"/>
+                        </map>
+                    </property>
+                </bean>
+
             </list>
         </property>
     </bean>

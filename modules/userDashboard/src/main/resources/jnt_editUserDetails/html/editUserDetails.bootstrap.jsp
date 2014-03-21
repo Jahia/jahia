@@ -74,7 +74,7 @@
 <template:addCacheDependency node="${user}"/>
 
 <jsp:useBean id="now" class="java.util.Date"/>
-<c:set var="fields" value="${user.propertiesAsString}"/>
+
 
 <jcr:nodeProperty node="${user}" name="j:birthDate" var="birthDate"/>
 
@@ -93,7 +93,7 @@
         var context = "${url.context}";
         var changePasswordUrl = '<c:url value="${url.base}${user.path}.changePassword.do"/>';
         var getUrl="<c:url value="${url.baseUserBoardFrameEdit}${currentNode.path}.bootstrap.html.ajax?includeJavascripts=false&userUuid=${user.identifier}"/>";
-
+        var urlFiles = "${url.context}${url.files}${user.path}";
         var propertiesNames = {
             <c:forTokens items="j:title,j:firstName,j:lastName,j:birthDate,j:gender,j:function,j:organization,j:about,j:picture,j:email,j:skypeID,j:twitterID,j:facebookID,j:linkedinID,preferredLanguage"
                          delims="," var="key" varStatus="loopStatus">
@@ -102,7 +102,7 @@
             </c:forTokens>
         };
 
-        var CurrentCssClass ="";
+        var currentCssClass ="";
 
         /**
          * @author rahmed (JAHIA)
@@ -111,7 +111,7 @@
          */
         function updateProperties(cssClass)
         {
-            CurrentCssClass=cssClass;
+            currentCssClass=cssClass;
             if(cssClass=="addressField")
             {
                 if(verifyAndSubmitAddress(cssClass,'phoneFormatError','emailFormatError'))
@@ -189,62 +189,66 @@
             <form enctype= multipart/form-data onkeypress="return event.keyCode != 13;" id="editDetailsForm" class="form-horizontal user-profile-table" onsubmit="return false;">
                 <div class="container">
                     <div id="detailsHead" class="row-fluid">
-                        <div class="span8 offset2 alert alert-info" style="padding-right: 10px">
-                            <div class="row-fluid ">
-                                <div id="imageDiv" class="span2">
-                                    <c:if test="${currentNode.properties['j:picture'].boolean}">
-                                        <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
-                                        <div id="image">
-                                            <div id="imageDisplay" class="row-fluid">
-                                                <c:choose>
-                                                    <c:when test="${empty picture}">
-                                                        <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
-                                                             alt="" border="0"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
-                                                             alt="${fn:escapeXml(person)}"/>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <br/>
-                                                <div style="clear: both;"></div>
-                                            </div>
-                                            <div id="pictureEditButton" class="row-fluid">
-                                                <button class="btn btn-primary" type="button" onclick="$('#about').hide();$('#about_form').hide();$('#image_form').show();$('#image').hide()">
-                                                    <fmt:message key="mysettings.picture.edit"/>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </c:if>
-                                </div>
-                                <div id="aboutMeDiv" class="span10">
-                                    <c:if test="${currentNode.properties['j:about'].boolean}">
-                                        <div id="about">
-                                            <div id="about-text-part">
-                                                <h1>
-                                                    <fmt:message key='jnt_user.j_about'/>
-                                                </h1>
-                                                <div id="aboutMeTextDiv" class="aboutMeText lead" style="height: auto;max-height: 100px; text-align: justify; overflow: hidden">
-                                                    <div id="aboutMeTextWrapper">
-                                                            ${user.properties['j:about'].string}
-                                                    </div>
+                        <div class="span11 offset1">
+                            <div class="alert alert-info" style="padding-right:10px;">
+                                <div class="row-fluid ">
+                                    <div id="imageDiv" class="span2">
+                                        <c:if test="${currentNode.properties['j:picture'].boolean}">
+                                            <jcr:nodeProperty var="picture" node="${user}" name="j:picture"/>
+                                            <div id="image">
+                                                <div id="imageDisplay" class="row-fluid">
+                                                    <c:choose>
+                                                        <c:when test="${empty picture}">
+                                                            <img class="img-polaroid pull-left" src="<c:url value='${url.currentModule}/img/userbig.png'/>"
+                                                                 alt="" border="0"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <img class="img-polaroid pull-left" src="${picture.node.thumbnailUrls['avatar_120']}"
+                                                                 alt="${fn:escapeXml(person)}"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <br/>
+                                                    <div style="clear: both;"></div>
                                                 </div>
-                                                <br />
-                                            </div>
-                                            <div id="about-button-part" class="row-fluid">
-                                                <button id="btnMoreAbout" class="hide btn btn-small btn-primary btnMoreAbout" <%--onclick="showMoreText()"--%>>
-                                                    <fmt:message key='mySettings.readMore'/>
-                                                </button>
-                                                <button id="btnLessAbout" class="hide btn btn-small btn-primary hide btnLessAbout" <%--onclick="hideMoreText()"--%>>
-                                                    <fmt:message key='mySettings.readLess'/>
-                                                </button>
-                                                <c:if test="${user:isPropertyEditable(user,'j:about')}">
-                                                    <button class="btn btn-primary pull-right" type="button" onclick="switchRow('about')">
-                                                        <fmt:message key="label.clickToEdit"/>
+                                                <div id="pictureEditButton" class="row-fluid">
+                                                    <c:if test="${user:isPropertyEditable(user,'j:picture')}">
+                                                    <button class="btn btn-primary" type="button" onclick="$('#about').hide();$('#about_form').hide();$('#image_form').show();$('#image').hide()">
+                                                        <fmt:message key="mysettings.picture.edit"/>
                                                     </button>
-                                                </c:if>
+                                                    </c:if>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </c:if>
+                                    </div>
+                                    <div id="aboutMeDiv" class="span10">
+                                        <c:if test="${currentNode.properties['j:about'].boolean}">
+                                            <div id="about">
+                                                <div id="about-text-part">
+                                                    <h1>
+                                                        <fmt:message key='jnt_user.j_about'/>
+                                                    </h1>
+                                                    <div id="aboutMeTextDiv" class="aboutMeText lead" style="height: auto;max-height: 100px; text-align: justify; overflow: hidden">
+                                                        <div id="aboutMeTextWrapper">
+                                                                ${user.properties['j:about'].string}
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </div>
+                                                <div id="about-button-part" class="row-fluid">
+                                                    <button id="btnMoreAbout" class="hide btn btn-small btn-primary btnMoreAbout">
+                                                        <fmt:message key='mySettings.readMore'/>
+                                                    </button>
+                                                    <button id="btnLessAbout" class="hide btn btn-small btn-primary btnLessAbout">
+                                                        <fmt:message key='mySettings.readLess'/>
+                                                    </button>
+                                                    <c:if test="${user:isPropertyEditable(user,'j:about')}">
+                                                        <button class="btn btn-primary pull-right" type="button" onclick="switchRow('about')">
+                                                            <fmt:message key="label.clickToEdit"/>
+                                                        </button>
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </c:if>
                                         <div id="image_form" class="hide span10">
                                             <div class="image_form_preview">
                                                 <c:choose>
@@ -272,15 +276,24 @@
                                                     <button id="imageUploadButton" class="btn btn-success" type="button" onclick="updatePhoto('uploadedImage','${currentResource.locale}', '${user.path}','${user.identifier}',ajaxReloadCallback, formError );">
                                                         <fmt:message key="save"/>
                                                     </button>
+                                                    <div>
+                                                        <span id="imageUploadError" class="hide"><fmt:message key="mySettings.errors.picture.upload"/></span>
+                                                        <span id="imageUploadNameError" class="hide"><fmt:message key="mySettings.errors.picture.name.upload"/></span>
+                                                        <span id="imageUploadEmptyError" class="hide"><fmt:message key="mySettings.errors.picture.empty.upload"/></span>
+                                                    </div>
+                                                    <div class="imageField otherErrorsMessage hide">
+                                                        <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                                                        <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <fmt:message key="myFiles.alertInfoCharacters"/> */:
-                                            <div><span id="imageUploadError" class="hide"><fmt:message key="mySettings.errors.picture.upload"/></span><span id="imageUploadNameError" class="hide"><fmt:message key="mySettings.errors.picture.name.upload"/></span><span id="imageUploadEmptyError" class="hide"><fmt:message key="mySettings.errors.picture.empty.upload"/></span></div>
+
                                         </div>
                                         <c:if test="${user:isPropertyEditable(user,'j:about')}">
                                             <div id="about_form" class="hide span10">
                                                 <div id="about_editor">
-                                                        ${fields['j:about']}
+                                                        ${user.properties['j:about'].string}
                                                 </div>
                                                 <script type="text/javascript">
                                                     if(editor==null)
@@ -300,9 +313,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="aboutField errorMessage pull-right hide" style="margin-right:15px;"></div>
+                                                <div class="aboutField otherErrorsMessage hide">
+                                                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                                                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                                                </div>
                                             </div>
                                         </c:if>
-                                    </c:if>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -310,7 +327,7 @@
                 </div>
                 <div class="container">
                     <div class="row-fluid" >
-                        <div class="span8 offset2">
+                        <div class="span11 offset1">
                             <%@include file="editUserDetailsRows.jspf" %>
                         </div>
                         <div class="clearfix"></div>

@@ -1,36 +1,38 @@
 <div id="namesRow">
     <h2><i class="icon-user"></i>&nbsp;<fmt:message key="mySettings.name"/></h2>
     <div class="row-fluid">
-        <div id="names" class="span12 box-1">
-            <div class="pull-left">
-                <c:if test="${currentNode.properties['j:title'].boolean}">
-                    <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
-                </c:if>
+        <div id="names" class="span12">
+            <div class="box-1">
+                <div class="pull-left">
+                    <c:if test="${currentNode.properties['j:title'].boolean}">
+                        <jcr:nodePropertyRenderer node="${user}" name="j:title" renderer="resourceBundle"/>&nbsp;
+                    </c:if>
 
-                <c:if test="${currentNode.properties['j:firstName'].boolean}">
-                    <c:if test="${!empty fields['j:firstName']}">
-                        ${fn:escapeXml(user.properties['j:firstName'].string)}&nbsp;
+                    <c:if test="${currentNode.properties['j:firstName'].boolean}">
+                        <c:if test="${!empty user.properties['j:firstName'].string}">
+                            ${fn:escapeXml(user.properties['j:firstName'].string)}&nbsp;
+                        </c:if>
                     </c:if>
-                </c:if>
-                <c:if test="${currentNode.properties['j:lastName'].boolean}">
-                    <c:if test="${!empty user.properties['j:lastName']}">
-                        ${fn:escapeXml(user.properties['j:lastName'].string)}&nbsp;
+                    <c:if test="${currentNode.properties['j:lastName'].boolean}">
+                        <c:if test="${!empty user.properties['j:lastName']}">
+                            ${fn:escapeXml(user.properties['j:lastName'].string)}&nbsp;
+                        </c:if>
                     </c:if>
-                </c:if>
+                </div>
+                <div class="pull-right">
+                    <button class="btn btn-primary" type="button" onclick="switchRow('names')">
+                        <fmt:message key="label.clickToEdit"/>
+                    </button>
+                </div>
+                <div class="clearfix"></div>
             </div>
-            <div class="pull-right">
-                <button class="btn btn-primary" type="button" onclick="switchRow('names')">
-                    <fmt:message key="label.clickToEdit"/>
-                </button>
-            </div>
-            <div class="clearfix"></div>
         </div>
         <div id="names_form" class="hide">
             <c:if test="${currentNode.properties['j:title'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="title"><fmt:message key="jnt_user.j_title"/></label>
                     <div class="controls">
-                        <select name="j:title" class="namesField">
+                        <select name="j:title" class="namesField" <c:if test="${not user:isPropertyEditable(user,'j:title')}">disabled="disabled"</c:if>>
                             <option value=""></option>
                             <c:forEach items="${titleInit}"
                                        varStatus="status"
@@ -53,7 +55,7 @@
                     <label class="control-label" for="firstname"><fmt:message key="jnt_user.j_firstName"/></label>
                     <div class="controls">
                         <c:set var="firstNameValue" value="${!empty user.properties['j:firstName'] ? fn:escapeXml(user.properties['j:firstName'].string) : ''}"/>
-                        <input class="namesField" name="j:firstName" type="text" value="${firstNameValue}" <c:if test="${user.properties['j:external'].boolean}">disabled="disabled"</c:if>/>
+                        <input class="namesField" name="j:firstName" type="text" value="${firstNameValue}" <c:if test="${not user:isPropertyEditable(user,'j:firstName')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -62,7 +64,7 @@
                     <label class="control-label" for="lastName"><fmt:message key="jnt_user.j_lastName"/></label>
                     <div class="controls">
                         <c:set var="lastNameValue" value="${not empty user.properties['j:lastName'] ? fn:escapeXml(user.properties['j:lastName'].string) : ''}"/>
-                        <input class="namesField" name="j:lastName" type="text" value="${lastNameValue}" <c:if test="${user.properties['j:external'].boolean}">disabled="disabled"</c:if>/>
+                        <input class="namesField" name="j:lastName" type="text" value="${lastNameValue}" <c:if test="${not user:isPropertyEditable(user,'j:lastName')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -70,7 +72,7 @@
                 <div class="control-group">
                     <label class="control-label" for="gender"><fmt:message key="jnt_user.j_gender"/></label>
                     <div class="controls">
-                        <select name="j:gender" class="namesField" jcrtype="choiceList">
+                        <select name="j:gender" class="namesField" jcrtype="choiceList" <c:if test="${not user:isPropertyEditable(user,'j:gender')}">disabled="disabled"</c:if>>
                             <option value=""></option>
                             <c:forEach items="${genderInit}"
                                        varStatus="status"
@@ -93,6 +95,10 @@
                 <button type="button" class="btn btn-danger" onclick="ajaxReloadCallback(null,'cancel')"><fmt:message key="cancel"/></button>
                 <button type="button" onclick="updateProperties('namesField')" class="btn btn-success"><fmt:message key="save"/></button>
                 <div class="namesField errorMessage"></div>
+                <div class="namesField otherErrorsMessage hide">
+                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                </div>
             </div>
         </div>
     </div>
@@ -127,7 +133,7 @@
                     <label class="control-label" for="function"><fmt:message key="jnt_user.j_function"/></label>
                     <div class="controls">
                         <c:set var="functionValue" value="${not empty user.properties['j:function'] ? fn:escapeXml(user.properties['j:function'].string) : ''}"/>
-                        <input class="professionField" name="j:function" type="text" value="${functionValue}"/>
+                        <input class="professionField" name="j:function" type="text" value="${functionValue}" <c:if test="${not user:isPropertyEditable(user,'j:function')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -136,7 +142,7 @@
                     <label class="control-label" for="organization"><fmt:message key="jnt_user.j_organization"/></label>
                     <div class="controls">
                         <c:set var="organizationValue" value="${not empty user.properties['j:organization'] ? fn:escapeXml(user.properties['j:organization'].string) : ''}"/>
-                        <input class="professionField" name="j:organization" type="text" value="${organizationValue}"/>
+                        <input class="professionField" name="j:organization" type="text" value="${organizationValue}" <c:if test="${not user:isPropertyEditable(user,'j:organization')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -147,6 +153,10 @@
                     <fmt:message key="save"/>
                 </button>
                 <div class="professionField errorMessage"></div>
+                <div class="professionField otherErrorsMessage hide">
+                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                </div>
             </div>
         </div>
     </div>
@@ -210,7 +220,7 @@
                     <label class="control-label" for="facebookID"><fmt:message key="jnt_user.j_facebookID"/></label>
                     <div class="controls">
                         <c:set var="facebookIDValue" value="${not empty user.properties['j:facebookID'] ? fn:escapeXml(user.properties['j:facebookID'].string) : ''}"/>
-                        <input class="socialField" name="j:facebookID" type="text" value="${facebookIDValue}"/>
+                        <input class="socialField" name="j:facebookID" type="text" value="${facebookIDValue}" <c:if test="${not user:isPropertyEditable(user,'j:facebookID')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -219,7 +229,7 @@
                     <label class="control-label" for="linkedinID"><fmt:message key="jnt_user.j_linkedinID"/></label>
                     <div class="controls">
                         <c:set var="linkedinIDValue" value="${not empty user.properties['j:linkedinID'] ? fn:escapeXml(user.properties['j:linkedinID'].string) : ''}"/>
-                        <input class="socialField" name="j:linkedinID" type="text" value="${linkedinIDValue}"/>
+                        <input class="socialField" name="j:linkedinID" type="text" value="${linkedinIDValue}" <c:if test="${not user:isPropertyEditable(user,'j:linkedinID')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -228,7 +238,7 @@
                     <label class="control-label" for="skypeID"><fmt:message key="jnt_user.j_skypeID"/></label>
                     <div class="controls">
                         <c:set var="skypeIDValue" value="${not empty user.properties['j:skypeID'] ? fn:escapeXml(user.properties['j:skypeID'].string) : ''}"/>
-                        <input class="socialField" name="j:skypeID" type="text" value="${skypeIDValue}"/>
+                        <input class="socialField" name="j:skypeID" type="text" value="${skypeIDValue}" <c:if test="${not user:isPropertyEditable(user,'j:skypeID')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -237,7 +247,7 @@
                     <label class="control-label" for="twitterID"><fmt:message key="jnt_user.j_twitterID"/></label>
                     <div class="controls">
                         <c:set var="twitterIDValue" value="${not empty user.properties['j:twitterID'] ? fn:escapeXml(user.properties['j:twitterID'].string) : ''}"/>
-                        <input class="socialField" name="j:twitterID" type="text" value="${twitterIDValue}"/>
+                        <input class="socialField" name="j:twitterID" type="text" value="${twitterIDValue}" <c:if test="${not user:isPropertyEditable(user,'j:twitterID')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -248,6 +258,10 @@
                     <fmt:message key="save"/>
                 </button>
                 <div class="socialField errorMessage"></div>
+                <div class="socialField otherErrorsMessage hide">
+                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                </div>
             </div>
         </div>
     </div>
@@ -260,24 +274,30 @@
             <div class="pull-left">
                 <div class="row-fluid">
                     <div class="pull-left">
-                        <div>
-                            <c:if test="${(not empty user.properties['j:email'].string)}">
-                            <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
-                             &nbsp;${user.properties['j:email'].string}
-                            </c:if>
-                        </div>
-                        <div>
-                            <c:if test="${(not empty user.properties['j:phoneNumber'].string)}">
-                                <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
-                                &nbsp;${user.properties['j:phoneNumber'].string}
-                            </c:if>
-                        </div>
-                        <div>
-                            <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
-                                <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
-                                &nbsp;${user.properties['j:mobileNumber'].string}
-                            </c:if>
-                        </div>
+                        <c:if test="${currentNode.properties['j:email'].boolean}">
+                            <div>
+                                <c:if test="${(not empty user.properties['j:email'].string)}">
+                                <strong><fmt:message key='jnt_user.j_email'/>&nbsp;:</strong>
+                                 &nbsp;${user.properties['j:email'].string}
+                                </c:if>
+                            </div>
+                        </c:if>
+                        <c:if test="${currentNode.properties['j:phoneNumber'].boolean}">
+                            <div>
+                                <c:if test="${(not empty user.properties['j:phoneNumber'].string)}">
+                                    <strong><fmt:message key='jnt_user.j_phoneNumber'/>&nbsp;:</strong>
+                                    &nbsp;${user.properties['j:phoneNumber'].string}
+                                </c:if>
+                            </div>
+                        </c:if>
+                        <c:if test="${currentNode.properties['j:mobileNumber'].boolean}">
+                            <div>
+                                <c:if test="${(not empty user.properties['j:mobileNumber'].string)}">
+                                    <strong><fmt:message key='jnt_user.j_mobileNumber'/>&nbsp;:</strong>
+                                    &nbsp;${user.properties['j:mobileNumber'].string}
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
                     <div class="pull-right" style="margin-left:15px;">
                         <div class="pull-left">
@@ -286,17 +306,25 @@
                             </c:if>
                         </div>
                         <div class="pull-right">
-                            <c:if test="${(not empty user.properties['j:address'].string)}">
-                                <div>${user.properties['j:address'].string}</div>
+                            <c:if test="${currentNode.properties['j:address'].boolean}">
+                                <c:if test="${(not empty user.properties['j:address'].string)}">
+                                    <div>${user.properties['j:address'].string}</div>
+                                </c:if>
                             </c:if>
-                            <c:if test="${(not empty user.properties['j:zipCode'].string)}">
-                                <div>${user.properties['j:zipCode'].string}</div>
+                            <c:if test="${currentNode.properties['j:zipCode'].boolean}">
+                                <c:if test="${(not empty user.properties['j:zipCode'].string)}">
+                                    <div>${user.properties['j:zipCode'].string}</div>
+                                </c:if>
                             </c:if>
-                            <c:if test="${(not empty user.properties['j:city'].string)}">
-                                <div>${user.properties['j:city'].string}</div>
+                            <c:if test="${currentNode.properties['j:city'].boolean}">
+                                <c:if test="${(not empty user.properties['j:city'].string)}">
+                                    <div>${user.properties['j:city'].string}</div>
+                                </c:if>
                             </c:if>
-                            <c:if test="${(not empty user.properties['j:country'].string)}">
-                                <div>${user.properties['j:country'].string}</div>
+                            <c:if test="${currentNode.properties['j:country'].boolean}">
+                                <c:if test="${(not empty user.properties['j:country'].string)}">
+                                    <div>${user.properties['j:country'].string}</div>
+                                </c:if>
                             </c:if>
                         </div>
                     </div>
@@ -310,66 +338,66 @@
             <div class="clearfix"></div>
         </div>
         <div id="address_form" class="hide">
-            <c:if test="${user:isPropertyEditable(user,'j:address')}">
+            <c:if test="${currentNode.properties['j:address'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="address"><fmt:message key='jnt_user.j_address'/></label>
                     <div class="controls">
                         <c:set var="addressValue" value="${not empty user.properties['j:address'] ? fn:escapeXml(user.properties['j:address'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:address" value="${addressValue}"/>
+                        <input class="addressField" type="text" name="j:address" value="${addressValue}" <c:if test="${not user:isPropertyEditable(user,'j:address')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
-            <c:if test="${user:isPropertyEditable(user,'j:zipCode')}">
+            <c:if test="${currentNode.properties['j:zipCode'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="zipCode"><fmt:message key='jnt_user.j_zipCode'/></label>
                     <div class="controls">
                         <c:set var="zipCodeValue" value="${not empty user.properties['j:zipCode'] ? fn:escapeXml(user.properties['j:zipCode'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:zipCode" value="${zipCodeValue}"/>
+                        <input class="addressField" type="text" name="j:zipCode" value="${zipCodeValue}" <c:if test="${not user:isPropertyEditable(user,'j:zipCode')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
-            <c:if test="${user:isPropertyEditable(user,'j:city')}">
+            <c:if test="${currentNode.properties['j:city'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="city"><fmt:message key='jnt_user.j_city'/></label>
                     <div class="controls">
                         <c:set var="cityValue" value="${not empty user.properties['j:city'] ? fn:escapeXml(user.properties['j:city'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:city" value="${cityValue}"/>
+                        <input class="addressField" type="text" name="j:city" value="${cityValue}" <c:if test="${not user:isPropertyEditable(user,'j:city')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
-            <c:if test="${user:isPropertyEditable(user,'j:country')}">
+            <c:if test="${currentNode.properties['j:country'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="country"><fmt:message key='jnt_user.j_country'/></label>
                     <div class="controls">
                         <c:set var="countryValue" value="${not empty user.properties['j:country'] ? fn:escapeXml(user.properties['j:country'].string) : ''}"/>
-                        <input class="addressField" type="text" name="j:country" value="${countryValue}"/>
+                        <input class="addressField" type="text" name="j:country" value="${countryValue}" <c:if test="${not user:isPropertyEditable(user,'j:country')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
-            <c:if test="${user:isPropertyEditable(user,'j:phoneNumber')}">
+            <c:if test="${currentNode.properties['j:phoneNumber'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="phoneNumber"><fmt:message key='jnt_user.j_phoneNumber'/></label>
                     <div class="controls">
                         <c:set var="phoneNumberValue" value="${not empty user.properties['j:phoneNumber'] ? fn:escapeXml(user.properties['j:phoneNumber'].string) : ''}"/>
-                        <input class="addressField phone" type="text" name="j:phoneNumber" value="${phoneNumberValue}"/>
+                        <input class="addressField phone" type="text" name="j:phoneNumber" value="${phoneNumberValue}" <c:if test="${not user:isPropertyEditable(user,'j:phoneNumber')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
-            <c:if test="${user:isPropertyEditable(user,'j:mobileNumber')}">
+            <c:if test="${currentNode.properties['j:mobileNumber'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="mobileNumber"><fmt:message key='jnt_user.j_mobileNumber'/></label>
                     <div class="controls">
                         <c:set var="mobileNumberValue" value="${not empty user.properties['j:mobileNumber'] ? fn:escapeXml(user.properties['j:mobileNumber'].string) : ''}"/>
-                        <input class="addressField phone" type="text" name="j:mobileNumber" value="${mobileNumberValue}"/>
+                        <input class="addressField phone" type="text" name="j:mobileNumber" value="${mobileNumberValue}" <c:if test="${not user:isPropertyEditable(user,'j:mobileNumber')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
-            <c:if test="${user:isPropertyEditable(user,'j:email')}">
+            <c:if test="${currentNode.properties['j:email'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="email"><fmt:message key="jnt_user.j_email"/></label>
                     <div class="controls">
                         <c:set var="emailValue" value="${not empty user.properties['j:email'] ? fn:escapeXml(user.properties['j:email'].string) : ''}"/>
-                        <input class="addressField email" type="text" name="j:email" value="${emailValue}"/>
+                        <input class="addressField email" type="text" name="j:email" value="${emailValue}" <c:if test="${not user:isPropertyEditable(user,'j:email')}">disabled="disabled"</c:if>/>
                     </div>
                 </div>
             </c:if>
@@ -381,6 +409,10 @@
                 <div class="addressField errorMessage"></div>
                 <div id="phoneFormatError" class="hide"><fmt:message key="mySettings.errors.phone.format"/></div>
                 <div id="emailFormatError" class="hide"><fmt:message key="failure.invalid.emailAddress"/></div>
+                <div class="addressField otherErrorsMessage hide">
+                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                </div>
             </div>
         </div>
     </div>
@@ -454,6 +486,10 @@
                     <div class="errorMessage">
                         <span id="passwordErrors" class="hide"></span>
                     </div>
+                    <div class="passwordField otherErrorsMessage hide">
+                        <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                        <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                    </div>
                 </div>
             </c:if>
         </div>
@@ -501,13 +537,13 @@
             <div class="clearfix"></div>
         </div>
         <div id="other_form" class="hide">
-            <c:if test="${user:isPropertyEditable(user,'j:birthDate')}">
+            <c:if test="${currentNode.properties['j:birthDate'].boolean}">
                 <div class="control-group">
                     <label class="control-label" for="birthDate">
                         <fmt:message key="jnt_user.j_birthDate"/>
                     </label>
                     <div class="controls input-append date" id="birthDate" style="display: block;">
-                        <input class="otherField" type="text" name="j:birthDate" value="${dateforCal}" jcrtype="Date"/>
+                        <input class="otherField" type="text" name="j:birthDate" value="${dateforCal}" jcrtype="Date" <c:if test="${not user:isPropertyEditable(user,'j:birthDate')}">disabled="disabled"</c:if>/>
                         <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
                     </div>
                 </div>
@@ -519,7 +555,7 @@
                 <div class="control-group">
                     <label class="control-label" for="preferredLanguage"><fmt:message key="jnt_user.preferredLanguage"/></label>
                     <div class="controls">
-                        <select class="otherField" name="preferredLanguage">
+                        <select class="otherField" name="preferredLanguage" <c:if test="${not user:isPropertyEditable(user,'preferredLanguage')}">disabled="disabled"</c:if>>
                             <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
                                 <option value="${functions:toLocale(adLocale)}" <c:if test="${functions:toLocale(adLocale) eq prefLang}">selected="selected"</c:if>>
                                 ${functions:displayLocaleNameWith(adLocale, adLocale)}
@@ -535,6 +571,10 @@
                     <fmt:message key="save"/>
                 </button>
                 <div class="otherField errorMessage"></div>
+                <div class="otherField otherErrorsMessage hide">
+                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                </div>
             </div>
         </div>
     </div>
@@ -624,8 +664,12 @@
                     <fmt:message key="save"/>
                 </button>
                 <div class="otherField errorMessage"></div>
+                <div class="errorMessage privacyField"></div>
+                <div class="privacyField otherErrorsMessage hide">
+                    <div><fmt:message key="mySettings.errors.otherErrors"/></div>
+                    <div><fmt:message key="mySettings.errors.otherErrors2"/> &nbsp; <a href="#" onclick="goToStart()"><fmt:message key="mySettings.startPage"/></a></div>
+                </div>
             </div>
-            <div class="errorMessage privacyField" style="text-align:center"></div>
         </div>
     </div>
 </div>

@@ -60,7 +60,10 @@
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <editDetails age="true"
                                          j:about="true"
+                                         j:address="true"
                                          j:birthDate="true"
+                                         j:city="true"
+                                         j:country="true"
                                          j:email="true"
                                          j:facebookID="true"
                                          j:firstName="true"
@@ -68,7 +71,9 @@
                                          j:gender="true"
                                          j:lastName="true"
                                          j:linkedinID="true"
+                                         j:mobileNumber="true"
                                          j:organization="true"
+                                         j:phoneNumber="true"
                                          j:picture="true"
                                          j:skypeID="true"
                                          j:title="true"
@@ -76,8 +81,10 @@
                                          j:view="bootstrap"
                                          jcr:mixinTypes="jmix:renderable jmix:useUILocale"
                                          jcr:primaryType="jnt:editUserDetails"
+                                         j:zipCode="true"
                                          password="true"
                                          preferredLanguage="true"/>
+
                         </pagecontent>
                     </me>
                     <files j:applyOn="jnt:user"

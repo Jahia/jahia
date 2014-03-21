@@ -15,14 +15,16 @@
 function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method, json , callback, errorCallback)
 {
     var callResult;
-    $.ajax({
+    var url = urlContext+"/"+API_URL_START+"/"+workspace+"/"+locale+"/"+way+"/"+endOfURI;
+    var httpResult = $.ajax({
         contentType: 'application/json',
         data: json,
         dataType: 'json',
         processData: false,
         type: method,
-        url: urlContext+"/"+API_URL_START+"/"+workspace+"/"+locale+"/"+way+"/"+endOfURI,
+        url: url,
         success:function(result) {
+            result["status"] = httpResult.status;
             //calling the callback
             if(!(callback === undefined))
             {
@@ -31,12 +33,12 @@ function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method,
             callResult=result;
         },
         error : function(result){
-            if(result.responseJSON != undefined)
-            {
-                return errorCallback(result, json);
-            }
+            result["status"] = httpResult.status;
+            return errorCallback(result, json);
+
         }
     });
+
     return callResult;
 }
 
@@ -79,7 +81,7 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
         var endOfURI = nodeIdentifier+"/properties";
         result = jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"DELETE", deleteJsonString , undefined, errorCallback);
     }
-    if (serializedForm != '{"properties":{"undefined":{"value":""}}}')
+    if (serializedForm != '{"properties":{"undefined":{"value":""}}}' && serializedForm != '{"properties":{}}')
     {
         //Post the Serialized form to Jahia
         return jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", serializedForm , callback, errorCallback);
@@ -112,7 +114,7 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
     }
     else
     {
-        serializedArray = $('.'+fieldsClass);
+        serializedArray = $('.'+fieldsClass+':not([disabled])');
     }
 
     //Building the JSON Object from the array
@@ -136,9 +138,9 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
                 //formatting dates
                 if(this.getAttribute("jcrtype") != undefined && this.getAttribute("jcrtype") == "Date")
                 {
-                    value = new Date(value).toISOString();
+                    // Add Timezone to gmt as we are only picking date by day/month/year
+                    value = new Date(value+'T00:00:00.000').toISOString();
                 }
-
                 //adding to object
                 if (serializedObject[name]) {
                     if (!serializedObject[name].push) {
@@ -166,7 +168,7 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
  */
 var ajaxReloadCallback = function (result,sent)
 {
-    if (sent != undefined && (sent.indexOf("preferredLanguage") != -1 && CurrentCssClass != "privacyField"))
+    if (sent != undefined && (sent.indexOf("preferredLanguage") != -1 && currentCssClass != "privacyField"))
     {
         var windowToRefresh = window.parent;
         if(windowToRefresh == undefined)
@@ -193,6 +195,15 @@ function ajaxReloadPublicView ()
     $('#public').load(getUrl);
 }
 
+
+function goToStart()
+{
+    var windowToRefresh = window.parent;
+    if(windowToRefresh == undefined)
+        windowToRefresh = window;
+    windowToRefresh.location.replace(context+"/start");
+}
+
 /* Edit User Details Functions */
 /**
  * @Author : Jahia(rahmed)
@@ -204,46 +215,85 @@ function ajaxReloadPublicView ()
  */
 var formError = function (result,sent)
 {
+    var resultObject=null;
 
-    $("."+CurrentCssClass+".errorMessage").html("");
-    var resultObject = {"message":""+result.responseJSON.message+"", "properties":[]};
-    if(result.responseJSON != undefined)
+    if(result["status"]>300)
     {
-        //looking for JCR property name
-        var propertiesArray=new Array();
-        if(result.responseJSON.message.indexOf("j:")!=-1)
+        if(result["status"]==401)
         {
-            //split message on spaces
-            propertiesArray=result.responseJSON.message.split(" ");
-
-            for(var property=0;property<propertiesArray.length;property++)
+            //Lost session redirecting to login
+            goToStart();
+        }
+        else if (result["status"]>=400 && result["status"]<500)
+        {
+            //other errors displaying default message
+            $("."+currentCssClass+".otherErrorsMessage").hide();
+            $("."+currentCssClass+".otherErrorsMessage").fadeIn('slow').delay(1500);
+        }
+        else if(result["status"]==500)
+        {
+            //server error trying to get message from Api
+            if(result.responseJSON != undefined)
             {
-                if(propertiesArray[property].indexOf("j:")!=-1)
+                //trying to get message in Json
+                resultObject = {"message":""+result.responseJSON.message+"", "properties":[]};
+            }
+            else if(result["message"] != undefined)
+            {
+                //trying to get message directly from result
+                resultObject = {"message":""+result["message"]+"", "properties":[]};
+            }
+            if(resultObject != null)
+            {
+                //formatting the message (replacing the j:properties by their names)
+
+                //looking for JCR property name
+                var propertiesArray=new Array();
+                if(result.responseJSON.message.indexOf("j:")!=-1)
                 {
-                    if (resultObject["properties"]) {
-                        if (!resultObject["properties"].push) {
-                            resultObject["properties"] = [resultObject["properties"]];
+                    //split message on spaces
+                    propertiesArray=result.responseJSON.message.split(" ");
+
+                    for(var property=0;property<propertiesArray.length;property++)
+                    {
+                        if(propertiesArray[property].indexOf("j:")!=-1)
+                        {
+                            if (resultObject["properties"]) {
+                                if (!resultObject["properties"].push) {
+                                    resultObject["properties"] = [resultObject["properties"]];
+                                }
+                                resultObject["properties"].push(propertiesArray[property] || '');
+                            } else {
+                                resultObject["properties"] = {"keys" : propertiesArray[property] || ''};
+                            }
                         }
-                        resultObject["properties"].push(propertiesArray[property] || '');
-                    } else {
-                        resultObject["properties"] = {"keys" : propertiesArray[property] || ''};
                     }
                 }
+                var errorMessage = ""+resultObject["message"];
+
+                var propertiesArray = resultObject["properties"];
+
+                for(var propertyName = 0;propertyName<propertiesArray.length;propertyName++)
+                {
+                    errorMessage=errorMessage.replace(propertiesArray[propertyName], propertiesNames[propertiesArray[propertyName]]);
+                }
+
+                //displaying formatted error message
+                $("."+currentCssClass+".errorMessage").html("");
+                $("."+currentCssClass+".errorMessage").hide();
+                $("."+currentCssClass+".errorMessage").stop().fadeIn();
+                $("."+currentCssClass+".errorMessage").stop().fadeOut();
+                $("."+currentCssClass+".errorMessage").html($("."+currentCssClass+".errorMessage").html()+"<div>"+errorMessage+"</div>");
+                $("."+currentCssClass+".errorMessage").fadeIn('slow').delay(4000).fadeOut('slow');
+
+            }
+            else
+            {
+                //default error message
+                $("."+currentCssClass+".otherErrorsMessage").hide();
+                $("."+currentCssClass+".otherErrorsMessage").fadeIn('slow').delay(1500);
             }
         }
-        var errorMessage = ""+resultObject["message"];
-        var propertiesArray = resultObject["properties"];
-
-        for(var propertyName = 0;propertyName<propertiesArray.length;propertyName++)
-        {
-            errorMessage=errorMessage.replace(propertiesArray[propertyName], propertiesNames[propertiesArray[propertyName]]);
-        }
-        $("."+CurrentCssClass+".errorMessage").hide();
-        $("."+CurrentCssClass+".errorMessage").stop().fadeIn();
-        $("."+CurrentCssClass+".errorMessage").stop().fadeOut();
-        $("."+CurrentCssClass+".errorMessage").html($("."+CurrentCssClass+".errorMessage").html()+"<div>"+errorMessage+"</div>");
-        $("."+CurrentCssClass+".errorMessage").fadeIn('slow').delay(1500).fadeOut('slow');
-
     }
     return resultObject;
 }
@@ -290,11 +340,11 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
     $("#"+emailErrorId).hide();
     if(!phoneValidation)
     {
-        $('#'+phoneErrorId).fadeIn('slow').delay(1500).fadeOut('slow');
+        $('#'+phoneErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
     }
     if(!emailValidation)
     {
-        $('#'+emailErrorId).fadeIn('slow').delay(1500).fadeOut('slow');
+        $('#'+emailErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
     }
     return phoneValidation && emailValidation;
 }
@@ -308,7 +358,7 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
  */
 function urlExists(testUrl) {
     var http = jQuery.ajax({
-        type:"HEAD",
+        type:"GET",
         url: testUrl,
         async: false
     })
@@ -327,6 +377,7 @@ function urlExists(testUrl) {
  */
 function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale)
 {
+
     var jsonString = "{\"properties\":{\"j:publicProperties\":{\"multiValued\":true,\"value\":[";
     var filled=false;
     //the image to put near the switch once the post is successful
@@ -356,7 +407,7 @@ function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale
     }
     jsonString += "]}}}";
     //posting the properties visibility to JCR
-    CurrentCssClass = "privacyField";
+    currentCssClass = "privacyField";
     jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", jsonString , ajaxReloadCallback, formError);
 }
 
@@ -377,20 +428,20 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
     if ($("#oldPasswordField").val() == "") {
         $("#passwordErrors").hide();
         $('#passwordErrors').html(oldPasswordMandatory);
-        $('#passwordErrors').fadeIn('slow').delay(2000).fadeOut('slow');
+        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
         $('#oldPasswordField').focus();
     }
     else if ($("#passwordField").val() == "") {
         $("#passwordErrors").hide();
         $('#passwordErrors').html(passwordMandatory);
-        $('#passwordErrors').fadeIn('slow').delay(2000).fadeOut('slow');
+        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
         $('#passwordField').focus();
     }
 
     else if ($("#passwordconfirm").val() == "") {
         $("#passwordErrors").hide();
         $('#passwordErrors').html(confirmationMandatory);
-        $('#passwordErrors').fadeIn('slow').delay(2000).fadeOut('slow');
+        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
         $('#passwordconfirm').focus();
     }
 
@@ -400,10 +451,11 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
         $("#passwordconfirm").val("");
         $("#passwordErrors").hide();
         $('#passwordErrors').html(passwordNotMatching);
-        $('#passwordErrors').fadeIn('slow').delay(2000).fadeOut('slow');
+        $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
         $('#passwordField').focus();
     }
     else{
+        currentCssClass  = "passwordField";
         $.post( changePasswordUrl, { oldpassword: $("#oldPasswordField").val(), password: $("#passwordField").val(), passwordconfirm:  $("#passwordconfirm").val()},
             function(result)
             {
@@ -412,7 +464,7 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
                     switchRow('password');
                     $('#passwordSuccess').addClass("text-success");
                     $('#passwordSuccess').html(result['errorMessage']);
-                    $('#passwordSuccess').fadeIn('slow').delay(2000).fadeOut('slow');
+                    $('#passwordSuccess').fadeIn('slow').delay(5000).fadeOut('slow');
                 }
                 else
                 {
@@ -421,11 +473,14 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
                     $("#oldPasswordField").val("");
                     $("#passwordErrors").hide();
                     $("#passwordErrors").html(result['errorMessage']);
-                    $("#passwordErrors").fadeIn('slow').delay(2000).fadeOut('slow');
+                    $("#passwordErrors").fadeIn('slow').delay(5000).fadeOut('slow');
                     $("input[name="+result['focusField']+"]").focus();
                 }
             },
-            'json');
+            'json').fail(function(){
+                var result = {status : "404", message : "standard error ..."};
+                formError(result);
+            });
     }
 }
 
@@ -444,11 +499,12 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
 function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
 {
     var uploadUrl = context+"/"+API_URL_START+"/default/"+locale+"/paths"+nodePath+"/files/profile";
-
+    var buggedUrl = context+"/default/"+locale+"/paths"+nodePath+"/files/profile";
+    currentCssClass= "imageField";
     //checking if the file input has been filled
     if( $("#"+imageId).val() == "")
     {
-        $("#imageUploadEmptyError").fadeIn('slow').delay(4000).fadeOut('slow');
+        $("#imageUploadEmptyError").fadeIn('slow').delay(5000).fadeOut('slow');
     }
     else
     {
@@ -460,43 +516,55 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
                 dataType: 'json',
                 success: function(result)
                 {
-                    if(result["localizedMessage"]===undefined)
+                    if(result["exception"] != undefined)
+                    {
+                        if(result["status"]===undefined){
+                            result["status"]=404
+                        };
+                        errorFunction(result);
+                    }
+                    else
                     {
                         var fileId = result["id"];
                         var fileName = result["name"];
+                        var filepath = urlFiles+"/files/profile/"+fileName;
                         //JSon Serialized String
                         var jsonData;
                         var endOfURI = userId+"/properties/j__picture";
 
                         //Creating the Json String to send with the PUT request
                         jsonData = "{\"value\":\""+fileId+"\"}";
-
-                        //Requesting the Jahia API to update the user picture
-                        jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"PUT", jsonData, function(){
-                            //Check If Jahia had the time to create the Avatar
-                            //building the avatar URL
-                            var imageUrl = context+"/files/default/users/root/files/profile/"+fileName+"?t=avatar_120";
-                            var avatarExists=false;
-                            var ExistsCode=-1;
-                            //Check 5 times if the avatar exists
-                            for(var testNumber = 0 ; !avatarExists &&  testNumber<5; testNumber++)
-                            {
-                                ExistsCode =urlExists(imageUrl);
-                                if(ExistsCode!=404)
-                                {
-                                    //Avatar has been found refreshing the profile display ...
-                                    avatarExists=true;
-                                    callbackFunction(result, "picture");
-                                }
-                            }
-
-                        }, errorFunction);}
-                    else
-                    {
-                        $("#imageUploadError").fadeIn('slow').delay(4000).fadeOut('slow');
+                        if(fileId != undefined)
+                        {
+                            //Requesting the Jahia API to update the user picture
+                            jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"PUT", jsonData, function(){
+                                //Check If Jahia had the time to create the Avatar
+                                //building the avatar URL
+                                var imageUrl = filepath+"?t=avatar_120";
+                                var avatarExists=false;
+                                var ExistsCode=-1;
+                                intervalURLChecker = window.setInterval(function(){
+                                    ExistsCode = urlExists(imageUrl);
+                                    if(ExistsCode<=300)
+                                    {
+                                        //Avatar has been found refreshing the profile display ...
+                                        avatarExists=true;
+                                        window.clearInterval(intervalURLChecker);
+                                        callbackFunction(result, "picture");
+                                    }
+                                },500);
+                            }, errorFunction);
+                        }
+                        else
+                        {
+                            $("#imageUploadError").fadeIn('slow').delay(5000).fadeOut('slow');
+                        }
                     }
                 },
                 error: function(result){
+                    if(result["status"]===undefined){
+                        result["status"]=404
+                    };
                     errorFunction(result);
                 }
             });
@@ -531,7 +599,7 @@ function saveCkEditorChanges(rowId,nodeIdentifier ,locale, callback, errorCallba
 
     //calling ajax POST
     var myJSONText = JSON.stringify(jsonTable);
-    CurrentCssClass=rowId+"Field";
+    currentCssClass=rowId+"Field";
 
     //Calling the Jahia Restful API to Update the node
     jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", myJSONText, callback, errorCallback);

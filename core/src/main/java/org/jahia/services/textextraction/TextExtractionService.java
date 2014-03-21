@@ -176,7 +176,7 @@ public class TextExtractionService {
 
     private boolean enabled = true;
 
-    private boolean initialized;
+    private volatile boolean initialized = false;
 
     private int maxExtractedCharacters = 100000;
 

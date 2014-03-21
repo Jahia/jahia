@@ -20,21 +20,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.Live"/>
                                     <ref bean="Toolbar.Item.Preview"/>
-                                    <bean id="Toolbar.Item.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                                        <property name="titleKey" value="label.editMode"/>
-                                        <property name="icon" value="editMode"/>
-                                        <property name="requiredPermission" value="editModeAccess"/>
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
-                                                <property name="configurationName" value="editmode"/>
-                                            </bean>
-                                        </property>
-                                        <property name="visibility">
-                                            <bean class="org.jahia.services.uicomponents.bean.InvertedVisibility">
-                                                <property name="inNodePath" value="/sites/systemsite"/>
-                                            </bean>
-                                        </property>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.Edit"/>
                                     <ref bean="Toolbar.Item.Studio"/>
                                     <ref bean="Toolbar.Item.Admin"/>
                                 </list>

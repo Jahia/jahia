@@ -69,6 +69,7 @@
  */
 package org.jahia.services.uicomponents.bean;
 
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -77,8 +78,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -175,20 +178,14 @@ public class Visibility {
                 if (inNodePath != null && !contextNode.getPath().startsWith(inNodePath)) {
                     return false;
                 }
-                try {
-                    if (contextNodePath != null) {
-                        contextNode = contextNode.getSession().getNode(contextNodePath);
-                    }
-                } catch (PathNotFoundException e) {
-                    return false;
-                }
 
                 if (!isAllowed(contextNode)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("SitePermission:: false");
+                        logger.debug("SitePermission: false");
                     }
                     return false;
                 }
+
                 if (logger.isDebugEnabled()) {
                     logger.debug("SitePermission: true");
                 }
@@ -228,12 +225,30 @@ public class Visibility {
      * @return
      */
     private boolean isAllowed(JCRNodeWrapper node) {
-        if (permission != null && !node.getUser().isRoot()) {
-            try {
+        try {
+            if (permission != null && !node.getUser().isRoot()) {
+                if ("$currentsite".equals(contextNodePath)) {
+                    node = node.getResolveSite();
+                } else if ("$anysite".equals(contextNodePath)) {
+                    List<JCRNodeWrapper> l = JCRContentUtils.getChildrenOfType(node.getResolveSite().getParent(), "jnt:virtualsite");
+                    for (JCRNodeWrapper nodeWrapper : l) {
+                        if (nodeWrapper.hasPermission(permission)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } else if (contextNodePath != null && !contextNodePath.startsWith("/")) {
+                    node = node.getNode(contextNodePath);
+                } else if (contextNodePath != null) {
+                    node = node.getSession().getNode(contextNodePath);
+                }
                 return node.hasPermission(permission);
-            } catch (Exception e) {
-                logger.error("Cannot check permission " + permission, e);
             }
+        } catch (PathNotFoundException e) {
+            return false;
+        } catch (RepositoryException e) {
+            logger.error("Cannot check permission " + permission, e);
+            return false;
         }
         return true;
     }

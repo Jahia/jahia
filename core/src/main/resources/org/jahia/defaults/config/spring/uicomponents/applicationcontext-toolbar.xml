@@ -197,6 +197,19 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="contributemode"/>
                 <property name="updateOnMainNodeRefresh" value="true"/>
+                <property name="noChecksInMode" >
+                    <set>
+                        <value>adminmode</value>
+                        <value>dashboardmode</value>
+                    </set>
+                </property>
+            </bean>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="operatingMode" value="development,production"/>
+                <property name="permission" value="contributeModeAccess"/>
+                <property name="contextNodePath" value="$anysite"/>
             </bean>
         </property>
     </bean>
@@ -204,14 +217,24 @@
     <bean id="Toolbar.Item.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.editMode"/>
         <property name="icon" value="editMode"/>
+        <property name="requiredPermission" value="editModeAccess"/>
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="editmode"/>
+                <property name="updateOnMainNodeRefresh" value="true"/>
+                <property name="noChecksInMode" >
+                    <set>
+                        <value>adminmode</value>
+                        <value>dashboardmode</value>
+                    </set>
+                </property>
             </bean>
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="operatingMode" value="development,production"/>
+                <property name="permission" value="editModeAccess"/>
+                <property name="contextNodePath" value="$anysite"/>
             </bean>
         </property>
     </bean>
@@ -350,6 +373,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
                 <property name="configurationName" value="adminmode"/>
+                <property name="enforcedWorkspace" value="default"/>
+                <property name="forceRootChange" value="true"/>
             </bean>
         </property>
     </bean>

@@ -85,6 +85,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
+import java.util.Set;
+
 /**
  * Toolbar action item for switching between editing modes.
  */
@@ -96,6 +98,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     private String enforcedWorkspace = "default";
     private boolean forceRootChange = false;
     private boolean updateOnMainNodeRefresh = false;
+    private Set<String> noChecksInMode;
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
@@ -127,12 +130,16 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
         this.updateToolbar = updateToolbar;
     }
 
+    public void setNoChecksInMode(Set<String> noChecksInMode) {
+        this.noChecksInMode = noChecksInMode;
+    }
+
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
-        if (updateOnMainNodeRefresh && linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) {
-            setEnabled(false);
+        if (!updateOnMainNodeRefresh || (noChecksInMode != null && noChecksInMode.contains(linker.getConfig().getName()))) {
+            setEnabled(true);
         } else {
-            setEnabled(isNodeTypeAllowed(node));
+            setEnabled(isNodeTypeAllowed(node) && !((EditLinker) linker).isInSettingsPage() && hasPermission(node)) ;
         }
     }
 

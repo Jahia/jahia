@@ -248,6 +248,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                                     MainModule.staticGoTo((String) siteNode.get(GWTJahiaNode.HOMEPAGE_PATH), null);
                                 } else if (finalEditLinker != null) {
                                     finalEditLinker.handleNewMainSelection();
+                                    finalEditLinker.handleNewMainNodeLoaded();
                                 }
                             }
                         });

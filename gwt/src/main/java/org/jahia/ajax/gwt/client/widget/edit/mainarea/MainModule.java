@@ -156,7 +156,13 @@ public class MainModule extends Module {
         this.depth = 0;
 
         storage = Storage.getSessionStorageIfSupported();
-
+        if (storage != null) {
+            String user = storage.getItem("currentUser");
+            if (user != null && !user.equals(JahiaGWTParameters.getCurrentUser())) {
+                storage.clear();
+            }
+            storage.setItem("currentUser",JahiaGWTParameters.getCurrentUser());
+        }
         head = new ToolbarHeader();
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");

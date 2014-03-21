@@ -22,19 +22,9 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.Studio"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-                                        <property name="titleKey" value="label.administration"/>
-                                        <property name="icon" value="admin"/>
-                                        <property name="visibility" value="administrationAccess"/>
-                                        <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
-                                                <property name="configurationName" value="adminmode"/>
-                                                <property name="enforcedWorkspace" value="default"/>
-                                                <property name="forceRootChange" value="true"/>
-                                            </bean>
-                                        </property>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.Admin"/>
                                 </list>
                             </property>
                         </bean>

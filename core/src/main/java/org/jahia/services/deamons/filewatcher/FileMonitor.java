@@ -71,12 +71,7 @@ package org.jahia.services.deamons.filewatcher;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * File watcher service implementation that is based on the VFS DefaultFileMonitor.
@@ -174,11 +169,14 @@ public class FileMonitor implements Serializable {
                     Map<File, Object> newChildrenMap = new HashMap<File, Object>();
                     Stack<File> missingChildren = new Stack<File>();
 
-                    for (int i = 0; i < newChildren.length; i++) {
-                        newChildrenMap.put(newChildren[i], new Object()); // null ?
-                        // If the child's not there
-                        if (!this.children.containsKey(newChildren[i])) {
-                            missingChildren.push(newChildren[i]);
+                    for (final File newChild : newChildren) {
+                        // only procces child if it isn't ignored
+                        if (!fm.isIgnored(newChild)) {
+                            newChildrenMap.put(newChild, new Object()); // null ?
+                            // If the child's not there
+                            if (!this.children.containsKey(newChild)) {
+                                missingChildren.push(newChild);
+                            }
                         }
                     }
 
@@ -198,9 +196,12 @@ public class FileMonitor implements Serializable {
                     if (newChildren.length > 0) {
                         this.children = new HashMap<File, Object>();
                     }
-                    for (int i = 0; i < newChildren.length; i++) {
-                        this.children.put(newChildren[i], new Object()); // null?
-                        this.fireAllCreate(newChildren[i], listener);
+                    for (final File newChild : newChildren) {
+                        // only process child if it isn't ignored
+                        if (!fm.isIgnored(newChild)) {
+                            this.children.put(newChild, new Object()); // null?
+                            this.fireAllCreate(newChild, listener);
+                        }
                     }
                 }
             }

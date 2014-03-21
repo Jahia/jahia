@@ -100,7 +100,7 @@ public class ImageMagickImageService extends AbstractImageService {
     
     private static final Logger logger = LoggerFactory.getLogger(ImageMagickImageService.class);
     
-    private static ImageMagickImageService instance;
+    private static ImageMagickImageService instance = new ImageMagickImageService();
 
     private String imageMagickPath;
 
@@ -113,11 +113,6 @@ public class ImageMagickImageService extends AbstractImageService {
     }
 
     public static ImageMagickImageService getInstance() {
-        if (instance == null) {
-            synchronized (ImageMagickImageService.class) {
-                instance = new ImageMagickImageService();
-            }
-        }
         return instance;
     }
 

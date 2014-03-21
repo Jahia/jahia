@@ -110,39 +110,41 @@ public class MacrosChoiceListInitializer implements ModuleChoiceListInitializer 
         JCRNodeWrapper node = null;
 
         if (context.containsKey("contextNode") && context.get("contextNode") != null) {
-            node = (JCRNodeWrapper)context.get("contextNode");
-        }else if (context.containsKey("contextParent") && context.get("contextParent") != null) {
-            node = (JCRNodeWrapper)context.get("contextParent");
+            node = (JCRNodeWrapper) context.get("contextNode");
+        } else if (context.containsKey("contextParent") && context.get("contextParent") != null) {
+            node = (JCRNodeWrapper) context.get("contextParent");
         }
 
-        if (node != null){
-            try{
+        if (node != null) {
+            try {
                 Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
 
                 packages.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("macros"));
 
-                for (String s : node.getResolveSite().getInstalledModules()){
+                for (String s : node.getResolveSite().getInstalledModules()) {
                     JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
-                    packages.add(pack);
-                    final List<JahiaTemplatesPackage> dependencies = pack.getDependencies();
-                    if(dependencies!=null && ! dependencies.isEmpty()) {
-                        packages.addAll(dependencies);
+                    if (pack != null) {
+                        packages.add(pack);
+                        final List<JahiaTemplatesPackage> dependencies = pack.getDependencies();
+                        if (dependencies != null && !dependencies.isEmpty()) {
+                            packages.addAll(dependencies);
+                        }
                     }
                 }
 
-                for (JahiaTemplatesPackage aPackage : packages){
-                    for (String path : macroLookupPath){
+                for (JahiaTemplatesPackage aPackage : packages) {
+                    for (String path : macroLookupPath) {
                         org.springframework.core.io.Resource[] resources = aPackage.getResources(path);
-                        for (org.springframework.core.io.Resource resource : resources){
+                        for (org.springframework.core.io.Resource resource : resources) {
                             String macroName = StringUtils.substringBefore(resource.getFilename(), ".");
-                            if(ignoreMacros != null && !ignoreMacros.contains(macroName)) {
+                            if (ignoreMacros != null && !ignoreMacros.contains(macroName)) {
                                 macroName = "##" + macroName + "##";
                                 macrosNames.add(new ChoiceListValue(macroName, macroName));
                             }
                         }
                     }
                 }
-            }catch(RepositoryException e){
+            } catch (RepositoryException e) {
                 logger.error("Cannot resolve site", e);
             }
         }

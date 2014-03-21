@@ -70,6 +70,7 @@
 package org.jahia.services.usermanager;
 
 import org.apache.commons.collections.list.UnmodifiableList;
+import org.drools.core.util.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -196,6 +197,9 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
     }
 
     public JahiaUser lookupUserByKey(final String userKey) {
+        if(StringUtils.isEmpty(userKey)){
+            return null;
+        }
         if (isSingleProvider()) {
             return defaultProvider.lookupUserByKey(userKey);
         }
@@ -211,6 +215,9 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
     }
 
     public JahiaUser lookupUser(final String name) {
+        if(StringUtils.isEmpty(name)){
+            return null;
+        }
         if (isSingleProvider()) {
             return defaultProvider.lookupUser(name);
         }

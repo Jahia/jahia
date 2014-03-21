@@ -119,7 +119,11 @@ public class UsersChoiceListInitializerImpl implements ChoiceListInitializer {
                 if (name.equals("")) {
                     name = node.getName();
                 }
-                vs.add(new ChoiceListValue(name, new HashMap<String,Object>(), new ValueImpl(node.getUUID(), PropertyType.WEAKREFERENCE, false)));
+                if (epd.getRequiredType() == PropertyType.STRING) {
+                    vs.add(new ChoiceListValue(name, new HashMap<String,Object>(), new ValueImpl(node.getPath(), epd.getRequiredType(), false)));
+                } else {
+                    vs.add(new ChoiceListValue(name, new HashMap<String,Object>(), new ValueImpl(node.getIdentifier(), epd.getRequiredType(), false)));
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

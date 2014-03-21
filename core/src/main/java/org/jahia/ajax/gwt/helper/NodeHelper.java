@@ -363,10 +363,11 @@ class NodeHelper {
         JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance()
                 .getJahiaTemplateManagerService();
         try {
-            if (fields.contains("j:versionInfo")
-                    && (isModuleNode != null ? isModuleNode : (isModuleNode = node
-                    .isNodeType("jnt:module")))) {
-                populateVersionInfoForModule(n, node);
+            if (fields.contains("j:versionInfo")) {
+                isModuleNode = node.isNodeType("jnt:module");
+                if (isModuleNode) {
+                    populateVersionInfoForModule(n, node);
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Cannot get property module version");

@@ -93,6 +93,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.RepositoryException;
 
@@ -110,7 +111,7 @@ import java.util.regex.Pattern;
  *
  * @author Sergiy Shyrkov
  */
-public class ModuleBuildHelper {
+public class ModuleBuildHelper implements InitializingBean {
 
     static class CompiledModuleInfo {
         private final File file;
@@ -268,7 +269,7 @@ public class ModuleBuildHelper {
         if (StringUtils.isNotBlank(groupId)) {
             archetypeParams.add("-DgroupId=" + groupId);
         }
-        archetypeParams.add("-DjahiaPackageVersion=" + Constants.JAHIA_PROJECT_VERSION);
+        archetypeParams.add("-DdigitalFactoryVersion=" + Constants.JAHIA_PROJECT_VERSION);
         archetypeParams.add("-DinteractiveMode=false");
 
 
@@ -477,5 +478,13 @@ public class ModuleBuildHelper {
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry registry) {
         templatePackageRegistry = registry;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (mavenArchetypeCatalog == null || mavenArchetypeCatalog.length() == 0) {
+            mavenArchetypeCatalog = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT") ? "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml"
+                    : "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
+        }
     }
 }

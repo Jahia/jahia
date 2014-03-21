@@ -175,7 +175,7 @@
 
     <bean id="ModuleBuildHelper" class="org.jahia.services.templates.ModuleBuildHelper">
         <property name="ignoreSnapshots" value="${jahia.mavenReleasePlugin.ignoreSnapshots:true}"/>
-        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml}"/>
+        <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:}"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>
         <property name="settingsBean" ref="settingsBean"/>
         <property name="sourceControlHelper" ref="SourceControlHelper"/>

@@ -221,7 +221,7 @@ public final class FileUtils {
             // initialize it
             getFileExtensionIcons();
         }
-        return fileExtensionIconsMapping;
+        return Arrays.copyOf(fileExtensionIconsMapping, fileExtensionIconsMapping.length);
     }
 
     public static String getFileIcon(String fileName) {

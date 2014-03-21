@@ -116,7 +116,8 @@ public class FormFieldCreator {
 
     private static final int DUAL_LIST_ITEM_COUNT_TO_FILTER = 5;
 
-    public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy");
 
     private static final int FILTER_FIELD_HEIGHT = 22;
 
@@ -197,7 +198,7 @@ public class FormFieldCreator {
                         ((CalendarField) field).getPropertyEditor()
                                 .setFormat(DateTimeFormat.getFormat(propDefinition.getSelectorOptions().get("format")));
                     } else {
-                        ((CalendarField) field).getPropertyEditor().setFormat(dateFormat);
+                        ((CalendarField) field).getPropertyEditor().setFormat(dateTimeFormat);
                         ((CalendarField) field).setHideTrigger(propDefinition.isProtected());
                     }
                     break;

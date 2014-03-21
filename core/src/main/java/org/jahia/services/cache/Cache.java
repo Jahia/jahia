@@ -107,7 +107,6 @@ import org.slf4j.LoggerFactory;
  * @since   Jahia 4.0
  * @see     org.jahia.services.cache.CacheFactory CacheFactory
  * @see     org.jahia.services.cache.CacheEntry CacheEntry
- * @see     org.jahia.services.cache.CacheListener CacheListener
  */
 public class Cache<K, V> implements CacheStatistics {
 
@@ -119,8 +118,6 @@ public class Cache<K, V> implements CacheStatistics {
 
     /** Cache name. */
     private String name;
-
-    private List<CacheListener> listeners = null;
 
 
     /** <p>Creates a new <code>Cache</code> instance.</p>
@@ -366,24 +363,6 @@ public class Cache<K, V> implements CacheStatistics {
         cacheImplementation.flushAll(propagate);
 
         logger.debug("Flushed all entries from cache [{}]", name);
-
-        // when requested, propagate the flush event to the cache listeners and the JMS
-        if (propagate) {
-
-            // call the listeners if present
-            if ((listeners != null) && (listeners.size() > 0)) {
-                for (int i = 0; i < listeners.size(); i++) {
-                    CacheListener listener = (CacheListener) listeners.get(i);
-                    if (listener != null)
-                        listener.onCacheFlush(name);
-                }
-            }
-
-        } else {
-            logger.debug("Got cache flush request without event propagation");
-        }
-
-
     }
 
     final public void flushGroup(String groupName) {
@@ -459,45 +438,6 @@ public class Cache<K, V> implements CacheStatistics {
             logger.debug ("Removed the entry [" + entryKey.toString () +
                           "] from cache [" + name + "]!");
         }
-    }
-
-    /**
-     * <p>Register a new cache listener.</p>
-     * <p>When the specified <code>listener</code> is <code>null</code> or already present
-     * within the listeners list, the registration process is ignored.</p>
-     *
-     * @param listener  the reference of the cache listener to register.
-     * @since  Jahia 4.0.2
-     */
-    public synchronized void registerListener (CacheListener listener) {
-        if (listener == null)
-            return;
-
-        if (listeners == null) {
-            listeners = new ArrayList<CacheListener>();
-
-        } else if (listeners.contains (listener)) {
-            return;
-        }
-
-        listeners.add (listener);
-        cacheImplementation.addListener(listener);
-    }
-
-    /**
-     * <p>Unregister a cache listener.</p>
-     * <p>When there is not cache listener registered, or the specified <code>listener</code>
-     * is <code>null</code>, the unregistration process is ignored.</p>
-     *
-     * @param listener  the reference of the cache listener to register
-     * @since  Jahia 4.0.2
-     */
-    public synchronized void unregisterListener (CacheListener listener) {
-        if ((listeners == null) || (listener == null))
-            return;
-
-        listeners.remove (listener);
-        cacheImplementation.removeListener(listener);
     }
 
     public CacheImplementation<K, CacheEntry<V>> getCacheImplementation() {

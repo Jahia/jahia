@@ -73,9 +73,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.statistics.StatisticsGateway;
-
 import org.jahia.services.cache.CacheImplementation;
-import org.jahia.services.cache.CacheListener;
 import org.jahia.services.cache.CacheStatistics;
 import org.jahia.services.cache.GroupCacheKey;
 import org.slf4j.Logger;
@@ -183,12 +181,6 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void addListener(CacheListener listener) {
-    }
-
-    public void removeListener(CacheListener listener) {
     }
 
     public void flushGroup(String groupName) {

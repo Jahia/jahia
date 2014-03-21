@@ -124,8 +124,5 @@ public interface CacheImplementation<K, V> {
     
     public void setName(String name);
 
-    void addListener(CacheListener listener);
-    void removeListener(CacheListener listener);
-
     Set<GroupCacheKey> getGroupKeys(String groupName);
 }

@@ -70,12 +70,11 @@
 package org.jahia.services.cache.dummy;
 
 import org.jahia.services.cache.CacheImplementation;
-import org.jahia.services.cache.CacheListener;
 import org.jahia.services.cache.GroupCacheKey;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import java.util.Collection;
 
 /**
  * An implementation of the {@link CacheImplementation} that disables caching.
@@ -140,14 +139,6 @@ public class DummyCacheImpl<K, V> implements CacheImplementation<K, V> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void addListener(CacheListener listener) {
-        
-    }
-
-    public void removeListener(CacheListener listener) {
-        
     }
 
     public Set<GroupCacheKey> getGroupKeys(String groupName) {

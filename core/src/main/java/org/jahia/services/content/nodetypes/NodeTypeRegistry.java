@@ -76,7 +76,6 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.xerces.impl.dv.dtd.ENTITYDatatypeValidator;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
@@ -123,11 +122,12 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     private static boolean hasEncounteredIssuesWithDefinitions = false;
     private NodeTypesDBServiceImpl nodeTypesDBService;
 
+    // Initialization on demand idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
+    }
     public static NodeTypeRegistry getInstance() {
-        if (instance == null) {
-            instance = new NodeTypeRegistry();
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     public static NodeTypeRegistry getProviderNodeTypeRegistry() {

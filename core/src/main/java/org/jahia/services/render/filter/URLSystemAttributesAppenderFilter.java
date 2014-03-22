@@ -102,37 +102,37 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
                     new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
                         public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                             if (!value.startsWith("javascript:") && !value.startsWith("#")) {
-                                String separateChar;
-                                if (value.contains("?")) {
-                                    separateChar = "&";
-                                } else {
-                                    separateChar = "?";
-                                }
+                                final String urlContext = renderContext.getURLGenerator().getContext();
+                                final Map<String, String[]> parameterMap = renderContext.getRequest().getParameterMap();
+
+                                StringBuilder newValue = new StringBuilder(30 * parameterMap.size());
+                                newValue.append(value);
+
+                                String separateChar = value.contains("?") ? "&" : "?";
+
                                 for (String s : attributesToKeep) {
                                     if (s.contains("*")) {
-                                        if (value.startsWith(renderContext.getURLGenerator().getContext()) &&
-                                            !value.matches(s.replace("*", ".*="))) {
-                                            final Map<String, String[]> parameterMap = renderContext.getRequest().getParameterMap();
+                                        if (value.startsWith(urlContext) && !value.matches(s.replace("*", ".*="))) {
                                             for (String paramName : parameterMap.keySet()) {
                                                 if (paramName.matches(s.replace("*", ".*"))) {
-                                                    String parameter = renderContext.getRequest().getParameter(
-                                                            paramName);
+                                                    String parameter = renderContext.getRequest().getParameter(paramName);
                                                     if (parameter != null) {
-                                                        value += separateChar + paramName + "=" + parameter;
+                                                        newValue.append(separateChar).append(paramName).append("=").append(parameter);
                                                         separateChar = "&";
                                                     }
                                                 }
                                             }
                                         }
-                                    } else if (!value.contains(s + "=") && value.startsWith(
-                                            renderContext.getURLGenerator().getContext())) {
+                                    } else if (!value.contains(s + "=") && value.startsWith(urlContext)) {
                                         String parameter = renderContext.getRequest().getParameter(s);
                                         if (parameter != null) {
-                                            value += separateChar + s + "=" + parameter;
+                                            newValue.append(separateChar).append(s).append("=").append(parameter);
                                             separateChar = "&";
                                         }
                                     }
                                 }
+
+                                return newValue.toString();
                             }
                             return value;
                         }

@@ -488,11 +488,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return providerList;
     }
 
+    // Initialization on demand idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final JCRSessionFactory INSTANCE = new JCRSessionFactory();
+    }
     public static JCRSessionFactory getInstance() {
-        if (instance == null) {
-            instance = new JCRSessionFactory();
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     public void closeAllSessions() {

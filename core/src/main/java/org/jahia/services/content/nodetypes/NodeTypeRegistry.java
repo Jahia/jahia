@@ -115,8 +115,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     private boolean propertiesLoaded = false;
     private final Properties deploymentProperties = new Properties();
 
-    private static NodeTypeRegistry instance;
-
     private static NodeTypeRegistry providerNodeTypeRegistry;
 
     private static boolean hasEncounteredIssuesWithDefinitions = false;
@@ -131,7 +129,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public static NodeTypeRegistry getProviderNodeTypeRegistry() {
-        if (providerNodeTypeRegistry == null && instance !=null) {
+        if (providerNodeTypeRegistry == null && getInstance() !=null) {
             providerNodeTypeRegistry = new NodeTypeRegistry();
             try {
                 providerNodeTypeRegistry.initSystemDefinitions();
@@ -139,14 +137,14 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                     List<String> files = new ArrayList<String>();
                 List<String> remfiles = null;
                 try {
-                    remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
+                    remfiles = new ArrayList<String>(getInstance().getNodeTypesDBService().getFilesList());
                     while (!remfiles.isEmpty() && !remfiles.equals(files)) {
                         files = new ArrayList<String>(remfiles);
                         remfiles.clear();
                         for (String file : files) {
                             try {
                                 if (file.endsWith(".cnd")) {
-                                    final String cndFile = instance.getNodeTypesDBService().readCndFile(file);
+                                    final String cndFile = getInstance().getNodeTypesDBService().readCndFile(file);
                                     deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
                                 }
                             } catch (ParseException e) {

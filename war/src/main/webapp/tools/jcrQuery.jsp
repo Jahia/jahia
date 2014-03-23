@@ -298,25 +298,35 @@
             <c:if test="${hasFacets}">
                 <div class="facets">Facets:
                     <c:forEach items="${result.facetFields}" var="currentFacet">
-                        <h5><facet:facetLabel currentFacetField="${currentFacet}"/></h5>
+                        <h5><facet:facetLabel currentFacetFieldName="${currentFacet.name}"/></h5>
                         <ul>
                             <c:forEach items="${currentFacet.values}" var="facetValue">
-                                <li><facet:facetValueLabel currentFacetField="${currentFacet}"
+                                <li><facet:facetValueLabel currentFacetFieldName="${currentFacet.name}"
                                                            facetValueCount="${facetValue}"/> (${facetValue.count})<br/>
                                 </li>
                             </c:forEach>
                         </ul>
                     </c:forEach>
                     <c:forEach items="${result.facetDates}" var="currentFacet">
-                        <h5><facet:facetLabel currentFacetField="${currentFacet}"/></h5>
+                        <h5><facet:facetLabel currentFacetFieldName="${currentFacet.name}"/></h5>
                         <ul>
                             <c:forEach items="${currentFacet.values}" var="facetValue">
-                                <li><facet:facetValueLabel currentFacetField="${currentFacet}"
+                                <li><facet:facetValueLabel currentFacetFieldName="${currentFacet.name}"
                                                            facetValueCount="${facetValue}"/> (${facetValue.count})<br/>
                                 </li>
                             </c:forEach>
                         </ul>
                     </c:forEach>
+                    <c:forEach items="${result.rangeFacets}" var="currentFacet">
+                        <h5><facet:facetLabel currentFacetFieldName="${currentFacet.name}"/></h5>
+                        <ul>
+                            <c:forEach items="${currentFacet.values}" var="facetValue">
+                                <li><facet:facetValueLabel currentFacetFieldName="${currentFacet.name}"
+                                                           facetValueCount="${facetValue}"/> (${facetValue.count})<br/>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:forEach>                    
                     <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">
                         <c:if test="${iterationStatus.first}">
                             <ul>

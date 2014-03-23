@@ -73,6 +73,7 @@ import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -84,6 +85,7 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -168,6 +170,10 @@ public class Functions {
                     FacetField.Count facetCount = (FacetField.Count) facetValueObj;
                     facetKey = facetCount.getFacetField().getName();
                     facetValue = facetCount.getName();
+                } else if (facetValueObj instanceof RangeFacet.Count) {            
+                    RangeFacet.Count facetCount = (RangeFacet.Count) facetValueObj;
+                    facetKey = facetCount.getRangeFacet().getName();
+                    facetValue = facetCount.getValue().toString();
                 } else if (facetValueObj instanceof Map.Entry<?, ?>) {
                     @SuppressWarnings("unchecked")
                     Map.Entry<String, Long> facetCount = (Map.Entry<String, Long>) facetValueObj;
@@ -175,11 +181,11 @@ public class Functions {
                     facetValue = facetCount.getValue().toString();
                 } else {
                     throw new IllegalArgumentException(
-                            "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");
+                            "Passed parameter is not of a valid facet value type");
                 }
             } catch (ClassCastException e) {
                 throw new IllegalArgumentException(
-                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count", e);
+                        "Passed parameter is not of a valid facet value type", e);
             }
             if (appliedFacets != null && appliedFacets.containsKey(facetKey)) {
                 for (KeyValue facet : appliedFacets.get(facetKey)) {
@@ -208,17 +214,21 @@ public class Functions {
                 FacetField.Count facetValue = (FacetField.Count) facetValueObj;
                 builder.append(facetValue.getFacetField().getName()).append(FACET_PARAM_DELIM).append(facetValue.getName()).append(
                         FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());
+            } else if (facetValueObj instanceof RangeFacet.Count) {
+                RangeFacet.Count facetValue = (RangeFacet.Count) facetValueObj;
+                builder.append(facetValue.getRangeFacet().getName()).append(FACET_PARAM_DELIM).append(facetValue.getValue()).append(
+                        FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());                
             } else if (facetValueObj instanceof Map.Entry<?, ?>) {
                 @SuppressWarnings("unchecked")
                 Map.Entry<String, Long> facetValue = (Map.Entry<String, Long>) facetValueObj;
                 builder.append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey());
             } else {
                 throw new IllegalArgumentException(
-                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");
+                        "Passed parameter is not of a valid facet value type");
             }
         } catch (ClassCastException e) {
             throw new IllegalArgumentException(
-                    "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count", e);
+                    "Passed parameter is not of a valid facet value type", e);
         }
         String facetValueFilter = builder.toString();
         if (!StringUtils.contains(queryString, facetValueFilter) && queryString != null) {
@@ -249,7 +259,6 @@ public class Functions {
      * @param queryString the current facet filter URL query parameter
      * @return the new facet filter URL query parameter
      */
-    @SuppressWarnings("unchecked")
     public static String getDeleteFacetUrl(KeyValue facetValue, String queryString) {
         // retrieve all facet Strings from query
         final String[] facets = FILTER_STRING_PATTERN.split(queryString);
@@ -331,6 +340,23 @@ public class Functions {
         }
         return false;
     }
+    
+    /**
+     * Check whether there is an unapplied range facet value existing in the facet. Useful in order to determine
+     * whether a title/label should be displayed or not.
+     *
+     * @param rangeFacet    the RangeFacet object holding all facet values for the facet field
+     * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
+     * @return true if unapplied range facet value exists otherwise false
+     */
+    public static boolean isUnappliedRangeFacetValueExisting(RangeFacet<?, ?> rangeFacet, Map<String, List<KeyValue>> appliedFacets) {
+        for (RangeFacet.Count facetCount : rangeFacet.getCounts()) {
+            if (!isFacetValueApplied(facetCount, appliedFacets)) {
+                return true;
+            }
+        }
+        return false;
+    }    
 
     /**
      * Get the drill down prefix for a hierarchical facet value

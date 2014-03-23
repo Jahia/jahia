@@ -59,9 +59,11 @@
                 org.apache.lucene.document,
                 org.apache.solr.client.solrj.response,
                 org.apache.solr.schema,
+                org.apache.solr.util,
                 org.jahia.services.content.nodetypes,
                 org.jahia.services.content.nodetypes.renderer,
                 org.jahia.services.render,
+                org.jahia.settings,
                 org.jahia.taglibs.utility
         -->
     </tag-file>
@@ -153,6 +155,17 @@
             ${facet:isUnappliedFacetValueExisting(currentFacet, activeFacetsVars[activeFacetMapVarName]))}
         </example>
     </function>
+
+    <function>
+        <description>Return true if there will be an unapplied range facet value. Useful to decide whether a title should be displayed.</description>
+        <name>isUnappliedRangeFacetValueExisting</name>
+        <function-class>org.jahia.taglibs.facet.Functions</function-class>
+        <function-signature>boolean isUnappliedRangeFacetValueExisting(org.apache.solr.client.solrj.response.RangeFacet, java.util.Map)
+        </function-signature>
+        <example>
+            ${facet:isUnappliedRangeFacetValueExisting(currentFacet, activeFacetsVars[activeFacetMapVarName]))}
+        </example>
+    </function>    
 
     <function>
         <description>Get the drill down prefix for a hierarchical facet value</description>

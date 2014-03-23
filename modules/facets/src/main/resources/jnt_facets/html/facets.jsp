@@ -55,6 +55,9 @@
             <c:forEach items="${result.facetDates}" var="currentFacet">
                 <%@include file="facetDisplay.jspf" %>
             </c:forEach>
+            <c:forEach items="${result.rangeFacets}" var="currentFacet">
+                <%@include file="rangeFacetDisplay.jspf" %>
+            </c:forEach>            
             <c:set var="currentFacetLabel" value=""/>
             <c:set var="mappedFacetLabel" value=""/>
             <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">

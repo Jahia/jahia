@@ -84,6 +84,8 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.solr.schema.DateField;
+import org.apache.solr.schema.SortableDoubleField;
+import org.apache.solr.schema.SortableLongField;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
@@ -100,6 +102,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.concurrent.Executor;
@@ -175,6 +178,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
     private static Name siteFolderTypeName = null;
 
     private static final DateField dateType = new DateField();
+    private static final SortableDoubleField doubleType = new SortableDoubleField();
+    private static final SortableLongField longType = new SortableLongField();
 
     private boolean addAclUuidInIndex = true;
 
@@ -640,7 +645,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addDoubleValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, DoubleField.doubleToString(internalValue));
+            addFacetValue(doc, fieldName, doubleType.toInternal(Double.toString(internalValue)));
         }
     }
 
@@ -649,7 +654,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         super.addLongValue(doc, fieldName, internalValue);
         ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
         if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, LongField.longToString(internalValue));
+            addFacetValue(doc, fieldName, longType.toInternal(Long.toString(internalValue)));
         }
     }
 

@@ -95,6 +95,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
+import org.apache.solr.schema.SchemaField;
 import org.jahia.api.Constants;
 import org.jahia.services.search.facets.JahiaQueryParser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -566,9 +567,16 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             try {
                 StaticOperand expr = fts.getFullTextSearchExpression();
                 if (expr instanceof Literal) {
-                    QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
-                    qp.setLowercaseExpandedTerms(false);
-                    qobj = qp.parse(((Literal) expr).getLiteralValue().getString());
+                    String expression = ((Literal) expr).getLiteralValue().getString();
+                    // check if query is a single range query with mixed inclusive/exclusive endpoints, then
+                    // directly create range query as the Lucene parser fails with ParseException (LUCENE-996)
+                    qobj = resolveSingleMixedInclusiveExclusiveRangeQuery(expression);
+                    
+                    if (qobj == null) {
+                        QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
+                        qp.setLowercaseExpandedTerms(false);
+                        qobj = qp.parse(expression);
+                    }
                 } else {
                     throw new RepositoryException("Unknown static operand type: " + expr);
                 }
@@ -577,6 +585,39 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
         } else {
             qobj = super.getFullTextSearchQuery(fts);
+        }
+        return qobj;
+    }
+    
+    private Query resolveSingleMixedInclusiveExclusiveRangeQuery(String expression) {
+        Query qobj = null;
+        boolean inclusiveEndRange = expression.endsWith("]");
+        boolean exclusiveEndRange = expression.endsWith("}");
+        int inclusiveBeginRangeCount = StringUtils
+                .countMatches(expression, "[");
+        int exclusiveBeginRangeCount = StringUtils
+                .countMatches(expression, "{");
+        if (((inclusiveEndRange && exclusiveBeginRangeCount == 1 && inclusiveBeginRangeCount == 0) || (exclusiveEndRange
+                && inclusiveBeginRangeCount == 1 && exclusiveBeginRangeCount == 0))) {
+            String fieldName = (inclusiveEndRange || exclusiveEndRange) ? StringUtils
+                    .substringBefore(expression, inclusiveEndRange ? ":{" : ":[")
+                    : "";
+            if (fieldName.indexOf(' ') == -1) {
+                fieldName = fieldName.replace("\\:", ":");
+                String rangeExpression = StringUtils.substringBetween(
+                        expression, inclusiveEndRange ? "{" : "[",
+                        inclusiveEndRange ? "]" : "}");
+                String part1 = StringUtils.substringBefore(rangeExpression,
+                        " TO");
+                String part2 = StringUtils.substringAfter(rangeExpression,
+                        "TO ");
+                SchemaField sf = new SchemaField(fieldName,
+                        JahiaQueryParser.STRING_TYPE);
+                qobj = JahiaQueryParser.STRING_TYPE.getRangeQuery(null, sf,
+                        part1.equals("*") ? null : part1,
+                        part2.equals("*") ? null : part2,
+                        !inclusiveEndRange, inclusiveEndRange);                    
+            }
         }
         return qobj;
     }

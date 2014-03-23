@@ -74,7 +74,7 @@
                                 <c:param name="${facetParamVarName}"
                                value="${functions:encodeUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
                                 </c:url>
-                                <facet:facetValueLabel currentFacetField="${currentFacet}"
+                                <facet:facetValueLabel currentFacetFieldName="${currentFacet.name}"
                                facetValueCount="${facetValue}"
                                facetValueLabels="${facetValueLabels}"
                                facetValueFormats="${facetValueFormats}" display="false"/>

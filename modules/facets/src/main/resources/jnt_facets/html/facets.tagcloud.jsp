@@ -74,7 +74,7 @@
                                 </c:url>
                                 <li><a href="${facetUrl}"
                                        class="tag${functions:round(10 * tagCloud[facetValue.name] / totalUsages)}0">
-                                    <facet:facetValueLabel currentFacetField="${currentFacet}"
+                                    <facet:facetValueLabel currentFacetFieldName="${currentFacet.name}"
                                                            facetValueCount="${facetValue}"
                                                            facetValueLabels="${facetValueLabels}"
                                                            facetValueFormats="${facetValueFormats}"/>

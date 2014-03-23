@@ -93,6 +93,7 @@ import java.util.Map;
  * @author Christophe Laprun
  */
 public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
+    private static final long serialVersionUID = 1L;
     private JCRNodeWrapper boundComponent;
     private QueryObjectModel existing;
     private Map<String, List<KeyValue>> activeFacets;
@@ -151,11 +152,11 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
             }
 
             // metadata for display, passed to JSP
-            Map facetValueNodeTypes = (Map) pageContext.getAttribute("facetValueNodeTypes", PageContext.REQUEST_SCOPE);
-            Map facetLabels = (Map) pageContext.getAttribute("facetLabels", PageContext.REQUEST_SCOPE);
-            Map facetValueLabels = (Map) pageContext.getAttribute("facetValueLabels", PageContext.REQUEST_SCOPE);
-            Map facetValueFormats = (Map) pageContext.getAttribute("facetValueFormats", PageContext.REQUEST_SCOPE);
-            Map facetValueRenderers = (Map) pageContext.getAttribute("facetValueRenderers", PageContext.REQUEST_SCOPE);
+            Map<String, ExtendedNodeType> facetValueNodeTypes = (Map<String, ExtendedNodeType>) pageContext.getAttribute("facetValueNodeTypes", PageContext.REQUEST_SCOPE);
+            Map<String, String> facetLabels = (Map<String, String>) pageContext.getAttribute("facetLabels", PageContext.REQUEST_SCOPE);
+            Map<String, String> facetValueLabels = (Map<String, String>) pageContext.getAttribute("facetValueLabels", PageContext.REQUEST_SCOPE);
+            Map<String, String> facetValueFormats = (Map<String, String>) pageContext.getAttribute("facetValueFormats", PageContext.REQUEST_SCOPE);
+            Map<String, String> facetValueRenderers = (Map<String, String>) pageContext.getAttribute("facetValueRenderers", PageContext.REQUEST_SCOPE);
 
             // specify query for unapplied facets
             final List<JCRNodeWrapper> facets = JCRContentUtils.getNodes(currentNode, "jnt:facet");
@@ -170,8 +171,9 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 // field components
                 final String field = facet.getPropertyAsString("field");
                 final String[] fieldComponents = StringUtils.split(field, ";");
-                final String facetNodeTypeName = fieldComponents != null ? fieldComponents[0] : null;
-                final String facetPropertyName = fieldComponents != null ? fieldComponents[1] : null;
+                int i = 0;
+                final String facetNodeTypeName = fieldComponents != null && fieldComponents.length > 1 ? fieldComponents[i++] : null;
+                final String facetPropertyName = fieldComponents != null ? fieldComponents[i] : null;
 
                 // are we dealing with a query facet?
                 boolean isQuery = facet.hasProperty("query");

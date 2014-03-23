@@ -826,9 +826,13 @@ public class SimpleJahiaJcrFacets {
             int idx = fieldName.indexOf(':');
             if (epd != null && epd.isFacetable()) {
                 fieldName = fieldName.substring(0, idx + 1) + JahiaNodeIndexer.FACET_PREFIX + fieldName.substring(idx + 1);
-            } else if ((epd == null || !epd.isFacetable()) && useJackrabbitField && params instanceof MapSolrParams) {
+            } else if ((epd == null || !epd.isFacetable()) && useJackrabbitField) {
                 String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
-                ((MapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, fieldName + (prefix != null ? prefix : ""));
+                if (params instanceof MapSolrParams) {
+                    ((MapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, fieldName + (prefix != null ? prefix : ""));
+                } else if (params instanceof MultiMapSolrParams) {
+                    ((MultiMapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, new String[]{fieldName + (prefix != null ? prefix : "")});
+                }
                 fieldName = FieldNames.PROPERTIES;
             } else {
                 fieldName = fieldName.substring(0, idx + 1) + FieldNames.FULLTEXT_PREFIX + fieldName.substring(idx + 1);
@@ -1222,10 +1226,12 @@ public class SimpleJahiaJcrFacets {
                     (include.contains(FacetRangeInclude.OUTER) ||
                      (! (include.contains(FacetRangeInclude.LOWER) ||
                          include.contains(FacetRangeInclude.EDGE)))));
-            int count = rangeCount(rangeQ);            
-            res.add(FacetRangeOther.BEFORE.toString(), count);
-            counts.add(FacetRangeOther.BEFORE.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
-                  count);
+            int count = rangeCount(rangeQ);        
+            if (count >= minCount) {
+              res.add(FacetRangeOther.BEFORE.toString(), count);
+              counts.add(FacetRangeOther.BEFORE.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
+                    count);
+            }  
         }
         if (all || others.contains(FacetRangeOther.AFTER)) {
           // include lower bound if "outer" or if last gap doesn't already include it
@@ -1234,9 +1240,11 @@ public class SimpleJahiaJcrFacets {
                             (! (include.contains(FacetRangeInclude.UPPER) ||
                                 include.contains(FacetRangeInclude.EDGE)))),  
                            false);
-            int count = rangeCount(rangeQ);            
-            res.add(FacetRangeOther.AFTER.toString(), count);
-            counts.add(FacetRangeOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(), count);
+            int count = rangeCount(rangeQ);
+            if (count >= minCount) {
+              res.add(FacetRangeOther.AFTER.toString(), count);
+              counts.add(FacetRangeOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(), count);
+            }  
         }
         if (all || others.contains(FacetRangeOther.BETWEEN)) {
             Query rangeQ = sf.getType().getRangeQuery(null, sf,startS,endS,
@@ -1245,9 +1253,11 @@ public class SimpleJahiaJcrFacets {
                            (include.contains(FacetRangeInclude.UPPER) ||
                             include.contains(FacetRangeInclude.EDGE)));
             int count = rangeCount(rangeQ);
-            res.add(FacetRangeOther.BETWEEN.toString(), count);
-            counts.add(FacetRangeOther.BETWEEN.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
-                 count);
+            if (count >= minCount) {
+              res.add(FacetRangeOther.BETWEEN.toString(), count);
+              counts.add(FacetRangeOther.BETWEEN.toString() + PROPNAME_INDEX_SEPARATOR + rangeQ.toString(),
+                   count);
+            }  
         }
       }
     }

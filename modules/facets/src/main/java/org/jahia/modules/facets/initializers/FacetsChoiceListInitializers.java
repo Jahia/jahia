@@ -70,16 +70,22 @@
 package org.jahia.modules.facets.initializers;
 
 import org.slf4j.Logger;
+import org.drools.core.util.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+import org.jahia.services.content.nodetypes.initializers.ComponentLinkerChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
+
 import java.util.*;
 
 /**
@@ -103,19 +109,16 @@ public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer
                                                      Map<String, Object> context) {
         final Set<ChoiceListValue> propertyNames = new HashSet<ChoiceListValue>();
         try {
-            NodeTypeIterator ntr = NodeTypeRegistry.getInstance().getAllNodeTypes();
-            while (ntr.hasNext()) {
-                ExtendedNodeType nt =(ExtendedNodeType) ntr.nextNodeType();
-                for (PropertyDefinition def : nt.getPropertyDefinitions()) {
-                    ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) def;
-                    if (ep.isFacetable()) {
-                        String displayName = ep.getLabel(locale,nt);
-                        displayName += nt.isMixin()?"":" (" + nt.getLabel(locale) + ")";
-                        String value = ep.getDeclaringNodeType().getName() + ";" + ep.getName();
-                        propertyNames.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
-                                new ValueImpl(value, PropertyType.STRING , false)));
-                    }
-                }
+            for (ExtendedPropertyDefinition propertyDef : getPropertyDefinitions(
+                    param, context)) {
+                ExtendedNodeType nt = propertyDef.getDeclaringNodeType();
+                String displayName = propertyDef.getLabel(locale, nt);
+                displayName += nt.isMixin() ? "" : " (" + nt.getLabel(locale)
+                        + ")";
+                String value = nt.getName() + ";" + propertyDef.getName();
+                propertyNames.add(new ChoiceListValue(displayName,
+                        new HashMap<String, Object>(), new ValueImpl(value,
+                                PropertyType.STRING, false)));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -123,5 +126,58 @@ public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer
         List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>(propertyNames);
         Collections.sort(listValues);
         return listValues;
+    }
+    
+    private List<ExtendedPropertyDefinition> getPropertyDefinitions(String param,
+            Map<String, Object> context)
+            throws RepositoryException {
+        List<ExtendedPropertyDefinition> propDefs = null;
+        if (StringUtils.isEmpty(param)) {
+            JCRNodeWrapper parentNode = (JCRNodeWrapper) context
+                    .get("contextParent");
+            if (parentNode == null) {
+                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) context
+                        .get("contextNode");
+                if (nodeWrapper != null) {
+                    parentNode = nodeWrapper.getParent();
+                }
+            }
+
+            if (parentNode != null
+                    && parentNode.hasProperty("j:bindedComponent")) {
+                JCRNodeWrapper boundNode = (JCRNodeWrapper) parentNode
+                        .getProperty("j:bindedComponent").getNode();
+                if (boundNode.hasProperty("j:allowedTypes")) {
+                    final Value[] values1 = boundNode.getProperty(
+                            "j:allowedTypes").getValues();
+                    ExtendedPropertyDefinition[] propertyDefs = ComponentLinkerChoiceListInitializer
+                            .getCommonChildNodeDefinitions(values1, true, true,
+                                    new LinkedHashSet<String>());
+                    propDefs = Arrays.asList(propertyDefs);
+                }
+            }
+        }
+        if (propDefs == null || propDefs.isEmpty()) {
+            propDefs = new ArrayList<ExtendedPropertyDefinition>();
+            boolean hierarchical = param.contains("hierarchical");
+            int requiredType = param.contains("date") ? PropertyType.DATE
+                    : PropertyType.UNDEFINED;
+
+            NodeTypeIterator ntr = NodeTypeRegistry.getInstance()
+                    .getAllNodeTypes();
+            while (ntr.hasNext()) {
+                ExtendedNodeType nt = (ExtendedNodeType) ntr.nextNodeType();
+                for (PropertyDefinition def : nt.getPropertyDefinitions()) {
+                    ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) def;
+                    if (ep.isFacetable()
+                            && (!hierarchical || ep.isHierarchical())
+                            && (requiredType == PropertyType.UNDEFINED || ep
+                                    .getRequiredType() == requiredType)) {
+                        propDefs.add(ep);
+                    }
+                }
+            }
+        }
+        return propDefs;
     }
 }

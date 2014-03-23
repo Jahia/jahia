@@ -7,10 +7,6 @@
         <property name="key" value="choicelistfacets"/>
     </bean>
 
-    <bean id="choiceListHierarchicalFacetsInitializer" class="org.jahia.modules.facets.initializers.HierarchicalFacetsChoiceListInitializer">
-        <property name="key" value="choicelisthierarchicalfacets"/>
-    </bean>
-    
     <bean id="repository.systemsite" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="systemSite"/>
         <property name="paths" value="$systemsite"/>

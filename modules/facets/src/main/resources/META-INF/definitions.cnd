@@ -24,9 +24,10 @@ orderable
 
 [jnt:fieldHierarchicalFacet] > jnt:fieldFacet
 - prefix (string, picker[type='hierarchyNode']) = '/sites/systemsite/categories' mandatory indexed=no
-- field (string, choicelist[choicelisthierarchicalfacets]) = 'jmix:categorized;j:defaultCategory' mandatory indexed=no
+- field (string, choicelist[choicelistfacets=hierarchical]) = 'jmix:categorized;j:defaultCategory' mandatory indexed=no
 
 [jnt:dateFacet] > jnt:facet
+- field (string, choicelist[choicelistfacets=facetabledate]) indexed=no
 - start (string) mandatory indexed=no
 - end (string) mandatory indexed=no
 - gap (string) mandatory indexed=no
@@ -40,6 +41,7 @@ orderable
 - valueLabel (string) i18n indexed=no
 
 [jnt:rangeFacet] > jnt:facet
+- field (string, choicelist[choicelistfacets=facetable]) indexed=no
 - start (string) mandatory indexed=no
 - end (string) mandatory indexed=no
 - gap (string) mandatory indexed=no

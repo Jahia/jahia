@@ -133,6 +133,7 @@ public class GWTJahiaLanguage extends BaseModelData {
         set("mandatory", mandatory);
     }
 
+<<<<<<< .working
     /**
      * Indicates whether some other object is "equal to" this one.
      * <p/>
@@ -230,4 +231,22 @@ public class GWTJahiaLanguage extends BaseModelData {
     public int hashCode() {
         return getLanguage().hashCode()+getDisplayName().hashCode();
     }
+=======
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GWTJahiaLanguage that = (GWTJahiaLanguage) o;
+
+        if (getLanguage() != null ? !getLanguage().equals(that.getLanguage()) : that.getLanguage() != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getLanguage() != null ? getLanguage().hashCode() : 0;
+    }
+>>>>>>> .merge-right.r49437
 }

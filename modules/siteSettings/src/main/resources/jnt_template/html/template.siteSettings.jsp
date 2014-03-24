@@ -27,18 +27,11 @@
 
 <body>
 
-<div class="page-header clearfix">
-    <img class="pull-left" src="<c:url value='${url.currentModule}/img/digital-factory.png'/>" alt=""/>
-    <%--@elvariable id="contentTemplateNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
-    <c:forEach items="${jcr:getDescendantNodes(currentNode, 'jnt:contentTemplate')}" var="contentTemplateNode">
-        <c:if test="${contentTemplateNode.name eq renderContext.mainResource.resolvedTemplate}">
-            <h1 class="pull-right">${contentTemplateNode.displayableName}</h1>
-        </c:if>
-    </c:forEach>
-</div>
-
 <div class="well clearfix">
     <template:area path="pagecontent"/>
+</div>
+<div class="clearfix">
+    <p class="text-center jahia-admin-copyright"><fmt:message key="jahia.copyright" /> <img src="<c:url value='/modules/default/images/jahia-bullet.png'/>" alt=""/> <fmt:message key="jahia.company" /></p>
 </div>
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />

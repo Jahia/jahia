@@ -1,6 +1,10 @@
 /*!
  * Admin
 */
+.jahia-admin-copyright {
+    line-height: 30px;
+    color: #999;
+}
 .box-1 {
     background-color:#FFFFFF;
     border:1px solid #DDDDDD;

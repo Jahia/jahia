@@ -213,6 +213,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         // do a session.save each maxBatch
         if (batchCount > maxBatch) {
             try {
+                ReferencesHelper.resolveCrossReferences(session, references, false);
                 session.save(JCRObservationManager.IMPORT);
                 batchCount = 0;
             } catch (ConstraintViolationException e) {

@@ -366,9 +366,8 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                                 logger.debug("Member '" + member.getName() + "' cannot be found for group '" + node.getName()
                                         + "'");
                             }
-                        } else {
-                            String s = Patterns.TRIPPLE_UNDERSCORE.matcher(member.getName()).replaceAll(":");
-                            JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(s);
+                        } else if (memberNode.isNodeType(Constants.JAHIANT_GROUP)) {
+                            JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(((JCRGroupNode)memberNode).getResolveSite().getName(), memberNode.getName());
                             if (g != null) {
                                 principals.add(g);
                             } else if (logger.isDebugEnabled()) {

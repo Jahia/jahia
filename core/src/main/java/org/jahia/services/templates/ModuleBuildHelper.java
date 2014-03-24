@@ -139,7 +139,9 @@ public class ModuleBuildHelper implements InitializingBean {
 
     private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
 
-    private boolean ignoreSnapshots;
+    private String ignoreSnapshots;
+
+    private boolean ignoreSnapshotsFlag;
 
     private String mavenArchetypeCatalog;
 
@@ -411,7 +413,7 @@ public class ModuleBuildHelper implements InitializingBean {
             tmpRepo.mkdir();
             String[] installParams = new String[]{"release:prepare", "release:stage", "release:clean",
                     "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag, "-DreleaseVersion=" + releaseVersion,
-                    "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=" + ignoreSnapshots,
+                    "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=" + ignoreSnapshotsFlag,
                     "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode"};
             StringBuilder out = new StringBuilder();
             ret = ProcessHelper.execute(mavenExecutable, installParams, null, sources, out, out);
@@ -453,7 +455,7 @@ public class ModuleBuildHelper implements InitializingBean {
         return generatedWar;
     }
 
-    public void setIgnoreSnapshots(boolean ignoreSnapshots) {
+    public void setIgnoreSnapshots(String ignoreSnapshots) {
         this.ignoreSnapshots = ignoreSnapshots;
     }
 
@@ -485,6 +487,11 @@ public class ModuleBuildHelper implements InitializingBean {
         if (mavenArchetypeCatalog == null || mavenArchetypeCatalog.length() == 0) {
             mavenArchetypeCatalog = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT") ? "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml"
                     : "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
+        }
+        if (ignoreSnapshots == null || ignoreSnapshots.length() == 0) {
+            ignoreSnapshotsFlag = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");
+        } else {
+            ignoreSnapshotsFlag = Boolean.valueOf(ignoreSnapshots.trim());
         }
     }
 }

@@ -182,11 +182,11 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.4</jahia.commons.version>
-        <jahia.plugin.version>4.0-SNAPSHOT</jahia.plugin.version>
-		<jahia.archivers.version>4.0-SNAPSHOT</jahia.archivers.version>
-		<jahia.configurators.version>4.0-SNAPSHOT</jahia.configurators.version>
-        <jahia.deployers.version>4.0-SNAPSHOT</jahia.deployers.version>
-		<jahia.installers.version>4.0-SNAPSHOT</jahia.installers.version>
+        <jahia.plugin.version>4.0</jahia.plugin.version>
+		<jahia.archivers.version>4.0</jahia.archivers.version>
+		<jahia.configurators.version>4.0</jahia.configurators.version>
+        <jahia.deployers.version>4.0</jahia.deployers.version>
+		<jahia.installers.version>4.0</jahia.installers.version>
 
         <jahia.modules.importPackage>
             org.jahia.defaults.config.spring,

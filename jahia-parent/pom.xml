@@ -188,6 +188,9 @@
         <jahia.deployers.version>4.0</jahia.deployers.version>
 		<jahia.installers.version>4.0</jahia.installers.version>
 
+        <!-- Releases properties -->
+        <jahia.nexus.staging.repository.id>64277f72646358</jahia.nexus.staging.repository.id>
+
         <jahia.modules.importPackage>
             org.jahia.defaults.config.spring,
             org.jahia.exceptions,
@@ -527,7 +530,7 @@
                         <configuration>
                             <nexusUrl>https://devtools.jahia.com/nexus/</nexusUrl>
                             <serverId>staging-repository</serverId>
-                            <stagingProfileId>64277f72646358</stagingProfileId>
+                            <stagingProfileId>${jahia.nexus.staging.repository.id}</stagingProfileId>
                         </configuration>
                     </plugin>
                 </plugins>

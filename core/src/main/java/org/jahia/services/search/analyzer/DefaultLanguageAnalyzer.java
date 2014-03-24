@@ -79,6 +79,9 @@ import java.io.Reader;
 import java.util.Locale;
 
 /**
+ * A custom {@link org.apache.lucene.analysis.Analyzer} implementation that attempts to use an Analyzer specific to the configured default language,
+ * dialect included (e.g. fr_CA). If none is found, we will attempt to get an Analyzer for the more general version (e.g. fr). If none is found, use the English Analyzer.
+ *
  * @author Christophe Laprun
  */
 public class DefaultLanguageAnalyzer extends Analyzer {
@@ -96,8 +99,7 @@ public class DefaultLanguageAnalyzer extends Analyzer {
         if (specific != null) {
             // if we've found one, use it
             analyzer = specific;
-        }
-        else {
+        } else {
             // otherwise use the English version
             analyzer = registry.getAnalyzer("en");
         }

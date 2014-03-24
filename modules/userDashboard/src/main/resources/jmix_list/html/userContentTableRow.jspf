@@ -6,6 +6,19 @@
         </td>
         <td>
             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
+            <c:set var="baseEdit" value="${url.baseEdit}"/>
+            <c:set var="siteInLang" value="false"/>
+            <c:set var="currentLocale">${currentResource.locale}</c:set>
+            <c:forEach items="${subchild.resolveSite.languages}" var="mapLang">
+                <c:if test="${currentLocale eq mapLang}">
+                    <c:set var="siteInLang" value="true"/>
+                </c:if>
+            </c:forEach>
+            <c:if test="${not siteInLang}">
+                <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
+                <c:set var="baseEdit"
+                       value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${subchild.resolveSite.defaultLanguage}"/>
+            </c:if>
             <c:choose>
                 <c:when test='${jcr:isNodeType(subchild, "nt:file")}'>
                     <a href="<c:url value='${url.files}${subchild.path}'/>" target="_parent"><c:out
@@ -13,11 +26,11 @@
                 </c:when>
                 <c:when test='${jcr:isNodeType(subchild, "jmix:nodeReference")}'>
                     <jcr:nodeProperty node="${subchild.properties['j:node'].node}" name="jcr:title" var="title"/>
-                    <a href="<c:url value='${url.baseEdit}${subchild.properties["j:node"].node.path}.html'/>" target="_parent">
+                    <a href="<c:url value='${baseEdit}${subchild.properties["j:node"].node.path}.html'/>" target="_parent">
                         <c:out value="${not empty subchild && not empty subchild.displayableName ? subchild.displayableName : subchild.properties['j:node'].node.name}"/></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="<c:url value='${url.baseEdit}${subchild.path}.html'/>" target="_parent"><c:out
+                    <a href="<c:url value='${baseEdit}${subchild.path}.html'/>" target="_parent"><c:out
                             value="${not empty subchild && not empty subchild.displayableName ? subchild.displayableName : subchild.name}"/></a>
                 </c:otherwise>
             </c:choose>

@@ -3,12 +3,24 @@
         <td>
             <i id="iconTaskDisplay_${task.identifier}" class="iconTaskDisplay icon-plus" onclick="switchTaskDisplay('${task.identifier}')"></i>
             <strong>&nbsp;${fn:escapeXml(task.displayableName)}</strong>
-            </a>
             <c:if test="${not empty task.properties['targetNode'].node}">
+                <c:set var="baseEdit" value="${url.baseEdit}"/>
+                <c:set var="siteInLang" value="false"/>
+                <c:set var="currentLocale">${currentResource.locale}</c:set>
+                <c:forEach items="${task.properties['targetNode'].node.resolveSite.languages}" var="mapLang">
+                    <c:if test="${currentLocale eq mapLang}">
+                        <c:set var="siteInLang" value="true"/>
+                    </c:if>
+                </c:forEach>
+                <c:if test="${not siteInLang}">
+                    <c:set var="localeLength" value="${fn:length(fn:toUpperCase(currentResource.locale))}"/>
+                    <c:set var="baseEdit"
+                           value="${fn:substring(url.baseEdit,-1,fn:length(url.baseEdit)-localeLength)}${task.properties['targetNode'].node.resolveSite.defaultLanguage}"/>
+                </c:if>
                 <c:set value="${jcr:findDisplayableNodeInSite(task.properties['targetNode'].node, renderContext, task.properties['targetNode'].node.resolveSite)}" var="displayableNode"/>
                 &nbsp;-&nbsp;
                 <span>
-                    <a href="<c:url value='${url.baseEdit}${displayableNode.path}.html'/>" target="_blank">
+                    <a href="<c:url value='${baseEdit}${displayableNode.path}.html'/>" target="_blank">
                             ${fn:escapeXml(task.properties["targetNode"].node.displayableName)}
                     </a>
                 </span>
@@ -17,7 +29,7 @@
             <c:if test="${not jcr:isNodeType(displayableNode, 'jnt:user')}">
                 &nbsp;-&nbsp;
                 <span>
-                    <a href="<c:url value='${url.baseEdit}${displayableNode.path}.html'/>" target="_blank">
+                    <a href="<c:url value='${baseEdit}${displayableNode.path}.html'/>" target="_blank">
                             ${displayableNode.displayableName}
                     </a>
                 </span>

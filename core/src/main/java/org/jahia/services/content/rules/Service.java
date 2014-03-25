@@ -860,6 +860,39 @@ public class Service extends JahiaService {
         }
     }
 
+    public void publishProfilePicture(AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
+        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
+        if(nodeWrapper.getPath().matches(".*/users/.*/files/profile/.*")) {
+            final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
+            jcrSessionWrapper.save();
+            Set<String> languages = null;
+            if (jcrSessionWrapper.getLocale() != null) {
+                languages = Collections.singleton(jcrSessionWrapper.getLocale().toString());
+            }
+
+            boolean resetUser = false;
+            if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
+                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+                resetUser = true;
+            }
+
+            try {
+                List<String> uuidsToPublish = new ArrayList<String>();
+                uuidsToPublish.add(nodeWrapper.getIdentifier());
+                uuidsToPublish.add(nodeWrapper.getParent().getIdentifier());
+                uuidsToPublish.add(nodeWrapper.getParent().getParent().getIdentifier());
+                JCRPublicationService.getInstance().publish(uuidsToPublish, jcrSessionWrapper.getWorkspace().getName(),
+                        Constants.LIVE_WORKSPACE, false, false, Collections.EMPTY_LIST);
+            } catch (Exception e) {
+                logger.error("Cannot publish node : " + nodeWrapper.getPath(), e);
+            } finally {
+                if (resetUser) {
+                    JCRSessionFactory.getInstance().setCurrentUser(null);
+                }
+            }
+        }
+    }
+
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
     }

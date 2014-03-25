@@ -21,6 +21,8 @@
                             <property name="titleKey" value="label.mode"/>
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.Studio"/>
                                     <ref bean="Toolbar.Item.Admin"/>
                                 </list>

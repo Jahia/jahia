@@ -283,6 +283,8 @@ public class ForgeService {
                 }
             } catch (JSONException e) {
                 logger.error("unable to parse JSON return string for " + url);
+            } catch (Exception e) {
+                logger.error("unable to get store information" + e.getMessage());
             }
         }
         Collections.sort(modules);

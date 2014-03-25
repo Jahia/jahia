@@ -16,7 +16,6 @@
 <template:addResources type="css" resources="languageSwitchingLinks.css"/>
 <c:set var="linkKind" value="${currentNode.properties.typeOfDisplay.string}"/>
 <c:set var="flag" value="${linkKind eq 'flag'}"/>
-sdsdsds
 <ui:initLangBarAttributes activeLanguagesOnly="${renderContext.liveMode}"/>
 <div id="languages">
     <ul>

@@ -11,52 +11,6 @@
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder">
-                <profile-page-items jcr:primaryType="jnt:contentFolder">
-                    <j:translation_en jcr:language="en"
-                                      jcr:mixinTypes="mix:title"
-                                      jcr:primaryType="jnt:translation"
-                                      jcr:title="##resourceBundle(system.profilePageItems)##"/>
-                    <home divClass="user-home"
-                          jcr:primaryType="jnt:componentLink"
-                          targetTemplate="user-home">
-                        <j:translation_en jcr:language="en"
-                                          jcr:mixinTypes="mix:title"
-                                          jcr:primaryType="jnt:translation"
-                                          jcr:title="##resourceBundle(home)##"/>
-                    </home>
-                    <my-settings divClass="user-edit-details"
-                                 jcr:primaryType="jnt:componentLink"
-                                 targetTemplate="user-edit-details">
-                        <j:translation_en jcr:language="en"
-                                          jcr:mixinTypes="mix:title"
-                                          jcr:primaryType="jnt:translation"
-                                          jcr:title="##resourceBundle(system.mySettings)##"/>
-                    </my-settings>
-                    <my-pages divClass="user-content"
-                              jcr:primaryType="jnt:componentLink"
-                              targetTemplate="user-content">
-                        <j:translation_en jcr:language="en"
-                                          jcr:mixinTypes="mix:title"
-                                          jcr:primaryType="jnt:translation"
-                                          jcr:title="##resourceBundle(system.myPages)##"/>
-                    </my-pages>
-                    <my-content divClass="user-sites"
-                                jcr:primaryType="jnt:componentLink"
-                                targetTemplate="user-content-manager">
-                        <j:translation_en jcr:language="en"
-                                          jcr:mixinTypes="mix:title"
-                                          jcr:primaryType="jnt:translation"
-                                          jcr:title="##resourceBundle(system.myContent)##"/>
-                    </my-content>
-                    <my-web-projects divClass="user-sites"
-                                     jcr:primaryType="jnt:componentLink"
-                                     targetTemplate="user-sites">
-                        <j:translation_en jcr:language="en"
-                                          jcr:mixinTypes="mix:title"
-                                          jcr:primaryType="jnt:translation"
-                                          jcr:title="##resourceBundle(system.myWebProjects)##"/>
-                    </my-web-projects>
-                </profile-page-items>
             </contents>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder">

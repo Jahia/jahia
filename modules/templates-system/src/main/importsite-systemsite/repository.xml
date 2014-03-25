@@ -18,36 +18,11 @@
         </site-privileged>
       </groups>
       <contents j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="7747760b-78c6-4870-9773-fe3c28f44a97" j:publicationStatus="1">
-        <profile-page-items j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="726a8fca-1418-4c1d-a9af-0e1352f8c2ab" j:publicationStatus="1">
-          <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.profilePageItems)##" jcr:uuid="2f6af386-1440-4132-a819-4685ef0c3fd2" />
-          <home divClass="user-home" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="8604c2ad-ba50-4abb-8d53-4cf4533e733d" targetTemplate="user-home">
-            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##" jcr:uuid="34373f7b-c15f-4301-93fc-4abe0281a921" />
-          </home>
-          <my-settings divClass="user-edit-details" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="21d06a08-427a-460e-8b15-d92f563b1a25" targetTemplate="user-edit-details">
-            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.mySettings)##" jcr:uuid="b2b56d46-f66b-4c3c-bf10-14a6ad7b7540" />
-          </my-settings>
-          <my-tasks divClass="user-tasks" j:originWS="default" j:published="true" j:requireLoggedUser="false" j:requirePrivilegedUser="true" jcr:mixinTypes="jmix:requiredPermissions" jcr:primaryType="jnt:componentLink" jcr:uuid="155f872e-68e9-4f85-9902-7f28c9944e40" targetTemplate="user-tasks">
-            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myTasks)##" jcr:uuid="a3cdea48-4e56-4b14-ba4a-265526b25667" />
-          </my-tasks>
-          <my-pages divClass="user-content" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="5104ad38-19ce-4f1f-9a87-a4c091e5fc1e" targetTemplate="user-content">
-            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myPages)##" jcr:uuid="cad15fac-48db-4dd3-a9df-0f78125d99d1" />
-          </my-pages>
-          <my-content divClass="user-sites" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="68af9e83-18be-47c7-acae-30f501614fa3" targetTemplate="user-content-manager">
-            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myContent)##" jcr:uuid="b401a63d-90fb-4e19-a3d9-e8287f33a440" />
-          </my-content>
-          <my-web-projects divClass="user-sites" j:originWS="default" j:published="true" jcr:primaryType="jnt:componentLink" jcr:uuid="18062dd9-5428-448a-92bf-6b5c5c16f970" targetTemplate="user-sites">
-            <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(system.myWebProjects)##" jcr:uuid="2e63a622-3576-4478-8b7f-9373269975a7" />
-          </my-web-projects>
-        </profile-page-items>
-        <portal-components j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="054ebbf1-3b93-44e6-abe3-bc4ac6898fae" j:publicationStatus="1" />
       </contents>
       <tags j:originWS="default" j:published="true" jcr:primaryType="jnt:tagList" jcr:uuid="1f451c42-0fc5-404e-83d1-21de3dd75265" />
       <categories j:originWS="default" j:published="true" jcr:primaryType="jnt:category" jcr:title="Categories" jcr:uuid="abd46620-d19a-4fd2-aa7a-d37d41b5952c" j:publicationStatus="1" />
       <home j:isHomePage="true" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/home" jcr:primaryType="jnt:page" jcr:uuid="28845de7-13a6-4a82-bf96-f0837cb279a2" j:publicationStatus="1">
         <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##" jcr:uuid="c483a9ec-c2a2-4fe8-9467-60faff6e0bcb" />
-        <profile-page-items j:originWS="default" j:published="true" jcr:primaryType="jnt:contentList" jcr:uuid="054ebbf1-3b93-44e6-abe3-bc4ac6898faf" j:publicationStatus="1" >
-          <profile-page-items j:node="/sites/systemsite/contents/profile-page-items" j:originWS="default" jcr:primaryType="jnt:contentFolderReference"/>
-        </profile-page-items>
       </home>
       <j:acl jcr:primaryType="jnt:acl" jcr:uuid="5de8cec2-eb91-4a50-b746-96a7528b1235">
         <GRANT_g_site-administrators j:aceType="GRANT" j:principal="g:site-administrators" j:protected="false" j:roles="site-administrator" jcr:primaryType="jnt:ace" jcr:uuid="17a1e0b6-dbbc-427c-94cb-4e977a323aa6" />

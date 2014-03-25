@@ -117,7 +117,6 @@
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                 </list>
                             </property>
                         </bean>
@@ -182,7 +181,6 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
@@ -299,7 +297,6 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                 </list>
                             </property>
                         </bean>
@@ -336,7 +333,6 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.Refresh"/>
                         <ref bean="Toolbar.Item.Publish"/>
                         <ref bean="Toolbar.Item.PublishAll"/>
@@ -753,7 +749,6 @@
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
@@ -952,7 +947,6 @@
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                 </list>
                             </property>
                         </bean>
@@ -1117,7 +1111,6 @@
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
                                     <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                                     <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
                                 </list>
@@ -1154,7 +1147,6 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.SaveAsPortalComponentMenu"/>
                         <ref bean="Toolbar.Item.Publish"/>
                         <ref bean="Toolbar.Item.PublishAll"/>
                     </list>

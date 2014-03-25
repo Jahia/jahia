@@ -120,16 +120,14 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     private static boolean hasEncounteredIssuesWithDefinitions = false;
     private NodeTypesDBServiceImpl nodeTypesDBService;
 
-    // Initialization on demand idiom: thread-safe singleton initialization
-    private static class Holder {
-        static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
-    }
+    private static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
+
     public static NodeTypeRegistry getInstance() {
-        return Holder.INSTANCE;
+        return INSTANCE;
     }
 
     public static NodeTypeRegistry getProviderNodeTypeRegistry() {
-        if (providerNodeTypeRegistry == null && getInstance() !=null) {
+        if (providerNodeTypeRegistry == null) {
             providerNodeTypeRegistry = new NodeTypeRegistry();
             try {
                 providerNodeTypeRegistry.initSystemDefinitions();
@@ -137,14 +135,14 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                     List<String> files = new ArrayList<String>();
                 List<String> remfiles = null;
                 try {
-                    remfiles = new ArrayList<String>(getInstance().getNodeTypesDBService().getFilesList());
+                    remfiles = new ArrayList<String>(INSTANCE.getNodeTypesDBService().getFilesList());
                     while (!remfiles.isEmpty() && !remfiles.equals(files)) {
                         files = new ArrayList<String>(remfiles);
                         remfiles.clear();
                         for (String file : files) {
                             try {
                                 if (file.endsWith(".cnd")) {
-                                    final String cndFile = getInstance().getNodeTypesDBService().readCndFile(file);
+                                    final String cndFile = INSTANCE.getNodeTypesDBService().readCndFile(file);
                                     deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
                                 }
                             } catch (ParseException e) {
@@ -331,8 +329,8 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                 }
 
                 for (ExtendedNodeType nodeType : r.getNodeTypesList()) {
-                    if (NodeTypeRegistry.getInstance().hasNodeType(nodeType.getName())) {
-                        ExtendedNodeType existingNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
+                    if (INSTANCE.hasNodeType(nodeType.getName())) {
+                        ExtendedNodeType existingNodeType = INSTANCE.getNodeType(nodeType.getName());
                         if (!existingNodeType.getSystemId().equals(nodeType.getSystemId())) {
                             throw new NodeTypeExistsException("Node type already defined : "+nodeType.getName());
                         }

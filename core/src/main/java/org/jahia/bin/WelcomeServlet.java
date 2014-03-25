@@ -124,6 +124,7 @@ public class WelcomeServlet extends HttpServlet {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WelcomeServlet.class);
     
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
+    private static final String DASHBOARD_HOME = ".projects.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -152,7 +153,8 @@ public class WelcomeServlet extends HttpServlet {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
             String language = resolveLanguage(request, site, user);
-            redirect(request.getContextPath() + "/cms/dashboard/default/"+ language + user.getLocalPath() + ".tasks.html", response);
+            redirect(request.getContextPath() + "/cms/dashboard/default/"+ language + user.getLocalPath() +
+                     DASHBOARD_HOME, response);
         } else {
             throw new AccessDeniedException();
         }

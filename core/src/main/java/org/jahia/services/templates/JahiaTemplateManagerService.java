@@ -492,16 +492,19 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             IOUtils.closeQuietly(out);
         }
 
-        final String importFileBasePath = "content/modules/" + aPackage.getId() + "/files/";
-        String filesNodePath = "/modules/" + aPackage.getIdWithVersion() + "/files";
+        final String importFileBasePath = "content/modules/" + aPackage.getId() + "/";
+        String filesNodePath = "/modules/" + aPackage.getIdWithVersion();
         JCRNodeWrapper filesNode = null;
         if (session.nodeExists(filesNodePath)) {
             filesNode = session.getNode(filesNodePath);
         }
         // clean up files folder before unziping in it
         File filesDirectory = new File(sourcesImportFolder.getPath() + "/" + importFileBasePath);
+        Collection<File> files = null;
         if (filesDirectory.exists()) {
-            FileUtils.deleteDirectory(filesDirectory);
+            files = FileUtils.listFiles(filesDirectory, null, true);
+        } else {
+            files = new ArrayList<File>();
         }
         ZipInputStream zis = null;
         try {
@@ -529,9 +532,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         if (nodeMoreRecentThanSourceFile && saveFile(zis, sourceFile)) {
                             modifiedFiles.add(sourceFile);
                         }
+                        files.remove(sourceFile);
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);
                     }
+                }
+            }
+            for (File file : files) {
+                try {
+                    file.delete();
+                } catch (Exception e) {
+                    logger.error("Cannot delete file "+file, e);
                 }
             }
         } catch (Exception e) {

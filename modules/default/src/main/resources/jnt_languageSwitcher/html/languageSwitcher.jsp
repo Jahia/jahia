@@ -13,38 +13,33 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="languageSwitchingLinks.css" />
+<template:addResources type="css" resources="languageSwitchingLinks.css"/>
 <c:set var="linkKind" value="${currentNode.properties.typeOfDisplay.string}"/>
-<c:choose>
-    <c:when test="${linkKind eq 'flag'}">
-        <ui:langBar display="horizontal" linkDisplay="flag" activeLanguagesOnly="${renderContext.liveMode}"/>
-    </c:when>
-    <c:when test="${linkKind eq 'flagPlain'}">
-        <ui:langBar display="horizontal" linkDisplay="flag" flagType="plain" activeLanguagesOnly="${renderContext.liveMode}"/>
-    </c:when>
-    <c:when test="${linkKind eq 'flagShadow'}">
-        <ui:langBar display="horizontal" linkDisplay="flag" flagType="shadow" activeLanguagesOnly="${renderContext.liveMode}"/>
-    </c:when>
-    <c:otherwise>
-        <ui:initLangBarAttributes activeLanguagesOnly="${renderContext.liveMode}"/>
-        <div id="languages">
-            <ul>
-                <c:forEach items="${requestScope.languageCodes}" var="language">
-                    <ui:displayLanguageSwitchLink languageCode="${language}" display="false" urlVar="switchUrl"
-                                                  var="renderedLanguage"
-                                                  linkKind="${currentNode.properties.typeOfDisplay.string}"/>
-                    <c:choose>
-                        <c:when test="${language eq currentResource.locale}">
-                            <li class="selected"><span>${renderedLanguage}</span></li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class=""><a title="<fmt:message key='switchTo'/>"
-                                            href="<c:url context='/' value='${switchUrl}'/>">${renderedLanguage}</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </ul>
-        </div>
-    </c:otherwise>
-</c:choose>
+<c:set var="flag" value="${linkKind eq 'flag'}"/>
+sdsdsds
+<ui:initLangBarAttributes activeLanguagesOnly="${renderContext.liveMode}"/>
+<div id="languages">
+    <ul>
+        <c:forEach items="${requestScope.languageCodes}" var="language">
+            <ui:displayLanguageSwitchLink languageCode="${language}" display="false" urlVar="switchUrl"
+                                          var="renderedLanguage"
+                                          linkKind="${currentNode.properties.typeOfDisplay.string}"/>
+            <c:if test="${flag}">
+                <c:set var="renderedLanguage">
+                    <span class='flag ${functions:getLanguageFlagCSSClass(functions:toLocale(language))}'></span>
+                </c:set>
+            </c:if>
+
+            <c:choose>
+                <c:when test="${language eq currentResource.locale}">
+                    <li class="selected"><span>${renderedLanguage}</span></li>
+                </c:when>
+                <c:otherwise>
+                    <li><a title="<fmt:message key='switchTo'/>"
+                                    href="<c:url context='/' value='${switchUrl}'/>">${renderedLanguage}</a>
+                    </li>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </ul>
+</div>

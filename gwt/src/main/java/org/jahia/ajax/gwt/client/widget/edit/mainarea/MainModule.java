@@ -751,6 +751,12 @@ public class MainModule extends Module {
     @Override
     public void setNode(GWTJahiaNode node) {
         this.node = node;
+        if(!node.getChildConstraints().equals(nodeTypes)) {
+            nodeTypes = node.getChildConstraints();
+        }
+        if(!node.get("referenceTypes").equals(referenceTypes)) {
+            referenceTypes = node.get("referenceTypes");
+        }
         if (node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
                     Messages.get("info_sharednode", "This is a shared node")));

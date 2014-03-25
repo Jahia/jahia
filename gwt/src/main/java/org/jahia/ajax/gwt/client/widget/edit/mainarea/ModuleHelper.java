@@ -178,6 +178,9 @@ public class ModuleHelper {
                 mainTemplate = divElement.getAttribute("template");
                 modulesByPath.put(mainPath, new ArrayList<Module>());
                 modulesByPath.get(mainPath).add(mainModule);
+                // In case of a switch of main module nodetypes need to be injected to have the last ones too
+                String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
+                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
             } else if ("linkedContentInfo".equals(jahiatype)) {
                 String linkedNode = DOM.getElementAttribute(divElement, "linkedNode");
                 String node = DOM.getElementAttribute(divElement, "node");
@@ -257,15 +260,15 @@ public class ModuleHelper {
                 ModuleHelper.nodeTypes.put(type.getName(), type);
             }
         }
-        for (Module module : modules) {
-            module.onNodeTypesLoaded();
-        }
 
         List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) nodesAndTypes.get("nodes");
         for (GWTJahiaNode gwtJahiaNode : nodes) {
             setNodeForModule(gwtJahiaNode);
         }
 
+        for (Module module : modules) {
+            module.onNodeTypesLoaded();
+        }
         mainModule.getEditLinker().onMainSelection(fmainPath, fmainTemplate);
         mainModule.getEditLinker().handleNewMainSelection();
         mainModule.refreshInfoLayer();

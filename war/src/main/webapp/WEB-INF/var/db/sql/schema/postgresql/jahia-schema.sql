@@ -5,7 +5,7 @@
 
     drop table if exists jahia_nodetypes_provider cascade;
 
-    drop sequence jahia_external_provider_id_seq;
+    drop sequence jahia_nodetypes_provider_id_seq;
 
     create table jahia_contenthistory (
         id varchar(32) not null,
@@ -33,4 +33,4 @@
 
     create index jahia_nodetypes_provider_ix1 on jahia_nodetypes_provider (filename);
 
-    create sequence jahia_external_provider_id_seq;
+    create sequence jahia_nodetypes_provider_id_seq;

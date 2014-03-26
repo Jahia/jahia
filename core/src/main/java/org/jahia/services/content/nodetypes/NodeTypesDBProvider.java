@@ -89,8 +89,8 @@ public class NodeTypesDBProvider {
     private String cndFile;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "jahia_external_provider_id_seq")
-    @SequenceGenerator(initialValue = 1, allocationSize = 40, name = "jahia_external_provider_id_seq", sequenceName = "jahia_external_provider_id_seq")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "jahia_nodetypes_provider_seq")
+    @SequenceGenerator(initialValue = 1, allocationSize = 40, name = "jahia_nodetypes_provider_seq", sequenceName = "jahia_nodetypes_provider_seq")
     public Integer getId() {
         return id;
     }

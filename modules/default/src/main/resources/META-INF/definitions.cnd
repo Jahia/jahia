@@ -256,11 +256,19 @@
 
 [jnt:simpleWorkflow] > nt:base, mix:title, jmix:i18n, mix:referenceable
 
+[jmix:internalLink] > jmix:templateMixin mixin
+ extends = jnt:content
+ - j:linknode (weakreference, picker[type='editoriallink']) internationalized < 'jmix:droppableContent', 'jnt:page'
+
+[jmix:externalLink] > jmix:templateMixin mixin
+ extends = jnt:content
+ - j:linkTitle (string) internationalized
+ - j:url (string) internationalized
+
 [jnt:imageReferenceLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:multimediaContent, jmix:editorialContent
  - j:node (weakreference, picker[type='image']) internationalized < 'jmix:image'
- - j:linknode (weakreference, picker[type='editoriallink']) internationalized < 'jmix:droppableContent', 'jnt:page'
+ - j:linkType (string, choicelist[linkTypeInitializer,resourceBundle]) = 'none' mandatory
  - j:alternateText (string) internationalized
- - j:url (string) internationalized
 
 [jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:multimediaContent, jmix:editorialContent, jmix:hiddenType
  - j:node (weakreference, picker[type='image']) < 'jmix:image'

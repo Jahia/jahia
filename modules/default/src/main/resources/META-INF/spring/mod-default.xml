@@ -179,5 +179,8 @@
         </property>
     </bean>
 
+    <bean class="org.jahia.modules.defaultmodule.initializers.LinkTypeInitializer">
+        <property name="key" value="linkTypeInitializer"/>
+    </bean>
 
 </beans>

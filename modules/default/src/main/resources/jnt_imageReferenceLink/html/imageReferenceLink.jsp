@@ -10,6 +10,7 @@
 <jcr:nodeProperty node="${currentNode}" name="j:linknode" var="linkreference"/>
 <jcr:nodeProperty node="${currentNode}" name="j:alternateText" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="j:url" var="externalUrl"/>
+<jcr:nodeProperty node="${currentNode}" name="j:linkTitle" var="linkTitle"/>
 
 <c:set var="node" value="${reference.node}"/>
 <c:if test="${not empty node}">
@@ -27,13 +28,15 @@
     <c:set var="linknode" value="${linkreference.node}"/>
     <c:if test="${not empty linknode}">
         <c:url var="linkUrl" value="${url.base}${linknode.path}.html"/>
+        <c:set var="linkTitle"> title="${linknode.displayableName}"</c:set>
     </c:if>
     <c:if test="${empty linkUrl and not empty externalUrl}">
         <c:if test="${!functions:matches('^[A-Za-z]*:.*', externalUrl.string)}"><c:set var="protocol">http://</c:set></c:if>
         <c:url var="linkUrl" value="${protocol}${externalUrl.string}"/>
+        <c:if test="${not empty linkTitle.string}"><c:set var="linkTitle"> title="${linkTitle.string}"</c:set></c:if>
     </c:if>
     <c:if test="${!empty linkUrl}">
-        <a href="${linkUrl}" ${target}>
+        <a href="${linkUrl}" ${target} ${linkTitle}>
     </c:if>
 
     <img src="${imageUrl}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" <c:out value="${height} ${width}" escapeXml="false"/> />

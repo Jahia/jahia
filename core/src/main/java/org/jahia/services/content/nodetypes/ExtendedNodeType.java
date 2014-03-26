@@ -621,17 +621,6 @@ public class ExtendedNodeType implements NodeType {
                 if (def.isMultiple() || def.isProtected()) {
                     return false;
                 }
-                int targetType;
-                if (def.getRequiredType() != PropertyType.UNDEFINED
-                        && def.getRequiredType() != value.getType()) {
-                    // type conversion required
-                    targetType = def.getRequiredType();
-                } else {
-                    // no type conversion required
-                    targetType = value.getType();
-                }
-                // perform type conversion as necessary and create InternalValue
-                // from (converted) Value
                 InternalValue internalValue = null;
                 if (value.getType() != PropertyType.BINARY && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
                     internalValue = InternalValue.create(value, null, null);

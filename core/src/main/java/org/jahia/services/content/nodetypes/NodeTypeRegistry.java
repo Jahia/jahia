@@ -115,34 +115,36 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     private boolean propertiesLoaded = false;
     private final Properties deploymentProperties = new Properties();
 
-    private static NodeTypeRegistry providerNodeTypeRegistry;
-
     private static boolean hasEncounteredIssuesWithDefinitions = false;
     private NodeTypesDBServiceImpl nodeTypesDBService;
 
-    private static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
-
+    // Initialization on demand idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
+    }
     public static NodeTypeRegistry getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
-    public static NodeTypeRegistry getProviderNodeTypeRegistry() {
-        if (providerNodeTypeRegistry == null) {
-            providerNodeTypeRegistry = new NodeTypeRegistry();
-            try {
-                providerNodeTypeRegistry.initSystemDefinitions();
+    private static class ProviderNodeTypeRegistryHolder {
+        static final NodeTypeRegistry PROVIDER_NODE_TYPE_INSTANCE = new NodeTypeRegistry();
 
-                    List<String> files = new ArrayList<String>();
+        static {
+            final NodeTypeRegistry instance = getInstance();
+            try {
+                PROVIDER_NODE_TYPE_INSTANCE.initSystemDefinitions();
+
+                List<String> files = new ArrayList<String>();
                 List<String> remfiles = null;
                 try {
-                    remfiles = new ArrayList<String>(INSTANCE.getNodeTypesDBService().getFilesList());
+                    remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
                     while (!remfiles.isEmpty() && !remfiles.equals(files)) {
                         files = new ArrayList<String>(remfiles);
                         remfiles.clear();
                         for (String file : files) {
                             try {
                                 if (file.endsWith(".cnd")) {
-                                    final String cndFile = INSTANCE.getNodeTypesDBService().readCndFile(file);
+                                    final String cndFile = instance.getNodeTypesDBService().readCndFile(file);
                                     deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
                                 }
                             } catch (ParseException e) {
@@ -155,17 +157,24 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                 }
 
             } catch (IOException e) {
-
                 logger.error(e.getMessage(),e);
             }
         }
-        return providerNodeTypeRegistry;
+
+        public static void deployDefinitionsFileToProviderNodeTypeRegistry(Reader reader, String definitionName) throws ParseException, IOException {
+            final String systemId = StringUtils.substringBefore(definitionName, ".cnd");
+            JahiaCndReader r = new JahiaCndReader(reader, definitionName, systemId, PROVIDER_NODE_TYPE_INSTANCE);
+            r.parse();
+        }
+
+    }
+
+    public static NodeTypeRegistry getProviderNodeTypeRegistry() {
+        return ProviderNodeTypeRegistryHolder.PROVIDER_NODE_TYPE_INSTANCE;
     }
 
     public static void deployDefinitionsFileToProviderNodeTypeRegistry(Reader reader, String definitionName) throws ParseException, IOException {
-        final String systemId = StringUtils.substringBefore(definitionName, ".cnd");
-        JahiaCndReader r = new JahiaCndReader(reader, definitionName, systemId, getProviderNodeTypeRegistry());
-        r.parse();
+        ProviderNodeTypeRegistryHolder.deployDefinitionsFileToProviderNodeTypeRegistry(reader,definitionName);
     }
 
     /**
@@ -329,8 +338,8 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                 }
 
                 for (ExtendedNodeType nodeType : r.getNodeTypesList()) {
-                    if (INSTANCE.hasNodeType(nodeType.getName())) {
-                        ExtendedNodeType existingNodeType = INSTANCE.getNodeType(nodeType.getName());
+                    if (NodeTypeRegistry.getInstance().hasNodeType(nodeType.getName())) {
+                        ExtendedNodeType existingNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
                         if (!existingNodeType.getSystemId().equals(nodeType.getSystemId())) {
                             throw new NodeTypeExistsException("Node type already defined : "+nodeType.getName());
                         }

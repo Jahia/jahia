@@ -143,7 +143,6 @@ public class ModuleHelper {
         String mainTemplate = null;
 
         Set<String> allNodetypes = new HashSet<String>();
-        allNodetypes.addAll(Arrays.asList(mainModule.getNodeTypes().split(" ")));
         for (Element divElement : elBody) {
             String jahiatype = DOM.getElementAttribute(divElement, JAHIA_TYPE);
             if ("module".equals(jahiatype)) {
@@ -181,6 +180,8 @@ public class ModuleHelper {
                 // In case of a switch of main module nodetypes need to be injected to have the last ones too
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
+                mainModule.setNodeTypes(nodetypes);
+                mainModule.setReferenceTypes(DOM.getElementAttribute(divElement, "referencetypes"));
             } else if ("linkedContentInfo".equals(jahiatype)) {
                 String linkedNode = DOM.getElementAttribute(divElement, "linkedNode");
                 String node = DOM.getElementAttribute(divElement, "node");

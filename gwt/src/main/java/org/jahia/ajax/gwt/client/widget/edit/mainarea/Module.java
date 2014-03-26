@@ -251,12 +251,6 @@ public abstract class Module extends LayoutContainer {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
-        if(!node.getChildConstraints().equals(nodeTypes)) {
-            nodeTypes = node.getChildConstraints();
-        }
-        if(!node.get("referenceTypes").equals(referenceTypes)) {
-            referenceTypes = node.get("referenceTypes");
-        }
     }
 
     public MainModule getMainModule() {

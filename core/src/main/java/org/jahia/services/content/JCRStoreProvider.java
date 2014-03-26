@@ -353,7 +353,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
             getSessionFactory().addProvider(this);
 
-            if (SettingsBean.getInstance().isProcessingServer()) {
+            boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
+            if (isProcessingServer) {
                 initNodeTypes();
             }
             initObservers();
@@ -362,7 +363,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             initDynamicMountPoints();
 
             authenticationType = tmpAuthenticationType;
-            if (groovyPatcher != null) {
+            if (groovyPatcher != null && isProcessingServer) {
                 groovyPatcher.executeScripts("jcrStoreProviderStarted");
             }
         } catch (Exception e) {

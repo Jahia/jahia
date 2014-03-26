@@ -82,8 +82,18 @@ import java.util.Map;
 public interface AnalyzerCustomizer {
     AnalyzerCustomizer NO_OP = new NoOpAnalyzerCustomizer();
 
+    /**
+     * Customize the specified Analyzer.
+     *
+     * @param analyzer the Analyzer instance to customize
+     */
     void customize(Analyzer analyzer);
 
+    /**
+     * Initialize this AnalyzerCustomizer with the specified key/values pairs.
+     *
+     * @param properties a Map associating a key name to a List of associated values
+     */
     void initFrom(Map<String, List<String>> properties);
 
     class NoOpAnalyzerCustomizer implements AnalyzerCustomizer {

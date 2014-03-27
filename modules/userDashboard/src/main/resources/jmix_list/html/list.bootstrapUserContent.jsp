@@ -82,7 +82,7 @@
                 <th>
                     <img src="<c:url value='/icons/copy.png'/>" width="16" height="16" alt=" "
                          role="presentation" style="position:relative;"/>
-                    <fmt:message key='jnt_imageReferenceLink.j_linknode'/>
+                    <fmt:message key='myPages.link'/>
                 </th>
                 <th>
                     <img src="<c:url value='/icons/editMode.png'/>" width="16" height="16" alt=" "

@@ -98,7 +98,9 @@
     </repositories>
 
     <modules>
-        <module>dummy-modules</module>
+        <!--
+		<module>dummy-modules</module>
+		-->
         <module>jahia-test-module</module>
     </modules>
 </project>

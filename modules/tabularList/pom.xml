@@ -75,16 +75,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.0-SNAPSHOT</version>
+    <version>7.0.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>tabularList</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Tabular List</name>
   <description>This is a module for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/tabularList</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/tabularList</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/tabularList</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tabularList</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tabularList</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/tabularList</url>
   </scm>
   <repositories>
     <repository>

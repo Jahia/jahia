@@ -147,12 +147,14 @@ public class ModuleBuildHelper implements InitializingBean {
 
     private String mavenExecutable;
 
+    private String mavenReleasePlugin;
+
     private SourceControlHelper scmHelper;
 
     private SettingsBean settingsBean;
 
     private TemplatePackageRegistry templatePackageRegistry;
-
+    
     public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
         CompiledModuleInfo moduleInfo = compileModule(sources);
@@ -411,7 +413,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
             File tmpRepo = new File(System.getProperty("java.io.tmpdir"), "repo");
             tmpRepo.mkdir();
-            String[] installParams = new String[]{"release:prepare", "release:stage", "release:clean",
+            String[] installParams = new String[]{mavenReleasePlugin + ":prepare", mavenReleasePlugin + ":stage", mavenReleasePlugin + ":clean",
                     "-Dmaven.home=" + getMavenHome(), "-Dtag=" + tag, "-DreleaseVersion=" + releaseVersion,
                     "-DdevelopmentVersion=" + nextVersion, "-DignoreSnapshots=" + ignoreSnapshotsFlag,
                     "-DstagingRepository=tmp::default::" + tmpRepo.toURI().toString(), "--batch-mode"};
@@ -424,7 +426,7 @@ public class ModuleBuildHelper implements InitializingBean {
                 String s = getMavenError(out.toString());
                 logger.error("Maven release call returnedError release, maven out : " + out);
                 logger.error("Error when releasing, maven out : " + out);
-                ProcessHelper.execute(mavenExecutable, new String[]{"release:rollback"}, null, sources, out, out);
+                ProcessHelper.execute(mavenExecutable, new String[]{mavenReleasePlugin + ":rollback"}, null, sources, out, out);
                 logger.error("Rollback release : " + out);
                 throw new IOException("Maven invocation failed\n" + s);
             }
@@ -493,5 +495,12 @@ public class ModuleBuildHelper implements InitializingBean {
         } else {
             ignoreSnapshotsFlag = Boolean.valueOf(ignoreSnapshots.trim());
         }
+        if (mavenReleasePlugin == null || mavenReleasePlugin.length() == 0) {
+            mavenReleasePlugin ="release";
+        }
+    }
+
+    public void setMavenReleasePlugin(String mavenReleasePlugin) {
+        this.mavenReleasePlugin = mavenReleasePlugin;
     }
 }

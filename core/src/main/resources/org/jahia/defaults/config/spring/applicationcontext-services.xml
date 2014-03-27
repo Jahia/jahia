@@ -177,6 +177,7 @@
         <property name="ignoreSnapshots" value="${jahia.mavenReleasePlugin.ignoreSnapshots:}"/>
         <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:}"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>
+        <property name="mavenReleasePlugin" value="${mavenReleasePlugin:org.apache.maven.plugins:maven-release-plugin:2.5}"/>
         <property name="settingsBean" ref="settingsBean"/>
         <property name="sourceControlHelper" ref="SourceControlHelper"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>

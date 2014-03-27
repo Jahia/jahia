@@ -1,19 +1,18 @@
 $.extend( $.fn.dataTable.defaults.oLanguage, {
-    "sProcessing": "Bezig...",
-    "sLengthMenu": "_MENU_ resultaten weergeven",
-    "sZeroRecords": "Geen resultaten gevonden",
-    "sInfo": "_START_ tot _END_ van _TOTAL_ resultaten",
-    "sInfoEmpty": "Geen resultaten om weer te geven",
-    "sInfoFiltered": " (gefilterd uit _MAX_ resultaten)",
-    "sInfoPostFix": "",
-    "sSearch": "Zoeken:",
-    "sEmptyTable": "Geen resultaten aanwezig in de tabel",
-    "sInfoThousands": ".",
-    "sLoadingRecords": "Een moment geduld aub - bezig met laden...",
+    "sEmptyTable":   "Keine Einträge vorhanden",
+    "sProcessing":   "Bitte warten...",
+    "sLengthMenu":   "_MENU_ Einträge anzeigen",
+    "sZeroRecords":  "Keine Einträge vorhanden.",
+    "sInfo":         "_START_ bis _END_ von _TOTAL_ Einträgen",
+    "sInfoEmpty":    "0 bis 0 von 0 Einträgen",
+    "sInfoFiltered": "(gefiltert von _MAX_ Einträgen)",
+    "sInfoPostFix":  "",
+    "sSearch":       "Suchen:",
+    "sUrl":          "",
     "oPaginate": {
-        "sFirst": "Eerste",
-        "sLast": "Laatste",
-        "sNext": "Volgende",
-        "sPrevious": "Vorige"
+        "sFirst":    "Erster",
+        "sPrevious": "Zurück",
+        "sNext":     "Nächster",
+        "sLast":     "Letzter"
     }
 });

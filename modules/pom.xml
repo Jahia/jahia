@@ -70,8 +70,7 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -147,11 +146,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments/>
+                                    <arguments />
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments/>
+                                    <arguments />
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -340,7 +339,7 @@
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
                         <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
 
-                        <Export-Package></Export-Package>
+                        <Export-Package />
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>

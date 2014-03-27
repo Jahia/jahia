@@ -70,8 +70,7 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -120,11 +119,11 @@
                             <additionalBuildcommands>
                                 <buildCommand>
                                     <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                                    <arguments/>
+                                    <arguments />
                                 </buildCommand>
                                 <buildCommand>
                                     <name>org.eclipse.wst.validation.validationbuilder</name>
-                                    <arguments/>
+                                    <arguments />
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
@@ -1245,14 +1244,14 @@
                         <configuration>
                             <tasks>
                                 <java classname="org.jahia.ajax.gwt.utils.GWTDictionaryBuilder">
-                                    <arg value="JahiaInternalResources"/>
-                                    <arg value="de,en,es,fr,it,pt"/>
-                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n"/>
-                                    <arg value="messages"/>
-                                    <arg value="true"/>
+                                    <arg value="JahiaInternalResources" />
+                                    <arg value="de,en,es,fr,it,pt" />
+                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n" />
+                                    <arg value="messages" />
+                                    <arg value="true" />
                                     <!-- minified -->
                                     <classpath>
-                                        <path refid="maven.runtime.classpath"/>
+                                        <path refid="maven.runtime.classpath" />
                                     </classpath>
                                 </java>
                             </tasks>
@@ -1269,21 +1268,17 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="Deleting unused/duplicate resources..."/>
+                                <echo message="Deleting unused/duplicate resources..." />
                                 <!-- in resources folder, delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) -->
                                 <delete includeemptydirs="true" failonerror="false">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/"
-                                             includes="**/*.cache.*,**/*.nocache.*,**/*.rpc"/>
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/" includes="**/*.cache.*,**/*.nocache.*,**/*.rpc" />
                                 </delete>
                                 <!-- delete duplicated resources , DO NOT delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) and resources folder -->
                                 <delete includeemptydirs="true" failonerror="false">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/"
-                                             includes="**/*"
-                                             excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html"/>
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/" includes="**/*" excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html" />
                                 </delete>
-                                <delete dir="${project.build.directory}/${project.build.finalName}/gwt-unitCache"
-                                        failonerror="false"/>
-                                <echo message="...done"/>
+                                <delete dir="${project.build.directory}/${project.build.finalName}/gwt-unitCache" failonerror="false" />
+                                <echo message="...done" />
                             </tasks>
                         </configuration>
                     </execution>

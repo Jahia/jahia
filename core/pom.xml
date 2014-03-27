@@ -70,8 +70,7 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -1568,8 +1567,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="${buildNumber}"
-                                      file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt"/>
+                                <echo message="${buildNumber}" file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt" />
                             </tasks>
                         </configuration>
                     </execution>

@@ -76,7 +76,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>7.0.0.0-SNAPSHOT</version>
+        <version>7.0.1.0-SNAPSHOT</version>
     </parent>
     <artifactId>atmosphere</artifactId>
     <name>Jahia Atmosphere</name>
@@ -131,7 +131,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.0.0.0-SNAPSHOT</version>
+            <version>7.0.1.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>7.0.0.0-SNAPSHOT</version>
+            <version>7.0.1.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

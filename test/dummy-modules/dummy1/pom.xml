@@ -79,7 +79,7 @@
 		<relativePath>../../../modules/pom.xml</relativePath>
     </parent>
     <artifactId>dummy1</artifactId>
-    <version>1.1</version>
+    <version>1.0</version>
     <name>dummy1</name>
     <packaging>bundle</packaging>
     <description>This is the custom module (dummy1) for running on a Jahia server.</description>

@@ -75,16 +75,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.0-SNAPSHOT</version>
+    <version>7.0.0.0</version>
   </parent>
   <artifactId>translation</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Translation Providers</name>
   <description>Registers providers for Translation Service</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/translation</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/translation</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/translation</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/translation</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/translation</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/translation</url>
   </scm>
   <repositories>
     <repository>

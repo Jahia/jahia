@@ -75,16 +75,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.0-SNAPSHOT</version>
+    <version>7.0.0.0</version>
   </parent>
   <artifactId>visibility</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Visibility</name>
   <description>Jahia visibility framework.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/visibility</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/visibility</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/visibility</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/visibility</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/visibility</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/visibility</url>
   </scm>
   <repositories>
     <repository>

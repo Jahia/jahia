@@ -75,16 +75,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.0-SNAPSHOT</version>
+    <version>7.0.0.0</version>
   </parent>
   <artifactId>default</artifactId>
   <packaging>bundle</packaging>
   <name>Default Jahia Templates</name>
   <description>These are the custom templates for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/default</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/default</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/default</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/default</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/default</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/default</url>
   </scm>
   <dependencies>
     <dependency>

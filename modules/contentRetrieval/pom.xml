@@ -75,7 +75,7 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.0-SNAPSHOT</version>
+    <version>7.0.0.0</version>
   </parent>
   <groupId>org.jahia.modules</groupId>
   <artifactId>contentRetrieval</artifactId>
@@ -83,9 +83,9 @@
   <name>Jahia Content retrieval</name>
   <description>These is a custom module (contentRetrieval) for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/contentRetrieval</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/contentRetrieval</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/contentRetrieval</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/contentRetrieval</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/contentRetrieval</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/contentRetrieval</url>
   </scm>
   <repositories>
     <repository>

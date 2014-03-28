@@ -75,16 +75,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.0-SNAPSHOT</version>
+    <version>7.0.0.0</version>
   </parent>
   <artifactId>skins</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Skins</name>
   <description>This module provides skins to embed contents.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/skins</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/skins</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/modules/skins</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/skins</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/skins</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_0_0_0/modules/skins</url>
   </scm>
   <repositories>
     <repository>

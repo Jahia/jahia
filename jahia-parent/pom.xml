@@ -198,9 +198,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/common-parent</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/common-parent</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/common-parent</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/jahia-parent</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/jahia-parent</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_0_RC2/jahia-parent</url>
     </scm>
     <developers>
         <developer>

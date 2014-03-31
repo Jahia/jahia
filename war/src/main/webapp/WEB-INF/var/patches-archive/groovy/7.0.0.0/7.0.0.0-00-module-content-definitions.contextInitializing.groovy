@@ -2,12 +2,14 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.TrueFileFilter
 import org.apache.log4j.Logger
 import org.apache.poi.util.IOUtils
+import org.hibernate.engine.jdbc.ClobProxy;
 import org.jahia.settings.SettingsBean
 import org.jahia.utils.DatabaseUtils
 
 import javax.jcr.RepositoryException
 import javax.servlet.ServletContext
 import javax.sql.DataSource
+
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -25,6 +27,10 @@ Connection connection = null;
 try {
     DataSource dataSource = DatabaseUtils.getDatasource();
     connection = dataSource.getConnection();
+    if (connection.getAutoCommit()) {
+        // disable auto-commit
+        connection.setAutoCommit(false);
+    }
 
     ServletContext servletContext = SettingsBean.getInstance().getServletContext();
     String modulesPath = servletContext.getRealPath("WEB-INF/var/modules");
@@ -36,11 +42,9 @@ try {
         }
     }
 
-    if (!connection.getAutoCommit()) {
-        connection.commit();
-    }
-
+    connection.commit();
 } catch (SQLException sqle) {
+	log.error(sqle.getMessage(), sqle);
     if (connection != null && !connection.getAutoCommit()) {
         connection.rollback();
     }
@@ -126,8 +130,16 @@ public void saveCndFile(String filename, String content, Connection connection) 
 public int saveNewCndFile(String filename, String content, Connection connection) throws RepositoryException, SQLException {
     PreparedStatement stmt = null;
     try {
-        stmt = connection.prepareStatement('insert into jahia_nodetypes_provider(cndFile, filename) values (?,?)');
-        stmt.setString(1, content);
+        String insertSql = null;
+    	if (DatabaseUtils.DatabaseType.postgresql == DatabaseUtils.getDatabaseType()) {
+            insertSql = "insert into jahia_nodetypes_provider(id, cndFile, filename) values (nextval('jahia_nodetypes_provider_seq'), ?, ?)";
+    	} else if (DatabaseUtils.DatabaseType.oracle == DatabaseUtils.getDatabaseType()) {
+            insertSql = "insert into jahia_nodetypes_provider(id, cndFile, filename) values (jahia_nodetypes_provider_seq.nextval(), ?, ?)";
+        } else {
+            insertSql = 'insert into jahia_nodetypes_provider(cndFile, filename) values (?,?)';
+        }
+        stmt = connection.prepareStatement(insertSql);
+        stmt.setClob(1, ClobProxy.generateProxy(content));
         stmt.setString(2, filename);
         return stmt.executeUpdate();
     } finally {

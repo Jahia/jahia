@@ -76,8 +76,6 @@ import javax.servlet.ServletContextEvent;
 
 import org.springframework.web.util.Log4jConfigListener;
 
-import com.google.common.collect.ImmutableSet;
-
 /**
  * Listener for log4j configuration initialization.
  * 
@@ -116,17 +114,19 @@ public class LoggingConfigListener extends Log4jConfigListener {
                         }
                     } else if (server.contains("jboss")) {
                         File war = new File(path);
-                        if (war.getParentFile() != null
-                                && ImmutableSet.copyOf(
-                                        new String[] { "deploy", "deploy-hasingleton", "farm" })
-                                        .contains(war.getParentFile().getName())) {
-                            File jbossServer = war.getParentFile().getParentFile();
-                            if (jbossServer.exists()) {
-                                File log = new File(jbossServer, "log");
+                        File earFolder = war.getParentFile();
+                        if (earFolder != null) {
+                            File deploymentsFolder = earFolder.getParentFile();
+                        if (deploymentsFolder != null
+                                && "deployments".equals(deploymentsFolder.getName())) {
+                            File standaloneFolder = deploymentsFolder.getParentFile();
+                            if (standaloneFolder.exists()) {
+                                File log = new File(standaloneFolder, "log");
                                 if (log.isDirectory() && log.canWrite()) {
                                     logDir = log.getAbsolutePath();
                                 }
                             }
+                        }
                         }
                     } else {
                         // no handling for other application servers

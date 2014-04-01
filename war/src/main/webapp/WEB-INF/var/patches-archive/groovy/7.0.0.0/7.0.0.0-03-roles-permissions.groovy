@@ -18,7 +18,7 @@ def callback = new JCRCallback<Object>() {
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                 try {
-                    if(next.hasProperty(refPropName)) {
+                    if (next.hasProperty(refPropName)) {
                         JCRPropertyWrapper property = next.getProperty(refPropName);
                         JCRValueWrapper[] values = property.getRealValues();
                         def names = [];
@@ -75,13 +75,16 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             log.info("Removing /roles/j:acl node.");
             rolesNode.getNode("j:acl").remove();
         }
+        if (rolesNode.isNodeType("jmix:accessControlled")) {
+            rolesNode.removeMixin("jmix:accessControlled")
+        }
 
         JCRNodeWrapper role;
         JCRNodeWrapper subNode;
 
-        def setPermissions = {JCRNodeWrapper node, List<String> permsToRemove, List<String> permsToAdd ->
+        def setPermissions = { JCRNodeWrapper node, List<String> permsToRemove, List<String> permsToAdd ->
             def permissionNames = [];
-            node.getProperty("j:permissionNames").getValues().collect(permissionNames, {it.getString()});
+            node.getProperty("j:permissionNames").getValues().collect(permissionNames, { it.getString() });
             permissionNames.removeAll(permsToRemove);
             for (String permName : permsToAdd) {
                 if (!permissionNames.contains(permName)) {
@@ -91,19 +94,31 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             node.setProperty("j:permissionNames", (String[]) permissionNames.toArray(new String[permissionNames.size()]));
         }
 
+        def permsToAdd;
+        def permsToRemove
+        def permissionNames
+
+        if (rolesNode.hasNode("privileged")) {
+            log.info("Start updating privileged role...");
+            role = rolesNode.getNode("privileged");
+            role.setProperty("j:hidden", true);
+            log.info("...update done.");
+        }
+
         if (rolesNode.hasNode("contributor")) {
             log.info("Start updating contributor role...");
             role = rolesNode.getNode("contributor");
             role.setProperty("j:hidden", false);
-            def permsToRemove = ["contributeMode", "viewContentTab", "viewMetadataTab", "viewCategoriesTab",
-                    "viewTagsTab", "view-basic-wysiwyg-editor"];
-            def permsToAdd = ["2-step-publication-finish-correction", "2-step-publication-start"];
+            permsToRemove = ["contributeMode", "viewContentTab", "viewMetadataTab", "viewCategoriesTab",
+                                 "viewTagsTab", "view-basic-wysiwyg-editor", "1-step-publication-start",
+                                 "1-step-unpublication-start","2-step-publication-finish-correction","2-step-publication-start"];
+            permsToAdd = ["publication-start", "publication-finish-correction"];
             setPermissions(role, permsToRemove, permsToAdd);
 
             subNode = role.addNode("currentSite-access", "jnt:externalPermissions");
             subNode.setProperty("j:path", "currentSite");
-            String[] permissionNames = ["contributeMode", "editorialContentManager", "fileManager"];
-            subNode.setProperty("j:permissionNames", permissionNames);
+            permissionNames = ["contributeMode", "components", "editorialContentManager", "fileManager", "templates", "viewCategoriesTab", "viewContentTab", "viewMetadataTab", "viewTagsTab"];
+            subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
             subNode = role.addNode("j:translation_en", "jnt:translation");
             subNode.setProperty("jcr:description", "Can edit content using contribute mode");
             subNode.setProperty("jcr:language", "en");
@@ -111,22 +126,54 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             log.info("...update done.");
         }
 
-        if (rolesNode.hasNode("editor")) {
-            log.info("Start updating editor role...");
-            role = rolesNode.getNode("editor");
+        if (rolesNode.hasNode("reviewer")) {
+            log.info("Start updating reviewer role...");
+            role = rolesNode.getNode("reviewer");
             role.setProperty("j:hidden", false);
-            def permsToRemove = ["editModeActions", "editModeAccess", "editSelector", "viewContentTab", "viewLayoutTab",
-                    "viewMetadataTab", "viewOptionsTab", "viewCategoriesTab", "viewLiveRolesTab", "viewTagsTab",
-                    "viewSeoTab", "viewVisibilityTab", "viewContributeModeTab", "contributeMode", "templates",
-                    "fileManager", "portletManager", "view-full-wysiwyg-editor"];
-            def permsToAdd = ["2-step-publication-finish-correction", "2-step-publication-start"];
+            permsToRemove = ["editModeAccess", "sitemapSelector", "viewContentTab", "viewLayoutTab",
+                                 "viewMetadataTab", "viewOptionsTab", "viewCategoriesTab", "viewLiveRolesTab", "viewTagsTab",
+                                 "viewSeoTab", "viewVisibilityTab", "viewContributeModeTab", "contributeModeAccess", "templates",
+                                 "fileManager", "portletManager", "view-full-wysiwyg-editor", "1-step-publication-review", "1-step-unpublication-unpublish",
+                                 "2-step-publication-first-review",
+                                 "1-step-unpublication-choose-remote-publication",
+                                 "1-step-publication-choose-remote-publication",
+                                 "2-step-publication-choose-remote-publication",
+                                 "2-step-publication-final-review"
+            ];
+            permsToAdd = ["publication-choose-remote", "publication-review", "publication-first-review"];
             setPermissions(role, permsToRemove, permsToAdd);
 
             subNode = role.addNode("currentSite-access", "jnt:externalPermissions");
             subNode.setProperty("j:path", "currentSite");
-            def permissionNames =  ["editModeAccess", "editModeActions", "editSelector", "viewCategoriesTab",
-                    "viewContentTab", "viewContributeModeTab", "viewLayoutTab", "viewMetadataTab", "viewOptionsTab",
-                    "viewSeoTab", "viewTagsTab", "viewVisibilityTab", "managers", "view-full-wysiwyg-editor"];
+            permissionNames = ["contributeMode", "editModeAccess", "sitemapSelector", "viewCategoriesTab", "viewContentTab",
+                                   "viewLayoutTab", "viewMetadataTab", "viewSeoTab", "viewTagsTab"];
+            subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
+
+            subNode = role.addNode("j:translation_en", "jnt:translation");
+            subNode.setProperty("jcr:description", "Grant access to view the content and validate changes done by editors before publication");
+            subNode.setProperty("jcr:language", "en");
+            subNode.setProperty("jcr:title", "Reviewer");
+            log.info("...update done.");
+        }
+
+        if (rolesNode.hasNode("editor")) {
+            log.info("Start updating editor role...");
+            role = rolesNode.getNode("editor");
+            role.setProperty("j:hidden", false);
+            permsToRemove = ["editModeActions", "editModeAccess", "editSelector", "viewContentTab", "viewLayoutTab",
+                                 "viewMetadataTab", "viewOptionsTab", "viewCategoriesTab", "viewLiveRolesTab", "viewTagsTab",
+                                 "viewSeoTab", "viewVisibilityTab", "viewContributeModeTab", "contributeMode", "templates",
+                                 "fileManager", "portletManager", "view-full-wysiwyg-editor", "1-step-publication-start",
+                                 "1-step-unpublication-start", "2-step-publication-finish-correction", "siteManager", "2-step-publication-start"
+            ];
+            permsToAdd = ["publication-start", "publication-finish-correction"];
+            setPermissions(role, permsToRemove, permsToAdd);
+
+            subNode = role.addNode("currentSite-access", "jnt:externalPermissions");
+            subNode.setProperty("j:path", "currentSite");
+            permissionNames = ["components", "editModeAccess", "editModeActions", "editSelector", "managers",
+                                   "templates", "view-full-wysiwyg-editor", "viewCategoriesTab", "viewContentTab", "viewContributeModeTab",
+                                   "viewLayoutTab", "viewMetadataTab", "viewOptionsTab", "viewSeoTab", "viewTagsTab", "viewVisibilityTab"];
             subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
             subNode = role.addNode("j:translation_en", "jnt:translation");
             subNode.setProperty("jcr:description", "Can edit content using edit mode");
@@ -137,21 +184,26 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
 
         if (rolesNode.hasNode("editor-in-chief")) {
             log.info("Start updating editor-in-chief role...");
-            def permsToAdd = [];
+            permsToAdd = [];
             if (jcrsession.nodeExists("/roles/editor/editor-in-chief")) {
                 // copy permissions and remove existing node
+                jcrsession.save()
+                JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
                 JCRNodeWrapper existingNode = jcrsession.getNode("/roles/editor/editor-in-chief");
                 if (existingNode.hasProperty("j:permissionNames")) {
-                    existingNode.getProperty("j:permissionNames").getValues().collect(permsToAdd, {it.getString()});
+                    existingNode.getProperty("j:permissionNames").getValues().collect(permsToAdd, { it.getString() });
                 }
                 existingNode.remove();
+                jcrsession.save()
+                JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
             role = rolesNode.getNode("editor-in-chief");
             role.setProperty("j:hidden", false);
-            def permsToRemove = ["jcr:all_default", "categoryManager", "editorialContentManager", "fileManager",
-                    "portletManager", "siteManager", "tagManager", "jobs", "editMode", "view-basic-wysiwyg-editor",
-                    "templates"];
-            setPermissions(role, permsToRemove, []);
+            permsToAdd = ["adminMicrosoftTranslation", "siteAdminLinkChecker"]
+            permsToRemove = ["jcr:all_default", "categoryManager", "editorialContentManager", "fileManager",
+                                 "portletManager", "siteManager", "tagManager", "jobs", "editMode", "view-basic-wysiwyg-editor",
+                                 "templates", "adminLinkChecker", "rolesManager"];
+            setPermissions(role, permsToRemove, permsToAdd);
 
             subNode = role.addNode("currentSite-access", "jnt:externalPermissions");
             subNode.setProperty("j:path", "currentSite");
@@ -161,7 +213,12 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             subNode.setProperty("jcr:language", "en");
             subNode.setProperty("jcr:title", "Editor in chief");
 
+            jcrsession.save()
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
             jcrsession.move("/roles/editor-in-chief", "/roles/editor/editor-in-chief");
+            jcrsession.save()
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
+
             log.info("...update done.");
         }
 
@@ -170,7 +227,7 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             role = rolesNode.getNode("web-designer");
             role.setProperty("j:hidden", false);
             def nodeTypes = [];
-            role.getProperty("j:nodeTypes").getValues().collect(nodeTypes, {it.getString()});
+            role.getProperty("j:nodeTypes").getValues().collect(nodeTypes, { it.getString() });
             nodeTypes.remove("jnt:virtualsite");
             if (!nodeTypes.contains("rep:root")) {
                 nodeTypes.add("rep:root");
@@ -184,13 +241,15 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             }
 
             if (role.hasNode("modules-management")) {
-                subNode = role.getNode("modules-management");
-                subNode.setProperty("j:path", "/modules");
-                def permsToRemove = ["editMode", "adminTemplates"];
-                setPermissions(subNode, permsToRemove, []);
-                subNode.rename("modules-access");
-
+                role.getNode("studio-management").remove();
             }
+
+            subNode = role.addNode("modules-access", "jnt:externalPermissions");
+            subNode.setProperty("j:path", "/modules");
+            permissionNames = ["components","editModeActions","editSelector","engineTabs","jcr:all_default",
+                                   "managers","studioMode","templates","useComponent","wysiwyg-editor-toolbar"];
+            subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
+
             subNode = role.addNode("j:translation_en", "jnt:translation");
             subNode.setProperty("jcr:description", "Gives full access to the studio");
             subNode.setProperty("jcr:language", "en");
@@ -203,31 +262,82 @@ JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             role = rolesNode.getNode("site-administrator");
             role.setProperty("j:hidden", false);
             def nodeTypes = [];
-            role.getProperty("j:nodeTypes").getValues().collect(nodeTypes, {it.getString()});
+            role.getProperty("j:nodeTypes").getValues().collect(nodeTypes, { it.getString() });
             nodeTypes.remove("jnt:virtualsite");
-            role.setProperty("j:nodeTypes",  (String[]) nodeTypes.toArray(new String[nodeTypes.size()]));
-            def permsToRemove = ["administrationAccess", "siteAdminLanguages", "siteAdminUrlmapping",
-                    "siteAdminHtmlSettings", "adminDocumentation", "siteAdminGroups", "adminIssueTracking",
-                    "siteAdminTemplates", "siteAdminWcagCompliance"];
-            def permsToAdd = ["remotePublicationManager", "repositoryExplorer", "site-admin"];
+            role.setProperty("j:nodeTypes", (String[]) nodeTypes.toArray(new String[nodeTypes.size()]));
+            permsToRemove = ["administrationAccess", "siteAdminLanguages", "siteAdminUrlmapping",
+                                 "siteAdminHtmlSettings", "adminDocumentation", "siteAdminGroups", "adminIssueTracking",
+                                 "siteAdminTemplates", "siteAdminWcagCompliance", "adminGroups", "adminHtmlSettings",
+                                 "adminLinkChecker", "adminSiteLanguages", "adminSiteTemplates", "adminUrlmapping",
+                                 "categoryManager", "editorialContentManager", "fileManager", "portletManager",
+                                 "repositoryExplorer", "rolesManager", "siteManager", "tagManager"];
+            permsToAdd = ["components", "remotePublicationManager", "repositoryExplorer", "site-admin",
+                          "adminBootstrapCustomization", "adminMicrosoftTranslation",
+                          "adminSampleTemplatesCustomizationcomponents", "managers",
+                          "publish", "siteAdminLinkChecker","workflow-tasks"];
             setPermissions(role, permsToRemove, permsToAdd);
             role.setProperty("j:roleGroup", "site-role");
 
+            subNode = role.addNode("bootstrap-write-publish", "jnt:externalPermissions");
+            subNode.setProperty("j:path", "currentSite/files/bootstrap");
+            permissionNames = ["jcr:all_default", "workflow-tasks", "publish"];
+            subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
+
             subNode = role.addNode("j:translation_en", "jnt:translation");
-            subNode.setProperty("jcr:description", "");
+            subNode.setProperty("jcr:description", "Gives administrative privileges over the site");
             subNode.setProperty("jcr:language", "en");
-            subNode.setProperty("jcr:title", "");
+            subNode.setProperty("jcr:title", "Site administrator");
             log.info("...update done.");
         }
+
+        log.info("Start creating translator role...");
+        permsToAdd = ["jcr:versionManagement_default", "publication-start", "publication-finish-correction"];
+        if (jcrsession.nodeExists("/roles/translator")) {
+            // copy permissions and remove existing node
+            JCRNodeWrapper existingNode = jcrsession.getNode("/roles/translator");
+            if (existingNode.hasProperty("j:permissionNames")) {
+                existingNode.getProperty("j:permissionNames").getValues().collect(permsToAdd, { it.getString() });
+            }
+            jcrsession.save()
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
+            existingNode.remove();
+            jcrsession.save()
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
+        }
+        role = rolesNode.addNode("translator", "jnt:role");
+        role.setProperty("j:hidden", true);
+        role.setProperty("j:permissionNames", permsToAdd.toArray(new String[permsToAdd.size()]));
+        role.setProperty("j:privilegedAccess", true);
+        role.setProperty("j:roleGroup", "edit-role");
+        subNode = role.addNode("currentSite-access", "jnt:externalPermissions");
+        subNode.setProperty("j:path", "currentSite");
+        permissionNames = ["components", "editModeAccess", "sitemapSelector", "view-full-wysiwyg-editor"];
+        subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
+
+        permsToRemove = ["editModeAccess", "sitemapSelector", "jcr:versionManagement_default"];
+        jcrsession.save()
+        JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
+        for (JCRNodeWrapper trans : rolesNode.getNodes("translator-*")) {
+            setPermissions(trans, permsToRemove, [])
+            jcrsession.move(trans.getPath(), "/roles/translator/" + trans.getName());
+        };
+        jcrsession.save()
+        JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
+        log.info("...creation done.");
 
         log.info("Start creating server-administrator role...");
         role = rolesNode.addNode("server-administrator", "jnt:role");
         role.setProperty("j:hidden", false);
         role.setProperty("j:nodeTypes", ["rep:root"].toArray(new String[1]));
-        def permissionNames = ["jcr:all_default", "admin"];
+        permissionNames = ["repository-permissions", "admin", "publish"];
         role.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
         role.setProperty("j:privilegedAccess", true);
         role.setProperty("j:roleGroup", "server-role");
+        subNode = role.addNode("currentSite-access", "jnt:externalPermissions");
+        subNode.setProperty("j:path", "/sites/systemsite");
+        permissionNames = ["managers", "engineTabs"];
+        subNode.setProperty("j:permissionNames", permissionNames.toArray(new String[permissionNames.size()]));
+
         subNode = role.addNode("j:translation_en", "jnt:translation");
         subNode.setProperty("jcr:description", "Grant access to the server administration");
         subNode.setProperty("jcr:language", "en");

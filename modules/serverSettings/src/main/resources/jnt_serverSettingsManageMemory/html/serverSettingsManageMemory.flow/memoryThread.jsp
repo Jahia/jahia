@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -122,7 +123,7 @@
                                 <button class="btn" type="submit" name="_eventId_performTD">
                                     <i class="icon-cog"></i>
                                     &nbsp;<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.file'/>
-                                </button>
+                                </button>&nbsp;<a href="#threadshint">*</a>
                             </form>
                         </td>
                     </tr>
@@ -133,7 +134,7 @@
                                 <button class="btn" type="submit" name="_eventId_scheduleTD">
                                     <i class="icon-cog"></i>
                                     &nbsp;<fmt:message key='serverSettings.manageMemory.threads.performThreadDump.multiple'/>
-                                </button>
+                                </button>&nbsp;<a href="#threadshint">*</a>
                                 <label for="threadDumpCount"><fmt:message key="column.count.label"/>:&nbsp;</label>
                                 <input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="10"/>
                                 &nbsp;&nbsp;
@@ -141,6 +142,14 @@
                                 <input type="text" id="threadDumpInterval" name="threadDumpInterval" size="2" value="10"/>&nbsp;<fmt:message
                                     key="label.seconds"/>
                             </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left">
+                            <a class="btn" href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp" target="_blank">
+                                <i class="icon-share"></i>
+                                &nbsp;<fmt:message key="serverSettings.manageMemory.launchTda"/>
+                            </a>
                         </td>
                     </tr>
                     <tr>
@@ -184,19 +193,23 @@
                                         </button>
                                         </c:otherwise>
                                     </c:choose>
-
+                                    &nbsp;<a href="#errorshint">**</a>
                             </form>
                         </td>
                     </tr>
-                    <tr>
-                        <td align="left">
-                            <a class="btn" href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp" target="_blank">
-                                <i class="icon-share"></i>
-                                &nbsp;<fmt:message key="serverSettings.manageMemory.launchTda"/>
-                            </a>
-                        </td>
-                    </tr>
                 </table>
+                <hr/>
+                <p>
+                <a name="threadshint" id="threadshint">*</a> - <fmt:message key="serverSettings.manageMemory.threads.folder"/>:
+                <pre><%= SettingsBean.getThreadDir() %></pre>
+                <fmt:message key="serverSettings.manageMemory.threads.folder.overrideHint"/>
+                </p>
+                <p>
+                <a name="errorshint" id="errorshint">**</a> - <fmt:message key="serverSettings.manageMemory.errors.dumper.hint"/><br/>
+                <fmt:message key="serverSettings.manageMemory.errors.dumper.folder"/>:
+                <pre><%= SettingsBean.getErrorDir() %></pre>
+                <fmt:message key="serverSettings.manageMemory.errors.dumper.folder.overrideHint"/>
+                </p>
             </div>
         </div>
     </div>

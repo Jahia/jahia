@@ -6,13 +6,23 @@
                    j:modulePriority="0"
                    j:moduleType="system"
                    j:title="Jahia Translation Providers"
+                   jcr:mixinTypes="jmix:hasExternalProviderExtension"
                    jcr:primaryType="jnt:module">
                 
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/" jcr:primaryType="jnt:templatesFolder">
-                    <files jcr:primaryType="jnt:folder"/>
+                    <files jcr:primaryType="jnt:folder">
+                        <translation-settings.png j:height="16"
+                                         j:width="16"
+                                         jcr:mixinTypes="jmix:image"
+                                         jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                            <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                        </translation-settings.png>
+                    </files>
                     <contents jcr:primaryType="jnt:contentFolder"/>
                     <site-settings-base j:view="siteSettings"
                               jcr:mixinTypes="jmix:useUILocale"
@@ -20,6 +30,7 @@
                         <translationSettings j:applyOn="jnt:virtualsite"
                                     j:defaultTemplate="false"
                                     j:hiddenTemplate="true"
+                                    j:icon="/modules/translation/templates/files/translation-settings.png"
                                          j:priority="100"
                                          j:requiredPermissionNames="adminMicrosoftTranslation"
                                          j:titleKey="siteSettings.label.translation"

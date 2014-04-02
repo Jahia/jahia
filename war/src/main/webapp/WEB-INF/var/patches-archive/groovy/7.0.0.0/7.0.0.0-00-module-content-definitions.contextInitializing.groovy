@@ -10,6 +10,7 @@ import javax.jcr.RepositoryException
 import javax.servlet.ServletContext
 import javax.sql.DataSource
 
+import java.sql.Clob;
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -23,6 +24,7 @@ import java.util.regex.Pattern
 final Logger log = Logger.getLogger("org.jahia.tools.groovyConsole");
 
 Connection connection = null;
+boolean autoCommitChanged = false;
 
 try {
     DataSource dataSource = DatabaseUtils.getDatasource();
@@ -30,6 +32,7 @@ try {
     if (connection.getAutoCommit()) {
         // disable auto-commit
         connection.setAutoCommit(false);
+        autoCommitChanged = true;
     }
 
     ServletContext servletContext = SettingsBean.getInstance().getServletContext();
@@ -51,6 +54,9 @@ try {
 
 } finally {
     if (connection != null) {
+        if (autoCommitChanged) {
+            connection.setAutoCommit(true);
+        }
         connection.close();
     }
 }
@@ -131,15 +137,20 @@ public int saveNewCndFile(String filename, String content, Connection connection
     PreparedStatement stmt = null;
     try {
         String insertSql = null;
+        Clob contentClob = null; 
     	if (DatabaseUtils.DatabaseType.postgresql == DatabaseUtils.getDatabaseType()) {
             insertSql = "insert into jahia_nodetypes_provider(id, cndFile, filename) values (nextval('jahia_nodetypes_provider_seq'), ?, ?)";
+            contentClob = ClobProxy.generateProxy(content);
     	} else if (DatabaseUtils.DatabaseType.oracle == DatabaseUtils.getDatabaseType()) {
-            insertSql = "insert into jahia_nodetypes_provider(id, cndFile, filename) values (jahia_nodetypes_provider_seq.nextval(), ?, ?)";
+            insertSql = "insert into jahia_nodetypes_provider(id, cndFile, filename) values (jahia_nodetypes_provider_seq.nextval, ?, ?)";
+            contentClob = connection.createClob();
+            contentClob.setString(1, content);
         } else {
             insertSql = 'insert into jahia_nodetypes_provider(cndFile, filename) values (?,?)';
+            contentClob = ClobProxy.generateProxy(content);
         }
         stmt = connection.prepareStatement(insertSql);
-        stmt.setClob(1, ClobProxy.generateProxy(content));
+        stmt.setClob(1, contentClob);
         stmt.setString(2, filename);
         return stmt.executeUpdate();
     } finally {

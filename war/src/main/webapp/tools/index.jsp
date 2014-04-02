@@ -19,8 +19,8 @@
     <ul>
         <li><a href="systemInfo.jsp">System information</a></li>
         <li><a href="threadDumpMgmt.jsp">Thread state information</a></li>
-        <li><a href="jcrSessions.jsp">JCR sessions Information</a></li>
         <li><a href="memoryInfo.jsp">Memory information</a></li>
+        <li><a href="jcrSessions.jsp">JCR sessions information</a></li>
         <li><a href="maintenance.jsp">System maintenance</a></li>
         <li><a href="precompileServlet">JSP pre-compilation</a></li>
         <li><a href="benchmarks.jsp">System benchmarks</a></li>
@@ -78,9 +78,9 @@
     <legend>Cache</legend>
     <ul>
         <li><a href="cache.jsp">Cache management</a></li>
-        <li><a href="ehcache/ehcache_stats.jsp">Statistics only</a></li>
-        <li><a href="ehcache/ehcache_cj.jsp">Modules</a></li>
-        <li><a href="ehcache/ehcache_cj_dep.jsp">Dependencies</a></li>
+        <li><a href="ehcache/ehcache_stats.jsp">Output cache statistics</a></li>
+        <li><a href="ehcache/ehcache_cj.jsp">Output cache</a></li>
+        <li><a href="ehcache/ehcache_cj_dep.jsp">Output dependencies cache</a></li>
     </ul>
 </fieldset>
 <fieldset>

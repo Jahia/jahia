@@ -108,7 +108,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Jahia-Module-Type>system</Jahia-Module-Type>
             <Jahia-Depends>default,siteSettings</Jahia-Depends>
           </instructions>
         </configuration>

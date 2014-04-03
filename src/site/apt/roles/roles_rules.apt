@@ -1,9 +1,0 @@
-Roles/permissions related business rules
-
-  Several rules are provided for an event-driven role/permission management in an automated way.
-  The list of possible rule consequences (actions) can be found in the <<<WEB-INF/etc/repository/rules/rules.dsl>>>
-  file, which contains rule consequences in JBoss Rules Domain Specific Language, like:
-  
-  * Grant role \{role\} on the \{node\} to the current user
-  * Grant role \{role\} on the \{node\} to the user \{user\}
-  * Revoke role \{role\} from everybody on the \{node\}

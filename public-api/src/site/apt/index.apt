@@ -1,3 +1,0 @@
-Jahia Server API
-
- Jahia rely mainly on {{{http://jackrabbit.apache.org/api/2.2/}Jackrabbit 2.0}} to manage its content.

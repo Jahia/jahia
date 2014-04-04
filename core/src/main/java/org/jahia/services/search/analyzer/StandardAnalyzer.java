@@ -69,14 +69,9 @@
  */
 package org.jahia.services.search.analyzer;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.ISOLatin1AccentFilter;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
@@ -85,22 +80,8 @@ import org.apache.lucene.util.Version;
  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link LowerCaseFilter}, {@link StopFilter} and {@link ISOLatin1AccentFilter}.
  * 
  */
-public class StandardAnalyzer extends Analyzer {
-    private org.apache.lucene.analysis.standard.StandardAnalyzer luceneStdAnalyzer = new org.apache.lucene.analysis.standard.StandardAnalyzer(Version.LUCENE_30);
-
+public class StandardAnalyzer extends ASCIIFoldingAnalyzer {
     public StandardAnalyzer() {
-        super();
-    }
-
-    public TokenStream tokenStream(String fieldName, Reader reader) {
-        TokenStream result = luceneStdAnalyzer.tokenStream(fieldName, reader);
-        result = new ISOLatin1AccentFilter(result);
-        return result;
-    }
-
-    public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-        TokenStream result = luceneStdAnalyzer.reusableTokenStream(fieldName, reader);
-        result = new ISOLatin1AccentFilter(result);
-        return result;
+        super(new org.apache.lucene.analysis.standard.StandardAnalyzer(Version.LUCENE_30));
     }
 }

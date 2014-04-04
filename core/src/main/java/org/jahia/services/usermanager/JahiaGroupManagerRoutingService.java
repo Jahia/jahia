@@ -446,7 +446,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
             } else {
                 Set<JahiaGroupManagerProvider> newProviderSet = new TreeSet<JahiaGroupManagerProvider>(PROVIDER_COMPARATOR);
                 newProviderSet.addAll(providers);
-                newProviderSet.add(provider);
+                newProviderSet.remove(provider);
                 providers = UnmodifiableList.decorate(new LinkedList<JahiaGroupManagerProvider>(newProviderSet));
             }
         }

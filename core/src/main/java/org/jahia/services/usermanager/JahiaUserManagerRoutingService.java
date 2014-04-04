@@ -355,7 +355,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
             } else {
                 Set<JahiaUserManagerProvider> newProviderSet = new TreeSet<JahiaUserManagerProvider>(PROVIDER_COMPARATOR);
                 newProviderSet.addAll(providers);
-                newProviderSet.add(provider);
+                newProviderSet.remove(provider);
                 providers = UnmodifiableList.decorate(new LinkedList<JahiaUserManagerProvider>(newProviderSet));
             }
         }

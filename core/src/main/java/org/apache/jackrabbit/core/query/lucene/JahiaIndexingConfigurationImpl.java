@@ -127,6 +127,11 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     private Set<String> includedInSpellchecking = null;
 
     /**
+     * The configured {@code AnalyzerRegistry} if any.
+     */
+    private final LanguageCustomizingAnalyzerRegistry analyzerRegistry = new LanguageCustomizingAnalyzerRegistry(this);
+
+    /**
      * @param node a node.
      * @return the text content of the <code>node</code>.
      */
@@ -143,7 +148,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     }
 
     private Set<Name> excludesFromI18NCopy = Collections.emptySet();
-    
+
     private Set<Name> hierarchicalNodetypes = Collections.emptySet();
 
     private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
@@ -155,10 +160,10 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     public Set<Name> getExcludesFromI18NCopy() {
         return excludesFromI18NCopy;
     }
-    
+
     public Set<Name> getHierarchicalNodetypes() {
         return hierarchicalNodetypes;
-    }    
+    }
 
     /**
      * Returns the namespaces declared on the <code>node</code>.
@@ -213,7 +218,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             if (nodeName.equals("i18ncopy")) {
                 excludesFromI18NCopy = initPropertyCollectionFrom(configNode, "exclude-property", resolver);
             } else if (nodeName.equals("hierarchical")) {
-                hierarchicalNodetypes = initPropertyCollectionFrom(configNode, "nodetype", resolver);                
+                hierarchicalNodetypes = initPropertyCollectionFrom(configNode, "nodetype", resolver);
             } else if (nodeName.equals("spellchecker")) {
                 includedInSpellchecking = initPropertyCollectionFrom(configNode, "include-property", null);
             } else if (nodeName.equals("analyzer-registry")) {
@@ -258,7 +263,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                                         "argument or a no-arg constructor.", e1);
                             }
                         }
-
                         if (analyzer != null) {
                             Boolean useASCIIFoldingFilter = null;
                             try {
@@ -266,9 +270,6 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                             } catch (Exception e) {
                                 // nothing to do
                             }
-
-                            // and add the Analyzer to the registry if we managed to instantiate it
-                            LanguageCustomizingAnalyzerRegistry.getInstance().addAnalyzer(lang, analyzer, useASCIIFoldingFilter);
 
                             // instantiate and initialize AnalyzerCustomizer
                             final NodeList potentialCustomizers = child.getChildNodes();
@@ -321,6 +322,9 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                                     }
                                 }
                             }
+
+                            // and finally add the Analyzer to the registry if we managed to instantiate it
+                            analyzerRegistry.addAnalyzer(lang, analyzer, useASCIIFoldingFilter);
                         }
                     }
                 }
@@ -421,5 +425,9 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
         // if includedInSpellchecking is null, we consider that no setup of spellchecking has been done and all
         // properties should therefore be included
         return includedInSpellchecking == null || includedInSpellchecking.contains(propertyName);
+    }
+
+    public LanguageCustomizingAnalyzerRegistry getAnalyzerRegistry() {
+        return analyzerRegistry;
     }
 }

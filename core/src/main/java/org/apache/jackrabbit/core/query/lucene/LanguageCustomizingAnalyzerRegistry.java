@@ -113,16 +113,12 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
      */
     private final Map<String, Analyzer> languageToAnalyzer = new ConcurrentHashMap<String, Analyzer>();
 
-    private IndexingConfiguration configuration;
+    private final IndexingConfiguration configuration;
     private Analyzer defaultAnalyzer;
 
-    private static final LanguageCustomizingAnalyzerRegistry instance = new LanguageCustomizingAnalyzerRegistry();
+    public LanguageCustomizingAnalyzerRegistry(IndexingConfiguration configuration) {
+        this.configuration = configuration;
 
-    public static final LanguageCustomizingAnalyzerRegistry getInstance() {
-        return instance;
-    }
-
-    private LanguageCustomizingAnalyzerRegistry() {
         languageToAnalyzer.put("ar", new AnalyzerWrapper(new ArabicAnalyzer(Version.LUCENE_30), true));
         languageToAnalyzer.put("br", new AnalyzerWrapper(new BrazilianAnalyzer(Version.LUCENE_30), true));
         languageToAnalyzer.put("cjk", new AnalyzerWrapper(new CJKAnalyzer(Version.LUCENE_30), true));
@@ -196,10 +192,6 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
         this.defaultAnalyzer = defaultAnalyzer;
     }
 
-    public void setConfiguration(IndexingConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
     /**
      * Wraps a configured {@link org.apache.lucene.analysis.Analyzer} instance to make sure property-specific as
      * configured are properly used and filter token streams using ASCIIFoldingFilter.
@@ -217,33 +209,58 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
 
         @Override
         public TokenStream tokenStream(String fieldName, Reader reader) {
-            final Analyzer analyzer = getAnalyzer(fieldName);
-
-            TokenStream result = analyzer.tokenStream(fieldName, reader);
-            return useFilter ? new ASCIIFoldingFilter(result) : result;
+            return getAnalyzer(fieldName).tokenStream(fieldName, reader);
         }
 
         @Override
         public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-            final Analyzer analyzer = getAnalyzer(fieldName);
-
-            TokenStream result = analyzer.reusableTokenStream(fieldName, reader);
-            return useFilter ? new ASCIIFoldingFilter(result) : result;
+            return getAnalyzer(fieldName).reusableTokenStream(fieldName, reader);
         }
 
-        private Analyzer getAnalyzer(String fieldName) {
+        private Wrapper getAnalyzer(String fieldName) {
             // first look at indexing configuration to see if a property analyzer has been set for this field
             Analyzer analyzer = configuration.getPropertyAnalyzer(fieldName);
+            boolean filter = false;
             if (analyzer == null) {
                 // we didn't configure a property analyzer for this field
                 if (FieldNames.isFulltextField(fieldName)) {
                     // we have a full text field, so we can use our wrapped Analyzer
                     analyzer = wrappee;
+                    filter = useFilter;
                 } else {
                     analyzer = defaultAnalyzer;
                 }
             }
-            return analyzer;
+            return new Wrapper(analyzer, filter);
+        }
+
+        /**
+         * Wraps again to make sure that we're not filtering if we're using a configured property Analyzer.
+         */
+        private class Wrapper extends Analyzer {
+            private final Analyzer wrappee;
+            private final boolean useFilter;
+
+            private Wrapper(Analyzer wrappee, boolean useFilter) {
+                this.wrappee = wrappee;
+                this.useFilter = useFilter;
+            }
+
+            @Override
+            public TokenStream tokenStream(String fieldName, Reader reader) {
+                final TokenStream stream = wrappee.tokenStream(fieldName, reader);
+                return filterIfNeeded(stream);
+            }
+
+            @Override
+            public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+                final TokenStream stream = wrappee.reusableTokenStream(fieldName, reader);
+                return filterIfNeeded(stream);
+            }
+
+            private TokenStream filterIfNeeded(TokenStream stream) {
+                return useFilter ? new ASCIIFoldingFilter(stream) : stream;
+            }
         }
     }
 }

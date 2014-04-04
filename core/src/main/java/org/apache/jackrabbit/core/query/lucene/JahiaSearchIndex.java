@@ -81,15 +81,20 @@ import org.apache.jackrabbit.core.state.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.apache.shiro.util.StringUtils;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.Node;
@@ -129,12 +134,50 @@ public class JahiaSearchIndex extends SearchIndex {
 
     @Override
     protected AnalyzerRegistry getAnalyzerRegistry() {
-        LanguageCustomizingAnalyzerRegistry analyzerRegistry = LanguageCustomizingAnalyzerRegistry.getInstance();
-        analyzerRegistry.setConfiguration(getIndexingConfig());
-        // we get the JackrabbitAnalyzer this way, note though that this will mean that field names will be looked at
-        // twice
-        analyzerRegistry.setDefaultAnalyzer(getTextAnalyzer());
-        return analyzerRegistry;
+        final IndexingConfiguration indexingConfig = getIndexingConfig();
+        if (indexingConfig instanceof JahiaIndexingConfigurationImpl) {
+            JahiaIndexingConfigurationImpl config = (JahiaIndexingConfigurationImpl) indexingConfig;
+            return config.getAnalyzerRegistry();
+        } else {
+            return super.getAnalyzerRegistry();
+        }
+    }
+
+    @Override
+    protected IndexingConfiguration createIndexingConfiguration(NamespaceMappings namespaceMappings) {
+        final IndexingConfiguration configuration = super.createIndexingConfiguration(namespaceMappings);
+
+        // make sure the AnalyzerRegistry configured in the configuration gets the proper Analyzer
+        if (configuration instanceof JahiaIndexingConfigurationImpl) {
+            JahiaIndexingConfigurationImpl jahiaConfiguration = (JahiaIndexingConfigurationImpl) configuration;
+            final LanguageCustomizingAnalyzerRegistry registry = jahiaConfiguration.getAnalyzerRegistry();
+
+            // retrieve the default analyzer from the Jackrabbit configuration.
+            // Should be a JackrabbitAnalyzer instance set with the default Analyzer configured using the 'analyzer'
+            // param of the 'SearchIndex' section in repository.xml
+            final Analyzer analyzer = super.getTextAnalyzer();
+            registry.setDefaultAnalyzer(analyzer);
+
+            // attempt to get a default language specific Analyzer
+            final SettingsBean settings = SettingsBean.getInstance();
+            final Locale defaultLocale = settings.getDefaultLocale();
+            Analyzer specific = registry.getAnalyzer(defaultLocale.toString());
+            if (specific == null) {
+                specific = registry.getAnalyzer(defaultLocale.getLanguage());
+            }
+
+            if (specific != null) {
+                // if we've found one, use it
+                if (analyzer instanceof JackrabbitAnalyzer) {
+                    JackrabbitAnalyzer jrAnalyzer = (JackrabbitAnalyzer) analyzer;
+                    jrAnalyzer.setDefaultAnalyzer(specific);
+                } else {
+                    throw new IllegalArgumentException("Analyzer wasn't a JackrabbitAnalyzer. Couldn't set default language Analyzer as a consequence.");
+                }
+            }
+        }
+
+        return configuration;
     }
 
     /**
@@ -163,12 +206,12 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
             throws RepositoryException, IOException {
-        
+
         if (isVersionIndex()) {
             super.updateNodes(remove, add);
             return;
         }
-            
+
         final List<NodeState> addList = new ArrayList<NodeState>();
         final List<NodeId> removeList = new ArrayList<NodeId>();
         final Set<NodeId> removedIds = new HashSet<NodeId>();
@@ -181,10 +224,10 @@ public class JahiaSearchIndex extends SearchIndex {
             if (state != null) {
                 addedIds.add(state.getNodeId());
                 addList.add(state);
-                
+
                 if (!hasAclOrAce
-                        && (JNT_ACL.equals(state.getNodeTypeName()) || 
-                            JNT_ACE.equals(state.getNodeTypeName()))) {
+                        && (JNT_ACL.equals(state.getNodeTypeName()) ||
+                        JNT_ACE.equals(state.getNodeTypeName()))) {
                     hasAclOrAce = true;
                 }
             }
@@ -194,7 +237,7 @@ public class JahiaSearchIndex extends SearchIndex {
             removedIds.add(nodeId);
             removeList.add(nodeId);
         }
-        
+
         if (isAddAclUuidInIndex() && hasAclOrAce) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
@@ -323,6 +366,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
     /**
      * Check if this node state can use the optimized ACE indexation, based on the configured nodetypes
+     *
      * @param currentNode
      * @return
      * @throws RepositoryException
@@ -496,6 +540,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
     /**
      * Return the list of types which can benefit of the optimized ACE indexation.
+     *
      * @return
      */
     public Set<String> getTypesUsingOptimizedACEIndexation() {

@@ -172,6 +172,14 @@ public class JBPMMailProducer {
                             if (addresses != null && addresses.length > 0) {
                                 return Collections.singleton(email);
                             } else {
+                                addresses = email.getRecipients(Message.RecipientType.BCC);
+                                if (addresses != null && addresses.length > 0) {
+                                    return Collections.singleton(email);
+                                }
+                                addresses = email.getRecipients(Message.RecipientType.CC);
+                                if (addresses != null && addresses.length > 0) {
+                                    return Collections.singleton(email);
+                                }
                                 return Collections.emptyList();
                             }
                         } catch (Exception e) {

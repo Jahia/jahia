@@ -308,7 +308,17 @@ public class LangPropertiesEditor extends LayoutContainer {
                                             defs.add(def);
                                         }
                                     }
-                                    JahiaContentManagementService.App.getInstance().translate(props, defs, translationSource.getDisplayedLocale().getLanguage(), displayedLocale.getLanguage(), JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<List<GWTJahiaNodeProperty>>() {
+                                    String srcLanguage = translationSource.getDisplayedLocale().getLanguage();
+                                    int i = srcLanguage.indexOf("_");
+                                    if (i > -1) {
+                                        srcLanguage = srcLanguage.substring(0, i);
+                                    }
+                                    String destLanguage = displayedLocale.getLanguage();
+                                    i = destLanguage.indexOf("_");
+                                    if (i > -1) {
+                                        destLanguage = destLanguage.substring(0, i);
+                                    }
+                                    JahiaContentManagementService.App.getInstance().translate(props, defs, srcLanguage, destLanguage, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<List<GWTJahiaNodeProperty>>() {
                                         public void onApplicationFailure(Throwable throwable) {
                                             com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.translation", "Properties translation failed") + "\n\n"
                                                     + throwable.getMessage());

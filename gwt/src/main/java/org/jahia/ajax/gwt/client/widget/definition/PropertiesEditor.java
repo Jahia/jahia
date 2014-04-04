@@ -773,7 +773,17 @@ public class PropertiesEditor extends FormPanel {
                                         new Listener<MessageBoxEvent>() {
                                             public void handleEvent(MessageBoxEvent be) {
                                                 if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
-                                                    JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, definition, translationSource.getDisplayedLocale().getLanguage(), locale, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<GWTJahiaNodeProperty>() {
+                                                    String srcLanguage = translationSource.getDisplayedLocale().getLanguage();
+                                                    int i = srcLanguage.indexOf("_");
+                                                    if (i > -1) {
+                                                        srcLanguage = srcLanguage.substring(0, i);
+                                                    }
+                                                    String destLanguage = locale;
+                                                    i = destLanguage.indexOf("_");
+                                                    if (i > -1) {
+                                                        destLanguage = destLanguage.substring(0, i);
+                                                    }
+                                                    JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, definition, srcLanguage, destLanguage, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<GWTJahiaNodeProperty>() {
                                                         public void onApplicationFailure(Throwable throwable) {
                                                             com.google.gwt.user.client.Window.alert(Messages.get("failure.property.translation", "Property translation failed") + "\n\n"
                                                                     + throwable.getMessage());

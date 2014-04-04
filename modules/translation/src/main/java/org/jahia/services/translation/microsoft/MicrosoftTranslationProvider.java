@@ -82,6 +82,7 @@ import org.jahia.services.templates.JahiaModuleAware;
 import org.jahia.services.translation.AbstractTranslationProvider;
 import org.jahia.services.translation.TranslationException;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -144,7 +145,7 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
                 throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
             }
             if (returnCode != HttpStatus.SC_OK) {
-                throw new TranslationException(Messages.getWithArgs(module.getResourceBundleName(),"siteSettings.translation.microsoft.errorWithCode",uiLocale, returnCode));
+                throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale), "siteSettings.translation.microsoft.errorWithCode", returnCode));
             }
             try {
                 JSONObject jsonObject = new JSONObject(bodyAsString);
@@ -193,7 +194,7 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
             throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
         }
         if (returnCode != HttpStatus.SC_OK) {
-            throw new TranslationException(Messages.getWithArgs(module.getName(),"siteSettings.translation.microsoft.errorWithCode",uiLocale, returnCode));
+            throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale), "siteSettings.translation.microsoft.errorWithCode", returnCode));
         }
         String translatedText;
         try {
@@ -254,7 +255,7 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
             throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
         }
         if (returnCode != HttpStatus.SC_OK) {
-            throw new TranslationException(Messages.getWithArgs(module.getName(),"siteSettings.translation.microsoft.errorWithCode",uiLocale, returnCode));
+            throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale), "siteSettings.translation.microsoft.errorWithCode", returnCode));
         }
         List<String> translatedTexts = new ArrayList<String>();
         try {

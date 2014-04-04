@@ -83,11 +83,14 @@ public interface AnalyzerCustomizer {
     AnalyzerCustomizer NO_OP = new NoOpAnalyzerCustomizer();
 
     /**
-     * Customize the specified Analyzer.
+     * Customize the specified Analyzer. Since the Analyzer interface doesn't provide many opportunities for customization after instantiation so this method has the opportunity
+     * to return a different instance than the one provided. Note that it's even possible to return a completely different Analyzer instance (using a different class for
+     * example) but we wouldn't advise doing this.
      *
      * @param analyzer the Analyzer instance to customize
+     * @return a customized version of the provided Analyzer
      */
-    void customize(Analyzer analyzer);
+    Analyzer customize(Analyzer analyzer);
 
     /**
      * Initialize this AnalyzerCustomizer with the specified key/values pairs.
@@ -99,8 +102,9 @@ public interface AnalyzerCustomizer {
     class NoOpAnalyzerCustomizer implements AnalyzerCustomizer {
 
         @Override
-        public void customize(Analyzer analyzer) {
-            // do nothing
+        public Analyzer customize(Analyzer analyzer) {
+            // just return what we were given
+            return analyzer;
         }
 
         @Override

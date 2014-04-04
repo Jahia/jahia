@@ -310,7 +310,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                                             customizer.initFrom(props);
 
                                             // and finally, customize the Analyzer
-                                            customizer.customize(analyzer);
+                                            analyzer = customizer.customize(analyzer);
 
                                             // we only allow one customizer so stop here
                                             break;

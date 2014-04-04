@@ -86,6 +86,12 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
 import org.slf4j.Logger;
 
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
@@ -344,6 +350,13 @@ public class ErrorFileDumper {
         todaysDirectory.mkdirs();
         return new File(todaysDirectory,
                 "error-" + DATE_FORMAT_FILE.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
+    }
+
+    private static File getNextHeapDumpFile() {
+        Date now = new Date();
+        File todaysDirectory = new File(SettingsBean.getHeapDir(), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+        todaysDirectory.mkdirs();
+        return new File(todaysDirectory, "heap-" + ErrorFileDumper.DATE_FORMAT_FILE.format(now) + ".hprof");
     }
 
     public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable t, int lastExceptionOccurences,
@@ -692,6 +705,26 @@ public class ErrorFileDumper {
             newDepth = getNestedExceptionDepth(innerThrowable, curDepth + 1);
         }
         return newDepth;
+    }
+
+    public static boolean isHeapDumpSupported() throws MalformedObjectNameException {
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        ObjectName hotSpotDiagnostic = new ObjectName("com.sun.management:type=HotSpotDiagnostic");
+        return mBeanServer.isRegistered(hotSpotDiagnostic);
+    }
+    
+    public static File performHeapDump() throws MalformedObjectNameException, InstanceNotFoundException,
+            ReflectionException, MBeanException {
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        ObjectName hotSpotDiagnostic = new ObjectName("com.sun.management:type=HotSpotDiagnostic");
+        if (!mBeanServer.isRegistered(hotSpotDiagnostic)) {
+            throw new UnsupportedOperationException("Unable to find the "
+                    + "'com.sun.management:type=HotSpotDiagnostic'" + " managed bean to perform heap dump");
+        }
+        File hprofFilePath = getNextHeapDumpFile();
+        mBeanServer.invoke(hotSpotDiagnostic, "dumpHeap", new Object[] { hprofFilePath.getPath(), Boolean.TRUE },
+                new String[] { String.class.getName(), boolean.class.getName() });
+        return hprofFilePath;
     }
 
 }

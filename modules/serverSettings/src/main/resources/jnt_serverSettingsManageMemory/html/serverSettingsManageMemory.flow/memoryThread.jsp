@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -15,9 +16,21 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="memoryInfo" type="org.jahia.modules.serversettings.memoryThread.MemoryThreadInformationManagement"--%>
-<template:addResources type="javascript" resources="jquery.js,admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('button.blockUI').click(function() {workInProgress('${i18nWaiting}');});
+        });
+    </script>
+</template:addResources>
+<template:addResources type="javascript" resources="admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <h2><fmt:message key="serverSettings.manageMemory"/></h2>
+<c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
+    <div class="${msg.severity == 'ERROR' ? 'validationError' : ''} alert ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}"><button type="button" class="close" data-dismiss="alert">&times;</button>${fn:escapeXml(msg.text)}</div>
+</c:forEach>
 <div class="accordion" id="accordion2">
     <div class="accordion-group">
         <div class="accordion-heading">
@@ -58,21 +71,29 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td colspan="2">
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
                                 <button class="btn" type="submit" name="_eventId_refresh">
                                     <i class="icon-refresh"></i>
                                     &nbsp;<fmt:message key='label.refresh'/>
                                 </button>
                             </form>
-                        </td>
-                        <td>
+                            
                             <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-                                <button class="btn" type="submit" name="_eventId_gc">
-                                    <i class="icon-cog"></i>
+                                <button class="btn blockUI" type="submit" name="_eventId_gc">
+                                    <i class="icon-trash"></i>
                                     &nbsp;<fmt:message key='serverSettings.manageMemory.memory.gc'/>
                                 </button>
                             </form>
+                            
+                            <c:if test="${heapDumpSupported}">
+                            <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
+                                <button class="btn blockUI" type="submit" name="_eventId_heapDump">
+                                    <i class="icon-cog"></i>
+                                    &nbsp;<fmt:message key='serverSettings.manageMemory.memory.heapDump'/>
+                                </button>
+                            </form>
+                            </c:if>
                         </td>
                     </tr>
                 </table>

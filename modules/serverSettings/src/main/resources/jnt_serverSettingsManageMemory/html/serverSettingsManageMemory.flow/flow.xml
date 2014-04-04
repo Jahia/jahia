@@ -8,13 +8,18 @@
     <view-state id="memoryThread">
         <on-render>
             <evaluate expression="memoryInfo.refresh()" result="requestScope.memoryInfo"/>
+            <evaluate expression="memoryInfo.isHeapDumpSupported()" result="requestScope.heapDumpSupported"/>
         </on-render>
         <transition on="refresh" to="memoryThread" bind="false" validate="false">
             <set name="memoryInfo.mode" value="'memory'" />
         </transition>
         <transition on="gc" to="memoryThread" bind="false" validate="false">
             <set name="memoryInfo.mode" value="'memory'" />
-            <evaluate expression="memoryInfo.doGarbageCollection()"/>
+            <evaluate expression="memoryInfo.doGarbageCollection(messageContext)"/>
+        </transition>
+        <transition on="heapDump" to="memoryThread" bind="false" validate="false">
+            <set name="memoryInfo.mode" value="'memory'" />
+            <evaluate expression="memoryInfo.doHeapDump(messageContext)"/>
         </transition>
         <transition on="performTD" to="memoryThread">
             <set name="memoryInfo.mode" value="'threads'" />

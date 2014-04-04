@@ -73,11 +73,19 @@ import org.apache.commons.io.output.StringBuilderWriter;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.FileUtils;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ReflectionException;
 
 /**
  * @author rincevent
@@ -94,8 +102,20 @@ public class MemoryThreadInformationManagement implements Serializable {
         refresh();
     }
 
-    public void doGarbageCollection() {
+    public void doGarbageCollection(MessageContext messages) {
         System.gc();
+        messages.addMessage(new MessageBuilder().info().code("serverSettings.manageMemory.memory.gc.triggered").build());
+    }
+    
+    public boolean isHeapDumpSupported() throws MalformedObjectNameException {
+        return ErrorFileDumper.isHeapDumpSupported();
+    }
+
+    public void doHeapDump(MessageContext messages) throws MalformedObjectNameException, InstanceNotFoundException,
+            ReflectionException, MBeanException {
+        File hprofFilePath = ErrorFileDumper.performHeapDump();
+        messages.addMessage(new MessageBuilder().info().code("serverSettings.manageMemory.memory.heapDump.triggered")
+                .arg(hprofFilePath).build());
     }
 
     public String executeThreadDump() {

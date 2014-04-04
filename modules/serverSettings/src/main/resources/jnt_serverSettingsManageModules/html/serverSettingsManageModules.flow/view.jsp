@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -16,6 +17,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
+<c:set var="developmentMode" value="<%= SettingsBean.getInstance().isDevelopmentMode() %>"/>
 <template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
@@ -92,7 +94,7 @@
             <c:if test="${not isStudio}">
                 <th><fmt:message key='serverSettings.manageModules.status'/></th>
             </c:if>
-            <c:if test="${not isStudio}">
+            <c:if test="${developmentMode && not isStudio}">
                 <th><fmt:message key='serverSettings.manageModules.sources'/></th>
             </c:if>
             <th><fmt:message key='serverSettings.manageModules.usedInSites'/></th>

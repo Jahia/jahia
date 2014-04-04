@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -19,6 +20,7 @@
 <%--@elvariable id="otherVersions" type="java.util.Map<org.jahia.services.templates.ModuleVersion,org.jahia.data.templates.JahiaTemplatesPackage>"--%>
 <%--@elvariable id="bundleInfo" type="java.util.Map<java.lang.String, java.lang.String>"--%>
 <%--@elvariable id="activeVersion" type="org.jahia.data.templates.JahiaTemplatesPackage"--%>
+<c:set var="developmentMode" value="<%= SettingsBean.getInstance().isDevelopmentMode() %>"/>
 <template:addResources type="javascript" resources="jquery.js,jquery-ui.min.js,admin-bootstrap.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -118,7 +120,7 @@
                 <fmt:message key="serverSettings.manageModules.module.author"/>
             </th>
 
-            <c:if test="${not isStudio}">
+            <c:if test="${developmentMode && not isStudio}">
                 <th style="width:17%">
                     <fmt:message key="serverSettings.manageModules.module.source.uri"/>
                 </th>
@@ -143,7 +145,7 @@
             <td>
                 ${fn:escapeXml(activeVersion.provider)}
             </td>
-            <c:if test="${not isStudio}">
+            <c:if test="${developmentMode && not isStudio}">
                 <c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, activeVersion.id)}" var="isMandatoryDependency"/>
                 <c:set value="${activeVersion.sourcesDownloadable and not isMandatoryDependency}" var="sourcesDownloadable"/>
                 <td>

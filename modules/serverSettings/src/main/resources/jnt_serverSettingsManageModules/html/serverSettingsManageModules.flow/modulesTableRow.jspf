@@ -76,6 +76,7 @@
                 </c:choose>
             </td>
 
+            <c:if test="${developmentMode}">
             <td>
                 <c:choose>
                     <c:when test="${not empty currentModule.sourcesFolder}">
@@ -131,8 +132,8 @@
                         </form>
                     </c:otherwise>
                 </c:choose>
-
             </td>
+            </c:if>
         </c:if>
         <td>
             <c:choose>

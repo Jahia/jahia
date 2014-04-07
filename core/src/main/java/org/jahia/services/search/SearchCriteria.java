@@ -514,7 +514,7 @@ public class SearchCriteria implements Serializable {
         }
     }
     
-    protected static class NodePropertyMapFactory implements Factory, Serializable {
+    public static class NodePropertyMapFactory implements Factory, Serializable {
         private static final long serialVersionUID = 5271166314214230283L;
 
         public Object create() {

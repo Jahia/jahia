@@ -69,7 +69,6 @@
  */
 package org.jahia.services.importexport;
 
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 
 /**

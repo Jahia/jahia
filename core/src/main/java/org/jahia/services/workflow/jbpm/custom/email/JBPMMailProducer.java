@@ -72,6 +72,7 @@ package org.jahia.services.workflow.jbpm.custom.email;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.tools.generic.DateTool;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -158,7 +159,7 @@ public class JBPMMailProducer {
         if (template != null) {
             final MailTemplate usedTemplate = template;
             try {
-                return JCRTemplate.getInstance().doExecuteWithSystemSession(null, "default", locale, new JCRCallback<Collection<Message>>() {
+                return JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, locale, new JCRCallback<Collection<Message>>() {
                     public Collection<Message> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(usedTemplate.getLanguage());

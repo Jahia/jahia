@@ -74,6 +74,7 @@ import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
@@ -177,10 +178,7 @@ public abstract class BackgroundJob implements StatefulJob {
             try {
             	this.postExecution(ctx);
             } finally {
-	            sessionFactory.setCurrentUser(null);
-	            sessionFactory.setCurrentLocale(null);
- 	            sessionFactory.closeAllSessions();
-                ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
+                JcrSessionFilter.endRequest();
             }
         }
     }

@@ -73,6 +73,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -96,7 +97,6 @@ import org.osgi.framework.*;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -313,6 +313,8 @@ public class Activator implements BundleActivator {
                     }
                 } catch (Exception e) {
                     logger.error("Error when handling event", e);
+                } finally {
+                    JcrSessionFilter.endRequest();
                 }
             }
 

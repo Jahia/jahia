@@ -69,7 +69,7 @@
  */
 package org.jahia.bin.filters.jcr;
 
-import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.registries.ServicesRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -83,6 +83,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 /**
@@ -97,8 +98,6 @@ public class JcrSessionFilter implements Filter {
     private Pipeline authPipeline;
 
     private JCRSessionFactory sessionFactory;
-
-    private SchedulerService schedulerService;
 
     private JahiaUserManagerService userManagerService;
     
@@ -133,20 +132,30 @@ public class JcrSessionFilter implements Filter {
             filterChain.doFilter (servletRequest, servletResponse );
         } finally {
             if (initialized) {
-                sessionFactory.setCurrentUser(null);
-                sessionFactory.setCurrentLocale(null);
-                sessionFactory.setFallbackLocale(null);
-                sessionFactory.setCurrentAliasedUser(null);
-                sessionFactory.setCurrentServletPath(null);
-                sessionFactory.setCurrentPreviewDate(null);
-                /*sessionFactory.setVersionDate(null);
-                sessionFactory.setVersionLabel(null);*/
-                sessionFactory.closeAllSessions();
-
-                schedulerService.triggerEndOfRequest();
+                endRequest();
             }
         }
     }
+
+    /**
+     * Performs finalization task for ending request processing: resetting thread locals and closing all active JCR sessions.
+     */
+    public static void endRequest() {
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        sessionFactory.setCurrentUser(null);
+        sessionFactory.setCurrentLocale(null);
+        sessionFactory.setFallbackLocale(null);
+        sessionFactory.setCurrentAliasedUser(null);
+        sessionFactory.setCurrentServletPath(null);
+        sessionFactory.setCurrentPreviewDate(null);
+        /*sessionFactory.setVersionDate(null);
+        sessionFactory.setVersionLabel(null);*/
+        sessionFactory.closeAllSessions();
+
+        ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
+    }
+    
+    
 
     public void init(FilterConfig filterConfig) throws ServletException {
     	// do nothing;
@@ -162,9 +171,5 @@ public class JcrSessionFilter implements Filter {
 
 	public void setUserManagerService(JahiaUserManagerService userManagerService) {
     	this.userManagerService = userManagerService;
-    }
-
-    public void setSchedulerService(SchedulerService schedulerService) {
-        this.schedulerService = schedulerService;
     }
 }

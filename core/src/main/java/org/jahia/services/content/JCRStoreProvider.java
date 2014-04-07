@@ -158,8 +158,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     protected String rmibind;
 
-    private boolean running;
-
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
     private JahiaSitesService sitesService;
@@ -181,8 +179,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private Boolean updateMixinAvailable = null;
 
     private final Object syncRepoInit = new Object();
-
-    private long sessionKeepAliveCheckInterval = -1;
 
     private GroovyPatcher groovyPatcher;
     private NodeTypesDBServiceImpl nodeTypesDBService;
@@ -334,8 +330,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * @deprecated without no replacement
+     */
+    @Deprecated
     public void setSessionKeepAliveCheckInterval(long sessionKeepAliveCheckInterval) {
-        this.sessionKeepAliveCheckInterval = sessionKeepAliveCheckInterval;
+        // do nothing
     }
 
     public GroovyPatcher getGroovyPatcher() {
@@ -405,41 +405,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             // This session must not be released
             final JCRSessionWrapper session = getSystemSession(null, ws);
             final Workspace workspace = session.getProviderSession(this).getWorkspace();
-
+    
             ObservationManager observationManager = workspace.getObservationManager();
             JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
-            listener.setProvider(this);
             listener.setWorkspace(workspace.getName());
             observationManager.addEventListener(listener,
                     Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
                     "/", true, null, null, false);
-
-            running = true;
-            if (sessionKeepAliveCheckInterval > 0) {
-                // The thread should always checks if the session is still alive and reconnect it if lost
-                Thread t = new Thread(ws + "-WorkspaceObserverKeepAlive") {
-                    public void run() {
-                        while (isRunning() && session.isLive()) {
-                            try {
-                                // we retrieve root node to keep the session alive (note : in Jackrabbit sessions never
-                                // time-out but as this is possible in the spec, we do a simple read call in case we
-                                // use other implementations).
-                                session.getRootNode();
-                            } catch (RepositoryException e) {
-                                if (running && logger != null) logger.error(e.getMessage(), e);
-                            }
-                            try {
-                                Thread.sleep(sessionKeepAliveCheckInterval);
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
-                        }
-                        if (running && logger != null) logger.info("System session closed, deregister listeners");
-                    }
-                };
-                t.setDaemon(true);
-                t.start();
-            }
         }
     }
 
@@ -508,7 +480,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void stop() {
-        running = false;
         getSessionFactory().removeProvider(key);
         rmiUnbind();
     }
@@ -523,8 +494,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
+    /**
+     * @deprecated with no replacement
+     */
+    @Deprecated
     public boolean isRunning() {
-        return running;
+        return false;
     }
 
     public void deployDefinitions(String systemId) {

@@ -673,11 +673,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 boolean siteKeyEx = false;
                 boolean serverNameEx = false;
                 try {
-                    siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
-                            infos.get("sitekey"));
+                    siteKeyEx = "".equals(
+                            infos.get("sitekey")) || sitesService.siteExists((String) infos.get("sitekey"), session);
                     String serverName = (String) infos.get("siteservername");
-                    serverNameEx = (sitesService.getSite(serverName) != null && !Url.isLocalhost(serverName)) || "".equals(serverName);
-                } catch (JahiaException e) {
+                    serverNameEx = "".equals(serverName) || (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName, session) != null);
+                } catch (RepositoryException e) {
                     logger.error("Error when getting site", e);
                 }
 
@@ -1283,8 +1283,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         List<String> installedModules = site.getInstalledModules();
         try {
             // site.getInstalledModules() may return outdated data
-            installedModules = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site.getSiteKey()).getInstalledModules();
-        } catch (JahiaException e) {
+            installedModules = sitesService.getSiteByKey(site.getSiteKey(), session).getInstalledModules();
+        } catch (RepositoryException e) {
             logger.error("Cannot get installed modules ", e);
         }
 
@@ -1831,9 +1831,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (name.equals(LIVE_REPOSITORY_XML) && jcrStoreService.getSessionFactory().getCurrentUser() != null) {
                         long timerUGC = System.currentTimeMillis();
                         logger.info("Start importing user generated content");
-                        JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession("live", null, null);
-
-                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(liveSession, parentNodePath, file, fileList);
+                        JCRSessionWrapper liveSession = jcrStoreService.getSessionFactory().getCurrentUserSession(
+                                "live", null, null);
+                        DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(
+                                liveSession, parentNodePath, file, fileList);
 
                         documentViewImportHandler.setImportUserGeneratedContent(true);
                         documentViewImportHandler.setRootBehavior(rootBehaviour);
@@ -1846,10 +1847,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         liveSession.save(JCRObservationManager.IMPORT);
 
-//                        ReferencesHelper.resolveCrossReferences(liveSession, references);
-//                        liveSession.save(JCRObservationManager.IMPORT);
+                        // ReferencesHelper.resolveCrossReferences(liveSession, references);
+                        // liveSession.save(JCRObservationManager.IMPORT);
 
-                        logger.info("Done importing user generated content in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerUGC));
+                        logger.info("Done importing user generated content in {}",
+                                DateUtils.formatDurationWords(System.currentTimeMillis() - timerUGC));
                         break;
                     }
                     zis.closeEntry();

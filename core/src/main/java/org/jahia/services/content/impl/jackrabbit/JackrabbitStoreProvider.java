@@ -116,6 +116,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 session = getSystemSession(null, Constants.LIVE_WORKSPACE);
                 session.getProviderSession(this);
             } catch (NoSuchWorkspaceException e) {
+                if (session != null && session.isLive()) {
+                    session.logout();
+                }
                 session = getSystemSession();
                 JackrabbitWorkspace jrWs = (JackrabbitWorkspace) session.getProviderSession(this)
                         .getWorkspace();

@@ -27,7 +27,6 @@
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="service" ref="JCRStoreService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:-1}" />
         <property name="nodeTypesDBService" ref="nodeTypesDBService"/>
     </bean>
 
@@ -37,7 +36,6 @@
         <property name="sitesService" ref="JahiaSitesService"/>
         <property name="service" ref="JCRStoreService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="sessionKeepAliveCheckInterval" value="${jahia.jcr.observers.sessionKeepAliveCheckInterval:-1}" />
         <property name="nodeTypesDBService" ref="nodeTypesDBService"/>
     </bean>
 
@@ -499,7 +497,6 @@
     <bean id="JcrSessionFilter" class="org.jahia.bin.filters.jcr.JcrSessionFilter">
         <property name="authPipeline" ref="authPipeline"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="schedulerService" ref="SchedulerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 

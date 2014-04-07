@@ -248,6 +248,10 @@ public class JahiaSitesService extends JahiaService {
         return (JCRSiteNode) session.getNode("/sites/" + siteKey);
     }
 
+    public boolean siteExists(String siteKey, JCRSessionWrapper session) throws RepositoryException {
+        return StringUtils.isNotEmpty(siteKey) && session.nodeExists("/sites/" + siteKey);
+    }
+
     /**
      * Find a site by it's server name value
      *
@@ -373,11 +377,11 @@ public class JahiaSitesService extends JahiaService {
         JCRSiteNode site=null;
         try {
 
-            if (getSiteByKey(siteKey) == null) {
+            if (!siteExists(siteKey, session)) {
                 final String templatePackage = templateService.getAnyDeployedTemplatePackage(selectTmplSet).getId();
 
                 int id = 1;
-                List<JCRSiteNode> sites = getSitesNodeList();
+                List<JCRSiteNode> sites = getSitesNodeList(session);
                 for (JCRSiteNode jahiaSite : sites) {
                     if (id <= jahiaSite.getID()) {
                         id = jahiaSite.getID() + 1;

@@ -12,7 +12,7 @@
 <c:set target="${renderContext}" property="contentType" value="application/json;charset=UTF-8"/>
 <json:object>
     <c:forEach items="${currentNode.properties}" var="prop">
-        <c:if test="${not prop.definition.multiple}">
+        <c:if test="${not prop.definition.multiple and not prop.definition.hidden}">
             <json:property name="${prop.name}" value="${prop.string}"/>
         </c:if>
     </c:forEach>

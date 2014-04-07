@@ -30,6 +30,7 @@
             <c:set var="propName" value="${fn:replace(prop.name, ':', '_')}"/>
         </c:if>
         <c:choose>
+            <c:when test="${prop.definition.hidden}"><%-- do nothing --%></c:when>
             <c:when test="${not prop.definition.multiple}">
                 <json:property name="${propName}" value="${prop.string}"/>
             </c:when>

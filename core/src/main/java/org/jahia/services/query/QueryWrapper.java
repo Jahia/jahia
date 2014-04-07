@@ -240,27 +240,35 @@ public class QueryWrapper implements Query {
     private Constraint convertPath(Constraint constraint, String mountPoint, QueryObjectModelFactory f) throws RepositoryException {
         if (constraint instanceof ChildNode) {
             String root = ((ChildNode)constraint).getParentPath();
-            if (mountPoint.equals(root)) {
+            String rootWithSlash = root.endsWith("/") ? root : root + "/";
+            String rootNoSlash = root.endsWith("/") ? root.substring(0,root.length()-1) : root;
+            if (mountPoint.equals(rootNoSlash)) {
                 // Path constraint is the mount point -> create new constraint on root child nodes only
                 return f.childNode(((ChildNode)constraint).getSelectorName(), "/");
             }
-            if (mountPoint.startsWith(root)) {
+            if (mountPoint.startsWith(rootWithSlash)) {
+                if (root.equals(StringUtils.substringBeforeLast(mountPoint,"/"))) {
+                    // Asked for root node
+                    return f.sameNode(((ChildNode)constraint).getSelectorName(), "/");
+                }
                 // Mount point in under path constraint -> do not search
                 throw new ConstraintViolationException();
             }
-            if (root.startsWith(mountPoint)) {
+            if (rootWithSlash.startsWith(mountPoint)) {
                 // Path constraint is under mount point -> create new constraint with local path
-                return f.childNode(((ChildNode)constraint).getSelectorName(), root.substring(mountPoint.length()));
+                return f.childNode(((ChildNode)constraint).getSelectorName(), rootNoSlash.substring(mountPoint.length()));
             }
             // Path constraint incompatible with mount point
             throw new ConstraintViolationException();
         } else if (constraint instanceof DescendantNode) {
             String root = ((DescendantNode)constraint).getAncestorPath();
-            if (mountPoint.startsWith(root)) {
+            String rootWithSlash = root.endsWith("/") ? root : root + "/";
+            String rootNoSlash = root.endsWith("/") ? root.substring(0,root.length()-1) : root;
+            if (mountPoint.startsWith(rootWithSlash) || mountPoint.equals(rootNoSlash)) {
                 // Mount point in under path constraint -> remove constraint
                 return null;
             }
-            if (root.startsWith(mountPoint)) {
+            if (rootWithSlash.startsWith(mountPoint)) {
                 // Path constraint is under mount point -> create new constraint with local path
                 return f.descendantNode(((DescendantNode) constraint).getSelectorName(), root.substring(mountPoint.length()));
             }

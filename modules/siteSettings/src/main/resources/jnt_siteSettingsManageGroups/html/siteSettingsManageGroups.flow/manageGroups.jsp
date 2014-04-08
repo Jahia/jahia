@@ -114,14 +114,14 @@ function submitGroupForm(act, group) {
         <c:set var="groupCount" value="${fn:length(groups)}"/>
         <c:set var="groupsFound" value="${groupCount > 0}"/>
         
-        <c:if test="${groupCount > groupDisplayLimit}">
-            <div class="alert alert-info">
-                <fmt:message key="siteSettings.groups.found">
-                    <fmt:param value="${groupCount}"/>
+        <div class="alert alert-info">
+            <fmt:message key="siteSettings.groups.found">
+                <fmt:param value="${groupCount}"/>
+            </fmt:message><c:if test="${groupCount > groupDisplayLimit}">&nbsp;<fmt:message key="siteSettings.groups.found.limit">
                     <fmt:param value="${groupDisplayLimit}"/>
                 </fmt:message>
-            </div>
-        </c:if>
+            </c:if>
+        </div>
         
         <c:if test="${groupsFound}">
             <form action="${flowExecutionUrl}" method="post" style="display: inline;" id="groupForm">

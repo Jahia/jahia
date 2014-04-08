@@ -621,14 +621,14 @@ public class PrincipalViewHelper implements Serializable {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
         final Set<Principal> searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
+        long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
+        if(countLimit > 0) {
+           logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
+           searchParameters.setProperty(JahiaUserManagerService.COUNT_LIMIT, String.valueOf(countLimit));
+        }
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
-            long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
-            if(countLimit > 0) {
-               logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
-               searchParameters.setProperty(JahiaUserManagerService.COUNT_LIMIT, String.valueOf(countLimit));
-            }
             searchResults.addAll(jahiaUserManagerService.
                     searchUsers(searchParameters));
         } else {

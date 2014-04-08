@@ -1,4 +1,3 @@
-<%--@elvariable id="searchCriteria" type="org.jahia.modules.serversettings.users.management.SearchCriteria"--%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -7,6 +6,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
+<%@ page import="org.jahia.settings.SettingsBean "%>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -18,9 +18,13 @@
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
+<%--@elvariable id="searchCriteria" type="org.jahia.modules.serversettings.users.management.SearchCriteria"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
+
+<c:set var="userDisplayLimit" value="${serverSettingsProperties.userDisplayLimit}"/>
+<c:set var="jcrUserCountLimit" value="<%= SettingsBean.getInstance().getJahiaJCRUserCountLimit() %>"/>
 
 <template:addResources>
 <script type="text/javascript">
@@ -49,6 +53,10 @@
             $("input[name='selectedUsers']").val(selected);
             return true;
         })
+        $("table").tablecloth({
+            theme: "default",
+            sortable: true
+        });
     });
     function toggleModeToBulkDelete(){
         $('.userRadio').toggle();
@@ -56,15 +64,6 @@
         $('.singleMode').toggle();
         $('#bulkDeleteForm button').toggle();
     };
-
-</script>
-<script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-        $("table").tablecloth({
-            theme: "default",
-            sortable: true
-        });
-    });
 </script>
 </template:addResources>
 
@@ -210,11 +209,23 @@
         </c:forEach>
     </p>
 
+    <c:set var="userCount" value="${fn:length(users)}"/>
     <div>
         <h2><fmt:message key="serverSettings.user.search.result"/></h2>
+        <div class="alert alert-info">
+            <c:if test="${userCount < userDisplayLimit || jcrUserCountLimit < 0}">
+            <fmt:message key="serverSettings.user.search.found">
+                <fmt:param value="${userCount}"/>
+            </fmt:message></c:if><c:if test="${userCount > userDisplayLimit}">&nbsp;<fmt:message key="serverSettings.user.search.found.limit">
+                    <fmt:param value="${userDisplayLimit}"/>
+                </fmt:message>
+            </c:if>
+        </div>
+        
         <table class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
+                <th class="sortable" width="5%">#</th>
                 <th class="{sorter: false}" width="5%">&nbsp;</th>
                 <th class="sortable"><fmt:message key="label.name"/></th>
                 <th width="45%" class="sortable"><fmt:message key="label.properties"/></th>
@@ -226,14 +237,15 @@
             <tbody>
             <c:choose>
                 <%--@elvariable id="users" type="java.util.List"--%>
-                <c:when test="${fn:length(users) eq 0}">
+                <c:when test="${userCount eq 0}">
                     <tr>
-                        <td colspan="${multipleProvidersAvailable ? '4' : '3'}"><fmt:message key="serverSettings.user.search.no.result"/></td>
+                        <td colspan="${multipleProvidersAvailable ? '5' : '4'}"><fmt:message key="serverSettings.user.search.no.result"/></td>
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach items="${users}" var="curUser">
+                    <c:forEach items="${users}" var="curUser" end="${userDisplayLimit - 1}" varStatus="loopStatus">
                         <tr class="sortable-row">
+                            <td>${loopStatus.count}</td>
                             <td><input type="radio" name="userSelected" value="${fn:escapeXml(curUser.userKey)}" class="userRadio"><input type="checkbox" name="userToDelete" value="${fn:escapeXml(curUser.userKey)}" class="userCheckbox" style="display: none"></td>
                             <td>${user:displayName(curUser)}</td>
                             <td>${user:fullName(curUser)}</td>

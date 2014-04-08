@@ -447,7 +447,8 @@ public class ManageGroupsFlowHandler implements Serializable {
         long timer = System.currentTimeMillis();
 
         Set<Principal> searchResult;
-        if (searchType.equals("users")) {
+        boolean searchForUsers = searchType.equals("users");
+        if (searchForUsers) {
             searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
                     searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders());
@@ -457,7 +458,8 @@ public class ManageGroupsFlowHandler implements Serializable {
                     searchCriteria.getStoredOn(), searchCriteria.getProviders());
         }
 
-        logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
+        logger.info("Found {} {} in {} ms", new Object[] { searchResult.size(), searchForUsers ? "users" : "groups",
+                System.currentTimeMillis() - timer });
         return searchResult;
     }
 

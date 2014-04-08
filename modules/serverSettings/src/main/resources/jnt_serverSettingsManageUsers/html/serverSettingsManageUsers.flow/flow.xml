@@ -9,6 +9,7 @@
 
     <on-start>
         <evaluate expression="flowHandler.initCriteria()" result="flowScope.searchCriteria"/>
+        <set name="flowScope.serverSettingsProperties" value="serverSettingsProperties" type="java.util.Map"/>
     </on-start>
 
     <view-state id="search" model="searchCriteria">

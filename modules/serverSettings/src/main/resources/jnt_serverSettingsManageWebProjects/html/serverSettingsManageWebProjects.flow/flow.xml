@@ -57,7 +57,7 @@
     </decision-state>
 
     <view-state id="siteAdminPropertiesForm" model="siteBean.adminProperties">
-        <transition on="previous" to="createSite" />
+        <transition on="previous" to="createSite" validate="false"/>
         <transition on="next" to="createSiteSelectModules" />
     </view-state>
 

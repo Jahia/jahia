@@ -108,6 +108,7 @@
                 <value>trident/7</value>
             </set>
         </property>
+<<<<<<< .working
     </bean>
     <util:list id="excludesFromAggregateAndCompress">
     </util:list>
@@ -124,6 +125,15 @@
         <property name="loggingService" ref="loggingService"/>
         <property name="skipOnConfigurations" value="include,wrapper"/>
     </bean>
+=======
+	</bean>
+	<bean class="org.jahia.services.render.filter.MetricsLoggingFilter">
+		<property name="priority" value="3" />
+        <property name="description" value="Calls the logging service to log the display of a resource. Also initializes profiling information"/>
+		<property name="loggingService" ref="loggingService" />
+		<property name="skipOnConfigurations" value="include,wrapper" />
+	</bean>
+>>>>>>> .merge-right.r49544
     <bean
             class="org.jahia.services.render.filter.AreaResourceFilter">
         <property name="description" value="Set attributes areaListResource and areaResource in the request"/>

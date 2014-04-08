@@ -308,17 +308,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int queryApproxCountLimit;
 
     private boolean globalGroupMembershipCheckActivated = false;
-<<<<<<< .working
     
     private boolean readOnlyMode;
     
     private DataSource dataSource;
     
     private String internetExplorerCompatibility;
-=======
-    
-    private String internetExplorerCompatibility;    
->>>>>>> .merge-right.r49544
 
     /**
      * Default constructor.
@@ -473,15 +468,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             queryApproxCountLimit = getInt("queryApproxCountLimit", 100);
 
             globalGroupMembershipCheckActivated = getBoolean("globalGroupMembershipCheckActivated", false);
-<<<<<<< .working
             
             readOnlyMode = getBoolean("readOnlyMode", false);
             
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
-=======
-            
-            internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=8");            
->>>>>>> .merge-right.r49544
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1177,7 +1167,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public boolean isGlobalGroupMembershipCheckActivated() {
         return globalGroupMembershipCheckActivated;
     }
-<<<<<<< .working
 
     /**
      * Returns <code>true</code> if this Jahia instance operates in "read-only" mode, i.e. access to the edit/studio/administration modes is
@@ -1207,10 +1196,4 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String getInternetExplorerCompatibility() {
         return internetExplorerCompatibility;
     }
-=======
-    
-    public String getInternetExplorerCompatibility() {
-        return internetExplorerCompatibility;
-    }    
->>>>>>> .merge-right.r49544
 }

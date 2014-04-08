@@ -331,13 +331,19 @@ public class ModuleBuildHelper implements InitializingBean {
             } catch (XmlPullParserException e) {
                 throw new IOException(e);
             }
-
+            String version = pom.getVersion();
+            if (version == null) {
+                version = pom.getParent().getVersion();
+            }
+            if (version == null) {
+                throw new IOException("unable to read project version");
+            }
             String[] deployParams = {"deploy:deploy-file", "-Dfile=" + generatedJar,
                     "-DrepositoryId=" + releaseInfo.getRepositoryId(), "-Durl=" + releaseInfo.getRepositoryUrl(),
                     "-DpomFile=" + pomFile.getPath(),
                     "-Dpackaging=" + StringUtils.substringAfterLast(generatedJar.getName(), "."),
                     "-DgroupId=" + PomUtils.getGroupId(pom), "-DartifactId=" + pom.getArtifactId(),
-                    "-Dversion=" + pom.getVersion()};
+                    "-Dversion=" + version};
             if (settings != null) {
                 deployParams = (String[]) ArrayUtils.addAll(deployParams,
                         new String[]{"--settings", settings.getPath()});

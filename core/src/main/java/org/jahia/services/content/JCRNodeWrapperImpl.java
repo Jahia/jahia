@@ -942,6 +942,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected JCRNodeIteratorWrapper getNodes(String namePattern, String[] nameGlobs) throws RepositoryException {
         List<JCRNodeWrapper> list = new LinkedList<JCRNodeWrapper>();
+        List<String> mounts = new LinkedList<String>();
         if (provider.getService() != null) {
             Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
             if (mountPoints.size() > 1) {
@@ -955,17 +956,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         String mpp = pos > 0 ? key.substring(0, pos) : "/";
                         if (mpp.equals(path)) {
                             // mount point matches the path; check name patterns if they were specified 
+                            final String name = key.substring(pos + 1);
                             if (namePattern == null
                                     && nameGlobs == null
                                     || key.length() > pos + 1
                                     && (namePattern != null
-                                    && ChildrenCollectorFilter.matches(key.substring(pos + 1), namePattern) || nameGlobs != null
-                                    && ChildrenCollectorFilter.matches(key.substring(pos + 1), nameGlobs))) {
+                                    && ChildrenCollectorFilter.matches(name, namePattern) || nameGlobs != null
+                                    && ChildrenCollectorFilter.matches(name, nameGlobs))) {
                                 JCRStoreProvider storeProvider = entry.getValue();
                                 String root = storeProvider.getRelativeRoot();
                                 final Node node = session.getProviderSession(storeProvider).getNode(
                                         root.length() == 0 ? "/" : root);
                                 list.add(storeProvider.getNodeWrapper(node, "/", this, session));
+                                mounts.add(name);
                             }
                         }
                     }
@@ -978,7 +981,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         while (ni.hasNext()) {
             Node node = ni.nextNode();
-            if (session.getLocale() == null || !node.getName().startsWith("j:translation_")) {
+            if ((session.getLocale() == null || !node.getName().startsWith("j:translation_")) && !mounts.contains(node.getName())) {
                 try {
                     JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
                     list.add(child);
@@ -2781,7 +2784,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean hasNode(String s) throws RepositoryException {
         if (provider.getService() != null) {
-            Set<String> allMountPoints = provider.getSessionFactory().getAllMountPoints();
+            Set<String> allMountPoints = provider.getSessionFactory().getMountPoints().keySet();
             if (allMountPoints.size() > 1 && allMountPoints.contains(getPath() + "/" + s)) {
                 return true;
             }
@@ -2809,7 +2812,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public boolean hasNodes() throws RepositoryException {
         if (provider.getService() != null) {
-            Set<String> allMountPoints = provider.getSessionFactory().getAllMountPoints();
+            Set<String> allMountPoints = provider.getSessionFactory().getMountPoints().keySet();
             if (allMountPoints.size() > 1) {
                 String pathPrefix = getPath() + "/";
                 for (String entry : allMountPoints) {

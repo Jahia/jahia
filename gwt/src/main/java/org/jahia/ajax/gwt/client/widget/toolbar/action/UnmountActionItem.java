@@ -95,9 +95,7 @@ public class UnmountActionItem extends BaseActionItem  {
                 Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockInfos());
             } else if (Window.confirm(Messages.getWithArgs("confirm.unmount.label", "Do you really want to unmount {0}?", new String[] {selection.getName()}))) {
                 linker.loading(Messages.get("statusbar.unmounting.label"));
-                List<String> selectedPaths = new ArrayList<String>(1);
-                selectedPaths.add(selection.getPath());
-                JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback<Object>() {
+                JahiaContentManagementService.App.getInstance().unmount(selection.getPath(), new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.get("failure.unmount.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
@@ -116,6 +114,6 @@ public class UnmountActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) && (lh.getSingleSelection().getNodeTypes().contains("jnt:mountPoint")  || lh.getSingleSelection().getInheritedNodeTypes().contains("jnt:mountPoint")));
+        setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) && (Boolean.TRUE.equals(lh.getSingleSelection().get("j:isDynamicMountPoint"))));
     }
 }

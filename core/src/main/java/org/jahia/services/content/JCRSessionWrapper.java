@@ -328,19 +328,6 @@ public class JCRSessionWrapper implements Session {
             JCRNodeWrapper parent = (JCRNodeWrapper) getItem(StringUtils.substringBeforeLast(path, DEREF_SEPARATOR), checkVersion);
             return dereference(parent, StringUtils.substringAfterLast(path, DEREF_SEPARATOR));
         }
-        Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
-        for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
-            if (path.startsWith(mp.getKey() + "/")) {
-                String localPath = path.substring(mp.getKey().length());
-                JCRStoreProvider provider = mp.getValue();
-                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + localPath);
-                if (item.isNode()) {
-                    return provider.getNodeWrapper((Node) item, localPath, null, this);
-                } else {
-                    return provider.getPropertyWrapper((Property) item, this);
-                }
-            }
-        }
         Map<String, JCRStoreProvider> mountPoints = sessionFactory.getMountPoints();
         final List<String> keys = new ArrayList<String>(mountPoints.keySet());
         for (String key : keys) {

@@ -555,6 +555,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentHub.mount(mountName, providerType, properties, retrieveCurrentSession(), getUILocale());
     }
 
+    public void unmount(String path) throws GWTJahiaServiceException {
+        contentHub.unmount(path, retrieveCurrentSession(), getUILocale());
+    }
+
     public List<GWTJahiaNodeType> getProviderFactoriesType() throws GWTJahiaServiceException {
         return contentHub.getProviderFactoriesType(getUILocale());
     }

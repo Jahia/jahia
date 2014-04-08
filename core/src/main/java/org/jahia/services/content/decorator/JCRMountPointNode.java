@@ -96,34 +96,9 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             getRootNode();
             return true;
         } catch (RepositoryException e) {
-            getProvider().getSessionFactory().getDynamicMountPoints().remove(getPath());
+            getProvider().getSessionFactory().getMountPoints().remove(getPath());
             return false;
         }
-    }
-
-    public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
-        return getRootNode().getNode(s);
-    }
-
-    public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
-        return getRootNode().getNodes();
-    }
-
-    public JCRNodeIteratorWrapper getNodes(String s) throws RepositoryException {
-        return getRootNode().getNodes(s);
-    }
-
-    public JCRNodeWrapper addNode(String name) throws RepositoryException {
-        return getRootNode().addNode(name);
-    }
-
-    public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
-        return getRootNode().addNode(name, type);
-    }
-
-    @Override
-    public JCRNodeWrapper uploadFile(String name, InputStream is, String contentType) throws RepositoryException {
-        return getRootNode().uploadFile(name, is, contentType);
     }
 
     private JCRNodeWrapper getRootNode() throws RepositoryException {
@@ -139,8 +114,8 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     private JCRStoreProvider getMountProvider() throws RepositoryException {
         JCRStoreProvider provider;
-        Map<String, JCRStoreProvider> dynamicMountPoints = getProvider().getSessionFactory().getDynamicMountPoints();
-        if (dynamicMountPoints == null || !dynamicMountPoints.containsKey(getPath())) {
+        Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
+        if (mountPoints == null || !mountPoints.containsKey(getPath())) {
             ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName());
             if (providerFactory == null) {
                 logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
@@ -148,7 +123,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             }
             provider = providerFactory.mountProvider(this);
         } else {
-            provider = dynamicMountPoints.get(getPath());
+            provider = mountPoints.get(getPath());
         }
         return provider;
     }

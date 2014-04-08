@@ -363,6 +363,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
+    void unmount(String path) throws GWTJahiaServiceException;
+
     List<GWTJahiaNodeType> getProviderFactoriesType() throws GWTJahiaServiceException;
 
     public void move(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;

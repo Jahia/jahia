@@ -90,6 +90,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.*;
 
@@ -298,6 +299,8 @@ public interface JahiaContentManagementServiceAsync {
     void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 
     void mount(String mountName, String providerType,List<GWTJahiaNodeProperty> properties, AsyncCallback async);
+
+    void unmount(String path, AsyncCallback async);
 
     void move(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 

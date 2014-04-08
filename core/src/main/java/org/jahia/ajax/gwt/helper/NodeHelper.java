@@ -311,6 +311,10 @@ class NodeHelper {
             populatePrimaryTypeLabel(n, node);
         }
 
+        if (JCRSessionFactory.getInstance().getMountPoints().containsKey(n.getPath()) && JCRSessionFactory.getInstance().getMountPoints().get(n.getPath()).isDynamicallyMounted()) {
+            n.set("j:isDynamicMountPoint", Boolean.TRUE);
+        }
+
         if (n.isFile() && (n.isNodeType("jmix:image") || n.isNodeType("jmix:size"))) {
             // handle width and height
             try {

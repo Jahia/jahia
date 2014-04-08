@@ -92,7 +92,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;
@@ -376,18 +375,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
                     }
                 }
-<<<<<<< .working
-                if (isEnforceIECompatibilityMode(renderContext)) {
-                    int idx = element.getBegin() + element.toString().indexOf('>');
-                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
-                            + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
-=======
+
+
                 // workaround for ie9 in gxt/gwt
                 // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
                 if (isEnforceIECompatibilityMode(renderContext)) {
                     int idx = element.getBegin() + element.toString().indexOf(">");
-                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"" + ieCompatibilityContent + "\">";
->>>>>>> .merge-right.r49540
+                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
+                            + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
                     outputDocument.replace(idx, idx + 1, str);
                 }
                 if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
@@ -416,15 +411,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
-<<<<<<< .working
-    private static boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
-//        if (!renderContext.isEditMode()) {
-//            return false;
-//        }
-        String header = renderContext.getRequest().getHeader("user-agent");
-        if (header == null || header.length() == 0) {
-            return false;
-=======
     private boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
         if (!renderContext.isEditMode()) {
             return false;
@@ -442,16 +428,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return false;
     }    
     
-    private void addJcropResources(RenderContext renderContext, Map<String, Map<String, Map<String, String>>> assets) {
-        Map<String, Map<String, String>> javascript = assets.get("javascript");
-        if (javascript == null) {
-            assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
->>>>>>> .merge-right.r49540
-        }
-        header = header.toLowerCase();
-        return header.contains("msie") || header.contains("trident/7");
-    }
-
     public static String removeTempTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
             return CLEANUP_REGEXP.matcher(content).replaceAll("");

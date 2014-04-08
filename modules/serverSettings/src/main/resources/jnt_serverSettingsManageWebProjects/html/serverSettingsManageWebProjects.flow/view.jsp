@@ -10,6 +10,7 @@
 <c:set var="defaultPrepackagedSite" value="acmespaceelektra.zip"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 <script type="text/javascript">
@@ -24,6 +25,7 @@
     	$('#sitesFormAction').val(act);
     	$('#sitesForm').submit();
     }
+
     $(document).ready(function () {
     	$("a.sitesAction").click(function () {
     		var act=$(this).attr('id');
@@ -77,9 +79,18 @@
 </script>
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
-        $("table").tablecloth({
+        var sitesTable = $('#sitesTable');
+
+        sitesTable.tablecloth({
             theme: "default",
             sortable: true
+        });
+
+        sitesTable.dataTable({
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "iDisplayLength": 10,
+            "sPaginationType": "bootstrap",
+            "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
         });
     });
 </script>
@@ -117,8 +128,8 @@
             </div>
         </c:forEach>
 
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
+        <table id="sitesTable" class="table table-bordered table-striped table-hover">
+        <thead>
                 <tr>
                     <th class="{sorter: false}">&nbsp;</th>
                     <th>#</th>

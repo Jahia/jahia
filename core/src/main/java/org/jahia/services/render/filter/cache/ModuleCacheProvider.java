@@ -72,8 +72,12 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import org.apache.jackrabbit.core.JahiaRepositoryImpl;
+import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -85,7 +89,7 @@ import java.util.UUID;
 /**
  * Instantiates and provides access to the module output and dependency caches.
  *
- * @author rincevent
+ * @author Cedric Mailleux
  * @author Sergiy Shyrkov
  */
 public class ModuleCacheProvider implements InitializingBean {
@@ -113,6 +117,8 @@ public class ModuleCacheProvider implements InitializingBean {
     private Cache syncCache;
 
     private CacheKeyGenerator keyGenerator;
+
+    private JCRSessionFactory jcrSessionFactory;
 
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
@@ -250,7 +256,7 @@ public class ModuleCacheProvider implements InitializingBean {
             if (logger.isDebugEnabled()) {
                 logger.debug("Sending flush of regexp {} across cluster", key);
             }
-            syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), key));
+            syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), new CacheClusterEvent(key,getClusterRevision())));
         }
     }
 
@@ -259,7 +265,7 @@ public class ModuleCacheProvider implements InitializingBean {
             if (logger.isDebugEnabled()) {
                 logger.debug("Sending flush of regexp dependencies {} across cluster", key);
             }
-            syncCache.put(new Element("FLUSH_REGEXPDEP-" + UUID.randomUUID(), key));
+            syncCache.put(new Element("FLUSH_REGEXPDEP-" + UUID.randomUUID(), new CacheClusterEvent(key,getClusterRevision())));
         }
     }
 
@@ -268,7 +274,7 @@ public class ModuleCacheProvider implements InitializingBean {
             if (logger.isDebugEnabled()) {
                 logger.debug("Sending flush of children of {} across cluster", path);
             }
-            syncCache.put(new Element("FLUSH_CHILDS-" + UUID.randomUUID(), path));
+            syncCache.put(new Element("FLUSH_CHILDS-" + UUID.randomUUID(), new CacheClusterEvent(path,getClusterRevision())));
         }
     }
 
@@ -277,7 +283,17 @@ public class ModuleCacheProvider implements InitializingBean {
             if (logger.isDebugEnabled()) {
                 logger.debug("Sending flush of {} across cluster", nodePath);
             }
-            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), nodePath));
+            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), new CacheClusterEvent(nodePath,getClusterRevision())));
         }
+    }
+
+    private long getClusterRevision() {
+        final ClusterNode clusterNode = ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) jcrSessionFactory.getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode();
+
+        return clusterNode.getRevision();
+    }
+
+    public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
+        this.jcrSessionFactory = jcrSessionFactory;
     }
 }

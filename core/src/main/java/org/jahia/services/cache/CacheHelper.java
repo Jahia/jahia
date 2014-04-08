@@ -81,6 +81,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.CacheInfo;
 import org.jahia.services.cache.ehcache.CacheManagerInfo;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -243,7 +244,9 @@ public final class CacheHelper {
             ehcacheManager.addCache("HTMLCacheEventSync");
             cache = ehcacheManager.getCache("HTMLCacheEventSync");
         }
-        cache.put(new Element("FLUSH_OUTPUT_CACHES", Boolean.TRUE));
+        cache.put(new Element("FLUSH_OUTPUT_CACHES",
+                // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
+                new CacheClusterEvent("",Long.MAX_VALUE)));
     }
 
     public static void flushOutputCachesForPath(String path, boolean flushSubtree) {

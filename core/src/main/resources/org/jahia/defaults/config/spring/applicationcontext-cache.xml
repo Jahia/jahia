@@ -63,6 +63,7 @@ when we flush this entry we will flush the whole cache
 	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
+        <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
 	</bean>
 
     <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">

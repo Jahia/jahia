@@ -177,5 +177,5 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
      */
     protected WorkspaceInfo createWorkspaceInfo(WorkspaceConfig wspConfig) {
         return new JahiaWorkspaceInfo(wspConfig);
-    }    
+    }
 }

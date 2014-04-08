@@ -76,6 +76,7 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
 import org.apache.jackrabbit.core.HierarchyManager;
+import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
@@ -98,6 +99,9 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
+import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -1072,11 +1076,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                             "HTMLCacheEventSync");
                     if (htmlCacheEventSync != null) {
                         htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
-                                Boolean.TRUE));
+                                //Create an empty CacheClusterEvent to be executed after next Journal sync
+                                new CacheClusterEvent("", getClusterRevision())));
                     }
                 }
             }
         }
+    }
+
+    private static long getClusterRevision() {
+        return ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode().getRevision();
     }
 
     public static void flushMatchingPermissions() {

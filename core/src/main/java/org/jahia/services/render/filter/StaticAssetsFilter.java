@@ -92,6 +92,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.WebUtils;

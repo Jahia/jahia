@@ -10,7 +10,7 @@
 <title>Jahia Tools</title>
 </head>
 <body>
-<h1>Jahia Tools Area (<%= Jahia.getFullProductVersion() %>)</h1>
+<h1>Jahia Tools Area <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
 <table width="100%" border="0">
     <tr>
         <td width="50%" valign="top">

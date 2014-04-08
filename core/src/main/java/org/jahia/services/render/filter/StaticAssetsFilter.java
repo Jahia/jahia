@@ -201,6 +201,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private boolean aggregateAndCompress;
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
 
+    private Set<String> ieHeaderRecognitions = new HashSet<String>();
+    private String ieCompatibilityContent = "IE=8";
+    
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -373,10 +376,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
                     }
                 }
+<<<<<<< .working
                 if (isEnforceIECompatibilityMode(renderContext)) {
                     int idx = element.getBegin() + element.toString().indexOf('>');
                     String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
                             + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
+=======
+                // workaround for ie9 in gxt/gwt
+                // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
+                if (isEnforceIECompatibilityMode(renderContext)) {
+                    int idx = element.getBegin() + element.toString().indexOf(">");
+                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\"" + ieCompatibilityContent + "\">";
+>>>>>>> .merge-right.r49540
                     outputDocument.replace(idx, idx + 1, str);
                 }
                 if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
@@ -405,6 +416,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
+<<<<<<< .working
     private static boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
 //        if (!renderContext.isEditMode()) {
 //            return false;
@@ -412,6 +424,29 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String header = renderContext.getRequest().getHeader("user-agent");
         if (header == null || header.length() == 0) {
             return false;
+=======
+    private boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
+        if (!renderContext.isEditMode()) {
+            return false;
+        }
+        String header = renderContext.getRequest().getHeader("user-agent");
+        if (header == null || header.length() == 0) {
+            return false;
+        }
+        header = header.toLowerCase();
+        for (String ieHeaderRecognition : getIeHeaderRecognitions()) {
+            if (header.contains(ieHeaderRecognition)) {
+                return true;   
+            }
+        }
+        return false;
+    }    
+    
+    private void addJcropResources(RenderContext renderContext, Map<String, Map<String, Map<String, String>>> assets) {
+        Map<String, Map<String, String>> javascript = assets.get("javascript");
+        if (javascript == null) {
+            assets.put("javascript", (javascript = new HashMap<String, Map<String, String>>()));
+>>>>>>> .merge-right.r49540
         }
         header = header.toLowerCase();
         return header.contains("msie") || header.contains("trident/7");
@@ -651,6 +686,22 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
+    }
+
+    public Set<String> getIeHeaderRecognitions() {
+        return ieHeaderRecognitions;
+    }
+
+    public void setIeHeaderRecognitions(Set<String> ieHeaderRecognitions) {
+        this.ieHeaderRecognitions = ieHeaderRecognitions;
+    }
+
+    public String getIeCompatibilityContent() {
+        return ieCompatibilityContent;
+    }
+
+    public void setIeCompatibilityContent(String ieCompatibilityContent) {
+        this.ieCompatibilityContent = ieCompatibilityContent;
     }    
 
 }

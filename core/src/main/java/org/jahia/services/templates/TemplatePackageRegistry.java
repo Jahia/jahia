@@ -122,7 +122,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import javax.servlet.Filter;
-
 import java.util.*;
 
 /**
@@ -135,14 +134,15 @@ public class TemplatePackageRegistry {
 
     private static boolean hasEncounteredIssuesWithDefinitions = false;
 
+    static final String TEMPLATES_SET = "templatesSet";
     public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             if (o2.getModulePriority() != o1.getModulePriority()) {
                 return o2.getModulePriority() - o1.getModulePriority();
             }
             if (!o1.getModuleType().equals(o2.getModuleType())) {
-                if (o1.getModuleType().equals("templatesSet")) return -99;
-                if (o2.getModuleType().equals("templatesSet")) return 99;
+                if (o1.getModuleType().equals(TEMPLATES_SET)) return -99;
+                if (o2.getModuleType().equals(TEMPLATES_SET)) return 99;
             }
 
             return o1.getName().compareTo(o2.getName());
@@ -276,7 +276,7 @@ public class TemplatePackageRegistry {
      *
      * @param moduleName the template package name to check for
      * @return <code>true</code>, if the specified template package already
-     *         exists in the repository
+     * exists in the repository
      */
     public boolean contains(String moduleName) {
         return packagesByName.containsKey(moduleName);
@@ -287,7 +287,7 @@ public class TemplatePackageRegistry {
      *
      * @param moduleNames the list of template package names to check for
      * @return <code>true</code>, if specified template packages are all present
-     *         in the repository
+     * in the repository
      */
     public boolean containsAll(List<String> moduleNames) {
         return packagesByName.keySet().containsAll(moduleNames);
@@ -384,8 +384,8 @@ public class TemplatePackageRegistry {
      *
      * @param packageName the template package name to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified name is not registered in the
-     *         repository
+     * package with the specified name is not registered in the
+     * repository
      */
     public JahiaTemplatesPackage lookup(String packageName) {
         if (packageName == null || packagesByName == null) return null;
@@ -412,14 +412,15 @@ public class TemplatePackageRegistry {
 
         return lookupByIdAndVersion(moduleId, new ModuleVersion(version));
     }
+
     /**
      * Returns the requested template package or <code>null</code> if the
      * package with the specified file name is not registered in the repository.
      *
      * @param fileName the template package Id to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified file name is not registered in the
-     *         repository
+     * package with the specified file name is not registered in the
+     * repository
      * @deprecated use {@link #lookupById(String)} instead
      */
     public JahiaTemplatesPackage lookupByFileName(String fileName) {
@@ -432,8 +433,8 @@ public class TemplatePackageRegistry {
      *
      * @param moduleId the template package Id to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified Id is not registered in the
-     *         repository
+     * package with the specified Id is not registered in the
+     * repository
      */
     public JahiaTemplatesPackage lookupById(String moduleId) {
         if (moduleId == null || packagesById == null) return null;
@@ -518,14 +519,14 @@ public class TemplatePackageRegistry {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    if (session.itemExists("/modules/" + templatePackage.getIdWithVersion()+"/permissions")) {
+                    if (session.itemExists("/modules/" + templatePackage.getIdWithVersion() + "/permissions")) {
                         JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + templatePackage.getIdWithVersion());
                     }
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Cannot get permissions in module",e);
+            logger.error("Cannot get permissions in module", e);
         }
 
         Resource[] rootResources = templatePackage.getResources("");
@@ -646,7 +647,7 @@ public class TemplatePackageRegistry {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;
             }
-            
+
             if (bean instanceof RenderFilter) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Unregistering RenderFilter '" + beanName + "'");
@@ -778,7 +779,7 @@ public class TemplatePackageRegistry {
                 }
             }
 
-            if (bean instanceof  AbstractServletFilter) {
+            if (bean instanceof AbstractServletFilter) {
                 try {
                     compositeFilter.unregisterFilter((AbstractServletFilter) bean);
                 } catch (Exception e) {
@@ -880,13 +881,13 @@ public class TemplatePackageRegistry {
                 if (decorators != null) {
                     for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> decorator : decorators.entrySet()) {
                         try {
-                            if(!NodeTypeRegistry.getInstance().getNodeType(decorator.getKey()).isMixin()) {
+                            if (!NodeTypeRegistry.getInstance().getNodeType(decorator.getKey()).isMixin()) {
                                 jcrStoreService.addDecorator(decorator.getKey(), decorator.getValue());
                             } else {
                                 logger.error("It is impossible to decorate a mixin, only primary node type can be decorated");
                             }
                         } catch (NoSuchNodeTypeException e) {
-                            logger.error("Cannot register decorator for nodetype "+decorator.getKey()+ " has it does not exist in the registry.", e);
+                            logger.error("Cannot register decorator for nodetype " + decorator.getKey() + " has it does not exist in the registry.", e);
                         }
                     }
                 }
@@ -900,12 +901,12 @@ public class TemplatePackageRegistry {
                     for (@SuppressWarnings("rawtypes") Map.Entry<String, Class> validatorEntry : validators.entrySet()) {
                         Class<?> validatorEntryValue = validatorEntry.getValue();
                         try {
-                            if(validatorEntryValue.getConstructor(JCRNodeWrapper.class)!=null && JCRNodeValidator.class.isAssignableFrom(validatorEntryValue)) {
+                            if (validatorEntryValue.getConstructor(JCRNodeWrapper.class) != null && JCRNodeValidator.class.isAssignableFrom(validatorEntryValue)) {
                                 jcrStoreService.addValidator(validatorEntry.getKey(), (Class<? extends JCRNodeValidator>) validatorEntryValue);
                             }
                         } catch (NoSuchMethodException e) {
                             logger.error("Validator must have a constructor taking only a JCRNodeWrapper has a parameter. " +
-                                         "Please add "+validatorEntryValue.getSimpleName()+"(JCRNodeWrapper node) has a constructor", e);
+                                    "Please add " + validatorEntryValue.getSimpleName() + "(JCRNodeWrapper node) has a constructor", e);
                         }
                     }
                 }

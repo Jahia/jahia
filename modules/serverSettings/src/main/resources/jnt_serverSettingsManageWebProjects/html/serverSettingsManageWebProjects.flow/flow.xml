@@ -63,7 +63,8 @@
 
     <view-state id="createSiteSelectModules" model="siteBean">
         <on-render>
-            <evaluate expression="JahiaTemplateManagerService.availableTemplatePackages" result="flashScope.allModules"/>
+            <evaluate expression="JahiaTemplateManagerService.nonSystemTemplateSetPackages" result="flashScope.templateSets"/>
+            <evaluate expression="JahiaTemplateManagerService.nonSystemModulePackages" result="flashScope.modules"/>
             <evaluate expression="webprojectHandler.defaultTemplateSetId" result="flashScope.defaultTemplateSetId"/>
             <evaluate expression="T(org.jahia.utils.LanguageCodeConverters).getSortedLocaleList(externalContext.requestMap.currentResource.locale)" result="flashScope.allLocales"/>
         </on-render>

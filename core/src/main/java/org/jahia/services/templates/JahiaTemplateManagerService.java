@@ -70,13 +70,11 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
-
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
@@ -98,7 +96,10 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -126,7 +127,6 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -170,8 +170,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
     private Set<Bundle> installedBundles = new HashSet<Bundle>();
     private Set<Bundle> initializedBundles = new HashSet<Bundle>();
-    private Map<String,List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
-    private Map<String,List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
+    private Map<String, List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
+    private Map<String, List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
 
     private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
@@ -188,7 +188,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private ModuleInstallationHelper moduleInstallationHelper;
 
     private SourceControlHelper scmHelper;
-    
+
     private ForgeHelper forgeHelper;
 
     private List<String> nonManageableModules;
@@ -256,12 +256,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Checkout module sources, compile and deploy
+     *
      * @param moduleSources sources folder
-     * @param scmURI scm uri ( in mvn format , scm:<type>:<url>
-     * @param branchOrTag branch or tag
-     * @param moduleId name of the module to checkout, if there are multiple modules in the repository
-     * @param version version of the module to checkout, if there are multiple modules in the repository
-     * @param session session
+     * @param scmURI        scm uri ( in mvn format , scm:<type>:<url>
+     * @param branchOrTag   branch or tag
+     * @param moduleId      name of the module to checkout, if there are multiple modules in the repository
+     * @param version       version of the module to checkout, if there are multiple modules in the repository
+     * @param session       session
      * @return the module node
      * @throws IOException
      * @throws RepositoryException
@@ -364,7 +365,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         Model model = null;
         try {
             model = PomUtils.read(pom);
-            if (scmUrl != null && !StringUtils.equals(model.getScm().getConnection(),scmUrl)) {
+            if (scmUrl != null && !StringUtils.equals(model.getScm().getConnection(), scmUrl)) {
                 PomUtils.updateScm(pom, scmUrl);
                 module.getSourceControl().add(pom);
                 module.getSourceControl().commit("restore pom scm uri before release");
@@ -472,7 +473,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
 
         logger.info("Initial import for module {} re-generated in {}", moduleId, DateUtils.formatDurationWords(System.currentTimeMillis() - startTime));
-        
+
         return modifiedFiles;
     }
 
@@ -542,7 +543,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 try {
                     file.delete();
                 } catch (Exception e) {
-                    logger.error("Cannot delete file "+file, e);
+                    logger.error("Cannot delete file " + file, e);
                 }
             }
         } catch (Exception e) {
@@ -665,9 +666,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * Fires a Spring event in core context and contexts of all modules to notify listeners about the fact that a module bundle is either
      * started or stopped.
-     * 
-     * @param aPackage
-     *            the module that generated this event
+     *
+     * @param aPackage the module that generated this event
      */
     public void fireTemplatePackageRedeployedEvent(JahiaTemplatesPackage aPackage) {
         SpringContextSingleton.getInstance().publishEvent(new TemplatePackageRedeployedEvent(aPackage.getId()));
@@ -753,9 +753,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Install module in provided list of site
-     * @param module : module to install
+     *
+     * @param module         : module to install
      * @param sessionWrapper : session to use
-     * @param sites : list of sites on which deploy the module
+     * @param sites          : list of sites on which deploy the module
      * @throws RepositoryException
      */
     public void installModuleOnAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
@@ -818,6 +819,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Check if any content is created with definitions in this module
+     *
      * @param module
      * @return
      * @throws RepositoryException
@@ -833,6 +835,36 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public List<JahiaTemplatesPackage> getAvailableTemplatePackages() {
         return templatePackageRegistry.getAvailablePackages();
+    }
+
+    public List<JahiaTemplatesPackage> getNonSystemTemplateSetPackages() {
+        final int packagesCount = getAvailableTemplatePackagesCount();
+        if (packagesCount > 0) {
+            List<JahiaTemplatesPackage> result = new ArrayList<JahiaTemplatesPackage>(packagesCount);
+            for (JahiaTemplatesPackage templatePackage : getAvailableTemplatePackages()) {
+                if (templatePackage.getModuleType().equals(TemplatePackageRegistry.TEMPLATES_SET) && !templatePackage.getId().equals("templates-system")) {
+                    result.add(templatePackage);
+                }
+            }
+            return result;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<JahiaTemplatesPackage> getNonSystemModulePackages() {
+        final int packagesCount = getAvailableTemplatePackagesCount();
+        if (packagesCount > 0) {
+            List<JahiaTemplatesPackage> result = new ArrayList<JahiaTemplatesPackage>(packagesCount);
+            for (JahiaTemplatesPackage templatePackage : getAvailableTemplatePackages()) {
+                if (!templatePackage.getModuleType().equals(TemplatePackageRegistry.TEMPLATES_SET) && !templatePackage.getId().equals("system")) {
+                    result.add(templatePackage);
+                }
+            }
+            return result;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -864,8 +896,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @param fileName the template package fileName to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified name is not registered in the
-     *         repository
+     * package with the specified name is not registered in the
+     * repository
      * @deprecated use {@link #getTemplatePackageById(String)} instead
      */
     public JahiaTemplatesPackage getTemplatePackageByFileName(String fileName) {
@@ -879,8 +911,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @param moduleId the template package Id to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified Id is not registered in the
-     *         repository
+     * package with the specified Id is not registered in the
+     * repository
      */
     public JahiaTemplatesPackage getTemplatePackageById(String moduleId) {
         return templatePackageRegistry.lookupById(moduleId);
@@ -912,8 +944,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @param packageName the template package name to search for
      * @return the requested template package or <code>null</code> if the
-     *         package with the specified name is not registered in the
-     *         repository
+     * package with the specified name is not registered in the
+     * repository
      */
     public JahiaTemplatesPackage getTemplatePackage(String packageName) {
         return templatePackageRegistry.lookup(packageName);
@@ -968,7 +1000,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                                     "where isdescendantnode(module,'/modules') " +
                                                     "and name(module) <> 'templates-system' " +
                                                     "and version.[j:moduleType]='templatesSet'",
-                                            Query.JCR_SQL2).execute().getNodes(); nodes.hasNext(); ) {
+                                            Query.JCR_SQL2
+                                    ).execute().getNodes(); nodes.hasNext(); ) {
                                 Node node = nodes.nextNode();
                                 if (getTemplatePackageById(node.getName()) != null) {
                                     templateSets.add(node.getName());
@@ -977,7 +1010,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                             return templateSets;
                         }
-                    });
+                    }
+            );
         } catch (RepositoryException e) {
             logger.error("Unable to get template set names. Cause: " + e.getMessage(), e);
             return Collections.emptySet();
@@ -1045,7 +1079,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                 throws RepositoryException {
                             return isTemplatePresent(templateName, templateSetNames, session);
                         }
-                    });
+                    }
+            );
         } catch (RepositoryException e) {
             logger.error("Unable to check presence of the template '" + templateName
                     + "' in the modules '" + templateSetNames + "'. Cause: " + e.getMessage(), e);
@@ -1056,7 +1091,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     "Template {} {} in modules {} in {} ms",
                     new String[]{templateName, present ? "found" : "cannot be found",
                             templateSetNames.toString(),
-                            String.valueOf(System.currentTimeMillis() - timer)});
+                            String.valueOf(System.currentTimeMillis() - timer)}
+            );
         }
 
         return present;
@@ -1121,8 +1157,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * Returns list of module bundles in the specified state.
      *
-     * @param state
-     *            the state of the module to be considered
+     * @param state the state of the module to be considered
      * @return list of module bundles in the specified state or an empty list if there no modules in that state
      */
     public List<Bundle> getModulesByState(ModuleState.State state) {
@@ -1133,7 +1168,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
 
-        return !modules.isEmpty() ? modules : Collections.<Bundle> emptyList();
+        return !modules.isEmpty() ? modules : Collections.<Bundle>emptyList();
     }
 
     public void setModuleStates(Map<Bundle, ModuleState> moduleStates) {
@@ -1210,8 +1245,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     /**
      * Injects an instance of the SCM helper.
      *
-     * @param scmHelper
-     *            an instance of the SCM helper
+     * @param scmHelper an instance of the SCM helper
      */
     public void setSourceControlHelper(SourceControlHelper scmHelper) {
         this.scmHelper = scmHelper;
@@ -1223,9 +1257,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Injects an instance of the helper class for Private App Store related operations.
-     * 
-     * @param forgeHelper
-     *            an instance helper class for Private App Store related operations
+     *
+     * @param forgeHelper an instance helper class for Private App Store related operations
      */
     public void setForgeHelper(ForgeHelper forgeHelper) {
         this.forgeHelper = forgeHelper;

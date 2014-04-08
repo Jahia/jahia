@@ -69,11 +69,6 @@
  */
 package org.jahia.modules.serversettings.flow;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
@@ -87,6 +82,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.binding.validation.ValidationContext;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SiteBean implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(SiteBean.class);
@@ -241,6 +241,15 @@ public class SiteBean implements Serializable {
         JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
         try {
+
+            JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+
+            if (templateManagerService.getNonSystemTemplateSetPackages().isEmpty()) {
+                messages.addMessage(new MessageBuilder()
+                        .error()
+                        .code("serverSettings.manageWebProjects.warningMsg.noTemplateSets").build());
+            }
+
             if (title != null && (title.length() > 0) && serverName != null && (serverName.length() > 0)
                     && siteKey != null && (siteKey.length() > 0)) {
                 if (!sitesService.isSiteKeyValid(siteKey)) {
@@ -274,6 +283,16 @@ public class SiteBean implements Serializable {
     }
 
     public void validateCreateSiteSelectModules(ValidationContext context) {
+        MessageContext messages = context.getMessageContext();
+
+        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+
+        if (templateManagerService.getNonSystemTemplateSetPackages().isEmpty()) {
+            messages.addMessage(new MessageBuilder()
+                    .error()
+                    .source("templateSet")
+                    .code("serverSettings.manageWebProjects.warningMsg.noTemplateSets").build());
+        }
     }
 
     public void validateEditSite(ValidationContext context) {

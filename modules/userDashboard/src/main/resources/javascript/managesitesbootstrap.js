@@ -1,18 +1,20 @@
 function deleteSiteBootstrap() {
-    if ($('.sitecheckbox:checked').length == 0) {
+    var sitecheckbox = $('.sitecheckbox:checked');
+    if (sitecheckbox.length == 0) {
         $('#nothing-selected').modal('show');
-        return;
+    }
+    else {
+        $(".addedInput").remove();
+        $(".addedLI").remove();
+
+        sitecheckbox.each(function (index) {
+            $('<li class="addedLI">' + $(this).attr('name') + '</li>').appendTo("#dialog-delete-confirm-body")
+            $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#deleteSiteForm")
+        });
+
+        $("#dialog-delete-confirm").modal('show')
     }
 
-    $(".addedInput").remove();
-    $(".addedLI").remove();
-
-    $(".sitecheckbox:checked").each(function (index) {
-        $('<li class="addedLI">' + $(this).attr('name') + '</li>').appendTo("#dialog-delete-confirm-body")
-        $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#deleteSiteForm")
-    });
-
-    $("#dialog-delete-confirm").modal('show')
 }
 
 function modalSiteEditProperties(node) {
@@ -57,39 +59,31 @@ function createSite() {
     return true;
 }
 
-function exportSite(url,live) {
-    if ($(".sitecheckbox:checked").length == 0) {
-        $("#nothing-selected").dialog({
-            resizable:false,
-            height:180,
-            modal:true,
-            zIndex:1200,
-            buttons:{
-                "Ok":function () {
-                    $(this).dialog("close");
-                }
-            }
+function exportSite(url,live,title) {
+    var sitecheckbox = $('.sitecheckbox:checked');
+    if (sitecheckbox.length == 0) {
+        $('#modal-nothing-selected').text(title);
+        $('#nothing-selected').modal('show');
+    } else {
+        $(".addedInput").remove();
+
+        if (sitecheckbox.length == 1) {
+            name = sitecheckbox.attr("name");
+            url = url.replace("/cms/export/default/sites","/cms/export/default/"+name);
+        }
+        sitecheckbox.each(function (index) {
+            $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#exportForm")
         });
-        return;
+        var exportForm = $('#exportForm');
+        exportForm.find('input[name=live]').val(live);
+        exportForm.attr("action",url);
+        exportForm.submit();
     }
-
-    $(".addedInput").remove();
-
-    if ($(".sitecheckbox:checked").length == 1) {
-        name = $(".sitecheckbox:checked").attr("name");
-        url = url.replace("/cms/export/default/sites","/cms/export/default/"+name);
-    }
-    $(".sitecheckbox:checked").each(function (index) {
-        $('<input class="addedInput" type="hidden" name="sitebox" value="'+$(this).attr("name")+'">').appendTo("#exportForm")
-    });
-    $('#exportForm input[name=live]').val(live);
-    $('#exportForm').attr("action",url);
-    $('#exportForm').submit();
 }
 
 function showLoading() {
     $('.loading').show();
-    $(".loading").appendTo("body")
+    $(".loading").appendTo("body");
 }
 
 function hideLoading() {

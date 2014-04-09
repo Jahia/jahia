@@ -123,12 +123,14 @@
     <c:if test="${moduleMap.end > 0 and moduleMap.end > moduleMap.begin}">
         <c:if test="${currentNode.properties.export.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
             <c:url var="stagingExportUrl" value="/cms/export/default/sites_staging_export_${now}.zip"/>
-            <button class="btn btn-primary exportStagingButton" id="exportStagingButton" onclick="exportSite('${stagingExportUrl}',false)">
-                <fmt:message key="label.manageSite.exportStaging"/>
+            <fmt:message key="label.manageSite.exportStaging" var="exportStagingTitle"/>
+            <fmt:message key="label.manageSite.exportLive" var="exportLiveTitle"/>
+            <button class="btn btn-primary exportStagingButton" id="exportStagingButton" onclick="exportSite('${stagingExportUrl}',false, '${exportStagingTitle}')">
+                ${exportStagingTitle}
             </button>
             <c:url var="exportUrl" value="/cms/export/default/sites_export_${now}.zip"/>
-            <button class="btn btn-primary exportLiveButton" id="exportLiveButton" onclick="exportSite('${exportUrl}',true)">
-                <fmt:message key="label.manageSite.exportLive"/>
+            <button class="btn btn-primary exportLiveButton" id="exportLiveButton" onclick="exportSite('${exportUrl}',true, '${exportLiveTitle}')">
+                ${exportLiveTitle}
             </button>
         </c:if>
 

@@ -766,7 +766,7 @@ public class TemplatePackageRegistry {
             }
 
             if (bean instanceof ProviderFactory) {
-                jcrStoreService.getProviderFactories().remove(((ProviderFactory) bean).getNodeTypeName());
+                jcrStoreService.removeProviderFactory(((ProviderFactory) bean).getNodeTypeName(), (ProviderFactory) bean);
             }
 
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {

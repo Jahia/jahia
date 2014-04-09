@@ -163,8 +163,68 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         interceptorChain = null;
     }
 
-    public void addProviderFactory(String nodeType, ProviderFactory externalProvider) {
-        this.providerFactories.put(nodeType, externalProvider);
+    public void addProviderFactory(String nodeType, final ProviderFactory externalProviderFactory) {
+        this.providerFactories.put(nodeType, externalProviderFactory);
+
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Query query = session.getWorkspace().getQueryManager().createQuery(
+                            "select * from ["+externalProviderFactory.getNodeTypeName()+"] as mount", Query.JCR_SQL2);
+                    QueryResult queryResult = query.execute();
+                    NodeIterator queryResultNodes = queryResult.getNodes();
+                    while (queryResultNodes.hasNext()) {
+                        JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
+                        if (mountPointNodeWrapper instanceof JCRMountPointNode) {
+                            JCRMountPointNode mountPointNode = (JCRMountPointNode) mountPointNodeWrapper;
+                            if (!mountPointNode.checkMountPointValidity()) {
+                                logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
+                                        "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                continue;
+                            }
+                        }
+                        try {
+                            mountPointNodeWrapper.getNodes();
+                        } catch (RepositoryException e) {
+                            logger.warn(
+                                    "Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
+                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e);
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Cannot mount provider "+nodeType, e);
+        }
+    }
+
+    public void removeProviderFactory(String nodeType, final ProviderFactory externalProviderFactory) {
+        if (this.providerFactories.get(nodeType) == externalProviderFactory) {
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    @Override
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        Query query = session.getWorkspace().getQueryManager().createQuery(
+                                "select * from ["+externalProviderFactory.getNodeTypeName()+"] as mount", Query.JCR_SQL2);
+                        QueryResult queryResult = query.execute();
+                        NodeIterator queryResultNodes = queryResult.getNodes();
+                        while (queryResultNodes.hasNext()) {
+                            JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
+                            JCRStoreProvider provider = JCRSessionFactory.getInstance().getMountPoints().get(mountPointNodeWrapper.getPath());
+                            if (provider != null && provider.isDynamicallyMounted()) {
+                                provider.stop();
+                            }
+                        }
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Cannot unmount provider " + nodeType, e);
+            }
+            providerFactories.remove(nodeType);
+        }
     }
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
@@ -251,38 +311,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-//                    JahiaPrivilegeRegistry.init(session);
-                    Query query = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
-                    QueryResult queryResult = query.execute();
-                    NodeIterator queryResultNodes = queryResult.getNodes();
-                    while (queryResultNodes.hasNext()) {
-                        JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
-                        if (mountPointNodeWrapper instanceof JCRMountPointNode) {
-                            JCRMountPointNode mountPointNode = (JCRMountPointNode) mountPointNodeWrapper;
-                            if (!mountPointNode.checkMountPointValidity()) {
-                                logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                        "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
-                                continue;
-                            }
-                        }
-                        try {
-                            mountPointNodeWrapper.getNodes();
-                        } catch (RepositoryException e) {
-                            logger.warn(
-                                    "Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e);
-                        }
-                    }
-                    return null;
-                }
-            });
-        } catch (RepositoryException e) {
-            throw new JahiaInitializationException("Cannot register permissions", e);
-        }
+        //
     }
 
     private void initObservers(Map<String, List<DefaultEventListener>> listeners)

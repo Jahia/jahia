@@ -84,6 +84,10 @@
         <transition on="addRole" to="viewRole">
             <evaluate expression="handler.addRole(requestParameters.newRole, requestParameters.uuid, requestParameters.roleType, messageContext)" />
         </transition>
+
+        <transition on="viewRole" to="viewRole">
+            <evaluate expression="handler.getRole(requestParameters.uuid, true)" result="handler.roleBean"/>
+        </transition>
     </view-state>
 
 </flow>

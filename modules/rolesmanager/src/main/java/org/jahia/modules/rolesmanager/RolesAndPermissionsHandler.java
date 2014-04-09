@@ -185,7 +185,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
             if (!next.getName().equals("privileged")) {
-                RoleBean role = getRole(next.getIdentifier(), false);
+                RoleBean role = createRoleBean(next, false, false);
                 String key = role.getRoleType().getName();
                 if (!all.containsKey(key)) {
                     all.put(key, new ArrayList<RoleBean>());
@@ -210,8 +210,13 @@ public class RolesAndPermissionsHandler implements Serializable {
 
         JCRNodeWrapper role = currentUserSession.getNodeByIdentifier(uuid);
 
+        return createRoleBean(role, getPermissions, true);
+    }
+
+    private RoleBean createRoleBean(JCRNodeWrapper role, boolean getPermissions, boolean getSubRoles) throws RepositoryException {
         RoleBean roleBean = new RoleBean();
-        roleBean.setUuid(role.getIdentifier());
+        final String uuid = role.getIdentifier();
+        roleBean.setUuid(uuid);
         roleBean.setName(role.getName());
         roleBean.setPath(role.getPath());
         roleBean.setDepth(role.getDepth());
@@ -274,7 +279,7 @@ public class RolesAndPermissionsHandler implements Serializable {
                 for (String s : roleType.getAvailableNodeTypes()) {
                     boolean includeSubtypes = false;
                     if (s.endsWith("/*")) {
-                        s = StringUtils.substringBeforeLast(s,"/*");
+                        s = StringUtils.substringBeforeLast(s, "/*");
                         includeSubtypes = true;
                     }
                     ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(s);
@@ -287,6 +292,16 @@ public class RolesAndPermissionsHandler implements Serializable {
                 }
                 roleBean.setNodeTypes(nodeTypes);
             }
+        }
+
+        // sub-roles
+        if (getSubRoles) {
+            final List<JCRNodeWrapper> subRoles = JCRContentUtils.getNodes(role, "jnt:role");
+            final List<RoleBean> subRoleBeans = new ArrayList<RoleBean>(subRoles.size());
+            for (JCRNodeWrapper subRole : subRoles) {
+                subRoleBeans.add(createRoleBean(subRole, false, false));
+            }
+            roleBean.setSubRoles(subRoleBeans);
         }
 
         return roleBean;
@@ -389,7 +404,7 @@ public class RolesAndPermissionsHandler implements Serializable {
         role.setProperty("j:roleGroup", roleType.getName());
 
         currentUserSession.save();
-        this.setRoleBean(getRole(role.getIdentifier(), true));
+        this.setRoleBean(createRoleBean(role, true, false));
         return true;
     }
 

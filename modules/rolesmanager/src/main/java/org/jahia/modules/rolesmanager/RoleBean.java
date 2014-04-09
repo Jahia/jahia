@@ -97,6 +97,7 @@ public class RoleBean implements Serializable {
     private boolean isDirty = false;
 
     private Map<String, Map<String, Map<String,PermissionBean>>> permissions;
+    private List<RoleBean> subRoles;
 
 //    private Map<String, List<PermissionBean>> externalPermissions;
 
@@ -199,4 +200,11 @@ public class RoleBean implements Serializable {
         this.permissions = permissions;
     }
 
+    public void setSubRoles(List<RoleBean> subRoles) {
+        this.subRoles = subRoles;
+    }
+
+    public List<RoleBean> getSubRoles() {
+        return subRoles;
+    }
 }

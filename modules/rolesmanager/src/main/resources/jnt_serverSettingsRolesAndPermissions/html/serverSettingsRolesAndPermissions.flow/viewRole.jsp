@@ -21,94 +21,94 @@
             $("#form").submit(function () {
                 selectedPermissions = [];
                 $(".checkbox[class*='checked']").each(function (i) {
-                    selectedPermissions[i] = $(this).attr('path')
-                })
+                    selectedPermissions[i] = $(this).attr('path');
+                });
                 partialSelectedPermissions = [];
                 $(".checkbox[class*='partial']").each(function (i) {
-                    partialSelectedPermissions[i] = $(this).attr('path')
-                })
+                    partialSelectedPermissions[i] = $(this).attr('path');
+                });
 
-                $("#selectedPermissions").val(selectedPermissions)
-                $("#partialSelectedPermissions").val(partialSelectedPermissions)
-            })
+                $("#selectedPermissions").val(selectedPermissions);
+                $("#partialSelectedPermissions").val(partialSelectedPermissions);
+            });
 
             $(".checkbox").click(function () {
-                $('.submitButton').addClass('btn-danger')
+                $('.submitButton').addClass('btn-danger');
                 if ($(this).hasClass('checked')) {
-                    uncheck(this)
+                    uncheck(this);
                 } else if ($(this).hasClass('partial')) {
-                    check(this)
+                    check(this);
                 } else {
-                    check(this)
+                    check(this);
                 }
 
                 return false;
-            })
+            });
 
             function uncheckthis() {
-                uncheck(this)
+                uncheck(this);
             }
 
             function uncheck(obj) {
-                $(obj).removeClass('checked')
-                $(obj).removeClass('partial')
-                $(":checkbox[name='selectedPermissions'][path='" + $(obj).attr('path') + "']").attr('checked', false)
+                $(obj).removeClass('checked');
+                $(obj).removeClass('partial');
+                $(":checkbox[name='selectedPermissions'][path='" + $(obj).attr('path') + "']").attr('checked', false);
                 $(":checkbox[name='partialSelectedPermissions'][path='" + $(obj).attr('path') + "']").attr('checked',
-                        false)
+                        false);
 
                 // Was checked, uncheck all
-                selector = ".checkbox[parent='" + $(obj).attr('path') + "']"
+                selector = ".checkbox[parent='" + $(obj).attr('path') + "']";
 
-                $(selector).each(uncheckthis)
+                $(selector).each(uncheckthis);
 
-                setParent($(obj).attr('parent'))
+                setParent($(obj).attr('parent'));
             }
 
             function checkthis() {
-                check(this)
+                check(this);
             }
 
             function check(obj) {
-                $(obj).addClass('checked')
-                $(obj).removeClass('partial')
+                $(obj).addClass('checked');
+                $(obj).removeClass('partial');
 
-                $(":checkbox[name='selectedPermissions'][path='" + $(obj).attr('path') + "']").attr('checked', true)
+                $(":checkbox[name='selectedPermissions'][path='" + $(obj).attr('path') + "']").attr('checked', true);
                 $(":checkbox[name='partialSelectedPermissions'][path='" + $(obj).attr('path') + "']").attr('checked',
-                        false)
+                        false);
 
                 // Was unchecked, check all
-                selector = ".checkbox[parent='" + $(obj).attr('path') + "']"
+                selector = ".checkbox[parent='" + $(obj).attr('path') + "']";
 
-                $(selector).each(checkthis)
+                $(selector).each(checkthis);
 
-                setParent($(obj).attr('parent'))
+                setParent($(obj).attr('parent'));
             }
 
             function setParent(parentPath) {
-                selector = ".checkbox[path='" + parentPath + "']"
+                selector = ".checkbox[path='" + parentPath + "']";
 
                 if ($(".checkbox[parent='" + parentPath + "'][class*='checked']").size() ==
-                    $(".checkbox[parent='" + parentPath + "']").size()) {
-                    $(selector).addClass('checked')
-                    $(selector).removeClass('partial')
-                    $(":checkbox[name='selectedPermissions'][path='" + parentPath + "']").attr('checked', true)
-                    $(":checkbox[name='partialSelectedPermissions'][path='" + parentPath + "']").attr('checked', false)
+                        $(".checkbox[parent='" + parentPath + "']").size()) {
+                    $(selector).addClass('checked');
+                    $(selector).removeClass('partial');
+                    $(":checkbox[name='selectedPermissions'][path='" + parentPath + "']").attr('checked', true);
+                    $(":checkbox[name='partialSelectedPermissions'][path='" + parentPath + "']").attr('checked', false);
                 } else if ($(".checkbox[parent='" + parentPath + "'][class*='checked']").size() > 0 ||
-                           $(".checkbox[parent='" + parentPath + "'][class*='partial']").size() > 0) {
-                    $(selector).removeClass('checked')
-                    $(selector).addClass('partial')
-                    $(":checkbox[name='selectedPermissions'][path='" + parentPath + "']").attr('checked', false)
-                    $(":checkbox[name='partialSelectedPermissions'][path='" + parentPath + "']").attr('checked', true)
+                        $(".checkbox[parent='" + parentPath + "'][class*='partial']").size() > 0) {
+                    $(selector).removeClass('checked');
+                    $(selector).addClass('partial');
+                    $(":checkbox[name='selectedPermissions'][path='" + parentPath + "']").attr('checked', false);
+                    $(":checkbox[name='partialSelectedPermissions'][path='" + parentPath + "']").attr('checked', true);
                 } else {
-                    $(selector).removeClass('checked')
-                    $(selector).removeClass('partial')
-                    $(":checkbox[name='selectedPermissions'][path='" + parentPath + "']").attr('checked', false)
-                    $(":checkbox[name='partialSelectedPermissions'][path='" + parentPath + "']").attr('checked', false)
+                    $(selector).removeClass('checked');
+                    $(selector).removeClass('partial');
+                    $(":checkbox[name='selectedPermissions'][path='" + parentPath + "']").attr('checked', false);
+                    $(":checkbox[name='partialSelectedPermissions'][path='" + parentPath + "']").attr('checked', false);
                 }
 
-                p = $(".checkbox[path='" + parentPath + "']").attr("parent")
+                p = $(".checkbox[path='" + parentPath + "']").attr("parent");
                 if (p) {
-                    setParent(p)
+                    setParent(p);
                 }
             }
 
@@ -123,26 +123,33 @@
         });
 
         function addI18nRow() {
-            var languageCode = $("#newLanguage").val();
+            var newLanguage = $("#newLanguage");
+            var languageCode = newLanguage.val();
             if (languageCode != null) {
-                var $selectedOption = $("#newLanguage option[value='" + languageCode + "']");
+                var $selectedOption = newLanguage.find("option[value='" + languageCode + "']");
                 var languageName = $selectedOption.text();
-                $('#roleI18nPropsTable > tbody:last').append("<tr><td>" + languageName +
-                                                             "<input type=\"hidden\" name=\"languageCode\" value=\"" +
-                                                             languageCode + "\" />" +
-                                                             "<input type=\"hidden\" name=\"languageName\" value=\"" +
-                                                             languageName + "\" />" +
-                                                             "</td><td><input type=\"text\" name=\"title\" onchange=\"$('.submitButton').addClass('btn-danger')\" /></td>" +
-                                                             "<td><textarea name=\"description\" onchange=\"$('.submitButton').addClass('btn-danger')\" /></td></tr>");
+                $('#roleI18nPropsTable').find('> tbody:last').append("<tr><td>" + languageName +
+                        "<input type=\"hidden\" name=\"languageCode\" value=\"" +
+                        languageCode + "\" />" +
+                        "<input type=\"hidden\" name=\"languageName\" value=\"" +
+                        languageName + "\" />" +
+                        "</td><td><input type=\"text\" name=\"title\" onchange=\"$('.submitButton').addClass('btn-danger')\" /></td>" +
+                        "<td><textarea name=\"description\" onchange=\"$('.submitButton').addClass('btn-danger')\" /></td></tr>");
                 $selectedOption.remove();
             }
         }
 
         function updatedSelectedTypes() {
             $('#selectedAvailableNodeTypes').empty();
-            $('#nodeTypes option:selected').each(function () {
+            $('#nodeTypes').find('option:selected').each(function () {
                 $('#selectedAvailableNodeTypes').append("<li>" + $(this).text() + "</li>");
             });
+        }
+
+        function viewRole(uuid) {
+            $('#uuid').val(uuid);
+            $('#eventId').val('viewRole');
+            $('#form').submit();
         }
     </script>
 </template:addResources>
@@ -230,12 +237,14 @@
         </div>
         <div id="tabTypes" class="tab-pane">
             <em>(<fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes.description"/>)</em><br/>
+
             <div class="box-1">
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <div class="span1">
                             <label for="hidden"><fmt:message key="rolesmanager.rolesAndPermissions.hidden"/>
-                                <input name="hidden" id="hidden" type="checkbox" ${handler.roleBean.hidden?'checked="true"':''} onchange="$('.submitButton').addClass('btn-danger')"/>
+                                <input name="hidden" id="hidden" type="checkbox" ${handler.roleBean.hidden?'checked="true"':''}
+                                       onchange="$('.submitButton').addClass('btn-danger')"/>
                             </label>
                         </div>
                     </div>
@@ -270,16 +279,48 @@
         </div>
         <div id="tabSub" class="tab-pane">
             <em>(<fmt:message key="rolesmanager.rolesAndPermissions.subRoles.description"/>)</em><br/>
+
             <div class="box-1">
                 <fieldset>
                     <input type="hidden" name="roleType" value="${handler.roleBean.roleType.name}"/>
                     <input type="text" name="newRole"/>
-                    <input type="hidden" name="uuid" value="${handler.roleBean.uuid}"/>
+                    <input type="hidden" id="uuid" name="uuid" value="${handler.roleBean.uuid}"/>
+                    <input type="hidden" id="eventId" name="_eventId" value="rolesList"/>
                     <button class="btn btn-primary" type="submit" name="_eventId_addRole">
                         <i class="icon-plus  icon-white"></i>
                         <fmt:message key="rolesmanager.rolesAndPermissions.subRole.add"/>
                     </button>
                 </fieldset>
+
+                <h3><fmt:message key="rolesmanager.rolesAndPermissions.subRoles"/></h3>
+                <c:choose>
+                    <c:when test="${not empty handler.roleBean.subRoles}">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th width="25%">
+                                    <fmt:message key="label.name"/>
+                                </th>
+                                <th width="75%">
+                                    <fmt:message key="label.description"/>
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <c:forEach items="${handler.roleBean.subRoles}" var="subRole">
+                                <tr>
+                                    <td>
+                                        <strong><a href="#" name="_eventId_viewRole" onclick="viewRole('${subRole.uuid}')">${subRole.title} (${subRole.name})</a></strong>
+                                    </td>
+                                    <td>${subRole.description}</td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:when>
+                    <c:otherwise><fmt:message key="rolesmanager.rolesAndPermissions.subRoles.empty"/></c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
@@ -306,11 +347,13 @@
                     <c:if test="${(permission.set or permission.superSet) and not (centry.value[gentry.key][permission.parentPath].set or centry.value[gentry.key][permission.parentPath].superSet)}">
                         <c:choose>
                             <c:when test="${centry.key ne handler.currentContext}">
-                                <a href="#" onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#contextSelector').val('${centry.key}');$('#tabField').val('${gentry.key}');$('#eventField').attr('name','_eventId_switchGroup');$('#form').submit()"> ${permission.title} </a>
+                                <a href="#"
+                                   onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#contextSelector').val('${centry.key}');$('#tabField').val('${gentry.key}');$('#eventField').attr('name','_eventId_switchGroup');$('#form').submit()"> ${permission.title} </a>
                                 |
                             </c:when>
                             <c:when test="${gentry.key ne handler.currentGroup}">
-                                <a href="#" onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#switchToGroup${status.index}').click()"> ${permission.title} </a>
+                                <a href="#"
+                                   onclick="$('#form').attr('action',$('#form').attr('action') + '#${permission.path}');$('#switchToGroup${status.index}').click()"> ${permission.title} </a>
                                 |
                             </c:when>
                             <c:otherwise>
@@ -350,11 +393,13 @@
     </p>
 
     <input type="hidden" name="groupTab" id="tabField" value=""/>
+
     <div class="btn-group">
         <div class="btn-group">
             <c:forEach items="${handler.roleBean.permissions[handler.currentContext]}" var="permissionGroup" varStatus="status">
-                <button class="btn ${handler.currentGroup eq permissionGroup.key ? 'btn-success':''}" id="switchToGroup${status.index}" type="submit" name="_eventId_switchGroup" onclick="$('#tabField').val('${permissionGroup.key}')">
-                    <c:set var="key" value="${fn:replace(permissionGroup.key,',','_')}"/>
+                <button class="btn ${handler.currentGroup eq permissionGroup.key ? 'btn-success':''}" id="switchToGroup${status.index}" type="submit" name="_eventId_switchGroup"
+                        onclick="$('#tabField').val('${permissionGroup.key}')">
+                <c:set var="key" value="${fn:replace(permissionGroup.key,',','_')}"/>
                     <c:set var="key" value="${fn:replace(key,'-','_')}"/>
                     <fmt:message key="rolesmanager.rolesAndPermissions.group.${key}"/>
                 </button>
@@ -385,6 +430,7 @@
                     <tr>
                         <td>
                             <a name="${permission.path}"/>
+
                             <div class="triState" style="height:13px; overflow: hidden">
 
                                 <c:choose>
@@ -409,8 +455,9 @@
                                 ${permission.depth == 2 ? '<h3>' : '' }${permission.title} ${permission.depth == 2 ? '</h3>' : '' }
 
                             <c:if test="${not empty permission.mappedPermissions and not permission.partialSet and not permission.hasChildren}">
-                                <a href="#" onclick="$('#permissionField').val('${permission.path}');$('#eventField').attr('name','_eventId_expandMappedPermissions');$('#form').submit()">
-                                    <c:if test="${permission.mappedPermissionsExpanded}">-</c:if>
+                                <a href="#"
+                                   onclick="$('#permissionField').val('${permission.path}');$('#eventField').attr('name','_eventId_expandMappedPermissions');$('#form').submit()">
+                                <c:if test="${permission.mappedPermissionsExpanded}">-</c:if>
                                     <c:if test="${not permission.mappedPermissionsExpanded}">+</c:if>
                                 </a>
                             </c:if>

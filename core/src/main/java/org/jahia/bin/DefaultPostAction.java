@@ -80,12 +80,18 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.Patterns;
 import org.json.JSONObject;
+<<<<<<< .working
+=======
+import org.slf4j.Logger;
+
+>>>>>>> .merge-right.r49552
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.util.*;
 
 /**
@@ -96,6 +102,8 @@ import java.util.*;
  * Created : 11 mars 2010
  */
 public class DefaultPostAction extends Action {
+	
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultPostAction.class);
 
     public static final String ACTION_NAME = "default";
 
@@ -202,9 +210,14 @@ public class DefaultPostAction extends Action {
                 jsonObject.put("validationError", jsonErrors);
                 return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
             } catch (ConstraintViolationException e) {
+<<<<<<< .working
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("validationError", Arrays.asList(getJSONConstraintError(e)));
                 return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
+=======
+            	logger.error(e.getMessage());
+                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
+>>>>>>> .merge-right.r49552
             }
 
             final String nodeId = newNode.getIdentifier();

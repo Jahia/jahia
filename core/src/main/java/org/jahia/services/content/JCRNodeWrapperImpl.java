@@ -2211,6 +2211,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (!parent.isNodeType("jmix:deletedChildren")) {
                         parent.addMixin("jmix:deletedChildren");
                         parent.setProperty("j:deletedChildren", new String[]{getIdentifier()});
+                    } else if (!parent.hasProperty("j:deletedChildren")) {
+                        parent.setProperty("j:deletedChildren", new String[] {getIdentifier()});
                     } else {
                         parent.getProperty("j:deletedChildren").addValue(getIdentifier());
                     }

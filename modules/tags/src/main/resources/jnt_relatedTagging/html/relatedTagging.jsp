@@ -15,19 +15,21 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <template:include view="hidden.header"/>
-<c:if test="${not empty moduleMap.currentList}">
-    <ul>
-        <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-            <li>
-                <c:set var="displayableNode" value="${jcr:findDisplayableNode(subchild, renderContext)}"/>
-                <a href="<c:url value="${url.base}${displayableNode.path}.html"/>">${subchild.displayableName}</a>
-            </li>
-        </c:forEach>
-        <c:if test="${functions:length(moduleMap.currentList) == 0 and not empty moduleMap.emptyListMessage}">
-            ${moduleMap.emptyListMessage}
-        </c:if>
-    </ul>
-</c:if>
+<c:choose>
+    <c:when test="${not empty moduleMap.currentList && functions:length(moduleMap.currentList) > 0}">
+        <ul>
+            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                <li>
+                    <c:set var="displayableNode" value="${jcr:findDisplayableNode(subchild, renderContext)}"/>
+                    <a href="<c:url value="${url.base}${displayableNode.path}.html"/>">${subchild.displayableName}</a>
+                </li>
+            </c:forEach>
+        </ul>
+    </c:when>
+    <c:when test="${not empty moduleMap.emptyListMessage}">
+        ${moduleMap.emptyListMessage}
+    </c:when>
+</c:choose>
 <c:if test="${moduleMap.editable and renderContext.editMode && !resourceReadOnly}">
     <template:module path="*"/>
 </c:if>

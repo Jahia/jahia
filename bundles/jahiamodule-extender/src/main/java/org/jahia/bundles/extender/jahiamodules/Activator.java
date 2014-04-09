@@ -270,11 +270,11 @@ public class Activator implements BundleActivator {
                     logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEvent.getType()),
                             getDisplayName(bundleEvent.getBundle()));
                 }
+                boolean fromFileInstall = bundleEvent.getOrigin().getSymbolicName().equals("org.apache.felix.fileinstall");
                 try {
                     switch (bundleEvent.getType()) {
                         case BundleEvent.INSTALLED:
                             setModuleState(bundle,ModuleState.State.INSTALLED, null);
-                            boolean fromFileInstall = bundleEvent.getOrigin().getSymbolicName().equals("org.apache.felix.fileinstall");
                             install(bundle, fromFileInstall);
                             break;
                         case BundleEvent.UPDATED:
@@ -314,7 +314,9 @@ public class Activator implements BundleActivator {
                 } catch (Exception e) {
                     logger.error("Error when handling event", e);
                 } finally {
-                    JcrSessionFilter.endRequest();
+                    if (fromFileInstall) {
+                        JcrSessionFilter.endRequest();
+                    }
                 }
             }
 

@@ -16,7 +16,7 @@
 <template:addResources>
     <script type="text/javascript">
         function getUuids() {
-            var uuids = new Array();
+            var uuids = [];
             i = 0;
             $(".roleCheckbox:checked").each(function (index) {
                 uuids[i++] = $(this).val();
@@ -28,25 +28,29 @@
         var addSubRoleLabel = '<fmt:message key="rolesmanager.rolesAndPermissions.subRole.add" />';
         function checkRole() {
             var uuids = getUuids();
+            var roleTypeCombo = $('#roleTypeCombo');
+            var deleteRolesButton = $('#deleteRolesButton');
+
             if (uuids.length == 1) {
                 $('#addRoleButtonLabel').text(addSubRoleLabel);
-                $('#roleTypeCombo').val($("#"+uuids[0]).attr("roleType"));
-                $('#roleTypeCombo').prop("disabled", true);
+                roleTypeCombo.val($("#" + uuids[0]).attr("roleType"));
+                roleTypeCombo.prop("disabled", true);
                 $('#uuid').val(uuids[0]);
             } else {
                 $('#addRoleButtonLabel').text(addRoleLabel);
-                $('#roleTypeCombo').prop("disabled", false);
+                roleTypeCombo.prop("disabled", false);
                 $('#uuid').val('');
             }
+
             if (uuids.length == 0) {
-                 if (!$('#deleteRolesButton').hasClass("disabled")) {
-                     $('#deleteRolesButton').addClass("disabled");
-                     $('#deleteRolesButton').attr("disabled", "disabled");
+                if (!deleteRolesButton.hasClass("disabled")) {
+                    deleteRolesButton.addClass("disabled");
+                    deleteRolesButton.attr("disabled", "disabled");
                  }
             } else {
-                if ($('#deleteRolesButton').hasClass("disabled")) {
-                    $('#deleteRolesButton').removeClass("disabled");
-                    $('#deleteRolesButton').removeAttr("disabled");
+                if (deleteRolesButton.hasClass("disabled")) {
+                    deleteRolesButton.removeClass("disabled");
+                    deleteRolesButton.removeAttr("disabled");
                 }
             }
         }

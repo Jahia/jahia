@@ -460,9 +460,9 @@ public class WorkflowHelper {
 
                     for (String nodeId : nodeIds) {
                         try {
-                            Locale wflocale = (Locale) wf.getVariables().get("locale");
-                            if (wflocale == null) {
-                                wflocale = locale;
+                            Locale wflocale = locale;
+                            if (wf != null && wf.getVariables().get("locale") != null) {
+                                wflocale = (Locale) wf.getVariables().get("locale");
                             }
                             JCRNodeWrapper nodeWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(null, wflocale).getNodeByIdentifier(nodeId);
                             gwtWfHistory.set("nodeWrapper", ((NavigationHelper) SpringContextSingleton.getInstance().getContext().getBeansOfType(NavigationHelper.class).values().iterator().next()).getGWTJahiaNode(nodeWrapper));

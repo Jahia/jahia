@@ -76,7 +76,6 @@ package org.jahia.services.sites;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -101,7 +100,6 @@ import org.springframework.core.io.Resource;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -378,7 +376,8 @@ public class JahiaSitesService extends JahiaService {
         try {
 
             if (!siteExists(siteKey, session)) {
-                final String templatePackage = templateService.getAnyDeployedTemplatePackage(selectTmplSet).getId();
+                final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(selectTmplSet);
+                final String templatePackage = templateSet.getId();
 
                 int id = 1;
                 List<JCRSiteNode> sites = getSitesNodeList(session);
@@ -429,26 +428,10 @@ public class JahiaSitesService extends JahiaService {
 
                         siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
 
-                        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>(
-                                2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
-                        modules.add(templateService.getAnyDeployedTemplatePackage("default"));
-                        modules.add(templateService.getAnyDeployedTemplatePackage(templatePackage));
-                        if (modulesToDeploy != null) {
-                            for (String s : modulesToDeploy) {
-                                JahiaTemplatesPackage packageByFileName = templateService.getAnyDeployedTemplatePackage(s);
-                                if (!modules.contains(packageByFileName)) {
-                                    modules.add(packageByFileName);
-                                }
-                            }
-                        }
-                        String target = "/sites/" + siteKey;
-                        try {
-                            logger.info("Deploying modules {} to {}", modules.toString(), target);
-                            templateService.installModules(modules, target, session);
-                        } catch (RepositoryException re) {
-                            logger.error("Unable to deploy modules " + modules.toString() + " to "
-                                    + target + ". Cause: " + re.getMessage(), re);
-                        }
+                        String target = getTargetString(siteKey);
+
+                        deployModules(target, modulesToDeploy, templateSet, session, templateService);
+
                         //Auto deploy all modules that define this behavior on site creation
                         final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
                         for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
@@ -549,6 +532,37 @@ public class JahiaSitesService extends JahiaService {
         }
 
         return site;
+    }
+
+    private String getTargetString(String siteKey) {
+        return "/sites/" + siteKey;
+    }
+
+    public void deployModules(JahiaSite site, String[] modulesToDeploy, JCRSessionWrapper session) {
+        final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        deployModules(getTargetString(site.getSiteKey()), modulesToDeploy, templateService.getAnyDeployedTemplatePackage(site.getTemplatePackageName()), session, templateService);
+    }
+
+    private void deployModules(String target, String[] modulesToDeploy, JahiaTemplatesPackage templateSet, JCRSessionWrapper session, JahiaTemplateManagerService templateService) {
+        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>(2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
+        modules.add(templateService.getAnyDeployedTemplatePackage("default"));
+        modules.add(templateSet);
+        if (modulesToDeploy != null) {
+            for (String s : modulesToDeploy) {
+                JahiaTemplatesPackage packageByFileName = templateService.getAnyDeployedTemplatePackage(s);
+                if (!modules.contains(packageByFileName)) {
+                    modules.add(packageByFileName);
+                }
+            }
+        }
+
+        try {
+            logger.info("Deploying modules {} to {}", modules.toString(), target);
+            templateService.installModules(modules, target, session);
+        } catch (RepositoryException re) {
+            logger.error("Unable to deploy modules " + modules.toString() + " to "
+                    + target + ". Cause: " + re.getMessage(), re);
+        }
     }
 
     /**

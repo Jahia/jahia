@@ -18,17 +18,28 @@
 
 <div class="box-1">
     <form action="${flowExecutionUrl}" method="POST">
-        <h2><fmt:message key="serverSettings.manageWebProjects.createWebProject"/></h2>
+        <c:set var="editingModules" value="${siteBean.editModules}"/>
+        <h2><c:choose>
+            <c:when test="${not editingModules}">
+                <fmt:message key="serverSettings.manageWebProjects.createWebProject"/>
+            </c:when>
+            <c:otherwise>
+                <fmt:message key="serverSettings.manageWebProjects.webProject.selectModules"/>
+            </c:otherwise>
+        </c:choose>
+        </h2>
         <fieldset>
-            <div>
-                <label for="templateSet"><strong><fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/></strong></label>
+            <c:if test="${not editingModules}">
+                <div>
+                    <label for="templateSet"><strong><fmt:message key="serverSettings.webProjectSettings.pleaseChooseTemplateSet"/></strong></label>
 
-                <select class="span6" name="templateSet" id="templateSet">
-                    <c:forEach items="${templateSets}" var="module">
-                        <option value="${module.id}" ${siteBean.templateSet eq module.id || empty siteBean.templateSet && module.id eq defaultTemplateSetId ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.id})</option>
-                    </c:forEach>
-                </select>
-            </div>
+                    <select class="span6" name="templateSet" id="templateSet">
+                        <c:forEach items="${templateSets}" var="module">
+                            <option value="${module.id}" ${siteBean.templateSet eq module.id || empty siteBean.templateSet && module.id eq defaultTemplateSetId ? 'selected="true"' : ''}>${module.name}&nbsp;(${module.id})</option>
+                        </c:forEach>
+                    </select>
+                </div>
+            </c:if>
 
             <div>
                 <p><strong><fmt:message key="serverSettings.manageWebProjects.webProject.selectModules"/></strong></p>
@@ -48,15 +59,17 @@
             </div>
 
 
-            <div>
-                <label for="language"><strong><fmt:message key="serverSettings.manageWebProjects.webProject.selectLanguage"/></strong></label>
+            <c:if test="${not editingModules}">
+                <div>
+                    <label for="language"><strong><fmt:message key="serverSettings.manageWebProjects.webProject.selectLanguage"/></strong></label>
 
-                <select class="span6" name="language" id="language">
-                    <c:forEach items="${allLocales}" var="locale">
-                        <option value="${locale}" ${siteBean.language eq locale ? 'selected="true"' : ''}>${locale.displayName}</option>
-                    </c:forEach>
-                </select>
-            </div>
+                    <select class="span6" name="language" id="language">
+                        <c:forEach items="${allLocales}" var="locale">
+                            <option value="${locale}" ${siteBean.language eq locale ? 'selected="true"' : ''}>${locale.displayName}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+            </c:if>
 
 
         </fieldset>

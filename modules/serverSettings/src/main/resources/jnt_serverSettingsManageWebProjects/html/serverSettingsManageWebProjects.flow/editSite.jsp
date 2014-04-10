@@ -67,7 +67,20 @@
             <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="span12">
-                        <label for="defaultSite"><fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>:</label>
+
+                        <label for="defaultSite">
+                            <c:if test="${numberOfSites > 1}">
+                                <input type="checkbox" name="defaultSite" id="defaultSite"
+                                       <c:if test="${siteBean.defaultSite}">checked="checked"</c:if> /> <fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>
+                            </c:if>
+                            <c:if test="${numberOfSites <= 1}">
+                                <input type="checkbox" name="defaultSite" id="defaultSite" disabled="disabled" checked="checked"/> <fmt:message
+                                    key="serverSettings.manageWebProjects.webProject.isDefault"/>
+                            </c:if>
+                        </label>
+
+
+                        <%--<label for="defaultSite"><fmt:message key="serverSettings.manageWebProjects.webProject.defaultSite"/>:</label>
                         <c:choose>
                             <c:when test="${siteBean.defaultSite}">
                                 <p><fmt:message key="serverSettings.manageWebProjects.webProject.isDefault"/></p>
@@ -76,7 +89,7 @@
                             <c:otherwise>
                                 <input style="margin-bottom:15px;" type="checkbox" name="defaultSite" id="defaultSite" ${siteBean.defaultSite ? 'checked="checked"' : ''}/>
                             </c:otherwise>
-                        </c:choose>
+                        </c:choose>--%>
                     </div>
                 </div>
             </div>
@@ -97,6 +110,10 @@
                     <button class="btn btn-primary" type="submit" name="_eventId_next" id="${currentNode.identifier}-next">
                         <i class="icon-ok icon-white"></i>
                         &nbsp;<fmt:message key='label.save'/>
+                    </button>
+                    <button class="btn" type="submit" name="_eventId_editModules">
+                        <i class="icon-th-large"></i>
+                        &nbsp;<fmt:message key='serverSettings.manageWebProjects.webProject.selectModules' />
                     </button>
                     <button class="btn" type="submit" name="_eventId_cancel">
                         <i class="icon-ban-circle"></i>

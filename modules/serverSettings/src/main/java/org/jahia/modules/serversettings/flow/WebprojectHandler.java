@@ -856,7 +856,8 @@ public class WebprojectHandler implements Serializable {
     public void updateSite(SiteBean bean, MessageContext messages) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            JahiaSite site = sitesService.getSiteByKey(getSites().get(0).getSiteKey(), session);
+            final String siteKey = getSites().get(0).getSiteKey();
+            JahiaSite site = sitesService.getSiteByKey(siteKey, session);
             if (!StringUtils.equals(site.getServerName(), bean.getServerName())
                     || !StringUtils.equals(site.getTitle(), bean.getTitle())
                     || !StringUtils.equals(site.getDescription(), bean.getDescription())) {
@@ -870,6 +871,12 @@ public class WebprojectHandler implements Serializable {
             if (!site.isDefault() && bean.isDefaultSite()) {
                 sitesService.setDefaultSite(site);
             }
+
+            // update modules
+            // todo: check that module list has changed before updating it
+            final List<String> modules = bean.getModules();
+            sitesService.deployModules(site, modules.toArray(new String[modules.size()]), session);
+
             session.save();
             messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
         } catch (Exception e) {

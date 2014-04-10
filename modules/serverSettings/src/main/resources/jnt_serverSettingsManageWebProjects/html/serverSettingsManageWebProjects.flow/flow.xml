@@ -53,7 +53,12 @@
     </decision-state>
 
     <decision-state id="createSiteAdministratorConditionPrevious" >
-        <if test="siteBean.createAdmin" then="siteAdminPropertiesForm" else="createSite" />
+        <if test="siteBean.createAdmin" then="siteAdminPropertiesForm" />
+        <if test="siteBean.editModules" then="editSite" else="createSite" />
+    </decision-state>
+
+    <decision-state id="createSiteSelectModulesConditionNext">
+        <if test="siteBean.editModules" then="updateSite" else="createSiteSummary"/>
     </decision-state>
 
     <view-state id="siteAdminPropertiesForm" model="siteBean.adminProperties">
@@ -70,7 +75,7 @@
         </on-render>
 
         <transition on="previous" to="createSiteAdministratorConditionPrevious" />
-        <transition on="next" to="createSiteSummary" />
+        <transition on="next" to="createSiteSelectModulesConditionNext" />
     </view-state>
 
     <view-state id="createSiteSummary" model="siteBean">
@@ -86,9 +91,14 @@
     <end-state id="siteCreated"/>
 
     <view-state id="editSite" model="siteBean">
+        <on-render>
+            <evaluate expression="webprojectHandler.numberOfSites" result="flashScope.numberOfSites"/>
+            <evaluate expression="siteBean.setEditModules(true)"/>
+        </on-render>
         <!-- edit site -->    
         <transition on="next" to="updateSite" />
         <transition on="cancel" to="view" validate="false" />
+        <transition on="editModules" to="createSiteSelectModules"/>
     </view-state>
     <action-state id="updateSite" >
         <evaluate expression="webprojectHandler.updateSite(siteBean, messageContext)"/>

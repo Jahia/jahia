@@ -93,6 +93,7 @@ public class SiteBean implements Serializable {
     private static final long serialVersionUID = 2151226556427659305L;
     private AdminProperties adminProperties;
     private boolean createAdmin = false;
+    private boolean editModules = false;
     private boolean defaultSite = false;
     private String description;
 
@@ -228,6 +229,14 @@ public class SiteBean implements Serializable {
 
     public void setTemplateFolder(String templateFolder) {
         this.templateFolder = templateFolder;
+    }
+
+    public boolean isEditModules() {
+        return editModules;
+    }
+
+    public void setEditModules(boolean editModules) {
+        this.editModules = editModules;
     }
 
     public void validateCreateSite(ValidationContext context) {

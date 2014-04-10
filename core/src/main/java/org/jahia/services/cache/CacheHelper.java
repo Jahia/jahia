@@ -246,7 +246,7 @@ public final class CacheHelper {
         }
         cache.put(new Element("FLUSH_OUTPUT_CACHES",
                 // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
-                new CacheClusterEvent("",Long.MAX_VALUE)));
+                new CacheClusterEvent("",Long.MIN_VALUE)));
     }
 
     public static void flushOutputCachesForPath(String path, boolean flushSubtree) {

@@ -365,6 +365,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public void contextDestroyed(ServletContextEvent event) {
+        if (!running) {
+            return;
+        }
         contextInitialized = false;
         running = false;
         if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {

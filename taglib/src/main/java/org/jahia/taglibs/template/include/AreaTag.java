@@ -188,6 +188,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
             if (conflictsWith != null) {
                 additionalParameters.append(" conflictsWith=\"").append(conflictsWith).append("\"");
             }
+            if (!areaType.equals("jnt:contentList")) {
+                additionalParameters.append(" areaType=\"").append(areaType).append("\"");
+            }
+
             if (renderContext.getEditModeConfigName().equals("contributemode")) {
                 JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
                 if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
@@ -401,8 +405,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
             level = null;
             areaAsSubNode = false;
             conflictsWith = null;
+            areaType = "jnt:contentList";
             pageContext.getRequest().setAttribute("inArea", o);
-
         }
     }
 

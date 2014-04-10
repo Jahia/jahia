@@ -126,6 +126,11 @@ public class AreaModule extends SimpleModule {
         this.missingList = "true".equals(DOM.getElementAttribute(divElement, "missingList"));
         this.areaHolder =  DOM.getElementAttribute(divElement, "areaHolder");
         this.conflictsWith = DOM.getElementAttribute(divElement, "conflictsWith");
+        String areaType = DOM.getElementAttribute(divElement, "areaType");
+        if (areaType != null && areaType.length() > 0) {
+            this.areaType = areaType;
+        }
+
         if (this.conflictsWith.length()==0) {
             this.conflictsWith = null;
         }

@@ -323,5 +323,9 @@ public class VanityUrlService {
     
     public void flushCaches() {
         cacheByUrl.flush();
-    }    
+    }
+
+    public void flushCacheEntry(String key) {
+        cacheByUrl.remove(key);
+    }
 }

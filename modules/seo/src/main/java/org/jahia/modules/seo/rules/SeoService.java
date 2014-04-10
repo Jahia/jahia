@@ -171,6 +171,7 @@ public class SeoService {
             } while (true);
             if (changed) {
                 node.setProperty("j:url", url);
+                urlService.flushCacheEntry(urlService.getCacheByUrlKey(url,node.getResolveSite().getSiteKey(), node.getSession().getWorkspace().getName()));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(),e);

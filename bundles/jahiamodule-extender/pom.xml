@@ -189,7 +189,7 @@
         <dependency>
           <groupId>org.ops4j.pax.web</groupId>
           <artifactId>pax-web-jsp</artifactId>
-          <version>3.0.2-patch2</version>
+          <version>3.0.7-jahia1-SNAPSHOT</version>
           <scope>provided</scope>
         </dependency>
 

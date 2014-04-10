@@ -81,7 +81,6 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerRoutingService;
-import org.jahia.utils.Patterns;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -253,13 +252,13 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *         principal was already a member.
      */
     public boolean addMember(final Principal principal) {
+        if (null == principal || this.equals(principal)) {
+            return false;
+        }
         try {
             boolean memberAdded = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     if (isMember(principal)) {
-                        return false;
-                    }
-                    if (principal.equals(JCRGroup.this)) {
                         return false;
                     }
                     JCRPrincipal jcrUser = null;
@@ -544,7 +543,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         if (isMember(principal)) {
                             continue;
                         }
-                        if (principal.equals(JCRGroup.this)) {
+                        if (null == principal || JCRGroup.this.equals(principal)) {
                             continue;
                         }
                         JCRPrincipal jcrUser = null;

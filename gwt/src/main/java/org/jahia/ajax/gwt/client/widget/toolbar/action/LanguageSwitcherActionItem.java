@@ -162,7 +162,7 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
             }
             events = true;
             if (!JahiaGWTParameters.getSiteLanguages().contains(mainComponent.getSelection().get(0))) {
-                mainComponent.setSelection(Arrays.asList(JahiaGWTParameters.getSiteLanguages().get(0)));
+                mainComponent.setSelection(Arrays.asList((GWTJahiaLanguage) JahiaGWTParameters.getSiteNode().get("j:defaultLanguage")));
             }
         }
     }

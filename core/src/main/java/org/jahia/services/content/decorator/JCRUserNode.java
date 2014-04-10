@@ -172,7 +172,11 @@ public class JCRUserNode extends JCRNodeDecorator {
         if (user == null || user instanceof JCRUser) {
             return super.getProperty(s);
         } else {
-            String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
+            boolean isExternal = user instanceof JahiaExternalUser;
+            String property = isExternal ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
+            if (property == null && isExternal) {
+                property = user.getUserProperties().getProperty(s);
+            }
             if (null == property) {
                 return super.getProperty(s);
             }
@@ -193,7 +197,7 @@ public class JCRUserNode extends JCRNodeDecorator {
             boolean isExternal = user instanceof JahiaExternalUser;
             String property = isExternal ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
             if(property==null && isExternal) {
-                property = ((JahiaExternalUser) user).getUserProperties().getProperty(s);
+                property = user.getUserProperties().getProperty(s);
             }
             if (property == null) {
                 // actually read the property on the corresponding JCR node

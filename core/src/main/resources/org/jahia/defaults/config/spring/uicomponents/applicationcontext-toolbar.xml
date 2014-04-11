@@ -647,7 +647,13 @@
 
     <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="titleKey" value="label.publish"/>
         <property name="icon" value="publish"/>
@@ -673,7 +679,13 @@
     <!-- new edit mode buttons: unpublish -->
     <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem">
+                <property name="forbiddenNodeTypes">
+                    <list>
+                        <value>jnt:virtualsite</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="titleKey" value="label.unpublish"/>
         <property name="icon" value="unpublish"/>

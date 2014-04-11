@@ -96,7 +96,13 @@ public class PublishSiteActionItem extends PublishActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+        LinkerSelectionContext ctx = linker.getSelectionContext();
+        if (isNodeTypeAllowed(ctx.getMultipleSelection())) {
+            setEnabled(true);
+            updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+        } else {
+            setEnabled(false);
+        }
     }
 
     @Override public void onComponentSelection() {

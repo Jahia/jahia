@@ -99,7 +99,7 @@ import java.util.Map;
  * Time: 6:58:56 PM
  */
 @SuppressWarnings("serial")
-public class PublishActionItem extends BaseActionItem {
+public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
     /**
      * Returns <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
@@ -137,13 +137,13 @@ public class PublishActionItem extends BaseActionItem {
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (ctx.getMultipleSelection() != null
                 && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
-            if (!isChildOfMarkedForDeletion(ctx)) {
+            if (!isChildOfMarkedForDeletion(ctx) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                 setEnabled(true);
                 updateTitle(getGwtToolbarItem().getTitle());
             }
         } else {
             GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode)) {
+            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                 setEnabled(true);
 
                 if (checkForUnpublication) {

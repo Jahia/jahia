@@ -311,6 +311,19 @@
                                     <ref bean="Toolbar.Item.NewExternalLink"/>
                                     <ref bean="Toolbar.Item.NavMenuText"/>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
+                                                <property name="allowedNodeTypes">
+                                                    <list>
+                                                        <value>jnt:virtualsite</value>
+                                                    </list>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.publishSite"/>
+                                        <property name="icon" value="publishSite"/>
+                                    </bean>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>

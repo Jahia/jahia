@@ -362,12 +362,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return new Value[0];  
     }
 
-    public synchronized Map<String, JCRStoreProvider> getMountPoints() {
+    public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized Map<String, JCRStoreProvider> getProviders() {
+    public Map<String, JCRStoreProvider> getProviders() {
         if (providers == null) {
             Map<String, JCRStoreProvider> providerMap = new LinkedHashMap<String, JCRStoreProvider>(providerList.size());
             for (JCRStoreProvider p : providerList) {
@@ -457,7 +457,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
      * @return an ORDERED list of providers
      */
     public List<JCRStoreProvider> getProviderList() {
-        // providerList should be unmodifiable
         return providerList;
     }
 

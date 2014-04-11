@@ -76,10 +76,15 @@ import java.util.List;
 /**
  * @author rincevent
  * @since JAHIA 6.5
- * Created : 4/13/11
  */
 public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule {
 
+    private static int round(float a) {
+        // we use here the same code for Math.round() as it was in Java 6/7, because in the Java 8 the implementation has changed with the
+        // side-effect of producing different results in some cases.
+        return (int) Math.floor(a + 0.5f);
+    }
+    
     private String usersRootNode;
 
     private List<String> nonSplittedUsers;
@@ -97,9 +102,9 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         String firstFolder = getFolderName(userNameHashcode).toLowerCase();
         // Warning : The useless call to Math.round() converts int to float and back to int but changes the value,
         // due to float low precision - removing this call would change path of all users !
-        userNameHashcode = Math.round(userNameHashcode/100);
+        userNameHashcode = round(userNameHashcode/100);
         String secondFolder = getFolderName(userNameHashcode).toLowerCase();
-        userNameHashcode = Math.round(userNameHashcode/100);
+        userNameHashcode = round(userNameHashcode/100);
         String thirdFolder = getFolderName(userNameHashcode).toLowerCase();
         return builder.append(usersRootNode).append("/").append(firstFolder).append("/").append(secondFolder).append(
                 "/").append(thirdFolder).append("/").append(JCRContentUtils.escapeLocalNodeName(
@@ -109,10 +114,11 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
     private String getFolderName(int userNameHashcode) {
         // Additional Math.abs just in case of userNameHashcode==Integer.MIN_VALUE
         int i = Math.abs(userNameHashcode % 100);
-        return Character.toString((char) ('a' + Math.round(i / 10)))+Character.toString((char)('a'+ (i%10)));
+        return Character.toString((char) ('a' + round(i / 10)))+Character.toString((char)('a'+ (i%10)));
     }
 
     public void setNonSplittedUsers(List<String> nonSplittedUsers) {
         this.nonSplittedUsers = nonSplittedUsers;
     }
+    
 }

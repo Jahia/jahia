@@ -91,9 +91,12 @@ public class UserFolderSplittingTest {
         assertEquals("/users/guest", userSplittingRule.getPathForUsername("guest"));
 
         assertEquals("/users/hj/di/ac/bill", userSplittingRule.getPathForUsername("bill"));
-        assertEquals("/users/jf/bi/ab/mathias", userSplittingRule.getPathForUsername("mathias"));
         assertEquals("/users/je/fc/hi/bernhard", userSplittingRule.getPathForUsername("bernhard"));
         assertEquals("/users/ge/ha/ga/fritz_fritzer", userSplittingRule.getPathForUsername("fritz_fritzer"));
+
+        assertEquals("/users/jf/bi/ab/mathias", userSplittingRule.getPathForUsername("mathias"));
+        assertEquals("/users/ce/fa/fc/thomas", userSplittingRule.getPathForUsername("thomas"));
+        assertEquals("/users/hh/ai/ie/sergiy", userSplittingRule.getPathForUsername("sergiy"));
     }
 
     private JahiaUserSplittingRule getSplittingRule() {
@@ -105,5 +108,4 @@ public class UserFolderSplittingTest {
 
         // return ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule();
     }
-
 }

@@ -71,7 +71,6 @@ package org.jahia.bin.errors;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.statistics.StatisticsGateway;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -86,26 +85,19 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
 import org.slf4j.Logger;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
+import javax.management.*;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryPoolMXBean;
-import java.lang.management.MemoryType;
-import java.lang.management.MemoryUsage;
+import java.lang.management.*;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -234,10 +226,7 @@ public class ErrorFileDumper {
     }
 
     public static void shutdown(long millisecondsToWait) {
-        if (isShutdown()) {
-            return;
-        }
-        if (executorService != null) {
+        if (!isShutdown()) {
             System.out.println("Shutting down error file dumper executor service...");
             executorService.shutdown();
             try {
@@ -250,7 +239,6 @@ public class ErrorFileDumper {
             executorService = null;
             System.out.println("...done shutting down error file dumper executor service.");
         }
-
     }
 
     public static boolean isShutdown() {

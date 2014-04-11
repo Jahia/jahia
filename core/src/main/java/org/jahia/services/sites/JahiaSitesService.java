@@ -118,14 +118,14 @@ public class JahiaSitesService extends JahiaService {
 
     private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
 
-    protected static JahiaSitesService instance = null;
-
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
     protected EhCacheProvider ehCacheProvider;
+    private SelfPopulatingCache siteKeyByServerNameCache;
+    private SelfPopulatingCache siteDefaultLanguageBySiteKey;
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -140,10 +140,15 @@ public class JahiaSitesService extends JahiaService {
      *
      * @throws JahiaException
      */
-    protected JahiaSitesService() {
+    private JahiaSitesService() {
         super();
     }
 
+
+    // Initialization on demand idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final JahiaSitesService INSTANCE = new JahiaSitesService();
+    }
 
     /**
      * Retrieves the unique instance of this singleton class.
@@ -151,14 +156,7 @@ public class JahiaSitesService extends JahiaService {
      * @return the unique instance of this class
      */
     public static JahiaSitesService getInstance() {
-        if (instance == null) {
-            synchronized (JahiaSitesService.class) {
-                if (instance == null) {
-                    instance = new JahiaSitesService();
-                }
-            }
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
 
@@ -283,8 +281,6 @@ public class JahiaSitesService extends JahiaService {
         }
         return null;
     }
-
-    private static SelfPopulatingCache siteKeyByServerNameCache;
 
     public String getSitenameByServerName(final String serverName) throws JahiaException {
         if (serverName == null) {
@@ -815,8 +811,6 @@ public class JahiaSitesService extends JahiaService {
         return false;
     }
 
-    private static SelfPopulatingCache siteDefaultLanguageBySiteKey;
-
     public String getSiteDefaultLanguage(String siteKey) throws JahiaException {
         if (siteKey == null) {
             return null;
@@ -836,6 +830,10 @@ public class JahiaSitesService extends JahiaService {
      * Flush the sites internal caches ( site key by server name & default language by site key).
      */
     public static void flushSitesInternalCaches() {
+        getInstance().flushCaches();
+    }
+
+    private void flushCaches() {
         if (siteKeyByServerNameCache != null) {
             siteKeyByServerNameCache.refresh(false);
         }

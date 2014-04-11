@@ -123,7 +123,6 @@ import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Current ACL policy :
@@ -172,8 +171,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
-    private static SelfPopulatingCache privilegesInRole = null;
-    private static Cache<String, Boolean> matchingPermissions = null;
+    private static volatile SelfPopulatingCache privilegesInRole = null;
+    private static volatile Cache<String, Boolean> matchingPermissions = null;
     private LRUMap pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;

@@ -106,7 +106,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
     private JahiaUserManagerService userService;
-    private Map<String, JCRStoreProvider> providers;
+    private Map<String, JCRStoreProvider> providers = new HashMap<String, JCRStoreProvider>();
     private List<JCRStoreProvider> providerList = new LinkedList<JCRStoreProvider>();
     private SortedMap<String, JCRStoreProvider> mountPoints;
     private String servletContextAttributeName;
@@ -368,13 +368,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     @SuppressWarnings("unchecked")
     public Map<String, JCRStoreProvider> getProviders() {
-        if (providers == null) {
-            Map<String, JCRStoreProvider> providerMap = new LinkedHashMap<String, JCRStoreProvider>(providerList.size());
-            for (JCRStoreProvider p : providerList) {
-                providerMap.put(p.getKey(), p);
-            }
-            providers = UnmodifiableMap.decorate(providerMap);
-        }
         return providers;
     }
 
@@ -397,7 +390,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             newList.add(p);
             Collections.sort(newList);
             providerList = Collections.unmodifiableList(newList);
-            providers = null;
+
+            initProviders();
 
             if (mountPoint != null) {
                 SortedMap<String, JCRStoreProvider> newMountPoints = new TreeMap<String, JCRStoreProvider>(mountPoints);
@@ -439,7 +433,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             newList.remove(p);
             providerList = Collections.unmodifiableList(newList);
 
-            providers = null;
+            initProviders();
 
             if (p.getMountPoint() != null) {
                 SortedMap<String, JCRStoreProvider> newMountPoints = new TreeMap<String, JCRStoreProvider>(mountPoints);
@@ -448,6 +442,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             }
         }
         logger.info("Removed provider " + key + " at mount point " + p.getMountPoint() + " using implementation " + p.getClass().getName());
+    }
+
+    private void initProviders() {
+        Map<String, JCRStoreProvider> providerMap = new LinkedHashMap<String, JCRStoreProvider>(providerList.size());
+        for (JCRStoreProvider p : providerList) {
+            providerMap.put(p.getKey(), p);
+        }
+        providers = UnmodifiableMap.decorate(providerMap);
     }
 
     /**

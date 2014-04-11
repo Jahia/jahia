@@ -66,6 +66,7 @@
                 <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>
                 <value>org.jahia.test.services.templates.ModuleDeploymentTest</value>
                 <value>org.jahia.test.services.usermanager.JahiaGroupManagerServiceTest</value>
+                <value>org.jahia.test.services.usermanager.UserFolderSplittingTest</value>
                 <value>org.jahia.test.services.validation.ValidationTest</value>
                 <value>org.jahia.test.services.versioning.VersioningTest</value>
                 <value>org.jahia.test.services.visibility.VisibilityServiceTest</value>

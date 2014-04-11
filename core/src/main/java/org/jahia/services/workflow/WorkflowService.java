@@ -344,17 +344,10 @@ public class WorkflowService implements BeanPostProcessor {
         Collection<WorkflowRule> rules = getWorkflowRulesForType(node, checkPermission, type);
         for (WorkflowRule ruledef : rules) {
             WorkflowDefinition definition =
-<<<<<<< .working
                     lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), uiLocale);
             if (definition != null) {
                 workflows.add(definition);
             }
-=======
-                    lookupProvider(ruledef.getProviderKey()).getWorkflowDefinitionByKey(ruledef.getWorkflowDefinitionKey(), locale);
-            if (definition != null) {
-            	workflows.add(definition);
-            }
->>>>>>> .merge-right.r49586
         }
         return new LinkedList<WorkflowDefinition>(workflows);
     }

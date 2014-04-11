@@ -135,13 +135,9 @@ public class WorkflowHelper {
             info.setPossibleWorkflows(gwtWorkflowDefinitions);
             JCRNodeWrapper node = session.getNode(path);
 
-            try {
-                Map<String, WorkflowDefinition> wfs = service.getPossibleWorkflows(node, true, locale);
-                for (Map.Entry<String, WorkflowDefinition> entry : wfs.entrySet()) {
-                    gwtWorkflowDefinitions.put(getGWTJahiaWorkflowType(entry.getKey()), getGWTJahiaWorkflowDefinition(entry.getValue()));
-                }
-            }catch(Exception ex) {
-                logger.error("Error to get possible workflows for " +  node.getPath(), ex);
+            Map<String, WorkflowDefinition> wfs = service.getPossibleWorkflows(node, true, locale);
+            for (Map.Entry<String, WorkflowDefinition> entry : wfs.entrySet()) {
+                gwtWorkflowDefinitions.put(getGWTJahiaWorkflowType(entry.getKey()), getGWTJahiaWorkflowDefinition(entry.getValue()));
             }
 
             Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> gwtWorkflows = new HashMap<GWTJahiaWorkflowType, GWTJahiaWorkflow>();

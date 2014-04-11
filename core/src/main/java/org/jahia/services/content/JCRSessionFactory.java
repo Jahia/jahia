@@ -109,7 +109,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private Map<String, JCRStoreProvider> providers;
     private List<JCRStoreProvider> providerList = new LinkedList<JCRStoreProvider>();
     private SortedMap<String, JCRStoreProvider> mountPoints;
-    private static JCRSessionFactory instance;
     private String servletContextAttributeName;
     private ServletContext servletContext;
     private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
@@ -129,7 +128,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 return s2.compareTo(s1);
             }
         };
-        this.mountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
+        synchronized (this) {
+            this.mountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
+        }
         namespaceRegistry = new NamespaceRegistryWrapper();
 
         if ((servletContextAttributeName != null) &&
@@ -361,12 +362,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return new Value[0];  
     }
 
-    public Map<String, JCRStoreProvider> getMountPoints() {
+    public synchronized Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, JCRStoreProvider> getProviders() {
+    public synchronized Map<String, JCRStoreProvider> getProviders() {
         if (providers == null) {
             Map<String, JCRStoreProvider> providerMap = new LinkedHashMap<String, JCRStoreProvider>(providerList.size());
             for (JCRStoreProvider p : providerList) {
@@ -456,6 +457,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
      * @return an ORDERED list of providers
      */
     public List<JCRStoreProvider> getProviderList() {
+        // providerList should be unmodifiable
         return providerList;
     }
 

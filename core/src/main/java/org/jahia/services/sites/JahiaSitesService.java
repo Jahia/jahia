@@ -127,7 +127,7 @@ public class JahiaSitesService extends JahiaService {
     protected JCRSessionFactory sessionFactory;
     protected EhCacheProvider ehCacheProvider;
 
-    public void setGroupService(JahiaGroupManagerService groupService) {
+    public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
     }
 

@@ -78,6 +78,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by toto on 06/12/13.
@@ -111,7 +112,7 @@ public class JahiaClusterNode extends ClusterNode {
     /**
      * Status flag, one of {@link #NONE}, {@link #STARTED} or {@link #STOPPED}.
      */
-    private int status;
+    private final AtomicInteger status = new AtomicInteger(NONE);
 
 
     /**
@@ -121,9 +122,9 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void start() throws ClusterException {
-        if (status == NONE) {
+        if (status.get() == NONE) {
             super.start();
-            status = STARTED;
+            status.set(STARTED);
         }
     }
 
@@ -147,7 +148,7 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void stop() {
-        status = STOPPED;
+        status.set(STOPPED);
         super.stop();
     }
 
@@ -191,7 +192,7 @@ public class JahiaClusterNode extends ClusterNode {
          * {@inheritDoc}
          */
         public void updateCreated(Update update) throws ClusterException {
-            if (status != STARTED) {
+            if (status.get() != STARTED) {
                 log.info("not started: update create ignored.");
                 return;
             }
@@ -215,7 +216,7 @@ public class JahiaClusterNode extends ClusterNode {
          * {@inheritDoc}
          */
         public void updateCommitted(Update update, String path) {
-            if (status != STARTED) {
+            if (status.get() != STARTED) {
                 log.info("not started: update commit ignored.");
                 return;
             }
@@ -234,7 +235,7 @@ public class JahiaClusterNode extends ClusterNode {
          * {@inheritDoc}
          */
         public void updateCancelled(Update update) {
-            if (status != STARTED) {
+            if (status.get() != STARTED) {
                 log.info("not started: update cancel ignored.");
                 return;
             }

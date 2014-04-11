@@ -560,7 +560,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
     }
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public synchronized void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 

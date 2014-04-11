@@ -80,6 +80,7 @@ import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.preferences.impl.JahiaPreferencesJCRProviders;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -92,7 +93,6 @@ import java.util.Map;
  */
 public class JahiaPreferencesService extends JahiaService {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPreferencesService.class);
-    private static JahiaPreferencesService instance;
     private CacheService cacheService;
     private JCRStoreService jcrStoreService;
 
@@ -105,7 +105,8 @@ public class JahiaPreferencesService extends JahiaService {
         providers = new HashMap<String, JahiaPreferencesProvider>();
         providersByClass = new HashMap<Class, JahiaPreferencesProvider>();
         for (String providerType : providerTypes.keySet()) {
-            Class clazz = jcrStoreService.getDecorators().get(providerTypes.get(providerType));
+            final String nodeType = providerTypes.get(providerType);
+            Class clazz = jcrStoreService.getDecorators().get(nodeType);
             JahiaPreferencesJCRProviders provider;
 //            try {
                 Class<? extends JCRNodeWrapper> aClass = clazz.asSubclass(JCRNodeWrapper.class);
@@ -115,7 +116,7 @@ public class JahiaPreferencesService extends JahiaService {
 //                provider = new JahiaPreferencesJCRProviders();
 //            }
             provider.setType(providerType);
-            provider.setNodeType(providerTypes.get(providerType));
+            provider.setNodeType(nodeType);
             provider.setJCRSessionFactory(jcrStoreService.getSessionFactory());
             providers.put(providerType, provider);
         }
@@ -129,11 +130,12 @@ public class JahiaPreferencesService extends JahiaService {
         logger.debug("** Stop the Preferences Service ...");
     }
 
-    public static synchronized JahiaPreferencesService getInstance() {
-        if (instance == null) {
-            instance = new JahiaPreferencesService();
-        }
-        return instance;
+    // Initialization on demand idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final JahiaPreferencesService INSTANCE = new JahiaPreferencesService();
+    }
+    public static JahiaPreferencesService getInstance() {
+        return Holder.INSTANCE;
     }
 
     public CacheService getCacheService() {
@@ -152,11 +154,11 @@ public class JahiaPreferencesService extends JahiaService {
         this.jcrStoreService = jcrStoreService;
     }
 
-    public Map<String, String> getProviderTypes() {
-        return providerTypes;
+    public synchronized Map<String, String> getProviderTypes() {
+        return Collections.unmodifiableMap(providerTypes);
     }
 
-    public void setProviderTypes(Map<String, String> providerTypes) {
+    public synchronized void setProviderTypes(Map<String, String> providerTypes) {
         this.providerTypes = providerTypes;
     }
 

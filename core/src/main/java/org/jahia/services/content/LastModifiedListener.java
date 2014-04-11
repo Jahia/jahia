@@ -264,7 +264,7 @@ public class LastModifiedListener extends DefaultEventListener {
         return false;
     }
 
-    public void setPublicationService(JCRPublicationService publicationService) {
+    public synchronized void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
     }
 }

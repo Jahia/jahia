@@ -237,7 +237,6 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      * side value is "*" for a property then it will be tested against all the
      * properties. ie *=test* will match every property that starts with "test"
      *
-     * @param siteID          site identifier
      * @param searchcriteria a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "username"="*test*")
      *
@@ -264,7 +263,6 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      *
      * @param providerKey     key of the provider in which to search, may be
      *                        obtained by calling getProviderList()
-     * @param siteID          site identifier
      * @param searchcriteria a Properties object that contains search criteria
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
      *                        null to search without criteria
@@ -388,7 +386,7 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
     }
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public synchronized void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 

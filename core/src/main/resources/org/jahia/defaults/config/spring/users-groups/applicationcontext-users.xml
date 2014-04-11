@@ -11,7 +11,7 @@
                 <property name="usersRootNode" value="/users"/>
                 <property name="nonSplittedUsers">
                     <list value-type="java.lang.String">
-                        <!-- System users are not splitted -->
+                        <!-- System users are not split -->
                         <value>guest</value>
                         <value>root</value>
                     </list>

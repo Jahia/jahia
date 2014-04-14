@@ -407,15 +407,10 @@ public class ErrorLoggingFilter implements Filter {
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user == null) {
             try {
-<<<<<<< .working
-                user = (JahiaUser) request.getSession(true).getAttribute(Constants.SESSION_USER);
-=======
                 HttpSession session = request.getSession(false);
                 if (session != null) {
-                    user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
-                    info = user != null ? user.getUsername() : null;
+                    user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
                 }
->>>>>>> .merge-right.r49599
             } catch (IllegalStateException ex) {
                 // ignore it
             }

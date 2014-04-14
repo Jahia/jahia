@@ -1,12 +1,5 @@
-<<<<<<< .working
-<%@page language="java" contentType="text/html; charset=UTF-8"%>
-<!DOCTYPE html>
-=======
 <%@page language="java" contentType="text/html; charset=UTF-8" session="false"
-%><?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
->>>>>>> .merge-right.r49599
+%><!DOCTYPE html>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>

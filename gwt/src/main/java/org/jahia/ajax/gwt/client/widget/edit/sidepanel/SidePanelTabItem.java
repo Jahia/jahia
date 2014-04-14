@@ -142,7 +142,7 @@ public class SidePanelTabItem implements Serializable {
     }
 
     public void refresh(Map<String, Object> data) {
-        if (data != null && (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data))) {
+        if (editLinker != null && data != null && (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data))) {
             doRefresh();
             autoRefreshData = null;
             needManualRefresh = false;

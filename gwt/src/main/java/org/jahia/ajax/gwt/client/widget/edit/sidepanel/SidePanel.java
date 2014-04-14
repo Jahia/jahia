@@ -70,10 +70,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.storage.client.Storage;
@@ -130,8 +127,11 @@ public class SidePanel extends ContentPanel {
         this.config = config;
 
         final Storage storage = Storage.getSessionStorageIfSupported();
-
-        tabPanel = new TabPanel();
+        if (tabPanel == null) {
+            tabPanel = new TabPanel();
+        } else {
+            tabPanel.removeAll();
+        }
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
         tabPanel.setHeight(800);
@@ -148,21 +148,21 @@ public class SidePanel extends ContentPanel {
                 }
             }
         });
+        int selectedTab = 0;
+        if (storage != null && storage.getItem(config.getName() + "_selectedTab") != null) {
+            selectedTab = Integer.parseInt(storage.getItem(config.getName() + "_selectedTab"));
+        }
 
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
 
             tabPanel.add(tabItem.create(tabConfig));
+            Map<String,Object> datas = new HashMap<String, Object>();
+            datas.put(Linker.REFRESH_ALL,"");
+            tabItem.markForAutoRefresh(datas);
         }
-
-        if (storage != null && storage.getItem(config.getName() + "_selectedTab") != null) {
-            int selectedTab = Integer.parseInt(storage.getItem(config.getName() + "_selectedTab"));
-            tabPanel.setSelection(tabPanel.getItem(selectedTab));
-        } else {
-            tabPanel.setSelection(tabPanel.getItem(0));
-        }
-
+        tabPanel.setSelection(tabPanel.getItem(selectedTab));
         add(tabPanel);
     }
 

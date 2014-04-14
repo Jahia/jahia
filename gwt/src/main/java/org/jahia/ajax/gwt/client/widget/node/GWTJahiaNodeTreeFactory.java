@@ -80,6 +80,7 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -303,6 +304,17 @@ public class GWTJahiaNodeTreeFactory {
     public class GWTJahiaNodeTreeGrid extends TreeGrid<GWTJahiaNode> {
         public GWTJahiaNodeTreeGrid(TreeStore store, ColumnModel cm) {
             super(store, cm);
+        }
+
+        @Override
+        protected void onRender(Element target, int index) {
+            super.onRender(target, index);
+        }
+
+        @Override
+        protected void onAfterRenderView() {
+            // init (loading) is done when the grid is displayed, not while we create the grid
+            //super.onAfterRenderView();
         }
 
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {

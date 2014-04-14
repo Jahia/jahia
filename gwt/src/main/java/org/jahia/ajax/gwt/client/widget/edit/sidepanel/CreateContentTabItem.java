@@ -109,9 +109,6 @@ class CreateContentTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
 
-        initExcludedNodeTypes(linker);
-
-        contentTypeTree.fillStore(baseTypes, excludedNodeTypes, true);
         if (linker.getConfig().isEnableDragAndDrop()) {
             gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
             gridDragSource.addDNDListener(linker.getDndListener());

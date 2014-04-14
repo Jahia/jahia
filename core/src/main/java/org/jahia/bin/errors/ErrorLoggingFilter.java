@@ -83,6 +83,8 @@ import org.jahia.settings.SettingsBean;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -405,7 +407,15 @@ public class ErrorLoggingFilter implements Filter {
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user == null) {
             try {
+<<<<<<< .working
                 user = (JahiaUser) request.getSession(true).getAttribute(Constants.SESSION_USER);
+=======
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
+                    info = user != null ? user.getUsername() : null;
+                }
+>>>>>>> .merge-right.r49599
             } catch (IllegalStateException ex) {
                 // ignore it
             }

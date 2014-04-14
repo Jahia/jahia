@@ -115,7 +115,6 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -165,7 +164,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private JCRStoreService service;
 
     protected JCRSessionFactory sessionFactory;
-    protected Repository repo = null;
+    protected volatile Repository repo = null;
 
     private boolean mainStorage = false;
     private boolean isDynamicallyMounted = false;
@@ -405,7 +404,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             // This session must not be released
             final JCRSessionWrapper session = getSystemSession(null, ws);
             final Workspace workspace = session.getProviderSession(this).getWorkspace();
-    
+
             ObservationManager observationManager = workspace.getObservationManager();
             JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
             listener.setWorkspace(workspace.getName());
@@ -517,16 +516,16 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         boolean needUpdate = false;
         for (Resource file : files) {
             try {
-                String propKey = file.getURL().toString() + ".lastRegistered."+key;
+                String propKey = file.getURL().toString() + ".lastRegistered." + key;
                 if (file.exists() && (p.getProperty(propKey) == null || Long.parseLong(p.getProperty(propKey)) != file.lastModified())) {
-                    if (!systemId.startsWith("system-")){
+                    if (!systemId.startsWith("system-")) {
                         try {
                             final StringWriter out = new StringWriter();
                             new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
-                            nodeTypesDBService.saveCndFile(systemId+".cnd",out.toString());
-                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(out.toString()),systemId+".cnd");
+                            nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString());
+                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(out.toString()), systemId + ".cnd");
                         } catch (Exception e) {
-                            logger.error(e.getMessage(),e);
+                            logger.error(e.getMessage(), e);
                         }
                     }
                     needUpdate = true;
@@ -593,12 +592,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
         for (Resource file : files) {
             try {
-                String propKey = file.getURL().toString() + ".lastRegistered."+key;
+                String propKey = file.getURL().toString() + ".lastRegistered." + key;
                 p.remove(propKey);
                 try {
-                    nodeTypesDBService.saveCndFile(systemId+".cnd",null);
+                    nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
                 } catch (Exception e) {
-                    logger.error(e.getMessage(),e);
+                    logger.error(e.getMessage(), e);
                 }
                 needUpdate = true;
                 NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
@@ -612,15 +611,19 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
 
     public Repository getRepository() {
-        if (repo == null) {
-            synchronized (syncRepoInit) {
-                if (repo == null) {
-                    repo = createRepository();
+        // Double-checked locking only works with volatile for Java 5+
+        // result variable is used to avoid accessing the volatile field multiple times to increase performance per Effective Java 2nd Ed.
+        Repository result = repo;
+        if (result == null) {
+            synchronized (this) {
+                result = repo;
+                if (result == null) {
+                    repo = result = createRepository();
                     rmiBind();
                 }
             }
         }
-        return repo;
+        return result;
     }
 
     protected void rmiBind() {
@@ -635,7 +638,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     /**
      * Creates an instance of the content repository.
-     * 
+     *
      * @return an instance of the {@link Repository}
      */
     protected Repository createRepository() {
@@ -748,14 +751,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        return session.getNodeByUUID(objectNode.getIdentifier());
-                    } catch (ItemNotFoundException e) {
-                        throw new PathNotFoundException();
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            try {
+                                return session.getNodeByUUID(objectNode.getIdentifier());
+                            } catch (ItemNotFoundException e) {
+                                throw new PathNotFoundException();
+                            }
+                        }
                     }
-                }
-            });
+            );
         }
         final JCRNodeWrapper w = createWrapper(objectNode, null, null, session);
         if (w.checkValidity()) {
@@ -770,14 +774,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        return session.getNodeByUUID(objectNode.getIdentifier());
-                    } catch (ItemNotFoundException e) {
-                        throw new PathNotFoundException();
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            try {
+                                return session.getNodeByUUID(objectNode.getIdentifier());
+                            } catch (ItemNotFoundException e) {
+                                throw new PathNotFoundException();
+                            }
+                        }
                     }
-                }
-            });
+            );
         }
         final JCRNodeWrapper w = createWrapper(objectNode, path, parent, session);
         if (objectNode.isNew() || w.checkValidity()) {
@@ -876,8 +881,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                                 for (Object o : jahiaUser.getProperties().keySet()) {
                                     properties.add(valueFactory.createValue((String) o));
                                 }
-                                userNode.setProperty("j:publicProperties",properties.toArray(new Value[properties.size()]));
-                                
+                                userNode.setProperty("j:publicProperties", properties.toArray(new Value[properties.size()]));
+
                                 ((JCRNodeWrapper) userNode).grantRoles("u:" + username, Collections.singleton("owner"));
                             } else {
                                 // Simply create a folder
@@ -901,7 +906,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      *
      * @param group the unique name for the group
      * @return a reference on a group object on success, or if the group name
-     *         already exists or another error occurred, null is returned.
+     * already exists or another error occurred, null is returned.
      */
     public void deployExternalGroup(JahiaGroup group) {
         Properties properties = new Properties();
@@ -1136,9 +1141,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     /**
      * Get weak references of a node
-     * @param node node
+     *
+     * @param node         node
      * @param propertyName name of the property
-     * @param session session
+     * @param session      session
      * @return an iterator
      * @throws RepositoryException
      */
@@ -1151,11 +1157,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         if (this == o) {
             return 0;
         }
-        
+
         if (o == null) {
             return 1;
         }
-        
+
         return StringUtils.defaultString(getMountPoint()).compareTo(StringUtils.defaultString(o.getMountPoint()));
     }
 
@@ -1168,13 +1174,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
         return StringUtils.defaultString(getMountPoint()).equals(that.getMountPoint());
     }
-    
+
     @Override
     public int hashCode() {
         return getMountPoint() != null ? getMountPoint().hashCode() : 0;
-    }      
-    
-    public Map<String,Constructor<?>> getValidators() {
+    }
+
+    public Map<String, Constructor<?>> getValidators() {
         return service.getValidators();
     }
 

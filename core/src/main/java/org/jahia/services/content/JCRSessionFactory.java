@@ -92,9 +92,8 @@ import java.util.*;
  *
  * Instead of using this class for creating and using sessions, please rather use the JCRTemplate.
  *
- * @see JCRTemplate
- *
  * @author toto
+ * @see JCRTemplate
  */
 public class JCRSessionFactory implements Repository, ServletContextAware {
 
@@ -168,7 +167,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return getCurrentUserSession(workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
-    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale,Locale fallbackLocale) throws RepositoryException {
+    public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale, Locale fallbackLocale) throws RepositoryException {
         // thread user session might be initialized/closed in an HTTP filter, instead of keeping it
         Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
         if (smap == null) {
@@ -265,11 +264,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
             if (smap != null && smap.containsKey(userID)) {
                 Map<String, JCRSessionWrapper> wsMap = smap.get(userID);
-                for (String key:wsMap.keySet()) {
+                for (String key : wsMap.keySet()) {
                     if (key.startsWith(ws)) {
-                        if ((s = wsMap.get(key).getProviderSession(provider,false)) != null) {
+                        if ((s = wsMap.get(key).getProviderSession(provider, false)) != null) {
                             break;
-                        };
+                        }
+                        ;
                     }
                 }
             }
@@ -328,7 +328,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     user = userService.lookupUser(jahiaPrincipal.getName());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale,  this, fallbackLocale);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);
         }
         throw new LoginException("Can't login");
     }
@@ -347,19 +347,19 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public boolean isStandardDescriptor(String key) {
-        return false;  
+        return false;
     }
 
     public boolean isSingleValueDescriptor(String key) {
-        return false;  
+        return false;
     }
 
     public Value getDescriptorValue(String key) {
-        return null;  
+        return null;
     }
 
     public Value[] getDescriptorValues(String key) {
-        return new Value[0];  
+        return new Value[0];
     }
 
     public Map<String, JCRStoreProvider> getMountPoints() {
@@ -377,15 +377,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     /**
      * Registers the JCR store provider.
-     * 
-     * @param p
-     *            the provider instance
+     *
+     * @param p the provider instance
      */
     public void addProvider(JCRStoreProvider p) {
         String key = p.getKey();
         String mountPoint = p.getMountPoint();
 
-        synchronized(this) {
+        synchronized (this) {
             List<JCRStoreProvider> newList = new ArrayList<JCRStoreProvider>(providerList);
             newList.add(p);
             Collections.sort(newList);
@@ -405,13 +404,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     /**
      * Registers the JCR store provider.
-     * 
-     * @param key
-     *            the key of the provider
-     * @param mountPoint
-     *            provider's mount point
-     * @param p
-     *            the provider instance
+     *
+     * @param key        the key of the provider
+     * @param mountPoint provider's mount point
+     * @param p          the provider instance
      * @deprecated use {@link #addProvider(JCRStoreProvider)} instead
      */
     @Deprecated
@@ -421,6 +417,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     /**
      * Unregister a provider
+     *
      * @param key the key of the provider
      */
     public void removeProvider(String key) {
@@ -428,7 +425,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         if (p == null) {
             return;
         }
-        synchronized(this) {
+        synchronized (this) {
             List<JCRStoreProvider> newList = new ArrayList<JCRStoreProvider>(providerList);
             newList.remove(p);
             providerList = Collections.unmodifiableList(newList);
@@ -462,10 +459,11 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return providerList;
     }
 
-    // Initialization on demand idiom: thread-safe singleton initialization
+    // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final JCRSessionFactory INSTANCE = new JCRSessionFactory();
     }
+
     public static JCRSessionFactory getInstance() {
         return Holder.INSTANCE;
     }

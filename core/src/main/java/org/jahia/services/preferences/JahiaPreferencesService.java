@@ -100,6 +100,9 @@ public class JahiaPreferencesService extends JahiaService {
     private Map<String, JahiaPreferencesProvider> providers;
     private Map<Class, JahiaPreferencesProvider> providersByClass;
 
+    private JahiaPreferencesService() {
+    }
+
     public synchronized void start() throws JahiaInitializationException {
         logger.debug("** Initializing the Preferences Service ...");
         providers = new HashMap<String, JahiaPreferencesProvider>();
@@ -109,9 +112,9 @@ public class JahiaPreferencesService extends JahiaService {
             Class clazz = jcrStoreService.getDecorators().get(nodeType);
             JahiaPreferencesJCRProviders provider;
 //            try {
-                Class<? extends JCRNodeWrapper> aClass = clazz.asSubclass(JCRNodeWrapper.class);
-                provider = createProvider(aClass);
-                providersByClass.put(aClass, provider);
+            Class<? extends JCRNodeWrapper> aClass = clazz.asSubclass(JCRNodeWrapper.class);
+            provider = createProvider(aClass);
+            providersByClass.put(aClass, provider);
 //            } catch (ClassNotFoundException e) {
 //                provider = new JahiaPreferencesJCRProviders();
 //            }
@@ -130,10 +133,11 @@ public class JahiaPreferencesService extends JahiaService {
         logger.debug("** Stop the Preferences Service ...");
     }
 
-    // Initialization on demand idiom: thread-safe singleton initialization
+    // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final JahiaPreferencesService INSTANCE = new JahiaPreferencesService();
     }
+
     public static JahiaPreferencesService getInstance() {
         return Holder.INSTANCE;
     }
@@ -191,7 +195,6 @@ public class JahiaPreferencesService extends JahiaService {
      * @param providerType
      * @return
      * @throws JahiaPreferenceProviderException
-     *
      */
     public JahiaPreferencesProvider getPreferencesProviderByType(String providerType) throws JahiaPreferenceProviderException {
         return providers.get(providerType);
@@ -207,7 +210,6 @@ public class JahiaPreferencesService extends JahiaService {
      *
      * @return
      * @throws JahiaPreferenceProviderException
-     *
      */
     public JahiaPreferencesProvider<GenericJahiaPreference> getGenericPreferencesProvider() throws JahiaPreferenceProviderException {
         return getPreferencesProviderByType("simple");

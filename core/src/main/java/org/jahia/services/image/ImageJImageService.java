@@ -86,7 +86,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -94,26 +93,23 @@ import java.io.*;
  * ImageJ application operation implementation
  */
 public class ImageJImageService extends AbstractImageService {
-    private static ImageJImageService instance;
 
     private static final Logger logger = LoggerFactory.getLogger(ImageJImageService.class);
 
-    protected ImageJImageService() {
+    private ImageJImageService() {
         super();
     }
 
     public void init() {
     }
 
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ImageJImageService INSTANCE = new ImageJImageService();
+    }
+
     public static ImageJImageService getInstance() {
-        if (instance == null) {
-            synchronized (ImageJImageService.class) {
-                if (instance == null) {
-                    instance = new ImageJImageService();
-                }
-            }
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException {
@@ -152,7 +148,7 @@ public class ImageJImageService extends AbstractImageService {
     }
 
     public int getHeight(Image i) {
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+        ImagePlus ip = ((ImageJImage) i).getImagePlus();
         if (ip != null) {
             return ip.getHeight();
         }
@@ -160,7 +156,7 @@ public class ImageJImageService extends AbstractImageService {
     }
 
     public int getWidth(Image i) {
-        ImagePlus ip = ((ImageJImage)i).getImagePlus();
+        ImagePlus ip = ((ImageJImage) i).getImagePlus();
         if (ip != null) {
             return ip.getWidth();
         }
@@ -202,14 +198,14 @@ public class ImageJImageService extends AbstractImageService {
         ImageJImage imageJImage = (ImageJImage) i;
 
         ImagePlus ip = imageJImage.getImagePlus();
-        
+
         resizeImage(ip, width, height, resizeType);
 
         return save(imageJImage.getImageType(), ip, outputFile);
     }
 
     public BufferedImage resizeImage(BufferedImage image, int width, int height,
-            ResizeType resizeType) throws IOException {
+                                     ResizeType resizeType) throws IOException {
         ImagePlus ip = new ImagePlus(null, image);
 
         resizeImage(ip, width, height, resizeType);
@@ -266,7 +262,7 @@ public class ImageJImageService extends AbstractImageService {
             case Opener.PNG:
                 ImagePlus tempImage = WindowManager.getTempCurrentImage();
                 WindowManager.setTempCurrentImage(ip);
-                PlugIn p =null;
+                PlugIn p = null;
                 try {
                     p = (PlugIn) Class.forName("ij.plugin.PNG_Writer").newInstance();
                     p.run(outputFile.getPath());

@@ -118,7 +118,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     private static boolean hasEncounteredIssuesWithDefinitions = false;
     private NodeTypesDBServiceImpl nodeTypesDBService;
 
-    // Initialization on demand idiom: thread-safe singleton initialization
+    // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
     }

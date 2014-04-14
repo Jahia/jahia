@@ -89,9 +89,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CacheFactory extends CacheService {
 
-    /** class unique instance. */
-    private static CacheFactory instance;
-
     /** logging. */
     private static final org.slf4j.Logger logger =
             org.slf4j.LoggerFactory.getLogger (CacheFactory.class);
@@ -105,8 +102,8 @@ public class CacheFactory extends CacheService {
 
     /** Default constructor, creates a new <code>JahiaCacheFactory</code> instance.
      */
-    protected CacheFactory () {
-    	super();
+    private CacheFactory() {
+        super();
     }
 
     public void start() throws JahiaInitializationException {
@@ -138,20 +135,20 @@ public class CacheFactory extends CacheService {
         }
     }
 
-    /** Return the unique instance of this class.
-     *
-     * @return  the class' unique instance.
-     */
-    public static CacheFactory getInstance () {
-        if (instance == null) {
-        	synchronized (CacheFactory.class) {
-        		if (instance == null) {
-                    instance = new CacheFactory();
-        		}
-        	}
-        }
-        return instance;
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final CacheFactory INSTANCE = new CacheFactory();
     }
+
+    /**
+     * Return the unique instance of this class.
+     *
+     * @return the class' unique instance.
+     */
+    public static CacheFactory getInstance() {
+        return Holder.INSTANCE;
+    }
+
     public <K, V> Cache<K, V> getCache(String name, boolean forceCreation)
             throws JahiaInitializationException {
     	Cache<K, V> cache = getCache(name);

@@ -69,46 +69,42 @@
  */
 package org.jahia.params.valves;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationListener;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 /**
  * Login configuration settings.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class LoginConfig implements ApplicationListener<RootContextInitializedEvent> {
 
-    private static LoginConfig instance;
-    
     private static final Logger logger = LoggerFactory.getLogger(LoginConfig.class);
 
-    public static LoginConfig getInstance() {
-        if (instance == null) {
-            synchronized (LoginConfig.class) {
-                if (instance == null) {
-                    instance = new LoginConfig();
-                }
-            }
-        }
-        
-        return instance;
+    private LoginConfig() {
     }
-    
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final LoginConfig INSTANCE = new LoginConfig();
+    }
+
+    public static LoginConfig getInstance() {
+        return Holder.INSTANCE;
+    }
+
     private LoginUrlProvider loginUrlProvider;
 
     /**
      * Returns custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
-     * 
-     * @param request
-     *            current servlet request
+     *
+     * @param request current servlet request
      * @return custom login URL if the corresponding authentication provider is found. <code>null</code> otherwise.
      */
     public String getCustomLoginUrl(HttpServletRequest request) {

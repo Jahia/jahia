@@ -69,8 +69,6 @@
  */
 package org.jahia.services.content.files;
 
-import java.util.Map;
-
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.cache.Cache;
@@ -78,41 +76,38 @@ import org.jahia.services.cache.CacheFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * File cache accessor and controller.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class FileCacheManager {
 
     public static final String CONTENT_CACHE_NAME = "FileContentCache";
 
-    private static FileCacheManager instance;
-
     public static final String LAST_MODIFIED_CACHE_NAME = "FileLastModifiedCache";
-    
+
     private static Logger logger = LoggerFactory.getLogger(FileCacheManager.class);
 
-    public static FileCacheManager getInstance() {
-        if (instance == null) {
-            synchronized (FileCacheManager.class) {
-                if (instance == null) {
-                    instance = new FileCacheManager();
-                }
-            }
-        }
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final FileCacheManager INSTANCE = new FileCacheManager();
+    }
 
-        return instance;
+    public static FileCacheManager getInstance() {
+        return Holder.INSTANCE;
     }
 
     private Cache<String, Map<String, FileCacheEntry>> contentCache;
 
     private Cache<String, FileLastModifiedCacheEntry> lastModifiedCache;
-    
+
     private FileCacheManager() {
         super();
     }
-    
+
 
     public Cache<String, Map<String, FileCacheEntry>> getContentCache() {
         if (contentCache == null) {
@@ -123,9 +118,9 @@ public class FileCacheManager {
                 throw new JahiaRuntimeException(e);
             }
         }
-        
+
         return contentCache;
-        
+
     }
 
     public Cache<String, FileLastModifiedCacheEntry> getLastModifiedCache() {
@@ -137,10 +132,10 @@ public class FileCacheManager {
                 throw new JahiaRuntimeException(e);
             }
         }
-        
+
         return lastModifiedCache;
     }
-    
+
     public void invalidate(FileKey key) {
         getContentCache().remove(key.getCacheKey());
         getLastModifiedCache().remove(key.getCacheKey());

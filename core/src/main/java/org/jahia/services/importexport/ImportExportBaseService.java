@@ -146,8 +146,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
 
-    private static ImportExportBaseService instance;
-
     private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
             "application/zip", "application/xml", "text/xml");
 
@@ -175,20 +173,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private List<AttributeProcessor> attributeProcessors;
 
-    /**
-     * Returns an singleton instance of this class.
-     *
-     * @return an singleton instance of this class
-     */
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ImportExportBaseService INSTANCE = new ImportExportBaseService();
+    }
+
     public static ImportExportBaseService getInstance() {
-        if (instance == null) {
-            synchronized (ImportExportBaseService.class) {
-                if (instance == null) {
-                    instance = new ImportExportBaseService();
-                }
-            }
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     /**
@@ -221,7 +212,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return contentType;
     }
 
-    protected ImportExportBaseService() {
+    private ImportExportBaseService() {
     }
 
     public void start() {
@@ -933,7 +924,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     } else if (name.equals(CATEGORIES_XML)) {
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {
-                        reg = new NodeTypeRegistry();
+                        reg = new NodeTypeRegistry(); // this is fishy: a new instance is created here when NodeTypeRegistry is meant to be used as a singleton
                         reg.initSystemDefinitions();
 
                         try {
@@ -976,7 +967,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
             if (legacyDefinitionsFilePath != null) {
-                reg = new NodeTypeRegistry();
+                reg = new NodeTypeRegistry(); // this is fishy: a new instance is created here when NodeTypeRegistry is meant to be used as a singleton
                 if ("6.1".equals(originatingJahiaRelease)) {
                     logger.info("Loading the built in 6.1 definitions before processing the provided custom ones");
                     final List<String> builtInLegacyDefs = Arrays.asList(

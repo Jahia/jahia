@@ -69,16 +69,16 @@
  */
 package org.jahia.services.usermanager;
 
+import org.jahia.services.JahiaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.services.JahiaService;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 
 
 /**
@@ -93,25 +93,20 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
 
     private static Logger logger = LoggerFactory.getLogger(JahiaUserManagerProvider.class);
 
-    private static Pattern userNamePattern;
-
     private boolean defaultProvider = false;
     private boolean readOnly = false;
     private int priority = 99;
     private String key;
-    
+
     protected JahiaUserManagerService userManagerService;
 
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final Pattern INSTANCE = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString("userManagementUserNamePattern"));
+    }
+
     private static Pattern getUserNamePattern() {
-        if (userNamePattern == null) {
-            synchronized (JahiaUserManagerProvider.class) {
-                if (userNamePattern == null) {
-                    userNamePattern = Pattern.compile(org.jahia.settings.SettingsBean.getInstance()
-                            .lookupString("userManagementUserNamePattern"));
-                }
-            }
-        }
-        return userNamePattern;
+        return Holder.INSTANCE;
     }
 
     public String getKey() {
@@ -136,6 +131,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
 
     /**
      * There can be only one... default provider
+     *
      * @param defaultProvider
      */
     public void setDefaultProvider(boolean defaultProvider) {
@@ -168,7 +164,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * This is the method that creates a new user in the system, with all the
      * specified attributes.
      *
-     * @param password   User password
+     * @param password User password
      */
     public abstract JahiaUser createUser(String name, String password,
                                          Properties properties);
@@ -181,7 +177,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @param user reference on the user to be deleted.
      */
-    public abstract boolean deleteUser (JahiaUser user);
+    public abstract boolean deleteUser(JahiaUser user);
 
 
     /**
@@ -189,14 +185,14 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @return Return the number of users in the system.
      */
-    public abstract int getNbUsers ();
+    public abstract int getNbUsers();
 
     /**
      * This method return all users' keys in the system.
      *
      * @return Return a List of strings holding the user identification key .
      */
-    public abstract List<String> getUserList ();
+    public abstract List<String> getUserList();
 
     /**
      * This method returns the list of all the user names registed into the system.
@@ -211,19 +207,17 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @param userKey      the user identifier defined in this service properties
      * @param userPassword the password of the user
-     *
      * @return boolean true if the login succeeded, false otherwise
      */
-    public abstract boolean login (String userKey, String userPassword);
+    public abstract boolean login(String userKey, String userPassword);
 
     /**
      * Validates provided user name against a regular expression pattern,
      * specified in the Jahia configuration.
-     * 
-     * @param name
-     *            the user name to be validated
+     *
+     * @param name the user name to be validated
      * @return <code>true</code> if the specified user name matches the
-     *         validation pattern
+     * validation pattern
      */
     public boolean isUsernameSyntaxCorrect(String name) {
         if (name == null || name.length() == 0) {
@@ -240,7 +234,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
         }
         return usernameCorrect;
     }
-    
+
     /**
      * Load all the user data and attributes. On success a reference on the user
      * is returned, otherwise NULL is returned.
@@ -265,16 +259,16 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
      *                        null to search without criterias
-     *
      * @return Set a set of JahiaUser elements that correspond to those
-     *         search criterias
+     * search criterias
      */
-    public abstract Set<JahiaUser> searchUsers (Properties searchCriterias);
+    public abstract Set<JahiaUser> searchUsers(Properties searchCriterias);
 
     /**
      * This method indicates that any internal cache for a provider should be
      * updated because the value has changed and needs to be transmitted to the
      * other nodes in a clustering environment.
+     *
      * @param jahiaUser JahiaUser the group to be updated in the cache.
      */
     public abstract void updateCache(JahiaUser jahiaUser);
@@ -284,13 +278,13 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * assigned to another user.
      *
      * @return Return true if the specified username has not been assigned yet,
-     *         return false on any failure.
+     * return false on any failure.
      */
     public abstract boolean userExists(String name);
 
     /**
      * Returns an instance of the user manager.
-     * 
+     *
      * @return an instance of the user manager
      */
     protected JahiaUserManagerService getUserManagerService() {
@@ -299,7 +293,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
 
     /**
      * Injects the user management service instance.
-     * 
+     *
      * @param userManagerService an instance of the user management service
      */
     public void setUserManagerService(JahiaUserManagerService userManagerService) {

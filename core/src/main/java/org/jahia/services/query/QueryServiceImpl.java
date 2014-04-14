@@ -89,25 +89,23 @@ import java.util.*;
 
 /**
  * The default implementation of Jahia's QueryService.
- * 
+ *
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of complex queries specified in JSR-283
  * (Content Repository for Java� Technology API 2.0)
- * 
+ *
  * Queries can be created with the API by using the QueryObjectModel. Jahia will also provide a query builder user interface. It is also
  * possible to use SQL-2 and the deprecated XPATH language.
- * 
+ *
  * As Jahia can plug-in multiple repositories via the universal content hub (UCH), the queries can be converted to other languages, like the
  * EntropySoft connector query language.
- * 
+ *
  * The query service provides methods to modify and optimize the queries to support and make use of Jahia's internal data model
  * implementation.
- * 
+ *
  * @author Benjamin Papez
  */
 public class QueryServiceImpl extends QueryService {
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(QueryService.class);
-
-    private static QueryService singletonInstance = null;
 
     /**
      * The initialization mode for the first QOM traversing iteration
@@ -126,23 +124,21 @@ public class QueryServiceImpl extends QueryService {
 
     private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
 
-    protected QueryServiceImpl() {
+    private QueryServiceImpl() {
+    }
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final QueryServiceImpl INSTANCE = new QueryServiceImpl();
     }
 
     /**
      * Return the unique service instance. If the instance does not exist, a new instance is created.
-     * 
+     *
      * @return The unique service instance.
      */
     public static QueryService getInstance() {
-        if (singletonInstance == null) {
-            synchronized (QueryServiceImpl.class) {
-                if (singletonInstance == null) {
-                    singletonInstance = new QueryServiceImpl();
-                }
-            }
-        }
-        return singletonInstance;
+        return Holder.INSTANCE;
     }
 
     /**
@@ -163,7 +159,7 @@ public class QueryServiceImpl extends QueryService {
      * javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
      */
     public QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom,
-            QueryObjectModelFactory qomFactory, JCRSessionWrapper session)
+                                                   QueryObjectModelFactory qomFactory, JCRSessionWrapper session)
             throws RepositoryException {
         ModificationInfo info = getModificationInfo(qom.getSource(), qom.getConstraint(),
                 qom.getOrderings(), qom.getColumns(), qomFactory, session);
@@ -178,8 +174,8 @@ public class QueryServiceImpl extends QueryService {
      * org.jahia.services.content.JCRSessionWrapper)
      */
     public QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint,
-            Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
-            JCRSessionWrapper session) throws RepositoryException {
+                                                   Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
+                                                   JCRSessionWrapper session) throws RepositoryException {
         ModificationInfo info = getModificationInfo(source, constraint, orderings, columns,
                 qomFactory, session);
         return info.getNewQueryObjectModel() != null ? info.getNewQueryObjectModel() : qomFactory
@@ -192,13 +188,13 @@ public class QueryServiceImpl extends QueryService {
 
     /**
      * We use a QOMTreeVisitor implementation to traverse through the query object model three times.
-     * 
+     *
      * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE,
      * which is only called if modification is necessary.
      */
     protected ModificationInfo getModificationInfo(Source source, Constraint constraint,
-            Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
-            JCRSessionWrapper session) throws RepositoryException {
+                                                   Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
+                                                   JCRSessionWrapper session) throws RepositoryException {
         ModificationInfo info = new ModificationInfo(qomFactory);
 
         QOMTreeVisitor visitor = new QueryModifierAndOptimizerVisitor(info, source, session);
@@ -251,8 +247,8 @@ public class QueryServiceImpl extends QueryService {
     }
 
     protected void makeModifications(Source source, Constraint constraint, Ordering[] orderings,
-            Column[] columns, ModificationInfo info, QOMTreeVisitor visitor,
-            QueryObjectModelFactory qomFactory) throws RepositoryException {
+                                     Column[] columns, ModificationInfo info, QOMTreeVisitor visitor,
+                                     QueryObjectModelFactory qomFactory) throws RepositoryException {
         info.setMode(MODIFY_MODE);
 
         try {
@@ -275,12 +271,12 @@ public class QueryServiceImpl extends QueryService {
                 newColumn = (Column) ((ColumnImpl) column).accept(visitor, null);
                 newColumns[i++] = newColumn;
             }
-            
+
             Constraint newConstraint = null;
             if (constraint != null) {
                 newConstraint = (Constraint) ((ConstraintImpl) constraint).accept(visitor, null);
             }
-            
+
             for (Constraint constraintToAdd : info.getNewConstraints()) {
                 if (newConstraint == null) {
                     newConstraint = constraintToAdd;
@@ -291,8 +287,8 @@ public class QueryServiceImpl extends QueryService {
             }
 
             Source newSource = (Source) ((SourceImpl) getModifiedSource(source, info)).accept(
-                    visitor, null);            
-            
+                    visitor, null);
+
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
@@ -323,22 +319,21 @@ public class QueryServiceImpl extends QueryService {
 
     /**
      * We use this QOMTreeVisitor implementation to traverse through the query object model three times.
-     * 
+     *
      * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE,
      * which is only called if modification is necessary.
-     * 
+     *
      * In INITIALIZE_MODE we analyze the query to check, whether language constraints are already set for selectors and we check whether
      * selectors to nodes having internationlized properties are already joined with their translation nodes and we store the node types per
      * selector.
-     * 
+     *
      * In CHECK_FOR_MODIFICATION_MODE we analyze the query to see, whether modifications needs to be made because of Jahia's internal
      * datamodel changes (mainly internationalized properties, which are copied to subnodes and propertynames are suffixed with the language
      * code). We will also check if modifications need to be done due to performance optimizations. This mode sets the
      * ModificationInfo.modificationNecessary variable to mark the necessity of modification.
-     * 
+     *
      * The MODIFY_MODE is only called if modification appears necessary (after previous step). This mode returns a modified query object
      * model in ModificationInfo.newQueryObjectModel.
-     * 
      */
     class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
         private ModificationInfo modificationInfo;
@@ -359,16 +354,13 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Constructor for the QueryModifierAndOptimizerVisitor
-         * 
-         * @param modificationInfo
-         *            object gathering all modification infos
-         * @param originalSource
-         *            Source object of original query
-         * @param session
-         *            the current JCR session used for the query
+         *
+         * @param modificationInfo object gathering all modification infos
+         * @param originalSource   Source object of original query
+         * @param session          the current JCR session used for the query
          */
         public QueryModifierAndOptimizerVisitor(ModificationInfo modificationInfo,
-                Source originalSource, JCRSessionWrapper session) {
+                                                Source originalSource, JCRSessionWrapper session) {
             super();
             this.modificationInfo = modificationInfo;
             this.originalSource = originalSource;
@@ -379,7 +371,7 @@ public class QueryServiceImpl extends QueryService {
          * In INITIALIZE_MODE checks whether a selector is set to nt:base and in such a case looks, which nodes are actually placed as child
          * nodes. If all are the same then store the primaryChildNodeType, otherwise the nodetypes, common to all child nodes. This is
          * needed to be able to obtain property definitions.
-         * 
+         *
          * In MODIFY_MODE return the unchanged node.
          */
         @Override
@@ -407,7 +399,7 @@ public class QueryServiceImpl extends QueryService {
         /**
          * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
          * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-         * 
+         *
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
         @Override
@@ -419,7 +411,7 @@ public class QueryServiceImpl extends QueryService {
         /**
          * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
          * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-         * 
+         *
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
         @Override
@@ -431,7 +423,7 @@ public class QueryServiceImpl extends QueryService {
         /**
          * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
          * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-         * 
+         *
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
         @Override
@@ -443,7 +435,7 @@ public class QueryServiceImpl extends QueryService {
         /**
          * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
          * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-         * 
+         *
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
         @Override
@@ -462,14 +454,14 @@ public class QueryServiceImpl extends QueryService {
                     languages.add(NO_LOCALE);
                 }
             }
-        	
+
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
          * Calls accept on each of the attached constraints of the AND node.
-         * 
+         *
          * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, otherwise return the
          * unchanged node.
          */
@@ -499,10 +491,10 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the two operands in the comparison node.
-         * 
+         *
          * In INITIALIZE_MODE check whether there is already a language based comparison in the original query, so that this language is
          * used instead of the current locale in the session.
-         * 
+         *
          * In MODIFY_MODE check if the dynamic operand returned was modified, and if yes create a new node and return it, otherwise return
          * the unchanged node.
          */
@@ -514,7 +506,7 @@ public class QueryServiceImpl extends QueryService {
                 if (QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO.equals(node.getOperator())
                         && node.getOperand1() instanceof PropertyValue
                         && Constants.JCR_LANGUAGE.equals(((PropertyValue) node.getOperand1())
-                                .getPropertyName())) {
+                        .getPropertyName())) {
                     Selector selector = getSelector(getOriginalSource(),
                             ((PropertyValue) node.getOperand1()).getSelectorName());
                     Set<String> languages = getLanguagesPerSelector().get(
@@ -543,10 +535,10 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the two sources and the join condition in the join node.
-         * 
+         *
          * In INITIALIZE_MODE check whether the original query already contains a childnode-JOIN on the translation node, so that it then
          * does not have to be added.
-         * 
+         *
          * In MODIFY_MODE check if the sources or join condition returned were modified, and if yes create a new node and return it,
          * otherwise return the unchanged node.
          */
@@ -580,7 +572,8 @@ public class QueryServiceImpl extends QueryService {
                                 returnedRight != null ? (Source) returnedRight : node.getRight(),
                                 node.getJoinType(),
                                 returnedJoinCondition != null ? (JoinCondition) returnedJoinCondition
-                                        : node.getJoinCondition())
+                                        : node.getJoinCondition()
+                        )
                         : node;
             }
 
@@ -589,7 +582,7 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the property value in the length node.
-         * 
+         *
          * In MODIFY_MODE check if the property value returned was modified, and if yes create a new node and return it, otherwise return
          * the unchanged node.
          */
@@ -605,7 +598,7 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the dynamic operand in the lower-case node.
-         * 
+         *
          * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
          * unchanged node.
          */
@@ -622,7 +615,7 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the constraint in the NOT node.
-         * 
+         *
          * In MODIFY_MODE check if the constraint returned was modified, and if yes create a new node and return it, otherwise return the
          * unchanged node.
          */
@@ -638,7 +631,7 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the dynamic operand in the ordering node.
-         * 
+         *
          * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
          * unchanged node.
          */
@@ -658,7 +651,7 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on each of the attached constraints of the OR node.
-         * 
+         *
          * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, otherwise return the
          * unchanged node.
          */
@@ -688,7 +681,7 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Calls accept on the dynamic operand in the lower-case node.
-         * 
+         *
          * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
          * unchanged node.
          */
@@ -728,7 +721,8 @@ public class QueryServiceImpl extends QueryService {
                     .get(node.getSelectorName()) != null ? getModificationInfo()
                     .getQueryObjectModelFactory().fullTextSearchScore(
                             getSelectorsJoinedWithTranslation().get(node.getSelectorName())
-                                    .getSelectorName()) : node) : data);
+                                    .getSelectorName()
+                    ) : node) : data);
         }
 
         /**
@@ -782,7 +776,7 @@ public class QueryServiceImpl extends QueryService {
         /**
          * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
          * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
-         * 
+         *
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
         @Override
@@ -845,7 +839,7 @@ public class QueryServiceImpl extends QueryService {
         }
 
         private AbstractQOMNode getNewPropertyBasedNodeIfRequired(String selectorName,
-                String propertyName, AbstractQOMNode node) throws RepositoryException {
+                                                                  String propertyName, AbstractQOMNode node) throws RepositoryException {
             Selector selector = getSelector(getOriginalSource(), selectorName);
             if (selector == null) {
                 return node;
@@ -856,7 +850,7 @@ public class QueryServiceImpl extends QueryService {
                         || getModificationInfo().getMode() == MODIFY_MODE) {
                     // check for language dependent modifications and use the translation selector on
                     // jnt:translation node if user specified it in query
-                    
+
                     if (getSelectorsJoinedWithTranslation().get(selector.getSelectorName()) != null) {
                         selector = getSelectorsJoinedWithTranslation().get(selector.getSelectorName());
                     }
@@ -865,10 +859,10 @@ public class QueryServiceImpl extends QueryService {
                     if (((languageCodes == null || languageCodes.isEmpty())
                             && session != null && session.getLocale() != null)
                             && !(Constants.NT_QUERY.equals(selector
-                                    .getNodeTypeName()) || Constants.JAHIANT_QUERY
-                                    .equals(selector.getNodeTypeName()))) {
+                            .getNodeTypeName()) || Constants.JAHIANT_QUERY
+                            .equals(selector.getNodeTypeName()))) {
                         if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE) {
-                            
+
                             Set<String> newLanguageCodes = getNewLanguagesPerSelector().get(
                                     selector.getSelectorName());
                             if (newLanguageCodes == null) {
@@ -877,7 +871,7 @@ public class QueryServiceImpl extends QueryService {
                                 newLanguageCodes.add(NO_LOCALE);
                                 getNewLanguagesPerSelector().put(selector.getSelectorName(),
                                         newLanguageCodes);
-                            } 
+                            }
                             if (newLanguageCodes.contains(NO_LOCALE)) {
                                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                                         .getNodeType(selector.getNodeTypeName());
@@ -903,13 +897,14 @@ public class QueryServiceImpl extends QueryService {
                                             .propertyExistence(selector.getSelectorName(),
                                                     Constants.JCR_LANGUAGE))
                                             : qomFactory
-                                                    .comparison(
-                                                            qomFactory.propertyValue(
-                                                                    selector.getSelectorName(),
-                                                                    Constants.JCR_LANGUAGE),
-                                                            QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
-                                                            qomFactory.literal(getValueFactory()
-                                                                    .createValue(newLanguageCode)));
+                                            .comparison(
+                                                    qomFactory.propertyValue(
+                                                            selector.getSelectorName(),
+                                                            Constants.JCR_LANGUAGE),
+                                                    QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+                                                    qomFactory.literal(getValueFactory()
+                                                            .createValue(newLanguageCode))
+                                            );
                                     langConstraint = langConstraint == null ? currentConstraint
                                             : qomFactory.or(langConstraint, currentConstraint);
                                 }
@@ -971,7 +966,7 @@ public class QueryServiceImpl extends QueryService {
         }
 
         private ExtendedPropertyDefinition getPropertyDefinition(ExtendedNodeType nodeType,
-                Selector selector, String propertyName) throws RepositoryException {
+                                                                 Selector selector, String propertyName) throws RepositoryException {
             ExtendedPropertyDefinition propDef = null;
 
             if (!Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
@@ -1066,13 +1061,14 @@ public class QueryServiceImpl extends QueryService {
             return nodeTypesPerSelector;
         }
 
-    };
+    }
+
+    ;
 
     /**
      * This class is used to gather modification information mainly set during the INITIALIZE_MODE traversing. During traversing in
      * CHECK_FOR_MODIFICATION mode mainly only the modificationNecessary variable is set. The information of this object is then used during
      * the MODIFY_MODE traversing iteration.
-     * 
      */
     class ModificationInfo {
         private int mode = INITIALIZE_MODE;
@@ -1089,9 +1085,8 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Constructor setting the QueryObjectModelFactory to be used for modifying the query
-         * 
-         * @param queryObjectModelFactory
-         *            to be used for modifying the query
+         *
+         * @param queryObjectModelFactory to be used for modifying the query
          */
         public ModificationInfo(QueryObjectModelFactory queryObjectModelFactory) {
             super();
@@ -1107,9 +1102,8 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Set true when modification of the query is found to be necessary otherwise set false
-         * 
-         * @param modificationNecessary
-         *            true when modification of the query is necessary otherwise false
+         *
+         * @param modificationNecessary true when modification of the query is necessary otherwise false
          */
         public void setModificationNecessary(boolean modificationNecessary) {
             this.modificationNecessary = modificationNecessary;
@@ -1131,9 +1125,8 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Set the new Source, which in any case is a join when adding translation node queries
-         * 
-         * @param newJoin
-         *            when a new translation node is added.
+         *
+         * @param newJoin when a new translation node is added.
          */
         public void setNewJoin(Join newJoin) {
             setModificationNecessary(true);
@@ -1142,11 +1135,11 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * @return the mode of the current iteration either
-         *         <ul>
-         *         <li>{@link org.jahia.services.query.QueryServiceImpl#INITIALIZE_MODE},</li>
-         *         <li>{@link org.jahia.services.query.QueryServiceImpl#CHECK_FOR_MODIFICATION_MODE},</li>
-         *         <li>{@link org.jahia.services.query.QueryServiceImpl#MODIFY_MODE}</li>
-         *         </ul>
+         * <ul>
+         * <li>{@link org.jahia.services.query.QueryServiceImpl#INITIALIZE_MODE},</li>
+         * <li>{@link org.jahia.services.query.QueryServiceImpl#CHECK_FOR_MODIFICATION_MODE},</li>
+         * <li>{@link org.jahia.services.query.QueryServiceImpl#MODIFY_MODE}</li>
+         * </ul>
          */
         public int getMode() {
             return mode;
@@ -1159,9 +1152,8 @@ public class QueryServiceImpl extends QueryService {
          * <li>{@link org.jahia.services.query.QueryServiceImpl#CHECK_FOR_MODIFICATION_MODE},</li>
          * <li>{@link org.jahia.services.query.QueryServiceImpl#MODIFY_MODE}</li>
          * </ul>
-         * 
-         * @param mode
-         *            for the next iteration
+         *
+         * @param mode for the next iteration
          */
         public void setMode(int mode) {
             this.mode = mode;
@@ -1176,9 +1168,8 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Set the new modified query object model
-         * 
-         * @param newQueryObjectModel
-         *            set after modification
+         *
+         * @param newQueryObjectModel set after modification
          */
         public void setNewQueryObjectModel(QueryObjectModel newQueryObjectModel) {
             this.newQueryObjectModel = newQueryObjectModel;

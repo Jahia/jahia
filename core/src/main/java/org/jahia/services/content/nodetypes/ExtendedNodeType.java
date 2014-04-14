@@ -73,18 +73,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.apache.jackrabbit.spi.commons.value.QValueValue;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.*;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -110,7 +109,7 @@ public class ExtendedNodeType implements NodeType {
     private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new ConcurrentHashMap<Integer, ExtendedPropertyDefinition>();
 
     private Map<String, ExtendedNodeDefinition> allNodes;
-    private Map<String, ExtendedPropertyDefinition> allProperties;
+    private volatile Map<String, ExtendedPropertyDefinition> allProperties;
     private Map<String, ExtendedNodeDefinition> allUnstructuredNodes;
     private Map<Integer, ExtendedPropertyDefinition> allUnstructuredProperties;
 

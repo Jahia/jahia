@@ -182,7 +182,7 @@ public final class FileUtils {
         }
         return df.getExtension();
     }
-    
+
     @SuppressWarnings("unchecked")
     private static Map<String, String> getFileExtensionIcons() {
         if (fileExtensionIcons == null) {

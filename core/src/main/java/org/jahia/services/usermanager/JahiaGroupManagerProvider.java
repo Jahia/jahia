@@ -69,17 +69,17 @@
  */
  package org.jahia.services.usermanager;
 
+import org.jahia.services.JahiaService;
+import org.jahia.services.sites.JahiaSite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.services.JahiaService;
-import org.jahia.services.sites.JahiaSite;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * <p>Title: </p>
@@ -95,24 +95,19 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
 
     private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerProvider.class);
 
-    private static Pattern groupNamePattern;
-
     private boolean defaultProvider = false;
     private boolean readOnly = false;
     private int priority = 99;
     private String key;
     protected JahiaGroupManagerService groupManagerService;
 
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final Pattern INSTANCE = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString("userManagementGroupNamePattern"));
+    }
+
     protected static Pattern getGroupNamePattern() {
-        if (groupNamePattern == null) {
-            synchronized (JahiaUserManagerProvider.class) {
-                if (groupNamePattern == null) {
-                    groupNamePattern = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString(
-                            "userManagementGroupNamePattern"));
-                }
-            }
-        }
-        return groupNamePattern;
+        return Holder.INSTANCE;
     }
 
     /**
@@ -198,7 +193,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
     /**
      * Get all JahiaSite objects where the user has an access.
      *
-     * @param JahiaUser user, the user you want to get his access grants sites list.
+     * @param user, the user you want to get his access grants sites list.
      *
      * @return Return a List containing all JahiaSite objects where the user has an access.
      *
@@ -276,8 +271,8 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
      * This function checks on a given site if the groupname has already been
      * assigned to another group.
      *
-     * @param int       siteID the site id
-     * @param groupname String representing the unique group name.
+     * @param siteID the site id
+     * @param name String representing the unique group name.
      *
      * @return Return true if the specified username has not been assigned yet,
      *         return false on any failure.
@@ -289,7 +284,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
      * Try to lookup the group into the cache, if it's not in the cache, then
      * load it into the cache from the database.
      *
-     * @param String groupKey Group's unique identification key.
+     * @param groupKey Group's unique identification key.
      *
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
@@ -301,7 +296,7 @@ public abstract class JahiaGroupManagerProvider extends JahiaService implements 
      * Try to lookup the group into the cache, if it's not in the cache, then
      * load it into the cache from the database.
      *
-     * @param int  siteID the site id
+     * @param siteID the site id
      * @param name Group's unique identification name.
      *
      * @return Return a reference on a the specified group name. Return null

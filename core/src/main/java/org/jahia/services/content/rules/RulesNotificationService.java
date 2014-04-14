@@ -99,11 +99,10 @@ import java.util.ResourceBundle;
  *
  * @author rincevent
  * @since JAHIA 6.5
- *        Created : 29 juin 2010
+ * Created : 29 juin 2010
  */
 public class RulesNotificationService {
 
-    private static RulesNotificationService instance;
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(RulesNotificationService.class);
 
     public void setScriptEngineUtils(ScriptEngineUtils scriptEngineUtils) {
@@ -112,15 +111,16 @@ public class RulesNotificationService {
 
     private ScriptEngineUtils scriptEngineUtils;
 
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final RulesNotificationService INSTANCE = new RulesNotificationService();
+    }
+
     public static RulesNotificationService getInstance() {
-        if (instance == null) {
-            synchronized (RulesNotificationService.class) {
-                if (instance == null) {
-                    instance = new RulesNotificationService();
-                }
-            }
-        }
-        return instance;
+        return Holder.INSTANCE;
+    }
+
+    private RulesNotificationService() {
     }
 
     private MailService notificationService;
@@ -253,14 +253,17 @@ public class RulesNotificationService {
             bindings.put("servername",
                     "http" + (siteURLPortOverride == 443 ? "s" : "") + "://" + node.getResolveSite().getServerName() +
                             ((siteURLPortOverride != 0 && siteURLPortOverride != 80 && siteURLPortOverride != 443) ?
-                                    ":" + siteURLPortOverride : ""));
+                                    ":" + siteURLPortOverride : "")
+            );
         }
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
         if (scriptInputStream != null) {
             String resourceBundleName = StringUtils.substringBeforeLast(
                     Patterns.SLASH.matcher(
                             StringUtils.substringAfter(Patterns.WEB_INF.matcher(template)
-                                    .replaceAll(""), "/")).replaceAll("."), ".");
+                                    .replaceAll(""), "/")
+                    ).replaceAll("."), "."
+            );
             String subject = "";
             try {
                 ResourceBundle resourceBundle = ResourceBundles.get(resourceBundleName, locale);

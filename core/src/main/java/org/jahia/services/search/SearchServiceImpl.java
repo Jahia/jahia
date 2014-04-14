@@ -69,58 +69,53 @@
  */
 package org.jahia.services.search;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.RenderContext;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Default implementation of the {@link SearchService}.
  *
  * @author Benjamin Papez
- *
  */
 public class SearchServiceImpl extends SearchService {
-    
-    private SearchProvider searchProvider; 
 
-    /**
-     * The unique instance of this service
-     */
-    protected static SearchServiceImpl theObject;    
-    
+    private SearchProvider searchProvider;
+
     /**
      * Returns the unique instance of this service.
      */
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final SearchServiceImpl INSTANCE = new SearchServiceImpl();
+    }
+
     public static SearchServiceImpl getInstance() {
-        if (theObject == null) {
-            synchronized (SearchServiceImpl.class) {
-                if (theObject == null) {
-                    theObject = new SearchServiceImpl();
-                }                
-            }
-        }
-        return theObject;
-    }    
-    
+        return Holder.INSTANCE;
+    }
+
+    private SearchServiceImpl() {
+    }
+
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
         return getProvider().search(criteria, context);
     }
-    
+
     public static void executeURLModificationRules(
             Hit<?> searchHit, RenderContext context) {
         Map<String, Object> globals = new HashMap<String, Object>();
         globals.put("renderContext", context);
-        globals.put("urlService", SearchURLService.getInstance());        
+        globals.put("urlService", SearchURLService.getInstance());
         RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(searchHit,
                 globals);
         return;
     }
-    
+
 
     @Override
     public void start() throws JahiaInitializationException {
@@ -136,9 +131,10 @@ public class SearchServiceImpl extends SearchService {
     public Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest) {
         return getProvider().suggest(originalQuery, context, maxTermsToSuggest);
     }
-    
+
     /**
      * Returns an instance of the search provider for handling query requests.
+     *
      * @return an instance of the search provider for handling query requests
      */
     protected SearchProvider getProvider() {

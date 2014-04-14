@@ -116,7 +116,7 @@ public class JahiaSitesService extends JahiaService {
 
     private static final Pattern JCR_KEY_PATTERN = Pattern.compile("{jcr}", Pattern.LITERAL);
 
-    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
+    private static final String[] TRANSLATOR_NODES_PATTERN = new String[]{"translator-*"};
 
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
@@ -145,7 +145,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
 
-    // Initialization on demand idiom: thread-safe singleton initialization
+    // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final JahiaSitesService INSTANCE = new JahiaSitesService();
     }
@@ -253,7 +253,7 @@ public class JahiaSitesService extends JahiaService {
      *
      * @param serverName the server name to look for
      * @return if found, returns the site with the corresponding serverName, or
-     *         the first one if there are multiple, or null if there are none.
+     * the first one if there are multiple, or null if there are none.
      * @throws JahiaException thrown if there was a problem communicating with the
      *                        database.
      */
@@ -288,12 +288,12 @@ public class JahiaSitesService extends JahiaService {
         }
 
         String siteName = getSiteKeyByServerNameCache().get(serverName).getObjectValue().toString();
-        return "".equals(siteName)?null:siteName;
+        return "".equals(siteName) ? null : siteName;
     }
 
     private SelfPopulatingCache getSiteKeyByServerNameCache() {
-        if(siteKeyByServerNameCache == null) {
-            siteKeyByServerNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteKeyByServerNameCache",new SiteKeyByServerNameCacheEntryFactory());
+        if (siteKeyByServerNameCache == null) {
+            siteKeyByServerNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteKeyByServerNameCache", new SiteKeyByServerNameCacheEntryFactory());
         }
         return siteKeyByServerNameCache;
     }
@@ -368,7 +368,7 @@ public class JahiaSitesService extends JahiaService {
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        JCRSiteNode site=null;
+        JCRSiteNode site = null;
         try {
 
             if (!siteExists(siteKey, session)) {
@@ -657,7 +657,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public JahiaSite getDefaultSite() {
-        JahiaSite site =null;
+        JahiaSite site = null;
 
         try {
             site = getDefaultSite(getUserSession());
@@ -676,7 +676,7 @@ public class JahiaSitesService extends JahiaService {
             } catch (RepositoryException e) {
                 List<JCRSiteNode> sitesNodeList = getSitesNodeList(session);
                 for (JCRSiteNode jcrSiteNode : sitesNodeList) {
-                    if(!"systemsite".equals(jcrSiteNode.getSiteKey())){
+                    if (!"systemsite".equals(jcrSiteNode.getSiteKey())) {
                         return jcrSiteNode;
                     }
                 }
@@ -724,7 +724,7 @@ public class JahiaSitesService extends JahiaService {
         Node n = session.getNode("/permissions/repository-permissions/jcr:all_" + ws + "/jcr:write_" + ws + "/jcr:modifyProperties_" + ws);
         Set<String> languages = new HashSet<String>();
 
-        NodeIterator ni = n.getNodes(new String[] {"jcr:modifyProperties_" + ws + "_*"});
+        NodeIterator ni = n.getNodes(new String[]{"jcr:modifyProperties_" + ws + "_*"});
         while (ni.hasNext()) {
             Node next = (Node) ni.next();
             languages.add(StringUtils.substringAfter(next.getName(), "jcr:modifyProperties_" + ws + "_"));
@@ -820,8 +820,8 @@ public class JahiaSitesService extends JahiaService {
     }
 
     private SelfPopulatingCache getSiteDefaultLanguageBySiteKeyCache() {
-        if(siteDefaultLanguageBySiteKey == null) {
-            siteDefaultLanguageBySiteKey = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteDefaultLanguageBySiteKey",new SiteDefaultLanguageBySiteKeyCacheEntryFactory());
+        if (siteDefaultLanguageBySiteKey == null) {
+            siteDefaultLanguageBySiteKey = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteDefaultLanguageBySiteKey", new SiteDefaultLanguageBySiteKeyCacheEntryFactory());
         }
         return siteDefaultLanguageBySiteKey;
     }
@@ -855,10 +855,10 @@ public class JahiaSitesService extends JahiaService {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRSiteNode s = getSiteByServerName((String) key,session);
-                    if (s!=null) {
+                    JCRSiteNode s = getSiteByServerName((String) key, session);
+                    if (s != null) {
                         return s.getSiteKey();
-                    }  else {
+                    } else {
                         return "";
                     }
                 }
@@ -873,7 +873,7 @@ public class JahiaSitesService extends JahiaService {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        JCRSiteNode s = StringUtils.isEmpty((String) key)?null:getSiteByKey((String) key, session);
+                        JCRSiteNode s = StringUtils.isEmpty((String) key) ? null : getSiteByKey((String) key, session);
                         if (s != null) {
                             return s.getDefaultLanguage();
                         }
@@ -883,7 +883,7 @@ public class JahiaSitesService extends JahiaService {
                         // other errors
                         logger.error("cannot get site", e);
                     }
-                return "";
+                    return "";
                 }
             });
         }

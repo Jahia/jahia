@@ -69,36 +69,29 @@
  */
 package org.jahia.services.content;
 
+import com.google.common.collect.ImmutableSet;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
-import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;
+import org.jahia.services.content.interceptor.PropertyInterceptor;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableSet;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -108,44 +101,40 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author toto
  */
 public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
-    
-    static private JCRStoreService instance = null;
 
     private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
 
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final JCRStoreService INSTANCE = new JCRStoreService();
+    }
+
     public static JCRStoreService getInstance() {
-        if (instance == null) {
-            synchronized (JCRStoreService.class) {
-                if (instance == null) {
-                    instance = new JCRStoreService();
-                }
-            }
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     private Map<String, Class<? extends JCRNodeDecorator>> decorators = new ConcurrentHashMap<String, Class<? extends JCRNodeDecorator>>();
     private Map<String, Constructor<?>> decoratorCreators = new ConcurrentHashMap<String, Constructor<?>>();
     private InterceptorChain interceptorChain;
-    private Map<String,ProviderFactory> providerFactories = new ConcurrentHashMap<String, ProviderFactory>();
+    private Map<String, ProviderFactory> providerFactories = new ConcurrentHashMap<String, ProviderFactory>();
     private List<PropertyInterceptor> interceptors = new LinkedList<PropertyInterceptor>();
     private Set<String> noValidityCheckTypes = new HashSet<String>();
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
     private Map<String, Class<? extends JCRNodeValidator>> validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
     private Map<String, Constructor<?>> validatorCreators = new ConcurrentHashMap<String, Constructor<?>>();
-    
-    private Map<String,List<DefaultEventListener>> listeners;
+
+    private Map<String, List<DefaultEventListener>> listeners;
 
     private JCRSessionFactory sessionFactory;
 
-    protected JCRStoreService() {
+    private JCRStoreService() {
         super();
     }
 
     /**
      * Adds an interceptor to the chain.
-     * 
-     * @param index index at which the specified element is to be inserted.
+     *
+     * @param index       index at which the specified element is to be inserted.
      * @param interceptor the interceptor instance
      */
     public void addInterceptor(int index, PropertyInterceptor interceptor) {
@@ -155,7 +144,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     /**
      * Adds an interceptor to the chain.
-     * 
+     *
      * @param interceptor the interceptor instance
      */
     public void addInterceptor(PropertyInterceptor interceptor) {
@@ -171,7 +160,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Query query = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from ["+externalProviderFactory.getNodeTypeName()+"] as mount", Query.JCR_SQL2);
+                            "select * from [" + externalProviderFactory.getNodeTypeName() + "] as mount", Query.JCR_SQL2);
                     QueryResult queryResult = query.execute();
                     NodeIterator queryResultNodes = queryResult.getNodes();
                     while (queryResultNodes.hasNext()) {
@@ -189,14 +178,15 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                         } catch (RepositoryException e) {
                             logger.warn(
                                     "Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e);
+                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e
+                            );
                         }
                     }
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Cannot mount provider "+nodeType, e);
+            logger.error("Cannot mount provider " + nodeType, e);
         }
     }
 
@@ -207,7 +197,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
-                                "select * from ["+externalProviderFactory.getNodeTypeName()+"] as mount", Query.JCR_SQL2);
+                                "select * from [" + externalProviderFactory.getNodeTypeName() + "] as mount", Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator queryResultNodes = queryResult.getNodes();
                         while (queryResultNodes.hasNext()) {
@@ -294,14 +284,14 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             interceptorChain = new InterceptorChain();
             interceptorChain.setInterceptors(interceptors);
         }
-        
+
         return interceptorChain;
     }
-    
+
     public Map<String, List<DefaultEventListener>> getListeners() {
         return listeners;
     }
-    
+
     public JCRSessionFactory getSessionFactory() {
         return sessionFactory;
     }
@@ -324,7 +314,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 final Session session = getSessionFactory().getSystemSession(null, ws);
                 try {
                     final Workspace workspace = session.getWorkspace();
-    
+
                     ObservationManager observationManager = workspace.getObservationManager();
                     for (DefaultEventListener listener : l) {
                         if (listener.getEventTypes() > 0) {
@@ -346,9 +336,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     /**
      * Removes the specified interceptor from the chain.
-     * 
-     * @param interceptor
-     *            the interceptor instance
+     *
+     * @param interceptor the interceptor instance
      */
     public void removeInterceptor(PropertyInterceptor interceptor) {
         if (this.interceptors.remove(interceptor)) {
@@ -358,7 +347,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     @SuppressWarnings("unchecked")
     public void setDecorators(Map<String, String> decorators) {
-        if(!this.decorators.isEmpty()) {
+        if (!this.decorators.isEmpty()) {
             throw new RuntimeException("setDecorators should not be called after initialization of system, use addDecorator instead");
         }
         if (decorators != null) {
@@ -387,7 +376,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     logger.error("Unable to instantiate decorator: " + decoratorClass, e);
                 }
             } else {
-                logger.error("It is impossible to decorate a mixin ("+nodeType+"), only primary node type can be decorated");
+                logger.error("It is impossible to decorate a mixin (" + nodeType + "), only primary node type can be decorated");
             }
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);

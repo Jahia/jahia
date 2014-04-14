@@ -78,18 +78,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 /**
- * 
- *
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 12 oct. 2010
+ * Created : 12 oct. 2010
  */
 public class ModuleGeneratorQueue implements InitializingBean {
-    private Map<String,String> notCacheableModule = new ConcurrentHashMap<String, String>(2503);
+    private Map<String, String> notCacheableModule = new ConcurrentHashMap<String, String>(2503);
     private Map<String, CountDownLatch> generatingModules;
     private int maxModulesToGenerateInParallel = 50;
     private long moduleGenerationWaitTime = 5000;
-    private Semaphore availableProcessings = null;
+    private volatile Semaphore availableProcessings = null;
     private long minimumIntervalAfterLastAutoThreadDump = 60000; // in milliseconds
     private boolean useLatchOnlyForPages = false;
     private boolean threadDumpToSystemOut = true;
@@ -104,14 +102,18 @@ public class ModuleGeneratorQueue implements InitializingBean {
     }
 
     public Semaphore getAvailableProcessings() {
-        if (availableProcessings != null)
-            return availableProcessings;
-        synchronized (this) {
-            if (availableProcessings != null)
-                return availableProcessings;
-            availableProcessings = new Semaphore(getMaxModulesToGenerateInParallel(), true);            
+        // Double-checked locking only works with volatile for Java 5+
+        // result variable is used to avoid accessing the volatile field multiple times to increase performance per Effective Java 2nd Ed.
+        Semaphore result = availableProcessings;
+        if (result == null) {
+            synchronized (this) {
+                result = availableProcessings;
+                if (result == null) {
+                    availableProcessings = result = new Semaphore(getMaxModulesToGenerateInParallel(), true);
+                }
+            }
         }
-        return availableProcessings;
+        return result;
     }
 
     public int getMaxModulesToGenerateInParallel() {
@@ -147,8 +149,8 @@ public class ModuleGeneratorQueue implements InitializingBean {
 
     public void setMinimumIntervalAfterLastAutoThreadDump(long minimumIntervalAfterLastAutoThreadDump) {
         this.minimumIntervalAfterLastAutoThreadDump = minimumIntervalAfterLastAutoThreadDump;
-    }    
-    
+    }
+
     public long getMinimumIntervalAfterLastAutoThreadDump() {
         return minimumIntervalAfterLastAutoThreadDump;
     }

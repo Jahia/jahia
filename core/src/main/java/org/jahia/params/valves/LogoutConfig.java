@@ -69,46 +69,41 @@
  */
 package org.jahia.params.valves;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationListener;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 /**
  * Logout configuration settings.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class LogoutConfig implements ApplicationListener<RootContextInitializedEvent> {
-
-    private static LogoutConfig instance;
-
     private static final Logger logger = LoggerFactory.getLogger(LogoutConfig.class);
 
-    public static LogoutConfig getInstance() {
-        if (instance == null) {
-            synchronized (LogoutConfig.class) {
-                if (instance == null) {
-                    instance = new LogoutConfig();
-                }
-            }
-        }
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final LogoutConfig INSTANCE = new LogoutConfig();
+    }
 
-        return instance;
+    public static LogoutConfig getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    private LogoutConfig() {
     }
 
     private LogoutUrlProvider logoutUrlProvider;
 
     /**
      * Returns custom logout URL if the corresponding authentication provider is found. <code>null</code> otherwise.
-     * 
-     * @param request
-     *            current servlet request
+     *
+     * @param request current servlet request
      * @return custom logout URL if the corresponding authentication provider is found. <code>null</code> otherwise.
      */
     public String getCustomLogoutUrl(HttpServletRequest request) {

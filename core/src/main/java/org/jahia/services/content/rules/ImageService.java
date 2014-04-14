@@ -107,23 +107,25 @@ public class ImageService {
         this.imageService = imageService;
     }
 
-    private static ImageService instance;
-
     private static File contentTempFolder;
 
-    public static ImageService getInstance() {
-        if (instance == null) {
-            synchronized (ImageService.class) {
-                if (instance == null) {
-                    instance = new ImageService();
-                    contentTempFolder = new File(SettingsBean.getInstance().getTmpContentDiskPath());
-                    if (!contentTempFolder.exists()) {
-                        contentTempFolder.mkdirs();
-                    }
-                }
+    private ImageService() {
+    }
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ImageService INSTANCE = new ImageService();
+
+        static {
+            contentTempFolder = new File(SettingsBean.getInstance().getTmpContentDiskPath());
+            if (!contentTempFolder.exists()) {
+                contentTempFolder.mkdirs();
             }
         }
-        return instance;
+    }
+
+    public static ImageService getInstance() {
+        return Holder.INSTANCE;
     }
 
 

@@ -84,12 +84,12 @@ import java.io.IOException;
  */
 public class ImageJAndJava2DImageService extends Java2DProgressiveBilinearImageService {
 
-    private ImageJImageService imageJImageService = new ImageJImageService();
+    private ImageJImageService imageJImageService = ImageJImageService.getInstance();
     private static ImageJAndJava2DImageService instance = new ImageJAndJava2DImageService();
 
     private static final Logger logger = LoggerFactory.getLogger(ImageJAndJava2DImageService.class);
 
-    protected ImageJAndJava2DImageService() {
+    private ImageJAndJava2DImageService() {
     }
 
     public void init() {

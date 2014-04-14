@@ -69,10 +69,6 @@
  */
 package org.jahia.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.apache.commons.codec.binary.Base64;
 import org.jasypt.digest.ByteDigester;
 import org.jasypt.digest.PooledByteDigester;
@@ -80,6 +76,10 @@ import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Miscellaneous encryption utilities.
@@ -113,42 +113,33 @@ public final class EncryptionUtils {
 
     }
 
-    private static ByteDigester sha1DigesterLegacy;
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class SHA1DigesterHolder {
+        static final PooledByteDigester INSTANCE = new PooledByteDigester();
 
-    private static StringEncryptor stringEncryptor;
+        static {
+            INSTANCE.setAlgorithm("SHA-1");
+            INSTANCE.setSaltSizeBytes(0);
+            INSTANCE.setIterations(1);
+            INSTANCE.setPoolSize(4);
+        }
+    }
 
     private static ByteDigester getSHA1DigesterLegacy() {
-        if (sha1DigesterLegacy == null) {
-            synchronized (EncryptionUtils.class) {
-                if (sha1DigesterLegacy == null) {
-                    // StandardByteDigester digester = new StandardByteDigester();
-                    PooledByteDigester digester = new PooledByteDigester();
-                    digester.setAlgorithm("SHA-1");
-                    digester.setSaltSizeBytes(0);
-                    digester.setIterations(1);
-                    digester.setPoolSize(4);
-                    sha1DigesterLegacy = digester;
-                }
-            }
-        }
+        return SHA1DigesterHolder.INSTANCE;
+    }
 
-        return sha1DigesterLegacy;
+    private static class StringEncryptorHolder {
+        static final StandardPBEStringEncryptor INSTANCE = new StandardPBEStringEncryptor();
+
+        static {
+            INSTANCE.setPassword(new String(new byte[]{74, 97, 104, 105, 97, 32, 120, 67, 77, 32, 54, 46, 53}));
+            // INSTANCE.setAlgorithm("PBEWithMD5AndTripleDES");
+        }
     }
 
     private static StringEncryptor getStringEncryptor() {
-        if (stringEncryptor == null) {
-            synchronized (EncryptionUtils.class) {
-                if (stringEncryptor == null) {
-                    StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-                    encryptor.setPassword(new String(new byte[] { 74, 97, 104, 105, 97, 32, 120,
-                            67, 77, 32, 54, 46, 53 }));
-                    // encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
-                    stringEncryptor = encryptor;
-                }
-            }
-        }
-
-        return stringEncryptor;
+        return StringEncryptorHolder.INSTANCE;
     }
 
     /**

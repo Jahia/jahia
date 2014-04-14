@@ -73,8 +73,6 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,25 +86,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ScriptEngineUtils {
 
-    private static ScriptEngineUtils instance;
-    
-    public static ScriptEngineUtils getInstance() {
-        if (instance == null) {
-            synchronized (ScriptEngineUtils.class) {
-                if (instance == null) {
-                    instance = new ScriptEngineUtils();
-                }
-            }
-        }
-        return instance;
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ScriptEngineUtils INSTANCE = new ScriptEngineUtils();
     }
-    
+
+    public static ScriptEngineUtils getInstance() {
+        return Holder.INSTANCE;
+    }
+
     private Map<ClassLoader, Map<String, ScriptEngine>> scriptEngineByExtensionCache;
     private Map<ClassLoader, Map<String, ScriptEngine>> scriptEngineByNameCache;
 
     private ScriptEngineManager scriptEngineManager;
-    
-    public ScriptEngineUtils() {
+
+    private ScriptEngineUtils() {
         super();
         scriptEngineManager = new ScriptEngineManager();
         scriptEngineByExtensionCache = new ConcurrentHashMap<ClassLoader, Map<String, ScriptEngine>>(3);

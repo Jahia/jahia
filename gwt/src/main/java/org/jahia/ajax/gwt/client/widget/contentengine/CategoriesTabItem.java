@@ -192,7 +192,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         treeGrid.setAutoExpandMax(5000);
         treeGrid.setAutoExpandColumn("displayName");
         treeGrid.getTreeView().setRowHeight(25);
-
+        treeGridFactory.getLoader().load();
         return treeGrid;
     }
 

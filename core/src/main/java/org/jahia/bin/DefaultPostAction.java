@@ -168,7 +168,7 @@ public class DefaultPostAction extends Action {
                 nodeType = parameters.get(Render.NODE_TYPE).get(0);
             }
             if (StringUtils.isBlank(nodeType)) {
-//                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
+            	logger.error("Missing nodeType property");
                 return ActionResult.BAD_REQUEST;
             }
             String nodeName = null;
@@ -192,19 +192,35 @@ public class DefaultPostAction extends Action {
                     }
                 }
 
+<<<<<<< .working
                 session.save();
             } catch (CompositeConstraintViolationException e) {
                 List<JSONObject> jsonErrors = new ArrayList<JSONObject>();
                 for (ConstraintViolationException exception : e.getErrors()) {
                     jsonErrors.add(getJSONConstraintError(exception));
+=======
+                for (String s : newNode.getNodeTypes()) {
+                    Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
+                    for (ExtendedPropertyDefinition propDef : propDefs) {
+                    	System.out.println(propDef.getName() + " mandatory: " + propDef.isMandatory());
+                        if (propDef.isMandatory() && !propDef.isProtected() && !newNode.hasProperty(propDef.getName())) {
+                            throw new ConstraintViolationException("Mandatory field : "+propDef.getName());
+                        }
+                    }
+>>>>>>> .merge-right.r49594
                 }
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("validationError", jsonErrors);
                 return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
             } catch (ConstraintViolationException e) {
+<<<<<<< .working
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("validationError", Arrays.asList(getJSONConstraintError(e)));
                 return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, jsonObject);
+=======
+            	logger.error(e.getMessage(), e);
+                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
+>>>>>>> .merge-right.r49594
             }
 
             final String nodeId = newNode.getIdentifier();

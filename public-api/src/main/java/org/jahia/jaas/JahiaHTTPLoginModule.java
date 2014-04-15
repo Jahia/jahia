@@ -78,6 +78,7 @@ import java.security.Principal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
+import java.util.logging.Logger;
 
 /**
  * TODO Comment me
@@ -86,6 +87,7 @@ import java.net.HttpURLConnection;
  */
 public class JahiaHTTPLoginModule  implements LoginModule {
 
+    private static final Logger LOGGER = Logger.getLogger(JahiaHTTPLoginModule.class.getName());
     private Subject subject;
     private Principal user = null;
     private CallbackHandler callbackHandler;
@@ -145,7 +147,6 @@ public class JahiaHTTPLoginModule  implements LoginModule {
 
             final String name = ((NameCallback)callbacks[0]).getName();
             char[] pass = ((PasswordCallback)callbacks[1]).getPassword();
-            System.out.println("name="+name+",pass="+new String(pass));
 
             URL url = new URL(options.get("url")+"?user="+ URLEncoder.encode(name,"UTF-8") + "&pass=" + URLEncoder.encode(new String(pass),"UTF-8"));
             int i = ((HttpURLConnection)url.openConnection()).getResponseCode();
@@ -164,7 +165,7 @@ public class JahiaHTTPLoginModule  implements LoginModule {
         } catch (UnsupportedCallbackException e) {
             // ignore
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.info("An exception occurred while attempting to log user. Error was: " + e.getLocalizedMessage());
         }
         return user != null;
 

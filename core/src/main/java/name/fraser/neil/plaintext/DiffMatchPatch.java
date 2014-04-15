@@ -1,18 +1,9 @@
 package name.fraser.neil.plaintext;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.net.URLEncoder;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1852,15 +1843,17 @@ public class DiffMatchPatch {
    */
   protected String patch_addPadding(LinkedList<Patch> patches) {
     LinkedList<Diff> diffs;
-    String nullPadding = "";
+    StringBuilder nullPaddingBuilder = new StringBuilder(this.Patch_Margin);
     for (int x = 0; x < this.Patch_Margin; x++) {
-      nullPadding += String.valueOf((char) x);
+      nullPaddingBuilder.append(String.valueOf((char) x));
     }
+    final String nullPadding = nullPaddingBuilder.toString();
+    final int length = nullPadding.length();
 
     // Bump all the patches forward.
     for (Patch aPatch : patches) {
-      aPatch.start1 += nullPadding.length();
-      aPatch.start2 += nullPadding.length();
+      aPatch.start1 += length;
+      aPatch.start2 += length;
     }
 
     // Add some padding on start of first diff.
@@ -1869,14 +1862,14 @@ public class DiffMatchPatch {
     if (diffs.isEmpty() || diffs.getFirst().operation != Operation.EQUAL) {
       // Add nullPadding equality.
       diffs.addFirst(new Diff(Operation.EQUAL, nullPadding));
-      patch.start1 -= nullPadding.length();  // Should be 0.
-      patch.start2 -= nullPadding.length();  // Should be 0.
-      patch.length1 += nullPadding.length();
-      patch.length2 += nullPadding.length();
-    } else if (nullPadding.length() > diffs.getFirst().text.length()) {
+      patch.start1 -= length;  // Should be 0.
+      patch.start2 -= length;  // Should be 0.
+      patch.length1 += length;
+      patch.length2 += length;
+    } else if (length > diffs.getFirst().text.length()) {
       // Grow first equality.
       Diff firstDiff = diffs.getFirst();
-      int extraLength = nullPadding.length() - firstDiff.text.length();
+      int extraLength = length - firstDiff.text.length();
       firstDiff.text = nullPadding.substring(firstDiff.text.length())
           + firstDiff.text;
       patch.start1 -= extraLength;
@@ -1891,12 +1884,12 @@ public class DiffMatchPatch {
     if (diffs.isEmpty() || diffs.getLast().operation != Operation.EQUAL) {
       // Add nullPadding equality.
       diffs.addLast(new Diff(Operation.EQUAL, nullPadding));
-      patch.length1 += nullPadding.length();
-      patch.length2 += nullPadding.length();
-    } else if (nullPadding.length() > diffs.getLast().text.length()) {
+      patch.length1 += length;
+      patch.length2 += length;
+    } else if (length > diffs.getLast().text.length()) {
       // Grow last equality.
       Diff lastDiff = diffs.getLast();
-      int extraLength = nullPadding.length() - lastDiff.text.length();
+      int extraLength = length - lastDiff.text.length();
       lastDiff.text += nullPadding.substring(0, extraLength);
       patch.length1 += extraLength;
       patch.length2 += extraLength;

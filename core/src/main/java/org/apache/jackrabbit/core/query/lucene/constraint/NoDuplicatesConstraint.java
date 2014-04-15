@@ -72,8 +72,6 @@ package org.apache.jackrabbit.core.query.lucene.constraint;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
 import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
 import org.apache.jackrabbit.core.query.lucene.ScoreNode;
-import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
-import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.lucene.document.Document;
 
@@ -89,24 +87,22 @@ public class NoDuplicatesConstraint implements Constraint {
 
     public boolean evaluate(ScoreNode[] row, Name[] selectorNames, EvaluationContext context)
             throws IOException {
-        String id = "";
+        StringBuilder idBuilder = new StringBuilder(1024);
         for (ScoreNode sn : row) {
             if (sn == null) {
-                id += "null";
+                idBuilder.append("null");
             } else {
                 int docNb = sn.getDoc(context.getIndexReader());
                 Document doc = context.getIndexReader().document(docNb);
                 if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
-                    id += doc.getField(FieldNames.PARENT).stringValue();
+                    idBuilder.append(doc.getField(FieldNames.PARENT).stringValue());
                 } else {
-                    id += sn.getNodeId().toString();
+                    idBuilder.append(sn.getNodeId().toString());
                 }
             }
         }
-        if (ids.contains(id)) {
-            return false;
-        }
-        ids.add(id);
-        return true;
+
+        final String id = idBuilder.toString();
+        return ids.add(id);
     }
 }

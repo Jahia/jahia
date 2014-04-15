@@ -80,10 +80,12 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public final class ServletHandler
     extends AbstractHandler implements Comparable<ServletHandler>
 {
+    private static final Logger LOGGER = Logger.getLogger(ServletHandler.class.getName());
     private final String alias;
     private String aliasWithSlash;
     private String jspPathPrefix;
@@ -204,7 +206,7 @@ public final class ServletHandler
                 ResourceBundle oldBundle = (ResourceBundle) oldLocalizationContext.getClass().getMethod("getResourceBundle").invoke(oldLocalizationContext);
                 req.setAttribute("javax.servlet.jsp.jstl.fmt.localizationContext.request", new LocalizationContext(oldBundle,locale));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.info("Couldn't call method on " + oldLocalizationContext + " object. Error was: " + e.getLocalizedMessage());
             }
         }
         try {

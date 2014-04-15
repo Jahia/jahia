@@ -183,20 +183,20 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String PLUTO_ACTION = "ac";
     public static final String PLUTO_RESOURCE = "rs";
 
-    private String workspace;
-    private MetricsLoggingService loggingService;
-    private JahiaTemplateManagerService templateService;
-    private Action defaultPostAction;
-    private Action defaultPutAction;
-    private Action defaultDeleteAction = new DefaultDeleteAction();
-    private Map<String, String> defaultContentType = new HashMap<String, String>();
+    private transient String workspace;
+    private transient MetricsLoggingService loggingService;
+    private transient JahiaTemplateManagerService templateService;
+    private transient Action defaultPostAction;
+    private transient Action defaultPutAction;
+    private transient Action defaultDeleteAction = new DefaultDeleteAction();
+    private transient Map<String, String> defaultContentType = new HashMap<String, String>();
 
-	protected SettingsBean settingsBean;
-    private RenderService renderService;
-    private JCRSessionFactory jcrSessionFactory;
-    private URLResolverFactory urlResolverFactory;
+    protected transient SettingsBean settingsBean;
+    private transient RenderService renderService;
+    private transient JCRSessionFactory jcrSessionFactory;
+    private transient URLResolverFactory urlResolverFactory;
 
-    private Integer sessionExpiryTime = null;
+    private transient Integer sessionExpiryTime = null;
     private static Integer cookieExpirationInDays = 1;
 
     private Set<String> allowedMethods = new HashSet<String>();

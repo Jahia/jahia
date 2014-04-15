@@ -93,11 +93,11 @@ public class JahiaWebdavServlet extends SimpleWebdavServlet {
     /**
      * the repository session provider
      */
-    private SessionProvider sessionProvider;
+    private transient SessionProvider sessionProvider;
 
-    private DavLocatorFactory locatorFactory;
+    private transient DavLocatorFactory locatorFactory;
 
-    private String resourcePathPrefix = "/repository";
+    private static final String resourcePathPrefix = "/repository";
 
     public DavLocatorFactory getLocatorFactory() {
         if (locatorFactory == null) {

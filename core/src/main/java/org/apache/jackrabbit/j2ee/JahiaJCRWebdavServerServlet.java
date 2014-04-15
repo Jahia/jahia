@@ -69,21 +69,15 @@
  */
 package org.apache.jackrabbit.j2ee;
 
-import java.io.IOException;
+import org.apache.jackrabbit.server.SessionProvider;
+import org.apache.jackrabbit.server.SessionProviderImpl;
+import org.apache.jackrabbit.server.jcr.JCRWebdavServer;
+import org.apache.jackrabbit.webdav.*;
 
 import javax.jcr.Repository;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.jackrabbit.server.SessionProvider;
-import org.apache.jackrabbit.server.SessionProviderImpl;
-import org.apache.jackrabbit.server.jcr.JCRWebdavServer;
-import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.DavMethods;
-import org.apache.jackrabbit.webdav.DavResource;
-import org.apache.jackrabbit.webdav.DavSessionProvider;
-import org.apache.jackrabbit.webdav.WebdavRequest;
-import org.apache.jackrabbit.webdav.WebdavResponse;
+import java.io.IOException;
 
 /**
  * 
@@ -99,15 +93,15 @@ public class JahiaJCRWebdavServerServlet extends JCRWebdavServerServlet {
     /**
      * the repository session provider
      */
-    private SessionProvider sessionProvider;
+    private transient SessionProvider sessionProvider;
 
-    private JCRWebdavServer server;
+    private transient JCRWebdavServer server;
 
     /**
      * Returns the <code>DavSessionProvider</code>
      *
      * @return server
-     * @see org.apache.jackrabbit.server.AbstractWebdavServlet#getDavSessionProvider()
+     * @see org.apache.jackrabbit.webdav.server.AbstractWebdavServlet#getDavSessionProvider()
      */
     public DavSessionProvider getDavSessionProvider() {
         if (server == null) {

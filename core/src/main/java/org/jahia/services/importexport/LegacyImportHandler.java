@@ -71,7 +71,6 @@ package org.jahia.services.importexport;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
@@ -100,7 +99,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
@@ -470,7 +468,7 @@ public class LegacyImportHandler extends DefaultHandler {
                             String mixinsToAdd, JSONObject propertiesToSet)
             throws RepositoryException {
         JCRNodeWrapper subPage;
-        ExtendedNodeType t = null;
+        ExtendedNodeType t;
         try {
             t = registry.getNodeType(primaryType);
         } catch (NoSuchNodeTypeException e) {
@@ -607,7 +605,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
     private JCRNodeWrapper addOrCheckoutPageNode(String template, JCRNodeWrapper parent, String nodeName, Map<String, String> creationMetadata)
             throws RepositoryException {
-        JCRNodeWrapper node = null;
+        JCRNodeWrapper node;
         try {
             node = parent.getNode(nodeName);
             if (!node.isCheckedOut()) {
@@ -645,7 +643,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
     private JCRNodeWrapper addOrCheckoutNode(JCRNodeWrapper parent, String nodeName, String nodeType,
                                              List<String> followingNodeNames, Map<String, String> creationMetadata) throws RepositoryException {
-        JCRNodeWrapper node = null;
+        JCRNodeWrapper node;
         try {
             node = parent.getNode(nodeName);
             if (!node.isCheckedOut()) {
@@ -1077,7 +1075,7 @@ public class LegacyImportHandler extends DefaultHandler {
             parent.addMixin(mixinType);
         }
 
-        ExtendedPropertyDefinition propertyDefinition = null;
+        ExtendedPropertyDefinition propertyDefinition;
         propertyDefinition = parent.getApplicablePropertyDefinition(propertyName);
         if (propertyDefinition == null) {
             return false;
@@ -1124,7 +1122,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         case SelectorType.RICHTEXT: {
                             if (value.contains("=\"###")) {
                                 int count = 1;
-                                StringBuffer buf = new StringBuffer(value);
+                                StringBuilder buf = new StringBuilder(value);
                                 while (buf.indexOf("=\"###") > -1) {
                                     int from = buf.indexOf("=\"###") + 2;
                                     int to = buf.indexOf("\"", from);
@@ -1193,8 +1191,7 @@ public class LegacyImportHandler extends DefaultHandler {
                             } else {
                                 String[] strings = Patterns.TRIPPLE_DOLLAR.split(value);
                                 List<Value> values = new ArrayList<Value>();
-                                for (int i = 0; i < strings.length; i++) {
-                                    String string = strings[i];
+                                for (String string : strings) {
 
                                     if (string.startsWith("<jahia-resource")) {
                                         string = ResourceBundleMarker.parseMarkerValue(string).getResourceKey();

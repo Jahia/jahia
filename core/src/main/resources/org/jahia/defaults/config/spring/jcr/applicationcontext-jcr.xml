@@ -122,6 +122,7 @@
         </property>
         <property name="noValidityCheckTypes">
             <set>
+                <value>jnt:acl</value>
                 <value>jnt:componentFolder</value>
                 <value>jnt:contentFolder</value>
                 <value>jnt:groupsFolder</value>

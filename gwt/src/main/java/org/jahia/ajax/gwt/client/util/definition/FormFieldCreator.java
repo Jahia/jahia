@@ -243,6 +243,9 @@ public class FormFieldCreator {
                         store.add(initializer.getDisplayValues());
                     } else if (propDefinition.getValueConstraints() != null) {
                         for (String s : propDefinition.getValueConstraints()) {
+                            if (propDefinition.getRequiredType() != GWTJahiaNodePropertyType.STRING && s.contains("[") && s.contains(",")) {
+                                s = s.substring(s.indexOf("[") + 1,s.indexOf(","));
+                            }
                             store.add(new GWTJahiaValueDisplayBean(s, s));
                         }
                     }
@@ -452,14 +455,15 @@ public class FormFieldCreator {
                 case GWTJahiaNodePropertyType.LONG:
                 case GWTJahiaNodePropertyType.DOUBLE:
                 case GWTJahiaNodePropertyType.DECIMAL:
-                    if (propDefinition.getMaxValue() != null) {
-                        ((NumberField) field).setMaxValue(Double.parseDouble(propDefinition.getMaxValue()));
-                    }
-                    if (propDefinition.getMinValue() != null) {
-                        ((NumberField) field).setMinValue(Double.parseDouble(propDefinition.getMinValue()));
+                    if (GWTJahiaNodeSelectorType.CHOICELIST != definition.getSelector()) {
+                        if (propDefinition.getMaxValue() != null) {
+                            ((NumberField) field).setMaxValue(Double.parseDouble(propDefinition.getMaxValue()));
+                        }
+                        if (propDefinition.getMinValue() != null) {
+                            ((NumberField) field).setMinValue(Double.parseDouble(propDefinition.getMinValue()));
+                        }
                     }
                     break;
-
                 case GWTJahiaNodePropertyType.DATE:
                     if (propDefinition.getMaxValue() != null) {
                         ((DateField) field).setMaxValue(new Date(Long.parseLong(propDefinition.getMaxValue())));
@@ -523,7 +527,12 @@ public class FormFieldCreator {
                     final ComboBox<GWTJahiaValueDisplayBean> combo = (ComboBox<GWTJahiaValueDisplayBean>) field;
                     String val = values.get(0).getString();
                     for (GWTJahiaValueDisplayBean displayBean : combo.getStore().getModels()) {
-                        if (displayBean.getValue().equals(val)) {
+                        String value = displayBean.getValue();
+                        if (propDefinition.getRequiredType() == GWTJahiaNodePropertyType.LONG) {
+                            value = Long.toString(new Double(value).longValue());
+                        }
+
+                        if (value.equals(val)) {
                             selection.add(displayBean);
                         }
                     }
@@ -582,7 +591,7 @@ public class FormFieldCreator {
                         field.setValue(v);
                         break;
                     default:
-                        break;                        
+                        break;
                 }
             }
         } else {

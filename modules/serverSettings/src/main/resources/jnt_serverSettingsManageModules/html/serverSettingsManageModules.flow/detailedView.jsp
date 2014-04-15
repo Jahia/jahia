@@ -196,7 +196,7 @@
 
 
 <h2><fmt:message key="serverSettings.manageModules.versions"/></h2>
-<%@include file="moduleLabels.jspf" %>
+<%@include file="common/moduleLabels.jspf" %>
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
@@ -217,7 +217,7 @@
             <c:if test="${not isStudio}">
                 <td>
                  <c:set var="isActiveVersion" value="${version.key == activeVersion.version}"/>
-                 <%@include file="moduleVersionActions.jspf" %>
+                 <%@include file="common/moduleVersionActions.jspf" %>
                 </td>
             </c:if>
         </tr>

@@ -11,53 +11,52 @@
     </on-start>
 
     <decision-state id="moreAnswersNeeded">
-        <if test="flowHandler.isInModule(externalContext.requestMap.renderContext)" then="detailedView" else="view" />
+        <if test="flowHandler.isInModule(externalContext.requestMap.renderContext)" then="detailedView" else="viewResolver" />
+    </decision-state>
+
+    <decision-state id="viewResolver">
+        <if test="flowHandler.isStudio(externalContext.requestMap.renderContext)" then="studioView" else="view" />
     </decision-state>
 
     <view-state id="view" model="moduleFile">
         <on-entry>
             <evaluate expression="flowHandler.initModuleFile()" result="flowScope.moduleFile"/>
         </on-entry>
+
         <on-render>
-            <evaluate expression="flowHandler.allModuleVersions"
-                      result="requestScope.allModuleVersions"/>
-            <evaluate expression="flowHandler.availableUpdates"
-                      result="requestScope.availableUpdates"/>
-            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules"
-                      result="requestScope.registeredModules"/>
-            <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls"
-                      result="requestScope.sourceControls"/>
+            <evaluate expression="flowHandler.allModuleVersions" result="requestScope.allModuleVersions"/>
+            <evaluate expression="flowHandler.availableUpdates" result="requestScope.availableUpdates"/>
+            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules" result="requestScope.registeredModules"/>
+            <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls" result="requestScope.sourceControls"/>
             <evaluate expression="flowHandler.populateSitesInformation(flowRequestContext)" />
         </on-render>
 
-        <transition on="viewDownloadForm" to="viewDownloadForm">
-            <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
-            <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
-        </transition>
-
         <transition on="downloadSources" to="downloadSources"/>
-
-
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
         <transition on="undeployModule" to="undeployModule"/>
-
-
         <transition on="upload" to="view">
             <evaluate expression="flowHandler.uploadModule(moduleFile, messageContext)"/>
         </transition>
-
         <transition on="installModule" to="view">
             <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>
         </transition>
-
         <transition on="viewDetails" to="detailedView"/>
-
         <transition on="viewAvailableModules" to="forgeView"/>
     </view-state>
 
-    <view-state id="viewDownloadForm" model="flowScope">
+    <view-state id="studioView">
+        <on-render>
+            <evaluate expression="flowHandler.allModuleVersions" result="requestScope.allModuleVersions"/>
+            <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules" result="requestScope.registeredModules"/>
+            <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls" result="requestScope.sourceControls"/>
+            <evaluate expression="flowHandler.populateSitesInformation(flowRequestContext)" />
+        </on-render>
 
+        <transition on="viewDetails" to="detailedView"/>
+    </view-state>
+
+    <view-state id="viewDownloadForm" model="flowScope">
         <transition on="downloadSources" to="downloadSources"/>
     </view-state>
 
@@ -76,11 +75,15 @@
             <set value="requestParameters.module" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
+        <transition on="viewDownloadForm" to="viewDownloadForm">
+            <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
+            <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
+        </transition>
         <transition on="viewDetails" to="detailedView"/>
         <transition on="enable" to="enableOnSite"/>
         <transition on="disable" to="disableFromSite"/>
         <transition on="disableAll" to="disableFromAllSites"/>
-        <transition on="viewInstalledModules" to="view"/>
+        <transition on="viewInstalledModules" to="viewResolver"/>
         <transition on="undeployModule" to="undeployModule"/>
     </view-state>
 
@@ -89,8 +92,7 @@
             <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
             <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
         </on-entry>
-        <evaluate
-                expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
+        <evaluate expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
         <transition on-exception="java.lang.Exception" to="viewDownloadForm">
             <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>

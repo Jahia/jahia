@@ -143,6 +143,10 @@ public class ModuleManagementFlowHandler implements Serializable {
         return false;
     }
 
+    public boolean isStudio(RenderContext renderContext) {
+        return renderContext.getEditModeConfigName().equals("studiomode") || renderContext.getEditModeConfigName().equals("studiovisualmode");
+    }
+
     public ModuleFile initModuleFile() {
         return new ModuleFile();
     }

@@ -144,7 +144,6 @@ public class JahiaSitesService extends JahiaService {
         super();
     }
 
-
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final JahiaSitesService INSTANCE = new JahiaSitesService();
@@ -539,18 +538,54 @@ public class JahiaSitesService extends JahiaService {
         deployModules(getTargetString(site.getSiteKey()), modulesToDeploy, templateService.getAnyDeployedTemplatePackage(site.getTemplatePackageName()), session, templateService);
     }
 
-    private void deployModules(String target, String[] modulesToDeploy, JahiaTemplatesPackage templateSet, JCRSessionWrapper session, JahiaTemplateManagerService templateService) {
-        List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>(2 + (modulesToDeploy != null ? modulesToDeploy.length : 0));
-        modules.add(templateService.getAnyDeployedTemplatePackage("default"));
-        modules.add(templateSet);
-        if (modulesToDeploy != null) {
-            for (String s : modulesToDeploy) {
-                JahiaTemplatesPackage packageByFileName = templateService.getAnyDeployedTemplatePackage(s);
-                if (!modules.contains(packageByFileName)) {
-                    modules.add(packageByFileName);
-                }
+    public void updateModules(JahiaSite site, List<String> newModuleIds, JCRSessionWrapper session) {
+        final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        final List<String> installedModules = site.getInstalledModules();
+
+        // compute list of modules to uninstall
+        List<String> modulesToUninstall = new LinkedList<String>(installedModules);
+        // first remove all modules that are in common with the new modules list
+        modulesToUninstall.removeAll(newModuleIds);
+        // remove default and template set so that they don't get un-installed
+        modulesToUninstall.remove("default");
+        modulesToUninstall.remove(((JCRSiteNode) site).getTemplatePackage().getId());
+
+        // un-install modules if there are any
+        if (!modulesToUninstall.isEmpty()) {
+            List<JahiaTemplatesPackage> uninstalledModules = moduleIdsToTemplatesPackage(modulesToUninstall, templateService);
+            // uninstall modules that are not needed anymore
+            try {
+                logger.info("Uninstalling modules " + uninstalledModules + " from " + site.getSiteKey());
+                templateService.uninstallModules(uninstalledModules, site.getJCRLocalPath(), session);
+            } catch (RepositoryException re) {
+                logger.error("Unable to uninstall modules " + uninstalledModules + " from "
+                        + site.getSiteKey() + ". Cause: " + re.getMessage(), re);
             }
         }
+
+        // compute list of new modules to install
+        List<String> modulesToInstall = new LinkedList<String>(newModuleIds);
+        // first remove the modules that are in common with the installed modules list
+        modulesToInstall.removeAll(installedModules);
+
+        // install new modules if there are any
+        if (!modulesToInstall.isEmpty()) {
+            List<JahiaTemplatesPackage> toInstallModules = moduleIdsToTemplatesPackage(modulesToInstall, templateService);
+            // install new modules
+            try {
+                logger.info("Installing modules " + toInstallModules + " to " + site.getSiteKey());
+                templateService.installModules(toInstallModules, site.getJCRLocalPath(), session);
+            } catch (RepositoryException re) {
+                logger.error("Unable to install modules " + toInstallModules + " to "
+                        + site.getSiteKey() + ". Cause: " + re.getMessage(), re);
+            }
+        }
+    }
+
+    private void deployModules(String target, String[] modulesToDeploy, JahiaTemplatesPackage templateSet, JCRSessionWrapper session, JahiaTemplateManagerService templateService) {
+        List<JahiaTemplatesPackage> modules = moduleIdsToTemplatesPackage(modulesToDeploy != null ? Arrays.asList(modulesToDeploy) : Collections.<String>emptyList(), templateService);
+        modules.add(templateService.getAnyDeployedTemplatePackage("default"));
+        modules.add(templateSet);
 
         try {
             logger.info("Deploying modules {} to {}", modules.toString(), target);
@@ -558,6 +593,22 @@ public class JahiaSitesService extends JahiaService {
         } catch (RepositoryException re) {
             logger.error("Unable to deploy modules " + modules.toString() + " to "
                     + target + ". Cause: " + re.getMessage(), re);
+        }
+    }
+
+    private List<JahiaTemplatesPackage> moduleIdsToTemplatesPackage(List<String> modules, JahiaTemplateManagerService templateService) {
+        if (modules != null) {
+            List<JahiaTemplatesPackage> packages = new ArrayList<JahiaTemplatesPackage>(2 + modules.size());
+            for (String s : modules) {
+                JahiaTemplatesPackage packageByFileName = templateService.getAnyDeployedTemplatePackage(s);
+                if (!packages.contains(packageByFileName)) {
+                    packages.add(packageByFileName);
+                }
+            }
+
+            return packages;
+        } else {
+            return Collections.emptyList();
         }
     }
 

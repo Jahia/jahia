@@ -875,7 +875,7 @@ public class WebprojectHandler implements Serializable {
             // update modules
             // todo: check that module list has changed before updating it
             final List<String> modules = bean.getModules();
-            sitesService.deployModules(site, modules.toArray(new String[modules.size()]), session);
+            sitesService.updateModules(site, modules, session);
 
             session.save();
             messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());

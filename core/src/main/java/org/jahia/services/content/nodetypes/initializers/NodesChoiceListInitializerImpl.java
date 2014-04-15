@@ -136,7 +136,11 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 if (s.length > 2) {
                     returnType = s[2];
                 }
-                path = path.replace("$currentSite", site.getPath());
+                if (StringUtils.contains(path,"$currentSite/templates/")) {
+                    path = StringUtils.replace(path,"$currentSite", "/modules/" + site.getTemplatePackage().getIdWithVersion());
+                } else {
+                    path = StringUtils.replace(path,"$currentSite", site.getPath());
+                }
                 boolean subTree = false;
                 if (path.endsWith("//*")) {
                     path = StringUtils.substringBeforeLast(path, "//*");

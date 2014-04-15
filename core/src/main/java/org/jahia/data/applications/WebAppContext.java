@@ -85,13 +85,13 @@
 
 package org.jahia.data.applications;
 
+import org.jahia.utils.InsertionSortedMap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jahia.utils.InsertionSortedMap;
 
 
 
@@ -116,18 +116,22 @@ public class WebAppContext implements Serializable
 
     /** The Map of servlet bean , keyed by the servlet name **/
     private InsertionSortedMap<String, ServletBean> servlets = new InsertionSortedMap<String, ServletBean>();
+    private static final Object servletsLock = new Object();
 
     /**
      * The hashMap of servlet mapping, keyed with the pattern used to map a servlet.
      * The value is the servlet name.
      **/
     private Map<String, String> servletMappings = new HashMap<String, String>();
+    private static final Object mappingsLock = new Object();
 
     /** List of security roles **/
     private List<String> roles = new ArrayList<String>();
+    private static final Object rolesLock = new Object();
 
     /** The list of Welcome files **/
     private List<String> welcomeFiles = new ArrayList<String>();
+    private static final Object welcomesLock = new Object();
 
     // Entry points into servlet-based portlet web application.
     private List<EntryPointDefinition> entryPoints = new ArrayList<EntryPointDefinition>();
@@ -184,16 +188,13 @@ public class WebAppContext implements Serializable
     /**
      * Add a List of ServletBean.
      *
-     * @param servlets
+     * @param servlets the ServletBeans to add
      */
     public void addServlets(List<ServletBean> servlets) {
-        synchronized (this.servlets) {
+        synchronized (servletsLock) {
             if ( servlets!=null ){
-                int size = servlets.size();
-                ServletBean servlet = null;
-                for ( int i=0 ; i<size ; i++ ){
-                    servlet = (ServletBean)servlets.get(i);
-                    if ( servlet!=null && servlet.getServletName() != null ){
+                for (ServletBean servlet : servlets) {
+                    if (servlet != null && servlet.getServletName() != null) {
                         this.servlets.put(servlet.getServletName(), servlet);
                     }
                 }
@@ -205,10 +206,10 @@ public class WebAppContext implements Serializable
     /**
      * Add a new servlet bean.
      *
-     * @param servlet
+     * @param servlet the ServletBean to add
      */
     public void addServlet(ServletBean servlet) {
-        synchronized (servlets) {
+        synchronized (servletsLock) {
             if ( servlet!=null && servlet.getServletName() != null ){
                 servlets.put(servlet.getServletName(), servlet);
             }
@@ -222,7 +223,7 @@ public class WebAppContext implements Serializable
      * @param name , the servlet name
      */
     public ServletBean getServlet(String name) {
-        synchronized (servlets) {
+        synchronized (servletsLock) {
             if ( name!=null){
                 return servlets.get(name);
             }
@@ -234,10 +235,10 @@ public class WebAppContext implements Serializable
     /**
      * Set the map of servlet mapping.
      *
-     * @param servletMappings
+     * @param servletMappings a map of servlet mappings keyed with the url pattern and the servlet name as value
      */
     public void setServletMappings(Map<String, String> servletMappings) {
-        synchronized (this.servletMappings) {
+        synchronized (mappingsLock) {
             if ( servletMappings != null ){
                 this.servletMappings = servletMappings;
             }
@@ -248,11 +249,11 @@ public class WebAppContext implements Serializable
     /**
      * Add a new servlet mapping and replace old mapping with same pattern.
      *
-     * @param pattern
-     * @param name , the servlet name
+     * @param pattern the URL pattern for which we want to add a mapping
+     * @param name the name of the servlet mapped to the specified URL pattern
      */
     public void addServletMapping(String pattern, String name) {
-        synchronized (servletMappings) {
+        synchronized (mappingsLock) {
             servletMappings.put(pattern, name);
         }
     }
@@ -265,7 +266,7 @@ public class WebAppContext implements Serializable
      * @param pattern the url-pattern
      */
     public String findServletMapping(String pattern) {
-        synchronized (servletMappings) {
+        synchronized (mappingsLock) {
             return servletMappings.get(pattern);
         }
     }
@@ -277,7 +278,9 @@ public class WebAppContext implements Serializable
      * @return servlets
      */
     public Map<String, ServletBean> getServlets() {
-        return servlets;
+        synchronized (servletsLock) {
+            return servlets;
+        }
     }
 
 
@@ -288,7 +291,7 @@ public class WebAppContext implements Serializable
      * @param roles a List of security roles
      */
     public void setRoles(List<String> roles) {
-        synchronized (this.roles) {
+        synchronized (rolesLock) {
             if ( roles != null ){
                 this.roles = roles;
             }
@@ -302,7 +305,7 @@ public class WebAppContext implements Serializable
      * @param role New security role
      */
     public void addRole(String role) {
-        synchronized (roles) {
+        synchronized (rolesLock) {
             roles.add(role);
         }
     }
@@ -317,7 +320,7 @@ public class WebAppContext implements Serializable
         if ( role == null ){
             return false;
         }
-        synchronized (roles) {
+        synchronized (rolesLock) {
             return roles.contains(role);
         }
     }
@@ -327,17 +330,19 @@ public class WebAppContext implements Serializable
      * Return the security roles defined for this application.
      */
     public List<String> getRoles() {
-        return roles;
+        synchronized (rolesLock) {
+            return roles;
+        }
     }
 
     //--------------------------------------------------------------------------
     /**
      * Set the welcome files.
      *
-     * @param welcomeFiles
+     * @param welcomeFiles a List of welcome file names
      */
     public void setWelcomeFiles(List<String> welcomeFiles) {
-        synchronized (this.welcomeFiles) {
+        synchronized (welcomesLock) {
             if ( welcomeFiles != null ){
                 this.welcomeFiles = welcomeFiles;
             }
@@ -352,7 +357,7 @@ public class WebAppContext implements Serializable
      * @param filename New welcome file name
      */
     public void addWelcomeFile(String filename) {
-        synchronized (welcomeFiles) {
+        synchronized (welcomesLock) {
             welcomeFiles.add(filename);
         }
     }
@@ -372,7 +377,9 @@ public class WebAppContext implements Serializable
      * @return welcomeFiles
      */
     public List<String> getWelcomeFiles() {
-        return welcomeFiles;
+        synchronized (welcomesLock) {
+            return welcomeFiles;
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -388,7 +395,7 @@ public class WebAppContext implements Serializable
     /**
      * Set the context
      *
-     * @param val
+     * @param val the new context
      */
     public void setContext(String val){
         context = val;
@@ -407,7 +414,7 @@ public class WebAppContext implements Serializable
     /**
      * Set the display name
      *
-     * @param val
+     * @param val the new display name
      */
     public void setDisplayName(String val){
         displayName = val;
@@ -426,7 +433,7 @@ public class WebAppContext implements Serializable
     /**
      * Set the descr
      *
-     * @param val
+     * @param val the new description
      */
     public void setDescr(String val){
         descr = val;

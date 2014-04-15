@@ -108,6 +108,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
     protected String name;
 
     private Valve[] valves = new Valve[0];
+    private static final Object valvesLock = new Object();
 
     /**
      * The per-thread execution state for processing through this
@@ -136,9 +137,9 @@ public class GenericPipeline implements Pipeline, ValveContext {
             throws PipelineException {
 
         // Initialize the valves
-        for (int i = 0; i < valves.length; i++) {
+        for (Valve valve : valves) {
             //valves[i].setApplicationView(getApplicationView());
-            valves[i].initialize();
+            valve.initialize();
         }
     }
 
@@ -161,7 +162,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
     }
 
     public Valve[] getValves() {
-        synchronized (valves) {
+        synchronized (valvesLock) {
             Valve[] results = new Valve[valves.length];
             System.arraycopy(valves, 0, results, 0, valves.length);
             return results;
@@ -169,12 +170,14 @@ public class GenericPipeline implements Pipeline, ValveContext {
     }
 
     public void setValves(Valve[] valves) {
-        this.valves = valves;
+        synchronized (valvesLock) {
+            this.valves = valves;
+        }
     }
 
     public void addValve(Valve valve) {
         // Add this Valve to the set associated with this Pipeline
-        synchronized (valves) {
+        synchronized (valvesLock) {
             Valve[] results = new Valve[valves.length + 1];
             System.arraycopy(valves, 0, results, 0, valves.length);
             results[valves.length] = valve;
@@ -187,7 +190,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
      */
     public void addValve(int position, Valve valve) {
         // Add this Valve to the set associated with this Pipeline
-        synchronized (valves) {
+        synchronized (valvesLock) {
             Valve[] results = new Valve[valves.length + 1];
             if (position == -1 || position >= valves.length) {
                 System.arraycopy(valves, 0, results, 0, valves.length);
@@ -200,7 +203,7 @@ public class GenericPipeline implements Pipeline, ValveContext {
     }
 
     public void removeValve(Valve valve) {
-        synchronized (valves) {
+        synchronized (valvesLock) {
             // Locate this Valve in our list
             int index = -1;
             for (int i = 0; i < valves.length; i++) {
@@ -240,11 +243,13 @@ public class GenericPipeline implements Pipeline, ValveContext {
         // Identify the current subscript for the current request thread
         int valvePos = state.get();
 
-        if (valvePos < valves.length) {
-            // Invoke the requested Valve for the current request
-            // thread and increment its thread-local state.
-            state.set(valvePos + 1);
-            valves[valvePos].invoke(context, this);
+        synchronized (valvesLock) {
+            if (valvePos < valves.length) {
+                // Invoke the requested Valve for the current request
+                // thread and increment its thread-local state.
+                state.set(valvePos + 1);
+                valves[valvePos].invoke(context, this);
+            }
         }
 
     }
@@ -262,9 +267,11 @@ public class GenericPipeline implements Pipeline, ValveContext {
      * @see org.jahia.pipelines.Pipeline#getFirstValveOfClass(java.lang.Class)
      */
     public Valve getFirstValveOfClass(Class<Valve> c) {
-        for (int i = 0; i < this.valves.length; i++) {
-            if (c.isInstance(valves[i])) {
-                return valves[i];
+        synchronized (valvesLock) {
+            for (Valve valve : this.valves) {
+                if (c.isInstance(valve)) {
+                    return valve;
+                }
             }
         }
         return null;
@@ -276,10 +283,12 @@ public class GenericPipeline implements Pipeline, ValveContext {
      */
     public int indexOf(Valve valve) {
         int pos = -1;
-        for (int i = 0; i < valves.length; i++) {
-            if (valve.equals(valves[i])) {
-                pos = i;
-                break;
+        synchronized (valvesLock) {
+            for (int i = 0; i < valves.length; i++) {
+                if (valve.equals(valves[i])) {
+                    pos = i;
+                    break;
+                }
             }
         }
 

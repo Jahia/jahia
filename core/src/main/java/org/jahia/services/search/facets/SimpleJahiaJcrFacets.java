@@ -104,7 +104,6 @@ import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.request.SimpleFacets;
 import org.apache.solr.schema.*;
 import org.apache.solr.schema.DateField;
-import org.apache.solr.search.QParser;
 import org.apache.solr.search.QueryParsing;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.util.DateMathParser;
@@ -120,7 +119,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -215,7 +213,7 @@ public class SimpleJahiaJcrFacets {
         if (localParams == null) return;
 
         // remove local params unless it's a query
-        if (type != FacetParams.FACET_QUERY) {
+        if (!FacetParams.FACET_QUERY.equals(type)) {
           facetValue = localParams.get(CommonParams.VALUE);
         }
 
@@ -228,10 +226,10 @@ public class SimpleJahiaJcrFacets {
         // figure out if we need a new base DocSet
         String excludeStr = localParams.get(CommonParams.EXCLUDE);
         if (excludeStr == null) return;
+
 // TODO: Should we activate that and how ? - we have no request object in backend
 //        Map tagMap = (Map)req.getContext().get("tags");
-        Map<String, Object> tagMap = null;
-        if (tagMap != null && rb != null) {
+        /*if (tagMap != null && rb != null) {
           List<String> excludeTagList = StrUtils.splitSmart(excludeStr,',');
 
           IdentityHashMap<Query,Boolean> excludeSet = new IdentityHashMap<Query,Boolean>();
@@ -265,7 +263,7 @@ public class SimpleJahiaJcrFacets {
 
           // get the new base docset for this facet
           base = getDocIdSet(qlist, "");
-        }
+        }*/
 
       }    
     

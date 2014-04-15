@@ -545,6 +545,13 @@
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
 
                         <Import-Package>
+                            com.sun.org.apache.xerces.internal.xni;resolution:=optional,
+                            org.apache.html.dom,
+                            org.apache.tika.config,
+                            org.apache.tika.metadata,
+                            org.apache.tika.parser,
+                            org.apache.xerces.xni,
+                            org.apache.xerces.xni.parser,
                             ${jahia.plugin.projectPackageImport},
                             *
                         </Import-Package>

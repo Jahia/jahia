@@ -112,6 +112,7 @@ public class TestHelper {
     public static final String WEB_BLUE_TEMPLATES = "templates-web-blue";
     public static final String WEB_SPACE_TEMPLATES = "templates-web-space";
     public static final String INTRANET_TEMPLATES = "templates-intranet";
+    public static final String BOOTSTRAP_ACME_SPACE_TEMPLATES = "bootstrap-acme-space-templates";
 
     public static JahiaSite createSite(String name) throws Exception {
         return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);

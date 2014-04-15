@@ -37,6 +37,24 @@
 # skip URLs using curly braces
 -.*\{
 
+# skip URLs using opening brace
+-.*\(
+
+# skip URLs using closing brace
+-.*\)
+
+# skip URLs using opening brace
+-.*\<
+
+# skip URLs using closing brace
+-.*\>
+
+# skip URLs ending with ckeditor/
+-.*ckeditor/$
+
+# skip URLs ending with equals
+-.*=$
+
 # limit the crawl to localhost:
 #+^http://localhost
 

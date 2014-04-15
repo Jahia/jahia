@@ -21,7 +21,6 @@
 -->
 
 <parse-plugins>
-
   <!--  by default if the mimeType is set to *, or 
         if it can't be determined, use parse-tika -->
 	<mimeType name="*">
@@ -42,6 +41,10 @@
 		<!--  try and parse it with the zip parser -->
 		<plugin id="parse-zip" />
 	</mimeType>
+
+    <mimeType name="application/x-elc">
+        <plugin id="parse-js" />
+    </mimeType>
 
 	<mimeType name="application/x-javascript">
 		<plugin id="parse-js" />

@@ -194,9 +194,9 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
-                            TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.WEB_BLUE_TEMPLATES,
+                            TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.BOOTSTRAP_ACME_SPACE_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/acme.zip", "ACME.zip");
+                                            + "/prepackagedSites/acmespaceelektra.zip", "ACME-SPACE.zip");
                             jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();

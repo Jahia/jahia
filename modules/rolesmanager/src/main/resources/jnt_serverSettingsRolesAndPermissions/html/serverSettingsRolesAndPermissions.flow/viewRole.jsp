@@ -285,7 +285,6 @@
                     <input type="hidden" name="roleType" value="${handler.roleBean.roleType.name}"/>
                     <input type="text" name="newRole"/>
                     <input type="hidden" id="uuid" name="uuid" value="${handler.roleBean.uuid}"/>
-                    <input type="hidden" id="eventId" name="_eventId" value="rolesList"/>
                     <button class="btn btn-primary" type="submit" name="_eventId_addRole">
                         <i class="icon-plus  icon-white"></i>
                         <fmt:message key="rolesmanager.rolesAndPermissions.subRole.add"/>

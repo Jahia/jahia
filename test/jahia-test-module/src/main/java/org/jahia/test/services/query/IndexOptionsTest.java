@@ -145,13 +145,13 @@ public class IndexOptionsTest {
                     .getQueryManager();
 
             if (queryManager != null) {
-                String query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
+                String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
                 
                 assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
 
-                query = "//element(*, test_templates:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]";
+                query = "//element(*, test:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]";
                 q = queryManager.createQuery(query, Query.XPATH);
                 queryResult = q.execute();
 
@@ -188,13 +188,13 @@ public class IndexOptionsTest {
                     .getQueryManager();
 
             if (queryManager != null) {
-                String query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'ZXY')";
+                String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'ZXY')";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
 
                 assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
 
-                query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where indexFields.nofulltextSmallText like 'ZXY%'";
+                query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where indexFields.nofulltextSmallText like 'ZXY%'";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
                 queryResult = q.execute();
 
@@ -219,7 +219,7 @@ public class IndexOptionsTest {
                     .getQueryManager();
 
             if (queryManager != null) {
-                String query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields order by indexFields.[sortableFloat] asc";
+                String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields order by indexFields.[sortableFloat] asc";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
                 Node previousNode = null;
@@ -243,7 +243,7 @@ public class IndexOptionsTest {
                     previousNode = currentNode;
                 }
 
-                query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields order by indexFields.[nofulltextSmallText] asc";
+                query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields order by indexFields.[nofulltextSmallText] asc";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
                 queryResult = q.execute();
                 previousNode = null;
@@ -267,7 +267,7 @@ public class IndexOptionsTest {
                     previousNode = currentNode;
                 }
 
-                query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields order by indexFields.[simpleSmallText] asc";
+                query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields order by indexFields.[simpleSmallText] asc";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
                 queryResult = q.execute();
                 previousNode = null;
@@ -291,7 +291,7 @@ public class IndexOptionsTest {
                     previousNode = currentNode;
                 }
 
-                query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields order by indexFields.[untokenizedDate] asc";
+                query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields order by indexFields.[untokenizedDate] asc";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
                 queryResult = q.execute();
                 previousNode = null;
@@ -336,7 +336,7 @@ public class IndexOptionsTest {
                     .getQueryManager();
 
             if (queryManager != null) {
-                String query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'ABBA')";
+                String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'ABBA')";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
                 NodeIterator it = queryResult.getNodes();

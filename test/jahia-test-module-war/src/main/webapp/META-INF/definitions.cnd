@@ -122,7 +122,6 @@
 [test:externalWeakReference] > nt:base, jmix:droppableContent
 - test:simpleNode (weakreference)
 - test:multipleNode (weakreference) multiple
-<<<<<<< .working
 - test:multipleI18NNode (weakreference) multiple i18n
 
 [test:validatedNode] > nt:base, jmix:droppableContent
@@ -133,9 +132,6 @@
 - test:futureDate (date)
 - test:greaterThan2 (long)
 
-=======
-- test:multipleI18NNode (weakreference) multiple i18n
-
 [test:fieldsWithIndexOptions] > jnt:content, jmix:droppableContent
 - untokenizedDate (date) indexed='untokenized' scoreboost=1 analyzer='keyword'
 - scoreboostedDate (date) indexed='untokenized' scoreboost=6 analyzer='keyword'
@@ -144,4 +140,4 @@
 - nonIndexedSmallText (string) indexed='no'
 - nofulltextSmallText (string) nofulltext
 - scoreboostedSmallText (string) scoreboost=5
-- sortableFloat (double) sortable>>>>>>> .merge-right.r49621
+- sortableFloat (double) sortable

@@ -164,3 +164,13 @@
  - propertyResourceBundleSharedMixin (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
  - propertyResourceBundleI18nMixin (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
 //---------------------------------------------------------
+
+[test:fieldsWithIndexOptions] > jnt:content, jmix:droppableContent
+- untokenizedDate (date) indexed='untokenized' scoreboost=1 analyzer='keyword'
+- scoreboostedDate (date) indexed='untokenized' scoreboost=6 analyzer='keyword'
+- untokenizedLong (long) indexed='untokenized' analyzer='keyword'
+- simpleSmallText (string) analyzer='simple'
+- nonIndexedSmallText (string) indexed='no'
+- nofulltextSmallText (string) nofulltext
+- scoreboostedSmallText (string) scoreboost=5
+- sortableFloat (double) sortable

@@ -106,7 +106,11 @@ public class ForgeService {
 
     private HttpClientService httpClientService;
     private Set<Forge> forges = new HashSet<Forge>();
-    private List<Module> modules = new ArrayList<Module>();
+
+    private static List<Module> modules = new ArrayList<Module>();
+    private long loadModulesDelay;
+    private static long lastModulesLoad = new Date().getTime();
+    private static boolean flushModules = true;
 
     public ForgeService() {
         loadForges();
@@ -224,71 +228,84 @@ public class ForgeService {
 
 
     public List<Module> loadModules() {
-        modules.clear();
-        for (Forge forge : forges) {
-            String url = forge.getUrl() + "/contents/modules-repository.moduleList.json";
-            Map<String, String> headers = new HashMap<String, String>();
-            if (!StringUtils.isEmpty(forge.getUser())) {
-                headers.put("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));
-            }
-            headers.put("accept", "application/json");
-
-            String jsonModuleList = httpClientService.executeGet(url, headers);
-            try {
-                JSONArray modulesRoot = new JSONArray(jsonModuleList);
-
-                JSONArray moduleList = modulesRoot.getJSONObject(0).getJSONArray("modules");
-                for (int i = 0; i < moduleList.length(); i++) {
-                    boolean add = true;
-
-                    final JSONObject moduleObject = moduleList.getJSONObject(i);
-                    for (Module m : modules) {
-                        if (StringUtils.equals(m.getId(), moduleObject.getString("name")) && StringUtils.equals(m.getGroupId(), moduleObject.getString("groupId"))) {
-                            add = false;
-                            break;
-                        }
-                    }
-                    if (add) {
-                        final JSONArray moduleVersions = moduleObject.getJSONArray("versions");
-
-                        SortedMap<Version, JSONObject> sortedVersions = new TreeMap<Version, JSONObject>();
-
-                        final Version jahiaVersion = new Version(Jahia.VERSION);
-
-                        for (int j = 0; j < moduleVersions.length(); j++) {
-                            JSONObject object = moduleVersions.getJSONObject(j);
-                            Version version = new Version(object.getString("version"));
-                            Version requiredVersion = new Version(StringUtils.substringAfter(object.getString("requiredVersion"), "version-"));
-                            if (requiredVersion.compareTo(jahiaVersion) <= 0) {
-                                sortedVersions.put(version, object);
-                            }
-                        }
-                        if (!sortedVersions.isEmpty()) {
-                            Module module = new Module();
-                            JSONObject versionObject = sortedVersions.get(sortedVersions.lastKey());
-                            module.setRemoteUrl(moduleObject.getString("remoteUrl"));
-                            module.setRemotePath(moduleObject.getString("path"));
-                            if (moduleObject.has("icon")) {
-                                module.setIcon(moduleObject.getString("icon"));
-                            }
-                            module.setVersion(versionObject.getString("version"));
-                            module.setName(moduleObject.getString("title"));
-                            module.setId(moduleObject.getString("name"));
-                            module.setGroupId(moduleObject.getString("groupId"));
-                            module.setDownloadUrl(versionObject.getString("downloadUrl"));
-                            module.setForgeId(forge.getId());
-                            modules.add(module);
-                        }
-                    }
+        if(flushModules || (lastModulesLoad + loadModulesDelay) < new Date().getTime()){
+            modules.clear();
+            for (Forge forge : forges) {
+                String url = forge.getUrl() + "/contents/modules-repository.moduleList.json";
+                Map<String, String> headers = new HashMap<String, String>();
+                if (!StringUtils.isEmpty(forge.getUser())) {
+                    headers.put("Authorization", "Basic " + Base64.encode((forge.getUser() + ":" + forge.getPassword()).getBytes()));
                 }
-            } catch (JSONException e) {
-                logger.error("unable to parse JSON return string for " + url);
-            } catch (Exception e) {
-                logger.error("unable to get store information" + e.getMessage());
+                headers.put("accept", "application/json");
+
+                String jsonModuleList = httpClientService.executeGet(url, headers);
+                try {
+                    JSONArray modulesRoot = new JSONArray(jsonModuleList);
+
+                    JSONArray moduleList = modulesRoot.getJSONObject(0).getJSONArray("modules");
+                    for (int i = 0; i < moduleList.length(); i++) {
+                        boolean add = true;
+
+                        final JSONObject moduleObject = moduleList.getJSONObject(i);
+                        for (Module m : modules) {
+                            if (StringUtils.equals(m.getId(), moduleObject.getString("name")) && StringUtils.equals(m.getGroupId(), moduleObject.getString("groupId"))) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (add) {
+                            final JSONArray moduleVersions = moduleObject.getJSONArray("versions");
+
+                            SortedMap<Version, JSONObject> sortedVersions = new TreeMap<Version, JSONObject>();
+
+                            final Version jahiaVersion = new Version(Jahia.VERSION);
+
+                            for (int j = 0; j < moduleVersions.length(); j++) {
+                                JSONObject object = moduleVersions.getJSONObject(j);
+                                Version version = new Version(object.getString("version"));
+                                Version requiredVersion = new Version(StringUtils.substringAfter(object.getString("requiredVersion"), "version-"));
+                                if (requiredVersion.compareTo(jahiaVersion) <= 0) {
+                                    sortedVersions.put(version, object);
+                                }
+                            }
+                            if (!sortedVersions.isEmpty()) {
+                                Module module = new Module();
+                                JSONObject versionObject = sortedVersions.get(sortedVersions.lastKey());
+                                module.setRemoteUrl(moduleObject.getString("remoteUrl"));
+                                module.setRemotePath(moduleObject.getString("path"));
+                                if (moduleObject.has("icon")) {
+                                    module.setIcon(moduleObject.getString("icon"));
+                                }
+                                module.setVersion(versionObject.getString("version"));
+                                module.setName(moduleObject.getString("title"));
+                                module.setId(moduleObject.getString("name"));
+                                module.setGroupId(moduleObject.getString("groupId"));
+                                module.setDownloadUrl(versionObject.getString("downloadUrl"));
+                                module.setForgeId(forge.getId());
+                                modules.add(module);
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    logger.error("unable to parse JSON return string for " + url);
+                } catch (Exception e) {
+                    logger.error("unable to get store information" + e.getMessage());
+                }
             }
+            Collections.sort(modules);
+            lastModulesLoad = new Date().getTime();
+            flushModules = false;
         }
-        Collections.sort(modules);
+
         return modules;
+    }
+
+    public long getLastUpdateTime(){
+        return lastModulesLoad;
+    }
+
+    public void flushModules(){
+        flushModules = true;
     }
 
     public File downloadModuleFromForge(String forgeId, String url) {
@@ -316,5 +333,9 @@ public class ForgeService {
 
     public void setHttpClientService(HttpClientService httpClientService) {
         this.httpClientService = httpClientService;
+    }
+
+    public void setLoadModulesDelay(long loadModulesDelay) {
+        this.loadModulesDelay = loadModulesDelay;
     }
 }

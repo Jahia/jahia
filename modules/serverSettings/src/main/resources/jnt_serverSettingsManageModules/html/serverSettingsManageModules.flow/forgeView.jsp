@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -16,17 +17,56 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="module" type="org.jahia.modules.serversettings.forge.Module"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.cuteTime.settings.${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
+<template:addResources type="css" resources="manageModules.css"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <fmt:message key="serverSettings.manageModules.details" var="i18nModuleDetails" />
+<fmt:message key="serverSettings.manageModules.checkForUpdates" var="i18nRefreshModules" />
+<fmt:message var="lastUpdateTooltip" key="serverSettings.manageModules.lastUpdate">
+    <fmt:param value="${lastModulesUpdate}"/>
+</fmt:message>
+<h2><fmt:message key="serverSettings.manageModules"/></h2>
+
+<c:set var="moduleTableId" value="module_table_${forgeModuleTableUUID}"/>
+
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#${moduleTableId}').dataTable({
+                "sDom": "<'row-fluid'<'span6'l><'span6'<'refresh_modules'>f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+                "iDisplayLength": 10,
+                "sPaginationType": "bootstrap",
+                "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
+                "bStateSave": true
+            });
+
+            var refreshModulesButton = $("<button class='btn'><i class='icon-refresh'/>&nbsp; ${i18nRefreshModules}</button>");
+            refreshModulesButton.on('click', function(){
+                $("#reloadModulesForm").submit();
+            });
+
+            $('.timestamp').cuteTime({ refresh: 60000 });
+            $('.refresh_modules').append(refreshModulesButton).css("float", "right").css("margin-left","10px");
+        });
+    </script>
+</template:addResources>
 
 <form id="viewInstalledModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST">
     <input type="hidden" name="_eventId" value="viewInstalledModules"/>
+</form>
+<form id="reloadModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
+    <input type="hidden" name="_eventId" value="reloadModules"/>
 </form>
 <ul class="nav nav-tabs">
     <li><a href="#" onclick="$('#viewInstalledModulesForm').submit()"><fmt:message key="serverSettings.manageModules.installedModules"/></a></li>
     <li class="active">
         <a href="#"><fmt:message key="serverSettings.manageModules.availableModules"/></a>
+    </li>
+    <li class="last-modules-update">
+        <span><fmt:message key="serverSettings.manageModules.lastUpdate"/>:&nbsp;<span class="timestamp"><fmt:formatDate value="${lastModulesUpdate}" pattern="yyyy/MM/dd HH:mm"/></span></span>
     </li>
 </ul>
 <div class="tab-content">
@@ -40,7 +80,7 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-striped table-hover">
+    <table class="table table-bordered table-striped table-hover" id="${moduleTableId}">
         <thead>
         <tr>
             <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>

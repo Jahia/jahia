@@ -1,0 +1,9 @@
+.last-modules-update{
+    float: right !important;
+}
+
+.last-modules-update > span{
+    padding-bottom: 8px;
+    padding-top: 8px;
+    display: block;
+}

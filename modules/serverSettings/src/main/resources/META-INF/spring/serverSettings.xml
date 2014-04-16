@@ -12,7 +12,7 @@
     <bean id="messageSource" class="org.jahia.utils.i18n.ModuleMessageSource"/>
 
     <bean name="mailSettingsValidator" class="org.jahia.modules.serversettings.flow.validator.MailSettingsValidator"/>
-    
+
     <bean class="org.jahia.modules.serversettings.portlets.ManagePortletsAction" />
 
     <bean name="preparedPortletsController" class="org.jahia.modules.serversettings.portlets.PreparedPortletsController"/>
@@ -25,6 +25,7 @@
     </bean>
     <bean class="org.jahia.modules.serversettings.forge.ForgeService" id="forgeService">
         <property name="httpClientService" ref="HttpClientService"/>
+        <property name="loadModulesDelay" value="${jahia.settings.forgeModulesUpdateDelay:86400000}"/>
     </bean>
 
 </beans>

@@ -18,11 +18,17 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <c:set var="developmentMode" value="<%= SettingsBean.getInstance().isDevelopmentMode() %>"/>
-<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,workInProgress.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,admin-bootstrap.js,jquery.blockUI.js,bootstrap-filestyle.min.js,jquery.metadata.js,workInProgress.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.cuteTime.settings.${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css,datatables/css/bootstrap-theme.css,tablecloth.css"/>
+<template:addResources type="css" resources="manageModules.css"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+<fmt:message key="serverSettings.manageModules.checkForUpdates" var="i18nRefreshModules" />
+<fmt:message var="lastUpdateTooltip" key="serverSettings.manageModules.lastUpdate"/>
 <h2><fmt:message key="serverSettings.manageModules"/></h2>
+
+<c:set var="moduleTableId" value="module_table_${adminModuleTableUUID}"/>
 
 <template:addResources>
     <script type="text/javascript">
@@ -32,25 +38,39 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#module_table').dataTable({
-                "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            $('#${moduleTableId}').dataTable({
+                "sDom": "<'row-fluid'<'span6'l><'span6'<'refresh_modules'>f>r>t<'row-fluid'<'span6'i><'span6'p>>",
                 "iDisplayLength": 25,
                 "sPaginationType": "bootstrap",
-                "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
+                "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
+                "bStateSave": true
             });
+
+            var refreshModulesButton = $("<button class='btn'><i class='icon-refresh'/>&nbsp; ${i18nRefreshModules}</button>");
+            refreshModulesButton.on('click', function(){
+                $("#reloadModulesForm").submit();
+            });
+
+            $('.timestamp').cuteTime({ refresh: 60000 });
+            $('.refresh_modules').append(refreshModulesButton).css("float", "right").css("margin-left","10px");
         });
     </script>
 </template:addResources>
 
-
 <form id="viewAvailableModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST">
     <input type="hidden" name="_eventId" value="viewAvailableModules"/>
+</form>
+<form id="reloadModulesForm" style="display: none" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
+    <input type="hidden" name="_eventId" value="reloadModules"/>
 </form>
 <ul class="nav nav-tabs">
     <li class="active">
         <a href="#"><fmt:message key="serverSettings.manageModules.installedModules"/></a>
     </li>
     <li><a href="#" onclick="$('#viewAvailableModulesForm').submit()"><fmt:message key="serverSettings.manageModules.availableModules"/></a></li>
+    <li class="last-modules-update">
+        <span><fmt:message key="serverSettings.manageModules.lastUpdate"/>:&nbsp;<span class="timestamp"><fmt:formatDate value="${lastModulesUpdate}" pattern="yyyy/MM/dd HH:mm"/></span></span>
+    </li>
 </ul>
 <div class="tab-content">
     <form:form modelAttribute="moduleFile" class="form" enctype="multipart/form-data" method="post"
@@ -79,7 +99,7 @@
         </div>
     </form:form>
     <%@include file="common/moduleLabels.jspf" %>
-    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="module_table">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="${moduleTableId}">
         <thead>
         <tr>
             <th><fmt:message key='serverSettings.manageModules.moduleName'/></th>

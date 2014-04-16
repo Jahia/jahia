@@ -500,20 +500,39 @@ public class ModuleManagementFlowHandler implements Serializable {
         return modules;
     }
 
-    public void initModules(RequestContext requestContext) {
+    public Date getLastModulesUpdateTime(){
+        return new Date(forgeService.getLastUpdateTime());
+    }
+
+    public void initModules(RequestContext requestContext, RenderContext renderContext) {
+        // generate tables ids, used by datatable jquery plugin to store the state of a table in the user localestorage.
+        // new flow = new ids
+        reloadTablesUUIDFromSession(requestContext);
+        if(!requestContext.getFlowScope().contains("adminModuleTableUUID")){
+            requestContext.getFlowScope().put("adminModuleTableUUID", UUID.randomUUID().toString());
+            requestContext.getFlowScope().put("storeModuleTableUUID", UUID.randomUUID().toString());
+        }
+
+        if(!isStudio(renderContext)){
+            forgeService.loadModules();
+            final Object moduleHasBeenStarted = requestContext.getExternalContext().getSessionMap().get(
+                    "moduleHasBeenStarted");
+            if(moduleHasBeenStarted !=null) {
+                requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStarted).code("serverSettings.manageModules.module.started").arg(moduleHasBeenStarted).build());
+                requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStarted");
+            }
+            final Object moduleHasBeenStopped = requestContext.getExternalContext().getSessionMap().get(
+                    "moduleHasBeenStopped");
+            if(moduleHasBeenStopped !=null) {
+                requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStopped).code("serverSettings.manageModules.module.stopped").arg(moduleHasBeenStopped).build());
+                requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStopped");
+            }
+        }
+    }
+
+    public void reloadModules(){
+        forgeService.flushModules();
         forgeService.loadModules();
-        final Object moduleHasBeenStarted = requestContext.getExternalContext().getSessionMap().get(
-                "moduleHasBeenStarted");
-        if(moduleHasBeenStarted !=null) {
-            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStarted).code("serverSettings.manageModules.module.started").arg(moduleHasBeenStarted).build());
-            requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStarted");
-        }
-        final Object moduleHasBeenStopped = requestContext.getExternalContext().getSessionMap().get(
-                "moduleHasBeenStopped");
-        if(moduleHasBeenStopped !=null) {
-            requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStopped).code("serverSettings.manageModules.module.stopped").arg(moduleHasBeenStopped).build());
-            requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStopped");
-        }
     }
 
     public List<Module> getForgeModules() {
@@ -557,6 +576,21 @@ public class ModuleManagementFlowHandler implements Serializable {
         if (requestContext.getRequestParameters().get("module")!=null) {
             requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStopped",
                     requestContext.getRequestParameters().get("module"));
+        }
+    }
+
+    public void storeTablesUUID(RequestContext requestContext) {
+        requestContext.getExternalContext().getSessionMap().put("adminModuleTableUUID", requestContext.getFlowScope().get("adminModuleTableUUID"));
+        requestContext.getExternalContext().getSessionMap().put("forgeModuleTableUUID", requestContext.getFlowScope().get("forgeModuleTableUUID"));
+    }
+
+    private void reloadTablesUUIDFromSession(RequestContext requestContext) {
+        if(requestContext.getExternalContext().getSessionMap().contains("adminModuleTableUUID") && !requestContext.getFlowScope().contains("adminModuleTableUUID")){
+            requestContext.getFlowScope().put("adminModuleTableUUID", requestContext.getExternalContext().getSessionMap().get("adminModuleTableUUID"));
+            requestContext.getFlowScope().put("forgeModuleTableUUID", requestContext.getExternalContext().getSessionMap().get("forgeModuleTableUUID"));
+
+            requestContext.getExternalContext().getSessionMap().remove("adminModuleTableUUID");
+            requestContext.getExternalContext().getSessionMap().remove("forgeModuleTableUUID");
         }
     }
 }

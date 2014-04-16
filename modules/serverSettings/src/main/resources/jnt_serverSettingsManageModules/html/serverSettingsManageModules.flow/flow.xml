@@ -7,7 +7,7 @@
     <var name="flowHandler" class="org.jahia.modules.serversettings.flow.ModuleManagementFlowHandler"/>
 
     <on-start>
-        <evaluate expression="flowHandler.initModules(flowRequestContext)" />
+        <evaluate expression="flowHandler.initModules(flowRequestContext, externalContext.requestMap.renderContext)" />
     </on-start>
 
     <decision-state id="moreAnswersNeeded">
@@ -29,6 +29,7 @@
             <evaluate expression="JahiaTemplateManagerService.templatePackageRegistry.registeredModules" result="requestScope.registeredModules"/>
             <evaluate expression="JahiaTemplateManagerService.sourceControlFactory.supportedSourceControls" result="requestScope.sourceControls"/>
             <evaluate expression="flowHandler.populateSitesInformation(flowRequestContext)" />
+            <evaluate expression="flowHandler.getLastModulesUpdateTime()" result="requestScope.lastModulesUpdate"/>
         </on-render>
 
         <transition on="downloadSources" to="downloadSources"/>
@@ -40,6 +41,9 @@
         </transition>
         <transition on="installModule" to="view">
             <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>
+        </transition>
+        <transition on="reloadModules" to="view">
+            <evaluate expression="flowHandler.reloadModules()"/>
         </transition>
         <transition on="viewDetails" to="detailedView"/>
         <transition on="viewAvailableModules" to="forgeView"/>
@@ -97,7 +101,9 @@
             <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
-        <transition to="sourcesDownloaded"/>
+        <transition to="sourcesDownloaded">
+            <evaluate expression="flowHandler.storeTablesUUID(flowRequestContext)"/>
+        </transition>
     </action-state>
 
     <end-state id="sourcesDownloaded"/>
@@ -107,6 +113,7 @@
                 expression="JahiaTemplateManagerService.activateModuleVersion(requestParameters.module,requestParameters.version)"/>
         <transition to="moduleStarted">
             <evaluate expression="flowHandler.hasAModuleBeenStarted(flowRequestContext)"/>
+            <evaluate expression="flowHandler.storeTablesUUID(flowRequestContext)"/>
         </transition>
     </action-state>
 
@@ -116,6 +123,7 @@
         <evaluate expression="JahiaTemplateManagerService.stopModule(requestParameters.module)"/>
         <transition to="moduleStopped">
             <evaluate expression="flowHandler.hasAModuleBeenStopped(flowRequestContext)"/>
+            <evaluate expression="flowHandler.storeTablesUUID(flowRequestContext)"/>
         </transition>
     </action-state>
 
@@ -160,10 +168,15 @@
         <on-render>
             <evaluate expression="flowHandler.forgeModules" result="requestScope.modules"/>
             <evaluate expression="flowHandler.allModuleVersions" result="requestScope.allModuleVersions"/>
+            <evaluate expression="flowHandler.getLastModulesUpdateTime()" result="requestScope.lastModulesUpdate"/>
         </on-render>
 
         <transition on="installForgeModule" to="forgeView">
             <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>
+        </transition>
+
+        <transition on="reloadModules" to="forgeView">
+            <evaluate expression="flowHandler.reloadModules()"/>
         </transition>
 
         <transition on="viewInstalledModules" to="view"/>

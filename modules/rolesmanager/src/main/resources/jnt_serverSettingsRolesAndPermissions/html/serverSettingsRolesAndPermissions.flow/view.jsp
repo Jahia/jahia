@@ -9,11 +9,13 @@
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespace.zip"/>
 <template:addResources type="javascript"
-                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js"/>
+                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,workInProgress.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <jsp:useBean id="nowDate" class="java.util.Date"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <template:addResources>
+    ${copiedRole}
     <script type="text/javascript">
         function getUuids() {
             var uuids = [];
@@ -75,8 +77,24 @@
             $('#eventId').val('viewRole');
             $('#roleForm').submit();
         }
+
+        function copyRole(uuid) {
+            $('#uuid').val(uuid);
+            $('#eventId').val('copyRole');
+            $('#roleForm').submit();
+        }
     </script>
 </template:addResources>
+<div>
+    <p>
+        <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
+            <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${fn:escapeXml(msg.text)}
+            </div>
+        </c:forEach>
+    </p>
+
    <h2><fmt:message key="rolesmanager.rolesAndPermissions"/></h2>
    <div class="box-1">
     <fieldset>
@@ -103,13 +121,8 @@
         </form>
     </fieldset>
 </div>
-<c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
-    <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-            ${fn:escapeXml(msg.text)}
-    </div>
-</c:forEach>
 
+<fmt:message var="i18nCopy" key="label.copy"/><c:set var="i18nCopy" value="${fn:escapeXml(i18nCopy)}"/>
 <c:forEach items="${roles}" var="entry" varStatus="loopStatus">
     <fieldset>
 
@@ -122,8 +135,11 @@
                 <th width="25%">
                     <fmt:message key="label.name"/>
                 </th>
-                <th width="72%">
+                <th width="66%">
                     <fmt:message key="label.description"/>
+                </th>
+                <th width="6%">
+                    <fmt:message key="label.actions"/>
                 </th>
             </tr>
             </thead>
@@ -141,6 +157,11 @@
                     <td>
                         ${role.description}
                     </td>
+                    <td>
+                        <a style="margin-bottom:0;" class="btn btn-small" title="${i18nCopy}" href="#copy" onclick="copyRole('${role.uuid}');">
+                            <i class="icon-share"></i>
+                        </a>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -148,3 +169,4 @@
 
     </fieldset>
 </c:forEach>
+</div>

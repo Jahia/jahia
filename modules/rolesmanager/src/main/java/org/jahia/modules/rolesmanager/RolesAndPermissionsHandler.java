@@ -131,7 +131,7 @@ public class RolesAndPermissionsHandler implements Serializable {
     public void setRoleBean(RoleBean roleBean) {
         this.roleBean = roleBean;
         this.currentContext = "current";
-        this.currentGroup = roleBean.getPermissions().get(currentContext).keySet().iterator().next();
+        this.currentGroup = roleBean.getPermissions() != null ? roleBean.getPermissions().get(currentContext).keySet().iterator().next() : null;
     }
 
     private JCRSessionWrapper getSession() throws RepositoryException {
@@ -213,10 +213,43 @@ public class RolesAndPermissionsHandler implements Serializable {
         return createRoleBean(role, getPermissions, true);
     }
 
+    public boolean copyRole(String roleName, String deepCopy, String uuid, MessageContext messageContext) throws RepositoryException {
+        JCRSessionWrapper currentUserSession = getSession();
+        JCRNodeWrapper roleToCopy = currentUserSession.getNodeByIdentifier(uuid);
+
+        roleName = StringUtils.isNotEmpty(roleName) ? JCRContentUtils.generateNodeName(roleName) : roleName;
+        if(!testRoleName(roleName, messageContext, currentUserSession)){
+            return false;
+        }
+
+        boolean copy = roleToCopy.copy(roleToCopy.getParent().getPath(), roleName);
+        if(StringUtils.isEmpty(deepCopy)){
+            JCRNodeWrapper copiedNode = currentUserSession.getNode(roleToCopy.getParent().getPath() + "/" + roleName);
+            NodeIterator iterator = copiedNode.getNodes();
+            while (iterator.hasNext()){
+                JCRNodeWrapper subNode = (JCRNodeWrapper) iterator.next();
+                if(subNode.isNodeType("jnt:role")){
+                    subNode.remove();
+                }
+            }
+        }
+
+        if (copy) {
+            messageContext.addMessage(new MessageBuilder().source("roleName")
+                    .defaultText(getMessage("rolesmanager.rolesAndPermissions.successfullyCopied"))
+                    .build());
+        }
+
+        currentUserSession.save();
+        return copy;
+    }
+
     private RoleBean createRoleBean(JCRNodeWrapper role, boolean getPermissions, boolean getSubRoles) throws RepositoryException {
         RoleBean roleBean = new RoleBean();
+        JCRNodeWrapper parentRole = JCRContentUtils.getParentOfType(role, "jnt:role");
         final String uuid = role.getIdentifier();
         roleBean.setUuid(uuid);
+        roleBean.setParentUuid(parentRole != null ? parentRole.getIdentifier() : null);
         roleBean.setName(role.getName());
         roleBean.setPath(role.getPath());
         roleBean.setDepth(role.getDepth());
@@ -361,17 +394,14 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
     }
 
-    public boolean addRole(String roleName, String parentRoleId, String roleTypeString, MessageContext messageContext) throws RepositoryException {
-        JCRSessionWrapper currentUserSession = getSession();
-
-        if (StringUtils.isBlank(roleName)) {
+    private boolean testRoleName(String roleName, MessageContext messageContext, JCRSessionWrapper currentUserSession) throws RepositoryException {
+        if (StringUtils.isEmpty(roleName)) {
             messageContext.addMessage(new MessageBuilder().source("roleName")
                     .defaultText(getMessage("rolesmanager.rolesAndPermissions.role.noName"))
                     .error()
                     .build());
             return false;
         }
-        roleName = JCRContentUtils.generateNodeName(roleName);
 
         NodeIterator nodes = currentUserSession.getWorkspace().getQueryManager().createQuery(
                 "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + roleName + "' and isdescendantnode(r,['/roles'])",
@@ -381,6 +411,17 @@ public class RolesAndPermissionsHandler implements Serializable {
                     .defaultText(getMessage("rolesmanager.rolesAndPermissions.role.exists"))
                     .error()
                     .build());
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean addRole(String roleName, String parentRoleId, String roleTypeString, MessageContext messageContext) throws RepositoryException {
+        JCRSessionWrapper currentUserSession = getSession();
+
+        roleName = StringUtils.isNotEmpty(roleName) ? JCRContentUtils.generateNodeName(roleName) : roleName;
+        if(!testRoleName(roleName, messageContext, currentUserSession)){
             return false;
         }
 

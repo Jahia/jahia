@@ -24,6 +24,9 @@
             <evaluate expression="handler.selectRoles(requestParameters.uuid)" />
         </transition>
 
+        <transition on="copyRole" to="copyRole">
+            <evaluate expression="handler.getRole(requestParameters.uuid, false)" result="handler.roleBean"/>
+        </transition>
     </view-state>
 
     <view-state id="deleteRoles">
@@ -33,6 +36,14 @@
 
         <transition on="deleteRolesConfirmed" to="view">
             <evaluate expression="handler.deleteRoles()" />
+        </transition>
+
+        <transition on="cancel" to="view" />
+    </view-state>
+
+    <view-state id="copyRole">
+        <transition on="copy" to="view">
+            <evaluate expression="handler.copyRole(requestParameters.newRole, requestParameters.deepCopy, requestParameters.uuid, messageContext)" />
         </transition>
 
         <transition on="cancel" to="view" />

@@ -8,13 +8,13 @@
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespace.zip"/>
 <template:addResources type="javascript"
-                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.tristate.js"/>
+                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,workInProgress.js"/>
 
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tristate.css"/>
 
 <jsp:useBean id="nowDate" class="java.util.Date"/>
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
-
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -147,12 +147,18 @@
         }
 
         function viewRole(uuid) {
-            $('#uuid').val(uuid);
-            $('#eventId').val('viewRole');
-            $('#form').submit();
+            var form = $('#roleForm');
+            form.find(".roleUuid").val(uuid);
+            form.find(".eventId").val("viewRole");
+            form.submit();
         }
     </script>
 </template:addResources>
+
+<form id="roleForm" style="display: none" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
+    <input type="hidden" name="_eventId" class="eventId"/>
+    <input type="hidden" name="uuid" class="roleUuid"/>
+</form>
 
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
@@ -167,7 +173,11 @@
 <form id="form" action="${flowExecutionUrl}" method="post">
 <fieldset>
     <button class="btn" name="_eventId_rolesList">
-        <i class=" icon-chevron-left"></i>&nbsp;<fmt:message key="backToPreviousPage"/></button>
+        <i class=" icon-list"></i>&nbsp;<fmt:message key="rolesmanager.rolesAndPermissions.backToRolesList"/></button>
+    <c:if test="${not empty handler.roleBean.parentUuid}">
+        <button class="btn" onclick="viewRole('${handler.roleBean.parentUuid}'); return false;">
+            <i class=" icon-chevron-left"></i>&nbsp;<fmt:message key="rolesmanager.rolesAndPermissions.goToParentRole"/></button>
+    </c:if>
     <button class="submitButton btn ${handler.roleBean.dirty ? 'btn-danger' : 'btn-primary'}" type="submit" name="_eventId_saveRole">
         <i class="icon-ok icon-white"></i>&nbsp;<fmt:message key="label.save"/>
     </button>

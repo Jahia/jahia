@@ -80,6 +80,8 @@ public class RoleBean implements Serializable {
 
     private String uuid;
 
+    private String parentUuid;
+
     private String name;
 
     private String path;
@@ -206,5 +208,13 @@ public class RoleBean implements Serializable {
 
     public List<RoleBean> getSubRoles() {
         return subRoles;
+    }
+
+    public String getParentUuid() {
+        return parentUuid;
+    }
+
+    public void setParentUuid(String parentUuid) {
+        this.parentUuid = parentUuid;
     }
 }

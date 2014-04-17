@@ -269,7 +269,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                         if ((s = wsMap.get(key).getProviderSession(provider, false)) != null) {
                             break;
                         }
-                        ;
                     }
                 }
             }

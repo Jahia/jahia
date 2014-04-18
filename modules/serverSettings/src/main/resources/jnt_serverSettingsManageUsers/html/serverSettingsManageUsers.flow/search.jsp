@@ -29,41 +29,31 @@
 <template:addResources>
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".needUsersSelection").submit(function () {
-            var selected = $("input[name='userSelected']:checked").val();
-            if(undefined==selected) {
-            	<fmt:message key="serverSettings.user.select.one" var="i18nSelectUser"/>
-                alert('${functions:escapeJavaScript(i18nSelectUser)}');
-                return false;
-            }
-            $("input[name='selectedUsers']").val(selected);
-            return true;
-        })
-
-        $(".needUsersSelectionCheckbox").submit(function () {
-            var selected = $("input[name='userToDelete']:checked").map(function() {
-                return this.value;
-            }).get().join(',');
-            console.log(selected);
-            if(undefined==selected) {
-                <fmt:message key="serverSettings.user.select.one" var="i18nSelectUser"/>
-                alert('${functions:escapeJavaScript(i18nSelectUser)}');
-                return false;
-            }
-            $("input[name='selectedUsers']").val(selected);
-            return true;
-        })
         $("table").tablecloth({
             theme: "default",
             sortable: true
         });
     });
-    function toggleModeToBulkDelete(){
-        $('.userRadio').toggle();
-        $('.userCheckbox').toggle();
-        $('.singleMode').toggle();
-        $('#bulkDeleteForm button').toggle();
-    };
+
+    function doUserAction(event, selectedUsers){
+        var form = $("#usersForm");
+        form.find("#flowEvent").val(event);
+        form.find("#selectedUsers").val(selectedUsers);
+        form.submit();
+    }
+
+    function doUsersAction(event) {
+        var val = [];
+        $('.userCheckbox:checkbox:checked').each(function (i) {
+            val[i] = $(this).val();
+        });
+
+        if(val.length > 0){
+            doUserAction(event, val.join(","));
+        } else {
+            alert("<fmt:message key="serverSettings.user.select.one"/>")
+        }
+    }
 </script>
 </template:addResources>
 
@@ -152,45 +142,26 @@
 </div>
 <h2><fmt:message key="label.manageUsers"/></h2>
 
+
+<form style="display: none" action="${flowExecutionUrl}" id="usersForm" method="post">
+    <input type="hidden" name="_eventId" id="flowEvent">
+    <input type="hidden" name="selectedUsers" id="selectedUsers">
+</form>
+
 <div>
     <div>
-        <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-            <button class="btn" type="submit" name="_eventId_addUser" >
-                <i class="icon-plus"></i>
-                &nbsp;<fmt:message key='serverSettings.user.create'/>
-            </button>
-        </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection singleMode" style="display: inline;">
-            <input type="hidden" name="selectedUsers"/>
-            <button class="btn" type="submit" name="_eventId_editUser" >
-                <i class="icon-edit"></i>
-                &nbsp;<fmt:message key='serverSettings.user.edit'/>
-            </button>
-        </form>
-        <form action="${flowExecutionUrl}" method="POST" class="needUsersSelection singleMode" style="display: inline;">
-            <input type="hidden" name="selectedUsers"/>
-            <button class="btn" type="submit" name="_eventId_removeUser" >
-                <i class="icon-remove"></i>
-                &nbsp;<fmt:message key='serverSettings.user.remove'/>
-            </button>
-        </form>
-        <form action="${flowExecutionUrl}" method="POST" style="display: inline;">
-            <button class="btn" type="submit" name="_eventId_bulkAddUser" >
-                <i class="icon-cog"></i>
-                &nbsp;<fmt:message key='serverSettings.users.bulk.create'/>
-            </button>
-        </form>
-        <button class="btn" type="submit" onclick="toggleModeToBulkDelete(); ">
-            <i class="icon-check"></i>
-            &nbsp;<fmt:message key='serverSettings.users.bulk.remove.switch'/>
+        <button class="btn" type="submit" onclick="doUserAction('addUser')">
+            <i class="icon-plus"></i>
+            &nbsp;<fmt:message key='serverSettings.user.create'/>
         </button>
-        <form action="${flowExecutionUrl}" method="POST" style="display: inline" id="bulkDeleteForm" class="needUsersSelectionCheckbox">
-            <input type="hidden" name="selectedUsers"/>
-            <button class="btn" type="submit" name="_eventId_bulkDeleteUser" style="display: none">
-                <i class="icon-remove"></i>
-                &nbsp;<fmt:message key='serverSettings.users.bulk.delete'/>
-            </button>
-        </form>
+        <button class="btn" type="submit" onclick="doUserAction('bulkAddUser')">
+            <i class="icon-cog"></i>
+            &nbsp;<fmt:message key='serverSettings.users.bulk.create'/>
+        </button>
+        <button class="btn" type="submit" onclick="doUsersAction('bulkDeleteUser')">
+            <i class="icon-cog"></i>
+            &nbsp;<fmt:message key="serverSettings.user.remove"/>
+        </button>
     </div>
     <p>
         <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -232,9 +203,12 @@
                 <c:if test="${multipleProvidersAvailable}">
                     <th width="10%"><fmt:message key="column.provider.label"/></th>
                 </c:if>
+                <th width="8%"><fmt:message key="label.actions"/></th>
             </tr>
             </thead>
             <tbody>
+            <fmt:message var="i18nEdit" key="label.edit"/><c:set var="i18nEdit" value="${fn:escapeXml(i18nEdit)}"/>
+            <fmt:message var="i18nRemove" key="label.remove"/><c:set var="i18nRemove" value="${fn:escapeXml(i18nRemove)}"/>
             <c:choose>
                 <%--@elvariable id="users" type="java.util.List"--%>
                 <c:when test="${userCount eq 0}">
@@ -246,13 +220,23 @@
                     <c:forEach items="${users}" var="curUser" end="${userDisplayLimit - 1}" varStatus="loopStatus">
                         <tr class="sortable-row">
                             <td>${loopStatus.count}</td>
-                            <td><input type="radio" name="userSelected" value="${fn:escapeXml(curUser.userKey)}" class="userRadio"><input type="checkbox" name="userToDelete" value="${fn:escapeXml(curUser.userKey)}" class="userCheckbox" style="display: none"></td>
-                            <td>${user:displayName(curUser)}</td>
+                            <td>
+                                <input type="checkbox" name="userCheckbox" value="${fn:escapeXml(curUser.userKey)}" class="userCheckbox">
+                            </td>
+                            <td><a href="#" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.userKey)}')">${user:displayName(curUser)}</a></td>
                             <td>${user:fullName(curUser)}</td>
                             <c:if test="${multipleProvidersAvailable}">
                                 <fmt:message var="i18nProviderLabel" key="providers.${curUser.providerName}.label"/>
                                 <td>${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curUser.providerName : i18nProviderLabel)}</td>
                             </c:if>
+                            <td>
+                                <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.userKey)}')">
+                                    <i class="icon-edit"></i>
+                                </a>
+                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="doUserAction('removeUser', '${fn:escapeXml(curUser.userKey)}')">
+                                    <i class="icon-remove icon-white"></i>
+                                </a>
+                            </td>
                         </tr>
                     </c:forEach>
                 </c:otherwise>

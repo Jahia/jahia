@@ -267,7 +267,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
             JahiaContentManagementService.App.getInstance().getNodesForUsers(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                 @Override
                 public void onApplicationFailure(Throwable throwable) {
-                    Log.error("Error while loading user permission", throwable);
+                    Log.error("Error while loading users", throwable);
                     unmask();
                 }
 
@@ -289,7 +289,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
             JahiaContentManagementService.App.getInstance().getNodesForGroups(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                 @Override
                 public void onApplicationFailure(Throwable throwable) {
-                    Log.error("Error while loading user permission", throwable);
+                    Log.error("Error while loading groups", throwable);
                     unmask();
                 }
 

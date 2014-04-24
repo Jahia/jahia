@@ -70,7 +70,6 @@
 package org.jahia.services.seo.urlrewrite;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.Text;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter.ModeCondition;
@@ -131,10 +130,6 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
                 logger.debug("Rewriting URL {} into {} took {} ms", new Object[] { attrValue,
                         value, System.currentTimeMillis() - timer });
             }
-        } else {
-        	if(value.indexOf(" ") > -1) {  //only when a path contains a space the url must be escaped (happens for richText)
-        		value = Text.escapePath(value);
-        	} 
         }
         return value;
     }

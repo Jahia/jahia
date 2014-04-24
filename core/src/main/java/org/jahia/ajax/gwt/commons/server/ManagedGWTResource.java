@@ -86,8 +86,8 @@ import org.atmosphere.interceptor.IdleResourceInterceptor;
 import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.jahia.api.Constants;
 import org.jahia.services.usermanager.JahiaUser;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ManagedService(path = "/atmosphere/rpc",
         interceptors = {
@@ -123,7 +123,7 @@ import java.util.logging.Logger;
         })
 public class ManagedGWTResource {
 
-    static final Logger logger = Logger.getLogger("ManagedGWTResource");
+    static final Logger logger = LoggerFactory.getLogger(ManagedGWTResource.class);
 
     public static final String GWT_BROADCASTER_ID = "org.jahia.broadcaster";
 
@@ -136,7 +136,7 @@ public class ManagedGWTResource {
             BroadcasterFactory.getDefault().lookup(GWT_BROADCASTER_ID + user.getName(),true).addAtmosphereResource(r);
         }
 
-        logger.info("Received RPC GET");
+        logger.debug("Received RPC GET");
     }
 
     @Disconnect
@@ -146,13 +146,17 @@ public class ManagedGWTResource {
         if (event.isCancelled()) {
             logger.info("User:" + event.getResource().uuid() + " unexpectedly disconnected");
         } else if (event.isClosedByClient()) {
-            logger.info("User:" + event.getResource().uuid() + " closed the connection");
+            if (logger.isDebugEnabled()) {
+                logger.debug("User:" + event.getResource().uuid() + " closed the connection");
+            }
         }
     }
 
     @Post
     public void post(AtmosphereResource r) {
         // Don't need to do anything, the interceptor took care of it for us.
-        logger.info("POST received with transport + " + r.transport());
+        if (logger.isDebugEnabled()) {
+            logger.info("POST received with transport {}", r.transport());
+        }
     }
 }

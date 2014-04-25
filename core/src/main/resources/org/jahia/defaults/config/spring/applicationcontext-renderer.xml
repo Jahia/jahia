@@ -380,7 +380,7 @@
     </bean>
 
     <bean id="urlResolverFactory" class="org.jahia.services.render.URLResolverFactory">
-        <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="cacheService" ref="ehCacheProvider"/>
         <property name="urlResolverListener" ref="urlResolverListener"/>
     </bean>
 

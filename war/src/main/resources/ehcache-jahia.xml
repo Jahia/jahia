@@ -719,4 +719,21 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
            eternal="true" >
     </cache>
 
+    <cache name="urlResolverNodePath"
+           eternal="false"
+           timeToIdleSeconds="7200"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           diskPersistent="false">
+        <searchable keys="false" values="true"/>
+    </cache>
+
+    <cache name="urlResolverSiteInfo"
+           eternal="false"
+           timeToIdleSeconds="7200"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           diskPersistent="false">
+    </cache>
+
 </ehcache>

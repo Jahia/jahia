@@ -84,6 +84,8 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.Cache;
 import org.jahia.utils.Url;
@@ -156,10 +158,10 @@ public class URLResolver {
 
     private RenderContext renderContext;
     private Map<String, JCRNodeWrapper> resolvedNodes = new ConcurrentHashMap<String, JCRNodeWrapper>();
-    private Cache<String, String> nodePathCache;
-    private Cache<String, SiteInfo> siteInfoCache;
+    private Ehcache nodePathCache;
+    private Ehcache siteInfoCache;
 
-    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+    protected URLResolver(String urlPathInfo, String serverName, HttpServletRequest request, Ehcache nodePathCache, Ehcache siteInfoCache) {
         this(urlPathInfo, serverName, null, request, nodePathCache, siteInfoCache);
     }
 
@@ -171,7 +173,7 @@ public class URLResolver {
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
      * @param request  the current HTTP servlet request object 
      */
-    protected URLResolver(String pathInfo, String serverName, String workspace, HttpServletRequest request, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+    protected URLResolver(String pathInfo, String serverName, String workspace, HttpServletRequest request, Ehcache nodePathCache, Ehcache siteInfoCache) {
         super();
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
@@ -233,7 +235,7 @@ public class URLResolver {
      * @param url   URL in HTML links of outgoing requests
      * @param context  The current request in order to obtain the context path
      */
-    protected URLResolver(String url, RenderContext context, Cache<String, String> nodePathCache, Cache<String, SiteInfo> siteInfoCache) {
+    protected URLResolver(String url, RenderContext context, Ehcache nodePathCache, Ehcache siteInfoCache) {
         this.nodePathCache = nodePathCache;
         this.siteInfoCache = siteInfoCache;
 
@@ -466,8 +468,15 @@ public class URLResolver {
             return resolvedNodes.get(cacheKey);
         }
         JCRNodeWrapper node = null;
-        String nodePath = nodePathCache.get(cacheKey);
-        siteInfo = siteInfoCache.get(cacheKey);
+        Element element = nodePathCache.get(cacheKey);
+        String nodePath = null;
+        if(element!=null) {
+            nodePath = (String) element.getObjectValue();
+        }
+            element = siteInfoCache.get(cacheKey);
+        if(element!=null) {
+            siteInfo = (SiteInfo) element.getObjectValue();
+        }
         if (nodePath == null || siteInfo == null) {
             nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale,
                     new JCRCallback<String>() {
@@ -500,12 +509,12 @@ public class URLResolver {
                                     }
                                 }
                             }
-                            nodePathCache.put(cacheKey, nodePath);
+                            nodePathCache.put(new Element(cacheKey, nodePath));
                             // the next condition is false e.g. when nodePath is "/" and session's locale is not in systemsite's locales
                             JCRSiteNode resolveSite = node.getResolveSite();
                             if (resolveSite != null) {
                                 siteInfo = new SiteInfo(resolveSite);
-                                siteInfoCache.put(cacheKey, siteInfo);
+                                siteInfoCache.put(new Element(cacheKey, siteInfo));
                             }
                             return nodePath;
                         }
@@ -613,7 +622,11 @@ public class URLResolver {
                             }
                         }
 
-                        SiteInfo siteInfo = siteInfoCache.get(getCacheKey(workspace, locale, path));
+                        final Element element = siteInfoCache.get(getCacheKey(workspace, locale, path));
+                        SiteInfo siteInfo = null;
+                        if(element!=null) {
+                            siteInfo = (SiteInfo) element.getObjectValue();
+                        }
                         boolean mixLanguagesActive = false;
                         String defaultLanguage = null;
                         if(siteInfo==null){
@@ -621,7 +634,7 @@ public class URLResolver {
                             if (site != null) {
                                 defaultLanguage = site.getDefaultLanguage();
                                 mixLanguagesActive = site.isMixLanguagesActive();
-                                siteInfoCache.put(getCacheKey(workspace, locale, path), new SiteInfo(site));
+                                siteInfoCache.put(new Element(getCacheKey(workspace, locale, path), new SiteInfo(site)));
                             }
                         } else {
                             defaultLanguage = siteInfo.getDefaultLanguage();

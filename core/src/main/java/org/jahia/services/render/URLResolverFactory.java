@@ -69,12 +69,19 @@
  */
 package org.jahia.services.render;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.search.Query;
+import net.sf.ehcache.search.Result;
+import net.sf.ehcache.search.Results;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Basic factory for URL resolver, we will optimize it later, as it makes no sense to create these objects all the
@@ -84,22 +91,18 @@ public class URLResolverFactory {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolverFactory.class);
 
-    private Cache nodePathCache;
-    private Cache siteInfoCache;
+    private Ehcache nodePathCache;
+    private Ehcache siteInfoCache;
 
-    private CacheService cacheService;
+    private EhCacheProvider cacheService;
     private static final String NODE_PATH_CACHE = "urlResolverNodePath";
     private static final String SITE_INFO_CACHE = "urlResolverSiteInfo";
     private URLResolverListener urlResolverListener;
 
-    public void setCacheService(CacheService cacheService) {
+    public void setCacheService(EhCacheProvider cacheService) {
         this.cacheService = cacheService;
-        try {
-            nodePathCache = cacheService.getCache(NODE_PATH_CACHE, true);
-            siteInfoCache = cacheService.getCache(SITE_INFO_CACHE, true);
-        } catch (JahiaInitializationException jie) {
-            logger.error("Error while creating URL resolver caches", jie);
-        }
+        nodePathCache = cacheService.getCacheManager().addCacheIfAbsent(NODE_PATH_CACHE);
+        siteInfoCache = cacheService.getCacheManager().addCacheIfAbsent(SITE_INFO_CACHE);
     }
 
     public void setUrlResolverListener(URLResolverListener urlResolverListener) {
@@ -119,8 +122,17 @@ public class URLResolverFactory {
         return new URLResolver(url, context, nodePathCache, siteInfoCache);
     }
 
-    public void flushCaches() {
-        nodePathCache.flush();
-        siteInfoCache.flush();
+    public synchronized void flushCaches(String path) {
+        final List<Result> all = nodePathCache.createQuery().includeKeys().addCriteria(Query.VALUE.eq(path)).execute().all();
+        if(logger.isDebugEnabled() && !all.isEmpty()) {
+            logger.debug("Flushing "+all.size()+" keys from URLResolver Caches.");
+        }
+        for (Result result : all) {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Flushing key : "+result.getKey());
+            }
+            nodePathCache.remove(result.getKey());
+            siteInfoCache.remove(result.getKey());
+        }
     }
 }

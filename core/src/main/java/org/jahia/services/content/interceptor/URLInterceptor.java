@@ -70,6 +70,7 @@
 package org.jahia.services.content.interceptor;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
@@ -551,7 +552,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                         logger.warn("Cannot find referenced item : " + parent.getPath() + " -> " + path + " -> " + uuid);
                         return "#";                        
                     }
-                    nodePath = node.getPath();
+                    nodePath = Text.escapePath(node.getPath());
                     value = originalValue.replace(path, nodePath + ext);
                     JCRSiteNode site = node.getResolveSite();
                     if (!site.getLanguagesAsLocales().contains(locale)) {

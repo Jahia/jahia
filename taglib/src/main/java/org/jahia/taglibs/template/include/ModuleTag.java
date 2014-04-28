@@ -300,14 +300,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 boolean isVisible = true;
 
                 try {
-<<<<<<< .working
                     isVisible = renderContext.getEditModeConfig() == null || renderContext.isVisible(node);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
-=======
-                    boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext, resource.getNode()) && !isExcluded(renderContext, resource);
->>>>>>> .merge-right.r49652
 
                 try {
                     boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,

@@ -79,6 +79,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
+import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -663,6 +664,12 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * {@inheritDoc}
      */
     boolean isLocked();
+
+    Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
+
+    Lock getLock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, RepositoryException;
+
+    boolean holdsLock() throws RepositoryException;
 
     void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 

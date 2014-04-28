@@ -79,12 +79,12 @@ import org.jahia.services.query.QueryManagerImpl;
 import org.xml.sax.ContentHandler;
 
 import javax.jcr.*;
+import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
 import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.observation.ObservationManager;
-import javax.jcr.query.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
@@ -322,8 +322,8 @@ public class JCRWorkspaceWrapper implements Workspace {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public LockManager getLockManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public LockManagerWrapper getLockManager() {
+        return new LockManagerWrapper();
     }
 
     public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
@@ -588,5 +588,48 @@ public class JCRWorkspaceWrapper implements Workspace {
             });
         }
         
+    }
+
+    class LockManagerWrapper implements LockManager {
+
+        @Override
+        public void addLockToken(String lockToken) {
+            session.addLockToken(lockToken);
+        }
+
+        @Override
+        public Lock getLock(String absPath) throws PathNotFoundException, LockException, AccessDeniedException, RepositoryException {
+            return session.getNode(absPath).getLock();
+       }
+
+        @Override
+        public String[] getLockTokens() throws RepositoryException {
+            return session.getLockTokens();
+        }
+
+        @Override
+        public boolean holdsLock(String absPath) throws PathNotFoundException, RepositoryException {
+            return session.getNode(absPath).holdsLock();
+        }
+
+        @Override
+        public Lock lock(String absPath, boolean isDeep, boolean isSessionScoped, long timeoutHint, String ownerInfo) throws LockException, PathNotFoundException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+            return session.getNode(absPath).lock(isDeep,isSessionScoped);  // Not supported few parameters may be we will need to fix
+        }
+
+        @Override
+        public boolean isLocked(String absPath) throws PathNotFoundException, RepositoryException {
+            return session.getNode(absPath).isLocked();
+        }
+
+        @Override
+        public void removeLockToken(String lockToken) throws LockException, RepositoryException {
+            session.removeLockToken(lockToken);
+        }
+
+        @Override
+        public void unlock(String absPath) throws PathNotFoundException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+            session.getNode(absPath).unlock();
+        }
     }
 }

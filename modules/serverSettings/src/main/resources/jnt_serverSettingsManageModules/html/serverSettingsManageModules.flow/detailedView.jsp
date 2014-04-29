@@ -195,35 +195,37 @@
 </div>
 
 
-<h2><fmt:message key="serverSettings.manageModules.versions"/></h2>
-<%@include file="common/moduleLabels.jspf" %>
-<table class="table table-striped table-bordered table-hover">
-    <thead>
-    <tr>
-        <th style="width:33%"><fmt:message key="serverSettings.manageModules.module.version"/></th>
-        <th style="width:33%"><fmt:message key="serverSettings.manageModules.module.state"/></th>
-        <c:if test="${not isStudio}">
-            <th style="width:33%"><fmt:message key="serverSettings.manageModules.module.manage"/></th>
-        </c:if>
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${otherVersions}" var="version">
+<c:if test="${not empty otherVersions}">
+    <h2><fmt:message key="serverSettings.manageModules.versions"/></h2>
+    <%@include file="common/moduleLabels.jspf" %>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
         <tr>
-            <td>${version.key}</td>
-            <td>
-                <fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>
-            </td>
+            <th style="width:33%"><fmt:message key="serverSettings.manageModules.module.version"/></th>
+            <th style="width:33%"><fmt:message key="serverSettings.manageModules.module.state"/></th>
             <c:if test="${not isStudio}">
-                <td>
-                 <c:set var="isActiveVersion" value="${version.key == activeVersion.version}"/>
-                 <%@include file="common/moduleVersionActions.jspf" %>
-                </td>
+                <th style="width:33%"><fmt:message key="serverSettings.manageModules.module.manage"/></th>
             </c:if>
         </tr>
-    </c:forEach>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <c:forEach items="${otherVersions}" var="version">
+            <tr>
+                <td>${version.key}</td>
+                <td>
+                    <fmt:message key="serverSettings.manageModules.module.state.${fn:toLowerCase(version.value.state.state)}"/>
+                </td>
+                <c:if test="${not isStudio}">
+                    <td>
+                     <c:set var="isActiveVersion" value="${version.key == activeVersion.version}"/>
+                     <%@include file="common/moduleVersionActions.jspf" %>
+                    </td>
+                </c:if>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</c:if>
 
 <h2><fmt:message key="serverSettings.manageModules.sites.management"/></h2>
 

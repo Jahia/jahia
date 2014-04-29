@@ -231,18 +231,9 @@ public class ModuleManagementFlowHandler implements Serializable {
                 }
             }
             List<String> deps = BundleUtils.getModule(bundle).getDepends();
-            List<String> missingDeps = new ArrayList<String>();
-            for (String dep : deps) {
-                if (templateManagerService.getTemplatePackageById(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
-                    missingDeps.add(dep);
-                }
-            }
+            List<String> missingDeps = getMissingDependenciesFrom(deps);
             if (!missingDeps.isEmpty()) {
-                context.addMessage(new MessageBuilder().source("moduleFile")
-                        .code("serverSettings.manageModules.install.missingDependencies")
-                        .arg(StringUtils.join(missingDeps, ","))
-                        .error()
-                        .build());
+                createMessageForMissingDependencies(context, missingDeps);
             } else {
                 Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
                 if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
@@ -265,30 +256,62 @@ public class ModuleManagementFlowHandler implements Serializable {
         return true;
     }
 
+    private void createMessageForMissingDependencies(MessageContext context, List<String> missingDeps) {
+        context.addMessage(new MessageBuilder().source("moduleFile")
+                .code("serverSettings.manageModules.install.missingDependencies")
+                .arg(StringUtils.join(missingDeps, ","))
+                .error()
+                .build());
+    }
+
+    private List<String> getMissingDependenciesFrom(List<String> deps) {
+        List<String> missingDeps = new ArrayList<String>(deps.size());
+        for (String dep : deps) {
+            if (templateManagerService.getTemplatePackageById(dep) == null && templateManagerService.getTemplatePackage(dep) == null) {
+                missingDeps.add(dep);
+            }
+        }
+        return missingDeps;
+    }
+
     public void loadModuleInformation(RequestContext context) {
         String selectedModuleName = moduleName != null ? moduleName : (String) context.getFlowScope().get("selectedModule");
-        Map<ModuleVersion, JahiaTemplatesPackage> selectedModule = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions().get(
-                selectedModuleName);
-        if(selectedModule.size()>1) {
-            boolean foundActiveVersion = false;
-            for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> entry : selectedModule.entrySet()) {
-                JahiaTemplatesPackage value = entry.getValue();
-                if (value.isActiveVersion()) {
-                    foundActiveVersion = true;
-                    populateActiveVersion(context, value);
+        Map<ModuleVersion, JahiaTemplatesPackage> selectedModule = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions().get(selectedModuleName);
+        if (selectedModule != null) {
+            if(selectedModule.size()>1) {
+                boolean foundActiveVersion = false;
+                for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> entry : selectedModule.entrySet()) {
+                    JahiaTemplatesPackage value = entry.getValue();
+                    if (value.isActiveVersion()) {
+                        foundActiveVersion = true;
+                        populateActiveVersion(context, value);
+                    }
+                }
+                if(!foundActiveVersion) {
+                    // there is no active version take information from most recent installed version
+                    LinkedList<ModuleVersion> sortedVersions = new LinkedList<ModuleVersion>(selectedModule.keySet());
+                    Collections.sort(sortedVersions);
+                    populateActiveVersion(context, selectedModule.get(sortedVersions.getFirst()));
                 }
             }
-            if(!foundActiveVersion) {
-                // there is no active version take information from most recent installed version
-                LinkedList<ModuleVersion> sortedVersions = new LinkedList<ModuleVersion>(selectedModule.keySet());
-                Collections.sort(sortedVersions);
-                populateActiveVersion(context, selectedModule.get(sortedVersions.getFirst()));
+            else {
+                populateActiveVersion(context, selectedModule.values().iterator().next());
+            }
+            context.getRequestScope().put("otherVersions",selectedModule);
+        } else {
+            // module is not yet parsed probably because it depends on unavailable modules so look for it in module states
+            final Map<Bundle, ModuleState> moduleStates = templateManagerService.getModuleStates();
+            for (Bundle bundle : moduleStates.keySet()) {
+                JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
+                if (module.getId().equals(selectedModuleName)) {
+                    populateActiveVersion(context, module);
+                    final List<String> missing = getMissingDependenciesFrom(module.getDepends());
+                    createMessageForMissingDependencies(context.getMessageContext(), missing);
+                    break;
+                }
+
             }
         }
-        else {
-            populateActiveVersion(context, selectedModule.values().iterator().next());
-        }
-        context.getRequestScope().put("otherVersions",selectedModule);
 
         populateSitesInformation(context);
         Set<String> systemSiteRequiredModules = getSystemSiteRequiredModules();
@@ -361,8 +384,7 @@ public class ModuleManagementFlowHandler implements Serializable {
     public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {
         Map<Bundle,ModuleState> moduleStates = templateManagerService.getModuleStates();
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> allModuleVersions = templateManagerService.getTemplatePackageRegistry().getAllModuleVersions();
-        Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> result = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
-        result.putAll(allModuleVersions);
+        Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> result = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>(allModuleVersions);
         for (Bundle bundle : moduleStates.keySet()) {
             JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
             if(!allModuleVersions.containsKey(module.getId())) {

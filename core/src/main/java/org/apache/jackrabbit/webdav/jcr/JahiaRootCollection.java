@@ -201,7 +201,7 @@ public class JahiaRootCollection extends JahiaServerRootCollection {
                     getLocator().getFactory().createResourceLocator(getLocator().getPrefix(),"/default", "/default/"+JahiaServerRootCollection.MAP_POINT),
                     getSession());
         } catch (DavException e) {
-            e.printStackTrace();
+            log.error("Error retrieving root collection", e);
             return null;
         }
 

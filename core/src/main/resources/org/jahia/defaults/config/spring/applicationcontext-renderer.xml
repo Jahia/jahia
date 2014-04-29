@@ -100,7 +100,7 @@
         <property name="scriptEngineUtils" ref="scriptEngineUtils"/>
         <property name="ajaxTemplate" value="/WEB-INF/scripts/ajaxResources.groovy"/>
         <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
-        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:false}"/>
+        <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
         <property name="excludesFromAggregateAndCompress" ref="excludesFromAggregateAndCompress"/>
         <property name="ieHeaderRecognitions">
             <set>

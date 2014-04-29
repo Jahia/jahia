@@ -23,9 +23,7 @@
 
     <bean id="modulePlaceholderConfig"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="properties">
-            <ref bean="jahiaProperties"/>
-        </property>
+        <property name="properties" ref="jahiaProperties"/>
         <property name="locations">
             <list>
                 <value>classpath*:jahia-modules-*.properties</value>

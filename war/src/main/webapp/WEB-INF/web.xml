@@ -385,14 +385,14 @@
         <!--
             Optional parameter to define the value of the 'WWW-Authenticate' header
         -->
-        <!--
         <init-param>
             <param-name>authenticate-header</param-name>
-            <param-value>Basic realm="Jackrabbit Webdav Server"</param-value>
+            <param-value>Basic realm="Digital Factory WebDAV Server"</param-value>
             <description>
                 Defines the value of the 'WWW-Authenticate' header.
             </description>
         </init-param>
+        <!--
         -->
         <!--
             Parameter used to configure behaviour of webdav resources such as:

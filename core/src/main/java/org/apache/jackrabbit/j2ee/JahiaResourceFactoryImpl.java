@@ -72,6 +72,8 @@ package org.apache.jackrabbit.j2ee;
 import org.apache.jackrabbit.webdav.*;
 import org.apache.jackrabbit.webdav.io.InputContext;
 import org.apache.jackrabbit.webdav.io.OutputContext;
+import org.apache.jackrabbit.webdav.jcr.JahiaRootCollection;
+import org.apache.jackrabbit.webdav.jcr.JahiaServerRootCollection;
 import org.apache.jackrabbit.webdav.jcr.JcrDavSession;
 import org.apache.jackrabbit.webdav.lock.*;
 import org.apache.jackrabbit.webdav.property.DavProperty;
@@ -94,14 +96,28 @@ import java.util.List;
  */
 public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
+    private final LockManager lockMgr;
+
 
     public JahiaResourceFactoryImpl(LockManager lockMgr, ResourceConfig resourceConfig) {
         super(lockMgr, resourceConfig);
+        this.lockMgr=lockMgr;
     }
 
     public DavResource createResource(DavResourceLocator locator, DavServletRequest request,
                                                 DavServletResponse response) throws DavException {
         try {
+            if (locator.isRootLocation()) {
+                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession)request.getDavSession(),
+                                                                                  this);
+                jahiaRootCollection.addLockManager(lockMgr);
+                return jahiaRootCollection;
+            } else if ("default".equals(locator.getWorkspaceName()) && "/repository".equals(locator.getRepositoryPath())) {
+                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession)request
+                        .getDavSession(), this);
+                jahiaServerRootCollection.addLockManager(lockMgr);
+                return jahiaServerRootCollection;
+            }
             return createResource(super.createResource(locator, request, response), getNode(request.getDavSession(),
                     locator.getRepositoryPath()));
         } catch (RepositoryException e) {
@@ -111,6 +127,15 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
 
     public DavResource createResource(DavResourceLocator locator, DavSession session) throws DavException {
         try {
+            if (locator.isRootLocation()) {
+                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession)session,this);
+                jahiaRootCollection.addLockManager(lockMgr);
+                return jahiaRootCollection;
+            } else if ("default".equals(locator.getWorkspaceName()) && "/repository".equals(locator.getRepositoryPath())) {
+                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession)session, this);
+                jahiaServerRootCollection.addLockManager(lockMgr);
+                return jahiaServerRootCollection;
+            }
             return createResource(super.createResource(locator, session), getNode(session, locator.getRepositoryPath()));
         } catch (RepositoryException e) {
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);

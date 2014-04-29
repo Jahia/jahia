@@ -524,6 +524,7 @@ public class JCRSessionWrapper implements Session {
                                 (
                                         !node.hasProperty(propertyName) ||
                                                 (!propertyDefinition.isMultiple() &&
+                                                        propertyDefinition.getRequiredType() != PropertyType.BINARY &&
                                                         StringUtils.isEmpty(node.getProperty(propertyName).getString()))
 
                                 )) {

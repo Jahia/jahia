@@ -91,6 +91,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
@@ -206,8 +207,10 @@ public final class Jahia {
                 URL urlToVersionMarker = Jahia.class.getResource("/META-INF/jahia-impl-marker.txt");
                 if (urlToVersionMarker != null) {
                     URLConnection conn = urlToVersionMarker.openConnection();
-                    BUILD_DATE = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.ENGLISH).format(
-                            new Date(conn.getLastModified()));
+                    long lastModified = (conn instanceof JarURLConnection) ? ((JarURLConnection) conn).getJarEntry()
+                            .getTime() : conn.getLastModified();
+                    BUILD_DATE = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.ENGLISH)
+                            .format(new Date(lastModified));
                 } else {
                     BUILD_DATE = "";
                 }

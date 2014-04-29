@@ -114,4 +114,7 @@
         </property>
     </bean>
 
+    <bean class="org.jahia.params.valves.AuthPipelineInitializer">
+        <property name="authPipeline" ref="authPipeline"/>
+    </bean>
 </beans>

@@ -343,7 +343,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     ScriptContext scriptContext = new AssetsScriptContext();
                     final Bindings bindings = scriptEngine.createBindings();
 
-                    if (resource.getWorkspace().equals("live") && aggregateAndCompress) {
+                    if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
                         assets.put("css", aggregate(assets.get("css"), "css"));
                         Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(assets.get("javascript"));
                         Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");

@@ -456,6 +456,7 @@ public class PropertiesEditor extends FormPanel {
                     }
                 }
                 for (Component co : compToRemove) {
+                    fields.remove(((PropertyAdapterField) co).getName());
                     co.removeFromParent();
                 }
             }

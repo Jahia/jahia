@@ -39,6 +39,7 @@
 
 <form action="${flowExecutionUrl}" method="post">
         <div class="box-1">
+            <c:set var="hasValidationErrors" value="false"/>
             <c:forEach items="${webprojectHandler.importsInfos}" var="importInfoMap">
                     <label for="${importInfoMap.key}">
                         <input type="checkbox" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
@@ -117,9 +118,14 @@
                         </div>
                     </c:if>
             </c:forEach>
-            <button class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport">
+            <button class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport"
+                    <c:if test="${hasValidationErrors}"> disabled="disabled"</c:if> >
                 <i class="icon-chevron-right icon-white"></i>
                 &nbsp;<fmt:message key='label.next'/>
+            </button>
+            <button class="btn" type="submit" name="_eventId_cancel">
+                <i class="icon-ban-circle"></i>
+                &nbsp;<fmt:message key='label.cancel'/>
             </button>
     </div>
 </form>

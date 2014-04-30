@@ -141,6 +141,7 @@
             <evaluate expression="JahiaTemplateManagerService.templateSetNames" result="requestScope.templateSets"/>
         </on-render>
         <transition on="processImport" to="processImport"/>
+        <transition on="cancel" to="view"/>
     </view-state>
 
     <action-state id="processImport">

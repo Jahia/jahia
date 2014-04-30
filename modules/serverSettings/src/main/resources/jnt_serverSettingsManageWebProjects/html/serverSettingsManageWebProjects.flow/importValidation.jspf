@@ -20,6 +20,7 @@
 <%--@elvariable id="webprojectHandler" type="org.jahia.modules.serversettings.flow.WebprojectHandler"--%>
 <c:forEach var="checks" items="${importInfoMap.value.validationResult.results}">
     <c:if test="${!checks.successful}">
+        <c:set var="hasValidationErrors" value="true"/>
         <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingModulesValidationResult'}">
             <c:if test="${!checks.targetTemplateSetPresent}">
                 <fmt:message key="failure.import.missingTemplateSet" var="errorSummary">

@@ -888,18 +888,11 @@ public class WebprojectHandler implements Serializable {
     }
 
     public void validateDisplayImportContent(ValidationContext context) {
-        context.getMessageContext();
-
         for (ImportInfo infos : importsInfos.values()) {
-            if (infos.isSelected()) {
-                if (NON_SITE_IMPORTS.contains(infos.getImportFileName())) {
-
-                } else {
-                    validateSite(context.getMessageContext(), infos);
-                }
+            if (infos.isSelected() && !NON_SITE_IMPORTS.contains(infos.getImportFileName())) {
+                validateSite(context.getMessageContext(), infos);
             }
         }
-
     }
 
     public void validateView(ValidationContext context) {
@@ -914,9 +907,9 @@ public class WebprojectHandler implements Serializable {
 
     private void validateSite(MessageContext messageContext, ImportInfo infos) {
         try {
-            infos.setSiteTitleInvalid(StringUtils.isEmpty((String) infos.getSiteTitle()));
+            infos.setSiteTitleInvalid(StringUtils.isEmpty(infos.getSiteTitle()));
 
-            String siteKey = (String) infos.getSiteKey();
+            String siteKey = infos.getSiteKey();
             if (infos.isSite()) {
                 boolean valid = sitesService.isSiteKeyValid(siteKey);
                 if (!valid) {

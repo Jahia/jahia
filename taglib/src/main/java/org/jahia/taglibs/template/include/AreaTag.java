@@ -88,7 +88,10 @@ import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -181,7 +184,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 }
             }
 
-            boolean isEdiatble = true;
+            boolean isEditable = true;
 
             StringBuilder additionalParameters = new StringBuilder();
             additionalParameters.append("missingList=\"true\"");
@@ -196,7 +199,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
                 if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
                     additionalParameters.append(" editable=\"false\"");
-                    isEdiatble = false;
+                    isEditable = false;
                 }
             }
             if (!StringUtils.isEmpty(mockupStyle)) {
@@ -204,7 +207,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             additionalParameters.append(" areaHolder=\"").append(resource.getNode().getIdentifier()).append("\"");
             
-            if (isEdiatble && JCRContentUtils.isLockedAndCannotBeEdited(parent)) {
+            if (isEditable && JCRContentUtils.isLockedAndCannotBeEdited(parent)) {
                 // if the parent is locked -> disable area editing
                 additionalParameters.append(" editable=\"false\"");
             }

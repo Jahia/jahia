@@ -82,6 +82,7 @@ public class SearchCriteria implements Serializable {
     private String[] properties;
     private String storedOn;
     private String[] providers;
+    private int numberOfRemovedJahiaAdministrators = 0;
 
     public String[] getProperties() {
         return properties;
@@ -121,5 +122,13 @@ public class SearchCriteria implements Serializable {
 
     public void setStoredOn(String storedOn) {
         this.storedOn = storedOn;
+    }
+
+    public void setNumberOfRemovedJahiaAdministrators(int numberOfRemovedJahiaAdministrators) {
+        this.numberOfRemovedJahiaAdministrators = numberOfRemovedJahiaAdministrators;
+    }
+
+    public int getNumberOfRemovedJahiaAdministrators() {
+        return numberOfRemovedJahiaAdministrators;
     }
 }

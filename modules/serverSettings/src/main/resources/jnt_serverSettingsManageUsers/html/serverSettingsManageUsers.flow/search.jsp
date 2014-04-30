@@ -184,13 +184,22 @@
     <div>
         <h2><fmt:message key="serverSettings.user.search.result"/></h2>
         <div class="alert alert-info">
-            <c:if test="${userCount < userDisplayLimit || jcrUserCountLimit < 0}">
+            <c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) lt userDisplayLimit || jcrUserCountLimit lt 0}">
             <fmt:message key="serverSettings.user.search.found">
                 <fmt:param value="${userCount}"/>
-            </fmt:message></c:if><c:if test="${userCount > userDisplayLimit}">&nbsp;<fmt:message key="serverSettings.user.search.found.limit">
-                    <fmt:param value="${userDisplayLimit}"/>
+            </fmt:message></c:if><c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) ge userDisplayLimit}">&nbsp;<fmt:message key="serverSettings.user.search.found.limit">
+                    <fmt:param value="${(userDisplayLimit-searchCriteria.numberOfRemovedJahiaAdministrators)}"/>
                 </fmt:message>
             </c:if>
+            <c:choose>
+                <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators eq 1}"><br/><fmt:message key="serverSettings.user.search.renoved.administrator">
+                    <fmt:param value="${searchCriteria.numberOfRemovedJahiaAdministrators}"/>
+                </fmt:message></c:when>
+                <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators gt 1}"><br/><fmt:message key="serverSettings.user.search.renoved.administrators">
+                    <fmt:param value="${searchCriteria.numberOfRemovedJahiaAdministrators}"/>
+                </fmt:message></c:when>
+            </c:choose>
+
         </div>
         
         <table class="table table-bordered table-striped table-hover">
@@ -199,11 +208,11 @@
                 <th class="sortable" width="5%">#</th>
                 <th class="{sorter: false}" width="5%">&nbsp;</th>
                 <th class="sortable"><fmt:message key="label.name"/></th>
-                <th width="45%" class="sortable"><fmt:message key="label.properties"/></th>
+                <th width="43%" class="sortable"><fmt:message key="label.properties"/></th>
                 <c:if test="${multipleProvidersAvailable}">
                     <th width="10%"><fmt:message key="column.provider.label"/></th>
                 </c:if>
-                <th width="8%"><fmt:message key="label.actions"/></th>
+                <th width="10%"><fmt:message key="label.actions"/></th>
             </tr>
             </thead>
             <tbody>

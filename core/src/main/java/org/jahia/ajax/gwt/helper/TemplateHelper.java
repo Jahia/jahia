@@ -72,7 +72,6 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.GWTStaticAssetEntry;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Render;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -83,7 +82,10 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
-import org.jahia.services.render.*;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.utils.i18n.Messages;
 
@@ -186,7 +188,7 @@ public class TemplateHelper {
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
             if ("contributemode".equals(configName)) {
-            	renderContext.setContributionMode(true);
+                renderContext.setContributionMode(true);
             }
             renderContext.setMainResource(r);
 

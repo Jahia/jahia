@@ -91,7 +91,7 @@ public class JCRSessionLoadAverage extends LoadAverage {
 
     @Override
     public double getCount() {
-        return (double) JCRSessionWrapper.getActiveSessions().get();
+        return (double) JCRSessionWrapper.getActiveSessions();
     }
 
     @Override

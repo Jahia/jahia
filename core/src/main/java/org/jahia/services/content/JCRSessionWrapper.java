@@ -120,6 +120,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessControlException;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -168,10 +170,12 @@ public class JCRSessionWrapper implements Session {
     private static AtomicLong activeSessions = new AtomicLong(0L);
 
     private Exception thisSessionTrace;
-    private static List<JCRSessionWrapper> activeSessionsObjects = new ArrayList<JCRSessionWrapper>();
+    protected UUID uuid;
+    private static Map<UUID,JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<UUID,JCRSessionWrapper>();
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
                              JCRSessionFactory sessionFactory, Locale fallbackLocale) {
+        uuid = UUID.randomUUID();
         this.user = user;
         this.credentials = credentials;
         this.isSystem = isSystem;
@@ -187,7 +191,7 @@ public class JCRSessionWrapper implements Session {
         this.sessionFactory = sessionFactory;
         activeSessions.incrementAndGet();
         thisSessionTrace = new Exception();
-        activeSessionsObjects.add(this);
+        activeSessionsObjects.put(uuid, this);
     }
 
 
@@ -764,8 +768,17 @@ public class JCRSessionWrapper implements Session {
             JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
         }
         isLive = false;
-        activeSessions.decrementAndGet();
-        activeSessionsObjects.remove(this);
+        long actives = activeSessions.decrementAndGet();
+        if(activeSessionsObjects.remove(uuid)==null){
+            logger.error("Could not removed session " + this + " opened here \n", thisSessionTrace);
+        }
+        if(logger.isDebugEnabled() && actives < activeSessionsObjects.size()){
+            Map<UUID,JCRSessionWrapper> copyActives = new HashMap<UUID,JCRSessionWrapper>(activeSessionsObjects);
+            logger.debug("There is "+actives+ " sessions but "+copyActives.size() + " is retained");
+            for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
+                logger.debug("Active Session "+entry.getKey()+" is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
+            }
+        }
     }
 
     public boolean isLive() {
@@ -1241,12 +1254,12 @@ public class JCRSessionWrapper implements Session {
         return null;
     }
 
-    public static AtomicLong getActiveSessions() {
-        return activeSessions;
+    public static long getActiveSessions() {
+        return activeSessions.get();
     }
 
-    public static List<JCRSessionWrapper> getActiveSessionsObjects() {
-        return activeSessionsObjects;
+    public static Map<UUID,JCRSessionWrapper> getActiveSessionsObjects() {
+        return Collections.unmodifiableMap(activeSessionsObjects);
     }
 
     protected void flushCaches() {

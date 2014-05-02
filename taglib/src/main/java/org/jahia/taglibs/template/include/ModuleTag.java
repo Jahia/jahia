@@ -71,20 +71,20 @@ package org.jahia.taglibs.template.include;
 
 import com.google.common.collect.Ordering;
 import org.apache.commons.lang.StringUtils;
+import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.nodetypes.ConstraintsHelper;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.*;
-import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -457,7 +457,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
                         for (ExtendedNodeType subtype : nt.getSubtypesAsList()) {
                             if (!subtype.isAbstract() && !subtype.isMixin() &&
-                                    (nt.getTemplatePackage() == null|| installedModulesWithAllDependencies.contains(nt.getTemplatePackage().getId()))) {
+                                    (subtype.getTemplatePackage() == null|| installedModulesWithAllDependencies.contains(subtype.getTemplatePackage().getId()))) {
                                 subtypes.add(subtype.getName());
                             }
                         }

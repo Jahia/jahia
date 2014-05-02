@@ -409,6 +409,10 @@
                     <groupId>org.apache.derby</groupId>
                     <artifactId>derby</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-dbcp</groupId>
+                    <artifactId>commons-dbcp</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

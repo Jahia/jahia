@@ -122,7 +122,7 @@
         <ant.version>1.8.2</ant.version>
         <junit.version>4.8.1</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
-        <izpack.version>4.3.5-jahia10-SNAPSHOT</izpack.version>
+        <izpack.version>4.3.5-jahia10</izpack.version>
         <jahia.tomcat.version>7.0.53</jahia.tomcat.version>
 
         <driver.derby.version>10.10.1.1</driver.derby.version>

@@ -26,7 +26,7 @@
                 </span>
             </c:if>
             <c:set value="${jcr:findDisplayableNode(task, renderContext)}" var="displayableNode"/>
-            <c:if test="${not jcr:isNodeType(displayableNode, 'jnt:user')}">
+            <c:if test="${not empty displayableNode and not jcr:isNodeType(displayableNode, 'jnt:user')}">
                 &nbsp;-&nbsp;
                 <span>
                     <a href="<c:url value='${baseEdit}${displayableNode.path}.html'/>" target="_blank">

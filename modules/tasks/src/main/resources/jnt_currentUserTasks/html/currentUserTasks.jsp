@@ -167,10 +167,12 @@
                         <span class="icon-task icon-task-${task.properties['priority'].string}"></span>&nbsp;<span class="opentask" onclick="switchTaskDisplay('${task.identifier}')">${fn:escapeXml(task.displayableName)}</span>
                         <c:if test="${not empty task.properties['targetNode'].node}">
                             <c:set value="${jcr:findDisplayableNode(task.properties['targetNode'].node, renderContext)}" var="displayableNode"/>
-                            - <span><a href="<c:url value='${url.base}${displayableNode.path}.html'/>">${fn:escapeXml(task.properties["targetNode"].node.displayableName)}</a></span>
+                            <c:if test="${not empty displayableNode}">
+                                - <span><a href="<c:url value='${url.base}${displayableNode.path}.html'/>">${fn:escapeXml(task.properties["targetNode"].node.displayableName)}</a></span>
+                            </c:if>
                         </c:if>
                         <c:set value="${jcr:findDisplayableNode(task, renderContext)}" var="displayableNode"/>
-                        <c:if test="${not jcr:isNodeType(displayableNode, 'jnt:user')}">
+                        <c:if test="${not empty displayableNode and not jcr:isNodeType(displayableNode, 'jnt:user')}">
                             - <span><a href="<c:url value='${url.base}${displayableNode.path}.html'/>">${displayableNode.displayableName}</a></span>
                         </c:if>
                         <div style="display:none;" class="taskdetail" id="taskdetail_${task.identifier}">

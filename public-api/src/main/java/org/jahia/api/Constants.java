@@ -312,6 +312,8 @@ public class Constants {
 
     public static final String JAHIA_TITLE_KEY = "j:titleKey";
 
+    public static final String JAHIA_EDITABLE_IN_CONTRIBUTION = "j:editableInContribution";
+
     public static final Set<String> forbiddenPropertiesToCopy = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT, JCR_CREATED, JCR_CREATEDBY, "j:lockTypes",

@@ -72,6 +72,7 @@ package org.jahia.taglibs.template.include;
 import com.google.common.collect.Ordering;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -478,31 +479,56 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return true;
         }
-        JCRNodeWrapper contributeNode = null;
-        if (renderContext.getRequest().getAttribute("areaListResource") != null) {
-            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
-        }
-        if (contributeNode == null) {
+        JCRNodeWrapper contributeNode;
+        final Object areaListResource = renderContext.getRequest().getAttribute("areaListResource");
+        if (areaListResource != null) {
+            contributeNode = (JCRNodeWrapper) areaListResource;
+        } else {
             contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
         }
 
         try {
-            if ((node.hasProperty("j:editableInContribution") && node.getProperty("j:editableInContribution").getBoolean()) ||
-                    (contributeNode != null && contributeNode.hasProperty("j:editableInContribution") && contributeNode.getProperty("j:editableInContribution").getBoolean())) {
-                return true;
-            }
-            if (node.getPath().startsWith(renderContext.getSite().getPath())){
-                while (!node.getPath().equals(renderContext.getSite().getPath())) {
-                    if (node.getParent().hasProperty("j:editableInContribution") && node.getParent().getProperty("j:editableInContribution").getBoolean()) {
-                        return true;
-                    }
+            final Boolean nodeStatus = isNodeEditableInContributeMode(node);
+            final Boolean contributeNodeStatus = contributeNode != null ? isNodeEditableInContributeMode(contributeNode) : null;
+
+            final String sitePath = renderContext.getSite().getPath();
+            if (nodeStatus != null) {
+                // first look at the current node's status with respect to editable in contribution mode, if it's determined, then use that
+                return nodeStatus;
+            } else if (contributeNodeStatus != null) {
+                // otherwise, look at the contribute node's status if it exists and use that
+                return contributeNodeStatus;
+            } else if (node.getPath().startsWith(sitePath)) {
+                // otherwise, if the property wasn't defined on the nodes we are interested in, look at the parent iteratively until we know the status of the property
+                while (!node.getPath().equals(sitePath)) {
                     node = node.getParent();
+
+                    final Boolean parentStatus = isNodeEditableInContributeMode(node);
+                    if (parentStatus != null) {
+                        return parentStatus;
+                    }
                 }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
         return false;
+    }
+
+    /**
+     * Returns <code>null</code> if the node we're looking at doesn't have the editable in contribution mode property, otherwise returns the value of the property.
+     * @param node the node we're interested in
+     * @return <code>null</code> if the node we're looking at doesn't have the editable in contribution mode property, otherwise returns the value of the property.
+     * @throws RepositoryException
+     */
+    private Boolean isNodeEditableInContributeMode(JCRNodeWrapper node) throws RepositoryException {
+        final boolean hasProperty = node.hasProperty(Constants.JAHIA_EDITABLE_IN_CONTRIBUTION);
+        if(hasProperty) {
+            return node.getProperty(Constants.JAHIA_EDITABLE_IN_CONTRIBUTION).getBoolean();
+        }
+        else {
+            return null;
+        }
     }
 
     protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {

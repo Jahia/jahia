@@ -75,19 +75,21 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.services.templates.ComponentRegistry;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.util.*;
 
 /**
@@ -408,11 +410,11 @@ public class JCRTagUtils {
         if ((typelistValues == null || typelistValues.length == 0) && !node.isNodeType("jnt:contentList") && !node.isNodeType("jnt:contentFolder")) {
             return Arrays.asList(Patterns.SPACE.split(ConstraintsHelper.getConstraints(node)));
         }
-        if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
-            typelistValues = node.getProperty("j:contributeTypes").getValues();
+        if (typelistValues == null && node.hasProperty(Constants.JAHIA_CONTRIBUTE_TYPES)) {
+            typelistValues = node.getProperty(Constants.JAHIA_CONTRIBUTE_TYPES).getValues();
         }
-        if (typelistValues == null && areaNode != null && areaNode.hasProperty("j:contributeTypes")) {
-            typelistValues = areaNode.getProperty("j:contributeTypes").getValues();
+        if (typelistValues == null && areaNode != null && areaNode.hasProperty(Constants.JAHIA_CONTRIBUTE_TYPES)) {
+            typelistValues = areaNode.getProperty(Constants.JAHIA_CONTRIBUTE_TYPES).getValues();
         }
 
         if (typelistValues == null) {

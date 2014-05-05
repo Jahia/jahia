@@ -71,6 +71,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -197,7 +198,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
             if (renderContext.getEditModeConfigName().equals("contributemode")) {
                 JCRNodeWrapper contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaListResource");
-                if (contributeNode == null || !contributeNode.hasProperty("j:contributeTypes")) {
+                if (contributeNode == null || !contributeNode.hasProperty(Constants.JAHIA_CONTRIBUTE_TYPES)) {
                     additionalParameters.append(" editable=\"false\"");
                     isEditable = false;
                 }

@@ -434,12 +434,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         try {
-            if (node.hasProperty("j:contributeTypes")) {
+            if (node.hasProperty(Constants.JAHIA_CONTRIBUTE_TYPES)) {
                 contributeNode = node;
             }
-            if (contributeNode != null && contributeNode.hasProperty("j:contributeTypes")) {
+            if (contributeNode != null && contributeNode.hasProperty(Constants.JAHIA_CONTRIBUTE_TYPES)) {
                 LinkedHashSet<String> l = new LinkedHashSet<String>();
-                Value[] v = contributeNode.getProperty("j:contributeTypes").getValues();
+                Value[] v = contributeNode.getProperty(Constants.JAHIA_CONTRIBUTE_TYPES).getValues();
                 if (v.length == 0) {
                     l.add("jmix:editorialContent");
                 } else {

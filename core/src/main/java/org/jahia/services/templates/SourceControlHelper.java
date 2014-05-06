@@ -217,8 +217,7 @@ public class SourceControlHelper {
     private File ensureModuleSourceFolder(File moduleSources) throws IOException {
         File sources = moduleSources;
         if (sources == null) {
-            sources = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/sources", UUID.randomUUID()
-                    .toString());
+            sources = new File(SettingsBean.getInstance().getModulesSourcesDiskPath(), UUID.randomUUID().toString());
         }
 
         if (sources.exists()) {

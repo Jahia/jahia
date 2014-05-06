@@ -32,7 +32,7 @@
     <rule>
         <note>GWT CKEditor resources</note>
         <from>^/gwt/(.*)/ckeditor/(.*)$</from>
-        <to>/modules/assets/javascript/ckeditor/$2</to>
+        <to>/modules/ckeditor/javascript/$2</to>
     </rule>
     <rule>
         <note>GWT CSS</note>

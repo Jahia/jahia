@@ -357,7 +357,7 @@
         </property>
         <property name="javaScripts">
             <list>
-                <value>/modules/assets/javascript/ckeditor/ckeditor.js</value>
+                <value>/modules/ckeditor/javascript/ckeditor.js</value>
                 <!--
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.js</value>
                 <value>/modules/assets/javascript/codemirror/addon/edit/matchbrackets.js</value>

@@ -79,6 +79,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.JCRCallback;
@@ -447,8 +448,10 @@ public class Activator implements BundleActivator {
         pkg.setState(getModuleState(bundle));
 
         List<String> dependsList = pkg.getDepends();
-        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates")
-                && !"assets".equals(pkg.getId()) && !"default".equals(pkg.getId()) && !"jquery".equals(pkg.getId())) {
+        if (!dependsList.contains("default")
+                && !dependsList.contains("Default Jahia Templates")
+                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
+                        .contains(pkg.getId())) {
             dependsList.add("default");
         }
 
@@ -567,7 +570,10 @@ public class Activator implements BundleActivator {
             return;
         }
         List<String> dependsList = jahiaTemplatesPackage.getDepends();
-        if (!dependsList.contains("default") && !dependsList.contains("Default Jahia Templates") && !bundle.getSymbolicName().equals("assets")&& !bundle.getSymbolicName().equals("default") && !bundle.getSymbolicName().equals("jquery")) {
+        if (!dependsList.contains("default")
+                && !dependsList.contains("Default Jahia Templates")
+                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
+                        .contains(bundle.getSymbolicName())) {
             dependsList.add("default");
         }
 

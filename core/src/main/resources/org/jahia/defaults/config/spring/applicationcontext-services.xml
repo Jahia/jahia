@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean id="springContextSingleton" class="org.jahia.services.SpringContextSingleton" factory-method="getInstance"/>
 
@@ -152,7 +154,14 @@
                 <value>siteSettings</value>
             </list>
         </property>
+        <property name="modulesWithNoDefaultDependency" ref="modulesWithNoDefaultDependency"/>
     </bean>
+    <util:set id="modulesWithNoDefaultDependency">
+        <value>default</value>
+        <value>jquery</value>
+        <value>ckeditor</value>
+        <value>assets</value>
+    </util:set>
     
     <bean id="ModuleInstallationHelper" class="org.jahia.services.templates.ModuleInstallationHelper">
         <property name="siteService" ref="JahiaSitesService"/>

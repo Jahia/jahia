@@ -70,11 +70,13 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
+
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
+
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
@@ -127,6 +129,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -192,6 +195,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private ForgeHelper forgeHelper;
 
     private List<String> nonManageableModules;
+    
+    private Set<String> modulesWithNoDefaultDependency = Collections.singleton("default");
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -1262,5 +1267,19 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public void setForgeHelper(ForgeHelper forgeHelper) {
         this.forgeHelper = forgeHelper;
+    }
+
+    public Set<String> getModulesWithNoDefaultDependency() {
+        return modulesWithNoDefaultDependency;
+    }
+
+    public void setModulesWithNoDefaultDependency(Set<String> modulesWithNoDefaultDependency) {
+        if (modulesWithNoDefaultDependency != null && !modulesWithNoDefaultDependency.isEmpty()) {
+            HashSet<String> modules = new HashSet<String>(modulesWithNoDefaultDependency);
+            modules.add("default");
+            this.modulesWithNoDefaultDependency = Collections.unmodifiableSet(modules);
+        } else {
+            this.modulesWithNoDefaultDependency = Collections.singleton("default");
+        }
     }
 }

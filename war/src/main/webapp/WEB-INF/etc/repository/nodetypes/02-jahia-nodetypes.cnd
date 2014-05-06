@@ -531,7 +531,7 @@
  - j:provider (string) indexed=no hidden
 
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
- + * (jnt:mountPoint)
+ + * (nt:base)
 
 //---------------------------------------------------------
 // Definition Content

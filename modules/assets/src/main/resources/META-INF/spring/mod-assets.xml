@@ -7,10 +7,13 @@
         <property name="mapping">
             <map>
                 <entry key="/modules/jquery/javascript/jquery.js"
-                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
+                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.min.js"/>
 
                 <entry key="/modules/jquery/javascript/jquery.min.js"
-                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.js"/>
+                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.min.js"/>
+                    
+                <entry key="/modules/assets/javascript/jquery.jahia.js"
+                    value="/modules/assets/javascript/jquery.jahia.min.js"/>
             </map>
         </property>
     </bean>

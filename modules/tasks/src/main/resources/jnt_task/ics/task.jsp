@@ -43,11 +43,9 @@
 %>
 <%
     HashMap<String, Integer> priorities = new HashMap<String, Integer>();
-    priorities.put("very_low", 9);
-    priorities.put("low", 7);
-    priorities.put("medium", 5);
-    priorities.put("high", 3);
-    priorities.put("very_high", 1);
+    priorities.put("low", 9);
+    priorities.put("normal", 5);
+    priorities.put("high", 1);
     pageContext.setAttribute("priorities", priorities);
 %>
 <c:set target="${renderContext}" property="contentType" value="text/calendar;charset=UTF-8" />BEGIN:VCALENDAR

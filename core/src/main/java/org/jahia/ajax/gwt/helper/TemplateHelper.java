@@ -87,7 +87,12 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+<<<<<<< .working
 import org.jahia.utils.i18n.Messages;
+=======
+import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+>>>>>>> .merge-right.r49694
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -227,6 +232,7 @@ public class TemplateHelper {
                 }
             }
 
+            response.setCharacterEncoding(SettingsBean.getInstance().getCharacterEncoding());
             String res = renderService.render(r, renderContext);
             Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
 

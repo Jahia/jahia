@@ -69,10 +69,6 @@
  */
 package org.jahia.osgi;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
@@ -83,6 +79,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Convenient utilities for Jahia OSGi bundles.
@@ -224,7 +224,14 @@ public final class BundleUtils {
      * @return the module name read from the provided bundle
      */
     public static String getModuleId(Bundle bundle) {
-        return bundle.getSymbolicName();
+        final String symbolicName = bundle.getSymbolicName();
+        if (symbolicName != null) {
+            return symbolicName;
+        }
+        else
+        {
+            throw new NullPointerException("Check your bundle's MANIFEST: missing required Bundle-SymbolicName for bundle " + bundle);
+        }
     }
 
     /**
@@ -235,8 +242,11 @@ public final class BundleUtils {
      * @return a version of the module read from the provided bundle
      */
     public static String getModuleVersion(Bundle bundle) {
-        return StringUtils.defaultIfEmpty((String) bundle.getHeaders().get("Implementation-Version"), bundle
-                .getVersion().toString());
+        final String version = bundle.getVersion().toString();
+        if(version == null) {
+            throw new NullPointerException("Check your bundle's MANIFEST: missing required Bundle-Version for bundle " + bundle);
+        }
+        return StringUtils.defaultIfEmpty(bundle.getHeaders().get("Implementation-Version"), version);
     }
 
     /**

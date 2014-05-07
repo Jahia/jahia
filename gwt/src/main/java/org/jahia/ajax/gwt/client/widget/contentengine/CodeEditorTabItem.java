@@ -85,7 +85,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.core.client.Scheduler;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -276,7 +275,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                 stubsCombo.setEmptyText(Messages.get("label.stub.select"));
                                 for (String stub : stubs.keySet()) {
                                     String display;
-                                    String viewName = "";
+                                    String viewName;
                                     if (stub.indexOf('/') != -1) {
                                         viewName = stub.substring(stub.indexOf("."), stub.lastIndexOf("."));
                                         display =  Messages.get("label.stub" + viewName);
@@ -299,7 +298,8 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                                             }
                                         });
                                         if (engine instanceof CreateContentEngine) {
-                                            ((CreateContentEngine) engine).setTargetName(((CreateContentEngine) engine).getTargetName() + stubsCombo.getValue().get("viewName"));
+                                            final CreateContentEngine createContentEngine = (CreateContentEngine) engine;
+                                            createContentEngine.setTargetName(createContentEngine.getTargetName() + stubsCombo.getValue().get("viewName"));
                                         }
                                         actions.show();
                                         codeField.show();

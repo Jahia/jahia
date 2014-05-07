@@ -118,19 +118,33 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 }
                 final String[] filePath = node.getPath().split("/");
 
-                String moduleVersionTmp;
-                String fileTypeTmp= "";
-                String fileTemplateTypeTmp= "html";
-                String fileNameTmp = "";
+                final String moduleVersion;
+                final String fileType;
+                final String fileTemplateType;
+                final String fileName;
+                final String fileView;
                 if ("modules".equals(filePath[1])) {
-                    moduleVersionTmp = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
+                    moduleVersion = (String) JahiaGWTParameters.getSiteNode().getProperties().get("j:versionInfo");
                     if (engine instanceof CreateContentEngine) {
-                        fileTypeTmp = ((CreateContentEngine) engine).getTargetName();
-                        fileNameTmp = fileTypeTmp.indexOf("_")>1?fileTypeTmp.substring(fileTypeTmp.indexOf("_") + 1) + ".jsp":fileTypeTmp+".jsp";
+                        // extract view name from target name
+                        final String targetName = ((CreateContentEngine) engine).getTargetName();
+                        final int periodIndex = targetName.indexOf('.');
+                        if (periodIndex > 0) {
+                            fileType = targetName.substring(0, periodIndex);
+                            fileView = targetName.substring(periodIndex + 1);
+                        } else {
+                            fileType = targetName;
+                            fileView = "default";
+                        }
+
+                        final int nsIndex = fileType.indexOf('_');
+                        fileName = nsIndex > 1 ? fileType.substring(nsIndex + 1) + ".jsp" : fileType + ".jsp";
+                        fileTemplateType = "html";
                     } else {
-                        fileTypeTmp = filePath[INDEX_OF_FILE_TYPE];
-                        fileNameTmp = filePath[INDEX_OF_FILE_NAME];
-                        fileTemplateTypeTmp=filePath[INDEX_OF_TEMPLATE_TYPE];
+                        fileType = filePath[INDEX_OF_FILE_TYPE];
+                        fileName = filePath[INDEX_OF_FILE_NAME];
+                        fileTemplateType = filePath[INDEX_OF_TEMPLATE_TYPE];
+                        fileView = "default";
                     }
 
                 } else {
@@ -139,12 +153,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                 }
                 final String modulePath = "/modules/" + filePath[INDEX_OF_MODULE_NAME];
                 final String moduleName = filePath[INDEX_OF_MODULE_NAME];
-                final String moduleVersion = moduleVersionTmp;
-                final String fileName = fileNameTmp;
-                final String fileView = fileName.indexOf(".") == fileName.lastIndexOf(".") ? "default" : fileName.substring(fileName.indexOf(".") + 1, fileName.lastIndexOf("."));
-                final String fileType = fileTypeTmp;
-                final String fileTemplateType = fileTemplateTypeTmp;
-
 
                 // Open popup to select module
 
@@ -187,18 +195,20 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         String newModulePath = modulePath;
                         String newModuleVersion = moduleVersion;
                         GWTJahiaNode newModuleNode = null;
-                        if (!newModuleName.equals(dependenciesCombo.getSimpleValue())) {
+                        final String dependenciesValue = dependenciesCombo.getSimpleValue();
+                        if (!newModuleName.equals(dependenciesValue)) {
                             for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
-                                if (n.getName().equals(dependenciesCombo.getSimpleValue())) {
+                                if (n.getName().equals(dependenciesValue)) {
                                     newModuleNode = n;
-                                    newModuleName = dependenciesCombo.getSimpleValue();
+                                    newModuleName = dependenciesValue;
                                     newModulePath = n.getPath();
                                     newModuleVersion = (String) n.getProperties().get("j:versionInfo");
                                     break;
                                 }
                             }
                         }
-                        String newfileTemplateType = !"".equals(templateType.getValue()) ? templateType.getValue() : fileTemplateType;
+                        final String templateTypeValue = templateType.getValue();
+                        String newfileTemplateType = !"".equals(templateTypeValue) ? templateTypeValue : fileTemplateType;
                         String newfileView;
                         String viewNameValue = viewName.getValue();
                         if (viewNameValue == null || viewNameValue.equals("default") || viewNameValue.trim().equals("")) {
@@ -206,16 +216,19 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                         } else {
                             newfileView = "." + viewNameValue;
                         }
-                        newModulePath = newModulePath + "/" +
-                                newModuleVersion + VIEWS_SOURCE_PATH +
-                                "/" + fileType +
-                                "/" + newfileTemplateType;
-                        String ft = fileType.indexOf("_") > 1?fileType.substring(fileType.indexOf("_") + 1):fileName;
-                        String newViewName = ft + newfileView + fileName.substring(fileName.lastIndexOf("."));
+                        final String versionSourceTypePath = "/" + newModuleVersion + VIEWS_SOURCE_PATH + "/" + fileType;
+                        final String templatePath = versionSourceTypePath + "/" + newfileTemplateType;
+                        newModulePath = newModulePath + templatePath;
+
+                        final int nsIndex = fileType.indexOf('_');
+                        String ft = nsIndex > 1 ? fileType.substring(nsIndex + 1) : fileName;
+                        String newViewName = ft + newfileView + fileName.substring(fileName.lastIndexOf('.'));
+
                         Map<String, String> parentNodesType = new LinkedHashMap<java.lang.String, java.lang.String>();
 
-                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion + VIEWS_SOURCE_PATH + "/" + fileType, "jnt:folder");
-                        parentNodesType.put("/modules/"+newModuleName+"/"+newModuleVersion + VIEWS_SOURCE_PATH + "/" + fileType+"/"+newfileTemplateType, "jnt:folder");
+                        final String modulePathStart = "/modules/" + newModuleName;
+                        parentNodesType.put(modulePathStart + versionSourceTypePath, "jnt:folder");
+                        parentNodesType.put(modulePathStart + templatePath, "jnt:folder");
                         parentNodesType.put(newfileTemplateType, "jnt:folder");
                         prepareAndSave(newModulePath, newViewName, parentNodesType, engine, newModuleNode);
                         popup.hide();

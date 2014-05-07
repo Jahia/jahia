@@ -298,4 +298,8 @@ public class ModuleCacheProvider implements InitializingBean {
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         this.jcrSessionFactory = jcrSessionFactory;
     }
+
+    public Cache getSyncCache() {
+        return syncCache;
+    }
 }

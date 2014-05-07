@@ -80,10 +80,12 @@ import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
@@ -96,10 +98,11 @@ import java.util.UUID;
  */
 public class URLResolverListener extends DefaultEventListener {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolverListener.class);
+    private static Logger logger = LoggerFactory.getLogger(URLResolverListener.class);
 
     private URLResolverFactory urlResolverFactory;
     private VanityUrlService vanityUrlService;
+    private ModuleCacheProvider moduleCacheProvider;
 
     @Override
     public int getEventTypes() {
@@ -148,42 +151,28 @@ public class URLResolverListener extends DefaultEventListener {
         if (clusterActivated) {
             // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
             // to flush it across the cluster
-            CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
-            if (cacheService != null) {
-                // Jahia is initialized
-                EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
-                net.sf.ehcache.Cache htmlCacheEventSync = ehCacheProvider.getCacheManager().getCache(
-                        "HTMLCacheEventSync");
-                if (htmlCacheEventSync != null) {
-                    htmlCacheEventSync.put(new Element("FLUSH_URLRESOLVER-" + UUID.randomUUID(),
+            moduleCacheProvider.getSyncCache().put(new Element("FLUSH_URLRESOLVER-" + UUID.randomUUID(),
                             //Create an empty CacheClusterEvent to be executed after next Journal sync
                             new CacheClusterEvent(path, getClusterRevision())));
-                }
-            }
         }
         if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
             vanityUrlService.flushCaches();
             if (clusterActivated) {
                 // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
                 // to flush it across the cluster
-                CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
-                if (cacheService != null) {
-                    // Jahia is initialized
-                    EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
-                    net.sf.ehcache.Cache htmlCacheEventSync = ehCacheProvider.getCacheManager().getCache(
-                            "HTMLCacheEventSync");
-                    if (htmlCacheEventSync != null) {
-                        htmlCacheEventSync.put(new Element("FLUSH_VANITYURL-" + UUID.randomUUID(),
+                moduleCacheProvider.getSyncCache().put(new Element("FLUSH_VANITYURL-" + UUID.randomUUID(),
                                 //Create an empty CacheClusterEvent to be executed after next Journal sync
                                 new CacheClusterEvent("", getClusterRevision())));
-                    }
-                }
             }
         }
     }
 
     private static long getClusterRevision() {
         return ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode().getRevision();
+    }
+
+    public void setModuleCacheProvider(ModuleCacheProvider moduleCacheProvider) {
+        this.moduleCacheProvider = moduleCacheProvider;
     }
 
 }

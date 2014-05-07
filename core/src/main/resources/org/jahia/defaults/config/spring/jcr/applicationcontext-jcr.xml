@@ -85,6 +85,7 @@
 
     <bean id="urlResolverListener" class="org.jahia.services.render.URLResolverListener">
         <property name="availableDuringPublish" value="true"/>
+        <property name="moduleCacheProvider" ref="ModuleCacheProvider"/>
     </bean>
 
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"

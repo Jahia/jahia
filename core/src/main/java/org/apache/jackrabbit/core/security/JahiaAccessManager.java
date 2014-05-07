@@ -72,6 +72,7 @@ package org.apache.jackrabbit.core.security;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
@@ -102,6 +103,7 @@ import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -120,6 +122,7 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.security.auth.Subject;
+
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -232,7 +235,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                         if (roleNode != null) {
                             privileges = getPrivileges(roleNode, externalPermission);
                         } else {
-                            privileges = Collections.EMPTY_SET;
+                            privileges = Collections.emptySet();
                         }
                         return privileges;
                     }
@@ -1067,20 +1070,25 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (SettingsBean.getInstance().isClusterActivated()) {
                 // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
                 // to flush it across the cluster
-                CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
-                if (cacheService != null) {
-                    // Jahia is initialized
-                    EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
-                    net.sf.ehcache.Cache htmlCacheEventSync = ehCacheProvider.getCacheManager().getCache(
-                            "HTMLCacheEventSync");
-                    if (htmlCacheEventSync != null) {
-                        htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
-                                //Create an empty CacheClusterEvent to be executed after next Journal sync
-                                new CacheClusterEvent("", getClusterRevision())));
-                    }
+                net.sf.ehcache.Cache htmlCacheEventSync = getHtmlCacheEventSync();
+                if (htmlCacheEventSync != null) {
+                    htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
+                    // Create an empty CacheClusterEvent to be executed after next Journal sync
+                            new CacheClusterEvent("", getClusterRevision())));
                 }
             }
         }
+    }
+    
+    private static net.sf.ehcache.Cache getHtmlCacheEventSync() {
+        net.sf.ehcache.Cache htmlCacheEventSync = null;
+        try {
+            htmlCacheEventSync = ModuleCacheProvider.getInstance().getSyncCache();
+        } catch (Exception e) {
+            // not initialized yet
+        }
+        
+        return htmlCacheEventSync;
     }
 
     private static long getClusterRevision() {

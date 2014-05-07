@@ -29,10 +29,12 @@
         </select>
         &nbsp;Offset:
         <input type="text" size="2" name="offset" id="offset" value="${offset}"/>
-        <input type="submit" name="action" value="Execute query ([Ctrl+Enter])"  title="Use this button to execute SELECT queries only" />
+        <input type="submit" name="action" value="Execute ([Ctrl+Enter])"  title="Executes the provided statement" />
         </span>
+        <%--
         <br/>
         <input type="submit" name="action" value="Execute update" title="Use this button to execute any DB data/structure modifications queries, i.e. INSERT, UPDATE, DELETE, CREATE, ALTER etc." />
+        --%>
     </form>
 </fieldset>
 
@@ -40,7 +42,7 @@
     <c:catch var="dbError">
         <% long actionTime = System.currentTimeMillis(); %>
         <c:choose>
-            <c:when test="${param.action == 'Execute update'}">
+            <c:when test="${param.action == 'Execute update' || !fn:startsWith(fn:trim(fn:toLowerCase(param.query)), 'select')}">
                 <sql:update dataSource="jdbc/jahia" sql="${param.query}" var="affected"/>
                 <% pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));  %>
                 <fieldset>

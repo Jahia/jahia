@@ -126,6 +126,10 @@ public class URLResolverListener extends DefaultEventListener {
                         path.endsWith("/j:published") ) {
                     if (path.endsWith("/j:published")) {
                         path = path.substring(0, path.lastIndexOf("/"));
+                        int pos = path.lastIndexOf("/");
+                        if (pos != -1 && path.substring(pos, path.length()).startsWith("/j:translation_")) {
+                            path = path.substring(0, pos);
+                        }
                     }
                     flushCaches(path);
                     return;

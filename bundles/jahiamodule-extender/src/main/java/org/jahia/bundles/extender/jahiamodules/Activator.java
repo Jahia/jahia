@@ -510,8 +510,12 @@ public class Activator implements BundleActivator {
             }
             logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
-            if (shouldAutoStart && newModuleDeployment) {
-                bundleStarter.startBundle(bundle);
+            if (shouldAutoStart) {
+                JahiaTemplatesPackage previousVersion = templatePackageRegistry.lookupById(bundle.getSymbolicName());
+                // in case of new version and version superior to current one then start the new version (only in development mode)
+                if(newModuleDeployment || (SettingsBean.getInstance().isDevelopmentMode() && previousVersion != null && pkg.getVersion().compareTo(previousVersion.getVersion()) > 0)){
+                    bundleStarter.startBundle(bundle);
+                }
             }
         }
 

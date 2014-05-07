@@ -100,6 +100,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
@@ -236,7 +237,9 @@ public class ModuleManagementFlowHandler implements Serializable {
                 createMessageForMissingDependencies(context, missingDeps);
             } else {
                 Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
-                if (allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) {
+                JahiaTemplatesPackage currentVersion = templateManagerService.getTemplatePackageRegistry().lookupById(bundle.getSymbolicName());
+                if ((allVersions.contains(new ModuleVersion(version)) && allVersions.size() == 1) ||
+                        ((SettingsBean.getInstance().isDevelopmentMode() && currentVersion != null && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
                     bundle.start();
                     context.addMessage(new MessageBuilder().source("moduleFile")
                             .code("serverSettings.manageModules.install.uploadedAndStarted")

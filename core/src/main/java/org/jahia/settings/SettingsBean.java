@@ -315,6 +315,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     
     private String internetExplorerCompatibility;
 
+    private boolean clusterActivated;
+
     /**
      * Default constructor.
      *
@@ -482,8 +484,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                     getString("default_templates_set"));
 
             settings.setFast(true);
-            // If cluster is activated then try to expose some properties as system properties for JGroups
-            boolean clusterActivated = getBoolean("cluster.activated",false);
+            clusterActivated = getBoolean("cluster.activated", false);
             System.setProperty("cluster.activated", Boolean.toString(clusterActivated));
             if (System.getProperty("cluster.node.serverId") == null) {
             	System.setProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
@@ -530,6 +531,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             logger.error("Properties file is not valid...!", nfe);
         }
     } // end load
+
+    /**
+     * Returns <code>true</code> if the clustering is activated.
+     * 
+     * @return <code>true</code> if the clustering is activated; <code>false</code> otherwise
+     */
+    public boolean isClusterActivated() {
+        return clusterActivated;
+    }
 
     private void readTldConfigJarsToSkip() {
         File cfgDir = new File(jahiaEtcDiskPath, "config");

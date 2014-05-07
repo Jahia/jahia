@@ -71,12 +71,14 @@ package org.jahia.services.render.filter.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.observation.EventImpl;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.ExternalEventListener;
 import org.jahia.services.content.JCREventIterator;
 import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +86,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -241,7 +244,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             cacheProvider.invalidate(path, propagateToOtherClusterNodes);
             depCache.remove(element.getObjectKey());
         }
-        if (Boolean.getBoolean("cluster.activated")) {
+        if (SettingsBean.getInstance().isClusterActivated()) {
             cacheProvider.propagatePathFlushToCluster(path, propagateToOtherClusterNodes);
         }
     }
@@ -257,7 +260,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 cacheProvider.invalidateRegexp(key, propagateToOtherClusterNodes);
             }
         }
-        if (Boolean.getBoolean("cluster.activated")) {
+        if (SettingsBean.getInstance().isClusterActivated()) {
             cacheProvider.propagateFlushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
         }
     }
@@ -273,7 +276,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 cacheProvider.invalidate(key, propagateToOtherClusterNodes);
             }
         }
-        if (Boolean.getBoolean("cluster.activated")) {
+        if (SettingsBean.getInstance().isClusterActivated()) {
             cacheProvider.propagateChildrenDependenciesFlushToCluster(path, propagateToOtherClusterNodes);
         }
     }

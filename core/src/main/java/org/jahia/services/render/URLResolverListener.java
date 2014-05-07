@@ -70,6 +70,7 @@
 package org.jahia.services.render;
 
 import net.sf.ehcache.Element;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.jahia.registries.ServicesRegistry;
@@ -81,11 +82,13 @@ import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
 import java.util.UUID;
 
 /**
@@ -141,7 +144,8 @@ public class URLResolverListener extends DefaultEventListener {
 
     private void flushCaches(String path) throws RepositoryException {
         urlResolverFactory.flushCaches(path);
-        if (Boolean.getBoolean("cluster.activated")) {
+        boolean clusterActivated = SettingsBean.getInstance().isClusterActivated();
+        if (clusterActivated) {
             // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
             // to flush it across the cluster
             CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
@@ -159,7 +163,7 @@ public class URLResolverListener extends DefaultEventListener {
         }
         if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
             vanityUrlService.flushCaches();
-            if (Boolean.getBoolean("cluster.activated")) {
+            if (clusterActivated) {
                 // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
                 // to flush it across the cluster
                 CacheService cacheService = ServicesRegistry.getInstance().getCacheService();

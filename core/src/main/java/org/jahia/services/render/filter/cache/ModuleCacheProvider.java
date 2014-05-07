@@ -72,12 +72,14 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -149,7 +151,7 @@ public class ModuleCacheProvider implements InitializingBean {
             regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         }
 
-        if (Boolean.getBoolean("cluster.activated")) {
+        if (SettingsBean.getInstance().isClusterActivated()) {
             // only create syncCache in cluster
             syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
             if (syncCache == null) {

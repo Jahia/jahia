@@ -1064,7 +1064,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
         if (matchingPermissions != null) {
             matchingPermissions.flush();
-            if (Boolean.getBoolean("cluster.activated")) {
+            if (SettingsBean.getInstance().isClusterActivated()) {
                 // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
                 // to flush it across the cluster
                 CacheService cacheService = ServicesRegistry.getInstance().getCacheService();

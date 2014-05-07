@@ -69,19 +69,17 @@
  */
 package org.jahia.services.render;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.search.Query;
 import net.sf.ehcache.search.Result;
-import net.sf.ehcache.search.Results;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheService;
+
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.slf4j.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.List;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic factory for URL resolver, we will optimize it later, as it makes no sense to create these objects all the
@@ -89,24 +87,20 @@ import java.util.List;
  */
 public class URLResolverFactory {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolverFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(URLResolverFactory.class);
 
     private Ehcache nodePathCache;
     private Ehcache siteInfoCache;
 
-    private EhCacheProvider cacheService;
     private static final String NODE_PATH_CACHE = "urlResolverNodePath";
     private static final String SITE_INFO_CACHE = "urlResolverSiteInfo";
-    private URLResolverListener urlResolverListener;
 
     public void setCacheService(EhCacheProvider cacheService) {
-        this.cacheService = cacheService;
         nodePathCache = cacheService.getCacheManager().addCacheIfAbsent(NODE_PATH_CACHE);
         siteInfoCache = cacheService.getCacheManager().addCacheIfAbsent(SITE_INFO_CACHE);
     }
 
     public void setUrlResolverListener(URLResolverListener urlResolverListener) {
-        this.urlResolverListener = urlResolverListener;
         urlResolverListener.setUrlResolverFactory(this); // we wire this manually to avoid loops.
     }
 
@@ -123,13 +117,14 @@ public class URLResolverFactory {
     }
 
     public synchronized void flushCaches(String path) {
+        @SuppressWarnings("unchecked")
         final List<Result> all = nodePathCache.createQuery().includeKeys().addCriteria(Query.VALUE.eq(path)).execute().all();
         if(logger.isDebugEnabled() && !all.isEmpty()) {
-            logger.debug("Flushing "+all.size()+" keys from URLResolver Caches.");
+            logger.debug("Flushing {} keys from URLResolver Caches.", all.size());
         }
         for (Result result : all) {
             if(logger.isDebugEnabled()) {
-                logger.debug("Flushing key : "+result.getKey());
+                logger.debug("Flushing key: {}", result.getKey());
             }
             nodePathCache.remove(result.getKey());
             siteInfoCache.remove(result.getKey());

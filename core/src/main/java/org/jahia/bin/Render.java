@@ -810,6 +810,17 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 site = (JCRSiteNode) session1.getNode("/sites/" + urlResolver.getSiteKeyByServerName());
                             }
                         }
+                        String jsite = null;
+                        HttpServletRequest request = renderContext.getRequest();
+                        if (request != null) {
+                            jsite = request.getParameter("jsite");
+                        }
+                        if (jsite == null && renderContext.getMainResource() != null) {
+                            jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
+                        }
+                        if (jsite != null) {
+                            site = (JCRSiteNode) resource.getNode().getSession().getNodeByIdentifier(jsite);
+                        }
                         if (resource.getNode().getPath().startsWith("/sites/") &&
                             (site == null || (!site.getPath().startsWith("/modules/") &&
                                               !site.isAllowsUnlistedLanguages() &&

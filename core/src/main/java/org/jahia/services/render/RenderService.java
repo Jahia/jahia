@@ -305,21 +305,7 @@ public class RenderService {
 
         Template template = null;
         try {
-            JCRNodeWrapper site;
-            String jsite = null;
-            HttpServletRequest request = renderContext.getRequest();
-            if (request != null) {
-                jsite = request.getParameter("jsite");
-            }
-            if (jsite == null && renderContext.getMainResource() != null) {
-                jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
-            }
-            if (jsite != null) {
-                site = node.getSession().getNodeByIdentifier(jsite);
-                renderContext.setSite((JCRSiteNode) site);
-            } else {
-                site = renderContext.getSite();
-            }
+            JCRNodeWrapper site = renderContext.getSite();
             if (site == null) {
                 site = node.getResolveSite();
             }
@@ -369,6 +355,7 @@ public class RenderService {
 
                         templateNode = templateNode.getParent();
                     }
+                    HttpServletRequest request = renderContext.getRequest();
                     if(request != null && templateNode.isNodeType("jnt:templatesFolder") && templateNode.hasProperty("j:defaultView")) {
                         String defaultView = templateNode.getProperty("j:defaultView").getString();
                         request.setAttribute("org.jahia.template.defaultView", defaultView);

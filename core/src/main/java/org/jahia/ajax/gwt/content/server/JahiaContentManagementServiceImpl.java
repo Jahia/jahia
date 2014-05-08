@@ -73,12 +73,16 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcMap;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -135,6 +139,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
+
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -869,8 +874,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
+        boolean needPermissionReload = false;
         if (rb != null) {
-            GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
+            needPermissionReload = GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
         }
 
         try {
@@ -884,7 +890,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         if (rb != null) {
             try {
-                result.put(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()), getUser(), getLocale()));
+                result.put(GWTJahiaNode.SITE_LANGUAGES,
+                        languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()),
+                                getUser(), getLocale()));
+                if (needPermissionReload) {
+                    // need to load the permissions
+                    Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
+                    List<String> permissions = new ArrayList<String>();
+                    for (Privilege privilege : p) {
+                        permissions.add(((PrivilegeImpl) privilege).getPrefixedName());
+                    }
+                    result.put(GWTJahiaNode.PERMISSIONS, permissions);
+                }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(),e);
             }
@@ -1545,7 +1562,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             noChanges = !moduleHelper.saveAndCommitModule(moduleId, message, retrieveCurrentSession(null));
         } catch (Exception e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.synchronize.sources", getUILocale(), ":\\n" + e.getLocalizedMessage()));
-        }
+            }
 
         if (noChanges) {
             final GWTJahiaServiceException exception = new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.cannot.synchronize.sources", getUILocale()));

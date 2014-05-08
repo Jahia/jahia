@@ -74,6 +74,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -82,6 +83,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
@@ -190,6 +192,7 @@ public class UpdateButtonItem extends SaveButtonItem {
                 failSave(engine, throwable);
             }
 
+            @SuppressWarnings("unchecked")
             public void onSuccess(RpcMap o) {
                 Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                 Map<String, Object> data = new HashMap<String, Object>();
@@ -209,6 +212,9 @@ public class UpdateButtonItem extends SaveButtonItem {
                 ((EditContentEngine) engine).closeEngine();
                 if (o != null && o.containsKey(GWTJahiaNode.SITE_LANGUAGES)) {
                     JahiaGWTParameters.getSiteNode().set(GWTJahiaNode.SITE_LANGUAGES, o.get(GWTJahiaNode.SITE_LANGUAGES));
+                    if (o.containsKey(GWTJahiaNode.PERMISSIONS)) {
+                        PermissionsUtils.loadPermissions((List<String>) o.get(GWTJahiaNode.PERMISSIONS));
+                    }
                 }
                 engine.getLinker().refresh(data);
             }

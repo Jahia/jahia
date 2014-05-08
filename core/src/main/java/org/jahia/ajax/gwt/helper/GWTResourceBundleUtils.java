@@ -76,9 +76,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.security.Privilege;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundleEntry;
@@ -283,9 +286,9 @@ public final class GWTResourceBundleUtils {
         }
     }
 
-    public static void store(GWTJahiaNode gwtNode, GWTResourceBundle bundle,
+    public static boolean store(GWTJahiaNode gwtNode, GWTResourceBundle bundle,
             JCRSessionWrapper session) throws GWTJahiaServiceException {
-
+        boolean needPermissionReload = false;
         try {
             JCRNodeWrapper node = session.getNode(gwtNode.isFile() ? StringUtils
                     .substringBeforeLast(gwtNode.getPath(), "/") : gwtNode.getPath());
@@ -333,12 +336,13 @@ public final class GWTResourceBundleUtils {
             }
             ResourceBundle.clearCache();
             NodeTypeRegistry.getInstance().flushLabels();
+            needPermissionReload = !node.getResolveSite().getLanguages().containsAll(bundle.getLanguages()); 
             node.getResolveSite().setLanguages(bundle.getLanguages());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
-
+        return needPermissionReload;
     }
 
     public static void unlock(JCRNodeWrapper node) {

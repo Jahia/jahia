@@ -76,6 +76,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -86,6 +87,7 @@ import org.jahia.utils.Url;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
@@ -371,14 +373,45 @@ public class URLGenerator {
     }
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
-        return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+    	JCRNodeWrapper usedNode = checkIfTemplateExistsForNode(node, template, templateType);
+    	if(usedNode == null) {
+    		usedNode = node;
+    	}
+        return base + usedNode.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
 
     public String buildURL(JCRNodeWrapper node, String languageCode, String template, String templateType) {
+    	JCRNodeWrapper usedNode = checkIfTemplateExistsForNode(node, template, templateType);
+    	if(usedNode == null) {
+    		usedNode = node;
+    	}
         if (StringUtils.isEmpty(languageCode)) {
-            return buildURL(node, template, templateType);
+            return buildURL(usedNode, template, templateType);
         }
-        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + usedNode.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+    }
+    
+    private JCRNodeWrapper checkIfTemplateExistsForNode (JCRNodeWrapper node, String template, String templateType) {
+    	
+    	try {
+  			SortedSet<View> views = RenderService.getInstance().getViewsSet(node.getPrimaryNodeType(), node.getResolveSite(), templateType);
+    		for (View view : views) {
+    	        final String key = view.getKey();
+    	        if ((template != null && !template.equals("default") && key.matches("^.*\\\\." + template + "\\\\..*"))
+    	            || ((template == null || template.equals("default")) && key.equals("default"))) {
+    	            return node;
+    	            }
+    	    }
+    		if (node.getParent() != null) {
+    			return checkIfTemplateExistsForNode(node.getParent(), template, templateType);
+    		} else {
+    			logger.error("No view " + (template != null && !template.equals("default") ? template : "default") + " for node (or parent nodes) " + node.getPath() + " exists!!");
+    			return null;
+    		}
+    	} catch (RepositoryException ex) {
+    		logger.error("Error when checking views for node " + node.getPath(), ex);
+    	}
+    	return null;
     }
 
     public String getInitializers() {

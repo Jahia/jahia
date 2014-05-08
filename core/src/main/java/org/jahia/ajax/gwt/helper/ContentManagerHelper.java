@@ -185,8 +185,7 @@ public class ContentManagerHelper {
             properties.setProperties(childNode, props);
         } catch (Exception e) {
             logger.error("Exception", e);
-            throw new GWTJahiaServiceException(Messages.getInternal(
-                    "label.gwt.error.cannot.get.node", uiLocale) + e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", uiLocale, e.getLocalizedMessage()));
         }
         if (childNode == null) {
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed", uiLocale));
@@ -703,7 +702,7 @@ public class ContentManagerHelper {
             throw e;
         } catch (Exception e) {
             logger.error("Error when importing", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.import", uiLocale, e.getLocalizedMessage()));
         }
     }
 
@@ -954,7 +953,7 @@ public class ContentManagerHelper {
                 }
             }
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get lock information", e);
         }
         return !lockedNodes.isEmpty();
     }

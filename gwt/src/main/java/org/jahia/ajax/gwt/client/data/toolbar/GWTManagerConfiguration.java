@@ -82,6 +82,8 @@ import java.util.ArrayList;
 
 public class GWTManagerConfiguration extends GWTConfiguration implements Serializable {
 
+    private static final long serialVersionUID = -8280137812056599560L;
+    
     private List<GWTColumn> treeColumns;
     private List<String> treeColumnKeys;
 
@@ -426,7 +428,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     }
 
     public void setEditableGrid(boolean editableGrid) {
-        editableGrid = editableGrid;
+        this.editableGrid = editableGrid;
     }
 
     public boolean isAllowRootNodeEditing() {

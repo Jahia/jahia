@@ -381,13 +381,13 @@ public class URLGenerator {
     }
 
     public String buildURL(JCRNodeWrapper node, String languageCode, String template, String templateType) {
+        if (StringUtils.isEmpty(languageCode)) {
+            return buildURL(node, template, templateType);
+        }    
     	JCRNodeWrapper usedNode = checkIfTemplateExistsForNode(node, template, templateType);
     	if(usedNode == null) {
     		usedNode = node;
     	}
-        if (StringUtils.isEmpty(languageCode)) {
-            return buildURL(usedNode, template, templateType);
-        }
         return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + usedNode.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
     

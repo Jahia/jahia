@@ -585,17 +585,6 @@
         </init-param>
     </servlet>
     
-<!-- Quercus PHP servlet -->
-    <servlet>
-        <servlet-name>Quercus Servlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextAttribute</param-name>
-            <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
-        </init-param>
-    </servlet>
-<!-- End of Quercus PHP servlet -->
-
     <!-- OSGi Proxy Servlet -->
     <servlet>
         <servlet-name>osgiProxy</servlet-name>
@@ -784,10 +773,6 @@
 <!-- End of Shindig servlet mappings -->
 
 <!-- Quercus PHP mapping -->
-    <servlet-mapping>
-        <servlet-name>Quercus Servlet</servlet-name>
-        <url-pattern>*.php</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>osgiProxy</servlet-name>

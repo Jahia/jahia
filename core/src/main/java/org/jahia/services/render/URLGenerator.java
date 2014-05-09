@@ -83,21 +83,14 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
  */
 public class URLGenerator {
-	
-	private static Logger logger = LoggerFactory.getLogger(URLGenerator.class);
-	
     private String base;
 
     private String live;

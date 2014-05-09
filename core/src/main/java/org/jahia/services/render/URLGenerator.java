@@ -88,7 +88,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedSet;
 
 import javax.jcr.RepositoryException;
 
@@ -379,45 +378,14 @@ public class URLGenerator {
     }
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
-    	JCRNodeWrapper usedNode = checkIfTemplateExistsForNode(node, template, templateType);
-    	if(usedNode == null) {
-    		usedNode = node;
-    	}
-        return base + usedNode.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+        return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
 
     public String buildURL(JCRNodeWrapper node, String languageCode, String template, String templateType) {
         if (StringUtils.isEmpty(languageCode)) {
             return buildURL(node, template, templateType);
-        }    
-    	JCRNodeWrapper usedNode = checkIfTemplateExistsForNode(node, template, templateType);
-    	if(usedNode == null) {
-    		usedNode = node;
-    	}
-        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + usedNode.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
-    }
-    
-    private JCRNodeWrapper checkIfTemplateExistsForNode (JCRNodeWrapper node, String template, String templateType) {
-    	
-    	try {
-  			SortedSet<View> views = RenderService.getInstance().getViewsSet(node.getPrimaryNodeType(), node.getResolveSite(), templateType);
-    		for (View view : views) {
-    	        final String key = view.getKey();
-    	        if ((template != null && !template.equals("default") && key.matches("^.*\\\\." + template + "\\\\..*"))
-    	            || ((template == null || template.equals("default")) && key.equals("default"))) {
-    	            return node;
-    	            }
-    	    }
-    		if (node.getParent() != null) {
-    			return checkIfTemplateExistsForNode(node.getParent(), template, templateType);
-    		} else {
-    			logger.error("No view " + (template != null && !template.equals("default") ? template : "default") + " for node (or parent nodes) " + node.getPath() + " exists!!");
-    			return null;
-    		}
-    	} catch (RepositoryException ex) {
-    		logger.error("Error when checking views for node " + node.getPath(), ex);
-    	}
-    	return null;
+        }
+        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
 
     public String getInitializers() {

@@ -92,9 +92,9 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -104,13 +104,13 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.*;
-import java.util.regex.Matcher;
 
 /**
  * Tab item to edit child items of a node type
@@ -222,21 +222,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                final MessageBox box = MessageBox.prompt(Messages.get("label.name"), Messages.get("label.enterItemName")+ ":");
-                box.getTextBox().setValidator(new Validator() {
-                    @Override
-                    public String validate(Field<?> field, String value) {
-                        if (!value.equals("*") && !value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^*+\\-\\[\\]\\/\\|]*")) {
-                            return Messages.get("label.childName.error","the name cannot contain one of these characters * [ ] | - / + : or start with a number");
-                        }
-                        for (GWTJahiaNode n : store.getModels()) {
-                            if (n.getName().equals(value)) {
-                                return Messages.get("label.duplicate.name","this name already used, please select a new one");
-                            }
-                        }
-                        return null;
-                    }
-                });
+                final MessageBox box = getNamePrompt();
 
                 box.getDialog().getButtonById(Dialog.OK).removeAllListeners();
                 box.getDialog().getButtonById(Dialog.OK).addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -279,7 +265,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         toolBar.add(add);
-        Button remove = new Button(Messages.get("label.remove", "Remove"));
+        final Button remove = new Button(Messages.get("label.remove", "Remove"));
+        remove.disable();
         remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
         remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -304,7 +291,45 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         toolBar.add(remove);
-        Button moveUp = new Button(Messages.get("label.move.up", "move up"), new SelectionListener<ButtonEvent>() {
+        final Button rename = new Button(Messages.get("label.rename", "Rename"));
+        rename.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
+        rename.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final GWTJahiaNode selection = grid.getSelectionModel().getSelectedItem();
+                final MessageBox box = getNamePrompt();
+                box.getTextBox().setValue(selection.getName());
+                box.getDialog().getButtonById(Dialog.OK).removeAllListeners();
+                box.getDialog().getButtonById(Dialog.OK).addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        if (box.getTextBox().isValid()) {
+                            for (GWTJahiaNode prop : children) {
+                                if (prop.getName().equals(selection.getName())) {
+                                    prop.set("renamedFrom", prop.getName());
+                                    PropertiesEditor pe = propertiesEditors.remove(prop);
+                                    Map<String, PropertiesEditor> pesByLang = propertiesEditorsByLang.remove(prop);
+                                    prop.setName(box.getTextBox().getValue());
+                                    prop.setPath(engine.getNode().getPath() + "/" + prop.getName());
+                                    propertiesEditors.put(prop, pe);
+                                    if (pesByLang != null) {
+                                        propertiesEditorsByLang.put(prop, pesByLang);
+                                    }
+                                    break;
+                                }
+                            }
+                            selection.setName(box.getTextBox().getValue());
+                            grid.getView().refresh(false);
+                            box.close();
+                        }
+                    }
+                });
+            }
+        });
+        rename.setIcon(ToolbarIconProvider.getInstance().getIcon("rename"));
+        rename.disable();
+        toolBar.add(rename);
+        final Button moveUp = new Button(Messages.get("label.move.up", "move up"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 for (GWTJahiaNode node : getOrderedSelectedList()) {
@@ -323,13 +348,12 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                     grid.getSelectionModel().select(index - 1, true);
                 }
             }
-
-
         });
         moveUp.setIcon(StandardIconsProvider.STANDARD_ICONS.moveUp());
+        moveUp.disable();
         toolBar.add(moveUp);
 
-        Button moveFirst = new Button(Messages.get("label.move.first", "move first"), new SelectionListener<ButtonEvent>() {
+        final Button moveFirst = new Button(Messages.get("label.move.first", "move first"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 int iteration = 0;
@@ -348,9 +372,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
+        moveFirst.disable();
         toolBar.add(moveFirst);
 
-        Button moveDown = new Button(Messages.get("label.move.down", "move down"), new SelectionListener<ButtonEvent>() {
+        final Button moveDown = new Button(Messages.get("label.move.down", "move down"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 List<GWTJahiaNode> ordered = getOrderedSelectedList();
@@ -373,9 +398,10 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         moveDown.setIcon(StandardIconsProvider.STANDARD_ICONS.moveDown());
+        moveDown.disable();
         toolBar.add(moveDown);
 
-        Button moveLast = new Button(Messages.get("label.move.last", "move last"), new SelectionListener<ButtonEvent>() {
+        final Button moveLast = new Button(Messages.get("label.move.last", "move last"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 List<GWTJahiaNode> ordered = getOrderedSelectedList();
@@ -399,6 +425,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             }
         });
         moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
+        moveLast.disable();
         toolBar.add(moveLast);
         tab.add(toolBar, new RowData(1, -1, new Margins(2)));
 
@@ -407,6 +434,14 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                boolean any = se.getSelectedItem() != null;
+                boolean single = se.getSelection().size() == 1;
+                remove.setEnabled(any);
+                rename.setEnabled(single);
+                moveDown.setEnabled(any);
+                moveFirst.setEnabled(any);
+                moveLast.setEnabled(any);
+                moveUp.setEnabled(any);
                 switchPropertiesEditor(tab);
             }
         });
@@ -481,6 +516,25 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         tab.layout();
         tab.setProcessed(true);
 
+    }
+    
+    private MessageBox getNamePrompt() {
+        final MessageBox box = MessageBox.prompt(Messages.get("label.name"), Messages.get("label.enterItemName")+ ":");
+        box.getTextBox().setValidator(new Validator() {
+            @Override
+            public String validate(Field<?> field, String value) {
+                if (!value.equals("*") && !value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^*+\\-\\[\\]\\/\\|]*")) {
+                    return Messages.get("label.childName.error","the name cannot contain one of these characters * [ ] | - / + : or start with a number");
+                }
+                for (GWTJahiaNode n : store.getModels()) {
+                    if (n.getName().equals(value)) {
+                        return Messages.get("label.duplicate.name","this name already used, please select a new one");
+                    }
+                }
+                return null;
+            }
+        });
+        return box;
     }
 
     @Override

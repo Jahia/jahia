@@ -819,6 +819,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 for (ModelData modelData : node.getChildren()) {
                     GWTJahiaNode subNode = ((GWTJahiaNode) modelData);
                     subNode.setPath(node.getPath() + "/" + subNode.getName());
+                    String renamedFrom = (String) subNode.get("renamedFrom");
+                    if (renamedFrom != null && nodeWrapper.hasNode(renamedFrom)) {
+                        // renaming sub-node first
+                        nodeWrapper.getNode(renamedFrom).rename(subNode.getName());
+                    }
                     if (subNode.get("nodeLangCodeProperties") != null && subNode.get("nodeProperties") != null) {
                         if (nodeWrapper.hasNode(subNode.getName())) {
                             saveNode(subNode, null, (Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"), (List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"), new HashSet<String>());

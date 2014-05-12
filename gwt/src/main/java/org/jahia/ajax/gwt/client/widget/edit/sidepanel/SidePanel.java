@@ -131,6 +131,7 @@ public class SidePanel extends ContentPanel {
             tabPanel = new TabPanel();
         } else {
             tabPanel.removeAll();
+            tabPanel.removeAllListeners();
         }
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
@@ -202,11 +203,12 @@ public class SidePanel extends ContentPanel {
             head.addTool(collapse);
         }
         ((ToolbarHeader) head).attachTools();
-        layout();
 
         for (SidePanelTabItem tab : tabs) {
             tab.initWithLinker(editLinker);
         }
+
+        layout();
     }
 
     private void updateRefreshButton() {
@@ -302,6 +304,7 @@ public class SidePanel extends ContentPanel {
     public void setConfig(GWTEditConfiguration config) {
         this.config = config;
         setVisible(!config.getTabs().isEmpty());
+        tabPanel.unmask();
         initTabs(config);
     }
 }

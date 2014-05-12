@@ -767,7 +767,7 @@ public class MainModule extends Module {
 
         final List<String> types = node.getNodeTypes();
         final List<String> inheritedTypes = node.getInheritedNodeTypes();
-        editLinker.setInSettingsPage(!node.getPath().startsWith("/modules") && !types.contains("jnt:page") && !types.contains("jnt:template") && !types.contains("jnt:content") &&
+        editLinker.setInSettingsPage(!types.contains("jnt:page") && !types.contains("jnt:template") && !types.contains("jnt:content") &&
                         !inheritedTypes.contains("jnt:page") && !inheritedTypes.contains("jnt:template") && !inheritedTypes.contains("jnt:content"));
 
         setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());

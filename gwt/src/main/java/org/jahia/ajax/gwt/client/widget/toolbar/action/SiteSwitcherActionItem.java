@@ -294,8 +294,9 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         for (GWTJahiaNode site : sitesCombo.getStore().getModels()) {
             if (site.getPath().equals(JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()).getPath())) {
                 sitesCombo.setValue(site);
-                break;
+                return;
             }
         }
+        sitesCombo.setValue(null);
     }
 }

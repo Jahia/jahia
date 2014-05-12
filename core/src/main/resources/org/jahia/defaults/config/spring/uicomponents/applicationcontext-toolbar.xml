@@ -201,6 +201,7 @@
                     <set>
                         <value>adminmode</value>
                         <value>dashboardmode</value>
+                        <value>studiomode</value>
                     </set>
                 </property>
             </bean>
@@ -226,6 +227,7 @@
                     <set>
                         <value>adminmode</value>
                         <value>dashboardmode</value>
+                        <value>studiomode</value>
                     </set>
                 </property>
             </bean>

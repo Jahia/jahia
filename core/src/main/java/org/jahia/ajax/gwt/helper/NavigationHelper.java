@@ -187,7 +187,10 @@ public class NavigationHelper {
                 if (logger.isDebugEnabled()) {
                     logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
                 }
-                if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(childNode, new RenderContext(null, null, node.getSession().getUser()))){
+                final RenderContext context = new RenderContext(null, null, node.getSession().getUser());
+                context.setMainResource(new Resource(childNode, "html", null, Resource.CONFIGURATION_PAGE));
+                context.setServletPath("/cms/render/live");
+                if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(childNode, context)){
                     continue;
                 }
                 // in case of a folder, it allows to know if the node is selectable

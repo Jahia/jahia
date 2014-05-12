@@ -545,6 +545,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
             Transformer transformer = transformerFactory.newTransformer(new StreamSource(new File(xsl)));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Created transformer {} using XLS '{}'", transformer, xsl);
+                logger.debug("Input: {} ||| Output: {}", stream.getFile(), stream.getFile());
+            }
             transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
         }
     }

@@ -91,7 +91,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Window;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
@@ -745,30 +744,11 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             Comparator<ModelData> nodeComparator = new Comparator<ModelData>() {
                 @Override
                 public int compare(ModelData o1, ModelData o2) {
-                    GWTJahiaNode c1 = null;
-                    GWTJahiaNode c2 = null;
-
-                    for (GWTJahiaNode n : grid.getStore().getModels()) {
-                        if (n.getPath().equals(((GWTJahiaNode) o1).getPath())) {
-                            c1 = n;
-                        }
-                        if (n.getPath().equals(((GWTJahiaNode) o2).getPath())) {
-                            c2 = n;
-                        }
-                        if (c1 != null && c2 != null) {
-                            int index = grid.getStore().indexOf(c1);
-                            int index2 = grid.getStore().indexOf(c2);
-                            if (index == index2) {
-                                return 0;
-                            } else if (index > index2) {
-                                return 1;
-                            } else {
-                                return -1;
-                            }
-                        }
-                    }
-
-                    throw new IllegalArgumentException();
+                    int index = o1 != null && (o1 instanceof GWTJahiaNode) ? grid.getStore().indexOf((GWTJahiaNode) o1)
+                            : -1;
+                    int index2 = o2 != null && (o2 instanceof GWTJahiaNode) ? grid.getStore()
+                            .indexOf((GWTJahiaNode) o2) : -1;
+                    return index < index2 ? -1 : (index == index2 ? 0 : 1);
                 }
             };
 

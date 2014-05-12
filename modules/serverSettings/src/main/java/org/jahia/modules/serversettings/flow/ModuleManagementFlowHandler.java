@@ -552,6 +552,12 @@ public class ModuleManagementFlowHandler implements Serializable {
                 requestContext.getMessageContext().addMessage(new MessageBuilder().info().source(moduleHasBeenStopped).code("serverSettings.manageModules.module.stopped").arg(moduleHasBeenStopped).build());
                 requestContext.getExternalContext().getSessionMap().remove("moduleHasBeenStopped");
             }
+            final List<String> missingDependencies = (List<String>) requestContext.getExternalContext().getSessionMap().get("missingDependencies");
+            if (missingDependencies != null) {
+                createMessageForMissingDependencies(requestContext.getMessageContext(), missingDependencies);
+                requestContext.getExternalContext().getSessionMap().remove("missingDependencies");
+
+            }
         }
     }
 
@@ -588,20 +594,28 @@ public class ModuleManagementFlowHandler implements Serializable {
         logger.error(e.getMessage(), e);
     }
 
-    public void hasAModuleBeenStarted(RequestContext requestContext) {
-        logger.debug("Testing if a module has been started");
-        if (requestContext.getRequestParameters().get("module")!=null) {
-            requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStarted",
-                requestContext.getRequestParameters().get("module"));
+    public void startModule(String moduleId, String version, RequestContext requestContext) throws RepositoryException, BundleException {
+        List<String> missingDependencies = new ArrayList<String>();
+        JahiaTemplatesPackage module = templateManagerService.getTemplatePackageRegistry().lookupByIdAndVersion(moduleId,
+                new ModuleVersion(version));
+        for (JahiaTemplatesPackage dep : module.getDependencies()) {
+            if (!dep.isActiveVersion()) {
+                missingDependencies.add(dep.getName());
+            }
         }
+        if (missingDependencies.isEmpty()) {
+            templateManagerService.activateModuleVersion(moduleId, version);
+            requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStarted",moduleId);
+        } else {
+            requestContext.getExternalContext().getSessionMap().put("missingDependencies",missingDependencies);
+        }
+        storeTablesUUID(requestContext);
     }
 
-    public void hasAModuleBeenStopped(RequestContext requestContext) {
-        logger.debug("Testing if a module has been started");
-        if (requestContext.getRequestParameters().get("module")!=null) {
-            requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStopped",
-                    requestContext.getRequestParameters().get("module"));
-        }
+    public void stopModule(String moduleId, RequestContext requestContext) throws RepositoryException, BundleException {
+        templateManagerService.stopModule(moduleId);
+        requestContext.getExternalContext().getSessionMap().put("moduleHasBeenStopped",moduleId);
+        storeTablesUUID(requestContext);
     }
 
     public void storeTablesUUID(RequestContext requestContext) {

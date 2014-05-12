@@ -110,21 +110,15 @@
 
     <action-state id="startModule">
         <evaluate
-                expression="JahiaTemplateManagerService.activateModuleVersion(requestParameters.module,requestParameters.version)"/>
-        <transition to="moduleStarted">
-            <evaluate expression="flowHandler.hasAModuleBeenStarted(flowRequestContext)"/>
-            <evaluate expression="flowHandler.storeTablesUUID(flowRequestContext)"/>
-        </transition>
+                expression="flowHandler.startModule(requestParameters.module,requestParameters.version,flowRequestContext)"/>
+        <transition to="moduleStarted"/>
     </action-state>
 
     <end-state id="moduleStarted"/>
 
     <action-state id="stopModule">
-        <evaluate expression="JahiaTemplateManagerService.stopModule(requestParameters.module)"/>
-        <transition to="moduleStopped">
-            <evaluate expression="flowHandler.hasAModuleBeenStopped(flowRequestContext)"/>
-            <evaluate expression="flowHandler.storeTablesUUID(flowRequestContext)"/>
-        </transition>
+        <evaluate expression="flowHandler.stopModule(requestParameters.module,flowRequestContext)"/>
+        <transition to="moduleStopped"/>
     </action-state>
 
     <end-state id="moduleStopped"/>

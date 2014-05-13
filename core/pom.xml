@@ -742,7 +742,8 @@
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>9.4.0.6</version>
+            <version>9.5.1-5</version>
+            <classifier>compressed</classifier>
         </dependency>
         <!-- Pluto 2.0 shared lib-->
         <dependency>

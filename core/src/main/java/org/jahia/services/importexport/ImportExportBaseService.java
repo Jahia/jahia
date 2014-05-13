@@ -71,7 +71,9 @@ package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
@@ -126,14 +128,17 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -543,14 +548,19 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 inputStream.close();
                 inputStream = new ByteArrayInputStream(stream.getData());
             }
-            TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
-            Transformer transformer = transformerFactory.newTransformer(new StreamSource(new File(xsl)));
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created transformer {} using XLS '{}'", transformer, xsl);
-                logger.debug("Input: {} ||| Output: {}", stream.getFile(), stream.getFile());
-            }
+            Transformer transformer = getTransformer(xsl);
             transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
         }
+    }
+
+    private Transformer getTransformer(String xsl) throws TransformerConfigurationException {
+        Templates templates = xsltTemplates.get(xsl);
+        if (templates == null) {
+            templates = new TransformerFactoryImpl().newTemplates(new StreamSource(new File(xsl)));
+            xsltTemplates.put(xsl, templates);
+        }
+        
+        return templates.newTransformer();
     }
 
     private void exportNodesBinary(JCRNodeWrapper root, SortedSet<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, String basepath) throws IOException, RepositoryException {
@@ -1943,6 +1953,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private List<XMLContentTransformer> xmlContentTransformers;
+    
+    private Map<String, Templates> xsltTemplates = new ConcurrentHashMap<String, Templates>(2);
 
     public void setXmlContentTransformers(final List<XMLContentTransformer> xmlContentTransformers) {
         this.xmlContentTransformers = xmlContentTransformers;

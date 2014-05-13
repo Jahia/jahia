@@ -180,7 +180,9 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             if (scmStatus == null) {
                 return "";
             }
-            return ToolbarIconProvider.getInstance().getIcon("scmStatus/" + scmStatus).createImage();
+            Image img = ToolbarIconProvider.getInstance().getIcon("scmStatus/" + scmStatus).createImage();
+            img.setTitle(Messages.get("label.scmStatus." + scmStatus, scmStatus));
+            return img;
         }
     };
 

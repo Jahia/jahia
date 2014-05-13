@@ -161,6 +161,7 @@ public class ModulesTabItem extends BrowseTabItem {
                     be.setCancelled(true);
                 } else {
                     tree.setContextMenu(contextMenu);
+                    contextMenu.show();
                 }
             }
         });

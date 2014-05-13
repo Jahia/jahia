@@ -119,14 +119,19 @@ public class GitSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void commit(String message) throws IOException {
+    public boolean commit(String message) throws IOException {
         boolean commitRequired = checkCommit();
+        String branch = executeCommand(executable, new String[]{"symbolic-ref"," --short ","HEAD"}).out.trim();
         if (commitRequired) {
-            String branch = executeCommand(executable, new String[]{"symbolic-ref"," --short ","HEAD"}).out.trim();
             checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m", message }));
-            checkExecutionResult(executeCommand(executable, new String[]{"-c", "core.askpass=true","push","-u","origin",branch}));
         }
+        ExecutionResult result = executeCommand(executable, new String[]{"-c", "core.askpass=true","push","--porcelain","-u","origin",branch});
+        checkExecutionResult(result);
         invalidateStatusCache();
+        if (result.out.contains("[up to date]")) {
+            return false;
+        }
+        return commitRequired;
     }
 
     @Override

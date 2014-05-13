@@ -185,7 +185,7 @@ public abstract class SourceControlManagement {
      * @throws IOException
      *             in case of a commit process error
      */
-    public abstract void commit(String message) throws IOException;
+    public abstract boolean commit(String message) throws IOException;
 
     protected abstract Map<String, Status> createStatusMap() throws IOException;
 

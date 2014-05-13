@@ -320,14 +320,10 @@ public class ModuleHelper {
 
         if (scm != null) {
             templateManagerService.regenerateImportFile(moduleId, sources, session);
-            if (scm.checkCommit()) {
-                scm.commit(message);
-                return true;
-            }
+            return scm.commit(message);
         } else {
             throw new IOException("No SCM configured");
         }
-        return false;
     }
 
     public GWTJahiaNode sendToSourceControl(String moduleName, String scmURI, String scmType, JCRSessionWrapper session)

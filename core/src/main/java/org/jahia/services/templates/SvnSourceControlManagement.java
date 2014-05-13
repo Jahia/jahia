@@ -122,12 +122,13 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     }
 
     @Override
-    public void commit(String message) throws IOException {
+    public boolean commit(String message) throws IOException {
         boolean commitRequired = checkCommit();
         if (commitRequired) {
             checkExecutionResult(executeCommand(executable, new String[]{"commit","-m",message}));
         }
         invalidateStatusCache();
+        return commitRequired;
     }
 
     @Override

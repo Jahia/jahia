@@ -86,6 +86,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.AssetsMapFactory;
 import org.jahia.services.render.RenderContext;
@@ -102,6 +105,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
+import javax.jcr.RepositoryException;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -109,6 +113,8 @@ import javax.script.SimpleScriptContext;
 import javax.servlet.ServletContext;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.util.*;
@@ -446,17 +452,29 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             long filesDates = 0;
             ServletContext context = JahiaContextLoaderListener.getServletContext();
 
-            List<String> pathsToAggregate = new ArrayList<String>();
+            LinkedHashMap<String, org.springframework.core.io.Resource> pathsToAggregate = new LinkedHashMap<String,org.springframework.core.io.Resource>();
+
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 String key = entry.getKey();
                 if(Jahia.getContextPath().length() > 0 && key.startsWith(jahiaContext)) {
                 	key = key.substring(Jahia.getContextPath().length());
                 }
-                File file = new File(context.getRealPath(key));
-                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && file.exists()) {
-                    pathsToAggregate.add(key);
-                    long lastModified = file.lastModified();
+
+                org.springframework.core.io.Resource r = null;
+
+                String filePath = StringUtils.substringAfter(key.substring(1),"/");
+                String moduleId = StringUtils.substringBefore(filePath, "/");
+                filePath = StringUtils.substringAfter(filePath, "/");
+
+                if (key.startsWith("/modules/")) {
+                    r = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId).getResource(filePath);
+                } else if (key.startsWith("/files/")) {
+                    r = getResourceFromFile(r, moduleId, "/" + filePath);
+                }
+                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && r != null && r.exists()) {
+                    pathsToAggregate.put(key, r);
+                    long lastModified = r.lastModified();
                     if (filesDates < lastModified) {
                         filesDates = lastModified;
                     }
@@ -466,23 +484,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
             }
             if (!pathsToAggregate.isEmpty()) {
-                String aggregatedKey = generateAggregateName(pathsToAggregate);
+                String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
 
-                String minifiedAggregatedPath = "/resources/" + aggregatedKey + ".min." + type;
-                String minifiedAggregatedRealPath = context.getRealPath(minifiedAggregatedPath);
+                String minifiedAggregatedPath = "/generated-resources/" + aggregatedKey + ".min." + type;
+                String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedPath);
                 File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
                 if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
-                    new File(context.getRealPath("/resources")).mkdirs();
+                    new File(getFileSystemPath("/generated-resources")).mkdirs();
 
-                    List<String> minifiedPaths = new ArrayList<String>();
-                    for (String path : pathsToAggregate) {
-                        File f = new File(context.getRealPath(path));
-                        String minifiedPath = "/resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
-                        File minifiedFile = new File(context.getRealPath(minifiedPath));
+                    LinkedHashMap<String,String> minifiedPaths = new LinkedHashMap<String, String>();
+                    for (Map.Entry<String, org.springframework.core.io.Resource> entry : pathsToAggregate.entrySet()) {
+                        final String path = entry.getKey();
+                        String minifiedPath = "/generated-resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
+                        File minifiedFile = new File(getFileSystemPath(minifiedPath));
+                        final org.springframework.core.io.Resource f = entry.getValue();
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
-                            Reader reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                            Writer writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                            Reader reader = new InputStreamReader(f.getInputStream(), "UTF-8");
+                            Writer writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                             boolean compress = true;
                             if (compress && type.equals("css")) {
                                 CssCompressor compressor = new CssCompressor(reader);
@@ -523,8 +542,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     logger.error("Error when minifying " + path, e);
                                     IOUtils.closeQuietly(reader);
                                     IOUtils.closeQuietly(writer);
-                                    reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                                    writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                                    reader = new InputStreamReader(f.getInputStream(), "UTF-8");
+                                    writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                                     IOUtils.copy(reader, writer);
                                 }
                             } else {
@@ -541,26 +560,26 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                             IOUtils.closeQuietly(reader);
                             IOUtils.closeQuietly(writer);
                         }
-                        minifiedPaths.add(minifiedPath);
+                        minifiedPaths.put(path, minifiedPath);
                     }
 
                     try {
                         OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(minifiedAggregatedRealPath));
                         try {
-                            for (String minifiedFile : minifiedPaths) {
+                            for (Map.Entry<String, String> entry : minifiedPaths.entrySet()) {
                                 if (type.equals("js")) {
                                     outMerged.write("//".getBytes());
-                                    outMerged.write(minifiedFile.getBytes());
+                                    outMerged.write(entry.getValue().getBytes());
                                     outMerged.write("\n".getBytes());
                                 }
-                                InputStream is = new FileInputStream(context.getRealPath(minifiedFile));
+                                InputStream is = new FileInputStream(getFileSystemPath(entry.getValue()));
                                 if (type.equals("css")) {
                                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                     IOUtils.copy(is, stream);
                                     IOUtils.closeQuietly(is);
                                     String s = stream.toString("UTF-8");
 
-                                    String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/");
+                                    String url = StringUtils.substringBeforeLast(entry.getKey(), "/");
                                     s = URL_PATTERN_1.matcher(s).replaceAll("url(");
                                     s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/$1");
                                     s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url + "/$1");
@@ -592,7 +611,81 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return newCss;
     }
 
-    public String generateAggregateName(List<String> m) {
+    private String getFileSystemPath(String minifiedAggregatedPath) {
+        return SettingsBean.getInstance().getJahiaVarDiskPath() + minifiedAggregatedPath;
+    }
+
+    private org.springframework.core.io.Resource getResourceFromFile(org.springframework.core.io.Resource r, String workspace, final String fFilePath) {
+        try {
+            final JCRNodeWrapper contentNode = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(fFilePath);
+            r = new org.springframework.core.io.Resource() {
+                @Override
+                public boolean exists() {
+                    return true;
+                }
+
+                @Override
+                public boolean isReadable() {
+                    return false;
+                }
+
+                @Override
+                public boolean isOpen() {
+                    return false;
+                }
+
+                @Override
+                public URL getURL() throws IOException {
+                    return null;
+                }
+
+                @Override
+                public URI getURI() throws IOException {
+                    return null;
+                }
+
+                @Override
+                public File getFile() throws IOException {
+                    return null;
+                }
+
+                @Override
+                public long contentLength() throws IOException {
+                    return contentNode.getFileContent().getContentLength();
+                }
+
+                @Override
+                public long lastModified() throws IOException {
+                    return contentNode.getLastModifiedAsDate().getTime();
+                }
+
+                @Override
+                public org.springframework.core.io.Resource createRelative(String relativePath) throws IOException {
+                    return null;
+                }
+
+                @Override
+                public String getFilename() {
+                    return contentNode.getName();
+                }
+
+                @Override
+                public String getDescription() {
+                    return null;
+                }
+
+                @Override
+                public InputStream getInputStream() throws IOException {
+                    return contentNode.getFileContent().downloadFile();
+                }
+            };
+        } catch (RepositoryException e) {
+
+        }
+        return r;
+    }
+
+    public String generateAggregateName(Collection<String> m) {
         StringBuilder sb = new StringBuilder();
         for (String s1 : m) {
             sb.append(s1);

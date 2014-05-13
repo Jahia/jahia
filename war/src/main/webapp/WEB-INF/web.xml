@@ -513,6 +513,13 @@
     </servlet>
 
     <servlet>
+        <servlet-name>StaticFiles</servlet-name>
+        <servlet-class>org.jahia.services.content.files.StaticFileServlet</servlet-class>
+        <load-on-startup>99</load-on-startup>
+    </servlet>
+
+
+    <servlet>
         <servlet-name>ValidateTicket</servlet-name>
         <servlet-class>org.jahia.bin.ValidateTicket</servlet-class>
     </servlet>
@@ -681,6 +688,11 @@
     <servlet-mapping>
         <servlet-name>Files</servlet-name>
         <url-pattern>/files/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>StaticFiles</servlet-name>
+        <url-pattern>/generated-resources/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

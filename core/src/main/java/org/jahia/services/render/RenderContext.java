@@ -69,17 +69,6 @@
  */
 package org.jahia.services.render;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -93,6 +82,11 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * Template rendering context with the information about current request/response pair and optional template parameters.
@@ -118,12 +112,12 @@ public class RenderContext {
     private String workspace = "default";
 
     private Set<String> displayedModules = new HashSet<String>();
-    
+
     private String redirect;
-    
+
     private String contentType;
 
-    private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
+    private Map<String, Map<String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String, Integer>>();
 
     private boolean ajaxRequest = false;
     private Resource ajaxResource = null;
@@ -257,12 +251,12 @@ public class RenderContext {
         return mainResource;
     }
 
-	public String getContentType() {
-    	return contentType;
+    public String getContentType() {
+        return contentType;
     }
 
-	public void setContentType(String contentType) {
-    	this.contentType = contentType;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public Set<String> getRenderedPaths() {
@@ -280,15 +274,15 @@ public class RenderContext {
     public Locale getUILocale() {
         if (uiLocale == null) {
             Locale locale = null;
-            if(JahiaUserManagerService.isNotGuest(getUser())) {
+            if (JahiaUserManagerService.isNotGuest(getUser())) {
                 locale = UserPreferencesHelper.getPreferredLocale(getUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
             }
-            if (locale == null && mainResource!=null) {
-                    locale = getMainResourceLocale();
+            if (locale == null && mainResource != null) {
+                locale = getMainResourceLocale();
             }
             uiLocale = locale;
-            if(uiLocale!=null) {
-                request.getSession(false).setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
+            if (uiLocale != null) {
+                request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
             }
         }
         return uiLocale;
@@ -296,7 +290,7 @@ public class RenderContext {
 
     public Locale getFallbackLocale() {
         if (site != null) {
-            return site.isMixLanguagesActive()? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()):null;
+            return site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()) : null;
         }
         return null;
     }
@@ -349,6 +343,7 @@ public class RenderContext {
 
     /**
      * Returns the currently active channel
+     *
      * @return
      */
     public Channel getChannel() {
@@ -357,6 +352,7 @@ public class RenderContext {
 
     /**
      * Sets the currently active channel.
+     *
      * @param channel a Channel containing the value for the currently active channel
      */
     public void setChannel(Channel channel) {
@@ -371,7 +367,7 @@ public class RenderContext {
      */
     public boolean isVisible(JCRNodeWrapper node) throws RepositoryException {
         if (editModeConfig != null) {
-            if (editModeConfig.getBypassModeForTypes() != null && !editModeConfig.getBypassModeForTypes().isEmpty() && isNodeOfType(mainResource.getNode(),editModeConfig.getBypassModeForTypes())) {
+            if (editModeConfig.getBypassModeForTypes() != null && !editModeConfig.getBypassModeForTypes().isEmpty() && isNodeOfType(mainResource.getNode(), editModeConfig.getBypassModeForTypes())) {
                 return true;
             }
 
@@ -389,9 +385,9 @@ public class RenderContext {
      * @return true if the node is editable (in editableTypes or without nonEditableTypes)
      * @throws RepositoryException
      */
-    public boolean isEditable( JCRNodeWrapper node) throws RepositoryException{
+    public boolean isEditable(JCRNodeWrapper node) throws RepositoryException {
         if (editModeConfig != null) {
-            if (editModeConfig.getBypassModeForTypes() != null && !editModeConfig.getBypassModeForTypes().isEmpty() && isNodeOfType(mainResource.getNode(),editModeConfig.getBypassModeForTypes())) {
+            if (editModeConfig.getBypassModeForTypes() != null && !editModeConfig.getBypassModeForTypes().isEmpty() && isNodeOfType(mainResource.getNode(), editModeConfig.getBypassModeForTypes())) {
                 return false;
             }
 

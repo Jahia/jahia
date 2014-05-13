@@ -175,6 +175,12 @@ public class ModulesTabItem extends BrowseTabItem {
         toolbar = new ActionToolbar(config.getTableContextMenu(), linker);
         toolbar.createToolBar();
         layoutContainer.add(toolbar);
+
+        tab.remove(layoutContainer);
+        VBoxLayoutData treeVBoxData = new VBoxLayoutData();
+        treeVBoxData.setFlex(0);
+        tab.insert(layoutContainer, 0, treeVBoxData);
+
         checkIfCurrentNodeIsModule();
     }
 

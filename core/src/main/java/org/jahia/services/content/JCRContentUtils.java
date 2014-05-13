@@ -69,48 +69,8 @@
  */
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.EDIT_WORKSPACE;
-import static org.jahia.api.Constants.LIVE_WORKSPACE;
-import static org.jahia.api.Constants.MARKED_FOR_DELETION_LOCK_USER;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.Principal;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.InvalidSerializedDataException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RangeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
-import javax.jcr.nodetype.ItemDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.servlet.ServletContext;
-
+import com.google.common.collect.ImmutableSet;
+import com.ibm.icu.text.Normalizer;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.CharUtils;
@@ -147,8 +107,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
-import com.google.common.collect.ImmutableSet;
-import com.ibm.icu.text.Normalizer;
+import javax.jcr.*;
+import javax.jcr.nodetype.*;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.servlet.ServletContext;
+import java.io.*;
+import java.security.Principal;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+
+import static org.jahia.api.Constants.*;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -190,12 +160,13 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     public static boolean check(String icon) {
+        String moduleId = StringUtils.substringBefore(icon, "/");
+        String pathAfter = StringUtils.substringAfter(icon, "/");
+        JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
+        icon = module.getId() + "/" + module.getVersion() + "/" + pathAfter;
+
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
-            String moduleId = StringUtils.substringBefore(icon, "/");
-            String pathAfter = StringUtils.substringAfter(icon, "/");
-            JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
-            icon = module.getId() + "/" + module.getVersion() + "/" + pathAfter;
             Resource r = module.getResource(pathAfter + ".png");
             present = r != null && r.exists();
             iconsPresence.put(icon, present);

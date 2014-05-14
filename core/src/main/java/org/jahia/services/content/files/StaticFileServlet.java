@@ -17,18 +17,23 @@ package org.jahia.services.content.files;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -41,8 +46,15 @@ import java.util.zip.GZIPOutputStream;
  */
 public class StaticFileServlet extends HttpServlet {
 
+    private static final long serialVersionUID = 7704264638970146054L;
+    
     // Constants ----------------------------------------------------------------------------------
 
+    private static final Pattern PATTERN_ACCEPT_HEADER_REPLACE = Pattern.compile("/.*$");
+    private static final Pattern PATTERN_ACCEPT_HEADER_SPLIT = Pattern.compile("\\s*(,|;)\\s*");
+    private static final Pattern PATTERN_MATCH_HEADER_SPLIT = Pattern.compile("\\s*,\\s*");
+    private static final Pattern PATTERN_RANGE = Pattern.compile("^bytes=\\d*-\\d*(,\\d*-\\d*)*$");
+    
     private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
     private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
@@ -50,18 +62,19 @@ public class StaticFileServlet extends HttpServlet {
     // Properties ---------------------------------------------------------------------------------
 
     private String basePath;
+    
+    private boolean enableGzip;
 
     // Actions ------------------------------------------------------------------------------------
 
-    /**
-     * Initialize the servlet.
-     *
-     * @see HttpServlet#init().
-     */
-    public void init() throws ServletException {
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
 
         // Get base path (path to get all resources from) as init parameter.
-        this.basePath = SettingsBean.getInstance().getJahiaVarDiskPath() + "/generated-resources";
+        this.basePath = SettingsBean.getInstance().getJahiaVarDiskPath() + File.separator + StringUtils.defaultString(config.getInitParameter("generated-resources-dir-name"), "generated-resources");
+        
+        enableGzip = Boolean.valueOf(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
     }
 
     /**
@@ -179,7 +192,7 @@ public class StaticFileServlet extends HttpServlet {
         if (range != null) {
 
             // Range header should match format "bytes=n-n,n-n,n-n...". If not, then return 416.
-            if (!range.matches("^bytes=\\d*-\\d*(,\\d*-\\d*)*$")) {
+            if (!PATTERN_RANGE.matcher(range).matches()) {
                 response.setHeader("Content-Range", "bytes */" + length); // Required in 416.
                 response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
                 return;
@@ -201,7 +214,7 @@ public class StaticFileServlet extends HttpServlet {
 
             // If any valid If-Range header, then process each part of byte range.
             if (ranges.isEmpty()) {
-                for (String part : range.substring(6).split(",")) {
+                for (String part : Patterns.COMMA.split(range.substring(6))) {
                     // Assuming a file with length of 100, the following examples returns bytes at:
                     // 50-80 (50 to 80), 40- (40 to length=100), -20 (length-20=80 to length=100).
                     long start = sublong(part, 0, part.indexOf("-"));
@@ -246,7 +259,7 @@ public class StaticFileServlet extends HttpServlet {
         // the browser and expand content type with the one and right character encoding.
         if (contentType.startsWith("text")) {
             String acceptEncoding = request.getHeader("Accept-Encoding");
-            acceptsGzip = acceptEncoding != null && accepts(acceptEncoding, "gzip");
+            acceptsGzip = enableGzip && acceptEncoding != null && accepts(acceptEncoding, "gzip");
             contentType += ";charset=UTF-8";
         }
 
@@ -358,10 +371,10 @@ public class StaticFileServlet extends HttpServlet {
      * @return True if the given accept header accepts the given value.
      */
     private static boolean accepts(String acceptHeader, String toAccept) {
-        String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
+        String[] acceptValues = PATTERN_ACCEPT_HEADER_SPLIT.split(acceptHeader);
         Arrays.sort(acceptValues);
         return Arrays.binarySearch(acceptValues, toAccept) > -1
-                || Arrays.binarySearch(acceptValues, toAccept.replaceAll("/.*$", "/*")) > -1
+                || Arrays.binarySearch(acceptValues, PATTERN_ACCEPT_HEADER_REPLACE.matcher(toAccept).replaceAll("/*")) > -1
                 || Arrays.binarySearch(acceptValues, "*/*") > -1;
     }
 
@@ -373,7 +386,7 @@ public class StaticFileServlet extends HttpServlet {
      * @return True if the given match header matches the given value.
      */
     private static boolean matches(String matchHeader, String toMatch) {
-        String[] matchValues = matchHeader.split("\\s*,\\s*");
+        String[] matchValues = PATTERN_MATCH_HEADER_SPLIT.split(matchHeader);
         Arrays.sort(matchValues);
         return Arrays.binarySearch(matchValues, toMatch) > -1
                 || Arrays.binarySearch(matchValues, "*") > -1;

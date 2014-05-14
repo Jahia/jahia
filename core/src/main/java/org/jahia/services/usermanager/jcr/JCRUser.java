@@ -183,10 +183,10 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      */
     public Properties getProperties() {
         if (properties == null || properties.isEmpty()) {
-            properties = new Properties();
             try {
-                return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
+                properties = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
                     public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        Properties properties = new Properties();
                         JCRUserNode jcrUserNode = (JCRUserNode) getNode(session);
                         PropertyIterator iterator = jcrUserNode.getProperties();
                         for (; iterator.hasNext();) {

@@ -130,7 +130,6 @@
             &lt;c:if test="${user:isPropertyEditable(currentUserNode,'j:firstName')}"/&gt;
         </example>
     </function>
-<<<<<<< .working
 
     <function>
         <description>
@@ -170,7 +169,6 @@
             &lt;/c:if/&gt;
         </example>
     </function>
-=======
 
     <function>
         <description>
@@ -183,5 +181,4 @@
             &lt;c:if test="${user:isAssignable(task)}"/&gt;
         </example>
     </function>
->>>>>>> .merge-right.r49755
 </taglib>

@@ -167,8 +167,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
         Boolean present = iconsPresence.get(icon);
         if (present == null) {
-            Resource r = module.getResource(pathAfter + ".png");
-            present = r != null && r.exists();
+            present = module.resourceExists(pathAfter + ".png");
             iconsPresence.put(icon, present);
         }
         return present;

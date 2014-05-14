@@ -806,6 +806,7 @@ class NodeHelper {
                 n.setSiteUUID(site.getUUID());
                 n.setAclContext("site:" + site.getName());
                 n.setSiteKey(site.getSiteKey());
+                n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
             } else {
                 n.setAclContext("sharedOnly");
             }

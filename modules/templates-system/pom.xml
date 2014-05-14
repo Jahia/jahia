@@ -110,6 +110,7 @@
           <instructions>
             <Jahia-Depends>contentRetrieval,default,default-skins,facets,grid,profile,serverSettings,skins,tabularList,tags</Jahia-Depends>
             <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
+            <Jahia-Block-Edit-Mode>true</Jahia-Block-Edit-Mode>
           </instructions>
         </configuration>
       </plugin>

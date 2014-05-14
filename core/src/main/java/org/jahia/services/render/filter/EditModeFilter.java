@@ -76,14 +76,19 @@ import net.htmlparser.jericho.StartTag;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
+import org.jahia.utils.Patterns;
 import org.jahia.utils.StringResponseWrapper;
 
+import javax.jcr.AccessDeniedException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * This filter handles edit modes requests.
  */
 public class EditModeFilter extends AbstractFilter {
+
+    private List<String> blockableModes;
 
     /**
      * Handle edit mode frame requests : open external url in new window
@@ -125,6 +130,11 @@ public class EditModeFilter extends AbstractFilter {
      */
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        if (blockableModes != null && blockableModes.contains(renderContext.getMode())
+                && resource.getNode().getResolveSite().getTemplatePackage().isEditModeBlocked()) {
+            throw new AccessDeniedException("This site is not accessible in Edit mode.");
+        }
+
         if (!renderContext.getServletPath().endsWith("frame")) {
             StringResponseWrapper wrapper = new StringResponseWrapper(renderContext.getResponse());
             renderContext.getRequest().setAttribute("currentResource", resource);
@@ -135,5 +145,9 @@ public class EditModeFilter extends AbstractFilter {
             return wrapper.getString();
         }
         return super.prepare(renderContext, resource, chain);
+    }
+
+    public void setBlockableModes(String blockableModes) {
+        this.blockableModes = Arrays.asList(Patterns.COMMA.split(blockableModes));
     }
 }

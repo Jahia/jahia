@@ -104,6 +104,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private boolean filterOnAvailableSources = false;
 
     private List<String> root = Arrays.asList("/sites/*");
+    private boolean filterEditModeBlockedSites = false;
 
     public void setRoot(List<String> root) {
         this.root = root;
@@ -160,7 +161,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private void refreshSitesList(final Linker linker) {
         List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
-            if (!n.getName().equals("systemsite")) {
+            if (!filterEditModeBlockedSites || !(Boolean)n.get(GWTJahiaNode.EDIT_MODE_BLOCKED)) {
                 if (!filterOnAvailableSources || n.get("j:sourcesFolder") != null) {
                     sites.add(n);
                 }
@@ -298,5 +299,9 @@ public class SiteSwitcherActionItem extends BaseActionItem {
             }
         }
         sitesCombo.setValue(null);
+    }
+
+    public void setFilterEditModeBlockedSites(boolean filterEditModeBlockedSites) {
+        this.filterEditModeBlockedSites = filterEditModeBlockedSites;
     }
 }

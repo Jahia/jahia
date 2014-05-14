@@ -81,6 +81,7 @@
         <property name="description" value="Filter that embeds edit mode frame around content"/>
         <property name="applyOnEditMode" value="true"/>
         <property name="applyOnConfigurations" value="page"/>
+        <property name="blockableModes" value="edit,contribute"/>
     </bean>
 
     <bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">

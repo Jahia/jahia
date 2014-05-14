@@ -132,6 +132,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String SITE_MANDATORY_LANGUAGES = "siteMandatoryLanguages";
     public static final String RESOURCE_BUNDLE = "resourceBundle";
     public static final String INCLUDE_CHILDREN = "includeChildren";
+    public static final String EDIT_MODE_BLOCKED = "editModeBlocked";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PERMISSIONS, LOCKS_INFO, PUBLICATION_INFO, SUBNODES_CONSTRAINTS_INFO);
@@ -144,7 +145,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> DEFAULT_SITE_FIELDS =
             Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO,"j:resolvedDependencies");
 
-    public static final List<String> DEFAULT_SITEMAP_FIELDS = Arrays.asList("j:versionInfo");
+    public static final List<String> DEFAULT_SITEMAP_FIELDS = Arrays.asList("j:versionInfo", EDIT_MODE_BLOCKED);
 
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,

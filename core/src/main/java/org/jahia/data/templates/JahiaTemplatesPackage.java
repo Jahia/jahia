@@ -193,6 +193,8 @@ public class JahiaTemplatesPackage {
 
     private String forgeUrl;
 
+    private boolean editModeBlocked;
+
     /**
      * Initializes an instance of this class.
      * 
@@ -1018,5 +1020,13 @@ public class JahiaTemplatesPackage {
      */
     public void setForgeUrl(String forgeUrl) {
         this.forgeUrl = forgeUrl;
+    }
+
+    public boolean isEditModeBlocked() {
+        return editModeBlocked;
+    }
+
+    public void setEditModeBlocked(boolean editModeBlocked) {
+        this.editModeBlocked = editModeBlocked;
     }
 }

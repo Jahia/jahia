@@ -185,7 +185,7 @@ public class ImportJob extends BackgroundJob {
             importContent(parentPath, replaceContent, item.getFile(), contentType);
         } catch (Exception e) {
             logger.error("Error when importing", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Error when importing", e);
         } finally {
             item.dispose();
         }

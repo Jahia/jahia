@@ -69,9 +69,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.Messages;
-import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -95,6 +92,9 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.Patterns;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
@@ -327,7 +327,7 @@ public class PortletHelper {
             throw e;
         } catch (Exception e) {
             logger.error("Unable to create an RSS portlet due to: ", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.create.portlet.instance", uiLocale, e.getLocalizedMessage()));
         }
     }
 

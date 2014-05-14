@@ -70,28 +70,31 @@
 package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.slf4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
-import com.google.common.collect.Lists;
-
-import javax.jcr.*;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
@@ -225,7 +228,7 @@ public class ContentDefinitionHelper {
                     item = prop;
                 }
                 item.setAutoCreated(overrideDef.isAutoCreated());
-                item.setLabel(def.getLabel(uiLocale,nodeType));
+                item.setLabel(def.getLabel(uiLocale, nodeType));
                 item.setMandatory(overrideDef.isMandatory());
                 item.setHidden(overrideDef.isHidden());
                 item.setName(overrideDef.getName());
@@ -376,7 +379,7 @@ public class ContentDefinitionHelper {
                         }
                     }
                     if (upperLimit != null) {
-                        prop.setMaxValue(String.valueOf(upperInclusive ? upperLimit.getTimeInMillis() : upperLimit.getTimeInMillis()-1));
+                        prop.setMaxValue(String.valueOf(upperInclusive ? upperLimit.getTimeInMillis() : upperLimit.getTimeInMillis() - 1));
                     }
                     if (lowerLimit != null) {
                         prop.setMinValue(String.valueOf(lowerInclusive ? lowerLimit.getTimeInMillis() : lowerLimit.getTimeInMillis() + 1));
@@ -438,15 +441,14 @@ public class ContentDefinitionHelper {
      * sub-types of the specified base type or that are allowed to be created in
      * the specified parent node (if the baseType parameter is null).
      *
-     *
-     * @param baseTypes the node type name to find sub-types
-     * @param ctx       current processing context instance
+     * @param baseTypes            the node type name to find sub-types
+     * @param ctx                  current processing context instance
      * @param uiLocale
      * @param displayStudioElement
      * @return a list of node types with name and label populated that are the
-     *         sub-types of the specified base type or that are allowed to be
-     *         created in the specified parent node (if the baseType parameter
-     *         is null)
+     * sub-types of the specified base type or that are allowed to be
+     * created in the specified parent node (if the baseType parameter
+     * is null)
      */
     public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getContentTypes(List<String> baseTypes, Map<String, Object> ctx,
                                                                          Locale uiLocale, boolean includeSubTypes, boolean displayStudioElement) {
@@ -488,9 +490,9 @@ public class ContentDefinitionHelper {
                     ExtendedNodeType nodeType = (ExtendedNodeType) subtypes.next();
                     if (nodeTypes.contains(nodeType)) {
                         final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, uiLocale);
-                        if(!displayStudioElement && !Arrays.asList(nodeType.getDeclaredSupertypeNames()).contains("jmix:studioOnly")) {
+                        if (!displayStudioElement && !Arrays.asList(nodeType.getDeclaredSupertypeNames()).contains("jmix:studioOnly")) {
                             l.add(nt);
-                        } else if(displayStudioElement) {
+                        } else if (displayStudioElement) {
                             l.add(nt);
                         }
                         nodeTypes.remove(nodeType);
@@ -503,7 +505,7 @@ public class ContentDefinitionHelper {
             if (!nodeTypes.isEmpty()) {
                 List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
                 for (ExtendedNodeType nodeType : nodeTypes) {
-                    if(!displayStudioElement && !Arrays.asList(nodeType.getDeclaredSupertypeNames()).contains("jmix:studioOnly")) {
+                    if (!displayStudioElement && !Arrays.asList(nodeType.getDeclaredSupertypeNames()).contains("jmix:studioOnly")) {
                         final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, uiLocale);
                         l.add(nt);
                     }
@@ -769,7 +771,7 @@ public class ContentDefinitionHelper {
                                 for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
                                     if (objectEntry.getKey() == null || objectEntry.getValue() == null) {
                                         logger.error("Null value : " + objectEntry.getKey() + " / " +
-                                                     objectEntry.getValue());
+                                                objectEntry.getValue());
                                     } else {
                                         displayBean.set(objectEntry.getKey(), objectEntry.getValue());
                                     }
@@ -804,7 +806,7 @@ public class ContentDefinitionHelper {
     /**
      * Get both dynamic and static default values for the specified types and locales
      *
-     * @param items a list of nodeTypes
+     * @param items   a list of nodeTypes
      * @param locales a list of locales
      * @return the default values per type, per locale
      * @throws RepositoryException
@@ -842,7 +844,6 @@ public class ContentDefinitionHelper {
      * Returns a tree of node types and sub-types with name and label populated that are the
      * sub-types of the specified node types.
      *
-     *
      * @param nodeTypes
      * @param excludedNodeTypes
      * @param includeSubTypes
@@ -867,7 +868,7 @@ public class ContentDefinitionHelper {
                 }
             }
 
-            for (int i = 0; i< packages.size(); i++) {
+            for (int i = 0; i < packages.size(); i++) {
                 JahiaTemplatesPackage aPackage = packages.get(i);
                 if (aPackage != null) {
                     for (JahiaTemplatesPackage dep : aPackage.getDependencies()) {
@@ -880,7 +881,7 @@ public class ContentDefinitionHelper {
 
             List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
             for (JahiaTemplatesPackage pkg : packages) {
-                if  (pkg != null) {
+                if (pkg != null) {
                     for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(pkg.getId()); nti.hasNext(); ) {
                         ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
                         if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {
@@ -898,7 +899,7 @@ public class ContentDefinitionHelper {
                 }
             }
 
-            Map<ExtendedNodeType,List<ExtendedNodeType>> r = new HashMap<ExtendedNodeType, List<ExtendedNodeType>>();
+            Map<ExtendedNodeType, List<ExtendedNodeType>> r = new HashMap<ExtendedNodeType, List<ExtendedNodeType>>();
             for (ExtendedNodeType nt : types) {
                 if (!nt.isMixin() && !nt.isAbstract()) {
                     ExtendedNodeType parent = findFolder(nt);
@@ -930,10 +931,9 @@ public class ContentDefinitionHelper {
             return roots;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.translate", uiLocale, e.getLocalizedMessage()));
         }
     }
-
 
 
     private ExtendedNodeType findFolder(ExtendedNodeType nt) throws RepositoryException {
@@ -984,7 +984,7 @@ public class ContentDefinitionHelper {
         while (it.hasNext()) {
             ExtendedNodeType next = (ExtendedNodeType) it.next();
             if (superTypes.contains(next)) {
-                allowed = node.hasPermission("component-" + next.getName().replace(":","_"));
+                allowed = node.hasPermission("component-" + next.getName().replace(":", "_"));
                 // Keep only last (nearest) accessControllableContent mixin if type inherits from multiple ones, so continue looping
             }
         }

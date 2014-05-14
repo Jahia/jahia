@@ -98,7 +98,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -211,7 +210,7 @@ public class PublicationHelper {
             return infos;
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get publication status for node " + node.getPath() + ". Cause: " + e.getLocalizedMessage(), e);
         }
 
     }
@@ -291,7 +290,7 @@ public class PublicationHelper {
             }
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get publication status for nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -522,7 +521,7 @@ public class PublicationHelper {
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         } catch (SchedulerException e) {
             logger.error("repository exception", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get publish nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -540,7 +539,7 @@ public class PublicationHelper {
             publicationService.publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get publish nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -559,7 +558,7 @@ public class PublicationHelper {
             publicationService.unpublish(uuids);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get unpublish nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 

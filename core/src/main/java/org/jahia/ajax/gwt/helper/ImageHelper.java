@@ -131,7 +131,7 @@ public class ImageHelper {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.crop.image", uiLocale, e.getLocalizedMessage()));
         }
     }
 
@@ -165,7 +165,7 @@ public class ImageHelper {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.resize.image", uiLocale, e.getLocalizedMessage()));
         }
     }
 
@@ -199,7 +199,7 @@ public class ImageHelper {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.rotate.image", uiLocale, e.getLocalizedMessage()));
         }
     }
 

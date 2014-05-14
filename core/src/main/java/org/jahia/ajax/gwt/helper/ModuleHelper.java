@@ -69,12 +69,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.DistributionManagement;
@@ -101,9 +95,14 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Module life cycle related methods.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ModuleHelper {
@@ -171,7 +170,7 @@ public class ModuleHelper {
     }
 
     public GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, final String siteType, String sources,
-            JCRSessionWrapper session) throws GWTJahiaServiceException {
+                                     JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = templateManagerService.createModule(moduleName, artifactId, groupId, siteType,
                     sources != null ? new File(sources) : null, session);
@@ -179,7 +178,7 @@ public class ModuleHelper {
                     : null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot create module " + moduleName + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -189,7 +188,7 @@ public class ModuleHelper {
             templateManagerService.installModule(moduleName, sitePath, currentUserSession.getUser().getUsername());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot deploy module " + moduleName + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -200,7 +199,7 @@ public class ModuleHelper {
 
         String info = null;
         try {
-            Map<String,String> headers = new HashMap<String,String>();
+            Map<String, String> headers = new HashMap<String, String>();
             if (username != null && password != null) {
                 headers.put("Authorization", "Basic " + Base64.encode((username + ":" + password).getBytes()));
             }
@@ -220,7 +219,7 @@ public class ModuleHelper {
 
                 PomUtils.updateDistributionManagement(pomFile, obj.getString("forgeSettingsId"), obj.getString("forgeSettingsUrl"));
             } catch (JSONException e) {
-                throw new IOException("Cannot get info from Private App Store",e);
+                throw new IOException("Cannot get info from Private App Store", e);
             }
         } else {
             throw new IOException("Cannot connect to Private App Store server");
@@ -346,21 +345,15 @@ public class ModuleHelper {
 
     /**
      * Updates the module's pom.xml file with the specified Private App Store server details.
-     * 
      *
-     * @param module
-     *            the module to update distribution management information
-     * @param forgeUrl
-     *            the target Private App Store URL
-     * @param session
-     *            current JCR session
+     * @param module   the module to update distribution management information
+     * @param forgeUrl the target Private App Store URL
+     * @param session  current JCR session
      * @param username
-     *@param password @throws XmlPullParserException
-     *             in case of pom.xml parsing error
-     * @throws IOException
-     *             in case of an I/O failure
-     * @throws RepositoryException
-     *             when a repository access exception occurs
+     * @param password @throws XmlPullParserException
+     *                 in case of pom.xml parsing error
+     * @throws IOException         in case of an I/O failure
+     * @throws RepositoryException when a repository access exception occurs
      */
     public void updateForgeUrlForModule(String module, String forgeUrl,
                                         JCRSessionWrapper session, String username, String password) throws IOException, XmlPullParserException, RepositoryException {
@@ -388,23 +381,16 @@ public class ModuleHelper {
     /**
      * Updates the module's pom.xml file with the specified distribution server details.
      *
-     * @param module
-     *            the module to update distribution management information
-     * @param repositoryId
-     *            the server ID for the repository
-     * @param repositoryUrl
-     *            the target repository URL
-     * @param session
-     *            current JCR session
-     * @throws XmlPullParserException
-     *             in case of pom.xml parsing error
-     * @throws IOException
-     *             in case of an I/O failure
-     * @throws RepositoryException
-     *             when a repository access exception occurs
+     * @param module        the module to update distribution management information
+     * @param repositoryId  the server ID for the repository
+     * @param repositoryUrl the target repository URL
+     * @param session       current JCR session
+     * @throws XmlPullParserException in case of pom.xml parsing error
+     * @throws IOException            in case of an I/O failure
+     * @throws RepositoryException    when a repository access exception occurs
      */
     public void updateDistributionServerForModule(String module, String repositoryId, String repositoryUrl,
-            JCRSessionWrapper session) throws IOException, XmlPullParserException, RepositoryException {
+                                                  JCRSessionWrapper session) throws IOException, XmlPullParserException, RepositoryException {
         File sources = getSources(module, session);
         if (sources != null) {
             JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(module);
@@ -433,7 +419,7 @@ public class ModuleHelper {
         } else {
             throw new IOException("No SCM configured");
         }
-        
+
         return output;
     }
 

@@ -96,13 +96,11 @@ import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.LanguageCodeConverters;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-
 import java.security.Principal;
 import java.util.*;
 
@@ -168,7 +166,7 @@ public class WorkflowHelper {
             return info;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get workflow info for " + path + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -247,12 +245,9 @@ public class WorkflowHelper {
             JCRNodeWrapper node = session.getNode(path);
             Map<String, Object> map = getVariablesMap(properties);
             service.startProcessAsJob(Arrays.asList(node.getIdentifier()), session, def.getId(), def.getProvider(), map, comments);
-        } catch (SchedulerException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot start workflow " + path + ". Cause: " + e.getLocalizedMessage());
         }
     }
 
@@ -264,12 +259,9 @@ public class WorkflowHelper {
             Map<String, Object> map = getVariablesMap(properties);
             map.putAll(args);
             service.startProcessAsJob(uuids, session, def.getId(), def.getProvider(), map, comments);
-        } catch (SchedulerException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot start workflows " + uuids + ". Cause: " + e.getLocalizedMessage());
         }
     }
 
@@ -295,7 +287,7 @@ public class WorkflowHelper {
             service.assignAndCompleteTask(task.getId(), task.getProvider(), outcome.getName(), map, session.getUser());
         } catch (Exception e) {
             logger.error("Exception in task", e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot assign and complete task " + task.getName() + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -392,7 +384,7 @@ public class WorkflowHelper {
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get workflow history. Cause: " + e.getLocalizedMessage(), e);
         }
         return history;
     }
@@ -547,7 +539,7 @@ public class WorkflowHelper {
             return result;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get workflow rules for " + path + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -572,7 +564,7 @@ public class WorkflowHelper {
             return definitions;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get workflows for " + locale + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -626,7 +618,7 @@ public class WorkflowHelper {
             session.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot update workflow rules. Cause: " + e.getLocalizedMessage(), e);
         }
     }
 

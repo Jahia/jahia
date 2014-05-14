@@ -67,7 +67,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.helper; 
+package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
@@ -84,7 +84,8 @@ import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRQueryNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.render.*;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,6 @@ import org.springframework.util.CollectionUtils;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.*;
 
 /**
@@ -154,7 +154,7 @@ public class NavigationHelper {
             return gwtNodeChildren;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.ls", uiLocale, parentPath, e.getLocalizedMessage()));
         }
     }
 
@@ -376,7 +376,7 @@ public class NavigationHelper {
             return userNodes;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.retrieve.root.nodes", uiLocale, paths, e.getLocalizedMessage()));
         }
     }
 
@@ -498,7 +498,7 @@ public class NavigationHelper {
             }
             return null;
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot retrieve tag node " + name + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -506,7 +506,7 @@ public class NavigationHelper {
         try {
             return site.getNode("tags");
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot retrieve tags node. Cause: " + e.getLocalizedMessage(), e);
         }
     }
 

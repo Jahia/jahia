@@ -80,7 +80,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -421,7 +420,7 @@ public class UIConfigHelper {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.config.not.found", uiLocale, name, e.getLocalizedMessage()));
         }
     }
 
@@ -706,7 +705,7 @@ public class UIConfigHelper {
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.config.not.found", uiLocale, name, e.getLocalizedMessage()));
         }
     }
 

@@ -253,7 +253,7 @@ public class SchedulerHelper {
             Collections.sort(gwtJobList, JOB_COMPARATOR);
             return gwtJobList;
         } catch (Exception e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot retrieve jobs. Cause: " + e.getLocalizedMessage(), e);
         }
 
     }
@@ -262,7 +262,7 @@ public class SchedulerHelper {
         try {
             return scheduler.getScheduler().deleteJob(jobName, groupName);
         } catch (SchedulerException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot delete job " + jobName + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -270,7 +270,7 @@ public class SchedulerHelper {
         try {
             return Arrays.asList(scheduler.getScheduler().getJobGroupNames());
         } catch (SchedulerException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot get all job group names. Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -278,7 +278,7 @@ public class SchedulerHelper {
         try {
             return scheduler.deleteAllCompletedJobs();
         } catch (SchedulerException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException("Cannot delete completed jobs. Cause: " + e.getLocalizedMessage(), e);
         }
     }
 

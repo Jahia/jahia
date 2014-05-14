@@ -69,9 +69,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.tika.io.IOUtils;
@@ -83,11 +80,13 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.content.files.FileCacheManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Date;
@@ -209,7 +208,7 @@ public class VersioningHelper implements InitializingBean {
                                             .getOriginalFileName() : node.getName(), item
                                             .getContentType()));
                 } catch (FileNotFoundException e) {
-                    throw new GWTJahiaServiceException(e.getMessage());
+                    throw new GWTJahiaServiceException("Cannot add new version. Cause: " + e.getLocalizedMessage());
                 } finally {
                     IOUtils.closeQuietly(is);
                     item.dispose();

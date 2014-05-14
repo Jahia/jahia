@@ -89,7 +89,7 @@ public final class Messages {
 
     private static final String MISSING_RESOURCE = "???";
 
-    private static final Pattern RB_MACRO = Pattern.compile("##resourceBundle\\((.*)\\)##");
+    private static final Pattern RB_MACRO = Pattern.compile("##resourceBundle\\(([^\"#]*)\\)##");
 
     /**
      * Returns the formatted messages with placeholders substituted by argument values.

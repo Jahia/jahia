@@ -320,10 +320,10 @@ public class UIConfigHelper {
                 // get a title from bundle if available
                 String title = null;
                 if (config.getTitleKey() != null) {
-                   title =  getResources(config.getTitleKey(), locale, site, jahiaUser);
+                   title =  getResources(config.getTitleKey(), uiLocale, site, jahiaUser);
                 } else {
                    //read from JahiaInternalResource  
-                   title = getResources("label." + name, locale, site, jahiaUser);
+                   title = getResources("label." + name, uiLocale, site, jahiaUser);
                 }
                 if (title != null) {                
                    gwtConfig.setTitle(title);

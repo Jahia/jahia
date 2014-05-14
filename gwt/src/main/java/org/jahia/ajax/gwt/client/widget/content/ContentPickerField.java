@@ -190,9 +190,9 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                             config, multiple);
 
                             if (config.getTitle() != null) {
-                                w.setHeading(config.getTitle());
+                                w.setHeadingHtml(config.getTitle());
                             } else {
-                                w.setHeading(Messages.get("label." + config.getName(), config.getName()));
+                                w.setHeadingHtml(Messages.get("label." + config.getName(), config.getName()));
                             }
                             int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
 

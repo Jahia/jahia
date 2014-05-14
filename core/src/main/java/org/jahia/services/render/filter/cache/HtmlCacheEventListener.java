@@ -71,7 +71,6 @@ package org.jahia.services.render.filter.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.observation.EventImpl;
 import org.jahia.exceptions.JahiaException;
@@ -81,21 +80,16 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,11 +106,12 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     private ModuleCacheProvider cacheProvider;
     private AggregateCacheFilter aggregateCacheFilter;
+
     @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED + Event.NODE_REMOVED;
     }
-    
+
     @Override
     public boolean isDeep() {
         return false;
@@ -125,7 +120,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     @Override
     public String getPath() {
         return "(?!/jcr:system).*";
-    }      
+    }
 
     /**
      * This method is called when a bundle of events is dispatched.
@@ -133,7 +128,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
-        final int operationType = ((JCREventIterator)events).getOperationType();
+        final int operationType = ((JCREventIterator) events).getOperationType();
         if (logger.isDebugEnabled()) {
             logger.debug("{} events received. Operation type {}", events.getSize(), operationType);
         }
@@ -160,7 +155,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
                 final int type = event.getType();
                 if (path.contains("j:invalidLanguages")) {
-                    flushParent=true;
+                    flushParent = true;
                 }
                 if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
                     if (path.endsWith("/j:published")) {
@@ -171,33 +166,33 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     flushParent = true;
                 }
                 if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
-                    flushForVanityUrl=true;
+                    flushForVanityUrl = true;
                 }
                 if (path.contains("j:acl") && !path.endsWith("j:acl")) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
                     if (cacheKeyGenerator != null) {
 
-                        String nodeName = StringUtils.substringAfterLast(path,"/");
+                        String nodeName = StringUtils.substringAfterLast(path, "/");
 
                         String key = "";
                         if (nodeName.startsWith("GRANT_")) {
-                            key = StringUtils.substringAfter(path,"GRANT_");
+                            key = StringUtils.substringAfter(path, "GRANT_");
                         } else if (nodeName.startsWith("DENY_")) {
-                            key = StringUtils.substringAfter(path,"DENY_");
+                            key = StringUtils.substringAfter(path, "DENY_");
                         } else if (nodeName.startsWith("REF")) {
                             final int g = nodeName.indexOf("_g_");
                             final int u = nodeName.indexOf("_u_");
                             if (g == nodeName.lastIndexOf("_g_") && u == nodeName.lastIndexOf("_u_")) {
-                                key = nodeName.substring(Math.max(u+1,g+1));
+                                key = nodeName.substring(Math.max(u + 1, g + 1));
                             }
                         } else {
-                            System.out.println(" ??? "+nodeName);
+                            logger.warn("Cannot parse ACL event for : " + nodeName);
                         }
                         if (key.startsWith("u_")) {
                             key = "u:" + key.substring(2) + ":0";
                         } else if (key.startsWith("g_")) {
                             int siteId = getSiteId(path);
-                            key = "g:" + key.substring(2) + ":"+siteId;
+                            key = "g:" + key.substring(2) + ":" + siteId;
                         }
                         userGroupsKeyToFlush.add(key);
                     }
@@ -236,21 +231,21 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 if (path.endsWith("/j:requiredPermissionNames")) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
                     if (cacheKeyGenerator != null) {
-                        cacheKeyGenerator.flushPermissionCacheEntry(StringUtils.substringBeforeLast(path,"/j:requiredPermissionNames"),propagateToOtherClusterNodes);
+                        cacheKeyGenerator.flushPermissionCacheEntry(StringUtils.substringBeforeLast(path, "/j:requiredPermissionNames"), propagateToOtherClusterNodes);
                     }
                 }
                 path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
                 flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                 try {
-                    flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                    flushDependenciesOfPath(depCache, flushed, ((JCREventIterator) events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                 } catch (PathNotFoundException e) {
                     if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                        flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propagateToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getChildId().toString(), propagateToOtherClusterNodes);
                     }
                 }
                 flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
 
-                if(flushChilds) {
+                if (flushChilds) {
                     flushChildsDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
                 }
 
@@ -258,24 +253,24 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     path = StringUtils.substringBeforeLast(path, "/");
                     flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed, ((JCREventIterator) events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
-                        if (event instanceof EventImpl  && (((EventImpl) event).getParentId() != null)) {
+                        if (event instanceof EventImpl && (((EventImpl) event).getParentId() != null)) {
                             flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getParentId().toString(),
                                     propagateToOtherClusterNodes);
                         }
                     }
-                    flushRegexpDependenciesOfPath(regexpDepCache,path, propagateToOtherClusterNodes);
+                    flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
                 }
 
                 if (flushForVanityUrl) {
                     path = StringUtils.substringBeforeLast(path, "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE);
                     flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed, ((JCREventIterator) events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
                         if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                            flushDependenciesOfPath(depCache, flushed,((EventImpl)event).getChildId().toString(), propagateToOtherClusterNodes);
+                            flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getChildId().toString(), propagateToOtherClusterNodes);
                         }
                     }
                 }
@@ -322,7 +317,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 logger.debug("Flushing path: {}", path);
             }
             Set<String> deps = (Set<String>) element.getObjectValue();
-            if(deps.contains("ALL")){
+            if (deps.contains("ALL")) {
                 AggregateCacheFilter.flushNotCacheableFragment();
             } else {
                 for (String dep : deps) {
@@ -344,7 +339,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         @SuppressWarnings("unchecked")
         List<String> keys = depCache.getKeys();
         for (String key : keys) {
-            if(path.matches(key)) {
+            if (path.matches(key)) {
                 cacheProvider.invalidateRegexp(key, propagateToOtherClusterNodes);
             }
         }
@@ -360,7 +355,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         @SuppressWarnings("unchecked")
         List<String> keys = depCache.getKeys();
         for (String key : keys) {
-            if(key.startsWith(path)) {
+            if (key.startsWith(path)) {
                 cacheProvider.invalidate(key, propagateToOtherClusterNodes);
             }
         }

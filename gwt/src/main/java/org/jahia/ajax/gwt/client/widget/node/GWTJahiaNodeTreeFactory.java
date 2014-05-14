@@ -71,9 +71,11 @@ package org.jahia.ajax.gwt.client.widget.node;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.TreeStoreEvent;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
@@ -85,6 +87,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PathStorage;
@@ -167,7 +170,7 @@ public class GWTJahiaNodeTreeFactory {
         GWTJahiaNodeTreeGrid grid = new GWTJahiaNodeTreeGrid(getStore(), cm);
         grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         pathStorage.addStorageListener(grid);
-
+        loader.addLoadListener(new LoadMaskListener(grid));
         return grid;
     }
 
@@ -176,6 +179,7 @@ public class GWTJahiaNodeTreeFactory {
         panel.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         panel.setAutoSelect(false);
         pathStorage.addStorageListener(panel);
+        loader.addLoadListener(new LoadMaskListener(panel));
 
         return panel;
     }
@@ -242,6 +246,29 @@ public class GWTJahiaNodeTreeFactory {
 
     public void setShowOnlyNodesWithTemplates(boolean showOnlyNodesWithTemplates) {
         this.showOnlyNodesWithTemplates = showOnlyNodesWithTemplates;
+    }
+
+    private static class LoadMaskListener extends LoadListener {
+        private final Component grid;
+
+        public LoadMaskListener(Component grid) {
+            this.grid = grid;
+        }
+
+        @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            grid.mask(Messages.get("label.loading", "Loading") + "...", "x-mask-loading");
+        }
+
+        @Override
+        public void loaderLoadException(LoadEvent le) {
+            grid.unmask();
+        }
+
+        @Override
+        public void loaderLoad(LoadEvent le) {
+            grid.unmask();
+        }
     }
 
     /**

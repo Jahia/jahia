@@ -74,18 +74,27 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.observation.EventImpl;
-import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.ExternalEventListener;
-import org.jahia.services.content.JCREventIterator;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.*;
+import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SitesSettings;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 import java.util.HashSet;
 import java.util.List;
@@ -131,6 +140,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         final Cache depCache = cacheProvider.getDependenciesCache();
         final Cache regexpDepCache = cacheProvider.getRegexpDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
+
+        AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
+        final Set<String> userGroupsKeyToFlush = new HashSet<String>();
+
         while (events.hasNext()) {
             Event event = (Event) events.next();
             if (logger.isDebugEnabled()) {
@@ -160,18 +173,68 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
                     flushForVanityUrl=true;
                 }
-                if (path.contains("j:acl") || type == Event.NODE_MOVED) {
+                if (path.contains("j:acl") && !path.endsWith("j:acl")) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
-                    AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
                     if (cacheKeyGenerator != null) {
-                        cacheKeyGenerator.flushUsersGroupsKey(propagateToOtherClusterNodes);
+
+                        String nodeName = StringUtils.substringAfterLast(path,"/");
+
+                        String key = "";
+                        if (nodeName.startsWith("GRANT_")) {
+                            key = StringUtils.substringAfter(path,"GRANT_");
+                        } else if (nodeName.startsWith("DENY_")) {
+                            key = StringUtils.substringAfter(path,"DENY_");
+                        } else if (nodeName.startsWith("REF")) {
+                            final int g = nodeName.indexOf("_g_");
+                            final int u = nodeName.indexOf("_u_");
+                            if (g == nodeName.lastIndexOf("_g_") && u == nodeName.lastIndexOf("_u_")) {
+                                key = nodeName.substring(Math.max(u+1,g+1));
+                            }
+                        } else {
+                            System.out.println(" ??? "+nodeName);
+                        }
+                        if (key.startsWith("u_")) {
+                            key = "u:" + key.substring(2) + ":0";
+                        } else if (key.startsWith("g_")) {
+                            int siteId = getSiteId(path);
+                            key = "g:" + key.substring(2) + ":"+siteId;
+                        }
+                        userGroupsKeyToFlush.add(key);
+                    }
+                    flushParent = true;
+                    flushChilds = true;
+                }
+                if (type == Event.NODE_MOVED) {
+                    if (cacheKeyGenerator != null) {
+                        final String fPath = path;
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                            @Override
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                final QueryManagerWrapper queryManager = session.getWorkspace().getQueryManager();
+                                QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + fPath + "/')", Query.JCR_SQL2).execute();
+                                for (JCRNodeWrapper nodeWrapper : result.getNodes()) {
+                                    String principal = nodeWrapper.getProperty("j:principal").getString();
+                                    if (principal.startsWith("u:")) {
+                                        principal += ":0";
+                                    } else {
+                                        int siteId = getSiteId(fPath);
+                                        JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, principal.substring(2));
+                                        if (group != null) {
+                                            siteId = group.getSiteID();
+                                        }
+                                        principal += ":" + siteId;
+                                    }
+                                    userGroupsKeyToFlush.add(principal);
+                                }
+                                return null;
+                            }
+                        });
                     }
                     flushParent = true;
                     flushChilds = true;
                 }
                 if (path.endsWith("/j:requiredPermissionNames")) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
-                    AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
                     if (cacheKeyGenerator != null) {
                         cacheKeyGenerator.flushPermissionCacheEntry(StringUtils.substringBeforeLast(path,"/j:requiredPermissionNames"),propagateToOtherClusterNodes);
                     }
@@ -216,11 +279,36 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         }
                     }
                 }
+
+                if (cacheKeyGenerator != null) {
+                    if (userGroupsKeyToFlush.contains("")) {
+                        cacheKeyGenerator.flushUsersGroupsKey(propagateToOtherClusterNodes);
+                    } else {
+                        for (String key : userGroupsKeyToFlush) {
+                            cacheKeyGenerator.flushUsersGroupsKey(key, propagateToOtherClusterNodes);
+                        }
+                    }
+                }
+
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
 
         }
+    }
+
+    private int getSiteId(String path) {
+        int siteId = 0;
+        if (path.startsWith("/sites/")) {
+            String siteKey = StringUtils.substringBetween(path, "/sites/", "/");
+            try {
+                JahiaSite site = JahiaSitesService.getInstance().getSiteByKey(siteKey);
+                siteId = site != null ? site.getID() : 0;
+            } catch (JahiaException e) {
+                //
+            }
+        }
+        return siteId;
     }
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propagateToOtherClusterNodes) {

@@ -76,10 +76,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSitesService;
@@ -427,6 +424,12 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             cache.removeAll(!propageToOtherClusterNodes);
             cache.flush();
             logger.debug("Flushed HTMLNodeUsersACLs cache");
+        }
+    }
+
+    public void flushUsersGroupsKey(String key, boolean propageToOtherClusterNodes) {
+        synchronized (objForSync) {
+            cache.remove(key, !propageToOtherClusterNodes);
         }
     }
 

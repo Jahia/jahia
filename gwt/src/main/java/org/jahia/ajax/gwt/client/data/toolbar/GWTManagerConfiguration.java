@@ -131,6 +131,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private String searchBasePath = null;
 
     private boolean showOnlyNodesWithTemplates = false;
+    
+    private String title = null;
 
     private boolean editableGrid = false;
 
@@ -445,5 +447,13 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setDisplaySearchInDateMeta(boolean displaySearchInDateMeta) {
         this.displaySearchInDateMeta = displaySearchInDateMeta;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

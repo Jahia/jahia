@@ -316,6 +316,18 @@ public class UIConfigHelper {
                 logger.debug("Config. " + name + " found.");
                 GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
                 gwtConfig.setName(name);
+                
+                // get a title from bundle if available
+                String title = null;
+                if (config.getTitleKey() != null) {
+                   title =  getResources(config.getTitleKey(), locale, site, jahiaUser);
+                } else {
+                   //read from JahiaInternalResource  
+                   title = getResources("label." + name, locale, site, jahiaUser);
+                }
+                if (title != null) {                
+                   gwtConfig.setTitle(title);
+                }
 
                 //  set all properties
                 gwtConfig.setNodeTypes(config.getNodeTypes());

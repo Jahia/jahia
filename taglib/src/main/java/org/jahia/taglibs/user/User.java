@@ -78,6 +78,8 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.security.Principal;
 import java.util.*;
 
@@ -89,39 +91,33 @@ import java.util.*;
 public class User {
 
     public static Boolean memberOf(String groups, RenderContext renderContext) {
-        boolean result = false;
-        if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+        final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            final int siteID = retrieveSiteId(renderContext);
             final String[] groupArray = StringUtils.split(groups, ',');
             for (String aGroupArray : groupArray) {
                 final String groupName = aGroupArray.trim();
-                if (JCRSessionFactory
-                        .getInstance()
-                        .getCurrentUser()
-                        .isMemberOfGroup(retrieveSiteId(renderContext),
-                                groupName)) {
+                if (currentUser.isMemberOfGroup(siteID, groupName)) {
                     return true;
                 }
             }
         }
-        return result;
+        return false;
     }
 
     public static Boolean notMemberOf(String groups, RenderContext renderContext) {
-        boolean result = true;
-        if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+        final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            final int siteID = retrieveSiteId(renderContext);
             final String[] groupArray = StringUtils.split(groups, ',');
             for (String aGroupArray : groupArray) {
                 String groupName = aGroupArray.trim();
-                if (JCRSessionFactory
-                        .getInstance()
-                        .getCurrentUser()
-                        .isMemberOfGroup(retrieveSiteId(renderContext),
-                                groupName)) {
+                if (currentUser.isMemberOfGroup(siteID, groupName)) {
                     return false;
                 }
             }
         }
-        return result;
+        return true;
     }
     
     public static Collection<Principal> getMembers(String group, RenderContext renderContext) {
@@ -170,6 +166,63 @@ public class User {
 
     public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
         return getUserMembership(user.getName());
+    }
+
+    /**
+     * Returns whether the current user can be assigned to the specified task (as represented by the specified JCRNodeWrapper).
+     *
+     * @param task a JCRNodeWrapper representing a WorkflowTask
+     * @return <code>true</code> if the user can be assigned to the task, <code>false</code> otherwise
+     * @throws RepositoryException
+     */
+    public static Boolean isAssignable(JCRNodeWrapper task) throws RepositoryException {
+        final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        if(user == null || task == null) {
+            return false;
+        } else {
+           if(task.hasProperty("candidates")) {
+               final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+               Set<String> userMembership = null;
+
+               // candidates are using the u:userName or g:groupName format
+               final String formattedUserName = "u:" + user.getName();
+
+               // look at all the candidates for assignment
+               final Value[] candidatesValues = task.getProperty("candidates").getValues();
+               for (Value value : candidatesValues) {
+                   final String candidate = value.getString();
+
+                   // first check if the current candidate is the user name
+                   if(candidate.equals(formattedUserName)) {
+                       // if it is, we're done
+                       return true;
+                   } else {
+                       // otherwise, check if we're looking at a group, extract the group name and check whether the user is a member of that group
+                       if(candidate.startsWith("g:")) {
+                           final String groupName = candidate.substring(2);
+
+                           if(userMembership == null) {
+                               // only init userMembership if we need it
+                               userMembership = new HashSet<String>(managerService.getUserMembership(user));
+                           }
+
+                           for (String membership : userMembership) {
+                               // memberships are groupName:siteId so check if we have a membership that starts with our group name first
+                               if(membership.startsWith(groupName)) {
+                                   // we need to make sure that we have a full match instead of a partial only
+                                   final String group = membership.substring(0, membership.indexOf(':'));
+                                   if(groupName.equals(group)) {
+                                       // we have a match!
+                                       return true;
+                                   }
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+        }
+        return false;
     }
 
     /**

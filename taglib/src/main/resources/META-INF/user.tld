@@ -130,6 +130,7 @@
             &lt;c:if test="${user:isPropertyEditable(currentUserNode,'j:firstName')}"/&gt;
         </example>
     </function>
+<<<<<<< .working
 
     <function>
         <description>
@@ -169,4 +170,18 @@
             &lt;/c:if/&gt;
         </example>
     </function>
+=======
+
+    <function>
+        <description>
+            Check whether the current user is assignable to the specified task (represented by the specified node)
+        </description>
+        <name>isAssignable</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.Boolean isAssignable(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>
+            &lt;c:if test="${user:isAssignable(task)}"/&gt;
+        </example>
+    </function>
+>>>>>>> .merge-right.r49755
 </taglib>

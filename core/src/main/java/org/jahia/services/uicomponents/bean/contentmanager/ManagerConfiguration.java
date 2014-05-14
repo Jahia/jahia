@@ -132,12 +132,12 @@ public class ManagerConfiguration implements Serializable {
 
     private String requiredPermission;
     private boolean showOnlyNodesWithTemplates = false;
-    
-    private String titleKey = null;
 
     private boolean editableGrid;
 
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
+    
+    private String titleKey = null;
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
@@ -420,7 +420,6 @@ public class ManagerConfiguration implements Serializable {
     public void setDisplaySearchInDateMeta(boolean displaySearchInDateMeta) {
         this.displaySearchInDateMeta = displaySearchInDateMeta;
     }
-<<<<<<< .working
 
 
     public boolean isEditableGrid() {
@@ -438,14 +437,13 @@ public class ManagerConfiguration implements Serializable {
     public void setComponentsPaths(List<String> componentsPaths) {
         this.componentsPaths = componentsPaths;
     }
-=======
-
+ 
     public String getTitleKey() {
         return titleKey;
     }
 
     public void setTitleKey(String titleKey) {
         this.titleKey = titleKey;
-    }
->>>>>>> .merge-right.r49752
+    }    
+    
 }

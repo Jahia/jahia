@@ -40,8 +40,8 @@
                         	var theTag = tagToAdds[i] != null ? jQuery.trim(tagToAdds[i]) : null;
                             if(theTag != null && theTag.length > 0){
                                 var tagDiv = $('<div></div>').attr('id', 'tag-' + theTag.replace(regExp, "-")).attr('style', 'display:inline');
-                                var tagDisplay = jQuery('<span class="taggeditem">' + theTag + '</span>');
-                                var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(\'' + theTag + '\')').attr('class', 'delete').attr('href', '#');
+                                var tagDisplay = jQuery('<span class="taggeditem"></span>').text(theTag);
+                                var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(this)').attr('class', 'delete').attr('href', '#');
                                 tagContainer.append(tagDiv);
                                 if (separator.length > 0) {
                                     tagDiv.append(separator);

@@ -27,11 +27,11 @@
         <c:if test="${not nodeLocked}">
         <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
         <script type="text/javascript">
-            function deleteTag(tag) {
+            function deleteTag(htmlDeleteLink) {
+                var tagItem = $(htmlDeleteLink).parent();
+                var tag = tagItem.find(".taggeditem").text();
                 $.post("${postUrl}.removeTag.do", {"tag":tag}, function(result) {
-				var regExp = /\s/g;
-				tag = tag.replace(regExp, "-");
-                    $("#tag-" + tag).hide();
+                    tagItem.hide();
                     if(result.size == "0"){
                         var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${boundComponent.identifier}');
                         $("#jahia-tags-${boundComponent.identifier}").append(spanNotYetTag)
@@ -53,10 +53,10 @@
                 <c:choose>
                     <c:when test="${not empty filteredTags}">
                         <c:forEach items="${filteredTags}" var="tag" varStatus="status">
-                            <div id="tag-${fn:replace(tag.value,' ','-')}" style="display:inline;">
+                            <div id="tag-${tag.key}" style="display:inline;">
                                 <span class="taggeditem">${fn:escapeXml(tag.value)}</span>
                                 <c:if test="${not nodeLocked}">
-                                <a class="delete" onclick="deleteTag('${tag.value}')"
+                                <a class="delete" onclick="deleteTag(this)"
                                    href="#"></a>${!status.last ? separator : ''}
                                 </c:if>
                             </div>

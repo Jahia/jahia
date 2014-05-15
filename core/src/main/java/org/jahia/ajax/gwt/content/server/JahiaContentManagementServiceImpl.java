@@ -666,7 +666,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         JCRSessionWrapper s = retrieveCurrentSession();
         try {
-            properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), s, getUILocale());
+            properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), s, getLocale());
             retrieveCurrentSession().save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
@@ -784,7 +784,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
         // save shared properties
-        saveProperties(Arrays.asList(node), sharedProperties, removedTypes, null);
+        saveProperties(Arrays.asList(node), sharedProperties, removedTypes, getLocale().toString());
         if (!removedTypes.isEmpty()) {
             try {
                 for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {

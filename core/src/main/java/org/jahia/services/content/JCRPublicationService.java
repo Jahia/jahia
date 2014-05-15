@@ -287,6 +287,8 @@ public class JCRPublicationService extends JahiaService {
                 public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                     JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {
                         public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                            sourceSession.setSkipValidation(true);
+                            destinationSession.setSkipValidation(true);
                             publish(checkedUuids, sourceSession, destinationSession, updateMetadata, comments);
                             return null;
                         }

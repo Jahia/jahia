@@ -121,7 +121,6 @@ import java.lang.reflect.Method;
 import java.security.AccessControlException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -161,6 +160,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> pathMapping = new LinkedHashMap<String, String>();
 
     private boolean isSystem;
+    private boolean skipValidation;
     private boolean isCurrentUserSession = false;
     private Date versionDate;
 
@@ -171,7 +171,7 @@ public class JCRSessionWrapper implements Session {
 
     private Exception thisSessionTrace;
     protected UUID uuid;
-    private static Map<UUID,JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<UUID,JCRSessionWrapper>();
+    private static Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<UUID, JCRSessionWrapper>();
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
                              JCRSessionFactory sessionFactory, Locale fallbackLocale) {
@@ -212,12 +212,20 @@ public class JCRSessionWrapper implements Session {
         return isSystem;
     }
 
+    public boolean isSkipValidation() {
+        return skipValidation;
+    }
+
+    public void setSkipValidation(boolean skipValidation) {
+        this.skipValidation = skipValidation;
+    }
+
     public Object getAttribute(String s) {
-        return null;  
+        return null;
     }
 
     public String[] getAttributeNames() {
-        return new String[0];  
+        return new String[0];
     }
 
     public JCRWorkspaceWrapper getWorkspace() {
@@ -265,14 +273,14 @@ public class JCRSessionWrapper implements Session {
                 }
                 Node n = session.getNodeByIdentifier(uuid);
                 JCRNodeWrapper wrapper = null;
-                if (checkVersion  && (versionDate != null || versionLabel != null)) {
+                if (checkVersion && (versionDate != null || versionLabel != null)) {
                     JCRNodeWrapper frozen = getFrozenVersionAsRegular(n, provider, false);
                     if (frozen != null) {
                         wrapper = frozen;
-                    } 
-                } 
+                    }
+                }
                 if (wrapper == null) {
-                    wrapper = provider.getNodeWrapper(n, this);    
+                    wrapper = provider.getNodeWrapper(n, this);
                 }
                 sessionCacheByIdentifier.put(uuid, wrapper);
                 sessionCacheByPath.put(wrapper.getPath(), wrapper);
@@ -294,7 +302,8 @@ public class JCRSessionWrapper implements Session {
                 }
                 logger.warn(
                         "repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " +
-                                ex.getMessage());
+                                ex.getMessage()
+                );
             }
         }
         if (originalEx != null) {
@@ -360,7 +369,7 @@ public class JCRSessionWrapper implements Session {
                         if (frozen != null) {
                             wrapper = frozen;
                         }
-                    } 
+                    }
                     if (wrapper == null) {
                         wrapper = provider.getNodeWrapper(node, localPath, null, this);
                     }
@@ -438,11 +447,11 @@ public class JCRSessionWrapper implements Session {
             if (s.equals(source) || s.startsWith(sourcePrefix)) {
                 JCRNodeWrapper n = cacheByPath.remove(s);
                 if (n instanceof JCRNodeDecorator) {
-                    n = ((JCRNodeDecorator)n).getDecoratedNode();
+                    n = ((JCRNodeDecorator) n).getDecoratedNode();
                 }
                 String newPath = dest + n.getPath().substring(source.length());
-                ((JCRNodeWrapperImpl)n).localPath = newPath;
-                ((JCRNodeWrapperImpl)n).localPathInProvider = newPath;
+                ((JCRNodeWrapperImpl) n).localPath = newPath;
+                ((JCRNodeWrapperImpl) n).localPathInProvider = newPath;
                 cacheByPath.put(newPath, n);
             }
         }
@@ -460,12 +469,12 @@ public class JCRSessionWrapper implements Session {
 
     void registerChangedNode(JCRNodeWrapper node) {
         if (!newNodes.containsKey(node.getPath())) {
-        changedNodes.put(node.getPath(), node);
-    }
+            changedNodes.put(node.getPath(), node);
+        }
     }
 
     void unregisterNewNode(JCRNodeWrapper node) {
-        if (!newNodes.isEmpty() || !changedNodes.isEmpty() ) {
+        if (!newNodes.isEmpty() || !changedNodes.isEmpty()) {
             newNodes.remove(node.getPath());
             changedNodes.remove(node.getPath());
             try {
@@ -499,16 +508,12 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void validate() throws ConstraintViolationException, RepositoryException {
-        CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null);
-        exception = validateNodes(changedNodes.values(), exception);
-        if (exception != null) {
-            if (getLocale() != null) {
+        if (!skipValidation) {
+            CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null);
+            exception = validateNodes(changedNodes.values(), exception);
+            if (exception != null) {
                 refresh(false);
                 throw exception;
-            } else {
-                for (ConstraintViolationException violationException : exception.getErrors()) {
-                    logger.error("Constraint violation " + violationException.getMessage());
-                }
             }
         }
     }
@@ -538,10 +543,7 @@ public class JCRSessionWrapper implements Session {
                                 errorLocale = getLocale();
                             }
 
-                            if (ccve == null) {
-                                ccve = new CompositeConstraintViolationException();
-                            }
-                            ccve.addException(new PropertyConstraintViolationException(node, Messages.getInternal("label.error.mandatoryField", LocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
+                            ccve = addError(ccve, new PropertyConstraintViolationException(node, Messages.getInternal("label.error.mandatoryField", LocaleContextHolder.getLocale(), "Field is mandatory"), errorLocale, propertyDefinition));
                         }
                     }
                 }
@@ -549,7 +551,6 @@ public class JCRSessionWrapper implements Session {
                 logger.debug("A new node can no longer be accessed to run validation checks", e);
             }
 
-            // refactoring
             Map<String, Constructor<?>> validators = sessionFactory.getDefaultProvider().getValidators();
             Set<ConstraintViolation<JCRNodeValidator>> constraintViolations = new LinkedHashSet<ConstraintViolation<JCRNodeValidator>>();
             for (Map.Entry<String, Constructor<?>> validatorEntry : validators.entrySet()) {
@@ -569,9 +570,6 @@ public class JCRSessionWrapper implements Session {
                 }
             }
             for (ConstraintViolation<JCRNodeValidator> constraintViolation : constraintViolations) {
-                if (ccve == null) {
-                    ccve = new CompositeConstraintViolationException();
-                }
                 String propertyName;
                 try {
                     Method propertyNameGetter = constraintViolation.getConstraintDescriptor().getAnnotation().annotationType().getMethod(
@@ -581,32 +579,26 @@ public class JCRSessionWrapper implements Session {
                 } catch (Exception e) {
                     propertyName = constraintViolation.getPropertyPath().toString();
                 }
-                Locale errorLocale = null;
                 if (StringUtils.isNotBlank(propertyName)) {
-                    try {
-                        ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(
-                                propertyName);
-                        if (propertyDefinition == null) {
-                            propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_",
-                                    ":"));
-                        }
-                        if (propertyDefinition != null) {
-                            if (propertyDefinition.isInternationalized()) {
-                                errorLocale = getLocale();
+                    ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(
+                            propertyName);
+                    if (propertyDefinition == null) {
+                        propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_",":"));
+                    }
+                    if (propertyDefinition != null) {
+                        Locale errorLocale = null;
+                        if (propertyDefinition.isInternationalized()) {
+                            errorLocale = getLocale();
+                            if (errorLocale == null) {
+                                continue;
                             }
-                            ccve.addException(new PropertyConstraintViolationException(node,
-                                    constraintViolation.getMessage(), errorLocale, propertyDefinition));
-                        } else {
-                            ccve.addException(new NodeConstraintViolationException(node,
-                                    constraintViolation.getMessage(), errorLocale));
                         }
-                    } catch (RepositoryException e) {
-                        ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(),
-                                errorLocale));
+                        ccve = addError(ccve, new PropertyConstraintViolationException(node, constraintViolation.getMessage(), errorLocale, propertyDefinition));
+                    } else {
+                        ccve = addError(ccve, new NodeConstraintViolationException(node, constraintViolation.getMessage(), null));
                     }
                 } else {
-                    ccve.addException(new NodeConstraintViolationException(node, constraintViolation.getMessage(),
-                            errorLocale));
+                    ccve = addError(ccve, new NodeConstraintViolationException(node, constraintViolation.getMessage(), null));
                 }
             }
         }
@@ -614,6 +606,13 @@ public class JCRSessionWrapper implements Session {
         return ccve;
     }
 
+    private CompositeConstraintViolationException addError(CompositeConstraintViolationException ccve, ConstraintViolationException exception) {
+        if (ccve == null) {
+            ccve = new CompositeConstraintViolationException();
+        }
+        ccve.addException(exception);
+        return ccve;
+    }
 
 
     public void refresh(boolean b) throws RepositoryException {
@@ -647,8 +646,7 @@ public class JCRSessionWrapper implements Session {
      *
      * @param absPath an absolute path.
      * @param actions a comma separated list of action strings.
-     * @throws UnsupportedRepositoryOperationException
-     *          as long as Jahia doesn't support it
+     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public void checkPermission(String absPath, String actions) throws AccessControlException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -712,6 +710,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Applies the namespace prefix to the appropriate sessions, including the underlying provider sessions.
+     *
      * @param prefix
      * @param uri
      * @throws NamespaceException
@@ -769,14 +768,14 @@ public class JCRSessionWrapper implements Session {
         }
         isLive = false;
         long actives = activeSessions.decrementAndGet();
-        if(activeSessionsObjects.remove(uuid)==null){
+        if (activeSessionsObjects.remove(uuid) == null) {
             logger.error("Could not removed session " + this + " opened here \n", thisSessionTrace);
         }
-        if(logger.isDebugEnabled() && actives < activeSessionsObjects.size()){
-            Map<UUID,JCRSessionWrapper> copyActives = new HashMap<UUID,JCRSessionWrapper>(activeSessionsObjects);
-            logger.debug("There is "+actives+ " sessions but "+copyActives.size() + " is retained");
+        if (logger.isDebugEnabled() && actives < activeSessionsObjects.size()) {
+            Map<UUID, JCRSessionWrapper> copyActives = new HashMap<UUID, JCRSessionWrapper>(activeSessionsObjects);
+            logger.debug("There is " + actives + " sessions but " + copyActives.size() + " is retained");
             for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
-                logger.debug("Active Session "+entry.getKey()+" is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
+                logger.debug("Active Session " + entry.getKey() + " is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
             }
         }
     }
@@ -792,7 +791,7 @@ public class JCRSessionWrapper implements Session {
      *
      * @param token a lock token (a string).
      * @deprecated As of JCR 2.0, {@link LockManager#addLockToken(String)}
-     *             should be used instead.
+     * should be used instead.
      */
     public void addLockToken(String token) {
         tokens.add(token);
@@ -829,6 +828,7 @@ public class JCRSessionWrapper implements Session {
     public Collection<Session> getAllSessions() {
         return sessions.values();
     }
+
     public Session getProviderSession(JCRStoreProvider provider) throws RepositoryException {
         return getProviderSession(provider, true);
     }
@@ -849,7 +849,7 @@ public class JCRSessionWrapper implements Session {
                     username = user.getUsername();
                 }
                 if (isCurrentUserSession() && !simpleCredentials.getUserID().startsWith(JahiaLoginModule.SYSTEM)) {
-                    s = provider.getSessionFactory().findSameSession(provider,username,workspace.getName());
+                    s = provider.getSessionFactory().findSameSession(provider, username, workspace.getName());
                 }
                 if (s == null) {
                     s = provider.getSession(credentials, workspace.getName());
@@ -898,6 +898,7 @@ public class JCRSessionWrapper implements Session {
     public Calendar getPreviewDate() {
         return sessionFactory.getCurrentPreviewDate();
     }
+
     /**
      * Generates a document view export using a {@link org.apache.jackrabbit.commons.xml.DocumentViewExporter}
      * instance.
@@ -1088,9 +1089,8 @@ public class JCRSessionWrapper implements Session {
      * Jahia throws an <code>UnsupportedRepositoryOperationException</code>.
      *
      * @return the access control manager for this <code>Session</code>
-     * @throws UnsupportedRepositoryOperationException
-     *          if access control
-     *          is not supported.
+     * @throws UnsupportedRepositoryOperationException if access control
+     *                                                 is not supported.
      * @since JCR 2.0
      */
     public AccessControlManager getAccessControlManager()
@@ -1182,7 +1182,7 @@ public class JCRSessionWrapper implements Session {
     public void setVersionLabel(String versionLabel) {
         if (this.versionLabel == null) {
             if (versionLabel != null && !versionLabel.startsWith(getWorkspace().getName())) {
-                throw new RuntimeException("Cannot use label "+versionLabel + " in workspace "+getWorkspace().getName());
+                throw new RuntimeException("Cannot use label " + versionLabel + " in workspace " + getWorkspace().getName());
             }
             this.versionLabel = versionLabel;
         } else {
@@ -1193,14 +1193,11 @@ public class JCRSessionWrapper implements Session {
     /**
      * Returns the wrapper node which corresponds to the version specified in the current session. If the corresponding version cannot be
      * found for the node a {@link PathNotFoundException} is thrown.
-     * 
-     * @param objectNode
-     *            the source object to check version node for
-     * @param provider
-     *            the node provider
+     *
+     * @param objectNode the source object to check version node for
+     * @param provider   the node provider
      * @return the wrapper node which corresponds to the version specified in the current session
-     * @throws RepositoryException
-     *             in case of a repository operation error
+     * @throws RepositoryException in case of a repository operation error
      */
     public JCRNodeWrapper getFrozenVersionAsRegular(Node objectNode, JCRStoreProvider provider) throws RepositoryException {
         return getFrozenVersionAsRegular(objectNode, provider, true);
@@ -1210,19 +1207,15 @@ public class JCRSessionWrapper implements Session {
      * Returns the wrapper node which corresponds to the version specified in the current session. If the corresponding version cannot be
      * found for the node a <b>null</b> is returned in case <code>throwExeptionIfNotFound</code> is set to false. If version is not found
      * and <code>throwExeptionIfNotFound</code> is set to true - throws a {@link PathNotFoundException}.
-     * 
-     * @param objectNode
-     *            the source object to check version node for
-     * @param provider
-     *            the node provider
-     * @param throwExeptionIfNotFound
-     *            if <code>true</code> a {@link PathNotFoundException} is thrown in case the corresponding version cannot be found
+     *
+     * @param objectNode              the source object to check version node for
+     * @param provider                the node provider
+     * @param throwExeptionIfNotFound if <code>true</code> a {@link PathNotFoundException} is thrown in case the corresponding version cannot be found
      * @return the wrapper node which corresponds to the version specified in the current session
-     * @throws RepositoryException
-     *             in case of a repository operation error
+     * @throws RepositoryException in case of a repository operation error
      */
     protected JCRNodeWrapper getFrozenVersionAsRegular(Node objectNode, JCRStoreProvider provider,
-            boolean throwExeptionIfNotFound) throws RepositoryException {
+                                                       boolean throwExeptionIfNotFound) throws RepositoryException {
         try {
             VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager()
                     .getVersionHistory(objectNode.getPath());
@@ -1258,7 +1251,7 @@ public class JCRSessionWrapper implements Session {
         return activeSessions.get();
     }
 
-    public static Map<UUID,JCRSessionWrapper> getActiveSessionsObjects() {
+    public static Map<UUID, JCRSessionWrapper> getActiveSessionsObjects() {
         return Collections.unmodifiableMap(activeSessionsObjects);
     }
 
@@ -1287,7 +1280,8 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Get weak references of a node
-     * @param node node
+     *
+     * @param node         node
      * @param propertyName name of the property
      * @return an iterator
      * @throws RepositoryException

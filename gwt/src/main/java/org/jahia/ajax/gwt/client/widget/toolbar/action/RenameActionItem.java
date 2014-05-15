@@ -69,7 +69,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -107,12 +109,10 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
             String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
                     selection.getName());
             if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
-                final boolean folder = !selection.isFile();
                 JahiaContentManagementService.App.getInstance()
                         .rename(selection.getPath(), newName, new BaseAsyncCallback<GWTJahiaNode>() {
                             public void onApplicationFailure(Throwable throwable) {
-                                Window.alert(
-                                        Messages.get("failure.rename.label") + "\n" + throwable.getLocalizedMessage());
+                                MessageBox.alert(Messages.get("failure.rename.label"), throwable.getLocalizedMessage(), null);
                                 linker.loaded();
                             }
 

@@ -616,13 +616,20 @@ public class ContentManagerHelper {
             } else if (!node.hasPermission(Privilege.JCR_WRITE)) {
                 throw new GWTJahiaServiceException(node.getName() + " - ACCESS DENIED");
             } else if (!node.rename(JCRContentUtils.escapeLocalNodeName(newName))) {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file", uiLocale, node.getName(), newName));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename", uiLocale, node.getName(), newName));
             }
         } catch (ItemExistsException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.already.exists", uiLocale, newName));
+        } catch (ConstraintViolationException e) {
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename",
+                    uiLocale, node.getName(), newName)
+                    + ". "
+                    + Messages.getInternal("label.cause", uiLocale)
+                    + ": "
+                    + e.getLocalizedMessage());
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename.file", uiLocale, node.getName(), newName));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.rename", uiLocale, node.getName(), newName));
         }
         try {
             node.saveSession();

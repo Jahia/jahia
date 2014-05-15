@@ -83,12 +83,16 @@ public class CookieAuthConfig implements Serializable {
     private boolean activated;
 
     private String cookieName = "jid";
+    
+    private boolean httpOnly = true;
 
     private int idLength = 40;
 
     private int maxAgeInSeconds = 2592000;
 
     private boolean renewalActivated;
+    
+    private boolean secure;
 
     private String userPropertyName = "org.jahia.user.cookieauth.id";
 
@@ -112,8 +116,16 @@ public class CookieAuthConfig implements Serializable {
         return activated;
     }
 
+    public boolean isHttpOnly() {
+        return httpOnly;
+    }
+
     public boolean isRenewalActivated() {
         return renewalActivated;
+    }
+
+    public boolean isSecure() {
+        return secure;
     }
 
     public void setActivated(boolean activted) {
@@ -122,6 +134,10 @@ public class CookieAuthConfig implements Serializable {
 
     public void setCookieName(String cookieName) {
         this.cookieName = cookieName;
+    }
+
+    public void setHttpOnly(boolean httpOnly) {
+        this.httpOnly = httpOnly;
     }
 
     public void setIdLength(int idLength) {
@@ -134,6 +150,10 @@ public class CookieAuthConfig implements Serializable {
 
     public void setRenewalActivated(boolean renewalActivated) {
         this.renewalActivated = renewalActivated;
+    }
+
+    public void setSecure(boolean secure) {
+        this.secure = secure;
     }
 
     public void setUserPropertyName(String userPropertyName) {

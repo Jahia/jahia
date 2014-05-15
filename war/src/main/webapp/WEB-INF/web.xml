@@ -813,13 +813,16 @@
         <url-pattern>/flow/*</url-pattern>
     </servlet-mapping>
     
+    <session-config>
+        <cookie-config>
+            <http-only>true</http-only>
+        </cookie-config>
     <!-- Session timeout value is set in minutes. Comment this section out
          in order to set the timeout time back to the server's value  -->
     <!--
-    <session-config>
       <session-timeout>1</session-timeout>
-    </session-config>
     -->
+    </session-config>
 
     <!-- ===================== Default MIME Type Mappings =================== -->
 

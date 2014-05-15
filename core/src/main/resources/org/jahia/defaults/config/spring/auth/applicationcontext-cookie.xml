@@ -13,7 +13,7 @@
 		 -->
 	    <property name="idLength" value="40"/>
 	    <!--
-	    	name of user property under which we store the cookie identifier key in Jahia,
+	    	name of user property under which we store the cookie identifier key in Digital Factory,
 	     	for matching with the value coming from the cookie.
 	     -->
 	    <property name="userPropertyName" value="cookieauth"/>
@@ -39,6 +39,15 @@
 			the age in seconds to a value in days. 
 	     -->
 	    <property name="renewalActivated" value="true"/>
+        <!--
+            Whether HttpOnly flag is set for this cookie or not
+        -->
+        <property name="httpOnly" value="true"/>
+        <!--
+            Indicates to the browser whether the cookie should only be sent using a
+            secure protocol, such as HTTPS or SSL
+        -->
+        <property name="secure" value="false"/>
     </bean>
 
 </beans>

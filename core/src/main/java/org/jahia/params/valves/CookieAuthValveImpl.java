@@ -165,6 +165,8 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                         authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
                                 authContext.getRequest().getContextPath() : "/");
                         authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+                        authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+                        authCookie.setSecure(cookieAuthConfig.isSecure());
                         HttpServletResponse realResponse = authContext.getResponse();
                         realResponse.addCookie(authCookie);
                     }

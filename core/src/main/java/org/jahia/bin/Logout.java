@@ -325,6 +325,8 @@ public class Logout implements Controller {
             Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
             authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
             authCookie.setMaxAge(0); // means we want it deleted now !
+            authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+            authCookie.setSecure(cookieAuthConfig.isSecure());
             response.addCookie(authCookie);
             curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
         }

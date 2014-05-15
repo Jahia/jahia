@@ -251,6 +251,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                 authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
                         httpServletRequest.getContextPath() : "/");
                 authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+                authCookie.setSecure(cookieAuthConfig.isSecure());
                 authContext.getResponse().addCookie(authCookie);
             }
 

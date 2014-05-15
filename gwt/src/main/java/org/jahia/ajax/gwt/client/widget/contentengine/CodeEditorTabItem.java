@@ -71,11 +71,10 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.RpcMap;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -184,6 +183,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                         mirrorTemplates.getStore().add(snippets.get(se.getSelectedItem().getValue()));
                         if (mirrorTemplates.getStore().getModels().size() > 0) {
                             addAllButton.enable();
+                            mirrorTemplates.setEmptyText(Messages.get("label.stub.choose.codeTemplate"));
                         } else {
                             addAllButton.disable();
                         }
@@ -192,7 +192,47 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                 });
 
                 // code templates combo
-                mirrorTemplates = new ComboBox<GWTJahiaValueDisplayBean>();
+                mirrorTemplates = new ComboBox<GWTJahiaValueDisplayBean>(){
+                    public void doQuery(String q, boolean forceAll) {
+                        final String query = q;
+                        StoreFilter<GWTJahiaValueDisplayBean> filter = new StoreFilter<GWTJahiaValueDisplayBean>() {
+                            @Override
+                            public boolean select(Store<GWTJahiaValueDisplayBean> store, GWTJahiaValueDisplayBean parent, GWTJahiaValueDisplayBean item, String property) {
+                                return item.getDisplay().contains(query);
+                            }
+                        };
+                        if (q == null) {
+                            q = "";
+                        }
+
+                        FieldEvent fe = new FieldEvent(this);
+                        fe.setValue(q);
+                        if (!fireEvent(Events.BeforeQuery, fe)) {
+                            return;
+                        }
+
+                        if (q.length() >= 1) {
+                            if (!q.equals(lastQuery)) {
+                                lastQuery = q;
+                                store.clearFilters();
+                                if (store.getFilters() != null) {
+                                    store.getFilters().clear();
+                                }
+                                store.addFilter(filter);
+                                store.applyFilters(getDisplayField());
+                                expand();
+                            }
+                        } else {
+                            lastQuery = "";
+                            store.clearFilters();
+                            if (store.getFilters() != null) {
+                                store.getFilters().clear();
+                            }
+                            expand();
+                        }
+                    }
+
+                };
                 mirrorTemplates.setTypeAhead(true);
                 mirrorTemplates.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);
                 mirrorTemplates.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -322,7 +362,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
                             + ": "));
                     actions.add(getModeCombo());
                 }
-                
+
                 initEditor(tab);
             }
             actions.add(indentButton);

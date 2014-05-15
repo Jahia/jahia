@@ -89,6 +89,7 @@ import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -158,7 +159,17 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         final Map<String, String> mapping = getStaticAssetMapping();
 
-        String[] strings = Patterns.COMMA.split(resources);
+        Set<String> strings = new LinkedHashSet<String>();
+        for (String sourceResource : Patterns.COMMA.split(resources)) {
+            String replacement = mapping.get(sourceResource);
+            if (replacement != null) {
+                for (String r : StringUtils.split(replacement, " ")) {
+                    strings.add(r);
+                }
+            } else {
+                strings.add(sourceResource);
+            }
+        }
 
         Set<JahiaTemplatesPackage> packages = new TreeSet<JahiaTemplatesPackage>(TemplatePackageRegistry.TEMPLATE_PACKAGE_COMPARATOR);
         final JCRSiteNode site = renderContext.getSite();
@@ -189,14 +200,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
             resource = resource.trim();
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
-                if (mapping.containsKey(resource)) {
-                    for (String mappedResource : mapping.get(resource).split(" ")) {
-                        writeResourceTag(type, mappedResource, mappedResource);
-                    }
-                } else {
-                    writeResourceTag(type, resource, resource);
-                }
-                resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
+                writeResourceTag(type, resource, resource);
             } else {
                 String relativeResourcePath = "/" + type + "/" + resource;
                 for (JahiaTemplatesPackage pack : packages) {

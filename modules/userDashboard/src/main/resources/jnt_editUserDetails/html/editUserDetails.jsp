@@ -50,7 +50,7 @@
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
+<template:addResources type="javascript" resources="ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
@@ -61,7 +61,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${currentResource.locale}.js"/>
-<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
+<template:addResources type="javascript" resources="adapters/jquery.js"/>
 <template:addCacheDependency node="${user}"/>
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="fields" value="${user.propertiesAsString}"/>

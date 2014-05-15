@@ -6,14 +6,12 @@
     <bean class="org.jahia.services.render.StaticAssetMapping">
         <property name="mapping">
             <map>
-                <entry key="/modules/jquery/javascript/jquery.js"
-                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.min.js"/>
+                <entry key="jquery.js" value="jquery.min.js jquery.jahia.min.js"/>
+                <entry key="jquery.min.js" value="jquery.min.js jquery.jahia.min.js"/>
+                <entry key="jquery.jahia.js" value="jquery.jahia.min.js"/>
 
-                <entry key="/modules/jquery/javascript/jquery.min.js"
-                    value="/modules/jquery/javascript/jquery.min.js /modules/assets/javascript/jquery.jahia.min.js"/>
-                    
-                <entry key="/modules/assets/javascript/jquery.jahia.js"
-                    value="/modules/assets/javascript/jquery.jahia.min.js"/>
+                <entry key="ckeditor/ckeditor.js" value="ckeditor.js"/>
+                <entry key="ckeditor/adapters/jquery.js" value="adapters/jquery.js"/>
             </map>
         </property>
     </bean>

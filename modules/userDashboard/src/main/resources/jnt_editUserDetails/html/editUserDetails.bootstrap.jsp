@@ -64,8 +64,8 @@
 <template:addResources type="javascript" resources="admin-bootstrap.js"/>
 <template:addResources type="javascript" resources="bootstrap-switch.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
-<template:addResources type="javascript" resources="ckeditor/ckeditor.js"/>
-<template:addResources type="javascript" resources="ckeditor/adapters/jquery.js"/>
+<template:addResources type="javascript" resources="ckeditor.js"/>
+<template:addResources type="javascript" resources="adapters/jquery.js"/>
 <template:addResources type="javascript" resources="editUserDetailsUtils.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.min.js"/>
 <template:addResources type="javascript" resources="bootstrap-datetimepicker.${renderContext.UILocale}.js"/>
@@ -292,14 +292,9 @@
                                         </div>
                                         <c:if test="${user:isPropertyEditable(user,'j:about')}">
                                             <div id="about_form" class="hide span10">
-                                                <div id="about_editor">
-                                                        ${user.properties['j:about'].string}
-                                                </div>
+                                                <textarea id="about_editor">${user.properties['j:about'].string}</textarea>
                                                 <script type="text/javascript">
-                                                    if(editor==null)
-                                                    {
-                                                        editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"});
-                                                    }
+                                                    if(editor==null) { editor = $( '#about_editor' ).ckeditor({toolbar:"Mini"}); }
                                                 </script>
                                                 <br />
                                                 <div class="pull-right">

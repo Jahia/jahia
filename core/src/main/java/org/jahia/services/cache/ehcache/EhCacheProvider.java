@@ -71,7 +71,6 @@ package org.jahia.services.cache.ehcache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.ObjectExistsException;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.PinningConfiguration;
@@ -135,8 +134,7 @@ public class EhCacheProvider implements CacheProvider {
             logger.info("Shutting down cache provider, serializing to disk if active. Please wait...");
             long startTime = System.currentTimeMillis();
             cacheManager.shutdown();
-            long totalTime = System.currentTimeMillis() - startTime;
-            logger.info("Cache provider shutdown completed in " + totalTime + "[ms]");
+            logger.info("Cache provider shutdown completed in {} ms", System.currentTimeMillis() - startTime);
             initialized = false;
         }
     }

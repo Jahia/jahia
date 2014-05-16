@@ -70,6 +70,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +105,7 @@ public class SidePanelTabItem implements Serializable {
 
     protected transient TabItem tab;
     protected transient EditLinker editLinker;
-    protected transient Map autoRefreshData;
+    protected transient Map<String, Object> autoRefreshData;
     protected transient boolean needManualRefresh;
 
     /**
@@ -138,7 +139,10 @@ public class SidePanelTabItem implements Serializable {
     }
 
     public void markForAutoRefresh(Map<String, Object> data) {
-        autoRefreshData = data;
+        if (autoRefreshData == null) {
+            autoRefreshData = new HashMap<String, Object>();
+        }
+        autoRefreshData.putAll(data);
     }
 
     public void refresh(Map<String, Object> data) {
@@ -163,7 +167,7 @@ public class SidePanelTabItem implements Serializable {
      */
     public void doRefresh() {}
 
-    public Map getAutoRefreshData() {
+    public Map<String, Object> getAutoRefreshData() {
         return autoRefreshData;
     }
 

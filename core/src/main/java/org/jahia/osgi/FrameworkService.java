@@ -74,6 +74,7 @@ import org.apache.felix.framework.util.FelixConstants;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -88,7 +89,7 @@ import java.util.Properties;
 /**
  * OSGi framework service
  *
- * @author loom
+ * @author Serge Huber
  */
 public class FrameworkService {
     
@@ -98,6 +99,8 @@ public class FrameworkService {
     private final ServletContext context;
     private Felix felix;
     private ProvisionActivator provisionActivator = null;
+    
+    private boolean started;
 
     public FrameworkService(ServletContext context) {
         this.context = context;
@@ -108,20 +111,21 @@ public class FrameworkService {
         Felix tmp = new Felix(createConfig());
         tmp.start();
         this.felix = tmp;
-
-        logger.info("OSGi framework started");
     }
 
     public void stop() throws BundleException {
         provisionActivator = null;
         if (this.felix != null) {
+            FrameworkEvent stopEvent = null;
             this.felix.stop();
             logger.info("Waiting for OSGi framework shutdown...");
             try {
-                this.felix.waitForStop(10000);
+                stopEvent = this.felix.waitForStop(30000);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
+            
+            logger.info("Framework stopped with event {}", stopEvent.getType());
         }
 
         logger.info("OSGi framework stopped");
@@ -154,11 +158,27 @@ public class FrameworkService {
         return map;
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+    
     public static BundleContext getBundleContext() {
         if (instance != null && instance.felix != null) {
             return instance.felix.getBundleContext();
         } else {
             return null;
+        }
+    }
+    
+    /**
+     * Notify this service that the framework has actually started.
+     */
+    public static void notifyStarted() {
+        if (instance != null) {
+            synchronized (instance) {
+                instance.started = true;
+                instance.notifyAll();
+            }
         }
     }
 }

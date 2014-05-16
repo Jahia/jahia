@@ -252,6 +252,15 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             
             osgiService = new FrameworkService(event.getServletContext());
             osgiService.start();
+            synchronized (osgiService) {
+                while (!osgiService.isStarted()) {
+                    try {
+                        osgiService.wait();
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
+                }
+            }
             
             logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - timer));
             

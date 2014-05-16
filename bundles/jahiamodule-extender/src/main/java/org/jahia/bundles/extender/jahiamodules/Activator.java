@@ -79,6 +79,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -864,6 +865,10 @@ public class Activator implements BundleActivator {
                 case FrameworkEvent.PACKAGES_REFRESHED: 
                     startAllBundles();
                     stopAllBundles();
+                    break;
+                    
+                case FrameworkEvent.STARTED:
+                    FrameworkService.notifyStarted();
                     break;
             }
         }

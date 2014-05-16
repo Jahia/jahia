@@ -469,7 +469,7 @@
 
 [jmix:theme] mixin
  extends = jnt:page, jnt:template
- - j:theme (weakreference,choicelist[nodes='$currentSite/templates/files/themes;jnt:folder'])
+ - j:theme (weakreference,choicelist[nodes='$currentSiteTemplatesSet/templates/files/themes;jnt:folder'])
 
 // @since Jahia 7.0
 [jmix:useUILocale] mixin

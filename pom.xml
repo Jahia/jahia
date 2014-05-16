@@ -21,7 +21,11 @@
         Jahia counts hundreds of global brands and governmental organizations
         among its loyal customers, in more than 20 countries across the globe.
 
+<<<<<<< .working
         For more information, please visit http://www.jahia.com
+=======
+        <jahia.deployers.version>2.7.4</jahia.deployers.version>
+>>>>>>> .merge-right.r49778
 
     JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION
     ============================================
@@ -36,10 +40,34 @@
 
         IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
 
+<<<<<<< .working
         "This program is free software; you can redistribute it and/or
         modify it under the terms of the GNU General Public License
         as published by the Free Software Foundation; either version 2
         of the License, or (at your option) any later version.
+=======
+        <!-- Jahia Maven plugin version and default settings -->
+        <jahia.plugin.version>3.0.4</jahia.plugin.version>
+        <!-- common settings -->
+        <jahia.configure.useDataStore>true</jahia.configure.useDataStore>
+		<jahia.configure.storeFilesInDB>false</jahia.configure.storeFilesInDB>
+		<jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+        <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
+        <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
+        <jahia.deploy.war.contextPath />
+        <jahia.test.url>http://localhost:8080/cms</jahia.test.url>
+        <!-- DBMS -->
+        <jahia.configure.databaseType>derby_embedded</jahia.configure.databaseType>
+        <jahia.configure.databaseUrl>jdbc:derby:directory:jahia;create=true</jahia.configure.databaseUrl>
+        <jahia.configure.databaseUsername />
+        <jahia.configure.databasePassword />
+        <!-- Application server -->
+        <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+        <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
+        <!-- end of Jahia Maven plugin default settings -->
+        <nexus.maven.plugin.version>1.5.1</nexus.maven.plugin.version>
+    </properties>
+>>>>>>> .merge-right.r49778
 
         This program is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of

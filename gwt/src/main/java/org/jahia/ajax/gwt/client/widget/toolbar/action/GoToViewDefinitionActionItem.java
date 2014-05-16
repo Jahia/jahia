@@ -84,7 +84,9 @@ public class GoToViewDefinitionActionItem extends BaseActionItem {
             if (sourceInfo != null) {
                 String url = JahiaGWTParameters.getParam(JahiaGWTParameters.BASE_URL);
                 if (url != null) {
-                    url = url.replace("/cms/edit/default/","/cms/studio/default/");
+                    if (!url.contains("/cms/studio/default")) {
+                        url = url.replaceAll("(.*/cms/)(.*)(/default/.*)","$1studio$3");
+                    }
                     url += sourceInfo + ".html";
                     Window.Location.assign(url);
                 }

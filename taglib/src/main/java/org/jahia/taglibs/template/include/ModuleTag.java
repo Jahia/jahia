@@ -235,17 +235,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (node != null) {
                 Integer currentLevel =
                         (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                boolean hasParentConstraint = false;
                 try {
                     constraints = ConstraintsHelper.getConstraints(node);
-                    // if the path is not set and parentNode allows this child then we can set the path
-                    if (path == null && !StringUtils.isEmpty(ConstraintsHelper.getConstraints(node.getParent(),node.getName()))) {
-                        path = node.getPath();
-                    }
+                    hasParentConstraint = path == null && !StringUtils.isEmpty(ConstraintsHelper.getConstraints(node.getParent(), node.getName()));
 
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
-                if (checkConstraints && (path == null || path.equals("*"))) {
+                if (checkConstraints && !hasParentConstraint && (path == null || path.equals("*"))) {
                     String constrainedNodeTypes = null;
                     if (currentLevel != null) {
                         constrainedNodeTypes = (String) pageContext.getAttribute(

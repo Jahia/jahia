@@ -24,6 +24,8 @@
     </c:if>
 </c:if>
 
+<c:set var="expiration" scope="request" value="0"/>
+
 <c:choose>
     <c:when test='${searchMap[hitsName] eq null }'>
         <s:results var="resultsHits" limit="${limit}" approxCountVar="listApproxSize" >

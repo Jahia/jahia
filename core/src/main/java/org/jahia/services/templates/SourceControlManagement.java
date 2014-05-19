@@ -158,6 +158,10 @@ public abstract class SourceControlManagement {
             if (StringUtils.isBlank(message)) {
                 message = result.out;
             }
+
+            // remove potential "hint:" in message string
+            message = message.replace("hint:", "");
+
             throw new IOException(message);
         }
     }

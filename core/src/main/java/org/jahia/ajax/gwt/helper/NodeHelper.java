@@ -510,7 +510,16 @@ class NodeHelper {
 
     private void populateChildrenInfo(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
-            n.setHasChildren(n.isNodeType("jnt:mountPoint") || node.hasNodes());
+            boolean slowConnection = node.getProvider().isSlowConnection();
+
+            boolean allowChildNodes = false;
+             for (String s : node.getNodeTypes()) {
+                if (NodeTypeRegistry.getInstance().getNodeType(s).getChildNodeDefinitions().length > 0) {
+                    allowChildNodes = true;
+                    break;
+                }
+            }
+            n.setHasChildren(allowChildNodes && (slowConnection || node.hasNodes()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(),e);
         }
@@ -806,7 +815,9 @@ class NodeHelper {
                 n.setSiteUUID(site.getUUID());
                 n.setAclContext("site:" + site.getName());
                 n.setSiteKey(site.getSiteKey());
-                n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
+                if (site.getTemplatePackage() != null) {
+                    n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
+                }
             } else {
                 n.setAclContext("sharedOnly");
             }

@@ -176,6 +176,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private Boolean lockingAvailable = null;
     private Boolean searchAvailable = null;
     private Boolean updateMixinAvailable = null;
+    private Boolean slowConnection = false;
 
     private final Object syncRepoInit = new Object();
 
@@ -1137,6 +1138,28 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             updateMixinAvailable = Boolean.FALSE;
         }
         return updateMixinAvailable;
+    }
+
+    public boolean isSlowConnection() {
+        if (slowConnection != null) {
+            return slowConnection;
+        }
+        Repository repository = getRepository();
+        Value[] slowConnectionValues = repository.getDescriptorValues("jahia.provider.slowConnection");
+        if (slowConnectionValues == null) {
+            slowConnection = Boolean.FALSE;
+            return false;
+        }
+        if (slowConnectionValues.length == 0) {
+            slowConnection = Boolean.FALSE;
+        } else {
+            slowConnection = Boolean.TRUE;
+        }
+        return slowConnection;
+    }
+
+    public void setSlowConnection(boolean slowConnection) {
+        this.slowConnection = slowConnection;
     }
 
     /**

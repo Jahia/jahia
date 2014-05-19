@@ -243,14 +243,18 @@ public class NavigationHelper {
                     if (hasOrderableChildren) {
                         gwtChildNode.set("index", new Integer(i++));
                     }
-                    NodeIterator ni = childNode.getNodes();
-                    gwtChildNode.setHasChildren(false);
-                    while (ni.hasNext()) {
-                        Node n = ni.nextNode();
-                        if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
-                            gwtChildNode.setHasChildren(true);
-                            break;
+                    if (!childNode.getProvider().isSlowConnection()) {
+                        NodeIterator ni = childNode.getNodes();
+                        gwtChildNode.setHasChildren(false);
+                        while (ni.hasNext()) {
+                            Node n = ni.nextNode();
+                            if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
+                                gwtChildNode.setHasChildren(true);
+                                break;
+                            }
                         }
+                    } else {
+                        gwtChildNode.setHasChildren(true);
                     }
                     gwtNodeChildren.add(gwtChildNode);
                 } else if (checkSubChild && childNode.hasNodes()) {

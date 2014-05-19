@@ -664,7 +664,7 @@ public class Service extends JahiaService {
             cache.flush();
             logger.info("Cache '" + cacheId + "' flushed.");
         } else {
-            logger.warn("No cache found for name '" + cacheId + "'. Skip flushing.");
+            logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
         }
     }
 
@@ -673,7 +673,7 @@ public class Service extends JahiaService {
         if (cache != null) {
             cache.remove(cacheEntryKey);
         } else {
-            logger.warn("No cache found for name '" + cacheId + "'. Skip flushing.");
+            logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
         }
     }
 

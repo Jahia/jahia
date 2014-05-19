@@ -99,7 +99,7 @@ public class NodeTypesDBServiceImpl {
         try {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
-            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0,
+            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
                     DEFINITIONS_PROPERTIES).setReadOnly(true).uniqueResult();
             if (nodeTypesDBProvider != null) {
                 return nodeTypesDBProvider.getCndFile();
@@ -123,7 +123,7 @@ public class NodeTypesDBServiceImpl {
         try {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
-            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0,
+            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
                     DEFINITIONS_PROPERTIES).setReadOnly(false).uniqueResult();
             if (nodeTypesDBProvider != null) {
                 nodeTypesDBProvider.setCndFile(content);
@@ -152,7 +152,7 @@ public class NodeTypesDBServiceImpl {
         try {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
-            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0, filename).setReadOnly(true).uniqueResult();
+            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename", filename).setReadOnly(true).uniqueResult();
             if (nodeTypesDBProvider != null) {
                 return nodeTypesDBProvider.getCndFile();
             }
@@ -198,7 +198,7 @@ public class NodeTypesDBServiceImpl {
         try {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
-            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=?").setString(0,
+            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
                     filename).setReadOnly(false).uniqueResult();
             if (nodeTypesDBProvider != null && content != null) {
                 nodeTypesDBProvider.setCndFile(content);

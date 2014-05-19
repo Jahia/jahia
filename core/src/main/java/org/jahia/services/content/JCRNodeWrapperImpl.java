@@ -1700,18 +1700,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (epd == null) {
             throw new ConstraintViolationException("Couldn't find definition for property " + name);
         }
-
         if (values != null) {
+            Value[] valuesCopy = new Value[values.length];
             for (int i = 0; i < values.length; i++) {
                 if (values[i] != null
                         && PropertyType.UNDEFINED != epd.getRequiredType()
                         && values[i].getType() != epd.getRequiredType()
                         && !(values[i].getType() == PropertyType.WEAKREFERENCE
                         && epd.getRequiredType() == PropertyType.REFERENCE)) {
-                    values[i] = getSession().getValueFactory()
+                    valuesCopy[i] = getSession().getValueFactory()
                             .createValue(values[i].getString(), epd.getRequiredType());
+                } else {
+                    valuesCopy[i] = values[i];
                 }
             }
+
+            values = valuesCopy;
         }
 
         if (!session.isSystem() && !epd.isProtected() && !epd.getDeclaringNodeType().canSetProperty(epd.getName(), values)) {

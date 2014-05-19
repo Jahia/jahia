@@ -120,18 +120,61 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     @Override
     public boolean commit(String message) throws IOException {
+        // retrieve the name of the current branch
+        ExecutionResult result = executeCommand(executable, new String[]{"symbolic-ref", "--short", "HEAD"});
+        // if we have an error getting the current branch name, we're on a temp branch so probably in the middle of a rebase
+        boolean needRebaseContinue = result.exitValue > 0;
+        String branch = needRebaseContinue ? null : result.out.trim();
+
+        // commit stuff if needed
         boolean commitRequired = checkCommit();
-        String branch = executeCommand(executable, new String[]{"symbolic-ref"," --short ","HEAD"}).out.trim();
         if (commitRequired) {
             checkExecutionResult(executeCommand(executable, new String[]{"commit","-a","-m", message }));
         }
-        ExecutionResult result = executeCommand(executable, new String[]{"-c", "core.askpass=true","push","--porcelain","-u","origin",branch});
-        checkExecutionResult(result);
-        invalidateStatusCache();
-        if (result.out.contains("[up to date]")) {
-            return false;
+
+        boolean didWeDoAnything = commitRequired;
+
+        // if we're in the middle of a rebase, continue it and see if we can be done
+        if(needRebaseContinue) {
+            // check status to see if we're done
+            result = executeCommand(executable, new String[]{"status"});
+            if(result.exitValue == 0 && result.out.contains("all conflicts fixed")) {
+                // we don't have any more conflicts so we can finish the rebase
+                result = executeCommand(executable, new String[]{"rebase", "--continue"});
+
+                // it's possible that the changes have already been applied to we can just skip this patch
+                if(result.exitValue > 0 && result.out.contains("No changes")) {
+                    result = executeCommand(executable, new String[]{"rebase", "--skip"});
+                }
+                checkExecutionResult(result);
+
+                // retrieve the branch name again
+                result = executeCommand(executable, new String[]{"symbolic-ref", "--short", "HEAD"});
+                checkExecutionResult(result);
+                branch = result.out.trim();
+
+                didWeDoAnything = true;
+            }
+            else {
+                checkExecutionResult(result);
+            }
         }
-        return commitRequired;
+
+        // check if we need to push to remote for the current branch
+        // git log --branches --not --remotes --simplify-by-decoration --decorate --oneline
+        // output looks like: 120bc4a (HEAD,master) afsddsgdsg
+        result = executeCommand(executable, new String[]{"log", "--branches","--not","--remotes","--simplify-by-decoration","--decorate","--oneline"});
+        if(result.out.contains(branch)) {
+            // we have un-pushed commits for the current branch so push them
+            result = executeCommand(executable, new String[]{"-c", "core.askpass=true", "push", "--porcelain", "-u", "origin", branch});
+            checkExecutionResult(result);
+
+            didWeDoAnything = true;
+        }
+
+        invalidateStatusCache();
+
+        return didWeDoAnything;
     }
 
     @Override

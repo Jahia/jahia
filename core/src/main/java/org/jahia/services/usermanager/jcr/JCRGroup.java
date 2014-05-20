@@ -69,23 +69,19 @@
  */
 package org.jahia.services.usermanager.jcr;
 
-import org.jahia.services.content.decorator.JCRGroupNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerRoutingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.security.Principal;
 import java.util.*;
 
@@ -104,7 +100,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     private static final String PROVIDER_NAME = "jcr";
 
     private transient static Logger logger = LoggerFactory.getLogger(JCRGroup.class);
-    
+
     private String nodeUuid;
     private boolean external;
     private Properties properties = null;
@@ -132,25 +128,21 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      * Get grp's properties list.
      *
      * @return Return a reference on the grp's properties list, or null if no
-     *         property is present.
+     * property is present.
      */
     public Properties getProperties() {
         if (properties == null) {
             try {
-                properties = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Properties>() {
-                    public Properties doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Properties properties = new Properties();
-                        JCRGroupNode jcrGroupNode = (JCRGroupNode) getNode(session);
-                        PropertyIterator iterator = jcrGroupNode.getProperties();
-                        for (; iterator.hasNext();) {
-                            Property property = iterator.nextProperty();
-                            if (!property.isMultiple()) {
-                                properties.put(property.getName(), property.getString());
-                            }
-                        }
-                        return properties;
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+                properties = new Properties();
+                JCRGroupNode jcrGroupNode = (JCRGroupNode) getNode(session);
+                PropertyIterator iterator = jcrGroupNode.getProperties();
+                for (; iterator.hasNext(); ) {
+                    Property property = iterator.nextProperty();
+                    if (!property.isMultiple()) {
+                        properties.put(property.getName(), property.getString());
                     }
-                });
+                }
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving group properties", e);
             }
@@ -165,18 +157,15 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *
      * @param key Property's name.
      * @return Return the property's value of the specified key, or null if the
-     *         property does not exist.
+     * property does not exist.
      */
     public String getProperty(final String key) {
         if (properties != null) {
             return (String) properties.get(key);
         }
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
-                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getNode(session).getProperty(key).getString();
-                }
-            });
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            return getNode(session).getProperty(key).getString();
         } catch (PathNotFoundException pnfe) {
             // This is expected in the case the property doesn't exist in the repository. We will simply return null.
             return null;
@@ -226,18 +215,14 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
             if (J_EXTERNAL.equals(key)) {
                 external = Boolean.valueOf(value);
             }
-
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node node = getNode(session);
-                    node.setProperty(key, value);
-                    session.save();
-                    if (properties != null) {
-                        properties.put(key, value);
-                    }
-                    return Boolean.TRUE;
-                }
-            });
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            Node node = getNode(session);
+            node.setProperty(key, value);
+            session.save();
+            if (properties != null) {
+                properties.put(key, value);
+            }
+            return Boolean.TRUE;
         } catch (RepositoryException e) {
             logger.warn("Error while setting property " + key + " with value " + value, e);
         }
@@ -249,7 +234,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *
      * @param principal The principal to add to this group.
      * @return Return true if the member was successfully added, false if the
-     *         principal was already a member.
+     * principal was already a member.
      */
     public boolean addMember(final Principal principal) {
         if (null == principal || this.equals(principal)) {
@@ -296,7 +281,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         } catch (RepositoryException e) {
             logger.error("Error while adding group member", e);
         }
-        
+
         return false;
     }
 
@@ -325,18 +310,14 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
     protected void initMembers() {
         if (mMembers == null) {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        initMembersMap(getNode(session));
-                        return Boolean.TRUE;
-                    }
-                });
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+                initMembersMap(getNode(session));
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving group member map", e);
             }
         }
     }
-    
+
     private void initMembersMap(Node node) throws RepositoryException {
         if (mMembers == null) {
             Set<Principal> principals = new HashSet<Principal>();
@@ -346,7 +327,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                 Node member = (Node) iterator.next();
                 if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
                     if (!member.hasProperty("j:member")) {
-                        logger.warn("Missing member property for group "+mGroupname+"(key="+mGroupKey+"), ignoring group member " + member.getName() + "...");
+                        logger.warn("Missing member property for group " + mGroupname + "(key=" + mGroupKey + "), ignoring group member " + member.getName() + "...");
                         continue;
                     }
                     Property memberProperty = member.getProperty("j:member");
@@ -354,7 +335,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                     try {
                         memberNode = memberProperty.getNode();
                     } catch (ItemNotFoundException infe) {
-                        logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + ") for group "+mGroupname+"(key="+mGroupKey+"), ignoring...");
+                        logger.warn("Couldn't find group member " + member.getName() + "(uuid=" + memberProperty.getString() + ") for group " + mGroupname + "(key=" + mGroupKey + "), ignoring...");
                     }
                     if (memberNode != null) {
                         if (memberNode.isNodeType(Constants.JAHIANT_USER)) {
@@ -366,7 +347,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                                         + "'");
                             }
                         } else if (memberNode.isNodeType(Constants.JAHIANT_GROUP)) {
-                            JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(((JCRGroupNode)memberNode).getResolveSite().getName(), memberNode.getName());
+                            JahiaGroup g = JahiaGroupManagerRoutingService.getInstance().lookupGroup(((JCRGroupNode) memberNode).getResolveSite().getName(), memberNode.getName());
                             if (g != null) {
                                 principals.add(g);
                             } else if (logger.isDebugEnabled()) {
@@ -387,7 +368,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
      *
      * @param principal The principal to remove from this group.
      * @return Return true if the principal was removed, or false if the
-     *         principal was not a member.
+     * principal was not a member.
      */
     public boolean removeMember(final Principal principal) {
         try {
@@ -539,7 +520,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (Principal principal:principals) {
+                    for (Principal principal : principals) {
                         if (isMember(principal)) {
                             continue;
                         }

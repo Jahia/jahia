@@ -76,8 +76,6 @@ package org.jahia.services.sites;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-import net.sf.ehcache.hibernate.EhCache;
-import net.sf.ehcache.management.Cache;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -925,57 +923,46 @@ public class JahiaSitesService extends JahiaService {
     public class SiteKeyByServerNameCacheEntryFactory implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRSiteNode s = getSiteByServerName((String) key, session);
-                    if (s != null) {
-                        return s.getSiteKey();
-                    } else {
-                        return "";
-                    }
-                }
-            });
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            JCRSiteNode s = getSiteByServerName((String) key, session);
+            if (s != null) {
+                return s.getSiteKey();
+            } else {
+                return "";
+            }
         }
     }
 
     public class SiteKeyByIdCacheEntryFactory implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRSiteNode s = internalGetSite((Integer) key, session);
-                    if (s != null) {
-                        return s.getSiteKey();
-                    } else {
-                        return "";
-                    }
-                }
-            });
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+
+            JCRSiteNode s = internalGetSite((Integer) key, session);
+            if (s != null) {
+                return s.getSiteKey();
+            } else {
+                return "";
+            }
         }
     }
 
     public class SiteDefaultLanguageBySiteKeyCacheEntryFactory implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        JCRSiteNode s = StringUtils.isEmpty((String) key) ? null : getSiteByKey((String) key, session);
-                        if (s != null) {
-                            return s.getDefaultLanguage();
-                        }
-                    } catch (PathNotFoundException e) {
-                        // site not found .. do nothing
-                    } catch (RepositoryException e) {
-                        // other errors
-                        logger.error("cannot get site", e);
-                    }
-                    return "";
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            try {
+                JCRSiteNode s = StringUtils.isEmpty((String) key) ? null : getSiteByKey((String) key, session);
+                if (s != null) {
+                    return s.getDefaultLanguage();
                 }
-            });
+            } catch (PathNotFoundException e) {
+                // site not found .. do nothing
+            } catch (RepositoryException e) {
+                // other errors
+                logger.error("cannot get site", e);
+            }
+            return "";
         }
     }
 }

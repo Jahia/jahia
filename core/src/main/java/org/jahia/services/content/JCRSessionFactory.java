@@ -102,6 +102,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private static transient Logger logger = LoggerFactory.getLogger(JCRSessionFactory.class);
 
     protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
+    protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> systemSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
     private JahiaUserManagerService userService;
@@ -168,22 +169,34 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public JCRSessionWrapper getCurrentUserSession(String workspace, Locale locale, Locale fallbackLocale) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, false);
+    }
+
+    public JCRSessionWrapper getCurrentSystemSession(String workspace, Locale locale, Locale fallbackLocale) throws RepositoryException {
+        return getCurrentSession(workspace, locale, fallbackLocale, true);
+    }
+
+    public JCRSessionWrapper getCurrentSession(String workspace, Locale locale, Locale fallbackLocale, boolean system) throws RepositoryException {
         // thread user session might be initialized/closed in an HTTP filter, instead of keeping it
-        Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
+        ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> sessionThreadLocal = system ? userSession : systemSession;
+
+        Map<String, Map<String, JCRSessionWrapper>> smap = sessionThreadLocal.get();
         if (smap == null) {
             smap = new HashMap<String, Map<String, JCRSessionWrapper>>();
         }
-        userSession.set(smap);
+        sessionThreadLocal.set(smap);
         String username;
 
-        if (getCurrentUser() == null) {
+        if (!system && getCurrentUser() == null) {
             logger.error("Null thread user");
             throw new RepositoryException("Null thread user");
         }
 
         JahiaUser user = getCurrentUser();
 
-        if (JahiaUserManagerService.isGuest(user)) {
+        if (system) {
+            username = null;
+        } else if (JahiaUserManagerService.isGuest(user)) {
             username = JahiaLoginModule.GUEST;
         } else {
             username = user.getUsername();
@@ -208,20 +221,25 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         JCRSessionWrapper s = wsMap.get(key);
 
         if (s == null || !s.isLive()) {
-            if (!JahiaLoginModule.GUEST.equals(username)) {
-                s = login(JahiaLoginModule.getCredentials(username), workspace, locale, fallbackLocale);
-                // should be done somewhere else, call can be quite expensive
-                if (!(user instanceof JCRUser)) {
-                    mountPoints.get("/").deployExternalUser(user);
-                }
+            if (system) {
+                s = login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, fallbackLocale);
+                wsMap.put(key, s);
             } else {
-                s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
+                if (!JahiaLoginModule.GUEST.equals(username)) {
+                    s = login(JahiaLoginModule.getCredentials(username), workspace, locale, fallbackLocale);
+                    // should be done somewhere else, call can be quite expensive
+                    if (!(user instanceof JCRUser)) {
+                        mountPoints.get("/").deployExternalUser(user);
+                    }
+                } else {
+                    s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
+                }
+                s.setCurrentUserSession(true);
+                wsMap.put(key, s);
+                //} else {
+                // In cluster, this will perform a cluster node sync, which is an expensive operation.
+                //    s.refresh(true);
             }
-            s.setCurrentUserSession(true);
-            wsMap.put(key, s);
-            //} else {
-            // In cluster, this will perform a cluster node sync, which is an expensive operation.
-            //    s.refresh(true);
         }
         return s;
     }
@@ -468,7 +486,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public void closeAllSessions() {
-        Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
+        closeAllSessions(userSession);
+        closeAllSessions(systemSession);
+    }
+
+    private void closeAllSessions(ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> mapThreadLocal) {
+        Map<String, Map<String, JCRSessionWrapper>> smap = mapThreadLocal.get();
         if (smap != null) {
             for (Map<String, JCRSessionWrapper> wsMap : smap.values()) {
                 for (JCRSessionWrapper s : wsMap.values()) {

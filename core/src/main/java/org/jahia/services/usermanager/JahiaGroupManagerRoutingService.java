@@ -78,9 +78,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -491,17 +490,12 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
                 siteKeyIdMap = ehCacheProvider.registerSelfPopulatingCache("org.jahia.groups.siteKeyIDCache", new CacheEntryFactory() {
                     @Override
                     public Object createEntry(final Object key) throws Exception {
-                        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
-                            @Override
-                            public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                try {
-                                    return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) key,
-                                            session).getID();
-                                } catch (RepositoryException e) {
-                                    return 0;
-                                }
-                            }
-                        });
+                        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+                        try {
+                            return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) key, session).getID();
+                        } catch (RepositoryException e) {
+                            return 0;
+                        }
                     }
                 });
             }

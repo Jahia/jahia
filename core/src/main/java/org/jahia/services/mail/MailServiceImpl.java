@@ -205,6 +205,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             exchange.setProperty(Exchange.CHARSET_NAME, charset);
         }
         
+    	//if to in exchange message is set it must be initialized correctly if the To is initialized with null
+        if (exchange.getIn().getHeader("From") != null && exchange.getIn().getHeader("To") == null) {
+        	exchange.getIn().setHeader("To", settings.getTo());
+        }        
+        
         long timer = System.currentTimeMillis();
         if (logger.isDebugEnabled()) {
             logger.debug("Sending message: " + exchange);

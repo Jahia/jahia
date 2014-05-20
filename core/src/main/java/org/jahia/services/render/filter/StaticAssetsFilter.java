@@ -518,7 +518,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                             if (line < 0) {
                                                 logger.debug(message);
                                             } else {
-                                                logger.debug(line + ':' + lineOffset + ':' + message);
+                                                logger.debug(line + ":" + lineOffset + ":" + message);
                                             }
                                         }
 
@@ -527,7 +527,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                             if (line < 0) {
                                                 logger.error(message);
                                             } else {
-                                                logger.error(line + ':' + lineOffset + ':' + message);
+                                                logger.error(line + ":" + lineOffset + ":" + message);
                                             }
                                         }
 

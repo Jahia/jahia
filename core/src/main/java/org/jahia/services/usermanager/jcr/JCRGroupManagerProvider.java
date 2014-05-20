@@ -73,6 +73,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
+import org.drools.core.util.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -152,7 +153,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                     if (siteID == 0) {
                         parentNodeWrapper = session.getNode("/groups");
                     } else {
-                        String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                        String siteName = sitesService.getSiteKeyById(siteID);
                         parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
                     }
                     nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
@@ -293,7 +294,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                         if (siteID <= 0) {
                             query.append(" AND ISCHILDNODE(group, '/groups");;
                         } else {
-                            String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                            String siteName = sitesService.getSiteKeyById(siteID);
                             query.append(" AND ISCHILDNODE(group, '/sites/").append(siteName).append("/groups')");
                         }
                         query.append(" ORDER BY group.[j:nodename]");
@@ -373,7 +374,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                         if (siteID <= 0) {
                             query.append(" AND ISCHILDNODE(group, '/groups')");
                         } else {
-                            String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                            String siteName = sitesService.getSiteKeyById(siteID);
                             query.append(" AND ISCHILDNODE(group, '/sites/" + siteName + "/groups')");
                         }
                         query.append(" ORDER BY group.[j:nodename]");
@@ -538,7 +539,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                     if (siteID == 0) {
                         groupNode = session.getNode("/groups/" + name.trim());
                     } else {
-                        String siteName = sitesService.getSite(siteID, session).getSiteKey();
+                        String siteName = sitesService.getSiteKeyById(siteID);
                         groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                     }
                     return groupNode != null && !groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
@@ -635,13 +636,12 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                         if (siteID1 <= 0) {
                             groupNode = session.getNode("/groups/" + name.trim());
                         } else {
-                            JahiaSite site = sitesService.getSite(siteID1, session);
-                            if (site == null) {
+                            String site = sitesService.getSiteKeyById(siteID1);
+                            if (StringUtils.isEmpty(site)) {
                                 logger.debug("Site {} is not available", siteID1);
                                 return null;
                             }
-                            String siteName = site.getSiteKey();
-                            groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
+                            groupNode = session.getNode("/sites/" + site + "/groups/" + name.trim());
                         }
                     } catch (PathNotFoundException e) {
                         cachePut(trueGroupKey, null);
@@ -733,7 +733,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
                         if (siteID <= 0) {
                             query.append(" AND ISCHILDNODE(g, '/groups')");
                         } else {
-                            String siteName = sitesService.getSite(siteID,session).getSiteKey();
+                            String siteName = sitesService.getSiteKeyById(siteID);
                             query.append(" AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
                         }
                         if (searchCriterias != null && searchCriterias.size() > 0) {

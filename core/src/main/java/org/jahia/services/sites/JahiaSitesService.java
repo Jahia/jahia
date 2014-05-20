@@ -76,6 +76,8 @@ package org.jahia.services.sites;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+import net.sf.ehcache.hibernate.EhCache;
+import net.sf.ehcache.management.Cache;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -125,6 +127,7 @@ public class JahiaSitesService extends JahiaService {
     protected JCRSessionFactory sessionFactory;
     protected EhCacheProvider ehCacheProvider;
     private SelfPopulatingCache siteKeyByServerNameCache;
+    private SelfPopulatingCache siteKeyByIdCache;
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
@@ -194,17 +197,26 @@ public class JahiaSitesService extends JahiaService {
      * @return JahiaSite the JahiaSite bean
      */
     public JahiaSite getSite(final int id) throws JahiaException {
-        JahiaSite site = null;
-        try {
-            site = getSite(id, getUserSession());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        String siteKey = getSiteKeyByIdCache().get(id).getObjectValue().toString();
+        if (!siteKey.equals("")) {
+            return getSiteByKey(siteKey);
         }
+        return null;
+    }
 
-        return site;
+    public String getSiteKeyById(int id) throws RepositoryException {
+        return getSiteKeyByIdCache().get(id).getObjectValue().toString();
     }
 
     public JCRSiteNode getSite(int id, JCRSessionWrapper session) throws RepositoryException {
+        String siteKey = getSiteKeyByIdCache().get(id).getObjectValue().toString();
+        if (!siteKey.equals("")) {
+            return getSiteByKey(siteKey, session);
+        }
+        return null;
+    }
+
+    public JCRSiteNode internalGetSite(int id, JCRSessionWrapper session) throws RepositoryException {
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where s.[j:siteId]=" + id, Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();
         if (ni.hasNext()) {
@@ -295,6 +307,13 @@ public class JahiaSitesService extends JahiaService {
             siteKeyByServerNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteKeyByServerNameCache", new SiteKeyByServerNameCacheEntryFactory());
         }
         return siteKeyByServerNameCache;
+    }
+
+    private SelfPopulatingCache getSiteKeyByIdCache() {
+        if (siteKeyByIdCache == null) {
+            siteKeyByIdCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.siteKeyByIdCache", new SiteKeyByIdCacheEntryFactory());
+        }
+        return siteKeyByIdCache;
     }
 
     /**
@@ -888,6 +907,9 @@ public class JahiaSitesService extends JahiaService {
         if (siteKeyByServerNameCache != null) {
             siteKeyByServerNameCache.refresh(false);
         }
+        if (siteKeyByIdCache != null) {
+            siteKeyByIdCache.refresh(false);
+        }
         if (siteDefaultLanguageBySiteKey != null) {
             siteDefaultLanguageBySiteKey.refresh(false);
         }
@@ -907,6 +929,23 @@ public class JahiaSitesService extends JahiaService {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRSiteNode s = getSiteByServerName((String) key, session);
+                    if (s != null) {
+                        return s.getSiteKey();
+                    } else {
+                        return "";
+                    }
+                }
+            });
+        }
+    }
+
+    public class SiteKeyByIdCacheEntryFactory implements CacheEntryFactory {
+        @Override
+        public Object createEntry(final Object key) throws Exception {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRSiteNode s = internalGetSite((Integer) key, session);
                     if (s != null) {
                         return s.getSiteKey();
                     } else {

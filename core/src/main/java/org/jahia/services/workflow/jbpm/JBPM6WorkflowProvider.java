@@ -74,7 +74,9 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.TransactionManager;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.pipelines.Pipeline;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -113,7 +115,7 @@ import java.util.*;
 /**
  * jBPM 6 Workflow Provider implementation
  */
-public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservationManagerAware {
+public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservationManagerAware, JahiaAfterInitializationService {
 
     public static final List<Status> OPEN_STATUS_LIST = Arrays.asList(Status.Created, Status.InProgress, Status.Ready, Status.Reserved);
     public static final List<Status> OPEN_STATUS_LIST_NON_RESERVED = Arrays.asList(Status.Created, Status.InProgress, Status.Ready);
@@ -234,8 +236,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         kieServices = KieServices.Factory.get();
         kieRepository = kieServices.getRepository();
         kieFileSystem = kieServices.newKieFileSystem();
-
-        recompilePackages();
 
         workflowService.addProvider(this);
     }
@@ -496,5 +496,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         return s.execute(t);
     }
 
-
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        recompilePackages();
+        workflowService.registerWorkflowTypes();
+    }
 }

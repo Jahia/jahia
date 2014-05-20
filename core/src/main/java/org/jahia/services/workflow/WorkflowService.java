@@ -72,6 +72,7 @@ package org.jahia.services.workflow;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -150,39 +151,51 @@ public class WorkflowService implements BeanPostProcessor {
     public synchronized void registerWorkflowType(final WorklowTypeRegistration type) {
         if (type != null && !workflowRegistrationByDefinition.containsKey(type.getDefinition())) {
             workflowRegistrationByDefinition.put(type.getDefinition(), type);
-            if (type.getModule() != null) {
-                modulesForWorkflowDefinition.put(type.getDefinition(), type.getModule().getId());
-                for (WorkflowProvider provider : providers.values()) {
-                    final WorkflowDefinition def = provider.getWorkflowDefinitionByKey(type.getDefinition(), null);
-                    if (def != null) {
-                        try {
-                            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                                @Override
-                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                    boolean updated = initializePermission(session, def, type.getModule());
-                                    if (updated) {
-                                        session.save();
-                                        JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + type.getModule().getIdWithVersion());
-                                    }
-                                    return null;
+            if (JahiaContextLoaderListener.isContextInitialized()) {
+                doRegisterWorkflowType(type);
+            }
+        }
+    }
+
+    private void doRegisterWorkflowType(final WorklowTypeRegistration type) {
+        if (type.getModule() != null) {
+            modulesForWorkflowDefinition.put(type.getDefinition(), type.getModule().getId());
+            for (WorkflowProvider provider : providers.values()) {
+                final WorkflowDefinition def = provider.getWorkflowDefinitionByKey(type.getDefinition(), null);
+                if (def != null) {
+                    try {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                            @Override
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                boolean updated = initializePermission(session, def, type.getModule());
+                                if (updated) {
+                                    session.save();
+                                    JahiaPrivilegeRegistry.addModulePrivileges(session, "/modules/" + type.getModule().getIdWithVersion());
                                 }
-                            });
+                                return null;
+                            }
+                        });
 
-                        } catch (RepositoryException e) {
-                            logger.error("Cannot register workflow permissions", e);
-                        }
-
-                        type.setProvider(provider.getKey());
-                        cache.flush();
-                        ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle(def.getPackageName() + "." + type.getDefinition(), type.getModule());
-                        break;
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot register workflow permissions", e);
                     }
+
+                    type.setProvider(provider.getKey());
+                    cache.flush();
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().addPackageForResourceBundle(def.getPackageName() + "." + type.getDefinition(), type.getModule());
+                    break;
                 }
             }
-            if (type.getProvider() == null) {
-                workflowRegistrationByDefinition.remove(type.getDefinition());
-                modulesForWorkflowDefinition.remove(type.getDefinition());
-            }
+        }
+        if (type.getProvider() == null) {
+            workflowRegistrationByDefinition.remove(type.getDefinition());
+            modulesForWorkflowDefinition.remove(type.getDefinition());
+        }
+    }
+
+    public synchronized void registerWorkflowTypes() {
+        for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
+            doRegisterWorkflowType(registration);
         }
     }
 

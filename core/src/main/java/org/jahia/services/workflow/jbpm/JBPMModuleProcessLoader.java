@@ -136,7 +136,9 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 logger.info("... done");
             }
             logger.info("...workflow processes deployed.");
-            jbpm6WorkflowProvider.recompilePackages();
+            if (JahiaContextLoaderListener.isContextInitialized()) {
+                jbpm6WorkflowProvider.recompilePackages();
+            }
         }
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be deployed.", mailTemplates.length);
@@ -246,7 +248,9 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 logger.info("... done");
             }
             logger.info("...workflow processes undeployed.");
-            jbpm6WorkflowProvider.recompilePackages();
+            if (JahiaContextLoaderListener.isContextInitialized()) {
+                jbpm6WorkflowProvider.recompilePackages();
+            }
         }
         if (mailTemplates != null && mailTemplates.length > 0) {
             logger.info("Found {} workflow mail templates to be undeployed.", mailTemplates.length);

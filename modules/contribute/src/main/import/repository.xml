@@ -155,7 +155,6 @@
                                                              jcr:primaryType="jnt:backToParentPage">
                                             <j:acl j:inherit="true" jcr:primaryType="jnt:acl"/>
                                         </back-to-parent-page>
-                                        <language-switcher jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
                                         <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay"/>
                                     </view-content>
                                 </custom-rows-960gs-col1>
@@ -259,7 +258,6 @@
                                                           jcr:mixinTypes="mix:title"
                                                           jcr:primaryType="jnt:translation"
                                                           jcr:title="##resourceBundle(content.folder)##"/>
-                                        <language-switcher jcr:primaryType="jnt:languageSwitcher" typeOfDisplay="flag"/>
                                         <pager displayNbOfItemsPerPage="true"
                                                displayPager="true"
                                                jcr:primaryType="jnt:pager"

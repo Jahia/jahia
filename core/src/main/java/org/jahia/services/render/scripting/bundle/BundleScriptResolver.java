@@ -246,10 +246,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      */
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
-        String defaultView = (String) renderContext.getRequest().getAttribute("org.jahia.template.defaultView");
-        if(defaultView !=null && "default".equals(template)) {
-            template = defaultView;
-        }
         try {
             JCRSiteNode site = renderContext.getSite();
 

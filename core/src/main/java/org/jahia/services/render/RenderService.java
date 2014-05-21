@@ -355,11 +355,6 @@ public class RenderService {
 
                         templateNode = templateNode.getParent();
                     }
-                    HttpServletRequest request = renderContext.getRequest();
-                    if(request != null && templateNode.isNodeType("jnt:templatesFolder") && templateNode.hasProperty("j:defaultView")) {
-                        String defaultView = templateNode.getProperty("j:defaultView").getString();
-                        request.setAttribute("org.jahia.template.defaultView", defaultView);
-                    }
                     template = addContextualTemplates(resource, renderContext, template, templateNode, installedModules);
                 } else {
                     return null;

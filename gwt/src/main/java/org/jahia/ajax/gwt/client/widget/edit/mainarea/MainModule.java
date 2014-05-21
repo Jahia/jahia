@@ -469,8 +469,8 @@ public class MainModule extends Module {
             activeChannelVariant = editLinker.getActiveChannelVariant();
 
             Map<String,String> params = getParamsFromUrl(url);
-            if (params.containsKey("forcechannel")) {
-                String channelName = params.get("forcechannel");
+            if (params.containsKey("channel")) {
+                String channelName = params.get("channel");
                 for (GWTJahiaChannel gwtJahiaChannel : JahiaGWTParameters.getChannels()) {
                     if (gwtJahiaChannel.getValue().equals(channelName)) {
                         this.activeChannel = gwtJahiaChannel;
@@ -479,8 +479,8 @@ public class MainModule extends Module {
                     }
                 }
 
-                if (params.containsKey("forcevariant")) {
-                    activeChannelVariant = params.get("forcevariant");
+                if (params.containsKey("variant")) {
+                    activeChannelVariant = params.get("variant");
                 }
             }
         } else {
@@ -510,15 +510,18 @@ public class MainModule extends Module {
     public String getUrl(String path, String template, String channel, String variant) {
         StringBuilder url = new StringBuilder(getBaseUrl() + path + (template != null ? ("." + template) : "") + ".html");
         // add channel parameters if needed
-        if (channel != null &&
-                ((channel.equals("generic") && editLinker.getActiveChannel() == null) || (editLinker.getActiveChannel() != null && editLinker.getActiveChannel().getValue().equals(channel)))) {
+        if (channel != null && channel.equals("generic") && (editLinker.getActiveChannel() == null || editLinker.getActiveChannel().getValue().equals("generic"))) {
             channel = null;
             variant = null;
+        } else if (channel == null && editLinker.getActiveChannel() != null && !editLinker.getActiveChannel().getValue().equals("generic")) {
+            channel = editLinker.getActiveChannel().getValue();
+            variant = editLinker.getActiveChannelVariant();
         }
+
         if (channel != null && channel.length() > 0) {
-            url.append("?forcechannel=").append(channel);
+            url.append("?channel=").append(channel);
             if (variant != null && variant.length() > 0) {
-                url.append("&forcevariant=").append(variant);
+                url.append("&variant=").append(variant);
             }
         }
         return url.toString();

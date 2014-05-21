@@ -213,6 +213,10 @@ public class Resource {
         return !wrappers.isEmpty();
     }
 
+    public boolean hasWrapper(String wrapper) {
+        return wrappers.contains(wrapper);
+    }
+
     public String popWrapper() {
         return wrappers.pop();
     }

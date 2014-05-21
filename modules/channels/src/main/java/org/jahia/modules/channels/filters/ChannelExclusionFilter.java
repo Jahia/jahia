@@ -109,7 +109,7 @@ public class ChannelExclusionFilter extends AbstractFilter {
                 if (channelExclusionValue.getString() != null) {
                     boolean inList = isInExclusionList(channelExclusionValue.getString(), currentChannel);
                     if (inList && includeOrExclude.equals("exclude")) {
-                        return "";
+                        return getExcludedResult(resource, renderContext);
                     }
                     if (inList && includeOrExclude.equals("include")) {
                         return null;
@@ -117,8 +117,18 @@ public class ChannelExclusionFilter extends AbstractFilter {
                 }
             }
             if (includeOrExclude.equals("include")) {
-                return "";
+                return getExcludedResult(resource, renderContext);
             }
+        }
+        return null;
+    }
+
+    public String getExcludedResult(Resource resource, RenderContext context) {
+        if (!context.isEditMode() || (context.getChannel() != null && !context.getChannel().getIdentifier().equals("generic"))) {
+            return "";
+        }
+        if (!resource.hasWrapper("unselectedChannel")) {
+            resource.pushWrapper("unselectedChannel");
         }
         return null;
     }

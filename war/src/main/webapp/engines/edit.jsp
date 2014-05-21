@@ -17,9 +17,6 @@
 
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit />
-    <script type="text/javascript">
-        var contextJsParameters=jahiaGWTParameters;
-    </script>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.edit.Edit"/>
     <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.min.css"/>
     <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>

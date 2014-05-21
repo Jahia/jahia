@@ -74,11 +74,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.api.Constants;
 import org.jahia.bin.Render;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -103,17 +105,19 @@ public class GWTInitializer {
     private final static Logger logger = LoggerFactory.getLogger(GWTInitializer.class);
     private static GWTResourceConfig config;
 
-    public static String generateInitializerStructureForFrame(HttpServletRequest request, HttpSession session) {
+    public static String generateInitializerStructureForFrame(RenderContext ctx) {
         StringBuilder buf = new StringBuilder();
 
-        addCss(buf, request, true);
+        addCss(buf, ctx.getRequest(), true);
 
-        buf.append("<script type=\"text/javascript\">\n");
-        buf.append("        var onGWTFrameLoaded = [];\n");
-        buf.append("        function onGWTFrameLoad(fun) {\n");
-        buf.append("            onGWTFrameLoaded[onGWTFrameLoaded.length] = fun;\n");
-        buf.append("        }\n");
-        buf.append("\n</script>\n");
+        buf.append("<script type=\"text/javascript\">\n" + "var onGWTFrameLoaded = []; "
+                + "function onGWTFrameLoad(fun) { onGWTFrameLoaded[onGWTFrameLoaded.length] = fun; }; ");
+        String customCkeditorConfig = getCustomCKEditorConfig(ctx);
+        buf.append("if (typeof parent.CKEDITOR.config != 'undefined') { parent.CKEDITOR.config.customConfig='");
+        if (customCkeditorConfig != null) {
+            buf.append(customCkeditorConfig);
+        }
+        buf.append("' };\n</script>\n");
 
         return buf.toString();
     }
@@ -154,7 +158,8 @@ public class GWTInitializer {
 
         String serviceEntrypoint = buildServiceBaseEntrypointUrl(request);
         params.put(JahiaGWTParameters.SERVICE_ENTRY_POINT, serviceEntrypoint);
-        params.put(JahiaGWTParameters.CONTEXT_PATH, request.getContextPath().equals("/")?"":request.getContextPath());
+        String contextPath = request.getContextPath();
+        params.put(JahiaGWTParameters.CONTEXT_PATH, contextPath);
         params.put(JahiaGWTParameters.SERVLET_PATH, (request.getAttribute("servletPath") == null) ? request.getServletPath() : (String) request.getAttribute("servletPath"));
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
@@ -225,7 +230,12 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.STUDIO_VISUAL_URL, url.getContext() + url.getStudioVisual());
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {
-            params.put(JahiaGWTParameters.BASE_URL, request.getContextPath().equals("/") ? "" : request.getContextPath() + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
+            params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
+        }
+        
+        String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
+        if (customCkeditorConfig != null) {
+            params.put("ckeCfg", customCkeditorConfig);
         }
 
         // add jahia parameter dictionary
@@ -233,23 +243,45 @@ public class GWTInitializer {
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
         
-        addJavaScript(buf, request);
+        addJavaScript(buf, request, renderContext);
         
         return buf.toString();
     }
     
     public static String getCustomCKEditorConfig(RenderContext ctx) {
-        if (ctx == null || !getConfig().isDetectCustomCKEditorConfig()) {
-            return null;
+        return ctx == null ? null : getCustomCKEditorConfig(ctx.getRequest(), ctx);
+    }
+
+    public static String getCustomCKEditorConfig(HttpServletRequest request, RenderContext ctx) {
+        String cfgPath = null;
+
+        if (ctx != null && getConfig().isDetectCustomCKEditorConfig()) {
+            JCRSiteNode site = ctx.getSite();
+            if (site != null) {
+                JahiaTemplatesPackage pkg = site.getTemplatePackage();
+                if (pkg != null) {
+                    Bundle bundle = pkg.getBundle();
+                    if (bundle != null && bundle.getEntry("/javascript/ckeditor_config.js") != null) {
+                        cfgPath = ctx.getRequest().getContextPath() + pkg.getRootFolderPath()
+                                + "/javascript/ckeditor_config.js";
+                    }
+
+                }
+            }
+        }
+        if (null == cfgPath) {
+            JahiaTemplatesPackage ckeditorModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                    .getTemplatePackageById("ckeditor");
+            if (ckeditorModule != null) {
+                Bundle ckeditorBundle = ckeditorModule.getBundle();
+                if (ckeditorBundle != null && ckeditorBundle.getResource("javascript/config.js") != null) {
+                    cfgPath = request.getContextPath() + ckeditorModule.getRootFolderPath()
+                            + "/javascript/config.js";
+                }
+            }
         }
 
-        String templateSetFolder = ctx.getSite().getTemplateFolder();
-        if (getConfig().exists(templateSetFolder, "/javascript/ckeditor_config.js")) {
-            return ctx.getRequest().getContextPath() + "/modules/" + templateSetFolder
-                    + "/javascript/ckeditor_config.js";
-        }
-
-        return null;
+        return cfgPath;
     }
 
     private static void addCss(StringBuilder buf, HttpServletRequest request, boolean frame) {
@@ -263,7 +295,7 @@ public class GWTInitializer {
         }
     }
 
-    private static void addJavaScript(StringBuilder buf, HttpServletRequest request) {
+    private static void addJavaScript(StringBuilder buf, HttpServletRequest request, RenderContext ctx) {
         String context = request.getContextPath();
         for (String js : getConfig().getJavaScripts()) {
             buf.append("<script type=\"text/javascript\" src=\"")
@@ -326,7 +358,7 @@ public class GWTInitializer {
             }
         }
 
-        s.append("};");
+        s.append("}; contextJsParameters=" + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + ";");
 
         return s.toString();
     }

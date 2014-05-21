@@ -91,6 +91,7 @@
         <li><a href="textExtractor.jsp">Document text extractor</a></li>
         <li><a href="wcagChecker.jsp">WCAG checker</a></li>
         <li><a href="rewrite-status">URL rewriting rules</a></li>
+        <li><a href="ckeditorConfig.jsp">CKEditor configuration</a></li>
     </ul>
 </fieldset>
         </td>

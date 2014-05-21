@@ -5,19 +5,25 @@ import org.jahia.taglibs.AbstractJahiaTag
  * @author rincevent
  * @since JAHIA 6.5
  */
-if (renderContext.editMode && renderContext.mainResource.contextConfiguration == 'page') {
-    if (!renderContext.getServletPath().endsWith("frame")) {
-        println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
-        println GWTIncluder.generateGWTImport(renderContext.request,renderContext.response, "org.jahia.ajax.gwt.module.edit.Edit");
-        println AbstractJahiaTag.getGwtDictionnaryInclude(renderContext.request,AbstractJahiaTag.getUILocale(renderContext,renderContext.request.session,renderContext.request));
-    } else {
-        println GWTInitializer.generateInitializerStructureForFrame(renderContext.request,renderContext.request.session);
-    }
-}
 if (renderContext.mainResource.contextConfiguration == 'page') {
+	if (renderContext.editMode) {
+	    if (!renderContext.getServletPath().endsWith("frame")) {
+	        println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
+	        println GWTIncluder.generateGWTImport(renderContext.request,renderContext.response, "org.jahia.ajax.gwt.module.edit.Edit");
+	        println AbstractJahiaTag.getGwtDictionnaryInclude(renderContext.request,AbstractJahiaTag.getUILocale(renderContext,renderContext.request.session,renderContext.request));
+	    } else {
+	        println GWTInitializer.generateInitializerStructureForFrame(renderContext);
+	    }
+	}
+
     def slangmap = [en:'en_US', da:'da_DK', nl:'nl_NL', fi:'fi_FI', fr:'fr_FR', de:'de_DE', el:'el_GR', it:'it_IT', nb:'nb_NO', pt:'pt_PT', es:'es_ES', sv:'sv_SE']
     println "<script type=\"text/javascript\">"
-    print "var contextJsParameters={contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.siteInfo.WCAGComplianceCheckEnabled}}; ";
+    if (contextJsParameters == null) {
+    	contextJsParameters = "{contextPath:\"${contextPath}\",lang:\"${renderContext.mainResourceLocale}\",uilang:\"${renderContext.UILocale}\",siteUuid:\"${renderContext.site.identifier}\",wcag:${renderContext.siteInfo.WCAGComplianceCheckEnabled}}";
+    }
+    print "var contextJsParameters="
+    print contextJsParameters
+    print "; "
     print "var CKEDITOR_BASEPATH=\"${contextPath}/modules/ckeditor/javascript/\"; "
     print "var scayt_custom_params=new Array(); "
     if (slangmap[renderContext.mainResource.locale.language] != null) {

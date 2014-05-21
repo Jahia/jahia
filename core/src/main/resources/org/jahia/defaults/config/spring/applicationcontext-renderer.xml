@@ -92,7 +92,7 @@
         <property name="applyOnConfigurations" value="page"/>
         <property name="htmlExternalizationService" ref="HtmlExternalizationService"/>
     </bean>
-    <bean class="org.jahia.services.render.filter.StaticAssetsFilter">
+    <bean id="StaticAssetsFilter" class="org.jahia.services.render.filter.StaticAssetsFilter">
         <property name="priority" value="0"/>
         <property name="description"
                   value="Render filter that 'injects' the static assets into the HEAD section of the rendered HTML document."/>

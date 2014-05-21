@@ -259,8 +259,8 @@ public class CKEditor extends Component {
         } 
         eval("var overrideOptions=" + config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::toString()());
         if ((typeof cfg.toolbar == 'undefined') && (typeof overrideOptions.toolbar == 'undefined') && (typeof overrideOptions.defaultToolbar != 'undefined')) {
-            overrideOptions.toolbar = overrideOptions.defaultToolbar;
-        } 
+            $wnd.CKEDITOR.config.toolbar = overrideOptions.defaultToolbar;
+        }
         $wnd.CKEDITOR.tools.extend(cfg, overrideOptions, true);
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, cfg);
         oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);

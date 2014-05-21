@@ -84,8 +84,8 @@ import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -110,7 +110,6 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleScriptContext;
-import javax.servlet.ServletContext;
 
 import java.io.*;
 import java.net.URI;
@@ -197,6 +196,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private String ajaxTemplate;
     private String ajaxTemplateExtension;
+    
+    private String ckeditorJavaScript = "/modules/ckeditor/javascript/ckeditor.js";
+
     private String resolvedTemplate;
 
     private ScriptEngineUtils scriptEngineUtils;
@@ -270,6 +272,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
             assets.put(type, stringMap);
         }
+        
+        Map<String, Map<String, String>> inlineScripts = assets.get("inlinejavascript");
+        if (inlineScripts == null) {
+            inlineScripts = new LinkedHashMap<String, Map<String, String>>();
+            assets.put("inlinejavascript", inlineScripts);
+        }
+        inlineScripts
+                .put("<script type=\"text/javascript\">\ncontextJsParameters.ckeCfg='/modules/sample-bootstrap-templates/javascript/ckeditor_config.js';\n</script>",
+                        Collections.<String, String> emptyMap());
 
         renderContext.getRequest().setAttribute("staticAssets", assets);
 
@@ -348,6 +359,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
                     ScriptContext scriptContext = new AssetsScriptContext();
                     final Bindings bindings = scriptEngine.createBindings();
+                    
+                    bindings.put("contextJsParameters", getContextJsParameters(assets, renderContext));
 
                     if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
                         assets.put("css", aggregate(assets.get("css"), "css"));
@@ -418,6 +431,29 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
+    private Object getContextJsParameters(Map<String, Map<String, Map<String, String>>> assets, RenderContext ctx) {
+        StringBuilder params = new StringBuilder(128);
+        params.append("{contextPath:\"").append(ctx.getRequest().getContextPath()).append("\",lang:\"")
+                .append(ctx.getMainResourceLocale()).append("\",uilang:\"").append(ctx.getUILocale());
+        try {
+            params.append("\",siteUuid:\"").append(ctx.getSite() != null ? ctx.getSite().getIdentifier() : "''");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        params.append("\",wcag:").append(
+                ctx.getSiteInfo() != null ? ctx.getSiteInfo().isWCAGComplianceCheckEnabled() : "false");
+
+        Map<String, Map<String, String>> js = assets.get("javascript");
+        if (js != null && js.containsKey(ckeditorJavaScript)) {
+            String customCkeditorConfig = GWTInitializer.getCustomCKEditorConfig(ctx);
+            if (customCkeditorConfig != null) {
+                params.append(",ckeCfg:\"").append(customCkeditorConfig).append("\"");
+            }
+        }
+        params.append(",ckeCfg:\"\"}");
+        return params.toString();
+    }
+
     private boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
         if (!renderContext.isEditMode()) {
             return false;
@@ -450,7 +486,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         int i = 0;
         for (; i < entries.size(); ) {
             long filesDates = 0;
-            ServletContext context = JahiaContextLoaderListener.getServletContext();
 
             LinkedHashMap<String, org.springframework.core.io.Resource> pathsToAggregate = new LinkedHashMap<String,org.springframework.core.io.Resource>();
 
@@ -772,6 +807,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void setIeCompatibilityContent(String ieCompatibilityContent) {
         this.ieCompatibilityContent = ieCompatibilityContent;
+    }
+
+    public void setCkeditorJavaScript(String ckeditorJavaScript) {
+        this.ckeditorJavaScript = ckeditorJavaScript;
     }    
 
 }

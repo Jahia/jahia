@@ -82,6 +82,10 @@ import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -546,7 +550,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
             for (File file : files) {
                 try {
-                    file.delete();
+                    deleteFileAndEmptyParents(file, sourcesImportFolder.getPath());
                 } catch (Exception e) {
                     logger.error("Cannot delete file " + file, e);
                 }
@@ -557,6 +561,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (zis != null) {
                 IOUtils.closeQuietly(zis);
             }
+        }
+    }
+
+    private void deleteFileAndEmptyParents(File file, final String rootPath) throws IOException {
+        if (rootPath.equals(file.getPath())) {
+            return;
+        }
+        FileUtils.forceDelete(file);
+        File parentFile = file.getParentFile();
+        if (parentFile.listFiles((FileFilter) HiddenFileFilter.VISIBLE).length == 0) {
+            deleteFileAndEmptyParents(parentFile, rootPath);
         }
     }
 

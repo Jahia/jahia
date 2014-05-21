@@ -39,7 +39,7 @@ public class ToolbarWarningsService {
     }
 
     public String getMessagesAsString() {
-        return StringUtils.join(messages, "||");
+        return messages != null?StringUtils.join(messages, "||"):"";
     }
 
     /**
@@ -48,6 +48,9 @@ public class ToolbarWarningsService {
      * @return messages joined
      */
     public String getMessagesValueAsString(Locale locale) {
+        if (messages == null) {
+            return "";
+        }
         List<String> translatedMessages = new ArrayList<String>();
         for (String m : messages) {
             translatedMessages.add(Messages.getInternal(m,locale,m));

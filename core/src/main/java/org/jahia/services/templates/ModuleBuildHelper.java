@@ -85,9 +85,11 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.ProcessHelper;
+import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
@@ -96,7 +98,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.RepositoryException;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -113,48 +114,18 @@ import java.util.regex.Pattern;
  */
 public class ModuleBuildHelper implements InitializingBean {
 
-    static class CompiledModuleInfo {
-        private final File file;
-        private final String moduleName;
-        private final String version;
-
-        public CompiledModuleInfo(File file, String moduleName, String version) {
-            this.file = file;
-            this.moduleName = moduleName;
-            this.version = version;
-        }
-
-        public File getFile() {
-            return file;
-        }
-
-        public String getModuleName() {
-            return moduleName;
-        }
-
-        public String getVersion() {
-            return version;
-        }
-    }
-
     private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
-
-    private String ignoreSnapshots;
-
-    private boolean ignoreSnapshotsFlag;
-
-    private String mavenArchetypeCatalog;
-
     private String mavenExecutable;
-
+    private String ignoreSnapshots;
+    private boolean ignoreSnapshotsFlag;
+    private String mavenArchetypeCatalog;
+    private String mavenMinRequiredVersion;
     private String mavenReleasePlugin;
-
     private SourceControlHelper scmHelper;
-
     private SettingsBean settingsBean;
-
     private TemplatePackageRegistry templatePackageRegistry;
-    
+    private ToolbarWarningsService toolbarWarningsService;
+
     public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
         CompiledModuleInfo moduleInfo = compileModule(sources);
@@ -182,7 +153,7 @@ public class ModuleBuildHelper implements InitializingBean {
             throw new IOException("Cannot deploy module");
         }
         if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_PARSED) {
-            throw new IOException("Missing dependency : " +pkg.getState().getDetails().toString());
+            throw new IOException("Missing dependency : " + pkg.getState().getDetails().toString());
         }
         bundle.start();
         return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
@@ -471,13 +442,6 @@ public class ModuleBuildHelper implements InitializingBean {
         this.mavenArchetypeCatalog = mavenArchetypeCatalog;
     }
 
-    public void setMavenExecutable(String mavenExecutable) {
-        if (System.getProperty("os.name").toLowerCase().startsWith("windows") && !mavenExecutable.endsWith(".bat")) {
-            mavenExecutable = mavenExecutable + ".bat";
-        }
-        this.mavenExecutable = mavenExecutable;
-    }
-
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
     }
@@ -502,11 +466,89 @@ public class ModuleBuildHelper implements InitializingBean {
             ignoreSnapshotsFlag = Boolean.valueOf(ignoreSnapshots.trim());
         }
         if (mavenReleasePlugin == null || mavenReleasePlugin.length() == 0) {
-            mavenReleasePlugin ="release";
+            mavenReleasePlugin = "release";
         }
     }
 
     public void setMavenReleasePlugin(String mavenReleasePlugin) {
         this.mavenReleasePlugin = mavenReleasePlugin;
+    }
+
+    public void setMavenMinRequiredVersion(String mavenRequiredVersion) {
+        this.mavenMinRequiredVersion = mavenRequiredVersion;
+    }
+
+    /**
+     * before setting the executable, test if can be executed and if it matches the required version
+     * @param mavenExecutable
+     */
+    public void setMavenExecutable(String mavenExecutable) {
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows") && !mavenExecutable.endsWith(".bat")) {
+            mavenExecutable = mavenExecutable + ".bat";
+        }
+        // test maven version
+        if (settingsBean.isDevelopmentMode()) {
+            StringBuilder resultOut = new StringBuilder();
+            try {
+                int res = ProcessHelper.execute(mavenExecutable, new String[]{"-version"}, null, null, resultOut, null);
+                if (res > 0) {
+                    toolbarWarningsService.addMessage("warning.maven.missing");
+                    logger.error("Cannot set maven executable to " + mavenExecutable + ", please check your configuration");
+                    return;
+                }
+                String[] mvnVersion = StringUtils.split(StringUtils.substringBetween(resultOut.toString(), "Apache Maven ", "\n"), ".");
+                String[] requiredVersion = StringUtils.split(mavenMinRequiredVersion, ".");
+                boolean isValid = true;
+                for (int i = 0; i < mvnVersion.length; i++) {
+                    isValid = Integer.parseInt(mvnVersion[i]) >= Integer.parseInt(requiredVersion[i]);
+                    if (!isValid || i == requiredVersion.length - 1) {
+                        break;
+                    }
+                }
+
+                if (isValid) {
+                    this.mavenExecutable = mavenExecutable;
+                    settingsBean.setMavenExecutableSet(true);
+                } else {
+                    toolbarWarningsService.addMessage("warning.maven.wrong.version");
+                    logger.error("Detected Maven Version: " + StringUtils.join(mvnVersion, ".") + " do not match the minimum required version " + mavenMinRequiredVersion);
+                }
+            } catch (Exception e) {
+                toolbarWarningsService.addMessage("warning.maven.missing");
+                logger.error("Cannot set maven executable to " + mavenExecutable + ", please check your configuration", e);
+            }
+            if (StringUtils.isEmpty(this.mavenExecutable)) {
+                logger.error("Until maven executable is correctly set, the studio will not be available");
+                settingsBean.setMavenExecutableSet(false);
+            }
+        }
+    }
+
+    public void setToolbarWarningsService(ToolbarWarningsService toolbarWarningsService) {
+        this.toolbarWarningsService = toolbarWarningsService;
+    }
+
+    static class CompiledModuleInfo {
+        private final File file;
+        private final String moduleName;
+        private final String version;
+
+        public CompiledModuleInfo(File file, String moduleName, String version) {
+            this.file = file;
+            this.moduleName = moduleName;
+            this.version = version;
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        public String getModuleName() {
+            return moduleName;
+        }
+
+        public String getVersion() {
+            return version;
+        }
     }
 }

@@ -317,6 +317,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private boolean clusterActivated;
 
+    private boolean isMavenExecutableSet;
+
     /**
      * Default constructor.
      *
@@ -1205,5 +1207,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public String getInternetExplorerCompatibility() {
         return internetExplorerCompatibility;
+    }
+
+    /**
+     * @return true if maven is available
+     */
+    public boolean isMavenExecutableSet() {
+        return isMavenExecutableSet;
+    }
+
+    public void setMavenExecutableSet(boolean isMavenExecutableSet) {
+        this.isMavenExecutableSet = isMavenExecutableSet;
     }
 }

@@ -75,7 +75,9 @@ import java.util.Enumeration;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.ModuleBuildHelper;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 
 /**
@@ -132,7 +134,7 @@ class JahiaBundleTemplatesPackageHandler {
         if(downloadSourcesHeader!=null) {
             isSourcesDownloadable = Boolean.valueOf(downloadSourcesHeader);
         }
-        pkg.setSourcesDownloadable(isSourcesDownloadable);
+        pkg.setSourcesDownloadable(SettingsBean.getInstance().isMavenExecutableSet() && isSourcesDownloadable);
 
 
         if (bundle.getEntry("/") != null) {

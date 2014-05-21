@@ -69,8 +69,10 @@
  */
 package org.jahia.services.uicomponents.bean;
 
+import org.drools.core.util.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.templates.ModuleBuildHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -100,6 +102,7 @@ public class Visibility {
     private String contextNodePath;
     private String inNodePath;
     private String operatingMode;
+    private boolean needsMavenExecutable;
 
     public String getPermission() {
         return permission;
@@ -149,8 +152,8 @@ public class Visibility {
         this.inNodePath = inNodePath;
     }
 
-    public String getOperatingMode() {
-        return operatingMode;
+    public void setNeedsMavenExecutable(boolean needsMavenExecutable) {
+        this.needsMavenExecutable = needsMavenExecutable;
     }
 
     public void setOperatingMode(String operatingMode) {
@@ -200,6 +203,13 @@ public class Visibility {
                 if (!isAllowedOperatingMode()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("OperatingMode: false");
+                    }
+                    return false;
+                }
+
+                if (!isAllowedMavenExecutable()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("MavenExecutable: false");
                     }
                     return false;
                 }
@@ -302,6 +312,10 @@ public class Visibility {
                 (operatingMode.contains("development") && SettingsBean.getInstance().isDevelopmentMode()) ||
                 (operatingMode.contains("production") && SettingsBean.getInstance().isProductionMode()) ||
                 (operatingMode.contains("distantPublicationServer") && SettingsBean.getInstance().isDistantPublicationServerMode());
+    }
+
+    private boolean isAllowedMavenExecutable() {
+        return !needsMavenExecutable || SettingsBean.getInstance().isMavenExecutableSet();
     }
 
     private String resolveUserAgent(HttpServletRequest request) {

@@ -53,6 +53,7 @@
                                 </list>
                             </property>
                         </bean>
+                        <ref bean="Toolbar.Item.DisplayToolbarWarningsActionItem"/>
                     </list>
                 </property>
             </bean>

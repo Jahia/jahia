@@ -110,6 +110,7 @@ public class JahiaGWTParameters {
     public static final String BASE_URL = "baseUrl";
     public static final String DEVELOPMENT_MODE = "developmentMode";
     public static final String MODULES_SOURCES_DISK_PATH = "modulesSourcesDiskPath";
+    public static final String TOOLBAR_MESSAGES = "toolbarMessages";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 

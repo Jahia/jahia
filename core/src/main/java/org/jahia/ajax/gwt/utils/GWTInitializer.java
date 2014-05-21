@@ -72,6 +72,7 @@ package org.jahia.ajax.gwt.utils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.osgi.framework.Bundle;
@@ -232,7 +233,8 @@ public class GWTInitializer {
         } else {
             params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
         }
-        
+        params.put(JahiaGWTParameters.TOOLBAR_MESSAGES, ToolbarWarningsService.getInstance().getMessagesValueAsString(uilocale));
+
         String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
         if (customCkeditorConfig != null) {
             params.put("ckeCfg", customCkeditorConfig);

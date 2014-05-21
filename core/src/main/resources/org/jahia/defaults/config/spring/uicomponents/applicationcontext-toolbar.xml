@@ -275,9 +275,18 @@
                 <property name="permission" value="studioModeAccess"/>
                 <property name="contextNodePath" value="/modules"/>
                 <property name="operatingMode" value="development"/>
+                <property name="needsMavenExecutable"  value="true"/>
             </bean>
         </property>
     </bean>
+
+    <bean id="Toolbar.Item.DisplayToolbarWarningsActionItem" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DisplayToolbarWarningsActionItem"/>
+        </property>
+        <property name="icon" value="warning"/>
+    </bean>
+
 
     <bean id="Toolbar.Item.SwitchConfigActionToStudioVisual" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.studio.visual"/>

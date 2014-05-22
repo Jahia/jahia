@@ -694,7 +694,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             String username = ((SimpleCredentials) credentials).getUserID();
 
             if ("shared".equals(authenticationType)) {
-                if (username.startsWith(" system ") || guestUser == null) {
+                if (guestUser == null || username.startsWith(" system ")) {
                     credentials = JahiaLoginModule.getSystemCredentials();
                 } else {
                     credentials = JahiaLoginModule.getGuestCredentials();
@@ -702,13 +702,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 username = ((SimpleCredentials) credentials).getUserID();
             }
 
-            if (username.startsWith(" system ") && systemUser != null) {
+            if (systemUser != null && username.startsWith(" system ")) {
                 if (systemPassword != null) {
                     credentials = new SimpleCredentials(systemUser, systemPassword.toCharArray());
                 } else {
                     credentials = JahiaLoginModule.getCredentials(systemUser);
                 }
-            } else if (username.startsWith(" guest ") && guestUser != null) {
+            } else if (guestUser != null && username.startsWith(" guest ")) {
                 if (guestPassword != null) {
                     credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
                 } else {
